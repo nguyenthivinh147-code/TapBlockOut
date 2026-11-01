@@ -1,0 +1,30 @@
+{
+  "_comment": "Mau cau hinh. Chep thanh android/config/platform_config.json (khong commit) roi dien khoa that do Horus gui. Khoa de trong hoac de nguyen cho (YOUR_, REPLACE_) thi mo-dun tuong ung tu tat. KHONG dat bi mat that vao file mau nay.",
+
+  "applovin_sdk_key": "",
+  "rewarded_unit": "",
+  "interstitial_unit": "",
+  "privacy_policy_url": "",
+  "terms_url": "",
+  "consent_debug_geography": "",
+
+  "adjust_app_token": "",
+  "adjust_environment": "sandbox",
+  "adjust_events": {
+    "level_end": "",
+    "offer_buy": "",
+    "rv_done": ""
+  },
+
+  "play_games_app_id": "",
+  "billing_public_key": "",
+
+  "firebase_app_id": "",
+  "firebase_api_key": "",
+  "firebase_project_id": "",
+
+  "rc_min_fetch_interval_s": 3600,
+  "rc_defaults": {
+    "ads_inter_min_gap_s": "120"
+  }
+}

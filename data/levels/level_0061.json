@@ -1,0 +1,13 @@
+{
+	"id": 61, "w": 4, "h": 5, "hard": false,
+	"min_taps": 6, "moves": 8, "seed": 0,
+	"stones": [],
+	"pulse_sides": [],
+	"blocks": [
+		{"id":"b1","color":"yellow","cells":[[0,0],[1,0]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b2","color":"green","cells":[[0,2]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b3","color":"purple","cells":[[1,2],[2,2]],"ice":0,"chained_by":"","inner_color":"green","fog":false},
+		{"id":"b4","color":"blue","cells":[[3,3],[3,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b5","color":"purple","cells":[[0,4]],"ice":0,"chained_by":"","inner_color":"","fog":false}
+	]
+}

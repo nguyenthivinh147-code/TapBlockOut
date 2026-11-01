@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12 tro len (android:dataExtractionRules): sao luu len cloud va chuyen may. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="file" path="." />
+        <exclude domain="sharedpref" path="tbo_platform.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="file" path="." />
+        <exclude domain="sharedpref" path="tbo_platform.xml" />
+    </device-transfer>
+</data-extraction-rules>

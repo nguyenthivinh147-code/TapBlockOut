@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 tro xuong (android:fullBackupContent). user:// cua Godot nam trong files/. -->
+<full-backup-content>
+    <include domain="file" path="." />
+    <exclude domain="sharedpref" path="tbo_platform.xml" />
+</full-backup-content>

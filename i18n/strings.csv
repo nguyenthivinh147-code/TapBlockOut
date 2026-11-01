@@ -1,0 +1,225 @@
+keys,en,vi
+APP_NAME,Tap Block Out,Tap Block Out
+common_ok,OK,OK
+common_cancel,Cancel,Huỷ
+common_close,Close,Đóng
+common_back,Back,Quay lại
+common_yes,Yes,Có
+common_no,No,Không
+common_confirm,Confirm,Xác nhận
+common_free,Free,Miễn phí
+common_loading,Loading...,Đang tải...
+common_gold,Gold,Gold
+common_locked_level,Unlocked at Level %d,Mở khoá ở Level %d
+common_not_enough_gold,Not enough gold,Chưa đủ gold
+home_play,Play,Chơi
+home_play_level,Level %d,Level %d
+home_lives_full,Full,Đầy
+home_lives_next,Next life in %s,Mạng kế tiếp sau %s
+home_gift,Daily gift,Quà mỗi ngày
+home_shop,Shop,Cửa hàng
+home_settings,Settings,Cài đặt
+home_profile,Profile,Hồ sơ
+home_challenge,Daily Challenge,Thử thách ngày
+home_challenge_locked,Unlocked at Level %d,Mở khoá ở Level %d
+home_shop_locked,Unlocked at Level %d,Mở khoá ở Level %d
+home_coming_soon,New levels coming soon,Sắp có level mới
+home_offer_chip,Special offer,Ưu đãi đặc biệt
+home_offer_left,%s left,Còn %s
+level_title,Level %d,Level %d
+level_hard,HARD,KHÓ
+level_moves,Moves,Lượt
+level_moves_left,Moves: %d,Lượt: %d
+level_remaining,%d blocks left,Còn %d khối
+level_remaining_one,1 block left,Còn 1 khối
+level_restart,Restart,Chơi lại
+level_restart_confirm_title,Restart this level?,Chơi lại level này?
+level_restart_confirm_free,Start over from the beginning.,Bắt đầu lại từ đầu nhé.
+level_restart_confirm_life,Restarting now will cost 1 life.,Chơi lại lúc này sẽ mất 1 mạng.
+level_restart_yes,Restart,Chơi lại
+level_restart_no,Keep playing,Chơi tiếp
+level_home,Home,Trang chủ
+level_clap,Nice one!,Hay lắm!
+level_hint_none,No block can slide out right now.,Chưa có khối nào thoát được lúc này.
+level_demo_end,That's all the levels for now. New ones are coming soon!,Đã hết level hiện có. Level mới sắp ra mắt!
+booster_hint,Hint,Gợi ý
+booster_move,+3 Move,+3 Lượt
+booster_smash,Smash,Phá khối
+booster_hint_desc,Points to a block that can slide out right now.,Chỉ ra một khối có thể thoát ngay.
+booster_move_desc,Adds 3 moves to this level.,Thêm 3 lượt cho level này.
+booster_smash_desc,Removes one block from the board.,Xoá một khối khỏi bàn cờ.
+booster_buy,Buy for %d,Mua với %d
+booster_use,Use,Dùng
+booster_count,x%d,x%d
+booster_free_video,Free with a video,Miễn phí khi xem video
+booster_locked,Unlocked at Level %d,Mở khoá ở Level %d
+booster_smash_pick,Tap a block to smash it,Chạm vào một khối để phá
+booster_smash_stone,Stones can't be smashed.,Không thể phá đá.
+booster_not_enough,Not enough gold,Chưa đủ gold
+rescue_title,Out of moves,Hết lượt rồi
+rescue_body,Add 3 more moves and keep going?,Thêm 3 lượt để chơi tiếp nhé?
+rescue_remaining,%d blocks left,Còn %d khối
+rescue_remaining_one,1 block left,Còn 1 khối
+rescue_buy,Get +3 Moves for %d,Nhận +3 Lượt với %d
+rescue_use,Use +3 Move,Dùng +3 Lượt
+rescue_in_stock,You have %d,Bạn đang có %d
+rescue_video,Watch a video for +3 Moves,Xem video để nhận +3 Lượt
+rescue_give_up,Give up,Bỏ cuộc
+rescue_need_gold,Not enough gold,Chưa đủ gold
+rescue_confirm_title,Give up this level?,Bỏ cuộc level này?
+rescue_warn_life,"If you give up, you'll lose 1 life.","Nếu bỏ cuộc, bạn sẽ mất 1 mạng."
+rescue_confirm_yes,Give up (-1 life),Bỏ cuộc (-1 mạng)
+win_title,Level complete!,Hoàn thành level!
+win_subtitle,Nicely done.,Làm tốt lắm.
+win_reward,+%d gold,+%d gold
+win_x2,Double it! x2,Nhân đôi! x2
+win_x2_free,Free x2 this time,Nhân đôi miễn phí lần này
+win_x2_done,Doubled!,Đã nhân đôi!
+win_continue,Continue,Tiếp tục
+lose_title,Not this time,Chưa được rồi
+lose_body,Try again whenever you're ready.,Thử lại khi bạn sẵn sàng nhé.
+lose_retry,Try again,Thử lại
+lose_home,Home,Trang chủ
+lose_life_lost,You used 1 life.,Bạn đã dùng 1 mạng.
+lose_pack_title,Need a hand?,Cần giúp một tay?
+lose_pack_body,Rescue Pack: a +3 Move to help next time.,Gói Cứu Nguy: một +3 Lượt cho lần sau.
+lose_pack_buy,Get it for %s,Nhận với %s
+no_lives_title,Out of lives,Hết mạng
+no_lives_body,"Lives come back over time. Take a break, or refill now.",Mạng sẽ hồi dần theo thời gian. Nghỉ một chút hoặc nạp lại ngay nhé.
+no_lives_next,Next life in %s,Mạng kế tiếp sau %s
+no_lives_full_in,All lives back in %s,Đầy mạng sau %s
+no_lives_refill_gold,Refill with %d gold,Nạp lại với %d gold
+no_lives_refill_amount,Get %d lives,Nhận %d mạng
+no_lives_video,Watch a video: +1 life,Xem video: +1 mạng
+no_lives_no_ads,No video is available right now. You can wait for a life to come back.,Hiện chưa có video. Bạn có thể đợi mạng hồi lại nhé.
+no_lives_wait,Wait,Đợi
+no_lives_home,Back to Home,Về trang chủ
+no_lives_not_enough_gold,Not enough gold,Chưa đủ gold
+no_lives_lives,Lives: %d/%d,Mạng: %d/%d
+ads_watch,Watch video,Xem video
+ads_loading,Loading video...,Đang tải video...
+ads_not_available,No video is available right now. Please try again later.,Hiện chưa có video. Bạn thử lại sau nhé.
+ads_failed,"The video didn't finish, so no reward this time.",Video chưa xem xong nên chưa có phần thưởng.
+ads_closed_early,Watch the whole video to get the reward.,Hãy xem hết video để nhận thưởng.
+ads_reward_ok,Reward received!,Đã nhận thưởng!
+ads_privacy,Privacy settings,Cài đặt quyền riêng tư
+shop_title,Shop,Cửa hàng
+shop_gold_pack,%d gold,%d gold
+shop_sale,SALE,GIẢM GIÁ
+shop_sale_weekend,Weekend sale!,Giảm giá cuối tuần!
+shop_video,Watch a video: +%d gold,Xem video: +%d gold
+shop_video_left,%d of %d left today,Hôm nay còn %d/%d
+shop_video_none,No more videos today. Come back tomorrow!,Hôm nay hết video rồi. Mai quay lại nhé!
+shop_section_gold,Gold,Gold
+shop_section_other,Special packs,Gói đặc biệt
+shop_remove_ads,Remove Ads,Bỏ quảng cáo
+shop_remove_ads_desc,"No more full-screen ads, plus %d gold.","Không còn quảng cáo toàn màn hình, tặng thêm %d gold."
+shop_starter_pack,Starter Pack,Gói Khởi Đầu
+shop_starter_pack_desc,%d gold and one of each booster.,%d gold và mỗi loại booster một cái.
+shop_level_pack,Level Pack,Gói Level
+shop_level_pack_desc,%d gold and one of each booster.,%d gold và mỗi loại booster một cái.
+shop_rescue_pack,Rescue Pack,Gói Cứu Nguy
+shop_rescue_pack_desc,One +3 Move booster.,Một booster +3 Lượt.
+shop_restore,Restore purchases,Khôi phục giao dịch
+shop_restore_ok,Purchases restored.,Đã khôi phục giao dịch.
+shop_restore_none,Nothing to restore.,Không có gì để khôi phục.
+shop_owned,Owned,Đã sở hữu
+shop_buy_ok,Thank you!,Cảm ơn bạn!
+shop_buy_failed,The purchase didn't go through.,Giao dịch chưa thành công.
+shop_buy_pending,Your purchase is pending.,Giao dịch đang chờ xử lý.
+shop_locked,Unlocked at Level %d,Mở khoá ở Level %d
+shop_mini_title,Need more gold?,Cần thêm gold?
+shop_mini_close,Back,Quay lại
+daily_title,Daily gift,Quà mỗi ngày
+daily_week,Week %d,Tuần %d
+daily_day,Day %d,Ngày %d
+daily_today,Today,Hôm nay
+daily_claim,Claim,Nhận
+daily_claimed,Claimed,Đã nhận
+daily_come_back,Come back tomorrow for the next gift.,Mai quay lại để nhận quà tiếp theo nhé.
+daily_video,Watch a video: claim the next gift now,Xem video: nhận trước món quà kế tiếp
+daily_video_used,You've already claimed ahead today.,Hôm nay bạn đã nhận trước rồi.
+daily_reward_gold,%d gold,%d gold
+daily_reward_item,%s x%d,%s x%d
+daily_reward_received,Gift received!,Đã nhận quà!
+profile_title,Profile,Hồ sơ
+profile_avatars,Avatars,Ảnh đại diện
+profile_frames,Frames,Khung
+profile_default,Default,Mặc định
+profile_equipped,Equipped,Đang đeo
+profile_equip,Equip,Đeo
+profile_owned,Owned,Đã có
+profile_buy,Buy for %d,Mua với %d
+profile_video,Watch a video to unlock,Xem video để mở khoá
+profile_level,Level %d,Level %d
+profile_not_enough,Not enough gold,Chưa đủ gold
+settings_title,Settings,Cài đặt
+settings_sound,Sound effects,Hiệu ứng âm thanh
+settings_music,Music,Nhạc nền
+settings_haptics,Vibration,Rung
+settings_notifications,Notifications,Thông báo
+settings_notifications_off,Notifications are turned off in your device settings.,Thông báo đang tắt trong cài đặt của thiết bị.
+settings_arrows,Arrows on blocks (color-blind help),Mũi tên trên khối (hỗ trợ mù màu)
+settings_language,Language,Ngôn ngữ
+settings_language_auto,Device language,Theo thiết bị
+settings_language_en,English,English
+settings_language_vi,Tiếng Việt,Tiếng Việt
+settings_privacy,Privacy settings,Cài đặt quyền riêng tư
+settings_restore,Restore purchases,Khôi phục giao dịch
+settings_support,Contact support,Liên hệ hỗ trợ
+settings_support_subject,Tap Block Out support,Hỗ trợ Tap Block Out
+settings_version,Version %s,Phiên bản %s
+settings_on,On,Bật
+settings_off,Off,Tắt
+settings_tester_title,Tester menu,Menu thử nghiệm
+settings_tester_debugger,Mediation debugger,Mediation debugger
+settings_close,Done,Xong
+offer_starter_pack_title,Starter Pack,Gói Khởi Đầu
+offer_starter_pack_body,A boost of gold and one of each booster to get you going. One-time offer.,Một ít gold và mỗi loại booster một cái để bạn khởi đầu thuận lợi. Chỉ mua được một lần.
+offer_level_pack_title,Level Pack,Gói Level
+offer_level_pack_body,You've come a long way. Here's some gold and a booster of each kind.,Bạn đã đi được một chặng dài. Tặng bạn ít gold và mỗi loại booster một cái.
+offer_remove_ads_title,Remove Ads,Bỏ quảng cáo
+offer_remove_ads_body,Enjoy the puzzles without full-screen ads. One-time purchase.,"Chơi thoải mái, không còn quảng cáo toàn màn hình. Chỉ mua một lần."
+offer_rescue_pack_title,Rescue Pack,Gói Cứu Nguy
+offer_rescue_pack_body,A +3 Move to help with the tricky ones.,Một +3 Lượt để vượt qua những level khó.
+offer_buy,Get it for %s,Nhận với %s
+offer_no_thanks,Maybe later,Để sau
+offer_time_left,Ends in %s,Kết thúc sau %s
+tut_tap,Tap the block,Chạm vào khối
+tut_color_dir,Each color slides toward its own edge.,Mỗi màu trượt về một cạnh riêng.
+tut_blocked,Blocked blocks bounce back. Try another one.,Khối bị chặn sẽ bật về. Thử khối khác nhé.
+tut_hint_gift,A free Hint for you! Tap it when you're unsure.,Tặng bạn một Gợi ý! Chạm vào khi bạn phân vân.
+tut_move_gift,A free +3 Move for you! It adds moves when you run low.,Tặng bạn một +3 Lượt! Dùng khi sắp hết lượt.
+tut_smash_gift,A free Smash for you! It removes one block.,Tặng bạn một Phá khối! Nó xoá một khối khỏi bàn cờ.
+tut_x2,Tap to double your gold. It's free this time!,Chạm để nhân đôi gold. Lần này miễn phí!
+tut_gift_unlocked,Daily gifts are unlocked. Tap the gift icon to see them.,Đã mở quà mỗi ngày. Chạm vào biểu tượng quà để xem.
+tut_shop_unlocked,The shop is now open.,Cửa hàng đã mở.
+tut_lives_intro,"From now on, losing a level uses 1 life. Lives come back over time.","Từ giờ, thua một level sẽ dùng 1 mạng. Mạng sẽ hồi dần theo thời gian."
+mech_new,New: %s,Mới: %s
+mech_got_it,Got it,Đã hiểu
+mech_stone,Stone,Đá
+mech_stone_desc,Stones never move. Slide the blocks around them.,Đá không bao giờ di chuyển. Hãy trượt các khối qua bên cạnh.
+mech_ice,Ice,Băng
+mech_ice_desc,"Tap once to crack the ice, then tap again to slide.","Chạm một lần để làm nứt băng, chạm lần nữa để trượt."
+mech_chain,Chain,Xích
+mech_chain_desc,A chained block can only move after its key block has left.,Khối bị xích chỉ đi được sau khi khối chìa đã thoát.
+mech_layer,Layers,Hai lớp
+mech_layer_desc,Peel off the outer layer to reveal a new color.,Bóc lớp ngoài để lộ ra màu mới bên trong.
+mech_fog,Fog,Sương mù
+mech_fog_desc,Colors stay hidden until a neighboring cell is empty.,Màu sẽ ẩn cho tới khi ô bên cạnh trống.
+mech_pulse,Pulse gate,Cổng nhịp
+mech_pulse_desc,Gates open and close after every tap.,Cổng đóng mở luân phiên sau mỗi lần chạm.
+challenge_title,Daily Challenge,Thử thách ngày
+challenge_bonus,First win today: +%d gold,Thắng lần đầu hôm nay: +%d gold
+challenge_done,Done for today. See you tomorrow!,Hôm nay xong rồi. Mai gặp lại nhé!
+challenge_play,Play,Chơi
+notif_daily_gift_title,Your daily gift is waiting,Quà mỗi ngày đang chờ bạn
+notif_daily_gift_body,Come and pick up today's gift.,Ghé qua nhận quà hôm nay nhé.
+notif_lives_full_title,Your lives are full,Mạng của bạn đã đầy
+notif_lives_full_body,All lives are back. Ready for a calm puzzle?,Mạng đã hồi đầy. Sẵn sàng giải một màn nhẹ nhàng chưa?
+notif_offer_open_title,Your offer is still open,Ưu đãi của bạn vẫn còn
+notif_offer_open_body,Take a look before it ends.,Xem thử trước khi hết hạn nhé.
+notif_challenge_title,Today's challenge is ready,Thử thách hôm nay đã sẵn sàng
+notif_challenge_body,A fresh board is waiting for you.,Một bàn cờ mới đang chờ bạn.
+notif_come_back_title,A few blocks are waiting,Vài khối đang chờ bạn
+notif_come_back_body,Take a moment to slide them out.,Dành chút thời gian để trượt chúng ra nhé.

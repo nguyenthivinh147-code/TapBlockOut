@@ -1,0 +1,16 @@
+# Godot 4+ specific ignores
+.godot/
+build/
+tools/bin/
+*.apk
+*.aab
+*.keystore
+android/plugins/**/build/
+android/plugins/**/.gradle/
+android/build/
+android/config/platform_config.json
+android/config/google-services.json
+android_config.json
+android/.build_version
+android_config.json.import
+reference/horus/

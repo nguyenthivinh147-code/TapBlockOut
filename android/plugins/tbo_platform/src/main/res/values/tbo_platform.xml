@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tbo_notif_channel_name" translatable="false">Reminders</string>
+    <!-- App ID cua Play Games Services; addon tbo_platform ghi de bang gia tri that luc export. -->
+    <string name="game_services_project_id" translatable="false">0</string>
+    <!-- Crashlytics doi id nay (thuong do gradle plugin sinh). Gia tri co dinh de khoi can plugin;
+         ban co plugin Crashlytics se de len gia tri nay. -->
+    <string name="com.google.firebase.crashlytics.mapping_file_id" translatable="false">00000000000000000000000000000000</string>
+</resources>

@@ -1,0 +1,11 @@
+{
+  "id": 2, "w": 5, "h": 5, "hard": false,
+  "min_taps": 3, "moves": 6, "seed": 0,
+  "stones": [],
+  "pulse_sides": [],
+  "blocks": [
+    {"id": "b1", "color": "yellow", "cells": [[2, 3], [2, 4]], "ice": 0, "chained_by": "", "inner_color": "", "fog": false},
+    {"id": "b2", "color": "green", "cells": [[2, 1]], "ice": 0, "chained_by": "", "inner_color": "", "fog": false},
+    {"id": "b3", "color": "blue", "cells": [[0, 2]], "ice": 0, "chained_by": "", "inner_color": "", "fog": false}
+  ]
+}

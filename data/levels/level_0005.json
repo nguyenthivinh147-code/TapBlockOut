@@ -1,0 +1,15 @@
+{
+	"id": 5, "w": 5, "h": 6, "hard": false,
+	"min_taps": 7, "moves": 10, "seed": 0,
+	"stones": [],
+	"pulse_sides": [],
+	"blocks": [
+		{"id":"b1","color":"green","cells":[[0,1],[1,1],[0,2]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b2","color":"yellow","cells":[[3,1],[4,1],[4,2]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b3","color":"green","cells":[[2,0],[2,1]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b4","color":"yellow","cells":[[0,3],[0,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b5","color":"yellow","cells":[[4,3],[4,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b6","color":"green","cells":[[1,4],[1,5]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b7","color":"yellow","cells":[[3,4],[3,5]],"ice":0,"chained_by":"","inner_color":"","fog":false}
+	]
+}

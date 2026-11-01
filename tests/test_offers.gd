@@ -1,0 +1,171 @@
+extends RefCounted
+const T := preload("res://tests/t.gd")
+const Offers := preload("res://src/meta/offers.gd")
+const SaveSchema := preload("res://src/meta/save_schema.gd")
+const Config := preload("res://src/config.gd")
+
+const T0 := 1700000000  # 2023-11-14 22:13 UTC, thứ Ba
+const H := 3600
+const D := 86400
+
+
+func _ctx(over: Dictionary = {}) -> Dictionary:
+	var c := {"now": T0, "day": T0 / D, "level": 5, "runs": 5, "session_start": T0 - 1000,
+		"first_session": false, "inter_today": 0}
+	c.merge(over, true)
+	return c
+
+
+func test_sale(t: T) -> void:
+	# 1700000000 là thứ Ba; thứ Bảy = +4 ngày, Chủ nhật = +5, Thứ Hai = +6
+	t.eq(Offers.is_sale(T0, 0), false, "thứ Ba")
+	t.eq(Offers.is_sale(T0 + 4 * D, 0), true, "thứ Bảy")
+	t.eq(Offers.is_sale(T0 + 5 * D, 0), true, "Chủ nhật")
+	t.eq(Offers.is_sale(T0 + 6 * D, 0), false, "thứ Hai")
+	# múi giờ đẩy qua ngày: thứ Sáu 22:13 UTC, +7h thành thứ Bảy
+	t.eq(Offers.is_sale(T0 + 3 * D, 0), false, "thứ Sáu UTC")
+	t.eq(Offers.is_sale(T0 + 3 * D, 7 * H), true, "thứ Bảy theo giờ máy")
+
+
+func test_catalog(t: T) -> void:
+	var normal := Offers.catalog(T0, 0)
+	t.eq(normal.size(), 6, "6 gói")
+	t.eq(normal[0].sku, "gold_pack_1", "sku thường")
+	t.eq(normal[0].gold, 1000, "gold thường")
+	t.near(normal[0].usd, 1.99, 0.001, "giá thường")
+	t.eq(normal[5].sku, "gold_pack_6", "gói 6")
+	var sale := Offers.catalog(T0 + 4 * D, 0)
+	t.eq(sale.size(), 6, "6 gói sale")
+	t.eq(sale[0].sku, "gold_pack_1_sale", "sku sale")
+	t.eq(sale[0].gold, 2000, "gold sale")
+	t.near(sale[0].usd, 0.99, 0.001, "giá sale")
+	t.eq(sale[0].id, "gold_pack_1", "id giữ nguyên")
+	t.eq(sale[0].sale, true, "cờ sale")
+	t.eq(normal[0].sale, false, "cờ thường")
+
+
+func test_starter(t: T) -> void:
+	var s := SaveSchema.defaults()
+	t.eq(Offers.due(s, _ctx({"level": 10, "runs": 11})), "", "chưa qua L10, chưa lượt 12")
+	t.eq(Offers.due(s, _ctx({"level": 11, "runs": 11})), "starter_pack", "qua L10")
+	t.eq(Offers.due(s, _ctx({"level": 5, "runs": 12})), "starter_pack", "lượt 12")
+	Offers.shown(s, "starter_pack", _ctx({"level": 11}))
+	t.eq(Offers.due(s, _ctx({"level": 11, "runs": 40})), "", "đang mở không hiện lại, level_pack chờ")
+	var open := Offers.open_offers(s, T0 + 47 * H)
+	t.eq(open.size(), 1, "mở 47 giờ sau")
+	t.eq(open[0].id, "starter_pack", "id")
+	t.eq(open[0].sku, "starter_pack", "sku")
+	t.eq(open[0].until, T0 + 48 * H, "hạn 48 giờ")
+	t.eq(Offers.open_offers(s, T0 + 48 * H).size(), 0, "hết hạn")
+	t.eq(Offers.due(s, _ctx({"now": T0 + 100 * H, "level": 10, "runs": 99, "inter_today": 0})), "", "một lần, không hiện lại")
+	# mua thì đóng
+	var s2 := SaveSchema.defaults()
+	Offers.shown(s2, "starter_pack", _ctx({"level": 11}))
+	Offers.bought(s2, "starter_pack", T0 + H)
+	t.eq(Offers.open_offers(s2, T0 + 2 * H).size(), 0, "mua xong đóng")
+
+
+func test_remove_ads(t: T) -> void:
+	var s := SaveSchema.defaults()
+	Offers.bought(s, "starter_pack", T0 - D)  # tách riêng: starter đã xong
+	t.eq(Offers.due(s, _ctx({"inter_today": 2})), "", "mới 2 interstitial")
+	t.eq(Offers.due(s, _ctx({"inter_today": 3})), "remove_ads", "sau interstitial thứ 3")
+	Offers.shown(s, "remove_ads", _ctx({"runs": 30}))
+	t.eq(Offers.due(s, _ctx({"inter_today": 4, "runs": 40})), "", "1 lần/ngày")
+	t.eq(Offers.due(s, _ctx({"inter_today": 3, "runs": 40, "day": T0 / D + 1})), "remove_ads", "ngày sau lại hiện")
+	Offers.shown(s, "remove_ads", _ctx({"runs": 40, "day": T0 / D + 1}))
+	Offers.shown(s, "remove_ads", _ctx({"runs": 50, "day": T0 / D + 2}))
+	t.eq(Offers.due(s, _ctx({"inter_today": 3, "runs": 60, "day": T0 / D + 3})), "", "tối đa 3 lần tổng")
+	var s2 := SaveSchema.defaults()
+	s2.no_ads = true
+	t.eq(Offers.due(s2, _ctx({"inter_today": 5})), "", "đã bỏ quảng cáo")
+	var s3 := SaveSchema.defaults()
+	Offers.bought(s3, "remove_ads", T0)
+	t.eq(Offers.due(s3, _ctx({"inter_today": 5})), "", "đã mua")
+
+
+func test_rescue(t: T) -> void:
+	var s := SaveSchema.defaults()
+	Offers.note_fail(s, 7)
+	Offers.note_fail(s, 7)
+	t.eq(Offers.due(s, _ctx({"on_lose": true})), "", "mới thua 2 lần")
+	Offers.note_fail(s, 7)
+	t.eq(s.fail_streak.count, 3, "chuỗi 3")
+	t.eq(Offers.due(s, _ctx({"on_lose": true})), "rescue_pack", "thua 3 lần liền")
+	t.eq(Offers.due(s, _ctx({"on_lose": false})), "", "không hiện ngoài màn thua")
+	Offers.shown(s, "rescue_pack", _ctx({"runs": 30}))
+	Offers.note_fail(s, 7)
+	t.eq(Offers.due(s, _ctx({"on_lose": true, "runs": 40, "now": T0 + 23 * H})), "", "chưa đủ 24 giờ")
+	t.eq(Offers.due(s, _ctx({"on_lose": true, "runs": 40, "now": T0 + 24 * H})), "rescue_pack", "đủ 24 giờ")
+	# thua level khác thì chuỗi bắt đầu lại
+	Offers.note_fail(s, 8)
+	t.eq(s.fail_streak.level, 8, "level mới")
+	t.eq(s.fail_streak.count, 1, "đếm lại")
+	Offers.note_win(s, 8)
+	t.eq(s.fail_streak.count, 0, "thắng xoá chuỗi")
+	t.eq(Offers.due(s, _ctx({"on_lose": true, "runs": 99, "now": T0 + 99 * H})), "", "sau thắng")
+
+
+func test_level_pack(t: T) -> void:
+	var s := SaveSchema.defaults()
+	t.eq(Offers.due(s, _ctx({"level": 10, "runs": 5})), "", "mới qua 9 level")
+	# đánh dấu starter đã hiện để tách riêng level_pack
+	Offers.shown(s, "starter_pack", _ctx({"level": 11, "runs": 1}))
+	Offers.bought(s, "starter_pack", T0)
+	t.eq(Offers.due(s, _ctx({"level": 11, "runs": 10})), "level_pack", "qua 10 level")
+	Offers.shown(s, "level_pack", _ctx({"level": 11, "runs": 10}))
+	t.eq(Offers.due(s, _ctx({"level": 15, "runs": 20})), "", "đang mở / cùng mốc")
+	t.eq(Offers.open_offers(s, T0 + 71 * H).size(), 1, "mở 72 giờ")
+	t.eq(Offers.open_offers(s, T0 + 72 * H).size(), 0, "hết hạn")
+	t.eq(Offers.due(s, _ctx({"level": 18, "runs": 30, "now": T0 + 80 * H})), "", "hết hạn vẫn cùng mốc")
+	t.eq(Offers.due(s, _ctx({"level": 21, "runs": 30, "now": T0 + 80 * H})), "level_pack", "mốc 20")
+	Offers.shown(s, "level_pack", _ctx({"level": 21, "runs": 30, "now": T0 + 80 * H}))
+	Offers.bought(s, "level_pack", T0 + 81 * H)
+	t.eq(Offers.open_offers(s, T0 + 82 * H).size(), 0, "mua xong đóng")
+	t.eq(Offers.due(s, _ctx({"level": 25, "runs": 40, "now": T0 + 90 * H})), "", "chưa tới mốc 30")
+	t.eq(Offers.due(s, _ctx({"level": 31, "runs": 40, "now": T0 + 90 * H})), "level_pack", "mua rồi vẫn có mốc sau")
+
+
+func test_gates(t: T) -> void:
+	var s := SaveSchema.defaults()
+	var c := _ctx({"level": 11, "runs": 11, "first_session": true, "session_start": T0 - 299})
+	t.eq(Offers.due(s, c), "", "trong 5 phút đầu phiên đầu")
+	c.session_start = T0 - 300
+	t.eq(Offers.due(s, c), "starter_pack", "đủ 5 phút")
+	c.session_start = T0 - 10
+	c.first_session = false
+	t.eq(Offers.due(s, c), "starter_pack", "không phải phiên đầu")
+	# cách nhau ít nhất 3 lượt
+	Offers.shown(s, "starter_pack", _ctx({"level": 11, "runs": 11}))
+	Offers.bought(s, "starter_pack", T0)
+	var c2 := _ctx({"level": 11, "inter_today": 3, "runs": 13})
+	t.eq(Offers.due(s, c2), "", "mới cách 2 lượt")
+	c2.runs = 14
+	t.eq(Offers.due(s, c2), "remove_ads", "cách 3 lượt")
+	t.eq(s.offers.last_run, 11, "last_run ghi lúc hiện")
+
+
+func test_priority_and_roundtrip(t: T) -> void:
+	var s := SaveSchema.defaults()
+	Offers.note_fail(s, 3)
+	Offers.note_fail(s, 3)
+	Offers.note_fail(s, 3)
+	var c := _ctx({"level": 11, "inter_today": 3})
+	t.eq(Offers.due(s, c), "starter_pack", "starter ưu tiên")
+	c.on_lose = true
+	t.eq(Offers.due(s, c), "rescue_pack", "màn thua chỉ xét rescue")
+	# lưu rồi nạp lại qua JSON (số thành float) vẫn chạy đúng
+	Offers.shown(s, "starter_pack", _ctx({"level": 11, "runs": 12}))
+	var s2: Dictionary = JSON.parse_string(JSON.stringify(s))
+	t.eq(Offers.due(s2, _ctx({"level": 11, "runs": 40})), "rescue_pack", "starter đang mở, còn rescue")
+	t.eq(Offers.open_offers(s2, T0 + H).size(), 1, "open sau JSON")
+	Offers.bought(s2, "starter_pack", T0 + H)
+	t.eq(Offers.open_offers(s2, T0 + 2 * H).size(), 0, "bought sau JSON")
+
+
+func test_remote_config(t: T) -> void:
+	var s := SaveSchema.defaults()
+	Config.apply_remote({"offers_starter_pack_after_level": "20"})
+	t.eq(Offers.due(s, _ctx({"level": 8, "runs": 5})), "", "ghi đè after_level")
+	t.eq(Offers.due(s, _ctx({"level": 21, "runs": 5})), "starter_pack", "qua mốc mới")
+	Config.reset()
