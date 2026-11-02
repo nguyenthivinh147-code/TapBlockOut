@@ -11,7 +11,7 @@ const POOL_SIZE := 8
 const SFX_DB := 0.0
 const MUSIC_DB := -8.0
 ## Rung nhẹ (ms) theo tên hiệu ứng; không có trong bảng thì không rung.
-const HAPTIC_MS := {"tap": 10, "blocked": 25, "smash": 30, "life_lost": 30}
+const HAPTIC_MS := {"tap": 10, "blocked": 25, "bump": 25, "shatter": 15, "smash": 30, "life_lost": 30}
 
 var sfx_on: bool = true
 var music_on: bool = true
@@ -111,6 +111,20 @@ func play(sfx_name: String) -> void:
 	var p := _free_player()
 	p.stream = stream
 	p.play()
+
+
+## Phát `sfx_name`; chưa có file thì phát `fallback`. Rung theo tên chính.
+func play_or(sfx_name: String, fallback: String) -> void:
+	setup()
+	if _load_sfx(sfx_name) != null:
+		play(sfx_name)
+		return
+	if haptics_on and HAPTIC_MS.has(sfx_name):
+		Platform.haptic(HAPTIC_MS[sfx_name])
+	var was_haptics := haptics_on
+	haptics_on = false
+	play(fallback)
+	haptics_on = was_haptics
 
 
 func music(music_track: String) -> void:

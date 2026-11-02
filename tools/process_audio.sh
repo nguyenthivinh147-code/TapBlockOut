@@ -12,7 +12,7 @@ mkdir -p assets/sfx assets/music
 
 # do dai toi da (giay) cua hieu ung, theo design.md
 declare -A MAXSEC=(
-  [sfx_button]=0.2 [sfx_tap]=0.2 [sfx_exit]=0.4 [sfx_blocked]=0.3
+  [sfx_button]=0.2 [sfx_tap]=0.2 [sfx_exit]=0.4 [sfx_blocked]=0.3 [sfx_shatter]=0.7 [sfx_bump]=0.3
   [sfx_coin]=1.0 [sfx_hint]=1.0 [sfx_moves]=1.0 [sfx_smash]=1.0 [sfx_life_lost]=1.0
   [sfx_win]=3.0 [sfx_lose]=3.0 [sfx_clap]=3.0
 )

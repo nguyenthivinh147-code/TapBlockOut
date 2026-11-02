@@ -70,6 +70,12 @@ func test_real_stream_playback_state(t: T) -> void:
 	s.resume_after_ad()
 	s.play("test_tone")
 	t.eq(s.last_played, "test_tone", "hết quảng cáo phát lại")
+	s.last_played = ""
+	s.play_or("khong_ton_tai", "test_tone")
+	t.eq(s.last_played, "test_tone", "chưa có file thì dùng âm thay thế")
+	s.last_played = ""
+	s.play_or("test_tone", "khong_ton_tai")
+	t.eq(s.last_played, "test_tone", "có file thì dùng đúng tên")
 	s.queue_free()
 
 

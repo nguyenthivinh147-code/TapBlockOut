@@ -13,6 +13,9 @@ uniform vec2 arrow_size = vec2(1.0);  // x: ngang thân, y: dọc theo hướng 
 uniform float cell_px = 64.0;
 uniform float open = 1.0;   // 0: đóng, 1: mở
 uniform float flash = 0.0;
+uniform float hit_at = 0.0;  // điểm bị va, tính từ tâm thanh dọc theo thanh
+uniform float hit_t = 1.0;   // 0: vừa va, 1: sóng đã tan
+uniform float pop = 0.0;     // mũi tên phồng lên khi bị va
 
 const float END_RIM = 0.3;          // vành ở hai đầu, theo bán kính đầu thanh
 const float CAP_GLOSS_AT = 0.32;    // vòng sáng ở đầu trên thanh dọc, theo bán kính
@@ -21,6 +24,9 @@ const float CAP_GLOSS_A = 0.82;
 const float CAP_BAND_FROM = 0.58;   // đầu dưới thanh dọc đậm dần từ đây tới mép, theo bán kính
 const float CAP_BAND_TO = 0.3;
 const float ARROW_ROUND = 0.055;    // bo góc mũi tên, theo ô
+const float HIT_REACH = 7.0;        // sóng sáng chạy được chừng này ô mỗi phía
+const float HIT_W = 0.55;           // bề rộng sóng, theo ô
+const float HIT_A = 0.9;
 const float CLOSED_DIM = 0.55;
 const float SHADOW_DY = 0.11;       // bóng đổ, theo ô
 const float SHADOW_BLUR = 0.14;
@@ -47,7 +53,7 @@ float triangle(vec2 p, vec2 q) {
 
 // Khoảng cách tới mép mũi tên, âm là bên trong; ô chứa mũi tên giữ đúng arrow_size sau khi bo góc.
 float arrow(vec2 p) {
-	vec2 rel = p - arrow_at;
+	vec2 rel = (p - arrow_at) / (1.0 + pop);
 	vec2 lp = vec2(dot(rel, vec2(-arrow_dir.y, arrow_dir.x)), -dot(rel, arrow_dir));
 	float rr = ARROW_ROUND * cell_px;
 	vec2 q = vec2(arrow_size.x * 0.5 - rr, arrow_size.y - 2.0 * rr);
@@ -84,6 +90,13 @@ void fragment() {
 		}
 
 		body = mix(body, body * (1.0 - CLOSED_DIM), closed);
+
+		// sóng sáng chạy dọc thanh từ điểm bị va
+		if (hit_t < 1.0) {
+			float eased = 1.0 - (1.0 - hit_t) * (1.0 - hit_t);
+			float h = (abs(along - hit_at) - eased * HIT_REACH * cell_px) / (HIT_W * cell_px);
+			body = mix(body, vec3(1.0), HIT_A * (1.0 - hit_t) * exp(-h * h));
+		}
 
 		// thanh chắn khi đóng: các vạch ngang thanh
 		if (closed > 0.01) {

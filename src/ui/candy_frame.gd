@@ -43,11 +43,18 @@ const BAR_RAMPS := {
 }
 const END_COLORS := {"up": Color("EFA512"), "left": Color("33BD11"), "right": Color("0279EE"), "down": Color("C81CBA")}
 
+const HIT_TIME := 0.45  # giây, sóng sáng và nảy của thanh khi bị va
+const HIT_BUMP := 0.1  # thanh bật ra ngoài chừng này ô
+const HIT_POP := 0.42  # mũi tên phồng thêm chừng này
+
 static var _ramp_cache: Dictionary = {}
 
 var _bars: Dictionary = {}  # cạnh -> ColorRect
 var _corners: Dictionary = {}  # góc -> ColorRect
 var _open: Dictionary = {}  # cạnh -> 0 (đóng) .. 1 (mở)
+var _bar_home: Dictionary = {}  # cạnh -> vị trí khi chưa bị va
+var _hit_tws: Dictionary = {}  # cạnh -> Tween
+var _cell: float = 64.0
 
 
 func _init() -> void:
@@ -142,12 +149,14 @@ static func ramp_texture(side: String) -> Texture2D:
 
 ## Xếp lại toàn bộ theo bàn và cỡ ô hiện tại. `board` tính theo toạ độ cục bộ của khung.
 func layout(board: Rect2, cell: float) -> void:
+	_cell = cell
 	var pad := PAD * cell
 	for side in SIDES:
 		var r := bar_rect(side, board, cell)
 		var part: ColorRect = _bars[side]
 		part.position = r.position - Vector2(pad, pad)
 		part.size = r.size + Vector2(pad, pad) * 2.0
+		_bar_home[side] = part.position
 		var m: ShaderMaterial = part.material
 		var arrow: Dictionary = ARROWS[side]
 		m.set_shader_parameter("ramp", ramp_texture(side))
@@ -198,3 +207,27 @@ func set_gate(side: String, open: float) -> void:
 func set_flash(v: float) -> void:
 	for side in SIDES:
 		(_bars[side].material as ShaderMaterial).set_shader_parameter("flash", v)
+
+
+## Khối đập vào thanh tại `at` (toạ độ của khung): thanh bật ra rồi nảy về, sóng sáng chạy dọc thanh, mũi tên phồng lên.
+func hit(side: String, at: Vector2, strength: float = 1.0) -> void:
+	var part: ColorRect = _bars[side]
+	var center: Vector2 = _bar_home[side] + part.size * 0.5
+	var along := at.y - center.y if side == "left" or side == "right" else at.x - center.x
+	(part.material as ShaderMaterial).set_shader_parameter("hit_at", along)
+	var old: Tween = _hit_tws.get(side, null)
+	if old != null and old.is_valid():
+		old.kill()
+	var tw := create_tween()
+	_hit_tws[side] = tw
+	tw.tween_method(_apply_hit.bind(side, strength), 0.0, 1.0, HIT_TIME)
+
+
+func _apply_hit(t: float, side: String, strength: float) -> void:
+	var part: ColorRect = _bars[side]
+	var m: ShaderMaterial = part.material
+	m.set_shader_parameter("hit_t", t)
+	m.set_shader_parameter("pop", HIT_POP * strength * sin(PI * minf(t * 2.2, 1.0)))
+	var out: Vector2 = ARROWS[side]["dir"]
+	var bump := HIT_BUMP * strength * _cell * exp(-5.0 * t) * cos(t * TAU * 2.0) * (1.0 - t)
+	part.position = _bar_home[side] + out * bump

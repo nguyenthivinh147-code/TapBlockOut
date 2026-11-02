@@ -5,6 +5,7 @@ extends RefCounted
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const Pudding := preload("res://src/ui/pudding.gd")
+const FLASH_SHADER := preload("res://src/ui/impact_flash.gdshader")
 
 const FOG_COLOR := Color("6B7390")
 const ICE_TINT := Color(0.62, 0.86, 1.0, 0.55)
@@ -14,6 +15,8 @@ const CHAIN_COLOR := Color(0.88, 0.9, 0.96)
 const INNER_INSET := 0.25  # viên trong của khối hai lớp lùi vào chừng này (ô)
 
 static var _real_icon: Dictionary = {}  # tên -> có file thật?
+static var _sparkle_tex: Texture2D = null
+static var _shrink_curve: Curve = null
 
 
 ## Ảnh cơ chế thật (`assets/ui/mech_*.png`); null nếu chưa có để nơi gọi vẽ bằng code.
@@ -345,6 +348,97 @@ static func burst(parent: Node, pos: Vector2, color: Color, dir: Vector2, streng
 	parent.add_child(p)
 	p.emitting = true
 	return p
+
+
+## Loé sáng tại `pos` (toạ độ canvas): quầng tròn, sao bốn cánh, vòng sóng. Nằm trên mọi thứ, tự xoá khi xong.
+static func impact_flash(parent: Node, pos: Vector2, tint: Color, size: float, dur: float = 0.34, ring: float = 0.7) -> ColorRect:
+	var r := ColorRect.new()
+	r.name = "Flash"
+	r.top_level = true
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var m := ShaderMaterial.new()
+	m.shader = FLASH_SHADER
+	m.set_shader_parameter("tint", tint)
+	m.set_shader_parameter("ring_a", ring)
+	r.material = m
+	parent.add_child(r)
+	r.size = Vector2(size, size)
+	r.global_position = pos - r.size * 0.5
+	var tw := r.create_tween()
+	tw.tween_method(func(v: float) -> void: m.set_shader_parameter("t", v), 0.0, 1.0, dur)
+	tw.finished.connect(r.queue_free)
+	return r
+
+
+## Biên dịch sẵn shader loé sáng: `t` = 1 nên không hiện gì.
+static func prewarm_flash(parent: Node) -> void:
+	var flash := impact_flash(parent, Vector2(4, 4), Color.WHITE, 4.0, 0.05)
+	(flash.material as ShaderMaterial).set_shader_parameter("t", 1.0)
+
+
+## Sao lấp lánh bắn theo `dir` từ `pos` (toạ độ canvas), màu theo tông sáng của khối. Nằm trên mọi thứ, tự xoá khi xong.
+static func sparkles(parent: Node, pos: Vector2, ramp: Dictionary, dir: Vector2, strength: float, amount: int) -> CPUParticles2D:
+	var p := CPUParticles2D.new()
+	p.name = "Sparkles"
+	p.top_level = true
+	p.one_shot = true
+	p.amount = amount
+	p.lifetime = 0.75
+	p.explosiveness = 0.92
+	p.randomness = 0.5
+	p.texture = _sparkle_texture()
+	p.direction = dir
+	p.spread = 72.0
+	p.gravity = Vector2(0.0, 900.0 * strength)
+	p.initial_velocity_min = 240.0 * strength
+	p.initial_velocity_max = 860.0 * strength
+	p.damping_min = 260.0 * strength
+	p.damping_max = 620.0 * strength
+	p.angular_velocity_min = -420.0
+	p.angular_velocity_max = 420.0
+	p.scale_amount_min = 0.35 * strength
+	p.scale_amount_max = 1.0 * strength
+	p.scale_amount_curve = _shrink()
+	var g := Gradient.new()
+	g.set_color(0, Color.WHITE)
+	g.set_color(1, Color(ramp["stripe"], 0.0))
+	g.add_point(0.45, ramp["stripe"].lerp(Color.WHITE, 0.45))
+	p.color_ramp = g
+	var mat := CanvasItemMaterial.new()
+	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	p.material = mat
+	p.finished.connect(p.queue_free)
+	parent.add_child(p)
+	p.global_position = pos
+	p.emitting = true
+	return p
+
+
+## Hình sao bốn cánh dựng một lần bằng code.
+static func _sparkle_texture() -> Texture2D:
+	if _sparkle_tex == null:
+		var n := 48
+		var img := Image.create(n, n, false, Image.FORMAT_RGBA8)
+		var mid := (float(n) - 1.0) * 0.5
+		for y in n:
+			for x in n:
+				var px := absf(float(x) - mid) / mid
+				var py := absf(float(y) - mid) / mid
+				var r := sqrt(px * px + py * py)
+				var core := exp(-r * r * 22.0)
+				var rays := exp(-px * 22.0) * (1.0 - py) + exp(-py * 22.0) * (1.0 - px)
+				img.set_pixel(x, y, Color(1, 1, 1, clampf(core + rays * rays, 0.0, 1.0)))
+		_sparkle_tex = ImageTexture.create_from_image(img)
+	return _sparkle_tex
+
+
+static func _shrink() -> Curve:
+	if _shrink_curve == null:
+		_shrink_curve = Curve.new()
+		_shrink_curve.add_point(Vector2(0.0, 1.0))
+		_shrink_curve.add_point(Vector2(0.35, 0.8))
+		_shrink_curve.add_point(Vector2(1.0, 0.0))
+	return _shrink_curve
 
 
 ## Rung ngang nhẹ (khối bị xích, va chạm). Dùng offset từ vị trí hiện tại, trả về đúng vị trí cũ.

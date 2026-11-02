@@ -8,6 +8,7 @@ const BoardFx := preload("res://src/ui/board_fx.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const CandyFrame := preload("res://src/ui/candy_frame.gd")
+const CandyShards := preload("res://src/ui/candy_shards.gd")
 
 ## Khối chạm vào (đã là ô của khối, không phải đá hay ô trống).
 signal block_tapped(id: String)
@@ -18,7 +19,23 @@ const MAX_CELL := 150.0
 ## Bàn tham chiếu (lớn nhất trong 300 level): kích thước ô tính theo bàn này để mọi level dùng cùng một cỡ ô.
 const REF_COLS := 8
 const REF_ROWS := 11
-const SLIDE_TIME := 0.30
+const SLIDE_TIME := 0.30  # lâu nhất của một lần khối lao tới thanh
+const SLIDE_MIN := 0.14  # đường ngắn nhất vẫn đủ thấy khối lấy đà
+const SLIDE_PER_CELL := 0.022
+const SLIDE_STRETCH := 0.09  # khối dài ra theo hướng lao, hẹp lại phía ngang
+const BOUNCE_BACK := 0.24
+const WOBBLE_TIME := 0.46
+const WOBBLE_SELF := 0.15  # độ nhún của khối đi va
+const WOBBLE_BLOCKER := 0.1  # độ nhún của khối bị va
+const JOLT := 0.1  # khối bị va lùi chừng này ô
+const RIPPLE_DEPTH := 2  # dư chấn lan sang thêm chừng này khối phía sau
+const RIPPLE_DELAY := 0.05
+const RIPPLE_FADE := 0.5
+const CHIPS_BUMP := 7  # số vụn kẹo mỗi khối lúc va chạm
+const FLASH_SHATTER := 4.8  # cỡ loé sáng, theo ô
+const FLASH_BUMP := 2.6
+const SPARKS_SHATTER := 18
+const SPARKS_BUMP := 7
 const GATE_TIME := 0.22
 const GHOST_NAME := "Ghost"
 const SIDE_OF_DIR := {"up": Vector2(0, -1), "left": Vector2(-1, 0), "right": Vector2(1, 0), "down": Vector2(0, 1)}
@@ -62,6 +79,7 @@ class BlockNode extends Control:
 	var shadow: ShadowNode = null  # null với khối "bóng" trong hiệu ứng
 	var _body: Control = null
 	var _inner: Array[Control] = []  # viên trong của khối hai lớp, mỗi ô một viên
+	var _wobble_tw: Tween = null
 
 	func _init() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -82,6 +100,18 @@ class BlockNode extends Control:
 			BoardFx.Pudding.update_body(shadow.body, lc, cell_size, ramp)
 		_update_inner(lc)
 		BoardFx.draw_block(self, lc, cell_size, view, show_arrow)
+
+	## Nhún như thạch theo trục `axis` (dao động tắt dần), `amp` là độ nén lớn nhất. Khối hẹp trục kia nở ra bù.
+	func wobble(axis: Vector2, amp: float, dur: float) -> void:
+		if _wobble_tw != null:
+			_wobble_tw.kill()
+		_wobble_tw = create_tween()
+		_wobble_tw.tween_method(_set_wobble.bind(axis, amp), 0.0, 1.0, dur)
+		_wobble_tw.tween_callback(func() -> void: scale = Vector2.ONE)
+
+	func _set_wobble(t: float, axis: Vector2, amp: float) -> void:
+		var f := amp * exp(-5.5 * t) * cos(t * TAU * 2.4)
+		scale = Vector2.ONE - axis * f + Vector2(axis.y, axis.x) * f * 0.65
 
 	func _update_inner(lc: Array) -> void:
 		var inner_color := str(view.get("inner_color", ""))
@@ -119,6 +149,9 @@ var _pending: int = 0
 var _hl_id: String = ""
 var _hl_tween: Tween = null
 var _shake_tw: Tween = null
+var _rng := RandomNumberGenerator.new()
+
+static var _fx_prewarmed: bool = false
 
 
 func _init() -> void:
@@ -157,6 +190,16 @@ func setup(board: BoardState, area: Vector2 = Vector2.ZERO) -> void:
 	_refresh_keys()
 	_layout()
 	queue_redraw()
+	_prewarm_fx()
+
+
+## Mỗi phiên chạy một lần: shader hiệu ứng biên dịch lúc vào màn chứ không phải giữa lúc chơi.
+func _prewarm_fx() -> void:
+	if _fx_prewarmed:
+		return
+	_fx_prewarmed = true
+	CandyShards.prewarm(_fx_root, _cell, ThemeKit.block_ramp("yellow"))
+	BoardFx.prewarm_flash(_fx_root)
 
 
 func fit_to(area: Vector2) -> void:
@@ -440,15 +483,12 @@ func apply_result(result: Dictionary) -> void:
 	var dist := int(result.get("distance", 0))
 	match kind:
 		"exit":
-			_anim_exit(node, dir, maxi(dist, 1))
+			_anim_exit(node, dir)
 		"blocked":
-			var blocker := str(result.get("blocker", ""))
-			Sfx.play("stone" if blocker == LevelData.STONE else "blocked")
-			_anim_bounce(node, dir, float(dist), blocker, "")
+			_anim_bounce(node, dir, float(dist), dist, str(result.get("blocker", "")), "")
 		"gate_closed":
-			Sfx.play("gate")
 			var gate_side := LevelData.side_of(str(node.view.get("color", "")))
-			_anim_bounce(node, dir, float(dist) + CandyFrame.gap(gate_side), "", gate_side)
+			_anim_bounce(node, dir, float(dist) + CandyFrame.gap(gate_side), dist, "", gate_side)
 		"chained":
 			Sfx.play("chain")
 			_anim_chained(node, str(result.get("blocker", "")))
@@ -468,21 +508,71 @@ func _after_result(valid: bool) -> void:
 	_update_gates(true)
 
 
-func _anim_exit(node: BlockNode, dir: Vector2, dist: int) -> void:
-	Sfx.play("exit")
-	var id := node.id
-	var home_center := node.position + node.size * 0.5
-	_unmap(id)
-	_nodes.erase(id)
+## Khối lao nhanh dần tới mặt trong của thanh cùng màu rồi vỡ. Cắt mảnh ngay lúc chạm để lúc vỡ không bị khựng.
+func _anim_exit(node: BlockNode, dir: Vector2) -> void:
+	_unmap(node.id)
+	_nodes.erase(node.id)
 	node.busy = true
 	_begin()
-	var col := ThemeKit.block_color(str(node.view.get("color", "")))
-	var target := node.position + dir * _cell * float(dist + 1)
+	var side := LevelData.side_of(str(node.view.get("color", "")))
+	var steps := _steps_to_edge(node, dir)
+	var travel := (float(steps) + CandyFrame.gap(side)) * _cell
+	var time := clampf(SLIDE_MIN + SLIDE_PER_CELL * float(steps), SLIDE_MIN, SLIDE_TIME)
+	var polys := CandyShards.fracture(node.local_cells(), dir, _rng)
+	var axis := Vector2(absf(dir.x), absf(dir.y))
+	node.pivot_offset = node.size * 0.5
 	var tw := node.create_tween().set_parallel(true)
-	tw.tween_property(node, "position", target, SLIDE_TIME).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tw.tween_property(node, "modulate:a", 0.0, 0.14).set_delay(SLIDE_TIME - 0.14)
-	tw.tween_callback(_burst_at_edge.bind(home_center, dir, col)).set_delay(0.08)
-	tw.finished.connect(_finish_exit.bind(node))
+	tw.tween_property(node, "position", node.position + dir * travel, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.tween_property(node, "scale", Vector2.ONE + axis * SLIDE_STRETCH - Vector2(axis.y, axis.x) * SLIDE_STRETCH * 0.5, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.finished.connect(_shatter.bind(node, dir, side, polys))
+	_links.queue_redraw()
+
+
+## Số ô khối đi được tới khi mép trước chạm mép bàn.
+func _steps_to_edge(node: BlockNode, dir: Vector2) -> int:
+	var d := Vector2i(dir)
+	var steps := 1 << 20
+	for c: Vector2i in node.cells:
+		if d.x != 0:
+			steps = mini(steps, (_board.width() - 1 - c.x) if d.x > 0 else c.x)
+		else:
+			steps = mini(steps, (_board.height() - 1 - c.y) if d.y > 0 else c.y)
+	return steps
+
+
+## Giữa mép trước của khối theo hướng `dir`, px theo toạ độ của khối.
+func _leading_point(lc: Array, dir: Vector2) -> Vector2:
+	var best := -INF
+	var sum := Vector2.ZERO
+	var n := 0
+	for c: Vector2i in lc:
+		var edge := Vector2(c) + Vector2(0.5, 0.5) + dir * 0.5
+		var v := edge.dot(dir)
+		if v > best + 0.01:
+			best = v
+			sum = edge
+			n = 1
+		elif v > best - 0.01:
+			sum += edge
+			n += 1
+	return sum / float(n) * _cell
+
+
+func _shatter(node: BlockNode, dir: Vector2, side: String, polys: Array[PackedVector2Array]) -> void:
+	var ramp := ThemeKit.block_ramp(str(node.view.get("color", "")))
+	var lc := node.local_cells()
+	var xf := node.get_global_transform()
+	var impact := xf * _leading_point(lc, dir)
+	var burst := CandyShards.shatter(_fx_root, polys, lc, _cell, ramp, xf, dir, impact, _rng)
+	burst.settled.connect(_end, CONNECT_ONE_SHOT)
+	BoardFx.impact_flash(_fx_root, impact, ramp["stripe"], _cell * FLASH_SHATTER)
+	BoardFx.sparkles(_fx_root, impact, ramp, dir, _cell / 60.0, SPARKS_SHATTER)
+	_frame.hit(side, get_global_transform().affine_inverse() * impact)
+	Sfx.play_or("shatter", "exit")
+	_shake_root(Vector2(absf(dir.x), absf(dir.y)))
+	# khối giữ thêm một khung vì mảnh chỉ hiện từ khung sau; hai lớp trùng khít nên không lộ, còn bóng đổ thì bỏ ngay
+	node.shadow.hide()
+	get_tree().process_frame.connect(node.queue_free, CONNECT_ONE_SHOT)
 	_links.queue_redraw()
 
 
@@ -491,53 +581,110 @@ func _finish_exit(node: BlockNode) -> void:
 	_end()
 
 
-func _burst_at_edge(center: Vector2, dir: Vector2, col: Color) -> void:
-	var r := CandyFrame.inner_rect(board_rect(), _cell)
-	var p := center
-	if dir.x > 0:
-		p.x = r.end.x
-	elif dir.x < 0:
-		p.x = r.position.x
-	elif dir.y > 0:
-		p.y = r.end.y
-	else:
-		p.y = r.position.y
-	BoardFx.burst(_fx_root, p, col, dir, _cell / 90.0)
-
-
-## Trượt tới vật cản (dist ô), va, bật về chỗ cũ. Rung nhẹ cả bàn; không màn đỏ.
-func _anim_bounce(node: BlockNode, dir: Vector2, dist: float, blocker: String, gate_side: String) -> void:
+## Lao nhanh dần tới vật cản, va, bật về chỗ cũ. Rung nhẹ cả bàn; không màn đỏ.
+func _anim_bounce(node: BlockNode, dir: Vector2, cells_to_go: float, steps: int, blocker: String, gate_side: String) -> void:
 	var home := node.position
-	var travel := maxf(dist, 0.0) * _cell
-	if dist < 0.5:
+	var travel := maxf(cells_to_go, 0.0) * _cell
+	if cells_to_go < 0.5:
 		travel = _cell * 0.12
-	var go_time := clampf(0.05 + 0.03 * dist, 0.07, 0.22)
+	var go_time := clampf(0.05 + 0.03 * cells_to_go, 0.07, 0.22)
 	node.busy = true
 	_begin()
 	var tw := node.create_tween()
 	tw.tween_property(node, "position", home + dir * travel, go_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tw.tween_callback(_impact.bind(dir, blocker, gate_side))
-	tw.tween_property(node, "position", home, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_callback(_impact.bind(node, dir, steps, blocker, gate_side))
+	# không dùng TRANS_BACK: đà vượt quá chỗ cũ sẽ đè lên khối phía sau, độ nảy đã có wobble lo
+	tw.tween_property(node, "position", home, BOUNCE_BACK).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tw.finished.connect(_finish_busy.bind(node))
 
 
 func _finish_busy(node: BlockNode) -> void:
 	if is_instance_valid(node):
 		node.busy = false
+		node.pivot_offset = node.size * 0.5
 	_end()
 
 
-func _impact(dir: Vector2, blocker: String, gate_side: String) -> void:
-	_shake_root(Vector2(absf(dir.x), absf(dir.y)))
-	if blocker != "" and _nodes.has(blocker):
-		var b: BlockNode = _nodes[blocker]
-		if not b.busy:
-			var home := b.position
-			var tw := b.create_tween()
-			tw.tween_property(b, "position", home + dir * _cell * 0.1, 0.05)
-			tw.tween_property(b, "position", home, 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+## Điểm chạm theo toạ độ ô của khối (lúc còn ở chỗ cũ): giữa các mép trước đang đụng vật cản.
+func _contact_local(node: BlockNode, steps: int, dir: Vector2, blocker: String) -> Vector2:
+	if blocker != "":
+		var d := Vector2i(dir)
+		var stones := _board.stones()
+		var sum := Vector2.ZERO
+		var n := 0
+		for c: Vector2i in node.cells:
+			var next := c + d * (steps + 1)
+			var hit: bool = stones.has(next) if blocker == LevelData.STONE else str(_owner.get(next, "")) == blocker
+			if hit:
+				sum += Vector2(c - node.origin_cell) + Vector2(0.5, 0.5) + dir * 0.5
+				n += 1
+		if n > 0:
+			return sum / float(n)
+	return _leading_point(node.local_cells(), dir) / _cell
+
+
+## Khoảnh khắc va chạm: khối nhún ép vào vật cản, vụn kẹo và sao văng ra ở điểm chạm, khối bị va giật lùi và nhún theo.
+func _impact(node: BlockNode, dir: Vector2, steps: int, blocker: String, gate_side: String) -> void:
+	var axis := Vector2(absf(dir.x), absf(dir.y))
+	_shake_root(axis)
+	var ramp := BoardFx.block_ramp(node.view)
+	var at := _contact_local(node, steps, dir, blocker)
+	var xf := node.get_global_transform()
+	var world := xf * (at * _cell)
+	CandyShards.chips(_fx_root, node.local_cells(), _cell, ramp, xf, at, dir, CHIPS_BUMP, _rng)
+	BoardFx.impact_flash(_fx_root, world, ramp["stripe"], _cell * FLASH_BUMP, 0.26, 0.55)
+	BoardFx.sparkles(_fx_root, world, ramp, -dir, _cell / 95.0, SPARKS_BUMP)
+	node.pivot_offset = at * _cell
+	node.wobble(axis, WOBBLE_SELF, WOBBLE_TIME)
 	if gate_side != "":
+		Sfx.play("gate")
+		_frame.hit(gate_side, get_global_transform().affine_inverse() * world, 0.7)
 		_flash_gates()
+	elif blocker == LevelData.STONE:
+		Sfx.play("stone")
+	else:
+		Sfx.play_or("bump", "blocked")
+		if _nodes.has(blocker):
+			var b: BlockNode = _nodes[blocker]
+			var bxf := b.get_global_transform()
+			CandyShards.chips(_fx_root, b.local_cells(), _cell, BoardFx.block_ramp(b.view), bxf, bxf.affine_inverse() * world / _cell, -dir, CHIPS_BUMP, _rng)
+			_jolt(b, dir, 1.0, 0.0)
+			_ripple(b, dir)
+
+
+## Khối bị va giật lùi rồi về đúng ô của nó và nhún theo; `power` giảm dần khi lan ra xa.
+func _jolt(b: BlockNode, dir: Vector2, power: float, delay: float) -> void:
+	if b.busy:
+		return
+	var home := _origin + Vector2(b.origin_cell) * _cell
+	var tw := b.create_tween()
+	if delay > 0.0:
+		tw.tween_interval(delay)
+	tw.tween_callback(b.wobble.bind(Vector2(absf(dir.x), absf(dir.y)), WOBBLE_BLOCKER * power, WOBBLE_TIME))
+	tw.tween_property(b, "position", home + dir * _cell * JOLT * power, 0.05)
+	tw.tween_property(b, "position", home, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## Dư chấn lan sang các khối nằm ngay sau khối bị va, theo đúng hướng va.
+func _ripple(start: BlockNode, dir: Vector2) -> void:
+	var d := Vector2i(dir)
+	var seen := {start.id: true}
+	var front: Array = start.cells
+	var power := RIPPLE_FADE
+	for depth in RIPPLE_DEPTH:
+		var next_id := ""
+		for c: Vector2i in front:
+			var o := str(_owner.get(c + d, ""))
+			if o != "" and not seen.has(o):
+				next_id = o
+				break
+		if next_id == "":
+			return
+		seen[next_id] = true
+		var n: BlockNode = _nodes[next_id]
+		_jolt(n, dir, power, RIPPLE_DELAY * float(depth + 1))
+		front = n.cells
+		power *= RIPPLE_FADE
 
 
 func _shake_root(axis: Vector2) -> void:

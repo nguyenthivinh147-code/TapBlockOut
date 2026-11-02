@@ -30,8 +30,8 @@ Game làm bằng **Godot 4.7.2, GDScript, xuất Android gốc**. Tài liệu Ho
 - Bàn cờ lưới ô vuông, tối đa 8×11 trong 20 level đầu. Khối là polyomino (thanh, L, T, S, U).
 - Cỡ ô giữ nguyên qua mọi level: tính theo bàn 8×11 trong vùng chơi, bàn nhỏ hơn thì để trống xung quanh chứ không phóng to ô cho đầy.
 - Màu quyết định hướng: vàng lên, xanh lá trái, xanh dương phải, tím xuống. Mỗi cạnh khung là một cổng liền, không có cổng rời.
-- Chạm khối, đường thông: khối trượt ra (0,30 s, ease-out), hạt màu bắn ở cạnh, MOVES giảm 1.
-- Chạm khối, đường bị chặn: khối trượt tới vật cản, va chạm rồi bật về chỗ cũ, MOVES giảm 1. Bàn cờ không đổi nên không có thế bí.
+- Chạm khối, đường thông: khối lao nhanh dần tới thanh cùng màu (tối đa 0,30 s), vỡ thành mảnh kẹo bay xuyên qua thanh, MOVES giảm 1.
+- Chạm khối, đường bị chặn: khối lao tới vật cản, nhún khi va chạm rồi bật về chỗ cũ, khối bị va nhún theo, MOVES giảm 1. Bàn cờ không đổi nên không có thế bí.
 - `MOVES = số chạm tối thiểu do solver tính + dư`. Dư: L1–5 là 3; level thường `max(2, 10% số khối)`; level HARD là 1.
 - Nghĩ quá lâu rồi đi đúng (mặc định từ 8 giây): hiệu ứng vỗ tay.
 - Mỗi level có ít nhất một khối thoát được ngay. Solver kiểm 100% level trong unit test và lúc build.
@@ -380,6 +380,23 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 - Cổng nhịp đóng: thanh tối đi 55%, mũi tên mờ, hiện các vạch chắn ngang thanh; khi đổi trạng thái thì nháy sáng trong hình thanh. Khối bị cổng đóng chặn trượt qua khoảng trống tới mặt trong của thanh rồi bật về; hạt lúc khối thoát bắn ở mặt trong của thanh.
 - Nền bàn giữ màu cũ, chỉ đổi hình theo khung (tới đường giữa thanh, bo theo ống góc).
 
+**Hiệu ứng vỡ và va chạm (2026-11-02).** Mức "đẹp mà vẫn êm" do người dùng chọn: nhiều chi tiết nhưng bàn chỉ rung nhẹ, đúng tiêu chí thư giãn ở mục 3. Không có lần nào chặn thao tác: người chơi chạm tiếp được ngay. Vẽ bằng code và shader (`src/ui/candy_shards.gd`, `candy_shard.gdshader`, `impact_flash.gdshader`); mảnh dùng chung chất liệu với khối qua `candy_body.gdshaderinc`.
+
+| Khoảnh khắc | Diễn biến | Số đo |
+| --- | --- | --- |
+| Khối lao tới thanh | Nhanh dần, dài ra theo hướng lao, tới đúng mặt trong của thanh cùng màu | 0,14–0,30 giây tuỳ quãng đường; dài ra 9% |
+| Vỡ | Khối nứt loé trắng rất ngắn tại chỗ rồi nổ: mảnh gần điểm va bay trước. Mảnh lấy đúng chỗ của nó trên khối nên giữ nguyên sọc, mép và vạch bóng, rìa gãy sáng như kẹo trong có bề dày, loé khi xoay | Khựng 0,05 giây; khoảng 20 mảnh lớn (2–6 mảnh mỗi ô) và 10–24 vụn |
+| Mảnh bay | Xuyên qua thanh, toả rộng rồi rơi theo trọng lực, bay đè lên cả vùng ngoài bàn, nút và chữ; nhỏ dần và mờ ở cuối | 7–19 ô/giây; rơi 26 ô/giây²; sống 0,6–1,05 giây |
+| Thanh bị va | Bật ra rồi nảy về, sóng sáng chạy dọc thanh từ điểm va, mũi tên phồng lên | 0,45 giây; bật 0,1 ô |
+| Loé sáng | Quầng sáng, sao bốn cánh và vòng sóng toả ra, kèm sao lấp lánh | Vỡ: rộng 4,8 ô, 18 sao. Va chạm: rộng 2,6 ô, 7 sao |
+| Va chạm | Khối đi va nhún theo trục va, tâm nhún ở điểm chạm rồi về chỗ cũ không vượt quá; vụn kẹo và sao văng ra ở điểm chạm | Nhún 15%, 0,46 giây; 7 vụn mỗi khối |
+| Khối bị va | Giật lùi rồi về đúng ô, nhún theo, dư chấn lan sang tối đa 2 khối nằm ngay phía sau, mỗi khối yếu đi một nửa | Nhún 10%; lùi 0,1 ô; trễ 0,05 giây mỗi khối |
+| Chạm đá, cổng đóng | Chỉ khối kẹo nhún và văng vụn; cổng đóng còn có thanh bị va | Như trên |
+
+- Khối còn trong sương mù: vụn va chạm dùng màu xám để không lộ màu. Khi vỡ thì đã thoát nên mảnh dùng đúng màu thật.
+- Trận thắng chờ tối đa 0,55 giây sau lần vỡ cuối trước khi hiện thẻ thắng; mảnh còn lại rơi tiếp đè lên thẻ tới hết đời.
+- Shader hiệu ứng được biên dịch sẵn khi vào màn đầu tiên.
+
 **Vẫn vẽ bằng code (và shader):** hình khối, lưới, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
 
 | Việc | Công cụ | Ghi chú |
@@ -409,8 +426,10 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 | File | `category` | Tạo → dùng | Dùng ở |
 | --- | --- | --- | --- |
 | `sfx_button`, `sfx_tap` | `One-shot` | 1 giây → cắt còn tối đa 0,2 giây | Bấm nút, chạm khối |
-| `sfx_exit` | `SFX` | 1 giây → khoảng 0,4 giây | Khối trượt ra (hoạt ảnh 0,30 giây) |
-| `sfx_blocked` | `SFX` | 1 giây → khoảng 0,3 giây | Khối va chạm rồi bật về |
+| `sfx_exit` | `SFX` | 1 giây → khoảng 0,4 giây | Khối thoát, dùng tạm lúc khối vỡ khi chưa có `sfx_shatter` |
+| `sfx_blocked` | `SFX` | 1 giây → khoảng 0,3 giây | Khối va chạm rồi bật về, dùng tạm khi chưa có `sfx_bump` |
+| `sfx_shatter` | `SFX` | 2 giây → tối đa 0,7 giây | Khối vỡ ở thanh; **chưa tạo**, xem `art/MISSING.md` |
+| `sfx_bump` | `SFX` | 1 giây → tối đa 0,3 giây | Kẹo va vào kẹo; **chưa tạo**, xem `art/MISSING.md` |
 | `sfx_coin`, `sfx_hint`, `sfx_moves`, `sfx_smash`, `sfx_life_lost` | `SFX` | 2 giây → tối đa 1 giây | Nhận gold, 3 booster, mất mạng |
 | `sfx_win`, `sfx_lose`, `sfx_clap` | `SFX` | 3 giây | Thắng, thua, vỗ tay khi nghĩ lâu rồi đi đúng |
 | `sfx_stone`, `sfx_ice`, `sfx_chain`, `sfx_layer`, `sfx_fog`, `sfx_gate` | `SFX` | 2 giây → tối đa 1 giây | 6 cơ chế sau demo |
@@ -444,3 +463,4 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 
 - Đổi concept hình khối sang kẹo sọc (ảnh duyệt `concept_candy_board_v5_stripe`), đo số từ ảnh; bốn màu khối và cổng đổi theo ảnh. Giữ mũi tên mù màu dù ảnh không có.
 - Đổi khung cổng từ bốn dải vát chéo sát bàn sang bốn thanh capsule và ống góc theo cùng ảnh; chấp nhận cỡ ô giảm khoảng 14% để giữ đúng tỉ lệ khung.
+- Khối thoát thì vỡ thành mảnh kẹo ở mặt trong thanh, mảnh bay xuyên qua thanh và được đè lên vùng ngoài bàn; bị chặn thì nhún, văng vụn, dư chấn lan sang khối sau. Áp dụng cả với đá và cổng đóng. Giữ mức rung nhẹ.

@@ -61,15 +61,20 @@ static func update_body(body: Control, cells: Array, cell: float, ramp: Dictiona
 	body.size = dims * cell
 	body.tex = entry["tex"]
 	var m: ShaderMaterial = body.material
+	apply_material(m, entry, cell, ramp)
+	m.set_shader_parameter("overlay", overlay)
+	m.set_shader_parameter("flash", flash)
+	body.queue_redraw()
+
+
+## Đặt các tham số chất liệu chung (`candy_body.gdshaderinc`) cho một material.
+static func apply_material(m: ShaderMaterial, entry: Dictionary, cell: float, ramp: Dictionary) -> void:
 	m.set_shader_parameter("sdf", entry["tex"])
 	for tone in ["deep", "side", "face", "stripe"]:
 		m.set_shader_parameter(tone, ramp[tone])
-	m.set_shader_parameter("overlay", overlay)
-	m.set_shader_parameter("flash", flash)
-	m.set_shader_parameter("dims", dims)
+	m.set_shader_parameter("dims", entry["dims"])
 	m.set_shader_parameter("pad", PAD)
 	m.set_shader_parameter("cell_px", cell)
-	body.queue_redraw()
 
 
 static func sdf_for(cells: Array) -> Dictionary:
