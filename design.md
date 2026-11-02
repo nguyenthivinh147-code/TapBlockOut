@@ -387,6 +387,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 | Lòng khối | Màu gốc nằm lõm trong viền, mép chuyển mềm; mép trên và hai bên sáng nhẹ, tối dần về đáy lòng |
 | Vệt sáng | Cung trắng ôm góc trên trái của cả khối (đậm ở mép ngoài, mờ vào trong), một vạch ngắn bên dưới và một vệt mờ ngang ở mép trên |
 
+- **Bản 3D (`Pudding.STYLE_3D = true`, `src/ui/pudding3d.gdshader`)**: cùng SDF, nhưng coi mặt trên là gel phồng (profile quarter-circle, rộng 0.4 ô) để tính pháp tuyến, rồi chiếu sáng từ trên trái (half-Lambert, specular, Fresnel, xuyên sáng ở mép mỏng, ánh phản đáy phải) và thêm thành đùn dày ~0.09 ô ở đáy. Đặt `STYLE_3D = false` để về bản phẳng ở bảng trên.
 - Texture khoảng cách tới mép (SDF) dựng một lần cho mỗi hình khối rồi cache (không phụ thuộc màu hay cỡ ô, khoảng 2–17 ms mỗi hình trên máy dev); shader dùng SDF để tính viền, dải đáy, lòng và bóng, nên khối chữ L, T, ... đều ra đúng cấu trúc với ô lõm liền mạch.
 - Khối nhiều ô liền một viên: không viền, không khe giữa các ô trong khối; góc lồi bo, góc lõm mềm; chỉ một vệt sáng cho cả khối. Khe giữa các khối là 1/16 ô.
 - Cỡ ô là số nguyên (làm tròn xuống) để các ô của một khối khớp pixel, không lộ đường nối.

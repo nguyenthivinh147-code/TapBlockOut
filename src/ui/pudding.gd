@@ -2,7 +2,10 @@ extends RefCounted
 ## Thân khối pudding: dựng texture khoảng cách-tới-mép (SDF) cho từng hình khối rồi tô bằng `pudding.gdshader`.
 ## SDF không phụ thuộc màu hay cỡ ô nên cache theo hình. Hàm tĩnh, cache tĩnh.
 
-const SHADER := preload("res://src/ui/pudding.gdshader")
+const SHADER_FLAT := preload("res://src/ui/pudding.gdshader")
+const SHADER_3D := preload("res://src/ui/pudding3d.gdshader")
+const STYLE_3D := true  # true: khối phồng 3D (pudding3d.gdshader); false: bản phẳng cũ
+const SHADER := SHADER_3D if STYLE_3D else SHADER_FLAT
 
 const RES := 16  # px mỗi ô trong texture SDF
 const PAD := 0.25  # lề quanh khối (ô), chứa bóng đổ và viền khử răng cưa
