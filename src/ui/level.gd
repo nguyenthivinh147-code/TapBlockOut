@@ -191,7 +191,7 @@ func _build() -> void:
 	col.add_theme_constant_override("separation", 14)
 	margin.add_child(col)
 
-	# thanh trên: Home, tên level, restart
+	# thanh trên: Home, tên level và MOVES, restart. Chỉ thanh này và hàng booster chiếm chiều cao, để cỡ ô không đổi giữa các level.
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", 16)
 	col.add_child(top)
@@ -202,10 +202,14 @@ func _build() -> void:
 	mid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	mid.alignment = BoxContainer.ALIGNMENT_CENTER
 	top.add_child(mid)
-	title_label = ThemeKit.make_label("", ThemeKit.FS_TITLE)
+	var title_row := HBoxContainer.new()
+	title_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	title_row.add_theme_constant_override("separation", 12)
+	mid.add_child(title_row)
+	title_label = ThemeKit.make_label("", ThemeKit.FS_BODY)
 	title_label.name = "TitleLabel"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	mid.add_child(title_label)
+	title_row.add_child(title_label)
 	var hard := Label.new()
 	hard.name = "HardBadge"
 	hard.text = tr("level_hard")
@@ -220,25 +224,17 @@ func _build() -> void:
 	hs.content_margin_top = 2
 	hs.content_margin_bottom = 2
 	hard.add_theme_stylebox_override("normal", hs)
-	hard.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	hard.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	hard.visible = false
 	hard_badge = hard
-	mid.add_child(hard)
-	restart_button = _icon_button("ui_restart", "RestartButton")
-	restart_button.pressed.connect(_on_restart_pressed)
-	top.add_child(restart_button)
-
+	title_row.add_child(hard)
 	moves_label = ThemeKit.make_label("", ThemeKit.FS_TITLE, ThemeKit.GOLD)
 	moves_label.name = "MovesLabel"
 	moves_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(moves_label)
-
-	tut_label = ThemeKit.make_label("", ThemeKit.FS_BODY, ThemeKit.TEXT_DIM)
-	tut_label.name = "TutLabel"
-	tut_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tut_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	tut_label.custom_minimum_size.y = 48
-	col.add_child(tut_label)
+	mid.add_child(moves_label)
+	restart_button = _icon_button("ui_restart", "RestartButton")
+	restart_button.pressed.connect(_on_restart_pressed)
+	top.add_child(restart_button)
 
 	# bàn cờ
 	var holder := Control.new()
@@ -266,17 +262,18 @@ func _build() -> void:
 	toast_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	toast_label.visible = false
 	holder.add_child(toast_label)
-
-	smash_label = ThemeKit.make_label(tr("booster_smash_pick"), ThemeKit.FS_BODY, ThemeKit.GOLD)
-	smash_label.name = "SmashLabel"
-	smash_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tut_label = _board_overlay_label("TutLabel", ThemeKit.TEXT_DIM)
+	holder.add_child(tut_label)
+	smash_label = _board_overlay_label("SmashLabel", ThemeKit.GOLD)
+	smash_label.text = tr("booster_smash_pick")
 	smash_label.visible = false
-	col.add_child(smash_label)
+	holder.add_child(smash_label)
 
 	# booster
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 40)
+	row.custom_minimum_size.y = 168  # giữ chỗ cả khi booster chưa mở, để khung không xê dịch giữa các level
 	col.add_child(row)
 	for kind in BOOSTERS:
 		var c := VBoxContainer.new()
@@ -322,6 +319,20 @@ func _build() -> void:
 	Game.inv_changed.connect(_on_game_changed)
 	Game.coins_changed.connect(_on_game_changed)
 	Game.offer_ready.connect(_on_offer_ready)
+
+
+## Chữ phủ lên phần trên của bàn: không chiếm chiều cao nên không làm đổi cỡ ô khi hiện hay ẩn.
+func _board_overlay_label(label_name: String, color: Color) -> Label:
+	var l := ThemeKit.make_label("", ThemeKit.FS_BODY, color)
+	l.name = label_name
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	l.offset_left = 48
+	l.offset_right = -48
+	l.offset_top = 52
+	return l
 
 
 func _on_game_changed(_v: Variant = null) -> void:
@@ -741,6 +752,7 @@ func _set_smash_mode(on: bool) -> void:
 	_smash_mode = on
 	if smash_label != null:
 		smash_label.visible = on
+		tut_label.visible = not on  # cùng một chỗ trên bàn
 
 
 func _do_smash(id: String) -> void:

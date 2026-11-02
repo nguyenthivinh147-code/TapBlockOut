@@ -8,6 +8,7 @@ const BoardState := preload("res://src/core/board_state.gd")
 const Config := preload("res://src/config.gd")
 const GenTool := preload("res://tools/gen_levels.gd")
 const Validate := preload("res://tools/validate_levels.gd")
+const Silhouette := preload("res://src/core/silhouette.gd")
 
 const FIRST_ID := 21
 const COUNT := 500
@@ -53,7 +54,8 @@ func test_valid_solvable_fast(t: T) -> void:
 		t.eq(int(d["id"]), id, "id %d khớp" % id)
 		var n: int = d["blocks"].size()
 		t.ok(n >= 2 and n <= Gen.MAX_BLOCKS, "id %d số khối %d" % [id, n])
-		t.ok(int(d["w"]) <= Gen.MAX_W and int(d["h"]) <= Gen.MAX_H, "id %d cỡ bàn" % id)
+		t.eq(int(d["w"]), Config.BOARD_W, "id %d bàn rộng cố định" % id)
+		t.eq(int(d["h"]), Config.BOARD_H, "id %d bàn cao cố định" % id)
 		t.eq(bool(d["hard"]), id % 4 == 0, "id %d HARD" % id)
 		if bool(d["hard"]):
 			hards += 1
@@ -75,6 +77,74 @@ func test_valid_solvable_fast(t: T) -> void:
 	t.ok(hards > 0, "có level HARD")
 	print("generator: %d level, tb %.1f ms, max %.1f ms (id %d), đếm cơ chế %s" % [
 		COUNT, total_ms / COUNT, max_ms, worst_id, str(seen)])
+
+
+## Các ô có khối hoặc đá của level.
+func _occupied(d: Dictionary) -> Dictionary:
+	var occ := {}
+	for s in d["stones"]:
+		occ[LevelData.cell_of(s)] = true
+	for b in d["blocks"]:
+		for c in b["cells"]:
+			occ[LevelData.cell_of(c)] = true
+	return occ
+
+
+func _bbox(occ: Dictionary) -> Rect2i:
+	var keys: Array = occ.keys()
+	var r := Rect2i(keys[0], Vector2i.ONE)
+	for c in keys:
+		r = r.expand(c).expand(c + Vector2i.ONE)
+	return r
+
+
+## Khối xếp thành hình ở giữa bàn cố định: có khoảng trống, không kín khung, nhiều dạng khác nhau.
+func test_blocks_form_varied_silhouettes_in_the_fixed_board(t: T) -> void:
+	var shapes := {}
+	var gappy := 0
+	var total := 300
+	for id in range(FIRST_ID, FIRST_ID + total):
+		var d := Gen.generate(id, 0)
+		var occ := _occupied(d)
+		var box := _bbox(occ)
+		t.ok(occ.size() < Config.BOARD_W * Config.BOARD_H, "id %d còn khoảng trống trên bàn" % id)
+		t.ok(box.size.x <= Gen.MAX_W and box.size.y <= Gen.MAX_H, "id %d hình %s vừa vùng xếp" % [id, str(box.size)])
+		var left := box.position.x
+		var right := Config.BOARD_W - box.end.x
+		var top := box.position.y
+		var bottom := Config.BOARD_H - box.end.y
+		t.ok(absi(left - right) <= 1 and absi(top - bottom) <= 1, "id %d hình ở giữa bàn (%d %d %d %d)" % [id, left, right, top, bottom])
+		if occ.size() < box.size.x * box.size.y:
+			gappy += 1
+		var keys: Array = occ.keys()
+		keys.sort()
+		shapes[str(keys)] = true
+	t.ok(gappy >= total * 0.95, "hầu hết level không kín khung hình (%d/%d)" % [gappy, total])
+	t.ok(shapes.size() >= total * 0.8, "nhiều hình dạng khác nhau (%d/%d)" % [shapes.size(), total])
+
+
+## Mọi khối sương mù đều ẩn lúc đầu, dù ở rìa hình có ô trống kề.
+func test_fog_blocks_start_hidden(t: T) -> void:
+	var fogged := 0
+	for id in range(int(Config.UNLOCK["fog"]), FIRST_ID + COUNT):
+		var d := Gen.generate(id, 0)
+		var board := BoardState.new(d)
+		for b in d["blocks"]:
+			if bool(b["fog"]):
+				fogged += 1
+				t.ok(bool(board.block_view(str(b["id"]))["is_fog_hidden"]), "id %d: %s ẩn lúc đầu" % [id, b["id"]])
+	t.ok(fogged > 0, "có khối sương mù")
+
+
+## Bộ sinh dùng đủ mọi dạng hình, không chỉ vài dạng quen.
+func test_every_shape_kind_is_used(t: T) -> void:
+	var seen := {}
+	for sd in 400:
+		var shape := Gen._pick_shape(20, 0, "", Gen._rng(150, sd))
+		t.ok(not shape.is_empty(), "seed %d có hình" % sd)
+		seen[shape.get("kind", "")] = true
+	for kind in Silhouette.KINDS:
+		t.ok(seen.has(kind), "có dùng hình %s" % kind)
 
 
 func test_deterministic(t: T) -> void:

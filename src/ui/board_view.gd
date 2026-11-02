@@ -1,23 +1,20 @@
 extends Control
-## Vẽ bàn cờ: lưới, cổng liền bốn cạnh theo màu, đá, khối bo góc; nhận chạm; chạy hoạt ảnh kết quả.
+## Vẽ bàn cờ: nền trơn, cổng liền bốn cạnh theo màu, đá, khối bo góc; nhận chạm; chạy hoạt ảnh kết quả.
 ## Dùng: setup(board) rồi nối block_tapped; level gọi board.tap(id) và đưa kết quả vào apply_result().
-## Tự co theo `size` của chính nó (hoặc setup(board, area)); đổi size thì tự xếp lại.
+## Ô cỡ cố định Config.BOARD_CELL, chỉ co khi vùng chứa (`size` hoặc setup(board, area)) không đủ cho bàn chuẩn; đổi size thì tự xếp lại.
 
 const BoardState := preload("res://src/core/board_state.gd")
 const BoardFx := preload("res://src/ui/board_fx.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const Config := preload("res://src/config.gd")
 
 ## Khối chạm vào (đã là ô của khối, không phải đá hay ô trống).
 signal block_tapped(id: String)
 ## Mọi hoạt ảnh đang chạy đã xong.
 signal animation_done
 
-const MAX_CELL := 150.0
 const GATE_RATIO := 0.3
-## Bàn tham chiếu (lớn nhất trong 300 level): kích thước ô tính theo bàn này để mọi level dùng cùng một cỡ ô.
-const REF_COLS := 8
-const REF_ROWS := 11
 const SLIDE_TIME := 0.30
 const GATE_TIME := 0.22
 const GHOST_NAME := "Ghost"
@@ -172,6 +169,11 @@ func board_rect() -> Rect2:
 	return Rect2(_origin, Vector2(_board.width(), _board.height()) * _cell)
 
 
+## Trọn khung cổng quanh bàn, toạ độ cục bộ.
+func frame_rect() -> Rect2:
+	return board_rect().grow(_cell * GATE_RATIO)
+
+
 func cell_center(c: Vector2i) -> Vector2:
 	return _origin + (Vector2(c) + Vector2(0.5, 0.5)) * _cell
 
@@ -291,13 +293,12 @@ func _layout() -> void:
 		return
 	var avail := size
 	if avail.x <= 1.0 or avail.y <= 1.0:
-		_cell = 64.0
+		_cell = float(Config.BOARD_CELL)
 	else:
-		# Ô cố định theo bàn tham chiếu; chỉ co thêm khi bàn lớn hơn tham chiếu (không bao giờ phóng to để lấp đầy).
-		var ref_cell := minf(avail.x / (REF_COLS + 2.0 * GATE_RATIO), avail.y / (REF_ROWS + 2.0 * GATE_RATIO))
-		var fit_cell := minf(avail.x / (w + 2.0 * GATE_RATIO), avail.y / (h + 2.0 * GATE_RATIO))
+		# Ô cố định; tính theo bàn chuẩn nên không đổi theo level, chỉ co khi vùng chứa nhỏ hơn bàn chuẩn.
+		var fit_cell := minf(avail.x / (Config.BOARD_W + 2.0 * GATE_RATIO), avail.y / (Config.BOARD_H + 2.0 * GATE_RATIO))
 		# Làm tròn xuống số nguyên để các ô trong cùng khối khớp pixel, không lộ đường nối.
-		_cell = floorf(clampf(minf(ref_cell, fit_cell), 8.0, MAX_CELL))
+		_cell = floorf(clampf(fit_cell, 8.0, float(Config.BOARD_CELL)))
 	_origin = ((avail - Vector2(w, h) * _cell) * 0.5).floor()
 	for id in _nodes:
 		var n: BlockNode = _nodes[id]
@@ -328,10 +329,6 @@ func _draw() -> void:
 	bg.bg_color = Color("151A28")
 	bg.set_corner_radius_all(int(g * 0.5))
 	draw_style_box(bg, outer)
-	for y in _board.height():
-		for x in _board.width():
-			var shade := 0.05 if (x + y) % 2 == 0 else 0.09
-			draw_rect(Rect2(br.position + Vector2(x, y) * _cell + Vector2(1, 1), Vector2(_cell - 2, _cell - 2)), Color(1, 1, 1, shade))
 	# đá
 	for s in _board.stones():
 		_draw_stone(s)

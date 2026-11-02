@@ -180,9 +180,9 @@ func test_fog(t: T) -> void:
 	t.eq(r2["revealed"].size(), 1, "lộ 1 khối")
 	t.eq(r2["revealed"][0], "f", "lộ f")
 	t.eq(b.block_view("f")["is_fog_hidden"], false, "hết ẩn")
-	# Khối ẩn lộ ngay từ đầu nếu có ô kề trống.
+	# Ô trống sẵn trên bàn không làm lộ: chỉ khối kề rời đi mới làm lộ.
 	var c := BoardState.new(_lv(4, 4, [_b("f", "yellow", [[2, 2]], {"fog": true})]))
-	t.eq(c.block_view("f")["is_fog_hidden"], false, "có ô trống kề")
+	t.eq(c.block_view("f")["is_fog_hidden"], true, "ô trống sẵn quanh hình không làm lộ")
 	# Đá không phải ô trống.
 	var d := BoardState.new(_lv(3, 3, [_b("f", "yellow", [[1, 1]], {"fog": true})],
 		{"stones": [[0, 1], [2, 1], [1, 0], [1, 2]]}))

@@ -99,14 +99,19 @@ func _shape(cells: Array) -> String:
 	return "other"
 
 
+## Hình đối xứng trái phải quanh trục của chính nó (hình có thể lệch nửa ô so với giữa bàn).
 func _mirror_symmetric(d: Dictionary) -> bool:
-	var w := int(d["w"])
 	var occ := {}
+	var min_x := 1 << 20
+	var max_x := -1
 	for b in d["blocks"]:
 		for c in b["cells"]:
-			occ[LevelData.cell_of(c)] = true
+			var cell := LevelData.cell_of(c)
+			occ[cell] = true
+			min_x = mini(min_x, cell.x)
+			max_x = maxi(max_x, cell.x)
 	for c in occ:
-		if not occ.has(Vector2i(w - 1 - c.x, c.y)):
+		if not occ.has(Vector2i(min_x + max_x - c.x, c.y)):
 			return false
 	return true
 
@@ -135,8 +140,8 @@ func test_table(t: T) -> void:
 		prev_count = n
 		t.eq(bool(d["hard"]), HARD_LEVELS.has(id), "L%d cờ HARD" % id)
 		t.eq(_colors_of(d).size(), _colors_wanted(id), "L%d số màu" % id)
-		t.ok(int(d["w"]) <= 8 and int(d["h"]) <= 11, "L%d bàn <= 8x11" % id)
-		t.ok(int(d["h"]) >= int(d["w"]) - 1, "L%d dạng portrait" % id)
+		t.eq(int(d["w"]), Config.BOARD_W, "L%d bàn rộng cố định" % id)
+		t.eq(int(d["h"]), Config.BOARD_H, "L%d bàn cao cố định" % id)
 		t.eq(d["stones"].size(), 0, "L%d không có đá" % id)
 		t.eq(d["pulse_sides"].size(), 0, "L%d không có cổng nhịp" % id)
 	# màu tăng dần: vàng từ đầu, thêm xanh lá L4, xanh dương L6, tím L9

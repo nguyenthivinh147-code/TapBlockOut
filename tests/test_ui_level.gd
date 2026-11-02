@@ -345,9 +345,11 @@ func test_booster_smash(t: T) -> void:
 	var n: int = lv.board.remaining_count()
 	lv.booster_buttons.smash.pressed.emit()
 	t.ok(lv.smash_label.visible, "báo chọn khối để phá")
+	t.ok(not lv.tut_label.visible, "chữ hướng dẫn nhường chỗ cho nhãn Phá khối")
 	t.eq(int(g.s.inv.smash), 1, "chưa trừ kho tới khi chọn")
 	lv.booster_buttons.smash.pressed.emit()
 	t.ok(not lv.smash_label.visible, "bấm lại thì huỷ")
+	t.ok(lv.tut_label.visible, "huỷ thì chữ hướng dẫn hiện lại")
 	lv.booster_buttons.smash.pressed.emit()
 	lv.board_view.block_tapped.emit(lv.board.block_ids()[0])
 	t.eq(lv.board.remaining_count(), n - 1, "khối bị phá")
@@ -586,7 +588,7 @@ func _check_fit(t: T, lv: Control, tag: String) -> void:
 	var ids: Array[String] = lv.board.block_ids()
 	if not ids.is_empty():
 		var n: Control = bv.block_node(ids[0])
-		t.ok(n != null and bv.block_at(n.position + Vector2(1, 1) * bv.cell_size() * 0.5) == ids[0], "%s: vùng chạm đúng ô khối" % tag)
+		t.ok(n != null and bv.block_at(bv.cell_center(n.cells[0])) == ids[0], "%s: vùng chạm đúng ô khối" % tag)
 
 
 func _fit_level(t: T, level: int) -> void:
@@ -600,6 +602,7 @@ func _fit_level(t: T, level: int) -> void:
 	await _wait_until(_playing.bind(lv))
 	await _frames(4)
 	_check_fit(t, lv, "L%d 720x1280" % level)
+	t.near(lv.board_view.cell_size(), float(Config.BOARD_CELL), 0.001, "L%d 720x1280: ô đúng cỡ chuẩn" % level)
 	host.size = Vector2(360, 640)
 	await _frames(4)
 	_check_fit(t, lv, "L%d 360x640" % level)
@@ -607,6 +610,26 @@ func _fit_level(t: T, level: int) -> void:
 	await _frames(4)
 	_check_fit(t, lv, "L%d về 720x1280" % level)
 	host.free()
+
+
+## Khung đứng cùng một chỗ ở mọi level, kể cả L1 chưa mở booster và level có badge HARD.
+func test_board_same_place_across_levels(t: T) -> void:
+	var rects: Array[Rect2] = []
+	for level in [1, 8, 21]:
+		_g(level)
+		var host := Control.new()
+		host.size = Vector2(720, 1280)
+		_tree().root.add_child(host)
+		var lv := (load("res://scenes/level.tscn") as PackedScene).instantiate() as Control
+		host.add_child(lv)
+		lv.setup({})
+		await _wait_until(_playing.bind(lv))
+		await _frames(4)
+		var bv: Control = lv.board_view
+		rects.append(Rect2(bv.global_position + bv.frame_rect().position, bv.frame_rect().size))
+		host.free()
+	for i in range(1, rects.size()):
+		t.ok(rects[i].is_equal_approx(rects[0]), "khung trùng nhau: %s và %s" % [str(rects[0]), str(rects[i])])
 
 
 func test_board_fits_holder_l1(t: T) -> void:
@@ -617,7 +640,7 @@ func test_board_fits_holder_l8(t: T) -> void:
 	await _fit_level(t, 8)
 
 
-func test_board_fits_holder_l14_8x10(t: T) -> void:
+func test_board_fits_holder_l14(t: T) -> void:
 	await _fit_level(t, 14)
 
 

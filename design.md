@@ -27,8 +27,9 @@ Game làm bằng **Godot 4.7.2, GDScript, xuất Android gốc**. Tài liệu Ho
 
 ## 3. Luật chơi
 
-- Bàn cờ lưới ô vuông, tối đa 8×11 trong 20 level đầu. Khối là polyomino (thanh, L, T, S, U).
-- Cỡ ô giữ nguyên qua mọi level: tính theo bàn 8×11 trong vùng chơi, bàn nhỏ hơn thì để trống xung quanh chứ không phóng to ô cho đầy.
+- **Bàn cờ cố định, không đổi theo số khối: lưới 14×19 ô, mỗi ô 42 px ở độ phân giải gốc 720×1280, đúng như ảnh ref `art/concepts/ref_board_size.png`** (`Config.BOARD_W`, `BOARD_H`, `BOARD_CELL`). Đây là luật nền của game, mọi level và mọi theme phải giữ.
+- Khung đứng cùng một chỗ và cùng một cỡ ở mọi level. Ô chỉ co khi vùng chơi của máy nhỏ hơn bàn chuẩn, không bao giờ phóng to.
+- Khối xếp thành một hình ở giữa bàn, không lát kín bàn và không cần kín khung của hình: khoảng trống quanh hình và trong hình là bình thường (mục 4). Khối là polyomino (thanh, L, T, S, U).
 - Màu quyết định hướng: vàng lên, xanh lá trái, xanh dương phải, tím xuống. Mỗi cạnh khung là một cổng liền, không có cổng rời.
 - Chạm khối, đường thông: khối trượt ra (0,30 s, ease-out), hạt màu bắn ở cạnh, MOVES giảm 1.
 - Chạm khối, đường bị chặn: khối trượt tới vật cản, va chạm rồi bật về chỗ cũ, MOVES giảm 1. Bàn cờ không đổi nên không có thế bí.
@@ -102,6 +103,19 @@ Mọi level thắng đều +40 gold.
 | 17–19 | 4 màu | 22–26 | L18 hỏi đánh giá store sau khi thắng |
 | 20 | 4 màu | 28 | **HARD**, kết chặng |
 
+### Hình dạng level
+
+Bàn luôn 14×19 ô (mục 3), nên số khối chỉ quyết định hình to hay nhỏ, không đổi cỡ bàn. Vì ngoài hình là ô trống, dịch cả hình đi không đổi đường thoát của khối.
+
+| Nguồn | Hình |
+| --- | --- |
+| Từ L21 và Daily Challenge (`src/core/silhouette.gd`) | Chín dạng: oval, thoi, tim, chữ thập, đồng hồ cát, vòm, vòng, mũi tên, nhà. Dưới 6 khối thì xếp hình chữ nhật vì quá ít ô để nhận ra dạng |
+| L1–20 | Giữ layout làm tay, dịch vào giữa bàn; L6, 7, 8, 9, 10, 12, 13, 15, 16, 17, 19, 20 trước đây kín hoặc gần kín khung nên sinh lại, giữ số khối trong khoảng của bảng trên (L10 từ 14 còn 13), đúng số màu và HARD |
+| Level dạy cơ chế | Giữ bảng làm tay, dịch vào giữa bàn |
+
+- Cỡ hình: số ô khoảng 2,4–3,4 lần số khối, khung hình tối đa 12×17 (chừa một ô mỗi phía), cao tối đa khoảng 1,9 lần rộng, khoét thêm khoảng 6% ô rìa để hình không quá đều. Hình lớn nhất trong ảnh ref là 10×17.
+- Sương mù: chỉ khối kề rời đi (thoát hoặc bị phá) mới làm lộ, ô trống sẵn quanh hình không tính. Nhờ vậy mọi khối sương mù đều ẩn lúc đầu, kể cả ở rìa hình.
+
 ### Cơ chế sau bản demo
 
 Nguyên tắc: cơ chế chỉ làm bàn cờ dễ hơn theo thời gian hoặc lặp lại theo chu kỳ, không có nước đi nào khiến level không thể thắng. Không timer. Solver phải chứng minh được từng level. Vì vậy không dùng đổi màu ngẫu nhiên hay khối mọc thêm.
@@ -114,7 +128,7 @@ Mỗi cơ chế có một level dạy làm tay và một âm thanh riêng. Sau L
 | 31 | Băng | Cần 2 lần chạm, lần đầu làm nứt; chạm nứt tốn MOVES và đã tính vào `MOVES` | Băng nứt |
 | 46 | Xích và chìa | Khối bị xích chỉ đi được khi khối chìa đã thoát | Xích rơi |
 | 61 | Hai lớp | Thoát lớp ngoài thì lộ lớp trong, màu khác | Bóc lớp |
-| 81 | Sương mù | Không thấy màu cho tới khi ô bên cạnh trống | Gió nhẹ |
+| 81 | Sương mù | Không thấy màu cho tới khi một khối kề rời đi | Gió nhẹ |
 | 101 | Cổng nhịp | Cổng đóng/mở luân phiên sau mọi lần chạm, kể cả chạm bị chặn | Cổng cơ khí |
 
 Booster với cơ chế:
@@ -360,8 +374,9 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 - Cỡ ô là số nguyên (làm tròn xuống) để các ô của một khối khớp pixel, không lộ đường nối.
 - Mũi tên mù màu hạ nhẹ xuống dưới tâm ô để không chạm vệt sáng. Băng, xích, sương mù vẽ đè lên lớp pudding, giữ nguyên cách đọc. Khối hai lớp: lớp trong là viên pudding nhỏ bằng nửa ô, dùng cùng shader.
 - Chưa áp dụng cho nền, khung cổng, đá, icon (giữ nét hiện tại, trừ màu cổng). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá pudding/gel 3D (xem quy tắc prompt bên dưới) để cùng phong cách.
+- Màn level chỉ có thanh trên (Home, tên level, MOVES, restart) và hàng booster chiếm chiều cao, luôn giữ chỗ cho booster; chữ hướng dẫn và nhãn Phá khối phủ lên phần trên của bàn. Nhờ vậy khung không xê dịch giữa các level. Nền bàn trơn, không vẽ lưới ô.
 
-**Vẫn vẽ bằng code (và shader):** hình khối, lưới, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
+**Vẫn vẽ bằng code (và shader):** hình khối, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
 
 | Việc | Công cụ | Ghi chú |
 | --- | --- | --- |
@@ -424,3 +439,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 - Đổi concept hình khối sang pudding/gel bóng (ảnh duyệt `concept_candy_board_v1`), vẽ bằng code; bỏ tài nguyên `block_surface`.
 - Thêm avatar và frame, 6 cơ chế từ L21, bảng mở khoá, thưởng Daily Challenge, tiêu chí thư giãn.
 - Dùng AppLovin MAX, không có banner.
+
+**2026-11-02**
+
+- Bàn cờ cố định 14×19 ô, ô 42 px theo ảnh ref, không đổi theo số khối; khối xếp thành nhiều hình ở giữa bàn, có khoảng trống. Sinh lại L21–300; L1–20 giữ layout tay, trừ 12 level trước đây kín hoặc gần kín khung. Sương mù chỉ lộ khi khối kề rời đi. Đưa MOVES lên thanh trên, bỏ lưới ô trên nền bàn.

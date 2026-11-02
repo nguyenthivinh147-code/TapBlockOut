@@ -20,7 +20,7 @@ const DEFAULT_OUT := "user://gen_out"
 ## Seed gốc của bản phát hành L21-300 (ngày chốt thiết kế). Mặc định của --seed vẫn là 0.
 const BASE_SEED := 20261101
 
-## Level dạy làm tay, mỗi cơ chế một level, id = Config.UNLOCK[cơ chế]. Chỉ MỘT cơ chế mới, bàn nhỏ, có khối thoát ngay.
+## Level dạy làm tay, mỗi cơ chế một level, id = Config.UNLOCK[cơ chế]. Chỉ MỘT cơ chế mới, hình nhỏ, có khối thoát ngay.
 ## `rows`: mỗi chuỗi một hàng (y tăng xuống dưới), '.' ô trống, '#' đá, chữ cái là khối (cùng chữ = cùng khối).
 ## `blk[chữ]`: color (yellow lên, green trái, blue phải, purple xuống) và tuỳ chọn ice, chain (chữ khối chìa),
 ## inner (màu lớp trong), fog. `pulse`: cạnh có cổng nhịp và trạng thái mở ban đầu.
@@ -108,6 +108,11 @@ static func build_teach(mech: String) -> Dictionary:
 	var rows: Array = spec["rows"]
 	var h := rows.size()
 	var w := str(rows[0]).length()
+	# Dựng ở giữa bàn cố định: ngoài bảng TEACH là ô trống nên đường thoát không đổi.
+	@warning_ignore("integer_division")
+	var ox := (Config.BOARD_W - w) / 2
+	@warning_ignore("integer_division")
+	var oy := (Config.BOARD_H - h) / 2
 	var cells := {}  # chữ -> mảng ô
 	var stones: Array = []
 	var first := {}  # chữ -> ô đầu (y rồi x) để đặt id b1.. theo vị trí như bộ sinh
@@ -120,12 +125,12 @@ static func build_teach(mech: String) -> Dictionary:
 			if ch == ".":
 				continue
 			if ch == "#":
-				stones.append([x, y])
+				stones.append([x + ox, y + oy])
 				continue
 			if not cells.has(ch):
 				cells[ch] = []
-				first[ch] = Vector2i(x, y)
-			cells[ch].append([x, y])
+				first[ch] = Vector2i(x + ox, y + oy)
+			cells[ch].append([x + ox, y + oy])
 	var letters: Array = cells.keys()
 	letters.sort_custom(func(a: String, b: String) -> bool:
 		var fa: Vector2i = first[a]
@@ -144,7 +149,7 @@ static func build_teach(mech: String) -> Dictionary:
 			"chained_by": name_of[a["chain"]] if a.has("chain") else "",
 			"inner_color": str(a.get("inner", "")), "fog": bool(a.get("fog", false))})
 	var d := {
-		"id": teach_id(mech), "w": w, "h": h, "hard": false, "min_taps": 0, "moves": 0, "seed": 0,
+		"id": teach_id(mech), "w": Config.BOARD_W, "h": Config.BOARD_H, "hard": false, "min_taps": 0, "moves": 0, "seed": 0,
 		"stones": stones, "pulse_sides": spec.get("pulse", []).duplicate(true), "blocks": blocks,
 	}
 	if not LevelData.validate(d).is_empty():

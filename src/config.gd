@@ -140,6 +140,17 @@ const _CONTENT := {
 	"ftue_steps": ["open", "first_tap", "first_win", "first_x2", "first_booster", "run_2", "run_5", "level_10"],
 }
 
+## Bàn cờ cố định theo ảnh ref `art/concepts/ref_board_size.png` (design.md mục 3): mọi level cùng lưới và cùng cỡ ô,
+## không đổi theo số khối. BOARD_CELL tính bằng px ở độ phân giải gốc 720x1280.
+const BOARD_W := 14
+const BOARD_H := 19
+const BOARD_CELL := 42
+## Hình dạng level: dưới SHAPE_MIN_BLOCKS khối thì xếp hình chữ nhật vì quá ít ô để nhận ra dạng; cao tối đa SHAPE_MAX_ASPECT
+## lần rộng; khoét SHAPE_ROUGHEN số ô rìa để hình không quá đều, như ảnh ref.
+const SHAPE_MIN_BLOCKS := 6
+const SHAPE_MAX_ASPECT := 1.9
+const SHAPE_ROUGHEN := 0.06
+
 ## Ngày sale theo Time.get_datetime_dict_from_unix_time().weekday (0 = Chủ nhật, 6 = thứ Bảy).
 const _SALE_WEEKDAYS := [6, 0]
 

@@ -206,7 +206,7 @@ mech_chain_desc,A chained block can only move after its key block has left.,Kh�
 mech_layer,Layers,Hai lớp
 mech_layer_desc,Peel off the outer layer to reveal a new color.,Bóc lớp ngoài để lộ ra màu mới bên trong.
 mech_fog,Fog,Sương mù
-mech_fog_desc,Colors stay hidden until a neighboring cell is empty.,Màu sẽ ẩn cho tới khi ô bên cạnh trống.
+mech_fog_desc,Colors stay hidden until a neighboring block leaves.,Màu sẽ ẩn cho tới khi khối bên cạnh rời đi.
 mech_pulse,Pulse gate,Cổng nhịp
 mech_pulse_desc,Gates open and close after every tap.,Cổng đóng mở luân phiên sau mỗi lần chạm.
 challenge_title,Daily Challenge,Thử thách ngày

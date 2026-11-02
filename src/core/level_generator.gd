@@ -1,18 +1,21 @@
 extends RefCounted
 ## Bộ sinh level (design.md mục 3-4, kế hoạch Task 9.1). Thuần: chỉ dùng RandomNumberGenerator có seed,
-## cùng (id, seed) cho cùng level. Cách làm: lát bàn thành polyomino (tự do hoặc đối xứng), rồi mô phỏng
-## ván chơi tiến: mỗi bước chọn một khối còn có đường thoát và gán luôn màu (hướng) của nó theo đường đó,
-## nên level luôn giải được. Sau đó rải cơ chế theo `Config.UNLOCK`, cuối cùng qua validate và Solver.
+## cùng (id, seed) cho cùng level. Cách làm: chọn một hình (`Silhouette`) trong khung cục bộ, lát hình đó thành
+## polyomino (tự do hoặc đối xứng), rồi mô phỏng ván chơi tiến: mỗi bước chọn một khối còn có đường thoát và gán
+## luôn màu (hướng) của nó theo đường đó, nên level luôn giải được. Sau đó rải cơ chế theo `Config.UNLOCK`, dịch
+## hình vào giữa bàn cố định (ngoài hình là ô trống nên đường thoát không đổi), cuối cùng qua validate và Solver.
 ## Trường `seed` trong kết quả là seed thật đã dùng (sau khi sinh lại), generate(id, level.seed) cho đúng level đó.
 
 const LevelData := preload("res://src/core/level_data.gd")
 const Solver := preload("res://src/core/solver.gd")
 const Config := preload("res://src/config.gd")
 const BoardState := preload("res://src/core/board_state.gd")
+const Silhouette := preload("res://src/core/silhouette.gd")
 
 const MAX_BLOCKS := 30
-const MAX_W := 8
-const MAX_H := 11
+## Khung lớn nhất của hình: chừa một ô mỗi phía trên bàn cố định.
+const MAX_W := Config.BOARD_W - 2
+const MAX_H := Config.BOARD_H - 2
 const MAX_TRIES := 60
 ## Bàn có cổng nhịp: solver phải tìm chính xác nên giữ ít khối.
 const GATE_MAX_BLOCKS := 20
@@ -107,25 +110,23 @@ static func _attempt(id: int, s: int, attempt: int) -> Dictionary:
 		n_stones = mini(6, 1 + (id - unlock) / 20 + rng.randi_range(0, 1))
 		if mirror != "":
 			n_stones = n_stones + (n_stones % 2)
-	var size := _pick_size(n, n_stones, mirror, rng)
-	if size == Vector2i.ZERO:
+	var shape := _pick_shape(n, n_stones, mirror, rng)
+	if shape.is_empty():
 		return {}
-	var w := size.x
-	var h := size.y
-	if mirror == "h" and w % 2 != 0:
-		mirror = ""
-	elif mirror == "v" and h % 2 != 0:
-		mirror = ""
-	var stones := _place_stones(w, h, n_stones, mirror, rng)
-	var groups := _tile(w, h, stones, n, mirror, rng)
+	var w: int = shape["w"]
+	var h: int = shape["h"]
+	var area := _roughen(shape["cells"], w, h, mirror, rng)
+	var stones := _place_stones(area, w, h, n_stones, mirror, rng)
+	var groups := _tile(area, w, h, stones, n, mirror, rng)
 	if groups.is_empty():
 		return {}
 	var allowed := _allowed_colors(id)
 	var asg := _assign(w, h, stones, groups, allowed, hard, rng)
 	if asg.is_empty():
 		return {}
-	var mech := _mechanics(id, feats, n, groups, asg, allowed, rng)
-	var level := _build(id, s, hard, w, h, stones, groups, asg, mech)
+	var mech := _mechanics(id, feats, n, asg, rng)
+	var shift := _centering(groups, stones)
+	var level := _build(id, s, hard, _shifted(stones, shift), _shifted_groups(groups, shift), asg, mech)
 	if not mech["pulse"].is_empty() and not _fix_gates(level, rng):
 		return {}
 	var errs := LevelData.validate(level)
@@ -199,28 +200,71 @@ static func _allowed_colors(id: int) -> Array[int]:
 	return out
 
 
-## Chọn (w, h): h >= w, w <= 8, h <= 11, số ô trống khoảng 2,4 đến 3,4 lần số khối.
-static func _pick_size(n: int, n_stones: int, mirror: String, rng: RandomNumberGenerator) -> Vector2i:
+## Chọn hình và khung: h >= w, số ô trống khoảng 2,4 đến 3,4 lần số khối. Trả {kind, w, h, cells}, {} nếu không có.
+static func _pick_shape(n: int, n_stones: int, mirror: String, rng: RandomNumberGenerator) -> Dictionary:
+	var kinds: Array = Silhouette.KINDS
+	if n < Config.SHAPE_MIN_BLOCKS:
+		kinds = [Silhouette.RECT]
+	elif mirror == "v":
+		kinds = Silhouette.V_SYMMETRIC
+	var kind: String = kinds[rng.randi_range(0, kinds.size() - 1)]
 	var lo := 2.4
 	var hi := 3.4
 	for widen in 4:
 		var cand: Array[Vector2i] = []
 		for w in range(2, MAX_W + 1):
 			for h in range(w, MAX_H + 1):
-				if float(h) > 1.6 * float(w) + 0.5:
+				if float(h) > Config.SHAPE_MAX_ASPECT * float(w) + 0.5:
 					continue
 				if mirror == "h" and w % 2 != 0:
 					continue
 				if mirror == "v" and h % 2 != 0:
 					continue
-				var free := w * h - n_stones
+				var free := Silhouette.cells(kind, w, h).size() - n_stones
 				if free >= int(ceil(n * lo)) and free <= int(n * hi) and free >= n:
 					cand.append(Vector2i(w, h))
 		if not cand.is_empty():
-			return cand[rng.randi_range(0, cand.size() - 1)]
+			var size: Vector2i = cand[rng.randi_range(0, cand.size() - 1)]
+			return {"kind": kind, "w": size.x, "h": size.y, "cells": Silhouette.cells(kind, size.x, size.y)}
 		lo -= 0.3
 		hi += 0.4
-	return Vector2i.ZERO
+	return {}
+
+
+## Khoét bớt vài ô rìa của hình (cả ô đối xứng nếu có), giữ hình liền một mảng.
+static func _roughen(cells: Array[Vector2i], w: int, h: int, mirror: String, rng: RandomNumberGenerator) -> Array[Vector2i]:
+	var keep := {}
+	for c in cells:
+		keep[c] = true
+	var want := roundi(cells.size() * Config.SHAPE_ROUGHEN)
+	var edge: Array[Vector2i] = []
+	for c in cells:
+		for dv in NEIGHBORS:
+			if not keep.has(c + dv):
+				edge.append(c)
+				break
+	_shuffle(edge, rng)
+	var removed := 0
+	for c in edge:
+		if removed >= want:
+			break
+		var pair: Array[Vector2i] = [c]
+		if mirror != "":
+			var m := _mirror_cell(c, w, h, mirror)
+			if m != c:
+				pair.append(m)
+		for p in pair:
+			keep.erase(p)
+		if LevelData.connected(keep):
+			removed += pair.size()
+		else:
+			for p in pair:
+				keep[p] = true
+	var out: Array[Vector2i] = []
+	for c in cells:
+		if keep.has(c):
+			out.append(c)
+	return out
 
 
 static func _mirror_cell(c: Vector2i, w: int, h: int, mirror: String) -> Vector2i:
@@ -240,13 +284,11 @@ static func _in_half(c: Vector2i, w: int, h: int, mirror: String) -> bool:
 	return true
 
 
-static func _place_stones(w: int, h: int, count: int, mirror: String, rng: RandomNumberGenerator) -> Array[Vector2i]:
+static func _place_stones(area: Array[Vector2i], w: int, h: int, count: int, mirror: String, rng: RandomNumberGenerator) -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
-	for y in h:
-		for x in w:
-			var c := Vector2i(x, y)
-			if _in_half(c, w, h, mirror):
-				cells.append(c)
+	for c in area:
+		if _in_half(c, w, h, mirror):
+			cells.append(c)
 	_shuffle(cells, rng)
 	var out: Array[Vector2i] = []
 	@warning_ignore("integer_division")
@@ -266,19 +308,17 @@ static func _shuffle(a: Array, rng: RandomNumberGenerator) -> void:
 		a[j] = t
 
 
-## Lát các ô trống thành đúng `n` polyomino bằng cách gộp dần các ô đơn, ưu tiên gộp mảnh nhỏ.
+## Lát các ô của hình (trừ đá) thành đúng `n` polyomino bằng cách gộp dần các ô đơn, ưu tiên gộp mảnh nhỏ.
 ## Trả mảng các `Array[Vector2i]`, hoặc [] nếu kẹt.
-static func _tile(w: int, h: int, stones: Array[Vector2i], n: int, mirror: String,
+static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i], n: int, mirror: String,
 		rng: RandomNumberGenerator) -> Array:
 	var stone_set := {}
 	for s in stones:
 		stone_set[s] = true
 	var cells: Array[Vector2i] = []
-	for y in h:
-		for x in w:
-			var c := Vector2i(x, y)
-			if not stone_set.has(c) and _in_half(c, w, h, mirror):
-				cells.append(c)
+	for c in area:
+		if not stone_set.has(c) and _in_half(c, w, h, mirror):
+			cells.append(c)
 	@warning_ignore("integer_division")
 	var target := n / 2 if mirror != "" else n
 	var owner := {}
@@ -375,7 +415,7 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 						p.append(gi)
 						if grid[gi] == -2:
 							dead[i * 4 + col] = 1
-						else:
+						elif grid[gi] >= 0:
 							blockers[i * 4 + col] += 1
 					q += d
 			path.append(p)
@@ -430,8 +470,7 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 
 
 ## Rải cơ chế lên các khối. Trả {ice, chain (idx -> idx khoá), layer (idx -> màu trong), fog, pulse}.
-static func _mechanics(id: int, feats: Dictionary, n: int, _groups: Array, asg: Dictionary,
-		_allowed: Array[int], rng: RandomNumberGenerator) -> Dictionary:
+static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
 	var order: Array = asg["order"]
 	var pos := {}
 	for k in order.size():
@@ -516,7 +555,35 @@ static func _mechanics(id: int, feats: Dictionary, n: int, _groups: Array, asg: 
 	return {"ice": ice, "chain": chain, "layer": layer, "fog": fog, "pulse": pulse}
 
 
-static func _build(id: int, s: int, hard: bool, w: int, h: int, stones: Array[Vector2i], groups: Array,
+## Độ dời đưa hình (khối và đá) vào giữa bàn cố định.
+static func _centering(groups: Array, stones: Array[Vector2i]) -> Vector2i:
+	var mn := Vector2i(1 << 20, 1 << 20)
+	var mx := Vector2i(-(1 << 20), -(1 << 20))
+	var all: Array = stones.duplicate()
+	for g in groups:
+		all.append_array(g)
+	for c: Vector2i in all:
+		mn = Vector2i(mini(mn.x, c.x), mini(mn.y, c.y))
+		mx = Vector2i(maxi(mx.x, c.x), maxi(mx.y, c.y))
+	@warning_ignore("integer_division")
+	return Vector2i((Config.BOARD_W - (mx.x - mn.x + 1)) / 2 - mn.x, (Config.BOARD_H - (mx.y - mn.y + 1)) / 2 - mn.y)
+
+
+static func _shifted(cells: Array, shift: Vector2i) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	for c: Vector2i in cells:
+		out.append(c + shift)
+	return out
+
+
+static func _shifted_groups(groups: Array, shift: Vector2i) -> Array:
+	var out: Array = []
+	for g in groups:
+		out.append(_shifted(g, shift))
+	return out
+
+
+static func _build(id: int, s: int, hard: bool, stones: Array[Vector2i], groups: Array,
 		asg: Dictionary, mech: Dictionary) -> Dictionary:
 	var n := groups.size()
 	# Đặt id theo vị trí (hàng rồi cột của ô đầu) để id không lộ thứ tự giải.
@@ -559,7 +626,7 @@ static func _build(id: int, s: int, hard: bool, w: int, h: int, stones: Array[Ve
 	for c in sorted_stones:
 		st.append([c.x, c.y])
 	return {
-		"id": id, "w": w, "h": h, "hard": hard,
+		"id": id, "w": Config.BOARD_W, "h": Config.BOARD_H, "hard": hard,
 		"min_taps": 0, "moves": 0, "seed": s,
 		"stones": st, "pulse_sides": mech["pulse"], "blocks": blocks,
 	}

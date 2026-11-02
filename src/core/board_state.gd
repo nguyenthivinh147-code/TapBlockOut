@@ -17,6 +17,7 @@ var _blocks: Dictionary = {}  # id -> {color, cells, ice, chained_by, inner_colo
 var _order: Array[String] = []
 var _stones: Array[Vector2i] = []
 var _occ: Dictionary = {}  # Vector2i -> id khối, hoặc STONE
+var _vacated: Dictionary = {}  # ô từng có khối, nay đã trống
 var _gates: Dictionary = {}  # cạnh -> đang mở?
 
 
@@ -65,6 +66,7 @@ func clone() -> BoardState:
 	c._order = _order.duplicate()
 	c._stones = _stones
 	c._occ = _occ.duplicate()
+	c._vacated = _vacated.duplicate()
 	c._gates = _gates.duplicate()
 	return c
 
@@ -209,6 +211,7 @@ func state_key() -> String:
 func _remove(id: String) -> void:
 	for c in _blocks[id]["cells"]:
 		_occ.erase(c)
+		_vacated[c] = true
 	_blocks.erase(id)
 	_order.erase(id)
 
@@ -259,7 +262,7 @@ func _evaluate(id: String) -> Dictionary:
 	return {"kind": kind, "distance": k, "blocker": ""}
 
 
-## Cập nhật sương mù: khối hết ẩn khi có ô kề (4 hướng) trong bàn và trống. Trả id vừa lộ.
+## Cập nhật sương mù: khối hết ẩn khi một khối kề (4 hướng) đã rời đi; ô trống sẵn quanh hình không tính. Trả id vừa lộ.
 func _update_reveal() -> Array[String]:
 	var out: Array[String] = []
 	for id in _order:
@@ -270,7 +273,7 @@ func _update_reveal() -> Array[String]:
 		for c in b["cells"]:
 			for dv in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
 				var n: Vector2i = c + dv
-				if _in_bounds(n) and not _occ.has(n):
+				if _vacated.has(n):
 					hit = true
 					break
 			if hit:
