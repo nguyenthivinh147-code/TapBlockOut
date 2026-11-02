@@ -1,5 +1,5 @@
 extends Control
-## Vẽ bàn cờ: lưới, cổng liền bốn cạnh theo màu, đá, khối bo góc; nhận chạm; chạy hoạt ảnh kết quả.
+## Vẽ bàn cờ: lưới, đá, khối bo góc, khung cổng (`CandyFrame`); nhận chạm; chạy hoạt ảnh kết quả.
 ## Dùng: setup(board) rồi nối block_tapped; level gọi board.tap(id) và đưa kết quả vào apply_result().
 ## Tự co theo `size` của chính nó (hoặc setup(board, area)); đổi size thì tự xếp lại.
 
@@ -7,6 +7,7 @@ const BoardState := preload("res://src/core/board_state.gd")
 const BoardFx := preload("res://src/ui/board_fx.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const CandyFrame := preload("res://src/ui/candy_frame.gd")
 
 ## Khối chạm vào (đã là ô của khối, không phải đá hay ô trống).
 signal block_tapped(id: String)
@@ -14,7 +15,6 @@ signal block_tapped(id: String)
 signal animation_done
 
 const MAX_CELL := 150.0
-const GATE_RATIO := 0.3
 ## Bàn tham chiếu (lớn nhất trong 300 level): kích thước ô tính theo bàn này để mọi level dùng cùng một cỡ ô.
 const REF_COLS := 8
 const REF_ROWS := 11
@@ -22,7 +22,6 @@ const SLIDE_TIME := 0.30
 const GATE_TIME := 0.22
 const GHOST_NAME := "Ghost"
 const SIDE_OF_DIR := {"up": Vector2(0, -1), "left": Vector2(-1, 0), "right": Vector2(1, 0), "down": Vector2(0, 1)}
-const SIDE_COLOR := {"up": "yellow", "left": "green", "right": "blue", "down": "purple"}
 
 
 ## Bóng đổ của một khối: ở lớp riêng dưới mọi khối nên không đổ lên khối bên cạnh; bám theo khối mỗi khung, xoá theo khối.
@@ -110,8 +109,8 @@ var _gate_state: Dictionary = {}  # cạnh -> đang mở?
 var _gate_prog: Dictionary = {}  # cạnh -> 0 (đóng) .. 1 (mở), đang chạy hoạt ảnh
 var _gate_tws: Dictionary = {}  # cạnh -> Tween
 var _gate_sfx: bool = true
-var _gate_flash: float = 0.0
 var _gate_flash_tw: Tween = null
+var _frame: CandyFrame = null
 var _shadow_root: Control = null
 var _blocks_root: Control = null
 var _links: Control = null
@@ -125,6 +124,8 @@ var _shake_tw: Tween = null
 func _init() -> void:
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	_frame = CandyFrame.new()
+	add_child(_frame)
 	_shadow_root = _make_layer("Shadows")
 	_blocks_root = _make_layer("Blocks")
 	_links = _make_layer("Links")
@@ -194,6 +195,11 @@ func board_rect() -> Rect2:
 	if _board == null:
 		return Rect2()
 	return Rect2(_origin, Vector2(_board.width(), _board.height()) * _cell)
+
+
+## Trọn khung cổng quanh bàn, toạ độ cục bộ.
+func frame_rect() -> Rect2:
+	return CandyFrame.outer_rect(board_rect(), _cell)
 
 
 func cell_center(c: Vector2i) -> Vector2:
@@ -324,8 +330,9 @@ func _layout() -> void:
 		_cell = 64.0
 	else:
 		# Ô cố định theo bàn tham chiếu; chỉ co thêm khi bàn lớn hơn tham chiếu (không bao giờ phóng to để lấp đầy).
-		var ref_cell := minf(avail.x / (REF_COLS + 2.0 * GATE_RATIO), avail.y / (REF_ROWS + 2.0 * GATE_RATIO))
-		var fit_cell := minf(avail.x / (w + 2.0 * GATE_RATIO), avail.y / (h + 2.0 * GATE_RATIO))
+		var m := CandyFrame.margin()
+		var ref_cell := minf(avail.x / (REF_COLS + 2.0 * m.x), avail.y / (REF_ROWS + 2.0 * m.y))
+		var fit_cell := minf(avail.x / (w + 2.0 * m.x), avail.y / (h + 2.0 * m.y))
 		# Làm tròn xuống số nguyên để các ô trong cùng khối khớp pixel, không lộ đường nối.
 		_cell = floorf(clampf(minf(ref_cell, fit_cell), 8.0, MAX_CELL))
 	_origin = ((avail - Vector2(w, h) * _cell) * 0.5).floor()
@@ -341,6 +348,7 @@ func _layout() -> void:
 		n.position = _origin + Vector2(n.origin_cell) * _cell
 		n.pivot_offset = n.size * 0.5
 		n.queue_redraw()
+	_frame.layout(board_rect(), _cell)
 	queue_redraw()
 	_links.queue_redraw()
 
@@ -351,13 +359,12 @@ func _draw() -> void:
 	if _board == null:
 		return
 	var br := board_rect()
-	var g := _cell * GATE_RATIO
-	var outer := br.grow(g)
-	# nền bàn
+	# nền bàn: tới đường giữa các thanh khung
 	var bg := StyleBoxFlat.new()
 	bg.bg_color = Color("151A28")
-	bg.set_corner_radius_all(int(g * 0.5))
-	draw_style_box(bg, outer)
+	bg.set_corner_radius_all(int(CandyFrame.TUBE_R * _cell))
+	bg.anti_aliasing = true
+	draw_style_box(bg, CandyFrame.panel_rect(br, _cell))
 	for y in _board.height():
 		for x in _board.width():
 			var shade := 0.05 if (x + y) % 2 == 0 else 0.09
@@ -365,49 +372,12 @@ func _draw() -> void:
 	# đá
 	for s in _board.stones():
 		_draw_stone(s)
-	# khung: bốn cạnh, mỗi cạnh một màu, vát chéo ở góc
-	var o_tl := outer.position
-	var o_tr := Vector2(outer.end.x, outer.position.y)
-	var o_bl := Vector2(outer.position.x, outer.end.y)
-	var o_br := outer.end
-	var i_tl := br.position
-	var i_tr := Vector2(br.end.x, br.position.y)
-	var i_bl := Vector2(br.position.x, br.end.y)
-	var i_br := br.end
-	_draw_gate("up", PackedVector2Array([o_tl, o_tr, i_tr, i_tl]), br, g)
-	_draw_gate("left", PackedVector2Array([o_tl, i_tl, i_bl, o_bl]), br, g)
-	_draw_gate("right", PackedVector2Array([o_tr, o_br, i_br, i_tr]), br, g)
-	_draw_gate("down", PackedVector2Array([o_bl, i_bl, i_br, o_br]), br, g)
 
 
 func _draw_stone(c: Vector2i) -> void:
 	var m := _cell * 0.07
 	var r := Rect2(_origin + Vector2(c) * _cell + Vector2(m, m), Vector2(_cell - 2 * m, _cell - 2 * m))
 	BoardFx.draw_stone(self, r, _cell)
-
-
-func _draw_gate(side: String, poly: PackedVector2Array, br: Rect2, g: float) -> void:
-	var prog := gate_progress(side)
-	var col := ThemeKit.block_color(SIDE_COLOR[side]).darkened(0.55 * (1.0 - prog))
-	draw_colored_polygon(poly, col)
-	var mid_a := Vector2.ZERO
-	var mid_b := Vector2.ZERO
-	match side:
-		"up":
-			mid_a = Vector2(br.position.x, br.position.y - g * 0.5)
-			mid_b = Vector2(br.end.x, br.position.y - g * 0.5)
-		"down":
-			mid_a = Vector2(br.position.x, br.end.y + g * 0.5)
-			mid_b = Vector2(br.end.x, br.end.y + g * 0.5)
-		"left":
-			mid_a = Vector2(br.position.x - g * 0.5, br.position.y)
-			mid_b = Vector2(br.position.x - g * 0.5, br.end.y)
-		_:
-			mid_a = Vector2(br.end.x + g * 0.5, br.position.y)
-			mid_b = Vector2(br.end.x + g * 0.5, br.end.y)
-	BoardFx.draw_gate_mark(self, side, mid_a, mid_b, g, col, prog)
-	if _gate_flash > 0.0:
-		draw_colored_polygon(poly, Color(1, 1, 1, 0.55 * _gate_flash))
 
 
 func _draw_links() -> void:
@@ -477,7 +447,8 @@ func apply_result(result: Dictionary) -> void:
 			_anim_bounce(node, dir, float(dist), blocker, "")
 		"gate_closed":
 			Sfx.play("gate")
-			_anim_bounce(node, dir, float(dist), "", LevelData.side_of(str(node.view.get("color", ""))))
+			var gate_side := LevelData.side_of(str(node.view.get("color", "")))
+			_anim_bounce(node, dir, float(dist) + CandyFrame.gap(gate_side), "", gate_side)
 		"chained":
 			Sfx.play("chain")
 			_anim_chained(node, str(result.get("blocker", "")))
@@ -521,7 +492,7 @@ func _finish_exit(node: BlockNode) -> void:
 
 
 func _burst_at_edge(center: Vector2, dir: Vector2, col: Color) -> void:
-	var r := board_rect()
+	var r := CandyFrame.inner_rect(board_rect(), _cell)
 	var p := center
 	if dir.x > 0:
 		p.x = r.end.x
@@ -697,8 +668,9 @@ func _reveal_pop(n: BlockNode) -> void:
 
 
 func _set_gate_progress_now() -> void:
-	for side in _gate_state:
-		_gate_prog[side] = 1.0 if bool(_gate_state[side]) else 0.0
+	for side in CandyFrame.SIDES:
+		_gate_prog[side] = 1.0 if bool(_gate_state.get(side, true)) else 0.0
+		_frame.set_gate(side, _gate_prog[side])
 
 
 func _update_gates(animate: bool) -> void:
@@ -715,7 +687,6 @@ func _update_gates(animate: bool) -> void:
 		_flash_gates()
 		if _gate_sfx and is_inside_tree():
 			get_tree().create_timer(0.1).timeout.connect(Sfx.play.bind("gate"))
-	queue_redraw()
 
 
 func _tween_gate(side: String, open: bool, animate: bool) -> void:
@@ -726,6 +697,7 @@ func _tween_gate(side: String, open: bool, animate: bool) -> void:
 	var to := 1.0 if open else 0.0
 	if not animate:
 		_gate_prog[side] = to
+		_frame.set_gate(side, to)
 		return
 	_begin()
 	var tw := create_tween()
@@ -736,20 +708,15 @@ func _tween_gate(side: String, open: bool, animate: bool) -> void:
 
 func _set_gate_prog(v: float, side: String) -> void:
 	_gate_prog[side] = v
-	queue_redraw()
+	_frame.set_gate(side, v)
 
 
 func _flash_gates() -> void:
 	if _gate_flash_tw != null:
 		_gate_flash_tw.kill()
-	_gate_flash = 1.0
+	_frame.set_flash(1.0)
 	_gate_flash_tw = create_tween()
-	_gate_flash_tw.tween_method(_set_gate_flash, 1.0, 0.0, 0.25)
-
-
-func _set_gate_flash(v: float) -> void:
-	_gate_flash = v
-	queue_redraw()
+	_gate_flash_tw.tween_method(_frame.set_flash, 1.0, 0.0, 0.25)
 
 
 ## Làm khối nhấp nháy (Gợi ý) cho tới lần chạm kế tiếp hoặc clear_highlight().

@@ -577,8 +577,7 @@ func _check_fit(t: T, lv: Control, tag: String) -> void:
 	t.ok(bv.size.is_equal_approx(hs), "%s: BoardView = holder (%s vs %s)" % [tag, str(bv.size), str(hs)])
 	t.ok(bv.position.length() <= 1.0, "%s: BoardView ở góc holder (%s)" % [tag, str(bv.position)])
 	var br: Rect2 = bv.board_rect()
-	var g: float = bv.cell_size() * 0.3
-	t.ok(Rect2(Vector2.ZERO, hs).grow(1.5).encloses(br.grow(g)), "%s: bàn cùng cổng nằm trọn holder (%s trong %s)" % [tag, str(br), str(hs)])
+	t.ok(Rect2(Vector2.ZERO, hs).grow(1.5).encloses(bv.frame_rect()), "%s: bàn cùng cổng nằm trọn holder (%s trong %s)" % [tag, str(br), str(hs)])
 	var off := (br.get_center() - hs * 0.5).abs()
 	t.ok(off.x <= 2.0 and off.y <= 2.0, "%s: căn giữa (lệch %s)" % [tag, str(off)])
 	t.near(br.size.x / float(lv.board.width()), br.size.y / float(lv.board.height()), 0.01, "%s: ô vuông" % tag)

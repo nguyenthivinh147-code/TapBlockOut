@@ -365,7 +365,20 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 - Texture khoảng cách tới mép (SDF) dựng một lần cho mỗi hình khối rồi cache (không phụ thuộc màu hay cỡ ô, khoảng 4–35 ms mỗi hình trên máy dev); shader dùng SDF để tính mép gối, vạch đáy và bóng, nên khối chữ L, T, ... đều ra đúng cấu trúc, viền góc liền một nét. Mỗi điểm ảnh đọc texture tối đa 7 lần.
 - Cỡ ô là số nguyên (làm tròn xuống) để các ô của một khối khớp pixel.
 - Ảnh duyệt không có mũi tên trên khối, nhưng mũi tên mù màu vẫn bật mặc định (mục 2), hạ nhẹ xuống dưới tâm ô để không chạm vệt bóng. Băng tô trong hình khối bằng shader nên không tràn ra góc bo, nháy sáng Gợi ý cũng vậy; xích, sương mù vẽ đè lên lớp kẹo, giữ nguyên cách đọc. Khối hai lớp: viên trong dùng đúng shader và vệt bóng đó ở cỡ nhỏ hơn.
-- Chưa áp dụng cho nền, khung cổng, đá, icon (giữ nét hiện tại, chỉ đổi màu cổng theo khối). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá kẹo gel bóng (xem quy tắc prompt bên dưới) để cùng phong cách.
+- Chưa áp dụng cho nền, đá, icon (giữ nét hiện tại). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá kẹo gel bóng (xem quy tắc prompt bên dưới) để cùng phong cách.
+
+**Khung cổng (2026-11-02).** Khung theo cùng ảnh duyệt, vẽ bằng shader (`src/ui/candy_frame.gd`, `frame_bar.gdshader`, `frame_corner.gdshader`), số đo theo ô:
+
+| Phần | Hình | Số đo |
+| --- | --- | --- |
+| Thanh cổng | Bốn capsule rời nhau, mỗi cạnh một màu cổng, tô theo mặt cắt đo trung vị dọc thanh trong ảnh (`BAR_RAMPS`); thanh ngang có vạch sáng ở trên và dải đậm ở dưới, thanh dọc đậm ở hai mép; đầu trên thanh dọc có vòng sáng, đầu dưới đậm dần | Dày 0,645–0,70; từ mép bàn tới đường giữa thanh: trên 0,87, dưới 0,89, trái 1,11, phải 1,09 |
+| Ống góc | Một phần tư vành tròn hồng đỏ nối hai thanh, nằm dưới đầu thanh; vệt trắng chạy theo cung, vị trí đổi theo từng góc vì ánh sáng từ trên hơi lệch trái | Bán kính tới đường giữa 0,58; rộng 0,52 |
+| Mũi tên | Tam giác trắng bo góc, chỉ ra ngoài, viền mờ màu đậm của thanh; ở thanh dọc đặt cao hơn tâm | Ngang 0,525 (thanh dọc 0,59), dọc 0,40–0,415; thanh dọc lệch lên 0,25 |
+| Bóng đổ | Mềm, lệch xuống dưới, ám tím đậm | Lệch 0,11; mờ 0,14; đậm 32% |
+
+- Khung chiếm thêm 1,46 ô mỗi bên và 1,23 ô trên dưới (trước là 0,3 ô), nên cỡ ô giảm khoảng 14% ở cùng vùng chứa: 64 → 55 px với bàn 720×1280. Cỡ ô vẫn tính theo bàn tham chiếu 8×11 nên mọi level cùng một cỡ.
+- Cổng nhịp đóng: thanh tối đi 55%, mũi tên mờ, hiện các vạch chắn ngang thanh; khi đổi trạng thái thì nháy sáng trong hình thanh. Khối bị cổng đóng chặn trượt qua khoảng trống tới mặt trong của thanh rồi bật về; hạt lúc khối thoát bắn ở mặt trong của thanh.
+- Nền bàn giữ màu cũ, chỉ đổi hình theo khung (tới đường giữa thanh, bo theo ống góc).
 
 **Vẫn vẽ bằng code (và shader):** hình khối, lưới, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
 
@@ -430,3 +443,4 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 **2026-11-02**
 
 - Đổi concept hình khối sang kẹo sọc (ảnh duyệt `concept_candy_board_v5_stripe`), đo số từ ảnh; bốn màu khối và cổng đổi theo ảnh. Giữ mũi tên mù màu dù ảnh không có.
+- Đổi khung cổng từ bốn dải vát chéo sát bàn sang bốn thanh capsule và ống góc theo cùng ảnh; chấp nhận cỡ ô giảm khoảng 14% để giữ đúng tỉ lệ khung.

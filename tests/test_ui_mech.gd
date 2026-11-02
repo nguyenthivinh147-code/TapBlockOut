@@ -295,7 +295,7 @@ func _mech_in_holder(t: T, w: int, h: int, holder_size: Vector2) -> void:
 		var br: Rect2 = v.board_rect()
 		t.ok(hs.x > 100.0 and hs.y > 100.0, "%s: holder có kích thước" % tag)
 		t.ok(v.size.is_equal_approx(hs), "%s: BoardView = holder" % tag)
-		t.ok(Rect2(Vector2.ZERO, hs).grow(1.5).encloses(br.grow(v.cell_size() * 0.3)), "%s: trọn holder (%s)" % [tag, str(br)])
+		t.ok(Rect2(Vector2.ZERO, hs).grow(1.5).encloses(v.frame_rect()), "%s: trọn holder (%s)" % [tag, str(br)])
 		var off := (br.get_center() - hs * 0.5).abs()
 		t.ok(off.x <= 2.0 and off.y <= 2.0, "%s: căn giữa (lệch %s)" % [tag, str(off)])
 		t.eq(v.block_at(v.cell_center(Vector2i(2, 2))), "b2", "%s: chạm ô khối xích" % tag)
@@ -306,8 +306,7 @@ func _mech_in_holder(t: T, w: int, h: int, holder_size: Vector2) -> void:
 	v.apply_result(board.tap("b1"))
 	await _wait_done(v)
 	var hs2 := holder.size
-	var br2: Rect2 = v.board_rect()
-	t.ok(Rect2(Vector2.ZERO, hs2).grow(1.5).encloses(br2.grow(v.cell_size() * 0.3)), "%dx%d: sau chạm vẫn trọn holder" % [w, h])
+	t.ok(Rect2(Vector2.ZERO, hs2).grow(1.5).encloses(v.frame_rect()), "%dx%d: sau chạm vẫn trọn holder" % [w, h])
 	t.eq(v.size, hs2, "%dx%d: size không đổi sau hoạt ảnh" % [w, h])
 	host.free()
 

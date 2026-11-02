@@ -317,25 +317,6 @@ static func draw_stone(ci: CanvasItem, r: Rect2, cell: float) -> void:
 	ci.draw_line(p + sz * Vector2(0.2, 0.7), p + sz * Vector2(0.42, 0.55), Color(0, 0, 0, 0.3), maxf(1.5, cell * 0.03))
 
 
-## Một cạnh cổng nhịp: `open` 0 = đóng (thanh chắn), 1 = mở (vạch sáng). `mid_a`/`mid_b` là hai đầu đường giữa dải.
-static func draw_gate_mark(ci: CanvasItem, side: String, mid_a: Vector2, mid_b: Vector2, g: float, col: Color, open: float) -> void:
-	var line_w := maxf(2.0, g * 0.18)
-	if open > 0.01:
-		ci.draw_line(mid_a, mid_b, Color(col.lightened(0.35), open), line_w)
-	var closed := 1.0 - open
-	if closed <= 0.01:
-		return
-	var horizontal := side == "up" or side == "down"
-	var length := (mid_b - mid_a).length()
-	var count := maxi(3, int(length / (g * 0.9)))
-	var half := g * 0.4 * closed
-	for i in count:
-		var t := (float(i) + 0.5) / float(count)
-		var p := mid_a.lerp(mid_b, t)
-		var d := Vector2(0, half) if horizontal else Vector2(half, 0)
-		ci.draw_line(p - d, p + d, Color(1, 1, 1, 0.6 * closed), maxf(2.0, g * 0.16))
-
-
 # --- hiệu ứng ---
 
 ## Hạt màu bắn ra theo `dir` từ điểm `pos` (toạ độ của `parent`). Tự xoá khi xong.
