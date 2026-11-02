@@ -207,7 +207,7 @@ func test_stone_and_closed_gate_hit_only_the_candy(t: T) -> void:
 		furthest = maxf(furthest, a2.position.distance_to(home2))
 		var hit_t: Variant = (bar.material as ShaderMaterial).get_shader_parameter("hit_t")
 		hit = hit or (hit_t != null and float(hit_t) < 1.0)
-	t.ok(furthest > 3.0 * v2.cell_size(), "khối đi tới tận thanh chứ không dừng ở mép bàn (%f)" % furthest)
+	t.ok(furthest > 2.9 * v2.cell_size(), "khối đi hết đường tới thanh, thanh gần sát mép bàn (%f)" % furthest)
 	t.ok(hit, "thanh cổng phản ứng khi bị va")
 	v2.queue_free()
 

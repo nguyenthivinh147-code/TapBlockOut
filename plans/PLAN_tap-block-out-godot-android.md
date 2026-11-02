@@ -75,7 +75,7 @@ func test_ten_ca(t: T) -> void:
 project.godot  export_presets.cfg  CLAUDE.md  design.md  icon.svg
 .gitignore  .gitattributes  .editorconfig
 src/config.gd
-src/core/      level_data.gd  board_state.gd  solver.gd  level_generator.gd
+src/core/      level_data.gd  board_state.gd  solver.gd  level_generator.gd  silhouette.gd
 src/meta/      save_schema.gd  save_store.gd  clock.gd  wallet.gd  lives.gd  unlocks.gd
                rescue_flow.gd  daily_calendar.gd  cosmetics.gd  shop_videos.gd
                ad_pacing.gd  offers.gd  notif_plan.gd
@@ -100,7 +100,7 @@ tests/  tools/  reference/horus/  plans/
 
 ```json
 {
-  "id": 21, "w": 7, "h": 9, "hard": false,
+  "id": 21, "w": 14, "h": 19, "hard": false,
   "min_taps": 24, "moves": 26, "seed": 0,
   "stones": [[3, 4]],
   "pulse_sides": [{"side": "up", "open": false}],
@@ -423,7 +423,7 @@ Các module chỉ phụ thuộc `src/config.gd` và `save_schema.gd`. Test tự 
 
 - [x] **Task 3.3: 20 level demo**
   - **Allowed Files:** `data/levels/level_0001.json` … `level_0020.json`, `tools/validate_levels.gd`, `tests/test_levels_demo.gd`.
-  - **Specs:** Bảng trong `design.md` mục 4: đúng màu, số khối, HARD ở L8, 12, 16, 20, polyomino thanh, L, T, S, U, tối đa 8×11, layout tự thiết kế (đối xứng, vòng lồng nhau, hình vòm), không chép game gốc. Không dùng cơ chế mới. `moves` và `min_taps` do solver tính, không viết tay. `tools/validate_levels.gd` (chạy bằng `-s`) kiểm `validate`, solver, có khối thoát ngay, `moves` đúng công thức. Task này phụ thuộc đọc `src/core/*`, không sửa.
+  - **Specs:** Bảng trong `design.md` mục 4: đúng màu, số khối, HARD ở L8, 12, 16, 20, polyomino thanh, L, T, S, U, bàn cố định 14×19 (`Config.BOARD_W`, `BOARD_H`), hình ở giữa bàn (đối xứng, vòng lồng nhau, hình vòm), không chép game gốc. Không dùng cơ chế mới. `moves` và `min_taps` do solver tính, không viết tay. `tools/validate_levels.gd` (chạy bằng `-s`) kiểm `validate`, solver, có khối thoát ngay, `moves` đúng công thức. Task này phụ thuộc đọc `src/core/*`, không sửa.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tools/validate_levels.gd && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_levels_demo` (`tools/` có `.gdignore` chỉ chặn import; đã kiểm trên 4.7.2 là script trong đó vẫn chạy được bằng `-s`).
 
 ### Phase 4: Điều phối
@@ -444,7 +444,7 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 5.1: BoardView**
   - **Allowed Files:** `scenes/board_view.tscn`, `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `src/ui/pudding.gd`, `src/ui/pudding.gdshader`, `tests/test_ui_board.gd`.
-  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ lưới, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 1,46 ô mỗi bên và 1,23 ô trên dưới, `frame_rect()` trả về trọn khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; cỡ ô là số nguyên), mũi tên hỗ trợ mù màu theo cài đặt. Khối thoát lao nhanh dần tới thanh cùng màu (tối đa 0,30 giây) rồi vỡ thành mảnh kẹo (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Tự co vừa vùng cho trước. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)`. Cơ chế mới để Task 9.2.
+  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 ô mỗi bên và 0,61 ô trên dưới, `frame_rect()` trả về trọn khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; cỡ ô là số nguyên, cố định `Config.BOARD_CELL`, chỉ co khi vùng chứa nhỏ hơn bàn chuẩn), mũi tên hỗ trợ mù màu theo cài đặt. Khối thoát lao nhanh dần tới thanh cùng màu (tối đa 0,30 giây) rồi vỡ thành mảnh kẹo (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)`. Cơ chế mới để Task 9.2.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_board`
 
 - [x] **Task 5.2: Home và Profile**
@@ -517,8 +517,8 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
 ### Phase 9: Nội dung phát hành
 
 - [x] **Task 9.1: Bộ sinh level**
-  - **Allowed Files:** `src/core/level_generator.gd`, `tests/test_generator.gd`, `tools/gen_levels.gd`.
-  - **Specs:** `generate(id: int, seed: int) -> Dictionary` thuần, theo `RandomNumberGenerator` có seed: đặt khối theo vòng lồng hoặc đối xứng, bật cơ chế theo `Config.UNLOCK`, HARD mỗi 4 level, số khối tăng tới trần 30 và bảng tối đa 8×11, qua `validate` và `solver`, sinh lại với seed kế tiếp nếu không đạt. Dùng cho Daily Challenge; level sau L300 không sinh mà lặp lại nội dung từ `CONTENT.loop_start_level` (`src/core/level_loop.gd`, `Game.content_level`). Cùng `id` và `seed` phải ra cùng level.
+  - **Allowed Files:** `src/core/level_generator.gd`, `src/core/silhouette.gd`, `tests/test_generator.gd`, `tests/test_silhouette.gd`, `tools/gen_levels.gd`.
+  - **Specs:** `generate(id: int, seed: int) -> Dictionary` thuần, theo `RandomNumberGenerator` có seed: chọn hình trong `src/core/silhouette.gd`, lát hình thành khối (tự do hoặc đối xứng), dịch vào giữa bàn cố định 14×19, bật cơ chế theo `Config.UNLOCK`, HARD mỗi 4 level, số khối tăng tới trần 30, qua `validate` và `solver`, sinh lại với seed kế tiếp nếu không đạt. Dùng cho Daily Challenge; level sau L300 không sinh mà lặp lại nội dung từ `CONTENT.loop_start_level` (`src/core/level_loop.gd`, `Game.content_level`). Cùng `id` và `seed` phải ra cùng level.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_generator` (500 level hợp lệ, xác định, mỗi level dưới 200 ms trên máy dev).
 
 - [x] **Task 9.2: Hiển thị cơ chế**
@@ -528,7 +528,7 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
 
 - [x] **Task 9.3: Sinh L21–300 và level dạy**
   - **Allowed Files:** `data/levels/level_0021.json` … `level_0300.json`, `data/levels/index.json`, `tests/test_levels_all.gd`, `tools/gen_levels.gd`.
-  - **Specs:** Chạy `tools/gen_levels.gd`. Các level 21, 31, 46, 61, 81, 101 làm tay, chỉ một cơ chế mới, dễ. Không thay đổi L1–20. Ghi `index.json` nếu cần tăng tốc tải.
+  - **Specs:** Chạy `tools/gen_levels.gd`. Các level 21, 31, 46, 61, 81, 101 làm tay, chỉ một cơ chế mới, dễ. L1–20 giữ layout tay, trừ các level kín khung (`design.md` mục 4). Ghi `index.json` nếu cần tăng tốc tải.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_levels_all` (300 level qua validator và solver).
 
 - [x] **Task 9.4: Daily Challenge, tuỳ chọn sau L300, cơ chế trong game**

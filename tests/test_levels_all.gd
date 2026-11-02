@@ -1,5 +1,5 @@
 extends RefCounted
-## 300 level đóng gói sẵn (Task 9.3): L1-20 giữ nguyên, L21-300 do tools/gen_levels.gd sinh, 6 level dạy làm tay.
+## 300 level đóng gói sẵn (Task 9.3): L1-20 làm sẵn, L21-300 do tools/gen_levels.gd sinh, 6 level dạy làm tay.
 const T := preload("res://tests/t.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
@@ -44,6 +44,42 @@ func _mechs(d: Dictionary) -> Dictionary:
 		if bool(b["fog"]):
 			m["fog"] = int(m.get("fog", 0)) + 1
 	return m
+
+
+## Khung bao các ô có khối hoặc đá.
+func _footprint(d: Dictionary) -> Rect2i:
+	var r := Rect2i()
+	var first := true
+	var all: Array = d["stones"].duplicate()
+	for b in d["blocks"]:
+		all.append_array(b["cells"])
+	for raw in all:
+		var c := LevelData.cell_of(raw)
+		r = Rect2i(c, Vector2i.ONE) if first else r.expand(c).expand(c + Vector2i.ONE)
+		first = false
+	return r
+
+
+## Khối xếp thành hình, không kín khung bao của hình đó; hình nằm giữa bàn, có khoảng trống quanh.
+func test_levels_form_shapes_with_gaps(t: T) -> void:
+	var shapes := {}
+	var gappy := 0
+	for id in range(1, TOTAL + 1):
+		var d := _level(id)
+		if d.is_empty():
+			continue
+		var box := _footprint(d)
+		var cells: Array = d["stones"].duplicate()
+		for b in d["blocks"]:
+			cells.append_array(b["cells"])
+		t.ok(cells.size() < Config.BOARD_W * Config.BOARD_H, "L%d còn khoảng trống trên bàn" % id)
+		t.ok(absi(box.position.x - (Config.BOARD_W - box.end.x)) <= 1, "L%d giữa bàn theo chiều ngang" % id)
+		t.ok(absi(box.position.y - (Config.BOARD_H - box.end.y)) <= 1, "L%d giữa bàn theo chiều dọc" % id)
+		if cells.size() < box.size.x * box.size.y:
+			gappy += 1
+		shapes[str(box.size) + ":" + str(cells.size())] = true
+	t.ok(gappy >= TOTAL * 0.95, "hầu hết level có khoảng trống trong hình (%d/%d)" % [gappy, TOTAL])
+	t.ok(shapes.size() >= 40, "nhiều hình dạng khác nhau (%d)" % shapes.size())
 
 
 func _early_range(id: int) -> Array:
@@ -104,7 +140,8 @@ func test_every_level_solvable(t: T) -> void:
 		t.eq(int(d["moves"]), int(r["min_taps"]) + Solver.slack_for(d), "L%d moves = compute_moves" % id)
 		t.ok(Solver.immediate_exit_exists(d), "L%d có khối thoát ngay" % id)
 		t.ok(not d["blocks"].is_empty(), "L%d có khối" % id)
-		t.ok(int(d["w"]) <= 8 and int(d["h"]) <= 11, "L%d bàn <= 8x11" % id)
+		t.eq(int(d["w"]), Config.BOARD_W, "L%d bàn rộng cố định" % id)
+		t.eq(int(d["h"]), Config.BOARD_H, "L%d bàn cao cố định" % id)
 
 
 func test_play_through_solver_order(t: T) -> void:
@@ -191,7 +228,8 @@ func test_teaching_levels(t: T) -> void:
 		t.eq(mech.keys(), [m], "L%d chỉ có đúng cơ chế mới %s" % [id, m])
 		t.ok(not bool(d["hard"]), "L%d không HARD" % id)
 		var n: int = d["blocks"].size()
-		t.ok(n <= 8 and int(d["w"]) * int(d["h"]) <= 25, "L%d bàn nhỏ (%d khối, %dx%d)" % [id, n, int(d["w"]), int(d["h"])])
+		var box := _footprint(d)
+		t.ok(n <= 8 and box.size.x * box.size.y <= 25, "L%d hình nhỏ (%d khối, %s)" % [id, n, str(box.size)])
 		var b := BoardState.new(d)
 		t.ok(b.hint() != "", "L%d có khối thoát ngay" % id)
 		var exits := 0

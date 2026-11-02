@@ -1,6 +1,7 @@
 extends RefCounted
 const T := preload("res://tests/t.gd")
 const BoardState := preload("res://src/core/board_state.gd")
+const Config := preload("res://src/config.gd")
 const SCENE := "res://scenes/board_view.tscn"
 
 
@@ -64,11 +65,23 @@ func test_layout_and_fit(t: T) -> void:
 
 func test_cell_size_constant_across_boards(t: T) -> void:
 	var small := _make(_lv(4, 5, [_b("b1", "yellow", [[1, 1], [1, 2]])]))
-	var big := _make(_lv(8, 11, [_b("b1", "yellow", [[1, 1], [1, 2]])]))
-	t.near(small.cell_size(), big.cell_size(), 0.001, "bàn nhỏ và bàn 8x11 cùng cỡ ô")
-	t.ok(Rect2(Vector2.ZERO, big.size).encloses(big.board_rect()), "bàn 8x11 vẫn vừa vùng")
+	var big := _make(_lv(Config.BOARD_W, Config.BOARD_H, [_b("b1", "yellow", [[1, 1], [1, 2]])]))
+	t.near(small.cell_size(), big.cell_size(), 0.001, "bàn nhỏ và bàn chuẩn cùng cỡ ô")
+	t.ok(Rect2(Vector2.ZERO, big.size).encloses(big.board_rect()), "bàn chuẩn vẫn vừa vùng")
 	small.queue_free()
 	big.queue_free()
+
+
+## Cỡ ô cố định theo ảnh ref: không đổi theo số khối, không phóng to khi vùng chứa lớn hơn.
+func test_cell_size_fixed_like_reference(t: T) -> void:
+	var blocks := [_b("b1", "yellow", [[1, 1], [1, 2]])]
+	for area in [Vector2(664, 936), Vector2(960, 1400), Vector2(1600, 2000)]:
+		var v := _make(_lv(Config.BOARD_W, Config.BOARD_H, blocks))
+		v.fit_to(area)
+		t.near(v.cell_size(), float(Config.BOARD_CELL), 0.001, "vùng %s: ô đúng cỡ chuẩn" % str(area))
+		t.near(v.board_rect().size.x, float(Config.BOARD_W * Config.BOARD_CELL), 0.001, "vùng %s: bàn đúng bề ngang" % str(area))
+		t.ok(Rect2(Vector2.ZERO, area).encloses(v.frame_rect()), "vùng %s: khung nằm trọn" % str(area))
+		v.queue_free()
 
 
 func test_hit_area(t: T) -> void:
@@ -221,7 +234,7 @@ func test_gate_closed_and_fog(t: T) -> void:
 	var v := (load(SCENE) as PackedScene).instantiate() as Control
 	_root().add_child(v)
 	v.setup(board, Vector2(720, 900))
-	t.eq(v.block_node("b2").view["is_fog_hidden"], false, "b2 có ô kề trống nên đã lộ")
+	t.eq(v.block_node("b2").view["is_fog_hidden"], true, "b2 chưa có khối kề rời đi nên còn ẩn")
 	var r := board.tap("b1")
 	t.eq(r["kind"], "gate_closed", "cổng đóng")
 	v.apply_result(r)
@@ -282,5 +295,5 @@ func _fit_in_holder(t: T, w: int, h: int, holder_size: Vector2) -> void:
 
 
 func test_fit_in_holder(t: T) -> void:
-	for dims in [Vector2i(4, 4), Vector2i(8, 11), Vector2i(3, 3), Vector2i(7, 11)]:
+	for dims in [Vector2i(4, 4), Vector2i(Config.BOARD_W, Config.BOARD_H), Vector2i(3, 3), Vector2i(7, 11)]:
 		await _fit_in_holder(t, dims.x, dims.y, Vector2(664, 936))

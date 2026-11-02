@@ -1,7 +1,7 @@
 extends Control
-## Vẽ bàn cờ: lưới, đá, khối bo góc, khung cổng (`CandyFrame`); nhận chạm; chạy hoạt ảnh kết quả.
+## Vẽ bàn cờ: nền trơn, đá, khối bo góc, khung cổng (`CandyFrame`); nhận chạm; chạy hoạt ảnh kết quả.
 ## Dùng: setup(board) rồi nối block_tapped; level gọi board.tap(id) và đưa kết quả vào apply_result().
-## Tự co theo `size` của chính nó (hoặc setup(board, area)); đổi size thì tự xếp lại.
+## Ô cỡ cố định Config.BOARD_CELL, chỉ co khi vùng chứa (`size` hoặc setup(board, area)) không đủ cho bàn chuẩn; đổi size thì tự xếp lại.
 
 const BoardState := preload("res://src/core/board_state.gd")
 const BoardFx := preload("res://src/ui/board_fx.gd")
@@ -9,16 +9,13 @@ const LevelData := preload("res://src/core/level_data.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const CandyFrame := preload("res://src/ui/candy_frame.gd")
 const CandyShards := preload("res://src/ui/candy_shards.gd")
+const Config := preload("res://src/config.gd")
 
 ## Khối chạm vào (đã là ô của khối, không phải đá hay ô trống).
 signal block_tapped(id: String)
 ## Mọi hoạt ảnh đang chạy đã xong.
 signal animation_done
 
-const MAX_CELL := 150.0
-## Bàn tham chiếu (lớn nhất trong 300 level): kích thước ô tính theo bàn này để mọi level dùng cùng một cỡ ô.
-const REF_COLS := 8
-const REF_ROWS := 11
 const SLIDE_TIME := 0.30  # lâu nhất của một lần khối lao tới thanh
 const SLIDE_MIN := 0.14  # đường ngắn nhất vẫn đủ thấy khối lấy đà
 const SLIDE_PER_CELL := 0.022
@@ -370,14 +367,13 @@ func _layout() -> void:
 		return
 	var avail := size
 	if avail.x <= 1.0 or avail.y <= 1.0:
-		_cell = 64.0
+		_cell = float(Config.BOARD_CELL)
 	else:
-		# Ô cố định theo bàn tham chiếu; chỉ co thêm khi bàn lớn hơn tham chiếu (không bao giờ phóng to để lấp đầy).
+		# Ô cố định; tính theo bàn chuẩn nên không đổi theo level, chỉ co khi vùng chứa nhỏ hơn bàn chuẩn.
 		var m := CandyFrame.margin()
-		var ref_cell := minf(avail.x / (REF_COLS + 2.0 * m.x), avail.y / (REF_ROWS + 2.0 * m.y))
-		var fit_cell := minf(avail.x / (w + 2.0 * m.x), avail.y / (h + 2.0 * m.y))
+		var fit_cell := minf(avail.x / (Config.BOARD_W + 2.0 * m.x), avail.y / (Config.BOARD_H + 2.0 * m.y))
 		# Làm tròn xuống số nguyên để các ô trong cùng khối khớp pixel, không lộ đường nối.
-		_cell = floorf(clampf(minf(ref_cell, fit_cell), 8.0, MAX_CELL))
+		_cell = floorf(clampf(fit_cell, 8.0, float(Config.BOARD_CELL)))
 	_origin = ((avail - Vector2(w, h) * _cell) * 0.5).floor()
 	for id in _nodes:
 		var n: BlockNode = _nodes[id]
@@ -408,10 +404,6 @@ func _draw() -> void:
 	bg.set_corner_radius_all(int(CandyFrame.TUBE_R * _cell))
 	bg.anti_aliasing = true
 	draw_style_box(bg, CandyFrame.panel_rect(br, _cell))
-	for y in _board.height():
-		for x in _board.width():
-			var shade := 0.05 if (x + y) % 2 == 0 else 0.09
-			draw_rect(Rect2(br.position + Vector2(x, y) * _cell + Vector2(1, 1), Vector2(_cell - 2, _cell - 2)), Color(1, 1, 1, shade))
 	# đá
 	for s in _board.stones():
 		_draw_stone(s)

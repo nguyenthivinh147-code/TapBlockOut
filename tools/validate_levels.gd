@@ -1,9 +1,10 @@
 extends SceneTree
-## Kiểm mọi data/levels/level_NNNN.json: khung, solver, khối thoát ngay, min_taps và moves đúng công thức.
+## Kiểm mọi data/levels/level_NNNN.json: khung, cỡ bàn cố định, solver, khối thoát ngay, min_taps và moves đúng công thức.
 ## Chạy: tools/godot.sh --headless --path . -s res://tools/validate_levels.gd (thoát 1 nếu có lỗi).
 
 const LevelData := preload("res://src/core/level_data.gd")
 const Solver := preload("res://src/core/solver.gd")
+const Config := preload("res://src/config.gd")
 
 const DIR := "res://data/levels"
 
@@ -55,6 +56,8 @@ static func check_file(path: String, fname: String) -> Array[String]:
 	var expect_id := fname.trim_prefix("level_").trim_suffix(".json").to_int()
 	if int(d["id"]) != expect_id:
 		errs.append("id %d không khớp tên file" % int(d["id"]))
+	if int(d["w"]) != Config.BOARD_W or int(d["h"]) != Config.BOARD_H:
+		errs.append("bàn %dx%d khác cỡ cố định %dx%d" % [int(d["w"]), int(d["h"]), Config.BOARD_W, Config.BOARD_H])
 	if d["blocks"].is_empty():
 		errs.append("level không có khối")
 		return errs

@@ -146,7 +146,7 @@ static func validate(d: Dictionary) -> Array[String]:
 			else:
 				taken[c] = id
 				mine[c] = true
-		if cell_ok and not _connected(mine):
+		if cell_ok and not connected(mine):
 			errs.append("khối %s: các ô không liền nhau" % id)
 		var key := str(b.get("chained_by", ""))
 		if key != "":
@@ -169,7 +169,8 @@ static func validate(d: Dictionary) -> Array[String]:
 	return errs
 
 
-static func _connected(cells: Dictionary) -> bool:
+## Các ô (khoá của `cells`) có liền nhau theo 4 hướng không.
+static func connected(cells: Dictionary) -> bool:
 	if cells.size() <= 1:
 		return true
 	var start: Vector2i = cells.keys()[0]

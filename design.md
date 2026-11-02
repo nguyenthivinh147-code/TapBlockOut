@@ -27,8 +27,9 @@ Game làm bằng **Godot 4.7.2, GDScript, xuất Android gốc**. Tài liệu Ho
 
 ## 3. Luật chơi
 
-- Bàn cờ lưới ô vuông, tối đa 8×11 trong 20 level đầu. Khối là polyomino (thanh, L, T, S, U).
-- Cỡ ô giữ nguyên qua mọi level: tính theo bàn 8×11 trong vùng chơi, bàn nhỏ hơn thì để trống xung quanh chứ không phóng to ô cho đầy.
+- **Bàn cờ cố định, không đổi theo số khối: lưới 14×19 ô, mỗi ô 42 px ở độ phân giải gốc 720×1280, đúng như ảnh ref `art/concepts/ref_board_size.png`** (`Config.BOARD_W`, `BOARD_H`, `BOARD_CELL`). Đây là luật nền của game, mọi level và mọi theme phải giữ.
+- Khung đứng cùng một chỗ và cùng một cỡ ở mọi level. Ô chỉ co khi vùng chơi của máy nhỏ hơn bàn chuẩn, không bao giờ phóng to.
+- Khối xếp thành một hình ở giữa bàn, không lát kín bàn và không cần kín khung của hình: khoảng trống quanh hình và trong hình là bình thường (mục 4). Khối là polyomino (thanh, L, T, S, U).
 - Màu quyết định hướng: vàng lên, xanh lá trái, xanh dương phải, tím xuống. Mỗi cạnh khung là một cổng liền, không có cổng rời.
 - Chạm khối, đường thông: khối lao nhanh dần tới thanh cùng màu (tối đa 0,30 s), vỡ thành mảnh kẹo bay xuyên qua thanh, MOVES giảm 1.
 - Chạm khối, đường bị chặn: khối lao tới vật cản, nhún khi va chạm rồi bật về chỗ cũ, khối bị va nhún theo, MOVES giảm 1. Bàn cờ không đổi nên không có thế bí.
@@ -102,6 +103,19 @@ Mọi level thắng đều +40 gold.
 | 17–19 | 4 màu | 22–26 | L18 hỏi đánh giá store sau khi thắng |
 | 20 | 4 màu | 28 | **HARD**, kết chặng |
 
+### Hình dạng level
+
+Bàn luôn 14×19 ô (mục 3), nên số khối chỉ quyết định hình to hay nhỏ, không đổi cỡ bàn. Vì ngoài hình là ô trống, dịch cả hình đi không đổi đường thoát của khối.
+
+| Nguồn | Hình |
+| --- | --- |
+| Từ L21 và Daily Challenge (`src/core/silhouette.gd`) | Chín dạng: oval, thoi, tim, chữ thập, đồng hồ cát, vòm, vòng, mũi tên, nhà. Dưới 6 khối thì xếp hình chữ nhật vì quá ít ô để nhận ra dạng |
+| L1–20 | Giữ layout làm tay, dịch vào giữa bàn; L6, 7, 8, 9, 10, 12, 13, 15, 16, 17, 19, 20 trước đây kín hoặc gần kín khung nên sinh lại, giữ số khối trong khoảng của bảng trên (L10 từ 14 còn 13), đúng số màu và HARD |
+| Level dạy cơ chế | Giữ bảng làm tay, dịch vào giữa bàn |
+
+- Cỡ hình: số ô khoảng 2,4–3,4 lần số khối, khung hình tối đa 12×17 (chừa một ô mỗi phía), cao tối đa khoảng 1,9 lần rộng, khoét thêm khoảng 6% ô rìa để hình không quá đều. Hình lớn nhất trong ảnh ref là 10×17.
+- Sương mù: chỉ khối kề rời đi (thoát hoặc bị phá) mới làm lộ, ô trống sẵn quanh hình không tính. Nhờ vậy mọi khối sương mù đều ẩn lúc đầu, kể cả ở rìa hình.
+
 ### Cơ chế sau bản demo
 
 Nguyên tắc: cơ chế chỉ làm bàn cờ dễ hơn theo thời gian hoặc lặp lại theo chu kỳ, không có nước đi nào khiến level không thể thắng. Không timer. Solver phải chứng minh được từng level. Vì vậy không dùng đổi màu ngẫu nhiên hay khối mọc thêm.
@@ -114,7 +128,7 @@ Mỗi cơ chế có một level dạy làm tay và một âm thanh riêng. Sau L
 | 31 | Băng | Cần 2 lần chạm, lần đầu làm nứt; chạm nứt tốn MOVES và đã tính vào `MOVES` | Băng nứt |
 | 46 | Xích và chìa | Khối bị xích chỉ đi được khi khối chìa đã thoát | Xích rơi |
 | 61 | Hai lớp | Thoát lớp ngoài thì lộ lớp trong, màu khác | Bóc lớp |
-| 81 | Sương mù | Không thấy màu cho tới khi ô bên cạnh trống | Gió nhẹ |
+| 81 | Sương mù | Không thấy màu cho tới khi một khối kề rời đi | Gió nhẹ |
 | 101 | Cổng nhịp | Cổng đóng/mở luân phiên sau mọi lần chạm, kể cả chạm bị chặn | Cổng cơ khí |
 
 Booster với cơ chế:
@@ -371,12 +385,13 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 
 | Phần | Hình | Số đo |
 | --- | --- | --- |
-| Thanh cổng | Bốn capsule rời nhau, mỗi cạnh một màu cổng, tô theo mặt cắt đo trung vị dọc thanh trong ảnh (`BAR_RAMPS`); thanh ngang có vạch sáng ở trên và dải đậm ở dưới, thanh dọc đậm ở hai mép; đầu trên thanh dọc có vòng sáng, đầu dưới đậm dần | Dày 0,645–0,70; từ mép bàn tới đường giữa thanh: trên 0,87, dưới 0,89, trái 1,11, phải 1,09 |
-| Ống góc | Một phần tư vành tròn hồng đỏ nối hai thanh, nằm dưới đầu thanh; vệt trắng chạy theo cung, vị trí đổi theo từng góc vì ánh sáng từ trên hơi lệch trái | Bán kính tới đường giữa 0,58; rộng 0,52 |
-| Mũi tên | Tam giác trắng bo góc, chỉ ra ngoài, viền mờ màu đậm của thanh; ở thanh dọc đặt cao hơn tâm | Ngang 0,525 (thanh dọc 0,59), dọc 0,40–0,415; thanh dọc lệch lên 0,25 |
+| Thanh cổng | Bốn capsule rời nhau, mỗi cạnh một màu cổng, tô theo mặt cắt đo trung vị dọc thanh trong ảnh (`BAR_RAMPS`); thanh ngang có vạch sáng ở trên và dải đậm ở dưới, thanh dọc đậm ở hai mép; đầu trên thanh dọc có vòng sáng, đầu dưới đậm dần | Dày 0,55–0,60; từ mép bàn tới đường giữa thanh: trên 0,305, dưới 0,32, trái 0,46, phải 0,47 |
+| Ống góc | Một phần tư vành tròn hồng đỏ nối hai thanh, nằm dưới đầu thanh; vệt trắng chạy theo cung, vị trí đổi theo từng góc vì ánh sáng từ trên hơi lệch trái | Bán kính tới đường giữa 0,49; rộng 0,44 |
+| Mũi tên | Tam giác trắng bo góc, chỉ ra ngoài, viền mờ màu đậm của thanh; ở thanh dọc đặt cao hơn tâm | Ngang 0,45 (thanh dọc 0,50), dọc 0,34–0,35; thanh dọc lệch lên 0,21 |
 | Bóng đổ | Mềm, lệch xuống dưới, ám tím đậm | Lệch 0,11; mờ 0,14; đậm 32% |
 
-- Khung chiếm thêm 1,46 ô mỗi bên và 1,23 ô trên dưới (trước là 0,3 ô), nên cỡ ô giảm khoảng 14% ở cùng vùng chứa: 64 → 55 px với bàn 720×1280. Cỡ ô vẫn tính theo bàn tham chiếu 8×11 nên mọi level cùng một cỡ.
+- Số đo hình học theo ảnh ref `art/concepts/ref_board_size.png`, màu giữ theo ảnh duyệt kẹo. Khung chiếm thêm 0,77 ô mỗi bên và 0,61 ô trên dưới, trọn khung 652×848 px ở 720×1280 (ảnh ref quy đổi là 651×842).
+- Màn level chỉ có thanh trên (Home, tên level, MOVES, restart) và hàng booster chiếm chiều cao, luôn giữ chỗ cho booster; chữ hướng dẫn và nhãn Phá khối phủ lên phần trên của bàn. Nhờ vậy khung không xê dịch giữa các level. Nền bàn trơn, không vẽ lưới ô.
 - Cổng nhịp đóng: thanh tối đi 55%, mũi tên mờ, hiện các vạch chắn ngang thanh; khi đổi trạng thái thì nháy sáng trong hình thanh. Khối bị cổng đóng chặn trượt qua khoảng trống tới mặt trong của thanh rồi bật về; hạt lúc khối thoát bắn ở mặt trong của thanh.
 - Nền bàn giữ màu cũ, chỉ đổi hình theo khung (tới đường giữa thanh, bo theo ống góc).
 
@@ -397,7 +412,7 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 - Trận thắng chờ tối đa 0,55 giây sau lần vỡ cuối trước khi hiện thẻ thắng; mảnh còn lại rơi tiếp đè lên thẻ tới hết đời.
 - Shader hiệu ứng được biên dịch sẵn khi vào màn đầu tiên.
 
-**Vẫn vẽ bằng code (và shader):** hình khối, lưới, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
+**Vẫn vẽ bằng code (và shader):** hình khối, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
 
 | Việc | Công cụ | Ghi chú |
 | --- | --- | --- |
@@ -464,3 +479,4 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 - Đổi concept hình khối sang kẹo sọc (ảnh duyệt `concept_candy_board_v5_stripe`), đo số từ ảnh; bốn màu khối và cổng đổi theo ảnh. Giữ mũi tên mù màu dù ảnh không có.
 - Đổi khung cổng từ bốn dải vát chéo sát bàn sang bốn thanh capsule và ống góc theo cùng ảnh; chấp nhận cỡ ô giảm khoảng 14% để giữ đúng tỉ lệ khung.
 - Khối thoát thì vỡ thành mảnh kẹo ở mặt trong thanh, mảnh bay xuyên qua thanh và được đè lên vùng ngoài bàn; bị chặn thì nhún, văng vụn, dư chấn lan sang khối sau. Áp dụng cả với đá và cổng đóng. Giữ mức rung nhẹ.
+- Bàn cờ cố định 14×19 ô, ô 42 px theo ảnh ref, không đổi theo số khối; khối xếp thành nhiều hình ở giữa bàn, có khoảng trống. Sinh lại L21–300; L1–20 giữ layout tay, trừ 12 level trước đây kín hoặc gần kín khung. Sương mù chỉ lộ khi khối kề rời đi. Đưa MOVES lên thanh trên, bỏ lưới ô trên nền bàn.

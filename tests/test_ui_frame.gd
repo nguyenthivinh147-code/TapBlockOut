@@ -2,6 +2,7 @@ extends RefCounted
 const T := preload("res://tests/t.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const CandyFrame := preload("res://src/ui/candy_frame.gd")
+const Config := preload("res://src/config.gd")
 const SCENE := "res://scenes/board_view.tscn"
 
 
@@ -25,7 +26,7 @@ func _part_param(v: Control, side: String, param: String) -> Variant:
 
 
 func test_frame_fits_every_board_size(t: T) -> void:
-	for size in [Vector2i(1, 1), Vector2i(3, 3), Vector2i(6, 9), Vector2i(8, 11)]:
+	for size in [Vector2i(1, 1), Vector2i(3, 3), Vector2i(6, 9), Vector2i(Config.BOARD_W, Config.BOARD_H)]:
 		var v := _make(_lv(size.x, size.y))
 		var tag := "%dx%d" % [size.x, size.y]
 		t.ok(Rect2(Vector2.ZERO, v.size).encloses(v.frame_rect()), "%s: khung nằm trong vùng" % tag)
@@ -45,11 +46,20 @@ func test_bars_surround_board_without_touching_it(t: T) -> void:
 		t.ok(not r.intersects(board), "%s: thanh không đè lên bàn" % side)
 		t.ok(CandyFrame.outer_rect(board, cell).grow(0.01).encloses(r), "%s: thanh trong khung" % side)
 		t.ok(CandyFrame.gap(side) > 0.0, "%s: có khoảng trống tới bàn" % side)
-	t.ok(CandyFrame.bar_rect("up", board, cell).size.x > board.size.x, "thanh trên dài hơn cạnh bàn")
-	t.ok(CandyFrame.bar_rect("left", board, cell).size.y > board.size.y, "thanh trái dài hơn cạnh bàn")
+	t.ok(CandyFrame.bar_rect("up", board, cell).size.x > board.size.x * 0.85, "thanh trên gần bằng cạnh bàn")
+	t.ok(CandyFrame.bar_rect("left", board, cell).size.y > board.size.y * 0.85, "thanh trái gần bằng cạnh bàn")
 	# bốn thanh rời nhau, chỗ nối ở góc là ống
 	t.ok(not CandyFrame.bar_rect("up", board, cell).intersects(CandyFrame.bar_rect("left", board, cell)), "thanh trên và trái rời nhau")
 	t.ok(not CandyFrame.bar_rect("down", board, cell).intersects(CandyFrame.bar_rect("right", board, cell)), "thanh dưới và phải rời nhau")
+
+
+## Trọn khung ở 720 khớp ảnh ref (rộng 505, cao 653 trên ảnh rộng 558, quy đổi x 720/558).
+func test_frame_matches_reference_size(t: T) -> void:
+	var cell := float(Config.BOARD_CELL)
+	var board := Rect2(0, 0, Config.BOARD_W * cell, Config.BOARD_H * cell)
+	var outer := CandyFrame.outer_rect(board, cell)
+	t.near(outer.size.x, 652.0, 12.0, "khung rộng như ảnh ref (%.0f)" % outer.size.x)
+	t.near(outer.size.y, 843.0, 12.0, "khung cao như ảnh ref (%.0f)" % outer.size.y)
 
 
 func test_corner_tubes_sit_inside_frame(t: T) -> void:

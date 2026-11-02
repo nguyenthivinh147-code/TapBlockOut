@@ -1,7 +1,7 @@
 extends Control
 ## Khung bàn theo concept kẹo: bốn thanh capsule là bốn cổng, bốn ống góc hồng đỏ nằm dưới đầu thanh.
 ## BoardView gọi layout(board, cell) khi xếp lại, set_gate() và set_flash() khi cổng đổi.
-## Mọi số hình học tính theo ô, đo từ `art/concepts/concept_candy_board_v5_stripe.png`.
+## Mọi số hình học tính theo ô, đo từ `art/concepts/ref_board_size.png`; màu lấy từ `art/concepts/concept_candy_board_v5_stripe.png`.
 
 const BAR_SHADER := preload("res://src/ui/frame_bar.gdshader")
 const CORNER_SHADER := preload("res://src/ui/frame_corner.gdshader")
@@ -9,21 +9,21 @@ const CORNER_SHADER := preload("res://src/ui/frame_corner.gdshader")
 const SIDES := ["up", "left", "right", "down"]
 ## axis: từ mép bàn tới đường giữa thanh; thick: bề dày; inset: từ mép ngoài khung tới đầu thanh.
 const BARS := {
-	"up": {"axis": 0.868, "thick": 0.645, "inset": 0.93},
-	"left": {"axis": 1.113, "thick": 0.685, "inset": 0.84},
-	"right": {"axis": 1.092, "thick": 0.70, "inset": 0.84},
-	"down": {"axis": 0.889, "thick": 0.685, "inset": 0.83},
+	"up": {"axis": 0.305, "thick": 0.55, "inset": 0.78},
+	"left": {"axis": 0.46, "thick": 0.58, "inset": 0.77},
+	"right": {"axis": 0.47, "thick": 0.60, "inset": 0.77},
+	"down": {"axis": 0.32, "thick": 0.58, "inset": 0.78},
 }
 ## Mũi tên: x ngang thân, y dọc theo hướng; shift lệch dọc theo thanh (thanh dọc đặt mũi tên cao hơn tâm).
 const ARROWS := {
-	"up": {"dir": Vector2(0, -1), "size": Vector2(0.525, 0.40), "shift": Vector2(0.0, -0.04)},
-	"left": {"dir": Vector2(-1, 0), "size": Vector2(0.59, 0.415), "shift": Vector2(-0.035, -0.25)},
-	"right": {"dir": Vector2(1, 0), "size": Vector2(0.59, 0.415), "shift": Vector2(0.035, -0.25)},
-	"down": {"dir": Vector2(0, 1), "size": Vector2(0.525, 0.40), "shift": Vector2(0.0, 0.02)},
+	"up": {"dir": Vector2(0, -1), "size": Vector2(0.45, 0.34), "shift": Vector2(0.0, -0.03)},
+	"left": {"dir": Vector2(-1, 0), "size": Vector2(0.50, 0.35), "shift": Vector2(-0.03, -0.21)},
+	"right": {"dir": Vector2(1, 0), "size": Vector2(0.50, 0.35), "shift": Vector2(0.03, -0.21)},
+	"down": {"dir": Vector2(0, 1), "size": Vector2(0.45, 0.34), "shift": Vector2(0.0, 0.02)},
 }
-const TUBE_R := 0.58  # bán kính tới đường giữa ống góc
-const TUBE_W := 0.52  # bề rộng ống góc
-const TUBE_RUN := 0.42  # phần ống thẳng chui dưới đầu thanh
+const TUBE_R := 0.49  # bán kính tới đường giữa ống góc
+const TUBE_W := 0.44  # bề rộng ống góc
+const TUBE_RUN := 0.36  # phần ống thẳng chui dưới đầu thanh
 const PAD := 0.35  # lề vùng vẽ, chứa bóng đổ
 ## Vệt sáng trên ống ở mỗi góc, ánh sáng từ trên hơi lệch trái. peak: vị trí trên mặt cắt (-1 trong, 1 ngoài);
 ## gloss, gloss_w: độ đậm và nửa bề rộng; gloss_at, gloss_arc: tâm và độ dài theo góc (radian từ phương ngang);
