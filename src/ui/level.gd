@@ -147,7 +147,7 @@ func _exit_tree() -> void:
 
 
 func _icon_button(icon_name: String, node_name: String) -> Button:
-	var b := ThemeKit.make_button("", "secondary")
+	var b := ThemeKit.make_button("", "icon")
 	b.name = node_name
 	b.icon = ThemeKit.icon(icon_name)
 	b.expand_icon = true

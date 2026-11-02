@@ -281,3 +281,7 @@ chain_locked,Locked,Chưa mở
 chain_done,All steps done. Come back for the next chain!,Đã xong mọi bước. Lần sau sẽ có chuỗi mới!
 chain_failed,Couldn't complete this step. Please try again.,Chưa hoàn thành bước này. Bạn thử lại nhé.
 chain_expired,This chain has ended.,Chuỗi quà này đã kết thúc.
+home_home,Home,Trang chủ
+home_ranking_soon,Ranking soon,Xếp hạng sắp có
+home_path_locked,Locked,Khoá
+home_path_cleared,Cleared,Đã qua

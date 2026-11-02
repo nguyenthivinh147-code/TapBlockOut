@@ -8,6 +8,7 @@ const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const Unlocks := preload("res://src/meta/unlocks.gd")
 const Config := preload("res://src/config.gd")
 const Profile := preload("res://src/ui/profile.gd")
+const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 
 var gold_label: Label = null
 var lives_panel: Control = null
@@ -31,6 +32,16 @@ var weekly_dot: Control = null
 var chain_btn: Button = null
 var chain_dot: Control = null
 var special_btn: Button = null
+var _path_box: Control = null
+var _next_node: TextureRect = null
+var _next_num: Label = null
+var _next_cap: Label = null
+var _cur_node: TextureRect = null
+var _cur_num: Label = null
+var _cur_cap: Label = null
+var _prev_node: TextureRect = null
+var _prev_num: Label = null
+var _prev_cap: Label = null
 
 var _args: Dictionary = {}
 var _built: bool = false
@@ -113,7 +124,7 @@ func _make_dot(btn: Button, node_name: String) -> Control:
 func _icon_button(icon_name: String, caption: String) -> Array:
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 4)
-	var b := ThemeKit.make_button("", "secondary")
+	var b := ThemeKit.make_button("", "icon")
 	b.icon = ThemeKit.icon(icon_name)
 	b.expand_icon = true
 	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -121,6 +132,85 @@ func _icon_button(icon_name: String, caption: String) -> Array:
 	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	col.add_child(b)
 	var l := ThemeKit.make_label(caption, ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(l)
+	return [col, b, l]
+
+
+## Chip tiền tệ: panel + icon + chữ. Trả [panel, hộp ngang để thêm chữ/nút].
+func _chip(icon_name: String, icon_px: int) -> Array:
+	var chip := ThemeKit.make_panel()
+	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	chip.add_child(row)
+	var ic := TextureRect.new()
+	ic.texture = ThemeKit.icon(icon_name)
+	ic.custom_minimum_size = Vector2(icon_px, icon_px)
+	ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	ic.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(ic)
+	return [chip, row]
+
+
+## Nút "+" nhỏ cuối chip.
+func _plus_button(node_name: String, action: Callable) -> Button:
+	var b := Button.new()
+	b.name = node_name
+	b.flat = true
+	b.focus_mode = Control.FOCUS_NONE
+	for st in ["normal", "hover", "pressed", "disabled", "focus"]:
+		b.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	b.icon = ThemeKit.icon("ui_plus")
+	b.expand_icon = true
+	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	b.custom_minimum_size = Vector2(52, 52)
+	b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	b.pressed.connect(action)
+	return b
+
+
+## Mốc trên đường level: sprite + số ở giữa, chữ chú thích bên dưới. Trả [mốc, nhãn số, nhãn chú thích].
+func _path_node(parent: Control, node_name: String, top: float, px: float) -> Array:
+	var n := TextureRect.new()
+	n.name = node_name
+	n.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	n.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	n.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	n.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	n.offset_left = -px * 0.5
+	n.offset_right = px * 0.5
+	n.offset_top = top
+	n.offset_bottom = top + px
+	parent.add_child(n)
+	var num := ThemeKit.make_label("", int(px * 0.3))
+	num.set_anchors_preset(Control.PRESET_FULL_RECT)
+	num.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	num.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	n.add_child(num)
+	var cap := ThemeKit.make_label("", ThemeKit.FS_SMALL - 4, ThemeKit.TEXT_DIM)
+	cap.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	cap.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	cap.offset_top = top + px - 6
+	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(cap)
+	return [n, num, cap]
+
+
+## Tab thanh dưới: nút (icon) + chú thích. Trả [cột, nút, nhãn].
+func _nav_tab(icon_name: String, caption: String, kind: String) -> Array:
+	var col := VBoxContainer.new()
+	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.add_theme_constant_override("separation", 2)
+	var b := ThemeKit.make_button("", kind)
+	b.icon = ThemeKit.icon(icon_name)
+	b.expand_icon = true
+	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	b.custom_minimum_size = Vector2(0, 104)
+	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.add_child(b)
+	var l := ThemeKit.make_label(caption, ThemeKit.FS_SMALL - 2, ThemeKit.TEXT)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(l)
 	return [col, b, l]
@@ -134,114 +224,79 @@ func _build() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(ThemeKit.make_background())
 
+	var root := VBoxContainer.new()
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.add_theme_constant_override("separation", 0)
+	add_child(root)
 	var margin := MarginContainer.new()
-	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 32)
-	margin.add_theme_constant_override("margin_right", 32)
-	margin.add_theme_constant_override("margin_top", 48)
-	margin.add_theme_constant_override("margin_bottom", 48)
-	add_child(margin)
+	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_theme_constant_override("margin_left", 28)
+	margin.add_theme_constant_override("margin_right", 28)
+	margin.add_theme_constant_override("margin_top", 40)
+	margin.add_theme_constant_override("margin_bottom", 16)
+	root.add_child(margin)
 	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 20)
+	col.add_theme_constant_override("separation", 16)
 	margin.add_child(col)
 
-	# hàng trên: profile, vàng + mạng, settings
+	# hàng trên: avatar, mạng, vàng, settings
 	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 16)
+	top.add_theme_constant_override("separation", 10)
 	col.add_child(top)
 	profile_btn = Button.new()
 	profile_btn.name = "ProfileButton"
 	profile_btn.flat = true
 	profile_btn.focus_mode = Control.FOCUS_NONE
-	profile_btn.custom_minimum_size = Vector2(144, 144)
+	profile_btn.custom_minimum_size = Vector2(112, 112)
 	profile_btn.pressed.connect(_emit.bind("profile"))
 	top.add_child(profile_btn)
-	var chips := VBoxContainer.new()
-	chips.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	chips.add_theme_constant_override("separation", 8)
-	top.add_child(chips)
-	var gold_chip := ThemeKit.make_panel()
-	chips.add_child(gold_chip)
-	var gold_row := HBoxContainer.new()
-	gold_row.add_theme_constant_override("separation", 10)
-	gold_chip.add_child(gold_row)
-	var gi := TextureRect.new()
-	gi.texture = ThemeKit.icon("ui_gold")
-	gi.custom_minimum_size = Vector2(44, 44)
-	gi.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	gi.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	gold_row.add_child(gi)
-	gold_label = ThemeKit.make_label("0", ThemeKit.FS_BODY, ThemeKit.GOLD)
-	gold_label.name = "GoldLabel"
-	gold_row.add_child(gold_label)
-	lives_panel = ThemeKit.make_panel()
+	var lives_chip := _chip("ui_heart", 48)
+	lives_panel = lives_chip[0]
 	lives_panel.name = "LivesPanel"
-	chips.add_child(lives_panel)
+	top.add_child(lives_panel)
 	var lv := VBoxContainer.new()
-	lives_panel.add_child(lv)
-	lives_label = ThemeKit.make_label("", ThemeKit.FS_BODY)
+	lv.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lv.add_theme_constant_override("separation", -4)
+	(lives_chip[1] as HBoxContainer).add_child(lv)
+	lives_label = ThemeKit.make_label("", ThemeKit.FS_SMALL + 2)
 	lives_label.name = "LivesLabel"
 	lv.add_child(lives_label)
-	lives_timer_label = ThemeKit.make_label("", ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
+	lives_timer_label = ThemeKit.make_label("", ThemeKit.FS_SMALL - 6, ThemeKit.TEXT_DIM)
 	lives_timer_label.name = "LivesTimerLabel"
 	lv.add_child(lives_timer_label)
-	var st := _icon_button("ui_settings", tr("home_settings"))
-	settings_btn = st[1]
+	(lives_chip[1] as HBoxContainer).add_child(_plus_button("LivesPlus", _on_lives_plus))
+	var gold_chip := _chip("ui_gold", 48)
+	top.add_child(gold_chip[0])
+	gold_label = ThemeKit.make_label("0", ThemeKit.FS_SMALL + 4, ThemeKit.GOLD)
+	gold_label.name = "GoldLabel"
+	gold_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	(gold_chip[1] as HBoxContainer).add_child(gold_label)
+	(gold_chip[1] as HBoxContainer).add_child(_plus_button("GoldPlus", _emit.bind("shop")))
+	settings_btn = ThemeKit.make_button("", "icon")
 	settings_btn.name = "SettingsButton"
+	settings_btn.icon = ThemeKit.icon("ui_settings")
+	settings_btn.expand_icon = true
+	settings_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	settings_btn.custom_minimum_size = Vector2(88, 88)
+	settings_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	settings_btn.pressed.connect(_emit.bind("settings"))
-	top.add_child(st[0])
+	top.add_child(settings_btn)
 
-	# giữa: tên game, nút Chơi
-	var mid := VBoxContainer.new()
+	# giữa: quà bên trái, đường level ở giữa, ưu đãi bên phải
+	var mid := HBoxContainer.new()
 	mid.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	mid.alignment = BoxContainer.ALIGNMENT_CENTER
-	mid.add_theme_constant_override("separation", 48)
+	mid.add_theme_constant_override("separation", 8)
 	col.add_child(mid)
-	var title := ThemeKit.make_label(tr("APP_NAME"), ThemeKit.FS_HUGE)
-	title.name = "Title"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	mid.add_child(title)
-	play_btn = ThemeKit.make_button("", "primary")
-	play_btn.name = "PlayButton"
-	play_btn.custom_minimum_size = Vector2(520, 160)
-	play_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	play_btn.add_theme_font_size_override("font_size", 48)
-	play_btn.pressed.connect(_on_play)
-	mid.add_child(play_btn)
-	hard_tag = Label.new()
-	hard_tag.name = "HardTag"
-	hard_tag.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL)
-	hard_tag.add_theme_color_override("font_color", ThemeKit.TEXT)
-	var tag_box := StyleBoxFlat.new()
-	tag_box.set_corner_radius_all(18)
-	tag_box.content_margin_left = 28
-	tag_box.content_margin_right = 28
-	tag_box.content_margin_top = 2
-	tag_box.content_margin_bottom = 2
-	hard_tag.add_theme_stylebox_override("normal", tag_box)
-	hard_tag.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	hard_tag.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	hard_tag.offset_top = -22
-	hard_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hard_tag.visible = false
-	play_btn.add_child(hard_tag)
-	coming_soon_label = ThemeKit.make_label(tr("home_coming_soon"), ThemeKit.FS_BODY, ThemeKit.TEXT_DIM)
-	coming_soon_label.name = "ComingSoonLabel"
-	coming_soon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	mid.add_child(coming_soon_label)
-
-	# dưới: quà, shop, challenge, offer
-	var side := HBoxContainer.new()
-	side.alignment = BoxContainer.ALIGNMENT_CENTER
-	side.add_theme_constant_override("separation", 48)
-	col.add_child(side)
+	var left := VBoxContainer.new()
+	left.custom_minimum_size = Vector2(130, 0)
+	left.add_theme_constant_override("separation", 12)
+	mid.add_child(left)
 	var gf := _icon_button("ui_gift", tr("home_gift"))
 	_gift_col = gf[0]
 	gift_btn = gf[1]
 	gift_btn.name = "GiftButton"
 	gift_btn.pressed.connect(_emit.bind("gift"))
-	side.add_child(gf[0])
+	left.add_child(gf[0])
 	gift_badge = Panel.new()
 	gift_badge.name = "GiftBadge"
 	gift_badge.custom_minimum_size = Vector2(32, 32)
@@ -259,25 +314,66 @@ func _build() -> void:
 	gift_badge.offset_right = 6
 	gift_badge.offset_top = -6
 	gift_badge.offset_bottom = 26
-	var sh := _icon_button("ui_shop", tr("home_shop"))
-	shop_btn = sh[1]
-	shop_caption = sh[2]
-	shop_btn.name = "ShopButton"
-	shop_btn.pressed.connect(_emit.bind("shop"))
-	side.add_child(sh[0])
+
+	_path_box = Control.new()
+	_path_box.name = "LevelPath"
+	_path_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_path_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_path_box.custom_minimum_size = Vector2(0, 560)
+	mid.add_child(_path_box)
+	var line := ColorRect.new()
+	line.color = Color("20417B")
+	line.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	line.offset_left = -9
+	line.offset_right = 9
+	line.offset_top = 40
+	line.offset_bottom = 540
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_path_box.add_child(line)
+	var pn := _path_node(_path_box, "NextNode", 0, 130)
+	_next_node = pn[0]
+	_next_num = pn[1]
+	_next_cap = pn[2]
+	var pc := _path_node(_path_box, "CurrentNode", 170, 210)
+	_cur_node = pc[0]
+	_cur_num = pc[1]
+	_cur_cap = pc[2]
+	var pp := _path_node(_path_box, "PrevNode", 410, 130)
+	_prev_node = pp[0]
+	_prev_num = pp[1]
+	_prev_cap = pp[2]
+	hard_tag = Label.new()
+	hard_tag.name = "HardTag"
+	hard_tag.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL)
+	hard_tag.add_theme_color_override("font_color", ThemeKit.TEXT)
+	hard_tag.add_theme_color_override("font_outline_color", ThemeKit.TEXT_OUTLINE)
+	hard_tag.add_theme_constant_override("outline_size", 6)
+	var tag_box := StyleBoxFlat.new()
+	tag_box.set_corner_radius_all(18)
+	tag_box.content_margin_left = 28
+	tag_box.content_margin_right = 28
+	tag_box.content_margin_top = 2
+	tag_box.content_margin_bottom = 2
+	hard_tag.add_theme_stylebox_override("normal", tag_box)
+	hard_tag.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	hard_tag.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	hard_tag.offset_top = 150
+	hard_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hard_tag.visible = false
+	_path_box.add_child(hard_tag)
+
+	var right := VBoxContainer.new()
+	right.custom_minimum_size = Vector2(130, 0)
+	right.add_theme_constant_override("separation", 12)
+	mid.add_child(right)
 	var sl := _icon_button("ui_shop", tr("home_weekend_sale"))
 	_sale_col = sl[0]
 	sale_btn = sl[1]
 	sale_btn.name = "WeekendSaleButton"
 	sale_btn.pressed.connect(_emit.bind("shop"))
 	sl[2].add_theme_color_override("font_color", ThemeKit.GOLD)
-	side.add_child(sl[0])
-
+	right.add_child(sl[0])
 	# sự kiện: Weekly Pass, Chain Offer, Special Pack (ẩn khi chưa đủ điều kiện)
-	var events := HBoxContainer.new()
-	events.alignment = BoxContainer.ALIGNMENT_CENTER
-	events.add_theme_constant_override("separation", 48)
-	col.add_child(events)
 	var wk := _icon_button("ui_gold", tr("home_weekly"))
 	_weekly_col = wk[0]
 	weekly_btn = wk[1]
@@ -285,32 +381,77 @@ func _build() -> void:
 	weekly_btn.name = "WeeklyPassButton"
 	weekly_btn.pressed.connect(_emit.bind("weekly"))
 	weekly_dot = _make_dot(weekly_btn, "WeeklyDot")
-	events.add_child(wk[0])
+	right.add_child(wk[0])
 	var ch := _icon_button("ui_gift", tr("home_chain"))
 	_chain_col = ch[0]
 	chain_btn = ch[1]
 	chain_btn.name = "ChainOfferButton"
 	chain_btn.pressed.connect(_emit.bind("chain"))
 	chain_dot = _make_dot(chain_btn, "ChainDot")
-	events.add_child(ch[0])
+	right.add_child(ch[0])
 	var sp := _icon_button("shop_special_pack", tr("home_special_pack"))
 	_special_col = sp[0]
 	special_btn = sp[1]
 	special_btn.name = "SpecialPackButton"
 	special_btn.pressed.connect(_on_special)
 	sp[2].add_theme_color_override("font_color", ThemeKit.GOLD)
-	events.add_child(sp[0])
+	right.add_child(sp[0])
+
+	# nút Chơi
+	play_btn = ThemeKit.make_button("", "primary")
+	play_btn.name = "PlayButton"
+	play_btn.custom_minimum_size = Vector2(520, 150)
+	play_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	play_btn.add_theme_font_size_override("font_size", 46)
+	play_btn.pressed.connect(_on_play)
+	col.add_child(play_btn)
+	coming_soon_label = ThemeKit.make_label(tr("home_coming_soon"), ThemeKit.FS_BODY, ThemeKit.TEXT_DIM)
+	coming_soon_label.name = "ComingSoonLabel"
+	coming_soon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(coming_soon_label)
 
 	challenge_btn = ThemeKit.make_button("", "secondary")
 	challenge_btn.name = "ChallengeButton"
-	challenge_btn.add_theme_font_size_override("font_size", ThemeKit.FS_BODY)
+	challenge_btn.add_theme_font_size_override("font_size", ThemeKit.FS_BODY - 4)
 	challenge_btn.pressed.connect(_on_challenge)
 	col.add_child(challenge_btn)
 	offer_chip = ThemeKit.make_button("", "video")
 	offer_chip.name = "OfferChip"
-	offer_chip.add_theme_font_size_override("font_size", ThemeKit.FS_BODY)
+	offer_chip.add_theme_font_size_override("font_size", ThemeKit.FS_BODY - 4)
 	offer_chip.pressed.connect(_on_offer)
 	col.add_child(offer_chip)
+
+	# thanh điều hướng: Shop · Home · Ranking
+	var nav := PanelContainer.new()
+	nav.name = "NavBar"
+	var nav_box := StyleBoxFlat.new()
+	nav_box.bg_color = ThemeKit.NAV_TOP
+	nav_box.corner_radius_top_left = 36
+	nav_box.corner_radius_top_right = 36
+	nav_box.border_width_top = 4
+	nav_box.border_color = ThemeKit.NAV_BOTTOM
+	nav_box.content_margin_left = 24
+	nav_box.content_margin_right = 24
+	nav_box.content_margin_top = 14
+	nav_box.content_margin_bottom = 18
+	nav.add_theme_stylebox_override("panel", nav_box)
+	root.add_child(nav)
+	var tabs := HBoxContainer.new()
+	tabs.add_theme_constant_override("separation", 16)
+	nav.add_child(tabs)
+	var sh := _nav_tab("ui_shop", tr("home_shop"), "video")
+	shop_btn = sh[1]
+	shop_caption = sh[2]
+	shop_btn.name = "ShopButton"
+	shop_btn.pressed.connect(_emit.bind("shop"))
+	tabs.add_child(sh[0])
+	var hm := _nav_tab("ui_home", tr("home_home"), "gold")
+	hm[1].name = "HomeTab"
+	tabs.add_child(hm[0])
+	var rk := _nav_tab("ui_leaderboard", tr("home_ranking_soon"), "video")
+	rk[1].name = "RankingTab"
+	rk[1].disabled = true
+	tabs.add_child(rk[0])
 
 	_tick = Timer.new()
 	_tick.wait_time = 1.0
@@ -318,6 +459,22 @@ func _build() -> void:
 	_tick.timeout.connect(_refresh_timers)
 	add_child(_tick)
 	_tick.start()
+
+
+## Đường level: mốc kế (khoá), mốc hiện tại (xanh, hard thì tím/đỏ), mốc vừa qua.
+func _refresh_path(level: int) -> void:
+	var tier := Game.difficulty_of(level) if Game.level_exists(level) else ""
+	_cur_node.texture = UiAtlas.tex("hex_red" if tier == "very_hard" else ("hex_purple" if tier == "hard" else "node_green"))
+	_cur_num.text = str(level)
+	_cur_cap.text = ""
+	_next_node.texture = UiAtlas.tex("node_gray")
+	_next_num.text = str(level + 1)
+	_next_cap.text = tr("home_path_locked")
+	_prev_node.visible = level > 1
+	_prev_num.text = str(level - 1)
+	_prev_cap.visible = level > 1
+	_prev_cap.text = tr("home_path_cleared")
+	_prev_node.texture = UiAtlas.tex("node_gray")
 
 
 func refresh() -> void:
@@ -330,9 +487,11 @@ func refresh() -> void:
 	if _avatar_holder != null:
 		_avatar_holder.queue_free()
 	var cosm: Dictionary = Game.s.cos
-	_avatar_holder = Profile.make_avatar(str(cosm.get("avatar", "avatar_00")), str(cosm.get("frame", "frame_00")), 144)
+	_avatar_holder = Profile.make_avatar(str(cosm.get("avatar", "avatar_00")), str(cosm.get("frame", "frame_00")), 112)
 	_avatar_holder.name = "AvatarView"
 	profile_btn.add_child(_avatar_holder)
+
+	_refresh_path(level)
 
 	# nút Chơi
 	var ended := not Game.level_exists(level)
@@ -427,6 +586,15 @@ func _on_challenge() -> void:
 	if not bool(Game.challenge_view().get("open", false)):
 		return
 	_emit("challenge")
+
+
+## Dấu + cạnh mạng: sang màn hết mạng khi chưa đầy.
+func _on_lives_plus() -> void:
+	var lv: Dictionary = Game.lives_view()
+	if bool(lv.get("infinite", false)) or int(lv.get("count", 0)) >= int(lv.get("max", 0)):
+		return
+	Sfx.play("button")
+	closed.emit({"action": "no_lives"})
 
 
 func _on_play() -> void:
