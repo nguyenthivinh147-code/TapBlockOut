@@ -25,9 +25,32 @@ const SIDE_OF_DIR := {"up": Vector2(0, -1), "left": Vector2(-1, 0), "right": Vec
 const SIDE_COLOR := {"up": "yellow", "left": "green", "right": "blue", "down": "purple"}
 
 
+## Bóng đổ của một khối: ở lớp riêng dưới mọi khối nên không đổ lên khối bên cạnh; bám theo khối mỗi khung, xoá theo khối.
+class ShadowNode extends Control:
+	const BoardFx := preload("res://src/ui/board_fx.gd")
+	var source: Control = null
+	var body: Control = null
+
+	func _init() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		body = BoardFx.Pudding.make_shadow()
+		add_child(body)
+
+	func _process(_delta: float) -> void:
+		if not is_instance_valid(source) or source.is_queued_for_deletion():
+			queue_free()
+			return
+		position = source.position + source.get_parent().position
+		pivot_offset = source.pivot_offset
+		scale = source.scale
+		rotation = source.rotation
+		modulate = source.modulate
+
+
 ## Một khối trên bàn: Control vẽ bằng BoardFx.draw_block, toạ độ ô tính từ góc trên trái của khối.
 class BlockNode extends Control:
 	const BoardFx := preload("res://src/ui/board_fx.gd")
+	const ThemeKit := preload("res://src/ui/theme_kit.gd")
 	var id: String = ""
 	var cells: Array = []  # ô theo toạ độ bàn
 	var origin_cell: Vector2i = Vector2i.ZERO  # ô nhỏ nhất của khối
@@ -37,7 +60,9 @@ class BlockNode extends Control:
 	var glow: float = 0.0
 	var busy: bool = false
 
+	var shadow: ShadowNode = null  # null với khối "bóng" trong hiệu ứng
 	var _body: Control = null
+	var _inner: Array[Control] = []  # viên trong của khối hai lớp, mỗi ô một viên
 
 	func _init() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -52,11 +77,25 @@ class BlockNode extends Control:
 
 	func _draw() -> void:
 		var lc := local_cells()
-		BoardFx.Pudding.update_body(_body, lc, cell_size, BoardFx.block_base_color(view))
+		var ramp := BoardFx.block_ramp(view)
+		BoardFx.Pudding.update_body(_body, lc, cell_size, ramp, BoardFx.block_overlay(view), glow)
+		if shadow != null:
+			BoardFx.Pudding.update_body(shadow.body, lc, cell_size, ramp)
+		_update_inner(lc)
 		BoardFx.draw_block(self, lc, cell_size, view, show_arrow)
-		if glow > 0.0:
-			for c in lc:
-				draw_rect(Rect2(c.x * cell_size + 3, c.y * cell_size + 3, cell_size - 6, cell_size - 6), Color(1, 1, 1, 0.28 * glow))
+
+	func _update_inner(lc: Array) -> void:
+		var inner_color := str(view.get("inner_color", ""))
+		var want := lc.size() if inner_color != "" and not bool(view.get("is_fog_hidden", false)) else 0
+		while _inner.size() < want:
+			var b := BoardFx.Pudding.make_inner()
+			add_child(b)
+			_inner.append(b)
+		while _inner.size() > want:
+			_inner.pop_back().queue_free()
+		for i in want:
+			var r := BoardFx.inner_rect(lc[i], cell_size)
+			BoardFx.Pudding.update_body(_inner[i], [Vector2i.ZERO], r.size.x, ThemeKit.block_ramp(inner_color), Color(0, 0, 0, 0), glow, r.position)
 
 
 var arrows_enabled: bool = true
@@ -73,6 +112,7 @@ var _gate_tws: Dictionary = {}  # cạnh -> Tween
 var _gate_sfx: bool = true
 var _gate_flash: float = 0.0
 var _gate_flash_tw: Tween = null
+var _shadow_root: Control = null
 var _blocks_root: Control = null
 var _links: Control = null
 var _fx_root: Control = null
@@ -85,6 +125,7 @@ var _shake_tw: Tween = null
 func _init() -> void:
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	_shadow_root = _make_layer("Shadows")
 	_blocks_root = _make_layer("Blocks")
 	_links = _make_layer("Links")
 	_links.draw.connect(_draw_links)
@@ -225,6 +266,8 @@ func _clear() -> void:
 		_nodes[id].queue_free()
 	_nodes.clear()
 	_owner.clear()
+	for ch in _shadow_root.get_children():
+		ch.queue_free()
 	_pending = 0
 	for side in _gate_tws:
 		var gtw: Tween = _gate_tws[side]
@@ -252,6 +295,10 @@ func _add_block(id: String) -> void:
 	n.origin_cell = mn
 	n.view = v
 	n.show_arrow = arrows_enabled
+	var sh := ShadowNode.new()
+	sh.source = n
+	n.shadow = sh
+	_shadow_root.add_child(sh)
 	_blocks_root.add_child(n)
 	_nodes[id] = n
 

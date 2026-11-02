@@ -341,22 +341,31 @@ Horus SDK là JavaScript và `JavaScriptBridge` của Godot chỉ có ở bản 
 
 Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên có sẵn của người khác, rồi lưu thành file trong project. Game chạy offline nên bản build không gọi MCP và không cần máy chủ ComfyUI.
 
-**Concept theme: pudding (2026-11-01).** Khối trên bàn là viên pudding/gel bóng dạng khối đùn, theo ảnh duyệt `art/concepts/concept_candy_board_v1.png` (chất liệu tham khảo dòng game kẹo xếp hình, không dùng hình hay tên game đó). Mã màu bốn khối giữ nguyên trong `ThemeKit.BLOCK_COLORS` (vàng, xanh lá, xanh dương, tím), vì màu quyết định hướng; concept dùng màu sáng và ngả cyan hơn, nên bản vẽ tối hơn ảnh một chút ở cùng một mã màu. Thân khối vẽ bằng shader từ khoảng cách tới mép của hình khối (`src/ui/pudding.gd`, `src/ui/pudding.gdshader`), phần phủ bằng code (`BoardFx.draw_block`):
+**Concept theme: kẹo sọc (2026-11-02).** Khối trên bàn là viên kẹo gel bóng có sọc chéo, theo ảnh duyệt `art/concepts/concept_candy_board_v5_stripe.png`, thay concept pudding ngày 2026-11-01 (chất liệu tham khảo dòng game kẹo xếp hình, không dùng hình hay tên game đó). Thân khối vẽ bằng shader từ khoảng cách tới mép của hình khối (`src/ui/pudding.gd`, `src/ui/pudding.gdshader`), vệt bóng và phần phủ bằng code (`BoardFx.draw_block`). Số đo lấy trực tiếp từ ảnh duyệt (ô 36 px), đơn vị là ô:
 
-| Lớp | Hình |
-| --- | --- |
-| Bóng đổ | Cùng hình khối, đen mờ, lệch xuống dưới, hẹp |
-| Thành đáy | Vạch nâu ấm đậm màu sát mép dưới, rồi một vạch sáng ngay phía trên |
-| Viền gel | Màu gốc pha trắng, mỏng ở trên và hai bên (khoảng 6% ô), sáng dần về mép, vạch sáng mảnh sát mép |
-| Dải đáy | Phần viền gel ở dưới dày hơn nhiều (khoảng 20% ô), nhạt và trong, sáng dần về mép |
-| Lòng khối | Màu gốc nằm lõm trong viền, mép chuyển mềm; mép trên và hai bên sáng nhẹ, tối dần về đáy lòng |
-| Vệt sáng | Cung trắng ôm góc trên trái của cả khối (đậm ở mép ngoài, mờ vào trong), một vạch ngắn bên dưới và một vệt mờ ngang ở mép trên |
+| Lớp | Hình | Số đo |
+| --- | --- | --- |
+| Hình khối | Ô liền một viên, không đường nối; góc lồi bo, góc lõm bo mềm | Bo lồi 0,25; bo lõm 0,13; khe giữa hai khối 0,028 |
+| Bóng đổ | Ám chàm, không đen, mềm, lệch xuống dưới; nằm ở lớp riêng dưới mọi khối nên không đổ lên khối bên cạnh | Lệch 0,09; mờ 0,13; đậm 34% |
+| Mép gối | Đậm màu ở mép, chuyển mềm vào mặt, ánh sáng từ trên trái; mép phải tối hơn mép trái | Trên 0,02; hai bên 0,2; đáy 0,28; chuyển 0,11 |
+| Sọc | Dải chéo 45 độ lên phải, cạnh sắc, nửa đậm nửa nhạt; theo toạ độ ô nên khối cạnh nhau liền pha và sọc đi theo khối khi trượt; mờ đi khi qua mép gối | Chu kỳ ngang đúng 1 ô |
+| Sáng mặt | Pha trắng, mạnh nhất ở mép trên, nhạt dần xuống dưới | Tầm 0,6; tối đa 26% |
+| Vệt bóng | Mỗi mép hướng lên một vạch trắng mảnh. Đầu vạch ở góc lồi là đốm trắng móc nhẹ xuống; đầu vạch ở góc lõm là lưỡi liềm cong lên theo thành | Cách mép 0,14; vạch đậm 55%, đốm 100% |
+| Vạch đáy | Vạch sáng mảnh sát mép dưới, rõ hơn ở góc dưới phải | Cách mép 0,05 |
 
-- Texture khoảng cách tới mép (SDF) dựng một lần cho mỗi hình khối rồi cache (không phụ thuộc màu hay cỡ ô, khoảng 2–17 ms mỗi hình trên máy dev); shader dùng SDF để tính viền, dải đáy, lòng và bóng, nên khối chữ L, T, ... đều ra đúng cấu trúc với ô lõm liền mạch.
-- Khối nhiều ô liền một viên: không viền, không khe giữa các ô trong khối; góc lồi bo, góc lõm mềm; chỉ một vệt sáng cho cả khối. Khe giữa các khối là 1/16 ô.
-- Cỡ ô là số nguyên (làm tròn xuống) để các ô của một khối khớp pixel, không lộ đường nối.
-- Mũi tên mù màu hạ nhẹ xuống dưới tâm ô để không chạm vệt sáng. Băng, xích, sương mù vẽ đè lên lớp pudding, giữ nguyên cách đọc. Khối hai lớp: lớp trong là viên pudding nhỏ có thành, viền và vệt sáng riêng.
-- Chưa áp dụng cho nền, khung cổng, đá, icon (giữ nét hiện tại). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá pudding/gel bóng (xem quy tắc prompt bên dưới) để cùng phong cách.
+Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả sắc độ (vàng về cam, tím về tím đậm) nên không suy ra từ một màu. `face` cũng là `ThemeKit.BLOCK_COLORS`, nên cổng, hạt và khối cùng một màu:
+
+| Màu | `deep` (đáy) | `side` (hai bên) | `face` (sọc đậm) | `stripe` (sọc nhạt) |
+| --- | --- | --- | --- | --- |
+| Vàng | `F19B09` | `F8B20F` | `FDD414` | `FDE846` |
+| Xanh lá | `20A208` | `41C412` | `6DED1E` | `84F437` |
+| Xanh dương | `0260E6` | `148FF8` | `0C9CFD` | `41C1FD` |
+| Tím | `B113CC` | `C622DC` | `E644F4` | `EC5FF6` |
+
+- Texture khoảng cách tới mép (SDF) dựng một lần cho mỗi hình khối rồi cache (không phụ thuộc màu hay cỡ ô, khoảng 4–35 ms mỗi hình trên máy dev); shader dùng SDF để tính mép gối, vạch đáy và bóng, nên khối chữ L, T, ... đều ra đúng cấu trúc, viền góc liền một nét. Mỗi điểm ảnh đọc texture tối đa 7 lần.
+- Cỡ ô là số nguyên (làm tròn xuống) để các ô của một khối khớp pixel.
+- Ảnh duyệt không có mũi tên trên khối, nhưng mũi tên mù màu vẫn bật mặc định (mục 2), hạ nhẹ xuống dưới tâm ô để không chạm vệt bóng. Băng tô trong hình khối bằng shader nên không tràn ra góc bo, nháy sáng Gợi ý cũng vậy; xích, sương mù vẽ đè lên lớp kẹo, giữ nguyên cách đọc. Khối hai lớp: viên trong dùng đúng shader và vệt bóng đó ở cỡ nhỏ hơn.
+- Chưa áp dụng cho nền, khung cổng, đá, icon (giữ nét hiện tại, chỉ đổi màu cổng theo khối). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá kẹo gel bóng (xem quy tắc prompt bên dưới) để cùng phong cách.
 
 **Vẫn vẽ bằng code (và shader):** hình khối, lưới, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
 
@@ -374,7 +383,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 | --- | --- | --- | --- |
 | `icon_app` | `icon`, nền đặc | 1024 → các cỡ bản build cần | Một khối màu trượt ra cổng |
 | `bg_home`, `bg_level` | `background` | 768×1664 → rộng 720 | Nền ít chi tiết, phần giữa yên để bàn cờ nổi; cắt được cho 360×640 |
-| `block_surface` | Bỏ | | Không còn dùng: chất liệu pudding vẽ hoàn toàn bằng code (xem Concept theme) |
+| `block_surface` | Bỏ | | Không còn dùng: chất liệu khối vẽ hoàn toàn bằng code (xem Concept theme) |
 | `ui_gold`, `ui_heart`, `ui_hint`, `ui_moves`, `ui_smash` | `icon`, nền trong | 1024 → 128 | Gold, mạng, 3 booster |
 | `ui_shop`, `ui_settings`, `ui_lock`, `ui_restart`, `ui_video`, `ui_gift`, `ui_profile`, `ui_sound`, `ui_music` | `icon`, nền trong | 1024 → 128 | Nút và trạng thái; tắt âm thì code vẽ gạch chéo |
 | `art_win`, `art_lose`, `art_no_lives` | `ui`, nền trong | 1024 → 512 | Thẻ thắng, popup thua, màn hết mạng |
@@ -396,7 +405,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 
 **Cách làm**
 
-1. Prompt nào cũng theo một bộ quy tắc: nét bo tròn, màu tươi, chất liệu pudding/gel bóng (viền gel sáng mỏng, dải đáy dày nhạt, lòng lõm đậm màu, vệt sáng trắng ôm góc trên trái), đổ bóng nhẹ, nền sạch, không chữ, không logo, không watermark. Màu khối ghi đúng mã màu đang dùng trong game. Không đưa tên hay ảnh của game gốc vào prompt hoặc ảnh tham chiếu.
+1. Prompt nào cũng theo một bộ quy tắc: nét bo tròn, màu tươi, chất liệu kẹo gel bóng (sọc chéo 45 độ, mép gối đậm màu dày ở đáy, vạch sáng trắng ở mép trên), đổ bóng nhẹ, nền sạch, không chữ, không logo, không watermark. Màu khối ghi đúng mã màu đang dùng trong game. Không đưa tên hay ảnh của game gốc vào prompt hoặc ảnh tham chiếu.
 2. Dùng seed cố định và `use_reprompt=false`, để prompt lưu lại đúng là prompt đã chạy. Ghi công cụ, prompt, seed, steps và SHA256 của từng file vào `art/manifest.json`.
 3. Tạo thư mục cha trước khi gửi job. MCP không ghi đè file, nên làm lại thì lưu tên mới (`_v2`). Job chưa xong thì gọi lại `collect_*` với cùng `prompt_id`, không gửi job mới.
 4. Bản gốc nằm trong `art/`, không vào bản build (loại khỏi export bằng filter hoặc `.gdignore`). File dùng trong game nằm trong `assets/`: PNG cho hình, Godot tự import; **WAV cho hiệu ứng** để giảm độ trễ, **Ogg cho nhạc nền** để lặp liền mạch. Thu nhỏ, cắt khoảng lặng và cân âm lượng bằng `ffmpeg`, chỉ là công cụ dev.
@@ -417,3 +426,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 - Đổi concept hình khối sang pudding/gel bóng (ảnh duyệt `concept_candy_board_v1`), vẽ bằng code; bỏ tài nguyên `block_surface`.
 - Thêm avatar và frame, 6 cơ chế từ L21, bảng mở khoá, thưởng Daily Challenge, tiêu chí thư giãn.
 - Dùng AppLovin MAX, không có banner.
+
+**2026-11-02**
+
+- Đổi concept hình khối sang kẹo sọc (ảnh duyệt `concept_candy_board_v5_stripe`), đo số từ ảnh; bốn màu khối và cổng đổi theo ảnh. Giữ mũi tên mù màu dù ảnh không có.

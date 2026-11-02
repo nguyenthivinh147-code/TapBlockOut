@@ -11,6 +11,7 @@ const ICE_TINT := Color(0.62, 0.86, 1.0, 0.55)
 const NEIGHBORS := [Vector2i(0, -1), Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, 1)]
 const KEY_COLOR := Color("F5C518")
 const CHAIN_COLOR := Color(0.88, 0.9, 0.96)
+const INNER_INSET := 0.25  # viên trong của khối hai lớp lùi vào chừng này (ô)
 
 static var _real_icon: Dictionary = {}  # tên -> có file thật?
 
@@ -29,64 +30,95 @@ static func arrow_shown(view: Dictionary, show_arrow: bool) -> bool:
 	return show_arrow and not bool(view.get("is_fog_hidden", false))
 
 
-static func _box(fill: Color, radii: Array, _margins: Array, border: Color, borders: Array) -> StyleBoxFlat:
-	var s := StyleBoxFlat.new()
-	s.bg_color = fill
-	s.corner_radius_top_left = radii[0]
-	s.corner_radius_top_right = radii[1]
-	s.corner_radius_bottom_right = radii[2]
-	s.corner_radius_bottom_left = radii[3]
-	s.border_color = border
-	s.border_width_top = borders[0]
-	s.border_width_left = borders[1]
-	s.border_width_right = borders[2]
-	s.border_width_bottom = borders[3]
-	s.anti_aliasing = true
-	return s
-
-
-## Màu viền hoặc thành kẹo: tối đi `amount` nhưng vẫn đậm màu, không xám.
-static func _candy_edge(base: Color, amount: float = 0.30) -> Color:
-	var e := base.darkened(amount)
-	e.s = minf(1.0, e.s + 0.15)
-	return e
-
-
-## Quad Bezier qua `n + 1` điểm.
-static func _bez(p0: Vector2, p1: Vector2, p2: Vector2, n: int) -> PackedVector2Array:
-	var out := PackedVector2Array()
-	for i in n + 1:
-		var t := float(i) / float(n)
-		out.append(p0 * (1.0 - t) * (1.0 - t) + p1 * 2.0 * (1.0 - t) * t + p2 * t * t)
+## Các đoạn mép hướng lên của khối: {"x0", "x1", "y", "wall_left", "wall_right"} theo đơn vị ô.
+## `wall_*` true nghĩa là đầu đoạn đó chạm một thành khối đi lên (góc lõm), false là góc lồi.
+static func top_runs(cells: Array) -> Array:
+	var occ := {}
+	for c: Vector2i in cells:
+		occ[c] = true
+	var out: Array = []
+	for c: Vector2i in cells:
+		if occ.has(c + Vector2i(0, -1)):
+			continue
+		var left := c + Vector2i(-1, 0)
+		if occ.has(left) and not occ.has(left + Vector2i(0, -1)):
+			continue  # không phải đầu trái của đoạn
+		var end := c
+		while occ.has(end + Vector2i(1, 0)) and not occ.has(end + Vector2i(1, -1)):
+			end += Vector2i(1, 0)
+		out.append({"x0": c.x, "x1": end.x + 1, "y": c.y,
+			"wall_left": occ.has(left + Vector2i(0, -1)),
+			"wall_right": occ.has(end + Vector2i(1, -1))})
 	return out
 
 
-## Vệt sáng của pudding trong khung `size` (px) có góc trên trái ở `origin`: một thấu kính cong ôm góc
-## (đậm ở mép ngoài, mờ dần vào trong, đầu trên phải tròn, đuôi thon xuống trái), một vạch ngắn bên dưới
-## và một vệt mờ ngang ở mép trên. Toạ độ chuẩn hoá theo khung, đo từ viên pudding đơn trong concept.
-static func draw_glare(ci: CanvasItem, origin: Vector2, size: float) -> void:
-	var a := Vector2(0.09, 0.33)
-	var e := Vector2(0.35, 0.125)
-	var outer := _bez(a, Vector2(0.06, 0.12), e, 14)
-	var inner := _bez(a, Vector2(0.27, 0.28), e, 14)
-	var pts := PackedVector2Array()
+## Bo nét bằng cắt góc Chaikin; mỗi điểm là (x, y, nửa bề dày, độ đậm) nên bề dày và độ đậm cũng mượt theo.
+static func _chaikin(ctrl: Array[Vector4], passes: int = 2) -> Array[Vector4]:
+	var p := ctrl
+	for _i in passes:
+		var q: Array[Vector4] = [p[0]]
+		for i in p.size() - 1:
+			q.append(p[i].lerp(p[i + 1], 0.25))
+			q.append(p[i].lerp(p[i + 1], 0.75))
+		q.append(p[-1])
+		p = q
+	return p
+
+
+## Dải sáng thon qua các điểm (toạ độ theo ô); mép ngoài mờ về 0 nên không cần khử răng cưa.
+static func _ribbon(ci: CanvasItem, ctrl: Array[Vector4], cell: float, at: Vector2, feather: float) -> void:
+	var pts := _chaikin(ctrl)
+	var n := pts.size()
+	var verts := PackedVector2Array()
 	var cols := PackedColorArray()
-	for p in outer:
-		pts.append(origin + p * size)
-		cols.append(Color(1, 1, 1, 0.95))
-	for i in range(inner.size() - 1, -1, -1):
-		pts.append(origin + inner[i] * size)
-		cols.append(Color(1, 1, 1, 0.50))
-	ci.draw_polygon(pts, cols)
-	var edge := PackedVector2Array()
-	for p in outer:
-		edge.append(origin + p * size)
-	ci.draw_polyline(edge, Color(1, 1, 1, 0.9), maxf(1.0, size * 0.012), true)
-	# vạch ngắn dưới đuôi và vệt mờ ngang ở mép trên
-	var dash := Rect2(origin + Vector2(0.085, 0.325) * size, Vector2(0.022, 0.04) * size)
-	ci.draw_style_box(_box(Color(1, 1, 1, 0.9), [3, 3, 3, 3], [], Color(0, 0, 0, 0), [0, 0, 0, 0]), dash)
-	var streak := Rect2(origin + Vector2(0.50, 0.095) * size, Vector2(0.16, 0.022) * size)
-	ci.draw_style_box(_box(Color(1, 1, 1, 0.28), [3, 3, 3, 3], [], Color(0, 0, 0, 0), [0, 0, 0, 0]), streak)
+	var idx := PackedInt32Array()
+	for i in n:
+		var pos := Vector2(pts[i].x, pts[i].y)
+		var prev := Vector2(pts[maxi(i - 1, 0)].x, pts[maxi(i - 1, 0)].y)
+		var next := Vector2(pts[mini(i + 1, n - 1)].x, pts[mini(i + 1, n - 1)].y)
+		var t := (next - prev).normalized()
+		var nor := Vector2(-t.y, t.x)
+		var solid := pts[i].z * cell
+		for k: float in [-solid - feather, -solid, solid, solid + feather]:
+			verts.append(at + pos * cell + nor * k)
+		var hi := Color(1, 1, 1, pts[i].w)
+		var lo := Color(1, 1, 1, 0)
+		cols.append_array(PackedColorArray([lo, hi, hi, lo]))
+		if i < n - 1:
+			var b := i * 4
+			for s in 3:
+				idx.append_array(PackedInt32Array([b + s, b + s + 1, b + s + 4, b + s + 1, b + s + 5, b + s + 4]))
+	RenderingServer.canvas_item_add_triangle_array(ci.get_canvas_item(), idx, verts, cols)
+
+
+## Vệt bóng của khối: mỗi mép hướng lên một vạch mảnh, đầu vạch ở góc lồi là đốm trắng móc nhẹ xuống, đầu vạch
+## ở góc lõm là lưỡi liềm cong lên theo thành. Đo từ concept, theo ô; `at` là góc ô gốc.
+static func draw_gloss(ci: CanvasItem, cells: Array, cell: float, at: Vector2 = Vector2.ZERO) -> void:
+	var feather := maxf(0.8, cell * 0.022)
+	for r: Dictionary in top_runs(cells):
+		var x0 := float(r["x0"])
+		var x1 := float(r["x1"])
+		var y := float(r["y"])
+		var ctrl: Array[Vector4] = []
+		if bool(r["wall_left"]):
+			ctrl.append(Vector4(x0 + 0.03, y + 0.14, 0.004, 0.0))
+			ctrl.append(Vector4(x0 + 0.22, y + 0.14, 0.016, 0.5))
+		else:
+			ctrl.append(Vector4(x0 + 0.225, y + 0.235, 0.012, 0.55))
+			ctrl.append(Vector4(x0 + 0.245, y + 0.175, 0.036, 0.95))
+			ctrl.append(Vector4(x0 + 0.33, y + 0.15, 0.042, 1.0))
+			ctrl.append(Vector4(x0 + 0.46, y + 0.145, 0.018, 0.6))
+		if bool(r["wall_right"]):
+			ctrl.append(Vector4(x1 - 0.42, y + 0.14, 0.018, 0.55))
+			ctrl.append(Vector4(x1 - 0.2, y + 0.135, 0.026, 0.9))
+			ctrl.append(Vector4(x1 - 0.06, y + 0.105, 0.026, 0.95))
+			ctrl.append(Vector4(x1 + 0.012, y + 0.035, 0.006, 0.5))
+		else:
+			ctrl.append(Vector4(x1 - 0.48, y + 0.135, 0.018, 0.6))
+			ctrl.append(Vector4(x1 - 0.33, y + 0.125, 0.034, 0.98))
+			ctrl.append(Vector4(x1 - 0.255, y + 0.145, 0.03, 0.95))
+			ctrl.append(Vector4(x1 - 0.225, y + 0.215, 0.01, 0.5))
+		_ribbon(ci, ctrl, cell, at, feather)
 
 
 ## Ô gần trọng tâm nhất: nơi đặt mũi tên và biểu tượng.
@@ -105,54 +137,59 @@ static func anchor_cell(cells: Array) -> Vector2i:
 	return best
 
 
-## Màu gốc của khối: xám sương mù khi còn trong sương, tối đi khi bị xích.
-static func block_base_color(view: Dictionary) -> Color:
-	var base: Color = FOG_COLOR if bool(view.get("is_fog_hidden", false)) else ThemeKit.block_color(str(view.get("color", "")))
+## Bốn tông của khối: xám sương mù khi còn trong sương, tối đi khi bị xích.
+static func block_ramp(view: Dictionary) -> Dictionary:
+	var ramp: Dictionary = ThemeKit.block_ramp("", FOG_COLOR) if bool(view.get("is_fog_hidden", false)) else ThemeKit.block_ramp(str(view.get("color", "")))
 	if bool(view.get("chained", false)):
-		base = base.darkened(0.22)
-	return base
+		var dark := {}
+		for tone in ramp:
+			dark[tone] = (ramp[tone] as Color).darkened(0.22)
+		return dark
+	return ramp
 
 
-## Vẽ phần nằm trên thân pudding của một khối đa ô: vệt sáng, viên trong của khối hai lớp, rồi băng, xích,
-## sương, mũi tên. Thân (viền gel, lòng, bóng đổ) do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
-## theo concept `art/concepts/concept_candy_board_v1.png`.
+## Lớp băng tô trong hình khối (shader), trong suốt nếu không có băng.
+static func block_overlay(view: Dictionary) -> Color:
+	var ice := int(view.get("ice", 0))
+	if ice <= 0:
+		return Color(0, 0, 0, 0)
+	return Color(ICE_TINT, 0.72) if ice >= 2 else ICE_TINT
+
+
+## Khung (toạ độ ô gốc của khối) của viên trong ở ô `c` của khối hai lớp.
+static func inner_rect(c: Vector2i, cell: float) -> Rect2:
+	var m := cell * INNER_INSET
+	return Rect2(Vector2(c) * cell + Vector2(m, m), Vector2(cell, cell) - Vector2(m, m) * 2.0)
+
+
+## Vẽ phần nằm trên thân kẹo của một khối đa ô: vệt bóng (của khối và của viên trong khối hai lớp), rồi băng,
+## xích, sương, mũi tên. Thân (mép gối, sọc, bóng đổ) do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
+## theo concept `art/concepts/concept_candy_board_v5_stripe.png`.
 ## `cells` tính theo toạ độ ô gốc của chính CanvasItem này.
 static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictionary, show_arrow: bool) -> void:
 	var fog_hidden: bool = view.get("is_fog_hidden", false)
 	var chained: bool = view.get("chained", false)
-	var inner_color := str(view.get("inner_color", ""))
-	var inner_col := ThemeKit.block_color(inner_color) if inner_color != "" and not fog_hidden else Color(0, 0, 0, 0)
-	var bw := maxi(2, int(cell * 0.035))
-	var top_left: Vector2i = cells[0]
-	for c: Vector2i in cells:
-		if c.y < top_left.y or (c.y == top_left.y and c.x < top_left.x):
-			top_left = c
-	# vệt sáng ở góc trên trái của cả khối (khung bằng ô, lùi theo khe giữa các khối)
-	var g := cell * 0.0625
-	draw_glare(ci, Vector2(top_left) * cell + Vector2(g, g), cell - 2.0 * g)
-	if inner_col.a > 0.0:
+	var has_inner := str(view.get("inner_color", "")) != "" and not fog_hidden
+	draw_gloss(ci, cells, cell)
+	if has_inner:
 		for c: Vector2i in cells:
-			var m := cell * 0.27
-			var ir := Rect2(c.x * cell + m, c.y * cell + m, cell - 2.0 * m, cell - 2.0 * m)
-			var ri := int(cell * 0.14)
-			var lip := maxi(bw + 2, int(cell * 0.08))
-			ci.draw_style_box(_box(inner_col.lerp(Color.WHITE, 0.06), [ri, ri, ri, ri], [], _candy_edge(inner_col, 0.45), [bw, bw, bw, lip]), ir)
-			draw_glare(ci, ir.position, ir.size.x)
+			var ir := inner_rect(c, cell)
+			draw_gloss(ci, [Vector2i.ZERO], ir.size.x, ir.position)
 	var anchor := anchor_cell(cells)
 	var center := (Vector2(anchor) + Vector2(0.5, 0.5)) * cell
 	if fog_hidden:
 		draw_fog_cover(ci, cells, cell)
 	var ice := int(view.get("ice", 0))
 	if ice > 0:
-		draw_ice(ci, cells, cell, ice)
+		draw_ice(ci, cells, cell)
 	if arrow_shown(view, show_arrow):
-		if inner_col.a > 0.0:
+		if has_inner:
 			# khối hai lớp: mũi tên của lớp ngoài nằm lệch lên trên tâm ô
 			draw_arrow(ci, center + Vector2(0, -cell * 0.3), LevelData.dir_of(str(view.get("color", ""))), cell * 0.6)
 		elif chained:
 			draw_arrow(ci, center + Vector2(0, -cell * 0.2), LevelData.dir_of(str(view.get("color", ""))), cell * 0.7)
 		else:
-			# hạ nhẹ xuống để không chạm vệt sáng ở góc trên trái
+			# hạ nhẹ xuống để không chạm vệt bóng ở mép trên
 			draw_arrow(ci, center + Vector2(0, cell * 0.05), LevelData.dir_of(str(view.get("color", ""))), cell)
 	if chained:
 		draw_chain(ci, cells, cell)
@@ -223,15 +260,10 @@ static func draw_key(ci: CanvasItem, pos: Vector2, cell: float) -> void:
 	ci.draw_line(pos + Vector2(rad * 0.55, 0), pos + Vector2(rad * 0.55, rad * 0.3), KEY_COLOR, w)
 
 
-## Băng phủ khối: lớp xanh nhạt, vệt sáng, vết nứt; `level` >= 2 dày hơn.
-static func draw_ice(ci: CanvasItem, cells: Array, cell: float, level: int = 1) -> void:
-	var tint := ICE_TINT
-	if level >= 2:
-		tint.a = 0.72
+## Băng phủ khối: vệt sáng, vết nứt; lớp xanh nhạt do shader tô trong hình khối (`block_overlay`).
+static func draw_ice(ci: CanvasItem, cells: Array, cell: float) -> void:
 	for c: Vector2i in cells:
-		var r := Rect2(c.x * cell + 2, c.y * cell + 2, cell - 4, cell - 4)
-		ci.draw_rect(r, tint)
-		ci.draw_rect(Rect2(r.position + Vector2(cell * 0.08, cell * 0.08), Vector2(cell * 0.3, cell * 0.05)), Color(1, 1, 1, 0.5))
+		ci.draw_rect(Rect2(Vector2(c) * cell + Vector2(cell * 0.14, cell * 0.14), Vector2(cell * 0.3, cell * 0.05)), Color(1, 1, 1, 0.5))
 	var a: Vector2i = cells[0]
 	var o := Vector2(a.x * cell, a.y * cell)
 	var tex := mech_tex("mech_ice")

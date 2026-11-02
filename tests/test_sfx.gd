@@ -97,8 +97,8 @@ func test_music_pause_resume(t: T) -> void:
 
 
 func test_theme_palette_and_widgets(t: T) -> void:
-	t.eq(ThemeKit.block_color("yellow"), Color("F5C518"), "vàng")
-	t.eq(ThemeKit.block_color("purple"), Color("9B51E0"), "tím")
+	t.eq(ThemeKit.block_color("yellow"), Color("FDD414"), "vàng")
+	t.eq(ThemeKit.block_color("purple"), Color("E644F4"), "tím")
 	for kind in ["primary", "secondary", "video", "danger", "ghost"]:
 		var b := ThemeKit.make_button("OK", kind)
 		t.ok(b.custom_minimum_size.x >= 96 and b.custom_minimum_size.y >= 96, "nút >= 96 (%s)" % kind)

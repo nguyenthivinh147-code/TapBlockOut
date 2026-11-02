@@ -3,10 +3,17 @@ extends RefCounted
 ## Dùng: const ThemeKit := preload("res://src/ui/theme_kit.gd")
 
 const BLOCK_COLORS := {
-	"yellow": Color("F5C518"),
-	"green": Color("43B649"),
-	"blue": Color("2F80ED"),
-	"purple": Color("9B51E0"),
+	"yellow": Color("FDD414"),
+	"green": Color("6DED1E"),
+	"blue": Color("0C9CFD"),
+	"purple": Color("E644F4"),
+}
+## Bốn tông của khối kẹo; `face` trùng BLOCK_COLORS. Đổi sắc theo tông (vàng về cam, tím về tím đậm) nên không suy ra từ một màu.
+const BLOCK_RAMPS := {
+	"yellow": {"deep": Color("F19B09"), "side": Color("F8B20F"), "face": Color("FDD414"), "stripe": Color("FDE846")},
+	"green": {"deep": Color("20A208"), "side": Color("41C412"), "face": Color("6DED1E"), "stripe": Color("84F437")},
+	"blue": {"deep": Color("0260E6"), "side": Color("148FF8"), "face": Color("0C9CFD"), "stripe": Color("41C1FD")},
+	"purple": {"deep": Color("B113CC"), "side": Color("C622DC"), "face": Color("E644F4"), "stripe": Color("EC5FF6")},
 }
 
 const BG := Color("1E2433")
@@ -43,6 +50,13 @@ static var _icon_cache: Dictionary = {}
 
 static func block_color(color_name: String) -> Color:
 	return BLOCK_COLORS.get(color_name, TEXT_DIM)
+
+
+## Bốn tông của khối theo tên màu; màu lạ thì suy từ `base`.
+static func block_ramp(color_name: String, base: Color = TEXT_DIM) -> Dictionary:
+	if BLOCK_RAMPS.has(color_name):
+		return BLOCK_RAMPS[color_name]
+	return {"deep": base.darkened(0.38), "side": base.darkened(0.2), "face": base, "stripe": base.lightened(0.14)}
 
 
 ## Nền toàn màn hình, thêm vào đầu danh sách con của màn.
