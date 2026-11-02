@@ -37,7 +37,8 @@ func test_defaults(t: T) -> void:
 	t.eq(Config.UNLOCK.pulse, 90, "pulse")
 	t.eq(Config.CONTENT.demo_max_level, 20, "demo")
 	t.eq(Config.CONTENT.ftue_steps.size(), 8, "ftue")
-	t.eq(Config.SALE_WEEKDAYS, [6, 0], "sale")
+	t.eq(Config.SALE_WEEKDAYS, [5, 6, 0], "sale")
+	t.eq(Config.SALE_MODE, 1, "sale mode")
 	t.eq(Config.is_demo(), OS.has_feature("demo"), "is_demo")
 	t.eq(Config.demo_override, -1, "demo_override mặc định")
 
@@ -57,7 +58,7 @@ func test_demo_override(t: T) -> void:
 
 func test_skus(t: T) -> void:
 	Config.reset()
-	t.eq(Config.SKUS.size(), 16, "16 SKU")
+	t.eq(Config.SKUS.size(), 21, "21 SKU")
 	for i in range(1, 7):
 		var base := "gold_pack_%d" % i
 		t.ok(Config.SKUS.has(base), base)
@@ -155,3 +156,18 @@ func test_bool_coercion(t: T) -> void:
 	t.eq(v, false, "bool 0")
 	t.eq(Config._coerce(false, "TRUE"), true, "bool TRUE")
 	t.eq(Config._coerce(true, "maybe"), null, "bool hỏng")
+
+
+func test_weekend_sale_mode_remote(t: T) -> void:
+	Config.reset()
+	Config.apply_remote({"weekend_sale_mode": "2", "sale_percent": "40"})
+	t.eq(Config.SALE_MODE, 2, "mode 2")
+	t.eq(Config.SALE_PERCENT, 40, "percent")
+	Config.apply_remote({"weekend_sale_mode": "4"})
+	t.eq(Config.SALE_MODE, 2, "mode ngoài 1..3 bị bỏ")
+	Config.apply_remote({"weekend_sale_mode": "x", "sale_percent": "100"})
+	t.eq(Config.SALE_MODE, 2, "mode hỏng bị bỏ")
+	t.eq(Config.SALE_PERCENT, 40, "percent >= 100 bị bỏ")
+	Config.reset()
+	t.eq(Config.SALE_MODE, 1, "reset mode")
+	t.eq(Config.SALE_PERCENT, 50, "reset percent")

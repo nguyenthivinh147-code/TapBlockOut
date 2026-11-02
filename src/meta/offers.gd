@@ -12,15 +12,24 @@ const GOLD_PREFIX := "gold_pack_"
 const SALE_SUFFIX := "_sale"
 
 
-## Hôm nay có sale không (thứ Bảy và Chủ nhật theo giờ máy, Config.SALE_WEEKDAYS).
-static func is_sale(now: int, tz: int) -> bool:
-	return Config.SALE_WEEKDAYS.has(Clock.weekday(now, tz))
+## Weekend sale có đang bật cho người chơi này không. Mode 3 tắt hẳn; ngoài Config.SALE_WEEKDAYS
+## (mặc định thứ Sáu, thứ Bảy, Chủ nhật theo giờ máy) thì tắt; mode 1 bật cho mọi người;
+## mode 2 chỉ bật khi `purchased` (đã mua gói nào chưa) là false.
+static func is_sale(now: int, tz: int, purchased: bool = false) -> bool:
+	if Config.SALE_MODE == 3:
+		return false
+	if not Config.SALE_WEEKDAYS.has(Clock.weekday(now, tz)):
+		return false
+	if Config.SALE_MODE == 2:
+		return not purchased
+	return true
 
 
 ## Các gói gold theo thứ tự, mỗi gói đúng SKU thường hoặc `_sale`.
-## [{id: "gold_pack_1", sku, usd, gold, consumable, sale}]
-static func catalog(now: int, tz: int) -> Array:
-	var sale := is_sale(now, tz)
+## [{id: "gold_pack_1", sku, usd, gold, consumable, sale, base_sku, base_usd}]
+## `base_*` là gói thường, để UI gạch giá gốc lúc sale.
+static func catalog(now: int, tz: int, purchased: bool = false) -> Array:
+	var sale := is_sale(now, tz, purchased)
 	var ids: Array = []
 	for k in Config.SKUS:
 		var key := str(k)
@@ -38,6 +47,7 @@ static func catalog(now: int, tz: int) -> Array:
 			"id": id, "sku": sku, "usd": float(d.get("usd", 0.0)),
 			"gold": int(d.get("gold", 0)), "consumable": bool(d.get("consumable", true)),
 			"sale": use_sale,
+			"base_sku": id, "base_usd": float(Config.SKUS[id].get("usd", 0.0)),
 		})
 	return out
 

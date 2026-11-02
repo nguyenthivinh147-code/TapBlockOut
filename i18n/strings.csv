@@ -18,6 +18,7 @@ home_lives_full,Full,Đầy
 home_lives_next,Next life in %s,Mạng kế tiếp sau %s
 home_gift,Daily gift,Quà mỗi ngày
 home_shop,Shop,Cửa hàng
+home_weekend_sale,Weekend sale,Sale cuối tuần
 home_settings,Settings,Cài đặt
 home_profile,Profile,Hồ sơ
 home_challenge,Daily Challenge,Thử thách ngày
@@ -224,3 +225,59 @@ notif_challenge_title,Today's challenge is ready,Thử thách hôm nay đã sẵ
 notif_challenge_body,A fresh board is waiting for you.,Một bàn cờ mới đang chờ bạn.
 notif_come_back_title,A few blocks are waiting,Vài khối đang chờ bạn
 notif_come_back_body,Take a moment to slide them out.,Dành chút thời gian để trượt chúng ra nhé.
+feature_next,Next unlock: %s,Mở khoá tiếp: %s
+feature_unlocked,%s unlocked!,Đã mở khoá %s!
+feature_daily_gift,Daily gift,Quà mỗi ngày
+feature_hint,Hint,Gợi ý
+feature_shop,Shop,Cửa hàng
+feature_move,+3 Move,+3 Move
+feature_smash,Smash,Phá khối
+feature_lives,Lives,Mạng
+feature_challenge,Daily Challenge,Thử thách ngày
+feature_stone,Stones,Đá
+feature_ice,Ice,Băng
+feature_chain,Chains,Xích
+feature_layer,Layers,Lớp khối
+feature_fog,Fog,Sương mù
+feature_pulse,Pulse gates,Cổng nhịp
+home_weekly,Weekly Pass,Weekly Pass
+home_weekly_waiting,New season soon,Mùa mới sắp mở
+home_chain,Chain offer,Chuỗi quà
+home_special_pack,Special pack,Gói đặc biệt
+offer_special_pack_title,Special Pack,Gói Đặc Biệt
+offer_special_pack_body,"A big stash of gold and boosters for when you want to go further. Buy as many times as you like.",Một kho gold và booster lớn để bạn đi xa hơn. Mua bao nhiêu lần tuỳ ý.
+weekly_title,Weekly Pass,Weekly Pass
+weekly_keys,%d / %d keys,%d / %d chìa
+weekly_time_left,%s left,Còn %s
+weekly_waiting_title,Next season starts soon,Mùa mới sắp bắt đầu
+weekly_waiting_body,The Weekly Pass opens in %s. See you then!,Weekly Pass mở sau %s. Hẹn gặp bạn nhé!
+weekly_locked,Pass the second HARD level to unlock the Weekly Pass.,Vượt qua level HARD thứ hai để mở Weekly Pass.
+weekly_free,Free,Miễn phí
+weekly_vip,VIP,VIP
+weekly_milestone,%d keys,%d chìa
+weekly_claim,Claim,Nhận
+weekly_claim_all,Claim all,Nhận tất cả
+weekly_claimed,Claimed,Đã nhận
+weekly_buy_vip,Get VIP for %s,Mở VIP với %s
+weekly_vip_active,VIP active,Đã có VIP
+weekly_vip_hearts,+%d max hearts this week,+%d mạng tối đa trong tuần này
+weekly_vip_hint,VIP rewards unlock with the pass. Unclaimed VIP rewards are collected for you when the season ends.,Thưởng VIP mở khi có pass. Thưởng VIP chưa nhận sẽ tự được trao khi hết mùa.
+weekly_bank_title,Bonus Bank,Kho thưởng thêm
+weekly_bank_locked,Reach the last milestone with VIP to unlock the Bonus Bank.,Đạt mốc cuối cùng với VIP để mở Kho thưởng thêm.
+weekly_bank_step,Every %d extra keys,Mỗi %d chìa thừa
+weekly_end_title,Season ended,Mùa đã kết thúc
+weekly_end_vip,Your unclaimed rewards were collected for you: %s,Thưởng chưa nhận đã được trao cho bạn: %s
+weekly_end_free,You earned %d keys this season. A new season is coming!,Bạn đã kiếm được %d chìa trong mùa này. Mùa mới sắp đến!
+weekly_reward_gold,%d gold,%d gold
+chain_title,Chain Offer,Chuỗi quà
+chain_time_left,Ends in %s,Kết thúc sau %s
+chain_step,Step %d,Bước %d
+chain_free,Free,Miễn phí
+chain_ad,Watch video,Xem video
+chain_pay,%s,%s
+chain_claim,Claim,Nhận
+chain_claimed,Claimed,Đã nhận
+chain_locked,Locked,Chưa mở
+chain_done,All steps done. Come back for the next chain!,Đã xong mọi bước. Lần sau sẽ có chuỗi mới!
+chain_failed,Couldn't complete this step. Please try again.,Chưa hoàn thành bước này. Bạn thử lại nhé.
+chain_expired,This chain has ended.,Chuỗi quà này đã kết thúc.

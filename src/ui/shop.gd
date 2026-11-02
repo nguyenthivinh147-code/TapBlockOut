@@ -119,7 +119,21 @@ static func make_gold_row(entry: Dictionary, gold_text: String, sale_text: Strin
 	h.add_child(v)
 	v.add_child(ThemeKit.make_label(gold_text, ThemeKit.FS_BUTTON, ThemeKit.GOLD))
 	if bool(entry.get("sale", false)):
-		v.add_child(ThemeKit.make_label(sale_text, ThemeKit.FS_SMALL, ThemeKit.DANGER))
+		var tag := sale_text
+		if int(entry.get("sale_percent", 0)) > 0:
+			tag = "%s -%d%%" % [sale_text, int(entry.sale_percent)]
+		v.add_child(ThemeKit.make_label(tag, ThemeKit.FS_SMALL, ThemeKit.DANGER))
+		var base_price := str(entry.get("base_price_text", ""))
+		if base_price != "":
+			var old := RichTextLabel.new()
+			old.bbcode_enabled = true
+			old.fit_content = true
+			old.scroll_active = false
+			old.autowrap_mode = TextServer.AUTOWRAP_OFF
+			old.add_theme_font_size_override("normal_font_size", ThemeKit.FS_SMALL)
+			old.add_theme_color_override("default_color", ThemeKit.TEXT_DIM)
+			old.text = "[s]%s[/s]" % base_price.replace("[", "[lb]")
+			v.add_child(old)
 	var b := ThemeKit.make_button(str(entry.get("price_text", "")), "primary")
 	b.custom_minimum_size = Vector2(200, ThemeKit.MIN_BUTTON.y)
 	h.add_child(b)

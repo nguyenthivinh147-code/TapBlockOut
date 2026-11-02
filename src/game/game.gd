@@ -21,6 +21,9 @@ const Cosmetics := preload("res://src/meta/cosmetics.gd")
 const ShopVideos := preload("res://src/meta/shop_videos.gd")
 const AdPacing := preload("res://src/meta/ad_pacing.gd")
 const Offers := preload("res://src/meta/offers.gd")
+const WeeklyPass := preload("res://src/meta/weekly_pass.gd")
+const ChainOffer := preload("res://src/meta/chain_offer.gd")
+const PackConditions := preload("res://src/meta/pack_conditions.gd")
 const NotifPlan := preload("res://src/meta/notif_plan.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
@@ -59,6 +62,7 @@ var _in_ad: bool = false
 var _flush_timer: Timer = null
 var _offered: Dictionary = {}  # placement -> true (đã log rv_offer)
 var _last_win_level: int = 0
+var _last_attempt_level: int = 0
 var _x2_pending: int = 0
 var _x2_free: bool = false
 var _connected: bool = false
@@ -138,6 +142,7 @@ func boot() -> void:
 	meta["first_session_done"] = true
 	NotifPlan.note_open(s, t, _tz())
 	NotifPlan.note_return(s, t, "", Platform.enabled())
+	weekly_refresh()
 	Lives.tick(s, t)
 	_deliver_pending()
 	_recover_lost_ads()
@@ -172,6 +177,7 @@ func reset_for_test(path: String) -> void:
 	_in_ad = false
 	_offered = {}
 	_last_win_level = 0
+	_last_attempt_level = 0
 	_x2_pending = 0
 	_x2_free = false
 	_gen_cache = {}
@@ -236,7 +242,9 @@ func _on_resumed() -> void:
 	var t := now()
 	NotifPlan.note_open(s, t, _tz())
 	NotifPlan.note_return(s, t, "", Platform.enabled())
+	weekly_refresh()
 	Lives.tick(s, t)
+	ChainOffer.update(s, t)
 	lives_changed.emit()
 	_queue_save()
 
@@ -418,8 +426,10 @@ func _begin_attempt(data: Dictionary, level: int, challenge: bool) -> Dictionary
 		"taps": 0, "moves0": board.moves_left(), "count0": board.remaining_count(),
 		"start_ms": Time.get_ticks_msec(), "free_used": {}, "ended": false,
 		"life_charged": false, "challenge": challenge, "hard": bool(data.get("hard", false)),
-		"day": today(),
+		"day": today(), "replay": not challenge and level == _last_attempt_level,
 	}
+	if not challenge:
+		_last_attempt_level = level
 	var params := {"level": level, "runs": int(s.runs), "moves": board.moves_left(),
 		"lives": Lives.count(s, now())}
 	if challenge:
@@ -454,13 +464,17 @@ func _finish_attempt(attempt: Dictionary, won: bool, coins: int) -> void:
 	log_event("challenge_end" if bool(attempt.get("challenge", false)) else "level_end",
 		{"level": int(attempt.level), "won": 1 if won else 0,
 		"taps": int(attempt.taps), "moves_left": (attempt.board as BoardState).moves_left(),
-		"ms": ms, "coins": coins, "runs": int(s.runs)})
+		"ms": ms, "coins": coins, "runs": int(s.runs),
+		"blocks_left": (attempt.board as BoardState).remaining_count(),
+		"rescues": (attempt.rescue as RescueFlow).used(),
+		"replay": 1 if bool(attempt.get("replay", false)) else 0})
 
 
-## {coins, x2_available, x2_free, rate_prompt}. Cộng gold, tăng level, tăng s.runs, lưu ngay.
+## {coins, x2_available, x2_free, rate_prompt, progress, unlocked}. Cộng gold, tăng level, tăng s.runs, lưu ngay.
 func on_level_won(attempt: Dictionary) -> Dictionary:
 	if bool(attempt.get("ended", false)):
-		return {"coins": 0, "x2_available": false, "x2_free": false, "rate_prompt": false}
+		return {"coins": 0, "x2_available": false, "x2_free": false, "rate_prompt": false,
+			"progress": {}, "unlocked": [] as Array[String]}
 	var level := int(attempt.level)
 	var is_challenge := bool(attempt.get("challenge", false))
 	var coins := int(Config.ECON.win_coins)
@@ -474,6 +488,11 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 	if not is_challenge:
 		Offers.note_win(s, level)
 	_earn(coins, "challenge_win" if is_challenge else "level_win")
+	var weekly_pts := 0
+	if not is_challenge:
+		weekly_pts = WeeklyPass.add_points(s, weekly_state(), difficulty_of(level))
+		if weekly_pts > 0:
+			log_event("weekly_points", {"level": level, "points": weekly_pts, "total": WeeklyPass.points(s)})
 	if not is_challenge and level >= int(s.level):
 		s["level"] = level + 1
 	_last_win_level = level
@@ -485,12 +504,30 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 	var rate := not is_challenge and Unlocks.is_open("review", level) and not bool(s.meta.rated)
 	if rate:
 		s.meta["rated"] = true
+	if not is_challenge:
+		_chain_check(false, level)
 	save_now()
 	var avail := coins > 0 and (_x2_free or Platform.ready_rewarded())
 	if avail:
 		log_event("rv_offer", {"pl": "x2_coins"})
 		_offered["x2_coins"] = true
-	return {"coins": coins, "x2_available": avail, "x2_free": _x2_free, "rate_prompt": rate}
+	var progress: Dictionary = {}
+	if not is_challenge:
+		progress = Unlocks.feature_progress(level, _content_cap())
+	return {"coins": coins, "x2_available": avail, "x2_free": _x2_free, "rate_prompt": rate,
+		"progress": progress, "unlocked": progress.get("unlocked", [] as Array[String]),
+		"weekly_points": weekly_pts}
+
+
+func _content_cap() -> int:
+	return int(Config.CONTENT.demo_max_level) if Config.is_demo() else 0
+
+
+## Màn sau thẻ thắng: "home" khi vừa mở tính năng ở Home hoặc vừa thắng Daily Challenge, còn lại "level".
+func next_after_win(res: Dictionary, challenge: bool) -> String:
+	if challenge or Unlocks.opens_home(res.get("unlocked", [])):
+		return "home"
+	return "level"
 
 
 ## Thua (hết đường cứu). Từ L10 mất 1 mạng, trừ khi restart đã trừ.
@@ -513,6 +550,8 @@ func _end_lost(attempt: Dictionary, show_offer: bool) -> bool:
 	_finish_attempt(attempt, false, 0)
 	if not bool(attempt.get("challenge", false)):
 		Offers.note_fail(s, level)
+		if show_offer:
+			_chain_check(true, level)
 	var charged := Lives.lose(s, now(), level)
 	if charged:
 		attempt["life_charged"] = true
@@ -895,11 +934,25 @@ func shop_opened(source: String = "") -> void:
 	log_event("shop_open", {"source": source, "level": int(s.level)})
 
 
-## Gói gold theo giá sale hôm nay, thêm `price_text` từ store.
+## Người chơi đã từng mua gói nào chưa (mode 2 của weekend sale).
+func has_purchased() -> bool:
+	return not s.buys.is_empty()
+
+
+## Weekend sale đang bật cho người chơi này không (mode Remote Config, ngày, lịch sử mua).
+func is_sale_active() -> bool:
+	return Offers.is_sale(now(), _tz(), has_purchased())
+
+
+## Gói gold theo giá sale hôm nay, thêm `price_text` từ store. Lúc sale có thêm
+## `base_price_text` (giá gói thường để gạch) và `sale_percent`.
 func shop_catalog() -> Array:
-	var out := Offers.catalog(now(), _tz())
+	var out := Offers.catalog(now(), _tz(), has_purchased())
 	for e in out:
 		e["price_text"] = Platform.price(str(e.sku))
+		if bool(e.sale):
+			e["base_price_text"] = Platform.price(str(e.base_sku))
+			e["sale_percent"] = Config.SALE_PERCENT
 	return out
 
 
@@ -937,6 +990,11 @@ func grant_purchase(p: Dictionary) -> bool:
 	_give({"coins": int(info.get("gold", 0)), "items": info.get("inv", {})}, "iap_" + sku)
 	if bool(info.get("no_ads", false)):
 		s["no_ads"] = true
+	if bool(info.get("weekly_vip", false)):
+		weekly_refresh()
+		WeeklyPass.on_vip_purchased(s)
+		_apply_weekly_hearts()
+		log_event("weekly_vip", {"points": WeeklyPass.points(s)})
 	(s.buys as Array).append({"token": token, "sku": sku, "order_id": str(p.get("order_id", "")), "at": now()})
 	for id in Offers.ORDER:
 		if str(Config.OFFERS.get(id, {}).get("sku", "")) == sku:
@@ -977,7 +1035,7 @@ func check_offer(on_lose: bool = false) -> String:
 
 ## Mua offer qua SKU của nó (Offers.bought được ghi trong grant_purchase).
 func offer_buy(id: String) -> Dictionary:
-	var sku := str(Config.OFFERS.get(id, {}).get("sku", ""))
+	var sku := offer_sku(id)
 	if sku == "":
 		return {"status": "error", "sku": "", "granted": false}
 	return await buy_sku(sku)
@@ -987,6 +1045,232 @@ func offers_open() -> Array:
 	return Offers.open_offers(s, now())
 
 
+## SKU bán của offer hoặc gói (Config.OFFERS, rồi Config.PACKS). Lúc weekend sale đổi sang `<sku>_sale`
+## nếu SKU đó tồn tại. "" nếu id lạ.
+func offer_sku(id: String) -> String:
+	var sku := str(Config.OFFERS.get(id, {}).get("sku", ""))
+	if sku == "":
+		sku = str(Config.PACKS.get(id, {}).get("sku", ""))
+	if sku != "" and is_sale_active() and Config.SKUS.has(sku + PackConditions.SALE_SUFFIX):
+		return sku + PackConditions.SALE_SUFFIX
+	return sku
+
+
+# --- Special Pack ---
+
+## Gói cần hiện icon ở Main Menu bây giờ ("" nếu không). Mỗi lần chỉ một gói.
+func special_pack_id() -> String:
+	return PackConditions.first_visible(s, int(s.level))
+
+
+# --- Weekly Pass ---
+
+## Level mở Weekly Pass: level HARD thứ `unlock_hard_index` (người chơi phải qua level đó). 0 nếu không có.
+func weekly_unlock_level() -> int:
+	var want := maxi(int(Config.WEEKLY.get("unlock_hard_index", 2)), 1)
+	var seen := 0
+	var cap := 400
+	for lv in range(1, cap + 1):
+		if not level_exists(lv):
+			break
+		if difficulty_of(lv) != "":
+			seen += 1
+			if seen >= want:
+				return lv
+	return 0
+
+
+func weekly_unlocked() -> bool:
+	var u := weekly_unlock_level()
+	return u > 0 and int(s.level) > u
+
+
+func weekly_state() -> String:
+	return WeeklyPass.state(now(), _tz(), weekly_unlocked())
+
+
+## Sang mùa nếu cần (VIP tự nhận thưởng tồn), cập nhật max mạng. Trả reward đã cộng.
+func weekly_refresh() -> Dictionary:
+	var r := WeeklyPass.refresh(s, now(), _tz())
+	if bool(r.settled):
+		_give(r.reward, "weekly_settle")
+		log_event("weekly_end", {"coins": int(r.reward.coins)})
+	_apply_weekly_hearts()
+	if bool(r.settled):
+		save_now()
+	return r
+
+
+## Đặt s.lives.bonus theo state; tăng thì cộng luôn vào số mạng hiện có.
+func _apply_weekly_hearts() -> void:
+	var bonus := WeeklyPass.heart_bonus(s, weekly_state())
+	var l: Dictionary = s.lives
+	var old := int(l.get("bonus", 0))
+	if bonus == old:
+		return
+	l["bonus"] = bonus
+	if bonus > old:
+		l["count"] = int(l.count) + (bonus - old)
+	Lives.tick(s, now())
+	lives_changed.emit()
+
+
+## Mọi thứ Home và layer cần: {state, unlocked, seconds_left, points, vip, badge, dot, main, bank, ...}.
+func weekly_view() -> Dictionary:
+	var st := weekly_state()
+	var w: Dictionary = s.weekly
+	var main_rows: Array = []
+	var ms := WeeklyPass.main_milestones()
+	for i in ms.size():
+		main_rows.append({
+			"index": i, "points": int(ms[i].points), "free": ms[i].free, "vip": ms[i].vip,
+			"free_claimed": WeeklyPass._has(w.claimed_free, i), "vip_claimed": WeeklyPass._has(w.claimed_vip, i),
+			"free_claimable": WeeklyPass.free_claimable(s, i), "vip_claimable": WeeklyPass.vip_claimable(s, i),
+		})
+	var bank_rows: Array = []
+	for i in int(Config.WEEKLY.get("bank_max", 10)):
+		bank_rows.append({
+			"index": i, "reached": i < WeeklyPass.bank_slots(s),
+			"claimed": WeeklyPass._has(w.claimed_bank, i), "claimable": WeeklyPass.bank_claimable(s, i),
+			"coins": int(Config.WEEKLY.get("bank_reward_coins", 0)),
+		})
+	var pending := not (w.pending_end as Dictionary).is_empty()
+	return {
+		"state": st, "unlocked": st != WeeklyPass.LOCKED,
+		"seconds_left": WeeklyPass.seconds_left(now(), _tz(), st),
+		"points": WeeklyPass.points(s), "last_points": WeeklyPass.last_points(),
+		"vip": WeeklyPass.is_vip(s), "vip_price": Platform.price(str(Config.WEEKLY.sku)),
+		"badge": WeeklyPass.claimable_count(s) if st == WeeklyPass.ACTIVE else 0,
+		"dot": pending or (st == WeeklyPass.ACTIVE and not bool(w.opened)),
+		"pending_end": pending, "main": main_rows, "bank": bank_rows,
+		"bank_unlocked": WeeklyPass.bank_unlocked(s), "bank_slots": WeeklyPass.bank_slots(s),
+		"bonus_hearts": int(Config.WEEKLY.get("vip_bonus_hearts", 3)),
+	}
+
+
+## Người chơi mở layer. Ghi đã mở chu kỳ này, End popup nếu đã đủ điểm.
+func weekly_opened() -> void:
+	WeeklyPass.mark_opened(s)
+	WeeklyPass.mark_end_seen(s)
+	log_event("weekly_open", {"points": WeeklyPass.points(s), "vip": 1 if WeeklyPass.is_vip(s) else 0})
+	_queue_save()
+
+
+func weekly_take_end() -> Dictionary:
+	var p := WeeklyPass.take_pending_end(s)
+	if not p.is_empty():
+		_queue_save()
+	return p
+
+
+func _weekly_give(reward: Dictionary, kind: String) -> Dictionary:
+	if reward.is_empty():
+		return {}
+	_give(reward, "weekly_" + kind)
+	log_event("weekly_claim", {"kind": kind, "coins": int(reward.get("coins", 0)), "points": WeeklyPass.points(s)})
+	save_now()
+	return reward
+
+
+func weekly_claim_free(i: int) -> Dictionary:
+	if weekly_state() != WeeklyPass.ACTIVE:
+		return {}
+	return _weekly_give(WeeklyPass.claim_free(s, i), "free")
+
+
+func weekly_claim_vip(i: int) -> Dictionary:
+	if weekly_state() != WeeklyPass.ACTIVE:
+		return {}
+	return _weekly_give(WeeklyPass.claim_vip(s, i), "vip")
+
+
+## Nhận hết Main Tree và Bonus Bank đang nhận được. Trả thưởng gộp ({} nếu không có gì).
+func weekly_claim_all() -> Dictionary:
+	if weekly_state() != WeeklyPass.ACTIVE:
+		return {}
+	var total := WeeklyPass.claim_all_main(s)
+	var r: Dictionary = total.reward
+	var bank := WeeklyPass.claim_all_bank(s)
+	r = WeeklyPass.merge(r, bank.reward)
+	if int(total.count) + int(bank.count) == 0:
+		return {}
+	return _weekly_give(r, "all")
+
+
+func weekly_claim_bank(i: int) -> Dictionary:
+	if weekly_state() != WeeklyPass.ACTIVE:
+		return {}
+	return _weekly_give(WeeklyPass.claim_bank(s, i), "bank")
+
+
+## Mua VIP của chu kỳ này (chỉ khi Active và chưa VIP). Kết quả như buy_sku.
+func weekly_buy_vip() -> Dictionary:
+	var sku := str(Config.WEEKLY.sku)
+	if weekly_state() != WeeklyPass.ACTIVE or WeeklyPass.is_vip(s):
+		return {"status": "error", "sku": sku, "granted": false}
+	return await buy_sku(sku)
+
+
+# --- Chain Offer ---
+
+## Xét bật chuỗi sau một ván. Gọi trước save_now của người gọi.
+func _chain_check(lost: bool, level: int) -> void:
+	var t := now()
+	ChainOffer.update(s, t)
+	if not ChainOffer.should_trigger(lost, difficulty_of(level) != ""):
+		return
+	if ChainOffer.try_activate(s, t, int(s.level)):
+		log_event("chain_start", {"id": str(s.chain.id), "level": int(s.level)})
+
+
+## {id, steps, step, count, expires, seconds_left} hoặc {} khi không có chuỗi.
+func chain_view() -> Dictionary:
+	return ChainOffer.current(s, now())
+
+
+## Popup tự mở đúng một lần mỗi chuỗi: true thì gọi chain_view và mở layer.
+func chain_take_autoshow() -> bool:
+	if not ChainOffer.should_autoshow(s, now()):
+		return false
+	ChainOffer.mark_shown(s)
+	save_now()
+	return true
+
+
+## Nhận bước hiện tại. free: nhận luôn; ad: xem hết quảng cáo; pay: mua SKU của bước.
+## Trả {ok, type, reward, status}.
+func chain_claim() -> Dictionary:
+	var st := ChainOffer.current_step(s, now())
+	if st.is_empty():
+		return {"ok": false, "type": "", "reward": {}, "status": "none"}
+	var type := str(st.get("type", "free"))
+	var cid := str(s.chain.id)
+	var idx := int(s.chain.step)
+	if type == "ad":
+		if not await watch("chain_offer"):
+			return {"ok": false, "type": type, "reward": {}, "status": last_ad_reason}
+	elif type == "pay":
+		var r: Dictionary = await buy_sku(str(st.get("sku", "")))
+		if not bool(r.get("granted", false)):
+			return {"ok": false, "type": type, "reward": {}, "status": str(r.get("status", "error"))}
+	# Có thể hết hạn trong lúc xem quảng cáo hoặc thanh toán: vẫn trao phần đã làm xong.
+	if not (bool(s.chain.active) and str(s.chain.id) == cid and int(s.chain.step) == idx):
+		if type == "pay":
+			return {"ok": true, "type": type, "reward": {}, "status": "ok"}
+		var late := {"coins": int(st.get("coins", 0)), "items": (st.get("items", {}) as Dictionary).duplicate()}
+		_give(late, "chain_" + type)
+		save_now()
+		return {"ok": true, "type": type, "reward": late, "status": "ok"}
+	var adv := ChainOffer.advance(s, now())
+	if adv.is_empty():
+		return {"ok": false, "type": type, "reward": {}, "status": "none"}
+	if type != "pay":
+		_give(adv.reward, "chain_" + type)
+	log_event("chain_claim", {"id": cid, "step": idx, "type": type})
+	save_now()
+	return {"ok": true, "type": type, "reward": adv.reward, "status": "ok"}
+
+
 # --- mạng ---
 
 func lives_view() -> Dictionary:
@@ -994,11 +1278,11 @@ func lives_view() -> Dictionary:
 	var c := Lives.count(s, t)
 	var level := int(s.level)
 	return {
-		"count": c, "max": int(Config.LIVES.max), "seconds_to_next": Lives.seconds_to_next(s, t),
+		"count": c, "max": Lives.max_for(s), "seconds_to_next": Lives.seconds_to_next(s, t),
 		"open": Unlocks.is_open("lives", level),
 		"can_play": c > 0 or level < int(Config.LIVES.from_level),
 		"refill_price": int(Config.ECON.refill_coins), "refill_lives": int(Config.ECON.refill_lives),
-		"can_refill_gold": c < int(Config.LIVES.max) and int(s.coins) >= int(Config.ECON.refill_coins),
+		"can_refill_gold": c < Lives.max_for(s) and int(s.coins) >= int(Config.ECON.refill_coins),
 		"video_ready": Platform.ready_rewarded(),
 	}
 
@@ -1015,7 +1299,7 @@ func refill_gold() -> bool:
 
 
 func refill_video() -> bool:
-	if Lives.count(s, now()) >= int(Config.LIVES.max):
+	if Lives.count(s, now()) >= Lives.max_for(s):
 		return false
 	if not await watch("refill_life"):
 		return false
@@ -1097,7 +1381,7 @@ func _notif_candidates() -> Array:
 		out.append("daily_gift")
 	if Unlocks.is_open("lives", level):
 		var c := Lives.count(s, t)
-		var mx := int(Config.LIVES.max)
+		var mx := Lives.max_for(s)
 		if c < mx:
 			var full_at := int(s.lives.next_at) + (mx - c - 1) * int(Config.LIVES.regen_sec)
 			out.append({"kind": "lives_full", "at": full_at})

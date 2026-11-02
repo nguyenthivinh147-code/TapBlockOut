@@ -138,6 +138,16 @@ Booster với cơ chế:
 
 Booster chưa mở mà nhận từ lịch quà thì vẫn vào kho, tới level mở thì nút mới hiện. Popup hết MOVES vẫn bán hoặc dùng +3 Move trước L12, vì món này áp dụng ngay. Quà hướng dẫn ở L5/L12/L17 vẫn tặng.
 
+### Thẻ thắng và thẻ thua
+
+Hai thẻ là popup chồng lên màn level (bàn cờ khoá input), không đổi scene. Mỗi lượt chỉ kết thúc một lần: `attempt.ended` chặn cộng gold hai lần. Thẻ đọc `attempt.level`, không đọc `s.level` (đã tăng sau khi thắng).
+
+- **Thắng:** sau khi khối cuối rời bàn chờ `win_delay_sec` (0,8 giây) rồi hiện thẻ. Thẻ có +40 gold, nút x2 (L1 miễn phí, sau đó rewarded; thất bại hiện thông báo và thử lại được), nút Tiếp tục.
+- **Thanh tiến trình tính năng:** chạy từ mốc mở gần nhất tới mốc kế trong bảng "Mở khoá theo level" (bỏ Starter, Rate us). Đạt 100% thì đổi dòng thành "Đã mở khoá …". Ẩn khi hết tính năng; bản demo chỉ tính mốc tới L20. Daily Challenge không có thanh.
+- **Sau Tiếp tục:** rời thẻ (interstitial `result_exit`, offer, xin quyền thông báo, hỏi đánh giá), rồi: vừa mở tính năng ở Home (quà ngày, shop, Daily Challenge, mạng) hoặc vừa thắng Daily Challenge thì về Home; còn lại vào thẳng level kế. Hết mạng thì sang màn hết mạng; hết level demo thì báo rồi về Home.
+- **Thua:** thẻ có chơi lại, về Home, `rescue_pack` nếu có. Không interstitial khi thua. Chơi lại từ L10 mà hết mạng thì sang màn hết mạng.
+- **Analytics:** `level_end` kèm `won`, `taps`, `moves_left`, `blocks_left`, `rescues`, `ms`, `replay`.
+
 ### Phạm vi
 
 - **Demo:** L1–20, có đủ popup hết MOVES, quà 28 ngày, avatar và frame; có Đá từ L14. Sau L20 hiện "Sắp có level mới". Nút Daily Challenge ở Home hiện khoá, ghi "Unlocked at Level 50". Quảng cáo và mua hàng dùng bản giả lập cho tới khi có cấu hình từ Horus.
@@ -274,7 +284,7 @@ Chỉ thưởng khi xem hết. Ghi `S.adPend` trước khi hiện quảng cáo v
 
 ## 7. Mua hàng và offer
 
-**Gói gold (số của người dùng).** Sale chạy thứ Bảy và Chủ nhật theo lịch của máy. Giá trên store không đổi theo ngày được nên mỗi giá sale là một SKU riêng, đuôi `_sale`.
+**Gói gold (số của người dùng).** Sale chạy thứ Sáu, thứ Bảy và Chủ nhật theo lịch của máy. Remote Config `weekend_sale_mode` chọn đối tượng: 1 = mọi người chơi, 2 = chỉ người chưa mua gói nào (`Game.s.buys` rỗng), 3 = tắt. Lúc sale, Shop gạch giá gói thường, hiện giá `_sale` và nhãn `SALE -50%`; Home có nút Weekend Sale mở Shop (chỉ hiện khi Shop đã mở). Giá trên store không đổi theo ngày được nên mỗi giá sale là một SKU riêng, đuôi `_sale`.
 
 | ID | SKU | Giá | Gold | Gold/$ | Giá sale | Gold khi sale | Gold/$ khi sale |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -297,6 +307,32 @@ Chỉ thưởng khi xem hết. Ghi `S.adPend` trước khi hiện quảng cáo v
 Offer Remove Ads hiện ngay sau interstitial thứ 3 trong ngày, tối đa 1 lần/ngày và 3 lần tổng. Không popup offer trong 5 phút đầu phiên đầu, cách nhau ít nhất 3 lượt. `rescue_pack` hiện trên màn thua, sau khi đã bỏ qua popup hết MOVES, nên không tính vào giới hạn popup khi hết MOVES.
 
 **Giao hàng:** lưu hàng trước, xác nhận đơn sau; mỗi token giao một lần; lúc mở game giao hết đơn còn treo; `remove_ads` có Restore. Soft launch kiểm chữ ký của Play Billing ngay trên máy, vì game offline và gold lưu cục bộ nên gian lận khó ảnh hưởng người chơi khác. Khi phát hành toàn cầu, nếu số liệu cho thấy gian lận thì thêm server kiểm đơn.
+
+
+### Sự kiện: Weekly Pass, Chain Offer, Special Pack (2026-11-02)
+
+Port từ các gói của dự án pixelflow. Mọi số nằm trong `Config.WEEKLY`, `Config.CHAIN`, `Config.PACKS`; mốc thưởng và giá là đề xuất của mình, chưa có số liệu thật.
+
+**Weekly Pass** (`src/meta/weekly_pass.gd`, SKU `weekly_pass`, $4.99, consumable vì mua lại mỗi tuần)
+
+- Mở khoá sau khi qua level HARD thứ 2 (`weekly_unlock_hard_index`). Bản demo dừng ở L20 nên không bao giờ mở; chỉ có ở bản phát hành.
+- Chu kỳ theo giờ máy: thứ Hai 06:00 đến thứ Hai 00:00 tuần sau. Thứ Hai 00:00-06:00 là Waiting (nút còn, layer chỉ có đếm ngược). Config tắt hoặc SKU sai là Locked.
+- Thắng level (không tính Daily Challenge) khi Active: Normal +1 key, Hard +3, VeryHard +5.
+- Main Tree 10 mốc, mỗi mốc có thưởng free và thưởng VIP. Bonus Bank mở khi đủ mốc cuối + có VIP + đã xem End popup; cứ 15 key thừa được 1 mốc, tối đa 10 mốc, mỗi mốc 400 gold.
+- VIP: +3 mạng tối đa trong tuần (cộng luôn vào số mạng hiện có; hết tuần hoặc sang Waiting thì bỏ, số mạng kẹp lại).
+- Sang mùa: chỉ VIP tự nhận mọi thưởng chưa claim; người không VIP không nhận lại phần free chưa claim. Sau đó reset điểm, VIP, danh sách đã nhận. Mùa không chơi thì không có popup cuối mùa.
+
+**Chain Offer** (`src/meta/chain_offer.gd`)
+
+- Chuỗi bước `free` / `ad` (placement `chain_offer`) / `pay` (SKU `chain_pack_1`, `chain_pack_2`; thưởng lấy từ chính gói, không cộng hai lần). Hai chuỗi xoay vòng, mỗi chuỗi 8 bước, layer hiện cửa sổ 6 bước.
+- Bật sau một ván khi chưa có chuỗi, level >= 24 và hết cooldown. `chain_require_lose = -1` (mặc định) xét sau mọi ván; giá trị khác chỉ xét khi thua ở level không HARD.
+- Sống 1 ngày, nghỉ 3 ngày. Khác pixelflow: cooldown tính từ **lúc hết hạn**, không phụ thuộc lúc người chơi mở game lại (bản gốc tính từ lúc hàm tắt chạy nên có thể trễ). Làm hết bước không tắt chuỗi.
+- Tự mở layer một lần mỗi chuỗi khi về Home; sau đó mở bằng nút ở Home. Không kiểm tra mạng (game offline; bước `ad` và `pay` tự báo không dùng được khi thiếu mạng).
+
+**Special Pack** (`src/meta/pack_conditions.gd`, SKU `special_pack`, $10.99, bản sale `special_pack_sale` $5.49)
+
+- Hiện icon ở Home từ L16, phải đã mua `starter_pack`, mua không giới hạn số lần. Mỗi lần chỉ một gói (gói đầu tiên đủ điều kiện trong `Config.PACKS`). Mở bằng popup offer chung; lúc weekend sale tự đổi sang SKU `_sale`.
+- Nội dung: 12.000 gold + 2 mỗi booster.
 
 ## 8. Kỹ thuật
 
@@ -416,3 +452,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 - Đổi concept hình khối sang pudding/gel bóng (ảnh duyệt `concept_candy_board_v1`), vẽ bằng code; bỏ tài nguyên `block_surface`.
 - Thêm avatar và frame, 6 cơ chế từ L21, bảng mở khoá, thưởng Daily Challenge, tiêu chí thư giãn.
 - Dùng AppLovin MAX, không có banner.
+
+**2026-11-02**
+
+- Thêm Weekly Pass, Chain Offer, Special Pack (mục 7). Weekly Pass chỉ có ở bản phát hành vì demo không có level HARD thứ 2 trong phạm vi L1-20.

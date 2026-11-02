@@ -20,10 +20,17 @@ var gift_btn: Button = null
 var gift_badge: Control = null
 var shop_btn: Button = null
 var shop_caption: Label = null
+var sale_btn: Button = null
 var settings_btn: Button = null
 var challenge_btn: Button = null
 var offer_chip: Button = null
 var coming_soon_label: Label = null
+var weekly_btn: Button = null
+var weekly_caption: Label = null
+var weekly_dot: Control = null
+var chain_btn: Button = null
+var chain_dot: Control = null
+var special_btn: Button = null
 
 var _args: Dictionary = {}
 var _built: bool = false
@@ -31,6 +38,11 @@ var _tick: Timer = null
 var _offer_id: String = ""
 var _avatar_holder: Control = null
 var _gift_col: Control = null
+var _sale_col: Control = null
+var _weekly_col: Control = null
+var _chain_col: Control = null
+var _special_col: Control = null
+var _special_id: String = ""
 
 
 ## 75 -> "1:15", 3725 -> "1:02:05", từ 1 ngày: "1d 3h".
@@ -73,6 +85,29 @@ func _connect_game() -> void:
 
 func _on_game_changed(_v: Variant = null) -> void:
 	refresh()
+
+
+## Chấm đỏ thông báo ở góc trên phải của nút.
+func _make_dot(btn: Button, node_name: String) -> Control:
+	var dot := Panel.new()
+	dot.name = node_name
+	dot.custom_minimum_size = Vector2(32, 32)
+	dot.size = Vector2(32, 32)
+	dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var bs := StyleBoxFlat.new()
+	bs.bg_color = ThemeKit.DANGER
+	bs.set_corner_radius_all(16)
+	bs.set_border_width_all(3)
+	bs.border_color = ThemeKit.TEXT
+	dot.add_theme_stylebox_override("panel", bs)
+	btn.add_child(dot)
+	dot.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	dot.offset_left = -26
+	dot.offset_right = 6
+	dot.offset_top = -6
+	dot.offset_bottom = 26
+	dot.visible = false
+	return dot
 
 
 func _icon_button(icon_name: String, caption: String) -> Array:
@@ -230,6 +265,41 @@ func _build() -> void:
 	shop_btn.name = "ShopButton"
 	shop_btn.pressed.connect(_emit.bind("shop"))
 	side.add_child(sh[0])
+	var sl := _icon_button("ui_shop", tr("home_weekend_sale"))
+	_sale_col = sl[0]
+	sale_btn = sl[1]
+	sale_btn.name = "WeekendSaleButton"
+	sale_btn.pressed.connect(_emit.bind("shop"))
+	sl[2].add_theme_color_override("font_color", ThemeKit.GOLD)
+	side.add_child(sl[0])
+
+	# sự kiện: Weekly Pass, Chain Offer, Special Pack (ẩn khi chưa đủ điều kiện)
+	var events := HBoxContainer.new()
+	events.alignment = BoxContainer.ALIGNMENT_CENTER
+	events.add_theme_constant_override("separation", 48)
+	col.add_child(events)
+	var wk := _icon_button("ui_gold", tr("home_weekly"))
+	_weekly_col = wk[0]
+	weekly_btn = wk[1]
+	weekly_caption = wk[2]
+	weekly_btn.name = "WeeklyPassButton"
+	weekly_btn.pressed.connect(_emit.bind("weekly"))
+	weekly_dot = _make_dot(weekly_btn, "WeeklyDot")
+	events.add_child(wk[0])
+	var ch := _icon_button("ui_gift", tr("home_chain"))
+	_chain_col = ch[0]
+	chain_btn = ch[1]
+	chain_btn.name = "ChainOfferButton"
+	chain_btn.pressed.connect(_emit.bind("chain"))
+	chain_dot = _make_dot(chain_btn, "ChainDot")
+	events.add_child(ch[0])
+	var sp := _icon_button("shop_special_pack", tr("home_special_pack"))
+	_special_col = sp[0]
+	special_btn = sp[1]
+	special_btn.name = "SpecialPackButton"
+	special_btn.pressed.connect(_on_special)
+	sp[2].add_theme_color_override("font_color", ThemeKit.GOLD)
+	events.add_child(sp[0])
 
 	challenge_btn = ThemeKit.make_button("", "secondary")
 	challenge_btn.name = "ChallengeButton"
@@ -292,6 +362,9 @@ func refresh() -> void:
 	shop_btn.icon = ThemeKit.icon("ui_shop" if shop_open else "ui_lock")
 	shop_caption.text = tr("home_shop") if shop_open else tr("home_shop_locked") % int(Config.UNLOCK.shop)
 
+	# weekend sale: chỉ hiện khi sale bật và Shop đã mở
+	_sale_col.visible = shop_open and Game.is_sale_active()
+
 	# challenge
 	var ch: Dictionary = Game.challenge_view()
 	var ch_open := bool(ch.get("open", false))
@@ -303,10 +376,28 @@ func refresh() -> void:
 	_refresh_timers()
 
 
+## Weekly Pass, Chain Offer, Special Pack: hiện/ẩn theo điều kiện. Gọi cả mỗi giây vì hết hạn theo giờ.
+func _refresh_events() -> void:
+	if not _built:
+		return
+	var wv: Dictionary = Game.weekly_view()
+	_weekly_col.visible = bool(wv.unlocked)
+	if bool(wv.unlocked):
+		var badge := int(wv.badge)
+		weekly_caption.text = tr("home_weekly") if badge <= 0 else "%s (%d)" % [tr("home_weekly"), badge]
+		weekly_dot.visible = bool(wv.dot) or badge > 0
+	var cv: Dictionary = Game.chain_view()
+	_chain_col.visible = not cv.is_empty()
+	chain_dot.visible = not cv.is_empty() and int(cv.step) < int(cv.count)
+	_special_id = Game.special_pack_id()
+	_special_col.visible = _special_id != ""
+
+
 ## Đếm hồi mạng và hạn offer; gọi mỗi giây.
 func _refresh_timers() -> void:
 	if not _built:
 		return
+	_refresh_events()
 	var lv: Dictionary = Game.lives_view()
 	var show_lives := bool(lv.get("open", false))
 	lives_panel.visible = show_lives
@@ -344,6 +435,12 @@ func _on_play() -> void:
 		closed.emit({"action": "play"})
 	else:
 		closed.emit({"action": "no_lives"})
+
+
+func _on_special() -> void:
+	Sfx.play("button")
+	if _special_id != "":
+		closed.emit({"action": "offer", "id": _special_id})
 
 
 func _on_offer() -> void:

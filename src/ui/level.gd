@@ -615,6 +615,10 @@ func _resolve() -> void:
 	if _left:
 		return
 	if board.is_won():
+		if DisplayServer.get_name() != "headless":
+			await get_tree().create_timer(float(Config.CONTENT.win_delay_sec)).timeout
+			if _left:
+				return
 		await _win_flow()
 	else:
 		await _rescue_flow()
@@ -702,6 +706,8 @@ func _win_flow() -> void:
 	if rate:
 		Game.rate_now()
 	if _challenge:
+		_leave("home")
+	elif Game.next_after_win(res, false) == "home":
 		_leave("home")
 	elif not Game.level_exists(int(Game.s.level)):
 		var dlg := Dialog.new(tr("level_title") % int(Game.s.level), tr("level_demo_end"),

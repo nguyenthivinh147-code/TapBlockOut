@@ -15,7 +15,7 @@ Gói tên: `com.tungcv2.tapblockout` (đổi theo `appId` Horus cấp: sửa `pa
 
 ## 2. SKU (đăng ký trong Play Console, loại "In-app product")
 
-Nguồn: `src/config.gd` (`Config.SKUS`). Giá USD là giá gốc; Play tự quy đổi tiền địa phương. Gói gold sale là SKU riêng (đuôi `_sale`), game dùng giá sale vào thứ Bảy và Chủ nhật theo lịch của máy.
+Nguồn: `src/config.gd` (`Config.SKUS`). Giá USD là giá gốc; Play tự quy đổi tiền địa phương. Gói gold sale là SKU riêng (đuôi `_sale`), game dùng giá sale vào thứ Sáu, thứ Bảy và Chủ nhật theo lịch của máy (tuỳ `weekend_sale_mode`).
 
 | SKU | Giá USD | Loại | Nội dung |
 | --- | --- | --- | --- |
@@ -35,6 +35,11 @@ Nguồn: `src/config.gd` (`Config.SKUS`). Giá USD là giá gốc; Play tự quy
 | `starter_pack` | 6.99 | **không consumable** (mua một lần) | 6.000 gold + 1 hint, 1 move, 1 smash |
 | `rescue_pack` | 0.99 | consumable | 1 booster +3 Move |
 | `level_pack` | 4.99 | consumable | 2.000 gold + 1 hint, 1 move, 1 smash |
+| `weekly_pass` | 4.99 | consumable (mua lại mỗi tuần) | VIP của chu kỳ Weekly Pass hiện tại: thưởng VIP + 3 mạng tối đa |
+| `special_pack` | 10.99 | consumable | 12.000 gold + 2 hint, 2 move, 2 smash |
+| `special_pack_sale` | 5.49 | consumable | như `special_pack`, dùng lúc weekend sale |
+| `chain_pack_1` | 0.99 | consumable | 1.500 gold (bước Pay của Chain Offer) |
+| `chain_pack_2` | 2.99 | consumable | 3.000 gold + 1 hint, 1 move (bước Pay của Chain Offer) |
 
 Giao hàng: game cộng hàng và lưu trước, rồi mới consume (consumable) hoặc acknowledge (không consumable). Mỗi `purchase token` giao một lần; lúc mở game giao hết đơn còn treo; `remove_ads` có nút Restore. Game kiểm chữ ký đơn bằng `billing_public_key`; đơn sai chữ ký bị coi là `invalid`, không thưởng.
 
@@ -42,7 +47,7 @@ Giao hàng: game cộng hàng và lưu trước, rồi mới consume (consumable
 
 Tên placement gửi vào MAX (chữ thường, không dấu):
 
-- Rewarded: `x2_coins`, `booster_free`, `continue_moves`, `refill_life`, `shop_coins`, `daily_next`, `cosmetic_unlock`.
+- Rewarded: `x2_coins`, `booster_free`, `continue_moves`, `refill_life`, `shop_coins`, `daily_next`, `cosmetic_unlock`, `chain_offer`.
 - Interstitial: `result_exit`.
 
 Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rewarded và một interstitial. Có luồng đồng ý GDPR (UMP, cần `privacy_policy_url`), nút "Privacy settings" trong Settings và Mediation Debugger. Plugin chưa gắn adapter mạng mediation nào (chỉ AppLovin); Horus gửi danh sách adapter thì thêm vào `DEPENDENCIES` của `addons/tbo_platform/export_plugin.gd` (và `build.gradle.kts` của plugin).
@@ -88,7 +93,13 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `content_think_clap_sec` | 8 |
 | `content_build`, `content_support_email` | v1, support@horusvn.com |
 | `content_ftue_steps` | open,first_tap,first_win,first_x2,first_booster,run_2,run_5,level_10 |
-| `sale_weekdays` (0 = Chủ nhật, 6 = thứ Bảy) | 6,0 |
+| `weekly_enabled`, `weekly_sku`, `weekly_unlock_hard_index`, `weekly_start_hour`, `weekly_vip_bonus_hearts` | true, weekly_pass, 2, 6, 3 |
+| `weekly_points_normal`, `_points_hard`, `_points_very_hard` | 1, 3, 5 |
+| `weekly_bank_step`, `weekly_bank_max`, `weekly_bank_reward_coins` | 15, 10, 400 |
+| `chain_days_to_existence`, `chain_days_to_reset`, `chain_level_unlock`, `chain_require_lose` (-1 = sau mọi ván), `chain_window` | 1, 3, 24, -1, 6 |
+| `sale_weekdays` (0 = Chủ nhật, 6 = thứ Bảy) | 5,6,0 |
+| `weekend_sale_mode` (1 = mọi người, 2 = chỉ người chưa mua gói nào, 3 = tắt) | 1 |
+| `sale_percent` (số % trên nhãn sale, chỉ hiển thị) | 50 |
 | `skus_<sku>_usd`, `skus_<sku>_gold`, `skus_<sku>_consumable` (ví dụ `skus_starter_pack_usd`) | theo bảng mục 2 |
 
 Ghi chú: đổi `skus_*_usd` chỉ đổi số hiển thị/logic trong game; giá thật do Play Console quyết định. Plugin còn đọc `rc_defaults` và `rc_min_fetch_interval_s` trong `platform_config.json` (mặc định fetch tối thiểu 3600 giây).
@@ -108,6 +119,13 @@ Tên và tham số chữ thường, `snake_case`, phẳng. Mọi sự kiện do 
 | `rv_done` | pl (có thể kèm credit = 1) |
 | `rv_cancel` / `rv_fail` | pl, why |
 | `rv_unavailable` | pl |
+| `weekly_points` | level, points, total |
+| `weekly_open` | points, vip (0/1) |
+| `weekly_claim` | kind (free, vip, bank, all), coins, points |
+| `weekly_vip` | points |
+| `weekly_end` | coins |
+| `chain_start` | id, level |
+| `chain_claim` | id, step, type (free, ad, pay) |
 | `ad_reward_recovered` | pl |
 | `inter_show` | pl, level, runs |
 | `booster_use` | kind, level |

@@ -28,7 +28,7 @@ func setup(args: Dictionary) -> void:
 	var open: Array = Game.offers_open()
 	if offer_id == "" and not open.is_empty():
 		offer_id = str(open[0].id)
-	sku = str(Config.OFFERS.get(offer_id, {}).get("sku", ""))
+	sku = Game.offer_sku(offer_id)
 	for o in open:
 		if str(o.id) == offer_id:
 			_until = int(o.until)
@@ -45,6 +45,8 @@ func _title() -> String:
 			return tr("offer_remove_ads_title")
 		"rescue_pack":
 			return tr("offer_rescue_pack_title")
+		"special_pack":
+			return tr("offer_special_pack_title")
 	return ""
 
 
@@ -58,6 +60,8 @@ func _body() -> String:
 			return tr("offer_remove_ads_body")
 		"rescue_pack":
 			return tr("offer_rescue_pack_body")
+		"special_pack":
+			return tr("offer_special_pack_body")
 	return ""
 
 
