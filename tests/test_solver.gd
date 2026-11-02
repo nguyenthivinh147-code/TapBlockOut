@@ -243,8 +243,9 @@ func test_solve_state_ignores_moves(t: T) -> void:
 func test_slack_and_compute_moves(t: T) -> void:
 	Config.reset()
 	var five := [_b("a", "yellow", [[0, 0]])]
-	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 1})), 3, "L1 dư 3")
-	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 5})), 3, "L5 dư 3")
+	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 1})), 5, "L1 dư 5")
+	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 3})), 5, "L3 dư 5")
+	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 4})), 2, "L4 hết dư dễ")
 	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 8, "hard": true})), 1, "HARD dư 1")
 	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 6})), 2, "ít khối: tối thiểu 2")
 	# 25 khối: ceil(10% x 25) = 3. 21 khối: ceil(2.1) = 3. 20 khối: 2.
@@ -254,7 +255,7 @@ func test_slack_and_compute_moves(t: T) -> void:
 			bl.append(_b("b%d" % i, "yellow", [[0, 0]]))
 		t.eq(Solver.slack_for(_lv(5, 5, bl, {"id": 30})), pair[1], "%d khối" % pair[0])
 	var lv := _load("basic")  # id 2, 3 chạm
-	t.eq(Solver.compute_moves(lv), 3 + 3, "L2 dư 3")
+	t.eq(Solver.compute_moves(lv), 3 + 5, "L2 dư 5")
 	lv["id"] = 22
 	t.eq(Solver.compute_moves(lv), 3 + 2, "level thường dư 2")
 	lv["hard"] = true

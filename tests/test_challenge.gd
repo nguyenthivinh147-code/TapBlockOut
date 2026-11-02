@@ -89,11 +89,11 @@ func test_open_at_50(t: T) -> void:
 	t.eq(a.challenge, true, "cờ challenge")
 	t.eq(int(a.level), 50, "id bàn kẹp tối thiểu 50")
 	t.eq(int(g.s.level), 50, "không đổi level người chơi")
-	# id theo level đã thắng gần nhất, kẹp [50, 300]
+	# id theo level đã thắng gần nhất, kẹp [50, 100]
 	g.s.level = 80
 	t.eq(g.challenge_level_id(), 79, "L80 -> id 79")
 	g.s.level = 9999
-	t.eq(g.challenge_level_id(), 300, "kẹp 300")
+	t.eq(g.challenge_level_id(), 100, "kẹp 100")
 	g.s.level = 3
 	t.eq(g.challenge_level_id(), 50, "kẹp 50")
 
@@ -440,7 +440,7 @@ func _mount_level(g: Node, lvn: int) -> Control:
 
 func test_teaching_levels_show_one_line_hint(t: T) -> void:
 	var g := _g(1)
-	var want := {21: "stone", 31: "ice", 46: "chain", 61: "layer", 81: "fog", 101: "pulse"}
+	var want := {14: "stone", 30: "ice", 40: "chain", 55: "layer", 70: "fog", 90: "pulse"}
 	for lvn in want:
 		var lv := _mount_level(g, lvn)
 		t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "L%d vào chơi" % lvn)
@@ -448,7 +448,7 @@ func test_teaching_levels_show_one_line_hint(t: T) -> void:
 		t.eq(lv.tut_label.text, "%s: %s" % [lv.tr("mech_" + m), lv.tr("mech_%s_desc" % m)], "L%d hướng dẫn %s" % [lvn, m])
 		t.ok(not lv.tut_label.text.contains("\n"), "một dòng")
 		lv.free()
-	for lvn in [22, 30, 47, 100]:
+	for lvn in [15, 31, 41, 100]:
 		var lv2 := _mount_level(g, lvn)
 		t.ok(await _wait_until(func() -> bool: return lv2.state == "playing"), "L%d vào chơi" % lvn)
 		t.eq(lv2.tut_label.text, "", "L%d không có hướng dẫn" % lvn)
@@ -457,7 +457,7 @@ func test_teaching_levels_show_one_line_hint(t: T) -> void:
 
 func test_booster_buttons_follow_unlocks(t: T) -> void:
 	var g := _g(1)
-	var cases := {3: [false, false, false], 4: [true, false, false], 6: [true, true, false], 9: [true, true, true]}
+	var cases := {4: [false, false, false], 5: [true, false, false], 12: [true, true, false], 17: [true, true, true]}
 	for lvn in cases:
 		var lv := _mount_level(g, lvn)
 		t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "L%d chơi" % lvn)

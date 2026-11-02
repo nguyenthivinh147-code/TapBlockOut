@@ -33,9 +33,9 @@ const _ADS := {
 }
 
 const _UNLOCK := {
-	"daily_gift": 4, "hint": 4, "shop": 5, "move": 6, "smash": 9,
-	"lives": 10, "starter": 10, "review": 18, "challenge": 50,
-	"stone": 21, "ice": 31, "chain": 46, "layer": 61, "fog": 81, "pulse": 101,
+	"daily_gift": 4, "hint": 5, "shop": 5, "move": 12, "smash": 17,
+	"lives": 10, "starter": 10, "review": 10, "challenge": 50,
+	"stone": 14, "ice": 30, "chain": 40, "layer": 55, "fog": 70, "pulse": 90,
 }
 
 ## 28 ô quà. Tổng: 6.650 gold, 5 hint, 5 move, 4 smash.
@@ -127,11 +127,13 @@ const _NOTIF := {
 
 const _CONTENT := {
 	"demo_max_level": 20,
-	"release_pregen_level": 300,
-	"loop_start_level": 101,
-	"slack_easy": 3,
-	"slack_easy_until": 5,
+	"release_pregen_level": 100,
+	"loop_start_level": 51,
+	"slack_easy": 5,
+	"slack_easy_until": 3,
 	"slack_hard": 1,
+	"very_hard_from_level": 100,
+	"hard_banner_sec": 1.2,
 	"slack_min": 2,
 	"slack_pct": 10,
 	"think_clap_sec": 8,

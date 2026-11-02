@@ -15,7 +15,7 @@ signal animation_done
 
 const MAX_CELL := 150.0
 const GATE_RATIO := 0.3
-## Bàn tham chiếu (lớn nhất trong 300 level): kích thước ô tính theo bàn này để mọi level dùng cùng một cỡ ô.
+## Bàn tham chiếu (lớn nhất trong 100 level): kích thước ô tính theo bàn này để mọi level dùng cùng một cỡ ô.
 const REF_COLS := 8
 const REF_ROWS := 11
 const SLIDE_TIME := 0.30
@@ -65,8 +65,10 @@ var input_enabled: bool = true
 var _board: BoardState = null
 var _cell: float = 64.0
 var _origin: Vector2 = Vector2.ZERO
+var _inner: Rect2 = Rect2()  # vùng trong khung cổng (cố định), lưới level nằm giữa vùng này
 var _nodes: Dictionary = {}  # id -> BlockNode
 var _owner: Dictionary = {}  # Vector2i -> id
+var _vacated: Dictionary = {}  # Vector2i -> true: ô của khối đã đi, không vẽ nền nữa
 var _gate_state: Dictionary = {}  # cạnh -> đang mở?
 var _gate_prog: Dictionary = {}  # cạnh -> 0 (đóng) .. 1 (mở), đang chạy hoạt ảnh
 var _gate_tws: Dictionary = {}  # cạnh -> Tween
@@ -225,6 +227,7 @@ func _clear() -> void:
 		_nodes[id].queue_free()
 	_nodes.clear()
 	_owner.clear()
+	_vacated.clear()
 	_pending = 0
 	for side in _gate_tws:
 		var gtw: Tween = _gate_tws[side]
@@ -263,6 +266,8 @@ func _unmap(id: String) -> void:
 	for c in n.cells:
 		if _owner.get(c, "") == id:
 			_owner.erase(c)
+			_vacated[c] = true
+	queue_redraw()
 
 
 func _layout() -> void:
@@ -281,7 +286,11 @@ func _layout() -> void:
 		var fit_cell := minf(avail.x / (w + 2.0 * GATE_RATIO), avail.y / (h + 2.0 * GATE_RATIO))
 		# Làm tròn xuống số nguyên để các ô trong cùng khối khớp pixel, không lộ đường nối.
 		_cell = floorf(clampf(minf(ref_cell, fit_cell), 8.0, MAX_CELL))
-	_origin = ((avail - Vector2(w, h) * _cell) * 0.5).floor()
+	# Khung cố định theo bàn tham chiếu (chỉ nở ra khi bàn lớn hơn), căn giữa vùng; lưới level căn giữa trong khung.
+	var frame_cells := Vector2(maxi(w, REF_COLS), maxi(h, REF_ROWS))
+	var frame_px := frame_cells * _cell
+	_inner = Rect2(((avail - frame_px) * 0.5).floor(), frame_px)
+	_origin = (_inner.position + (frame_px - Vector2(w, h) * _cell) * 0.5).floor()
 	for id in _nodes:
 		var n: BlockNode = _nodes[id]
 		if n.busy:
@@ -303,7 +312,8 @@ func _layout() -> void:
 func _draw() -> void:
 	if _board == null:
 		return
-	var br := board_rect()
+	var cells_rect := board_rect()
+	var br := _inner
 	var g := _cell * GATE_RATIO
 	var outer := br.grow(g)
 	# nền bàn
@@ -313,8 +323,10 @@ func _draw() -> void:
 	draw_style_box(bg, outer)
 	for y in _board.height():
 		for x in _board.width():
+			if _vacated.has(Vector2i(x, y)):
+				continue
 			var shade := 0.05 if (x + y) % 2 == 0 else 0.09
-			draw_rect(Rect2(br.position + Vector2(x, y) * _cell + Vector2(1, 1), Vector2(_cell - 2, _cell - 2)), Color(1, 1, 1, shade))
+			draw_rect(Rect2(cells_rect.position + Vector2(x, y) * _cell + Vector2(1, 1), Vector2(_cell - 2, _cell - 2)), Color(1, 1, 1, shade))
 	# đá
 	for s in _board.stones():
 		_draw_stone(s)
@@ -474,7 +486,7 @@ func _finish_exit(node: BlockNode) -> void:
 
 
 func _burst_at_edge(center: Vector2, dir: Vector2, col: Color) -> void:
-	var r := board_rect()
+	var r := _inner
 	var p := center
 	if dir.x > 0:
 		p.x = r.end.x

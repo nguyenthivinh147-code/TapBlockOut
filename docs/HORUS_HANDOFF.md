@@ -71,7 +71,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `ads_session_warmup` (giây) | 90 |
 | `ads_rewarded_grace` (giây) | 45 |
 | `ads_first_session_block_until_level` | 10 |
-| `unlock_daily_gift`, `unlock_hint`, `unlock_shop`, `unlock_move`, `unlock_smash`, `unlock_lives`, `unlock_starter`, `unlock_review`, `unlock_challenge`, `unlock_stone`, `unlock_ice`, `unlock_chain`, `unlock_layer`, `unlock_fog`, `unlock_pulse` | 4, 4, 5, 6, 9, 10, 10, 18, 50, 21, 31, 46, 61, 81, 101 (level mở khoá) |
+| `unlock_daily_gift`, `unlock_hint`, `unlock_shop`, `unlock_move`, `unlock_smash`, `unlock_lives`, `unlock_starter`, `unlock_review`, `unlock_challenge`, `unlock_stone`, `unlock_ice`, `unlock_chain`, `unlock_layer`, `unlock_fog`, `unlock_pulse` | 4, 5, 5, 12, 17, 10, 10, 10, 50, 14, 30, 40, 55, 70, 90 (level mở khoá) |
 | `cosmetics_avatar_count`, `cosmetics_frame_count` | 12, 12 |
 | `cosmetics_prices` | 50,75,100 |
 | `cosmetics_default_avatar`, `cosmetics_default_frame` | avatar_00, frame_00 |
@@ -83,7 +83,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `notif_first_week_days`, `_first_week_per_day`, `_lead_min`, `_daily_until_day` | 7, 3, 15, 14 |
 | `notif_sparse_days` | 16,18,21,24,27,30 |
 | `notif_earliest_hour`, `_latest_hour`, `_quiet_after_ignored`, `_ask_after_run` | 8, 22, 9, 2 |
-| `content_demo_max_level`, `content_release_pregen_level` (level cuối có file), `content_loop_start_level` (sau level cuối lặp lại từ đây) | 20, 300, 101 |
+| `content_demo_max_level`, `content_release_pregen_level` (level cuối có file), `content_loop_start_level` (sau level cuối lặp lại từ đây) | 20, 100, 51 |
 | `content_slack_easy`, `_slack_easy_until`, `_slack_hard`, `_slack_min`, `_slack_pct` | 3, 5, 1, 2, 10 |
 | `content_think_clap_sec` | 8 |
 | `content_build`, `content_support_email` | v1, support@horusvn.com |

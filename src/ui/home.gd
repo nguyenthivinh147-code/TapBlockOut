@@ -15,6 +15,7 @@ var lives_label: Label = null
 var lives_timer_label: Label = null
 var profile_btn: Button = null
 var play_btn: Button = null
+var hard_tag: Label = null
 var gift_btn: Button = null
 var gift_badge: Control = null
 var shop_btn: Button = null
@@ -173,6 +174,23 @@ func _build() -> void:
 	play_btn.add_theme_font_size_override("font_size", 48)
 	play_btn.pressed.connect(_on_play)
 	mid.add_child(play_btn)
+	hard_tag = Label.new()
+	hard_tag.name = "HardTag"
+	hard_tag.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL)
+	hard_tag.add_theme_color_override("font_color", ThemeKit.TEXT)
+	var tag_box := StyleBoxFlat.new()
+	tag_box.set_corner_radius_all(18)
+	tag_box.content_margin_left = 28
+	tag_box.content_margin_right = 28
+	tag_box.content_margin_top = 2
+	tag_box.content_margin_bottom = 2
+	hard_tag.add_theme_stylebox_override("normal", tag_box)
+	hard_tag.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	hard_tag.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	hard_tag.offset_top = -22
+	hard_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hard_tag.visible = false
+	play_btn.add_child(hard_tag)
 	coming_soon_label = ThemeKit.make_label(tr("home_coming_soon"), ThemeKit.FS_BODY, ThemeKit.TEXT_DIM)
 	coming_soon_label.name = "ComingSoonLabel"
 	coming_soon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -252,9 +270,16 @@ func refresh() -> void:
 	if ended:
 		play_btn.text = tr("home_play")
 		play_btn.disabled = true
+		hard_tag.visible = false
 	else:
 		play_btn.text = "%s\n%s" % [tr("home_play"), tr("home_play_level") % level]
 		play_btn.disabled = false
+		var tier := Game.difficulty_of(level)
+		hard_tag.visible = tier != ""
+		if tier != "":
+			hard_tag.text = tr("level_very_hard") if tier == "very_hard" else tr("level_hard")
+			var tag_box := hard_tag.get_theme_stylebox("normal") as StyleBoxFlat
+			tag_box.bg_color = ThemeKit.HARD_BANNER_VERY if tier == "very_hard" else ThemeKit.HARD_BANNER
 
 	# quà
 	var daily: Dictionary = Game.daily_view()

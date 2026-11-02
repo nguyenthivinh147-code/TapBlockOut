@@ -266,14 +266,14 @@ func test_rescue_give_up_confirm_life(t: T) -> void:
 
 
 func test_booster_gift_and_hint(t: T) -> void:
-	var g := _g(4, false)
+	var g := _g(5, false)
 	var lv := _mount()
-	t.ok(await _wait_until(_has_pop(lv, "GotItButton")), "tặng booster ở L4 kèm giới thiệu")
+	t.ok(await _wait_until(_has_pop(lv, "GotItButton")), "tặng booster ở L5 kèm giới thiệu")
 	t.eq(lv.state, "intro", "chưa chơi khi đọc giới thiệu")
 	t.eq(int(g.s.inv.hint), 1, "kho +1 gợi ý")
 	_press(lv, "GotItButton")
 	await _wait_until(_playing.bind(lv))
-	t.ok(lv.booster_buttons.hint.get_parent().visible, "gợi ý mở ở L4")
+	t.ok(lv.booster_buttons.hint.get_parent().visible, "gợi ý mở ở L5")
 	t.ok(not lv.booster_buttons.move.get_parent().visible, "+3 Move chưa mở")
 	t.eq(lv.booster_badges.hint.text, lv.tr("booster_count") % 1, "nhãn số còn lại")
 	lv.booster_buttons.hint.pressed.emit()
@@ -284,7 +284,7 @@ func test_booster_gift_and_hint(t: T) -> void:
 
 
 func test_booster_buy_move(t: T) -> void:
-	var g := _g(6)
+	var g := _g(12)
 	g.s.coins = 2500
 	var lv := _mount()
 	await _wait_until(_playing.bind(lv))
@@ -301,7 +301,7 @@ func test_booster_buy_move(t: T) -> void:
 
 
 func test_booster_free_video_once(t: T) -> void:
-	var g := _g(6)
+	var g := _g(12)
 	g.s.coins = 0
 	var lv := _mount()
 	await _wait_until(_playing.bind(lv))
@@ -322,7 +322,7 @@ func test_booster_free_video_once(t: T) -> void:
 
 
 func test_booster_video_closed_early(t: T) -> void:
-	var g := _g(6)
+	var g := _g(12)
 	g.s.coins = 0
 	var lv := _mount()
 	await _wait_until(_playing.bind(lv))
@@ -338,7 +338,7 @@ func test_booster_video_closed_early(t: T) -> void:
 
 
 func test_booster_smash(t: T) -> void:
-	var g := _g(9)
+	var g := _g(17)
 	g.s.inv.smash = 1
 	var lv := _mount()
 	await _wait_until(_playing.bind(lv))
@@ -485,6 +485,30 @@ func test_release_continues_after_l20(t: T) -> void:
 	Config.demo_override = -1
 
 
+## Level HARD/VERY HARD hiện dải cảnh báo rồi tự vào chơi; chơi lại không hiện lại.
+func test_hard_warning(t: T) -> void:
+	_g(24)
+	var lv := _mount()
+	t.ok(await _wait_until(func() -> bool: return lv.find_child("DifficultyBanner", true, false) != null), "L24 có dải cảnh báo")
+	t.ok(not _playing(lv), "chưa chơi khi đang cảnh báo")
+	t.eq(lv.hard_badge.text, lv.tr("level_hard"), "huy hiệu KHÓ")
+	t.eq((lv.find_child("Text", true, false) as Label).text, lv.tr("level_hard"), "dải ghi KHÓ")
+	t.ok(await _wait_until(_playing.bind(lv)), "tự vào chơi")
+	lv.free()
+	_g(29)
+	lv = _mount()
+	t.ok(await _wait_until(func() -> bool: return lv.find_child("DifficultyBanner", true, false) != null), "L29 (VeryHard) có dải cảnh báo")
+	t.eq(lv.hard_badge.text, lv.tr("level_very_hard"), "huy hiệu RẤT KHÓ")
+	t.ok(await _wait_until(_playing.bind(lv)), "L29 tự vào chơi")
+	lv._on_restart_pressed()
+	await _wait_until(func() -> bool: return _pop(lv, "ConfirmButton") != null or _playing(lv))
+	if _pop(lv, "ConfirmButton") != null:
+		_press(lv, "ConfirmButton")
+	await _wait_until(_playing.bind(lv))
+	t.ok(lv.find_child("DifficultyBanner", true, false) == null, "chơi lại không cảnh báo")
+	lv.free()
+
+
 # --- main ---
 
 func _main() -> Control:
@@ -617,8 +641,8 @@ func test_board_fits_holder_l8(t: T) -> void:
 	await _fit_level(t, 8)
 
 
-func test_board_fits_holder_l14_8x10(t: T) -> void:
-	await _fit_level(t, 14)
+func test_board_fits_holder_l44_8x10(t: T) -> void:
+	await _fit_level(t, 44)
 
 
 func test_board_fits_holder_l20(t: T) -> void:

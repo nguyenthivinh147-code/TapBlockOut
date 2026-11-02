@@ -27,6 +27,7 @@ const LevelData := preload("res://src/core/level_data.gd")
 const LevelLoop := preload("res://src/core/level_loop.gd")
 const LevelGenerator := preload("res://src/core/level_generator.gd")
 const Solver := preload("res://src/core/solver.gd")
+const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 const SAVE_PATH := "user://save.json"
 const LEVEL_PATH := "res://data/levels/level_%04d.json"
@@ -361,6 +362,14 @@ func current_level_data() -> Dictionary:
 ## Level nội dung (số file) mà level hiển thị `lv` chơi.
 func content_level(lv: int) -> int:
 	return LevelLoop.content_level(lv, int(Config.CONTENT.loop_start_level), int(Config.CONTENT.release_pregen_level))
+
+
+## Độ khó của level hiển thị `lv`: "" | "hard" | "very_hard". Level HARD từ `very_hard_from_level` luôn là rất khó.
+func difficulty_of(lv: int) -> String:
+	var c := content_level(lv)
+	if DifficultyCurve.is_very_hard(c) or (lv >= int(Config.CONTENT.very_hard_from_level) and DifficultyCurve.is_hard(c)):
+		return "very_hard"
+	return "hard" if DifficultyCurve.is_hard(c) else ""
 
 
 ## Level `lv` có thể chơi không. Demo: tới `demo_max_level`; phát hành: có file nội dung (kể cả sau vòng lặp).

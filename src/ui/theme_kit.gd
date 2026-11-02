@@ -18,6 +18,8 @@ const TEXT_DIM := Color("A9B1CC")
 const GOLD := Color("FFC93C")
 const GOOD := Color("43B649")
 const DANGER := Color("E0566B")
+const HARD_BANNER := Color("B83FD9")
+const HARD_BANNER_VERY := Color("D8344A")
 const VIDEO := Color("2F80ED")
 
 const FS_SMALL := 24

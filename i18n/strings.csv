@@ -28,6 +28,7 @@ home_offer_chip,Special offer,Ưu đãi đặc biệt
 home_offer_left,%s left,Còn %s
 level_title,Level %d,Level %d
 level_hard,HARD,KHÓ
+level_very_hard,VERY HARD,RẤT KHÓ
 level_moves,Moves,Lượt
 level_moves_left,Moves: %d,Lượt: %d
 level_remaining,%d blocks left,Còn %d khối

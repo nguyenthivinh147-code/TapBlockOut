@@ -1,15 +1,17 @@
 extends RefCounted
-## Bộ sinh level (Task 9.1): 500 level hợp lệ, xác định, đúng cơ chế theo Config.UNLOCK, dưới 200 ms mỗi level.
+## Bộ sinh level (Task 9.1): 500 level (L5-504) hợp lệ, xác định, đúng cơ chế theo Config.UNLOCK, dưới 200 ms mỗi level.
 const T := preload("res://tests/t.gd")
 const Gen := preload("res://src/core/level_generator.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const Solver := preload("res://src/core/solver.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const Config := preload("res://src/config.gd")
+const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 const GenTool := preload("res://tools/gen_levels.gd")
 const Validate := preload("res://tools/validate_levels.gd")
 
-const FIRST_ID := 21
+## L1-4 làm tay (tools/gen_levels.gd EARLY), bộ sinh bắt đầu từ L5.
+const FIRST_ID := 5
 const COUNT := 500
 const MAX_MSEC := 200.0
 
@@ -54,7 +56,7 @@ func test_valid_solvable_fast(t: T) -> void:
 		var n: int = d["blocks"].size()
 		t.ok(n >= 2 and n <= Gen.MAX_BLOCKS, "id %d số khối %d" % [id, n])
 		t.ok(int(d["w"]) <= Gen.MAX_W and int(d["h"]) <= Gen.MAX_H, "id %d cỡ bàn" % id)
-		t.eq(bool(d["hard"]), id % 4 == 0, "id %d HARD" % id)
+		t.eq(bool(d["hard"]), DifficultyCurve.is_hard(id), "id %d HARD" % id)
 		if bool(d["hard"]):
 			hards += 1
 		var r := Solver.solve(d)
@@ -78,7 +80,7 @@ func test_valid_solvable_fast(t: T) -> void:
 
 
 func test_deterministic(t: T) -> void:
-	for id in [21, 31, 46, 61, 81, 101, 150, 300, 301, 777]:
+	for id in [14, 30, 40, 55, 70, 90, 100, 150, 301, 777]:
 		for sd in [0, 5, 12345]:
 			var a := Gen.generate(id, sd)
 			var b := Gen.generate(id, sd)
@@ -102,16 +104,16 @@ func test_hard_and_early_ids(t: T) -> void:
 		t.ok(not d.is_empty(), "id %d sinh được" % id)
 		if d.is_empty():
 			continue
-		t.eq(bool(d["hard"]), id % 4 == 0, "HARD id %d" % id)
-		if id <= 20:
+		t.eq(bool(d["hard"]), DifficultyCurve.is_hard(id), "HARD id %d" % id)
+		if id < int(Config.UNLOCK.stone):
 			t.ok(d["stones"].is_empty() and d["pulse_sides"].is_empty(), "id %d chưa có đá và cổng" % id)
 		t.eq(int(d["moves"]), Solver.compute_moves(d), "moves id %d" % id)
 
 
 func test_mechanics_for(t: T) -> void:
-	t.eq(Gen.mechanics_for(20).size(), 0, "L20 chưa cơ chế")
-	t.eq(Gen.mechanics_for(21), ["stone"] as Array[String], "L21")
-	t.eq(Gen.mechanics_for(101).size(), 6, "L101 đủ 6")
+	t.eq(Gen.mechanics_for(13).size(), 0, "L13 chưa cơ chế")
+	t.eq(Gen.mechanics_for(14), ["stone"] as Array[String], "L14")
+	t.eq(Gen.mechanics_for(90).size(), 6, "L90 đủ 6")
 
 
 func test_gen_tool_roundtrip(t: T) -> void:

@@ -34,7 +34,7 @@ func test_defaults(t: T) -> void:
 	t.eq(Config.ECON.rescue_video_max, 4, "video cả 4 lần")
 	t.eq(Config.LIVES.max, 10, "mạng")
 	t.eq(Config.LIVES.regen_sec, 900, "hồi mạng")
-	t.eq(Config.UNLOCK.pulse, 101, "pulse")
+	t.eq(Config.UNLOCK.pulse, 90, "pulse")
 	t.eq(Config.CONTENT.demo_max_level, 20, "demo")
 	t.eq(Config.CONTENT.ftue_steps.size(), 8, "ftue")
 	t.eq(Config.SALE_WEEKDAYS, [6, 0], "sale")

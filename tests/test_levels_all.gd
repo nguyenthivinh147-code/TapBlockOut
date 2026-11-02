@@ -1,5 +1,5 @@
 extends RefCounted
-## 300 level đóng gói sẵn (Task 9.3): L1-20 giữ nguyên, L21-300 do tools/gen_levels.gd sinh, 6 level dạy làm tay.
+## 100 level đóng gói sẵn theo đường cong độ khó (difficulty_curve.gd): L1-4 và 6 level dạy cơ chế làm tay, còn lại do tools/gen_levels.gd sinh.
 const T := preload("res://tests/t.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
@@ -7,9 +7,9 @@ const Solver := preload("res://src/core/solver.gd")
 const Gen := preload("res://src/core/level_generator.gd")
 const GenTool := preload("res://tools/gen_levels.gd")
 const Config := preload("res://src/config.gd")
+const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
-const TOTAL := 300
-const HARD_EARLY := [8, 12, 16, 20]
+const TOTAL := 100
 const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
 
 var _cache: Dictionary = {}  # id -> level
@@ -44,40 +44,6 @@ func _mechs(d: Dictionary) -> Dictionary:
 		if bool(b["fog"]):
 			m["fog"] = int(m.get("fog", 0)) + 1
 	return m
-
-
-func _early_range(id: int) -> Array:
-	if id == 1:
-		return [2, 2]
-	if id <= 3:
-		return [3, 4]
-	if id <= 5:
-		return [5, 7]
-	if id <= 7:
-		return [8, 10]
-	if id == 8:
-		return [10, 10]
-	if id <= 11:
-		return [12, 15]
-	if id == 12:
-		return [16, 16]
-	if id <= 15:
-		return [16, 20]
-	if id == 16:
-		return [22, 22]
-	if id <= 19:
-		return [22, 26]
-	return [28, 28]
-
-
-func _early_colors(id: int) -> int:
-	if id <= 3:
-		return 1
-	if id <= 5:
-		return 2
-	if id <= 8:
-		return 3
-	return 4
 
 
 func test_all_files_and_ids(t: T) -> void:
@@ -122,33 +88,60 @@ func test_play_through_solver_order(t: T) -> void:
 		t.eq(b.moves_left(), Solver.slack_for(d), "L%d còn đúng phần dư" % id)
 
 
-func test_early_levels_unchanged(t: T) -> void:
-	for id in range(1, 21):
+func test_early_levels_handmade(t: T) -> void:
+	# L1-4 làm tay: 2, 3, 3, 4 màu; L1-3 không khối nào phải chờ quá một chạm, dư 5 MOVES.
+	for id in range(1, 5):
+		var d := _level(id)
+		if d.is_empty():
+			continue
+		var cols := {}
+		for b in d["blocks"]:
+			cols[b["color"]] = true
+		t.eq(cols.size(), DifficultyCurve.color_count(id), "L%d số màu" % id)
+		t.eq(cols.size(), [2, 3, 3, 4][id - 1], "L%d đúng bảng màu 2/3/3/4" % id)
+		t.ok(not bool(d["hard"]), "L%d không HARD" % id)
+		t.eq(_mechs(d).size(), 0, "L%d không cơ chế" % id)
+		t.eq(_norm(GenTool.build_spec(id, GenTool.EARLY[id])), _norm(d), "L%d khớp bảng EARLY" % id)
+		if id <= 3:
+			t.eq(Solver.slack_for(d), 5, "L%d dư 5 MOVES" % id)
+			t.eq(int(d["moves"]), int(d["min_taps"]) + 5, "L%d moves" % id)
+			# thắng chắc: dù chạm bừa theo mọi thứ tự, còn đủ MOVES để thắng bằng cách chạm lại khối bị chặn.
+			t.ok(int(d["min_taps"]) <= d["blocks"].size() + 1, "L%d gần như không khối bị chặn" % id)
+
+
+func test_early_levels_follow_curve(t: T) -> void:
+	for id in range(5, 21):
 		var d := _level(id)
 		if d.is_empty():
 			continue
 		var n: int = d["blocks"].size()
-		var rng := _early_range(id)
-		t.ok(n >= rng[0] and n <= rng[1], "L%d số khối %d" % [id, n])
-		var cols := {}
-		for b in d["blocks"]:
-			cols[b["color"]] = true
-		t.eq(cols.size(), _early_colors(id), "L%d số màu" % id)
-		t.eq(bool(d["hard"]), HARD_EARLY.has(id), "L%d cờ HARD" % id)
-		t.eq(_mechs(d).size(), 0, "L%d không cơ chế" % id)
+		t.ok(absi(n - DifficultyCurve.block_count(id)) <= 1 or Gen.mechanics_for(id).size() > 0, "L%d số khối %d ~ đường cong %d" % [id, n, DifficultyCurve.block_count(id)])
+	# Độ khó tăng dần: trung bình số khối mỗi 10 level (bỏ level dạy cơ chế, bàn nhỏ) không giảm trong 30 level đầu (đường cong tự trũng nhẹ ở L31-40).
+	var prev := 0.0
+	for start in [1, 11, 21]:
+		var sum := 0
+		var cnt := 0
+		for id in range(start, start + 10):
+			if GenTool.teach_mech(id) != "":
+				continue
+			sum += _level(id)["blocks"].size()
+			cnt += 1
+		t.ok(float(sum) / float(cnt) >= prev, "trung bình khối L%d-%d không giảm" % [start, start + 9])
+		prev = float(sum) / float(cnt)
 
 
-func test_hard_every_fourth(t: T) -> void:
+func test_hard_follows_curve(t: T) -> void:
 	var hard := 0
-	for id in range(21, TOTAL + 1):
+	for id in range(1, TOTAL + 1):
 		var d := _level(id)
 		if d.is_empty():
 			continue
-		t.eq(bool(d["hard"]), id % 4 == 0, "L%d cờ HARD" % id)
+		t.eq(bool(d["hard"]), DifficultyCurve.is_hard(id), "L%d cờ HARD theo đường cong" % id)
 		if bool(d["hard"]):
 			hard += 1
 			t.eq(Solver.slack_for(d), 1, "L%d HARD dư 1" % id)
-	t.eq(hard, 70, "70 level HARD trong L21-300")
+	t.eq(hard, DifficultyCurve.HARD.size() + DifficultyCurve.VERY_HARD.size(), "26 level HARD/VeryHard trong L1-100")
+	t.eq(hard, 26, "26 level HARD")
 
 
 func test_mechanics_follow_unlock_table(t: T) -> void:
@@ -166,7 +159,7 @@ func test_mechanics_follow_unlock_table(t: T) -> void:
 	for m in MECHS:
 		var u := int(Config.UNLOCK[m])
 		t.eq(int(first.get(m, 0)), u, "%s xuất hiện đầu tiên ở level mở khoá %d" % [m, u])
-		t.ok(int(count.get(m, 0)) >= 30, "%s dùng đủ nhiều (%d level)" % [m, int(count.get(m, 0))])
+		t.ok(int(count.get(m, 0)) >= (TOTAL - u) * 0.5, "%s dùng đủ nhiều (%d level)" % [m, int(count.get(m, 0))])
 	# Cơ chế mới không biến mất sau level dạy: 10 level sau mỗi level dạy đều còn cơ chế đó.
 	for m in MECHS:
 		var u := int(Config.UNLOCK[m])
@@ -276,8 +269,8 @@ func test_teaching_levels(t: T) -> void:
 
 
 func test_generator_reproduces_files(t: T) -> void:
-	# Level sinh ra khớp file đóng gói khi dùng seed gốc (mẫu vài level, không đủ thời gian cho cả 300).
-	for id in [22, 40, 77, 120, 213, 300]:
+	# Level sinh ra khớp file đóng gói khi dùng seed gốc (mẫu vài level, không đủ thời gian cho cả 100).
+	for id in [22, 41, 77, 100]:
 		var d := _level(id)
 		if d.is_empty():
 			continue

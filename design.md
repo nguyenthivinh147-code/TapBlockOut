@@ -13,7 +13,7 @@ Game làm bằng **Godot 4.7.2, GDScript, xuất Android gốc**. Tài liệu Ho
 | Cái gì quyết định thắng hay thua | Đọc đúng khối nào đang thoát được. Chạm khối bị chặn tốn 1 MOVES; hết MOVES mà còn khối thì vào luồng cứu (mục 3). Trong level không có timer. Từ L10, thua mất 1 mạng. |
 | Tiền nhận theo gì | Gold theo level thắng: +40 ở mọi độ khó; x2 bằng rewarded. Thêm quà 28 ngày và video trong shop. |
 | Nâng cấp gì | Không có nâng cấp vĩnh viễn. Gold mua 3 booster dùng một lần (Gợi ý, +3 Move, Phá 1 khối), chơi tiếp, refill tim, avatar và frame. |
-| Level sau khác gì | Thêm màu (1 → 4), nhiều khối hơn, chuỗi chặn sâu hơn, dư MOVES ít hơn, có level HARD xen kẽ. Từ L21 thêm 6 cơ chế (mục 4). |
+| Level sau khác gì | Thêm màu (2 → 4 trong 4 level đầu), nhiều khối hơn, chuỗi chặn sâu hơn, dư MOVES ít hơn, có level HARD xen kẽ theo đường cong độ khó. Từ L14 thêm 6 cơ chế (mục 4). |
 
 ## 2. Thông số đã có
 
@@ -21,7 +21,7 @@ Game làm bằng **Godot 4.7.2, GDScript, xuất Android gốc**. Tài liệu Ho
 - Hướng màn hình: **portrait**
 - Nền tảng: **chỉ Android** ở bản hiện tại, iOS phát triển sau. Không có bản web.
 - Offline, một người chơi. Ngôn ngữ: `en`, `vi`.
-- **Bản demo:** 20 level để duyệt game. **Bản phát hành đầu tiên:** L1–300.
+- **Bản demo:** 20 level để duyệt game. **Bản phát hành đầu tiên:** L1–100.
 - Game tham khảo: Tap Block Out: Color Puzzle (funsmith). Hôm nay trên Play: 4.7★, 4.11K đánh giá, 100K+ tải, cập nhật 26/10/2026, có sự kiện viền Halloween.
 - Đánh giá của người chơi: thích chỉ chạm không cần kéo; chê quảng cáo sau mỗi level và quảng cáo ngay lúc mở game. Game của ta tránh cả hai.
 
@@ -32,7 +32,8 @@ Game làm bằng **Godot 4.7.2, GDScript, xuất Android gốc**. Tài liệu Ho
 - Màu quyết định hướng: vàng lên, xanh lá trái, xanh dương phải, tím xuống. Mỗi cạnh khung là một cổng liền, không có cổng rời.
 - Chạm khối, đường thông: khối trượt ra (0,30 s, ease-out), hạt màu bắn ở cạnh, MOVES giảm 1.
 - Chạm khối, đường bị chặn: khối trượt tới vật cản, va chạm rồi bật về chỗ cũ, MOVES giảm 1. Bàn cờ không đổi nên không có thế bí.
-- `MOVES = số chạm tối thiểu do solver tính + dư`. Dư: L1–5 là 3; level thường `max(2, 10% số khối)`; level HARD là 1.
+- `MOVES = số chạm tối thiểu do solver tính + dư`. Dư: L1–3 là 5 (chắc chắn thắng); level thường `max(2, 10% số khối)`; level HARD là 1.
+- Cảnh báo độ khó (theo video demo): trên Home có nhãn HARD / VERY HARD phía trên nút Play; vào level thì một dải màu ngang bàn cờ ghi HARD (tím) hoặc VERY HARD (đỏ) trượt vào, giữ `hard_banner_sec` giây rồi tự mờ đi và vào chơi (chạm để bỏ qua). Level HARD từ L100 (`very_hard_from_level`) tính là VERY HARD. Chơi lại cùng level không hiện lại.
 - Nghĩ quá lâu rồi đi đúng (mặc định từ 8 giây): hiệu ứng vỗ tay.
 - Mỗi level có ít nhất một khối thoát được ngay. Solver kiểm 100% level trong unit test và lúc build.
 - Hỗ trợ người mù màu: mũi tên nhỏ trên khối, bật mặc định, tắt được trong Settings.
@@ -82,40 +83,38 @@ Luật chung:
 
 ## 4. Level
 
-### 20 level đầu
+### Đường cong độ khó L1–100
 
-Layout do mình tự thiết kế (đối xứng, vòng lồng nhau, hình vòm), không chép từ video của game gốc.
+Độ khó 100 level đầu bám file `difficulty_curve_levels_1-100.json` của PixelFlow (điểm 0–10, trung bình trượt 5 level), nạp vào `src/core/difficulty_curve.gd`. Bộ sinh đổi điểm thành số khối: chuẩn hoá min-max trên 100 level rồi nội suy 2–30 khối; level Hard +2 khối, VeryHard +3 khối, dư MOVES còn 1. Danh sách Hard: 24, 28, 33, 38, 44, 53, 59, 63, 68, 73, 79, 89, 93, 98. VeryHard: 29, 36, 45, 49, 54, 64, 69, 75, 82, 84, 95, 99 (huy hiệu và hộp thoại "rất khó" cho các level này và mọi level HARD từ L100). Cơ chế dày dần theo level kể từ level mở khoá. Bàn có cổng nhịp (L90+) tối đa 20 khối vì solver phải tìm chính xác, nên L91–99 thấp hơn đường cong.
+
+Bốn level đầu làm tay trong `tools/gen_levels.gd` (bảng EARLY). L1–3 chắc chắn thắng: dư 5 MOVES, L1–2 không khối nào bị chặn, L3 chỉ một khối phải chờ.
 
 Mọi level thắng đều +40 gold.
 
 | Level | Màu | Khối | Ghi chú |
 | --- | --- | --- | --- |
-| 1 | Vàng | 2 | Chữ "Tap the block" |
-| 2–3 | Vàng | 3–4 | Khối đầu tiên bị chặn |
-| 4–5 | + xanh lá | 5–7 | Mở Gợi ý, tặng 1 lần dùng |
-| 6–7 | + xanh dương | 8–10 | Mở +3 Move, tặng 1 lần |
-| 8 | 3 màu | 10 | **HARD** |
-| 9–11 | Đủ 4 màu | 12–15 | Mở Phá khối ở L9, tặng 1 lần |
-| 12 | 4 màu | 16 | **HARD** |
-| 13–15 | 4 màu | 16–20 | Chuỗi chặn sâu hơn |
-| 16 | 4 màu | 22 | **HARD** |
-| 17–19 | 4 màu | 22–26 | L18 hỏi đánh giá store sau khi thắng |
-| 20 | 4 màu | 28 | **HARD**, kết chặng |
+| 1 | 2 màu (vàng, xanh dương) | 2 | Chữ "Tap the block" |
+| 2 | 3 màu | 3 | Không khối bị chặn |
+| 3 | 3 màu | 4 | Một khối phải chờ |
+| 4 | Đủ 4 màu | 5 | Một khối phải chờ |
+| 5–13 | 4 màu | 6–11 | Gợi ý mở ở L5, Rate us ở L10, +3 Move mở ở L12 |
+| 14 | 4 màu | 6 | Level dạy Đá |
+| 15–29 | 4 màu | 15–24 | Phá khối mở ở L17; L24 là level HARD đầu tiên |
 
 ### Cơ chế sau bản demo
 
 Nguyên tắc: cơ chế chỉ làm bàn cờ dễ hơn theo thời gian hoặc lặp lại theo chu kỳ, không có nước đi nào khiến level không thể thắng. Không timer. Solver phải chứng minh được từng level. Vì vậy không dùng đổi màu ngẫu nhiên hay khối mọc thêm.
 
-Mỗi cơ chế có một level dạy làm tay và một âm thanh riêng. Sau L101 chỉ phối hợp các cơ chế đã có.
+Mỗi cơ chế có một level dạy làm tay và một âm thanh riêng. Sau L90 chỉ phối hợp các cơ chế đã có.
 
 | Từ level | Cơ chế | Luật | Âm thanh |
 | --- | --- | --- | --- |
-| 21 | Đá | Vật cản cố định, không trượt | Va đá trầm |
-| 31 | Băng | Cần 2 lần chạm, lần đầu làm nứt; chạm nứt tốn MOVES và đã tính vào `MOVES` | Băng nứt |
-| 46 | Xích và chìa | Khối bị xích chỉ đi được khi khối chìa đã thoát | Xích rơi |
-| 61 | Hai lớp | Thoát lớp ngoài thì lộ lớp trong, màu khác | Bóc lớp |
-| 81 | Sương mù | Không thấy màu cho tới khi ô bên cạnh trống | Gió nhẹ |
-| 101 | Cổng nhịp | Cổng đóng/mở luân phiên sau mọi lần chạm, kể cả chạm bị chặn | Cổng cơ khí |
+| 14 | Đá | Vật cản cố định, không trượt | Va đá trầm |
+| 30 | Băng | Cần 2 lần chạm, lần đầu làm nứt; chạm nứt tốn MOVES và đã tính vào `MOVES` | Băng nứt |
+| 40 | Xích và chìa | Khối bị xích chỉ đi được khi khối chìa đã thoát | Xích rơi |
+| 55 | Hai lớp | Thoát lớp ngoài thì lộ lớp trong, màu khác | Bóc lớp |
+| 70 | Sương mù | Không thấy màu cho tới khi ô bên cạnh trống | Gió nhẹ |
+| 90 | Cổng nhịp | Cổng đóng/mở luân phiên sau mọi lần chạm, kể cả chạm bị chặn | Cổng cơ khí |
 
 Booster với cơ chế:
 
@@ -129,21 +128,21 @@ Booster với cơ chế:
 | --- | --- |
 | Từ đầu | Popup hết MOVES, avatar, frame |
 | Sau khi thắng L3 | Quà 28 ngày |
-| 4 / 6 / 9 | Gợi ý / +3 Move / Phá khối |
+| 5 / 12 / 17 | Gợi ý / +3 Move / Phá khối |
 | 5 | Shop và video gold |
 | 10 | Mạng, Starter Pack |
 | Sau L10 | Interstitial trong phiên đầu |
-| 18 | Hỏi đánh giá store |
-| 21 / 31 / 46 / 61 / 81 / 101 | 6 cơ chế |
+| 10 | Hỏi đánh giá store (Rate us) |
+| 14 / 30 / 40 / 55 / 70 / 90 | 6 cơ chế |
 | 50 | Daily Challenge |
 
-Booster chưa mở mà nhận từ lịch quà thì vẫn vào kho, tới level mở thì nút mới hiện. Popup hết MOVES vẫn bán hoặc dùng +3 Move trước L6, vì món này áp dụng ngay. Quà hướng dẫn ở L4/L6/L9 vẫn tặng.
+Booster chưa mở mà nhận từ lịch quà thì vẫn vào kho, tới level mở thì nút mới hiện. Popup hết MOVES vẫn bán hoặc dùng +3 Move trước L12, vì món này áp dụng ngay. Quà hướng dẫn ở L5/L12/L17 vẫn tặng.
 
 ### Phạm vi
 
-- **Demo:** L1–20, có đủ popup hết MOVES, quà 28 ngày, avatar và frame; chưa có cơ chế mới. Sau L20 hiện "Sắp có level mới". Nút Daily Challenge ở Home hiện khoá, ghi "Unlocked at Level 50". Quảng cáo và mua hàng dùng bản giả lập cho tới khi có cấu hình từ Horus.
-- **Bản phát hành đầu tiên:** L21–300 sinh trước bằng công cụ, solver kiểm và đóng gói sẵn; level dạy cơ chế làm tay.
-- **Sau L300 (vòng lặp):** số level hiển thị tăng mãi (L301, L302…), nội dung quay lại từ level `content_loop_start_level` (mặc định 101) đến L300 rồi lặp tiếp. Cấu hình được qua Remote Config. Bản lưu chỉ giữ số hiển thị nên người chơi nâng cấp từ bản cũ (kể cả đã qua L300) tự nhận nội dung theo vòng lặp, không cần migrate. Daily Challenge vẫn sinh bàn trong game.
+- **Demo:** L1–20, có đủ popup hết MOVES, quà 28 ngày, avatar và frame; có Đá từ L14. Sau L20 hiện "Sắp có level mới". Nút Daily Challenge ở Home hiện khoá, ghi "Unlocked at Level 50". Quảng cáo và mua hàng dùng bản giả lập cho tới khi có cấu hình từ Horus.
+- **Bản phát hành đầu tiên:** L1–100 sinh trước bằng công cụ theo đường cong độ khó, solver kiểm và đóng gói sẵn; L1–4 và các level dạy cơ chế làm tay.
+- **Sau L100 (vòng lặp):** số level hiển thị tăng mãi (L101, L102…), nội dung quay lại từ level `content_loop_start_level` (mặc định 51) đến L100 rồi lặp tiếp. Cấu hình được qua Remote Config. Bản lưu chỉ giữ số hiển thị nên người chơi nâng cấp từ bản cũ (kể cả đã qua L300) tự nhận nội dung theo vòng lặp, không cần migrate. Daily Challenge vẫn sinh bàn trong game.
 - **Daily Challenge (L50):** dùng cùng bộ sinh. +100 gold cho lần thắng đầu tiên mỗi ngày, x2 bằng video như level thường, không có chuỗi ngày và bảng xếp hạng. Thua vẫn mất mạng như level thường.
 
 ## 5. Kinh tế (số của người dùng, cập nhật ngày 2026-11-01)
