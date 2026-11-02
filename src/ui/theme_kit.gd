@@ -3,10 +3,10 @@ extends RefCounted
 ## Dùng: const ThemeKit := preload("res://src/ui/theme_kit.gd")
 
 const BLOCK_COLORS := {
-	"yellow": Color("F5C518"),
-	"green": Color("43B649"),
-	"blue": Color("2F80ED"),
-	"purple": Color("9B51E0"),
+	"yellow": Color("FDE437"),
+	"green": Color("8DD142"),
+	"blue": Color("2EA4FF"),
+	"purple": Color("8D45E0"),
 }
 
 const BG := Color("1E2433")

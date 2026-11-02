@@ -28,6 +28,7 @@ const SIDE_COLOR := {"up": "yellow", "left": "green", "right": "blue", "down": "
 ## Một khối trên bàn: Control vẽ bằng BoardFx.draw_block, toạ độ ô tính từ góc trên trái của khối.
 class BlockNode extends Control:
 	const BoardFx := preload("res://src/ui/board_fx.gd")
+	const INNER_RATIO := 0.5  # inner pudding size, in cells
 	var id: String = ""
 	var cells: Array = []  # ô theo toạ độ bàn
 	var origin_cell: Vector2i = Vector2i.ZERO  # ô nhỏ nhất của khối
@@ -38,6 +39,7 @@ class BlockNode extends Control:
 	var busy: bool = false
 
 	var _body: Control = null
+	var _inner: Array[Control] = []  # inner puddings of a two-layer block, one per cell
 
 	func _init() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -52,11 +54,26 @@ class BlockNode extends Control:
 
 	func _draw() -> void:
 		var lc := local_cells()
-		BoardFx.Pudding.update_body(_body, lc, cell_size, BoardFx.block_base_color(view))
+		BoardFx.Pudding.update_body(_body, lc, cell_size, BoardFx.block_palette(view))
+		_update_inner(lc)
 		BoardFx.draw_block(self, lc, cell_size, view, show_arrow)
 		if glow > 0.0:
 			for c in lc:
 				draw_rect(Rect2(c.x * cell_size + 3, c.y * cell_size + 3, cell_size - 6, cell_size - 6), Color(1, 1, 1, 0.28 * glow))
+
+	func _update_inner(lc: Array) -> void:
+		var palette := BoardFx.inner_palette(view)
+		var count := 0 if palette.is_empty() else lc.size()
+		while _inner.size() > count:
+			_inner.pop_back().queue_free()
+		while _inner.size() < count:
+			var b := BoardFx.Pudding.make_body()
+			add_child(b)
+			_inner.append(b)
+		var inner_cell := floorf(cell_size * INNER_RATIO)
+		var margin := (cell_size - inner_cell) * 0.5
+		for i in count:
+			BoardFx.Pudding.update_body(_inner[i], [Vector2i.ZERO], inner_cell, palette, Vector2(lc[i]) * cell_size + Vector2(margin, margin))
 
 
 var arrows_enabled: bool = true

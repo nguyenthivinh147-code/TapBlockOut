@@ -11,7 +11,7 @@ const DIR := {
 	"purple": Vector2i(0, 1),
 }
 const SIDE_OF := {"yellow": "up", "green": "left", "blue": "right", "purple": "down"}
-const HEX := {"yellow": "#F5C518", "green": "#43B649", "blue": "#2F80ED", "purple": "#9B51E0"}
+const HEX := {"yellow": "#FDE437", "green": "#8DD142", "blue": "#2EA4FF", "purple": "#8D45E0"}
 const STONE := "stone"
 
 

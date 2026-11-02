@@ -111,7 +111,7 @@ tests/  tools/  reference/horus/  plans/
 }
 ```
 
-- Màu và hướng: `yellow` lên `(0,-1)`, `green` trái `(-1,0)`, `blue` phải `(1,0)`, `purple` xuống `(0,1)`. Mã màu (đề xuất của người lập kế hoạch): `#F5C518`, `#43B649`, `#2F80ED`, `#9B51E0`.
+- Màu và hướng: `yellow` lên `(0,-1)`, `green` trái `(-1,0)`, `blue` phải `(1,0)`, `purple` xuống `(0,1)`. Mã màu (đo từ concept, xem `design.md` mục 8): `#FDE437`, `#8DD142`, `#2EA4FF`, `#8D45E0`.
 - Cạnh ứng với màu: `up`, `left`, `right`, `down`.
 - `ice`: 1 nghĩa là phải chạm 1 lần để nứt rồi mới đi được. `chained_by`: id khối chìa. `inner_color`: lớp trong. `fog`: chỉ làm mờ màu.
 - `moves = min_taps + dư`. Dư theo `design.md` mục 3, tính trên số khối.
@@ -444,7 +444,7 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 5.1: BoardView**
   - **Allowed Files:** `scenes/board_view.tscn`, `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `src/ui/pudding.gd`, `src/ui/pudding.gdshader`, `tests/test_ui_board.gd`.
-  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ lưới, cổng liền bốn cạnh theo màu, khối pudding bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, phần phủ bằng code; concept theme trong `design.md` mục 8; cỡ ô là số nguyên), mũi tên hỗ trợ mù màu theo cài đặt. Trượt ra 0,30 giây ease-out, hạt màu ở cạnh; bị chặn thì trượt tới vật cản, bật về, rung nhẹ, không màn đỏ. Tự co vừa vùng cho trước. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)`. Cơ chế mới để Task 9.2.
+  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ lưới, cổng liền bốn cạnh theo màu, khối pudding 3D (thân bằng shader từ các trường khoảng cách trong `src/ui/pudding.gd`, phần phủ bằng code; concept theme trong `design.md` mục 8; cỡ ô là số nguyên), mũi tên hỗ trợ mù màu theo cài đặt. Trượt ra 0,30 giây ease-out, hạt màu ở cạnh; bị chặn thì trượt tới vật cản, bật về, rung nhẹ, không màn đỏ. Tự co vừa vùng cho trước. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)`. Cơ chế mới để Task 9.2.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_board`
 
 - [x] **Task 5.2: Home và Profile**

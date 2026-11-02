@@ -1,6 +1,10 @@
 extends RefCounted
 const T := preload("res://tests/t.gd")
 const BoardState := preload("res://src/core/board_state.gd")
+const BoardFx := preload("res://src/ui/board_fx.gd")
+const LevelData := preload("res://src/core/level_data.gd")
+const Pudding := preload("res://src/ui/pudding.gd")
+const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const SCENE := "res://scenes/board_view.tscn"
 
 
@@ -231,6 +235,108 @@ func test_gate_closed_and_fog(t: T) -> void:
 	t.eq(r["kind"], "exit", "lần sau cổng mở")
 	v.apply_result(r)
 	t.ok(await _wait_done(v), "exit xong")
+	v.queue_free()
+
+
+func test_pudding_corners(t: T) -> void:
+	var pad := Vector2(Pudding.PAD, Pudding.PAD)
+	var one := Pudding.corners_of([Vector2i.ZERO])
+	t.eq(one["tl"], PackedVector2Array([pad]), "một ô: một vệt sáng")
+	t.eq((one["cc"] as PackedVector2Array).size(), 0, "một ô: không có góc lõm")
+	# two arms open to the top left: two highlights and the small glint in the concave corner
+	var l := Pudding.corners_of([Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)])
+	t.eq(l["tl"], PackedVector2Array([Vector2(1, 0) + pad, Vector2(0, 1) + pad]), "chữ L: vệt sáng ở mỗi góc lồi")
+	t.eq(l["cc"], PackedVector2Array([Vector2(1, 1) + pad]), "chữ L: góc lõm")
+	# concave corners open to another side get no glint
+	t.eq((Pudding.corners_of([Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1)])["cc"] as PackedVector2Array).size(), 0, "góc lõm hướng khác")
+	# never more than the shader holds
+	var comb: Array = []
+	for x in Pudding.MAX_TL + 3:
+		comb.append(Vector2i(x * 2, 0))
+	t.eq((Pudding.corners_of(comb)["tl"] as PackedVector2Array).size(), Pudding.MAX_TL, "giới hạn số vệt sáng")
+
+
+## Distance (cells) from the cell edge at `start` to where the well begins, walking along `step`.
+func _well_inset(img: Image, start: Vector2i, step: Vector2i) -> float:
+	var p := start
+	var prev: float = img.get_pixelv(p).g
+	for i in Pudding.RES:
+		var v: float = img.get_pixelv(p + step).g
+		if prev < 0.0 and v >= 0.0:
+			return (float(i) + 0.5 - prev / (v - prev)) / float(Pudding.RES)
+		prev = v
+		p += step
+	return -1.0
+
+
+func test_pudding_fields(t: T) -> void:
+	var img := Pudding.bake_image([Vector2i.ZERO])
+	t.eq(img.get_size(), Vector2i(24, 24), "cỡ texture: 1 ô + lề")
+	t.ok(absf(img.get_pixel(12, 12).r - 0.47) < 0.04, "tâm ô cách mép gần nửa ô")
+	t.ok(absf(img.get_pixel(12, 4).r - 0.03125) < 0.005, "mép thẳng đúng vị trí, không lệch nửa pixel")
+	t.ok(img.get_pixel(4, 4).r < 0.0, "góc lồi đã bo")
+	t.ok(img.get_pixel(0, 12).r < 0.0, "ngoài khối mang dấu âm")
+	t.ok(img.get_pixel(12, 12).g > 0.0, "tâm nằm trong lòng khối")
+	t.ok(img.get_pixel(12, 4).g < 0.0, "mép trên nằm ngoài lòng khối")
+	t.ok(img.get_pixel(12, 18).g < 0.0, "dải đáy nằm ngoài lòng khối")
+	# the well sits slightly toward the top-left corner: the bottom band and the right bevel are the wide ones
+	t.ok(absf(_well_inset(img, Vector2i(4, 11), Vector2i(1, 0)) - 0.10) < 0.01, "lòng khối cách mép trái")
+	t.ok(absf(_well_inset(img, Vector2i(19, 11), Vector2i(-1, 0)) - 0.15) < 0.01, "lòng khối cách mép phải")
+	t.ok(absf(_well_inset(img, Vector2i(11, 4), Vector2i(0, 1)) - 0.10) < 0.01, "lòng khối cách mép trên")
+	t.ok(absf(_well_inset(img, Vector2i(11, 19), Vector2i(0, -1)) - 0.265) < 0.01, "lòng khối cách mép dưới")
+	# the gradient points into the well
+	t.ok(img.get_pixel(5, 12).b > 0.5, "mép trái")
+	t.ok(img.get_pixel(18, 12).b < -0.5, "mép phải")
+	t.ok(img.get_pixel(12, 5).a > 0.5, "mép trên")
+	t.ok(img.get_pixel(12, 18).a < -0.5, "mép dưới")
+	var a := Pudding.fields_for([Vector2i.ZERO])
+	t.ok(a["tex"] == Pudding.fields_for([Vector2i.ZERO])["tex"], "cache theo hình")
+	t.eq(a["dims"], Vector2(1.5, 1.5), "dims theo ô")
+
+
+func test_pudding_palettes(t: T) -> void:
+	var code: String = (load("res://src/ui/pudding.gdshader") as Shader).code
+	t.ok(code.contains("const float GAP = 0.005;"), "khe giữa hai khối là 1% ô")
+	t.ok(code.contains("const int MAX_TL = %d;" % Pudding.MAX_TL), "MAX_TL khớp shader")
+	t.ok(code.contains("const int MAX_CC = %d;" % Pudding.MAX_CC), "MAX_CC khớp shader")
+	var keys: Array = Pudding.palette_from(Color.GRAY).keys()
+	for k: String in keys:
+		t.ok(code.contains("uniform vec3 c_%s " % k), "shader có màu %s" % k)
+	for color_name: String in ThemeKit.BLOCK_COLORS:
+		var p: Dictionary = Pudding.PALETTES[color_name]
+		t.eq(p.size(), keys.size(), "%s đủ màu" % color_name)
+		for k: String in keys:
+			t.ok(p.has(k), "%s có %s" % [color_name, k])
+		t.eq(p["mid"], ThemeKit.block_color(color_name), "%s: mid là màu khối" % color_name)
+		t.eq(ThemeKit.block_color(color_name), Color(LevelData.HEX[color_name]), "%s: khớp mã màu" % color_name)
+	t.eq(Pudding.palette_of("nope", Color.RED)["mid"], Color.RED, "màu lạ dùng màu dự phòng")
+
+
+func test_block_palettes_by_state(t: T) -> void:
+	t.eq(BoardFx.block_palette({"color": "blue"})["mid"], ThemeKit.block_color("blue"), "màu thường")
+	t.eq(BoardFx.block_palette({"color": "blue", "is_fog_hidden": true})["mid"], BoardFx.FOG_COLOR, "sương mù che màu")
+	t.ok(BoardFx.block_palette({"color": "blue", "chained": true})["mid"].get_luminance() < ThemeKit.block_color("blue").get_luminance(), "xích tối hơn")
+	t.ok(BoardFx.inner_palette({"color": "blue"}).is_empty(), "không có lớp trong")
+	t.eq(BoardFx.inner_palette({"color": "blue", "inner_color": "green"})["mid"], ThemeKit.block_color("green"), "lớp trong")
+	t.ok(BoardFx.inner_palette({"color": "blue", "inner_color": "green", "is_fog_hidden": true}).is_empty(), "sương mù che lớp trong")
+
+
+func test_two_layer_inner_bodies(t: T) -> void:
+	var board := BoardState.new(_lv(4, 4, [_b("b", "purple", [[1, 1], [2, 1]], {"inner_color": "yellow"})]))
+	var v := (load(SCENE) as PackedScene).instantiate() as Control
+	_root().add_child(v)
+	v.setup(board, Vector2(720, 900))
+	var n: Control = v.block_node("b")
+	n.call("_update_inner", n.call("local_cells"))
+	t.eq((n.get("_inner") as Array).size(), 2, "mỗi ô một viên trong")
+	var inner: Control = n.get("_inner")[1]
+	t.ok(inner.get_parent() == n and inner.show_behind_parent, "viên trong nằm dưới phần phủ của khối")
+	var r := board.tap("b")
+	t.eq(r["kind"], "peel", "bóc lớp")
+	v.apply_result(r)
+	n.call("_update_inner", n.call("local_cells"))
+	t.eq((n.get("_inner") as Array).size(), 0, "bóc xong không còn viên trong")
+	t.ok(await _wait_done(v), "peel xong")
 	v.queue_free()
 
 

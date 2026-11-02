@@ -29,66 +29,6 @@ static func arrow_shown(view: Dictionary, show_arrow: bool) -> bool:
 	return show_arrow and not bool(view.get("is_fog_hidden", false))
 
 
-static func _box(fill: Color, radii: Array, _margins: Array, border: Color, borders: Array) -> StyleBoxFlat:
-	var s := StyleBoxFlat.new()
-	s.bg_color = fill
-	s.corner_radius_top_left = radii[0]
-	s.corner_radius_top_right = radii[1]
-	s.corner_radius_bottom_right = radii[2]
-	s.corner_radius_bottom_left = radii[3]
-	s.border_color = border
-	s.border_width_top = borders[0]
-	s.border_width_left = borders[1]
-	s.border_width_right = borders[2]
-	s.border_width_bottom = borders[3]
-	s.anti_aliasing = true
-	return s
-
-
-## Màu viền hoặc thành kẹo: tối đi `amount` nhưng vẫn đậm màu, không xám.
-static func _candy_edge(base: Color, amount: float = 0.30) -> Color:
-	var e := base.darkened(amount)
-	e.s = minf(1.0, e.s + 0.15)
-	return e
-
-
-## Quad Bezier qua `n + 1` điểm.
-static func _bez(p0: Vector2, p1: Vector2, p2: Vector2, n: int) -> PackedVector2Array:
-	var out := PackedVector2Array()
-	for i in n + 1:
-		var t := float(i) / float(n)
-		out.append(p0 * (1.0 - t) * (1.0 - t) + p1 * 2.0 * (1.0 - t) * t + p2 * t * t)
-	return out
-
-
-## Vệt sáng của pudding trong khung `size` (px) có góc trên trái ở `origin`: một thấu kính cong ôm góc
-## (đậm ở mép ngoài, mờ dần vào trong, đầu trên phải tròn, đuôi thon xuống trái), một vạch ngắn bên dưới
-## và một vệt mờ ngang ở mép trên. Toạ độ chuẩn hoá theo khung, đo từ viên pudding đơn trong concept.
-static func draw_glare(ci: CanvasItem, origin: Vector2, size: float) -> void:
-	var a := Vector2(0.09, 0.33)
-	var e := Vector2(0.35, 0.125)
-	var outer := _bez(a, Vector2(0.06, 0.12), e, 14)
-	var inner := _bez(a, Vector2(0.27, 0.28), e, 14)
-	var pts := PackedVector2Array()
-	var cols := PackedColorArray()
-	for p in outer:
-		pts.append(origin + p * size)
-		cols.append(Color(1, 1, 1, 0.95))
-	for i in range(inner.size() - 1, -1, -1):
-		pts.append(origin + inner[i] * size)
-		cols.append(Color(1, 1, 1, 0.50))
-	ci.draw_polygon(pts, cols)
-	var edge := PackedVector2Array()
-	for p in outer:
-		edge.append(origin + p * size)
-	ci.draw_polyline(edge, Color(1, 1, 1, 0.9), maxf(1.0, size * 0.012), true)
-	# vạch ngắn dưới đuôi và vệt mờ ngang ở mép trên
-	var dash := Rect2(origin + Vector2(0.085, 0.325) * size, Vector2(0.022, 0.04) * size)
-	ci.draw_style_box(_box(Color(1, 1, 1, 0.9), [3, 3, 3, 3], [], Color(0, 0, 0, 0), [0, 0, 0, 0]), dash)
-	var streak := Rect2(origin + Vector2(0.50, 0.095) * size, Vector2(0.16, 0.022) * size)
-	ci.draw_style_box(_box(Color(1, 1, 1, 0.28), [3, 3, 3, 3], [], Color(0, 0, 0, 0), [0, 0, 0, 0]), streak)
-
-
 ## Ô gần trọng tâm nhất: nơi đặt mũi tên và biểu tượng.
 static func anchor_cell(cells: Array) -> Vector2i:
 	var sum := Vector2.ZERO
@@ -105,39 +45,32 @@ static func anchor_cell(cells: Array) -> Vector2i:
 	return best
 
 
-## Màu gốc của khối: xám sương mù khi còn trong sương, tối đi khi bị xích.
-static func block_base_color(view: Dictionary) -> Color:
-	var base: Color = FOG_COLOR if bool(view.get("is_fog_hidden", false)) else ThemeKit.block_color(str(view.get("color", "")))
-	if bool(view.get("chained", false)):
-		base = base.darkened(0.22)
-	return base
+## Palette of the block body: fog grey while hidden, darker while chained.
+static func block_palette(view: Dictionary) -> Dictionary:
+	var palette: Dictionary
+	if bool(view.get("is_fog_hidden", false)):
+		palette = Pudding.palette_from(FOG_COLOR)
+	else:
+		var color_name := str(view.get("color", ""))
+		palette = Pudding.palette_of(color_name, ThemeKit.block_color(color_name))
+	return Pudding.palette_darkened(palette, 0.22) if bool(view.get("chained", false)) else palette
 
 
-## Vẽ phần nằm trên thân pudding của một khối đa ô: vệt sáng, viên trong của khối hai lớp, rồi băng, xích,
-## sương, mũi tên. Thân (viền gel, lòng, bóng đổ) do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
-## theo concept `art/concepts/concept_candy_board_v1.png`.
-## `cells` tính theo toạ độ ô gốc của chính CanvasItem này.
+## Palette of the inner pudding of a two-layer block; empty when there is none to show.
+static func inner_palette(view: Dictionary) -> Dictionary:
+	var inner_color := str(view.get("inner_color", ""))
+	if inner_color == "" or bool(view.get("is_fog_hidden", false)):
+		return {}
+	return Pudding.palette_of(inner_color, ThemeKit.block_color(inner_color))
+
+
+## Draws what sits on top of the pudding body of a block: fog, ice, arrow, chain, key. The body itself
+## (including the inner pudding of a two-layer block) is `Pudding.Body`, behind the BlockNode.
+## `cells` are relative to this CanvasItem's origin cell.
 static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictionary, show_arrow: bool) -> void:
 	var fog_hidden: bool = view.get("is_fog_hidden", false)
 	var chained: bool = view.get("chained", false)
-	var inner_color := str(view.get("inner_color", ""))
-	var inner_col := ThemeKit.block_color(inner_color) if inner_color != "" and not fog_hidden else Color(0, 0, 0, 0)
-	var bw := maxi(2, int(cell * 0.035))
-	var top_left: Vector2i = cells[0]
-	for c: Vector2i in cells:
-		if c.y < top_left.y or (c.y == top_left.y and c.x < top_left.x):
-			top_left = c
-	# vệt sáng ở góc trên trái của cả khối (khung bằng ô, lùi theo khe giữa các khối)
-	var g := cell * 0.0625
-	draw_glare(ci, Vector2(top_left) * cell + Vector2(g, g), cell - 2.0 * g)
-	if inner_col.a > 0.0:
-		for c: Vector2i in cells:
-			var m := cell * 0.27
-			var ir := Rect2(c.x * cell + m, c.y * cell + m, cell - 2.0 * m, cell - 2.0 * m)
-			var ri := int(cell * 0.14)
-			var lip := maxi(bw + 2, int(cell * 0.08))
-			ci.draw_style_box(_box(inner_col.lerp(Color.WHITE, 0.06), [ri, ri, ri, ri], [], _candy_edge(inner_col, 0.45), [bw, bw, bw, lip]), ir)
-			draw_glare(ci, ir.position, ir.size.x)
+	var two_layer := not inner_palette(view).is_empty()
 	var anchor := anchor_cell(cells)
 	var center := (Vector2(anchor) + Vector2(0.5, 0.5)) * cell
 	if fog_hidden:
@@ -146,13 +79,13 @@ static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictiona
 	if ice > 0:
 		draw_ice(ci, cells, cell, ice)
 	if arrow_shown(view, show_arrow):
-		if inner_col.a > 0.0:
-			# khối hai lớp: mũi tên của lớp ngoài nằm lệch lên trên tâm ô
+		if two_layer:
+			# two-layer block: the outer layer's arrow sits above the cell centre
 			draw_arrow(ci, center + Vector2(0, -cell * 0.3), LevelData.dir_of(str(view.get("color", ""))), cell * 0.6)
 		elif chained:
 			draw_arrow(ci, center + Vector2(0, -cell * 0.2), LevelData.dir_of(str(view.get("color", ""))), cell * 0.7)
 		else:
-			# hạ nhẹ xuống để không chạm vệt sáng ở góc trên trái
+			# slightly low so it stays off the highlight in the top-left corner
 			draw_arrow(ci, center + Vector2(0, cell * 0.05), LevelData.dir_of(str(view.get("color", ""))), cell)
 	if chained:
 		draw_chain(ci, cells, cell)
