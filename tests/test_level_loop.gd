@@ -1,6 +1,6 @@
 extends RefCounted
-## Sau L300 (bản phát hành): level sinh trong game từ LevelGenerator, Solver kiểm, xác định; màn chờ ngắn;
-## demo vẫn dừng ở L20.
+## Vòng lặp level (bản phát hành): sau level cuối, số hiển thị tăng mãi còn nội dung quay lại từ
+## Config.CONTENT.loop_start_level; demo vẫn dừng ở L20.
 const T := preload("res://tests/t.gd")
 const Config := preload("res://src/config.gd")
 const MockIap := preload("res://src/platform/mock_iap.gd")
@@ -8,8 +8,9 @@ const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const Solver := preload("res://src/core/solver.gd")
 const Gen := preload("res://src/core/level_generator.gd")
+const LevelLoop := preload("res://src/core/level_loop.gd")
 
-const DIR := "user://test_level_after_300"
+const DIR := "user://test_level_loop"
 const NOW := 1800000000
 
 
@@ -44,80 +45,68 @@ func _wait_until(cond: Callable, ms: int = 8000) -> bool:
 	return cond.call()
 
 
-func test_l300_from_file_l301_generated(t: T) -> void:
+func test_content_level_mapping(t: T) -> void:
+	var L := LevelLoop
+	t.eq(L.content_level(1, 101, 300), 1, "trước level cuối giữ nguyên")
+	t.eq(L.content_level(300, 101, 300), 300, "level cuối giữ nguyên")
+	t.eq(L.content_level(301, 101, 300), 101, "sau level cuối về loop_start")
+	t.eq(L.content_level(302, 101, 300), 102, "tiếp tục tuần tự")
+	t.eq(L.content_level(500, 101, 300), 300, "hết vòng 1")
+	t.eq(L.content_level(501, 101, 300), 101, "vòng 2")
+	t.eq(L.content_level(100000, 101, 300), 101 + (100000 - 101) % 200, "số lớn")
+	t.eq(L.content_level(7, 1, 5), 2, "loop_start = 1")
+	t.eq(L.content_level(8, 5, 5), 5, "vòng một level")
+	t.eq(L.content_level(7, 99, 5), 5, "loop_start quá cuối kẹp về level cuối")
+	t.eq(L.content_level(7, 0, 5), 2, "loop_start < 1 kẹp về 1")
+
+
+func test_game_loops_content_keeps_display(t: T) -> void:
 	var g := _g(300)
-	t.ok(FileAccess.file_exists("res://data/levels/level_0300.json"), "có file L300")
-	t.eq(int(g.current_level_data().get("id", 0)), 300, "L300 đọc từ file")
-	t.eq(g.level_needs_generation(), false, "L300 không cần sinh")
+	t.eq(int(g.current_level_data().get("id", 0)), 300, "L300 đọc file 300")
+	for pair in [[301, 101], [302, 102], [500, 300], [501, 101], [1234, 101 + (1234 - 101) % 200]]:
+		g.s.level = pair[0]
+		t.eq(g.level_exists(pair[0]), true, "L%d tồn tại" % pair[0])
+		t.eq(int(g.current_level_data().get("id", 0)), pair[1], "L%d chơi nội dung L%d" % [pair[0], pair[1]])
 	g.s.level = 301
-	t.ok(not FileAccess.file_exists("res://data/levels/level_0301.json"), "không có file L301")
-	t.eq(g.level_exists(301), true, "L301 tồn tại")
-	t.eq(g.level_needs_generation(), true, "L301 phải sinh")
-	var d: Dictionary = g.current_level_data()
-	t.ok(not d.is_empty(), "sinh được L301")
-	t.eq(int(d.id), 301, "id 301")
-	t.eq(g.level_needs_generation(), false, "đã nhớ trong cache")
-	Config.demo_override = -1
-
-
-func test_generated_levels_valid_and_deterministic(t: T) -> void:
-	var g := _g(301)
-	var worst_ms := 0.0
-	for lvn in range(301, 331):
-		g.s.level = lvn
-		var t0 := Time.get_ticks_usec()
-		var d: Dictionary = g.current_level_data()
-		worst_ms = maxf(worst_ms, float(Time.get_ticks_usec() - t0) / 1000.0)
-		t.ok(not d.is_empty(), "L%d sinh được" % lvn)
-		if d.is_empty():
-			continue
-		t.eq(int(d.id), lvn, "L%d id" % lvn)
-		t.eq(LevelData.validate(d), [] as Array[String], "L%d hợp lệ" % lvn)
-		var r := Solver.solve(d)
-		t.ok(bool(r.ok), "L%d solver giải được" % lvn)
-		t.eq(int(d.min_taps), int(r.min_taps), "L%d min_taps" % lvn)
-		t.ok(int(d.moves) >= int(r.min_taps), "L%d MOVES đủ" % lvn)
-		t.ok(not BoardState.new(d).hint().is_empty(), "L%d có khối thoát ngay" % lvn)
-		t.eq(bool(d.hard), lvn % 4 == 0, "L%d HARD mỗi 4 level" % lvn)
-		t.ok(d.blocks.size() <= Gen.MAX_BLOCKS, "L%d trần 30 khối" % lvn)
-		# xác định: sinh lại sau khi xoá cache (như mở game lại) cho đúng cùng level
-		var s1 := JSON.stringify(d)
-		var d2: Dictionary = g.generate_checked(lvn, lvn * g.SEED_STRIDE)
-		t.eq(JSON.stringify(d2), s1, "L%d xác định" % lvn)
-	print("level_after_300: sinh chậm nhất %.0f ms" % worst_ms)
-	t.ok(worst_ms < 1000.0, "mỗi level sinh dưới 1 giây (%.0f ms)" % worst_ms)
-	# level khác nhau cho bàn khác nhau
-	g.s.level = 301
-	var a := JSON.stringify(g.current_level_data())
-	g.s.level = 302
-	t.ok(a != JSON.stringify(g.current_level_data()), "L301 khác L302")
-	# cache xoá, cùng level cho đúng bàn cũ
-	g.reset_for_test(DIR + "/save.json")
-	Config.demo_override = 0
-	g.s.level = 301
-	t.eq(JSON.stringify(g.current_level_data()), a, "mở lại game vẫn cùng bàn L301")
-	Config.demo_override = -1
-
-
-func test_generate_checked_matches_generator(t: T) -> void:
-	var g := _g(301)
-	# Seed đầu hợp lệ thì generate_checked trả đúng LevelGenerator.generate(id, seed).
-	var d: Dictionary = g.generate_checked(305, 5000)
-	t.eq(JSON.stringify(d), JSON.stringify(Gen.generate(305, 5000)), "seed đầu đạt thì giữ nguyên")
-	# Id không sinh được ở mọi seed: trả {} chứ không treo.
-	var bad: Dictionary = g.generate_checked(0, 1)
-	t.ok(bad.is_empty() or LevelData.validate(bad).is_empty(), "id lạ: rỗng hoặc hợp lệ")
-	Config.demo_override = -1
-
-
-func test_start_attempt_after_300(t: T) -> void:
-	var g := _g(350)
 	var a: Dictionary = g.start_attempt()
-	t.ok(not a.is_empty(), "start_attempt L350")
-	t.eq(int(a.level), 350, "level")
-	t.eq(bool(a.challenge), false, "không phải challenge")
-	t.ok((a.board as BoardState).moves_left() > 0, "có MOVES")
-	t.eq(int(g._gen_cache.size()), 1, "một bàn trong cache")
+	t.eq(int(a.level), 301, "attempt giữ số hiển thị")
+	t.eq(g._gen_cache.size(), 0, "không sinh gì")
+
+
+func test_loop_start_configurable(t: T) -> void:
+	var g := _g(301)
+	var old: int = int(Config.CONTENT.loop_start_level)
+	Config.CONTENT["loop_start_level"] = 51
+	t.eq(int(g.current_level_data().get("id", 0)), 51, "loop_start 51")
+	g.s.level = 303
+	t.eq(int(g.current_level_data().get("id", 0)), 53, "L303 -> 53")
+	Config.CONTENT["loop_start_level"] = old
+	Config.demo_override = -1
+
+
+func test_win_advances_display_level_past_last(t: T) -> void:
+	var g := _g(300)
+	var a: Dictionary = g.start_attempt()
+	var res: Dictionary = g.on_level_won(a)
+	t.eq(int(g.s.level), 301, "thắng L300 lên L301")
+	var a2: Dictionary = g.start_attempt()
+	t.eq(int(a2.level), 301, "attempt kế là L301")
+	t.eq(int(a2.board.moves_left()), int(g.current_level_data().moves), "bàn là nội dung vòng lặp")
+	Config.demo_override = -1
+
+
+func test_old_save_upgrade_gets_loop_content(t: T) -> void:
+	# Bản lưu của bản cũ (đã sang level sinh trong game) mở bằng bản mới: giữ số level, nhận nội dung vòng lặp.
+	var g := _g(1)
+	var path := DIR + "/old_save.json"
+	g.reset_for_test(path)
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify({"version": 1, "level": 457, "runs": 900, "coins": 123}))
+	f.close()
+	Config.demo_override = 0
+	g.s = g.store.load_state("")
+	t.eq(int(g.s.level), 457, "giữ số level hiển thị")
+	t.eq(int(g.current_level_data().get("id", 0)), 101 + (457 - 101) % 200, "nội dung theo vòng lặp")
 	Config.demo_override = -1
 
 
@@ -130,7 +119,6 @@ func test_demo_still_stops_at_20(t: T) -> void:
 	g.s.level = 301
 	t.eq(g.current_level_data(), {}, "demo: sau L300 cũng rỗng")
 	t.eq(g.start_attempt(), {}, "demo: không bắt đầu được")
-	t.eq(g.level_needs_generation(), false, "demo: không sinh")
 	Config.demo_override = -1
 
 
@@ -152,11 +140,9 @@ func _pop(lv: Control, node_name: String) -> Node:
 	return null
 
 
-func test_level_screen_waits_then_plays_and_continues(t: T) -> void:
+func test_level_screen_continues_into_loop(t: T) -> void:
 	var g := _g(301)
 	var lv := _mount(g, 301)
-	t.eq(lv.state, "intro", "chưa chơi ngay: màn chờ")
-	t.eq(lv.tut_label.text, "Loading...", "hiện đang chuẩn bị level")
 	t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "vào chơi")
 	t.eq(lv.title_label.text, "Level 301", "tiêu đề")
 	t.eq(lv.tut_label.text, "", "hết chữ chờ")

@@ -127,7 +127,7 @@ func test_demo_end(t: T) -> void:
 	t.ok(h.play_btn.disabled, "nút Chơi tắt")
 	t.eq(h.coming_soon_label.text, "New levels coming soon", "chữ")
 	h.queue_free()
-	# phát hành: L21 có data, và sau L300 sinh trong game nên không bao giờ hết
+	# phát hành: L21 có data, và sau L300 lặp lại nội dung nên không bao giờ hết
 	Config.demo_override = 0
 	var h2 := _home()
 	t.ok(not h2.coming_soon_label.visible, "phát hành: L21 chơi được")

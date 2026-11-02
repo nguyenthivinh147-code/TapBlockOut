@@ -128,6 +128,7 @@ const _NOTIF := {
 const _CONTENT := {
 	"demo_max_level": 20,
 	"release_pregen_level": 300,
+	"loop_start_level": 101,
 	"slack_easy": 3,
 	"slack_easy_until": 5,
 	"slack_hard": 1,

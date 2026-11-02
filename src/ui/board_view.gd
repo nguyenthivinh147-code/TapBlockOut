@@ -37,8 +37,12 @@ class BlockNode extends Control:
 	var glow: float = 0.0
 	var busy: bool = false
 
+	var _body: Control = null
+
 	func _init() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_body = BoardFx.Pudding.make_body()
+		add_child(_body)
 
 	func local_cells() -> Array:
 		var out: Array = []
@@ -48,6 +52,7 @@ class BlockNode extends Control:
 
 	func _draw() -> void:
 		var lc := local_cells()
+		BoardFx.Pudding.update_body(_body, lc, cell_size, BoardFx.block_base_color(view))
 		BoardFx.draw_block(self, lc, cell_size, view, show_arrow)
 		if glow > 0.0:
 			for c in lc:
@@ -274,7 +279,8 @@ func _layout() -> void:
 		# Ô cố định theo bàn tham chiếu; chỉ co thêm khi bàn lớn hơn tham chiếu (không bao giờ phóng to để lấp đầy).
 		var ref_cell := minf(avail.x / (REF_COLS + 2.0 * GATE_RATIO), avail.y / (REF_ROWS + 2.0 * GATE_RATIO))
 		var fit_cell := minf(avail.x / (w + 2.0 * GATE_RATIO), avail.y / (h + 2.0 * GATE_RATIO))
-		_cell = clampf(minf(ref_cell, fit_cell), 8.0, MAX_CELL)
+		# Làm tròn xuống số nguyên để các ô trong cùng khối khớp pixel, không lộ đường nối.
+		_cell = floorf(clampf(minf(ref_cell, fit_cell), 8.0, MAX_CELL))
 	_origin = ((avail - Vector2(w, h) * _cell) * 0.5).floor()
 	for id in _nodes:
 		var n: BlockNode = _nodes[id]

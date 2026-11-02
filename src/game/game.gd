@@ -24,6 +24,7 @@ const Offers := preload("res://src/meta/offers.gd")
 const NotifPlan := preload("res://src/meta/notif_plan.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
+const LevelLoop := preload("res://src/core/level_loop.gd")
 const LevelGenerator := preload("res://src/core/level_generator.gd")
 const Solver := preload("res://src/core/solver.gd")
 
@@ -34,7 +35,7 @@ const FLUSH_SEC := 2.5
 const LANGS := ["en", "vi"]
 ## Daily Challenge không dùng level thấp hơn mức này (mở khoá ở L50).
 const CHALLENGE_MIN_ID := 50
-## Level sinh trong game: seed cơ sở = id * SEED_STRIDE, mỗi lần sinh lại cộng RESEED_STEP
+## Level Daily Challenge sinh trong game: seed cơ sở = id * SEED_STRIDE, mỗi lần sinh lại cộng RESEED_STEP
 ## (generate tự thử thêm 60 seed liền kề nên RESEED_STEP > 60). Giữ SEED_STRIDE > RESEED_STEP * số lần thử
 ## để hai level (hay hai ngày) kế nhau không trùng seed.
 const SEED_STRIDE := 1000
@@ -67,7 +68,7 @@ var _buying: int = 0
 ## JSON bản cloud đã xử lý (tránh áp hai lần) và bản tới muộn đang chờ ra khỏi level.
 var _cloud_applied: String = ""
 var _cloud_late: String = ""
-## Cache level sinh trong game (khoá: "L<level>" hoặc "C<ngày>:<id>").
+## Cache level sinh trong game (khoá: "C<ngày>:<id>").
 var _gen_cache: Dictionary = {}
 
 
@@ -346,34 +347,29 @@ func _ftue_runs() -> void:
 
 # --- level ---
 
-## Level người chơi sắp chơi. Demo dừng ở `demo_max_level`. L1-300 đọc từ data/levels; sau
-## `release_pregen_level` (bản phát hành) sinh bằng LevelGenerator: id = level, seed cơ sở = level * 1000,
-## Solver kiểm, sinh lại với seed kế tiếp nếu không đạt. Kết quả được nhớ (cùng level, cùng bàn).
+## Level người chơi sắp chơi. Demo dừng ở `demo_max_level`. `s.level` là số hiển thị, tăng mãi; nội dung đọc
+## từ data/levels theo `content_level`: sau level cuối (`release_pregen_level`) lặp lại từ `loop_start_level`.
+## Bản lưu cũ có `s.level` lớn hơn level cuối tự nhận nội dung vòng lặp, không cần migrate.
 func current_level_data() -> Dictionary:
 	var lv := int(s.level)
 	if not level_exists(lv):
 		return {}
-	var path := LEVEL_PATH % lv
-	if FileAccess.file_exists(path):
-		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
-		return parsed if parsed is Dictionary else {}
-	return _generated("L%d" % lv, lv, lv * SEED_STRIDE)
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(LEVEL_PATH % content_level(lv)))
+	return parsed if parsed is Dictionary else {}
 
 
-## Level `lv` có thể chơi không (không sinh gì). Demo: tới `demo_max_level`; phát hành: có file hoặc sau L300.
+## Level nội dung (số file) mà level hiển thị `lv` chơi.
+func content_level(lv: int) -> int:
+	return LevelLoop.content_level(lv, int(Config.CONTENT.loop_start_level), int(Config.CONTENT.release_pregen_level))
+
+
+## Level `lv` có thể chơi không. Demo: tới `demo_max_level`; phát hành: có file nội dung (kể cả sau vòng lặp).
 func level_exists(lv: int) -> bool:
 	if lv < 1:
 		return false
 	if Config.is_demo() and lv > int(Config.CONTENT.demo_max_level):
 		return false
-	return FileAccess.file_exists(LEVEL_PATH % lv) or lv > int(Config.CONTENT.release_pregen_level)
-
-
-## Level hiện tại phải sinh ngay (chưa có trong cache): UI hiện màn chờ trước khi gọi start_attempt.
-func level_needs_generation() -> bool:
-	var lv := int(s.level)
-	return level_exists(lv) and not FileAccess.file_exists(LEVEL_PATH % lv) \
-		and not _gen_cache.has("L%d" % lv)
+	return FileAccess.file_exists(LEVEL_PATH % content_level(lv))
 
 
 ## Sinh (id, seed cơ sở), qua validate và Solver, sinh lại với seed kế tiếp nếu không đạt. {} nếu hỏng hết.

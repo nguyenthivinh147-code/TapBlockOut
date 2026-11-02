@@ -4,6 +4,7 @@ extends RefCounted
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const LevelData := preload("res://src/core/level_data.gd")
+const Pudding := preload("res://src/ui/pudding.gd")
 
 const FOG_COLOR := Color("6B7390")
 const ICE_TINT := Color(0.62, 0.86, 1.0, 0.55)
@@ -44,11 +45,48 @@ static func _box(fill: Color, radii: Array, _margins: Array, border: Color, bord
 	return s
 
 
-## Màu viền kẹo: đậm và đầy hơn màu thân, không xám đi.
-static func _candy_edge(base: Color) -> Color:
-	var e := base.darkened(0.30)
-	e.s = minf(1.0, e.s + 0.12)
+## Màu viền hoặc thành kẹo: tối đi `amount` nhưng vẫn đậm màu, không xám.
+static func _candy_edge(base: Color, amount: float = 0.30) -> Color:
+	var e := base.darkened(amount)
+	e.s = minf(1.0, e.s + 0.15)
 	return e
+
+
+## Quad Bezier qua `n + 1` điểm.
+static func _bez(p0: Vector2, p1: Vector2, p2: Vector2, n: int) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for i in n + 1:
+		var t := float(i) / float(n)
+		out.append(p0 * (1.0 - t) * (1.0 - t) + p1 * 2.0 * (1.0 - t) * t + p2 * t * t)
+	return out
+
+
+## Vệt sáng của pudding trong khung `size` (px) có góc trên trái ở `origin`: một thấu kính cong ôm góc
+## (đậm ở mép ngoài, mờ dần vào trong, đầu trên phải tròn, đuôi thon xuống trái), một vạch ngắn bên dưới
+## và một vệt mờ ngang ở mép trên. Toạ độ chuẩn hoá theo khung, đo từ viên pudding đơn trong concept.
+static func draw_glare(ci: CanvasItem, origin: Vector2, size: float) -> void:
+	var a := Vector2(0.09, 0.33)
+	var e := Vector2(0.35, 0.125)
+	var outer := _bez(a, Vector2(0.06, 0.12), e, 14)
+	var inner := _bez(a, Vector2(0.27, 0.28), e, 14)
+	var pts := PackedVector2Array()
+	var cols := PackedColorArray()
+	for p in outer:
+		pts.append(origin + p * size)
+		cols.append(Color(1, 1, 1, 0.95))
+	for i in range(inner.size() - 1, -1, -1):
+		pts.append(origin + inner[i] * size)
+		cols.append(Color(1, 1, 1, 0.50))
+	ci.draw_polygon(pts, cols)
+	var edge := PackedVector2Array()
+	for p in outer:
+		edge.append(origin + p * size)
+	ci.draw_polyline(edge, Color(1, 1, 1, 0.9), maxf(1.0, size * 0.012), true)
+	# vạch ngắn dưới đuôi và vệt mờ ngang ở mép trên
+	var dash := Rect2(origin + Vector2(0.085, 0.325) * size, Vector2(0.022, 0.04) * size)
+	ci.draw_style_box(_box(Color(1, 1, 1, 0.9), [3, 3, 3, 3], [], Color(0, 0, 0, 0), [0, 0, 0, 0]), dash)
+	var streak := Rect2(origin + Vector2(0.50, 0.095) * size, Vector2(0.16, 0.022) * size)
+	ci.draw_style_box(_box(Color(1, 1, 1, 0.28), [3, 3, 3, 3], [], Color(0, 0, 0, 0), [0, 0, 0, 0]), streak)
 
 
 ## Ô gần trọng tâm nhất: nơi đặt mũi tên và biểu tượng.
@@ -67,98 +105,39 @@ static func anchor_cell(cells: Array) -> Vector2i:
 	return best
 
 
-## Vẽ một khối đa ô bằng chất liệu kẹo (kẹo dẻo bóng): đổ bóng, thân kẹo viền đậm có mép dưới dày,
-## lõi sáng hơn, ánh phản chiếu ở đáy, vệt bóng trắng ở mép trên và chấm sáng.
-## `cells` tính theo toạ độ ô gốc của chính CanvasItem này. Cạnh giữa hai ô cùng khối thì liền, góc chỉ bo khi lộ ra ngoài.
-## Vẽ theo lớp trên toàn khối (bóng, thân, lõi, bóng loáng) để lớp sau không bị ô kề đè lên.
+## Màu gốc của khối: xám sương mù khi còn trong sương, tối đi khi bị xích.
+static func block_base_color(view: Dictionary) -> Color:
+	var base: Color = FOG_COLOR if bool(view.get("is_fog_hidden", false)) else ThemeKit.block_color(str(view.get("color", "")))
+	if bool(view.get("chained", false)):
+		base = base.darkened(0.22)
+	return base
+
+
+## Vẽ phần nằm trên thân pudding của một khối đa ô: vệt sáng, viên trong của khối hai lớp, rồi băng, xích,
+## sương, mũi tên. Thân (viền gel, lòng, bóng đổ) do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
+## theo concept `art/concepts/concept_candy_board_v1.png`.
+## `cells` tính theo toạ độ ô gốc của chính CanvasItem này.
 static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictionary, show_arrow: bool) -> void:
 	var fog_hidden: bool = view.get("is_fog_hidden", false)
-	var base: Color = FOG_COLOR if fog_hidden else ThemeKit.block_color(str(view.get("color", "")))
 	var chained: bool = view.get("chained", false)
-	if chained:
-		base = base.darkened(0.22)
-	var occ := {}
-	for c: Vector2i in cells:
-		occ[c] = true
-	var gap := maxf(2.0, cell * 0.05)
-	var rad := int(cell * 0.28)
-	var bw := maxi(2, int(cell * 0.05))
-	var lip := bw * 2  # mép dưới dày: cảm giác viên kẹo có độ dày
-	var edge := _candy_edge(base)
-	var body := base.lerp(Color.WHITE, 0.10)
-	var glow_col := base.lerp(Color.WHITE, 0.38)
 	var inner_color := str(view.get("inner_color", ""))
 	var inner_col := ThemeKit.block_color(inner_color) if inner_color != "" and not fog_hidden else Color(0, 0, 0, 0)
-	var shapes: Array = []  # mỗi ô: {r, up, left, right, down, radii}
+	var bw := maxi(2, int(cell * 0.035))
 	var top_left: Vector2i = cells[0]
 	for c: Vector2i in cells:
-		var up: bool = occ.has(c + Vector2i(0, -1))
-		var left: bool = occ.has(c + Vector2i(-1, 0))
-		var right: bool = occ.has(c + Vector2i(1, 0))
-		var down: bool = occ.has(c + Vector2i(0, 1))
-		var x0 := c.x * cell + (0.0 if left else gap)
-		var y0 := c.y * cell + (0.0 if up else gap)
-		var x1 := (c.x + 1) * cell - (0.0 if right else gap)
-		var y1 := (c.y + 1) * cell - (0.0 if down else gap)
-		shapes.append({
-			"r": Rect2(x0, y0, x1 - x0, y1 - y0), "up": up, "left": left, "right": right, "down": down,
-			"radii": [
-				rad if not (up or left) else 0,
-				rad if not (up or right) else 0,
-				rad if not (down or right) else 0,
-				rad if not (down or left) else 0,
-			],
-		})
 		if c.y < top_left.y or (c.y == top_left.y and c.x < top_left.x):
 			top_left = c
-	# 1. bóng đổ xuống dưới
-	var drop := Vector2(0, gap * 0.9)
-	for sh in shapes:
-		var sr: Rect2 = sh["r"]
-		sr.position += drop
-		ci.draw_style_box(_box(Color(0, 0, 0, 0.30), sh["radii"], [], Color(0, 0, 0, 0), [0, 0, 0, 0]), sr)
-	# 2. thân kẹo: viền đậm, mép dưới dày
-	for sh in shapes:
-		var borders := [0 if sh["up"] else bw, 0 if sh["left"] else bw, 0 if sh["right"] else bw, 0 if sh["down"] else lip]
-		ci.draw_style_box(_box(body, sh["radii"], [], edge, borders), sh["r"])
-	# 3. ánh phản chiếu ở đáy (kẹo trong mờ nên đáy sáng lên)
-	for sh in shapes:
-		if sh["down"]:
-			continue
-		var r: Rect2 = sh["r"]
-		var gx0 := r.position.x + (0.0 if sh["left"] else bw + rad * 0.35)
-		var gx1 := r.end.x - (0.0 if sh["right"] else bw + rad * 0.35)
-		var gh := maxf(2.0, cell * 0.16)
-		var gr := Rect2(gx0, r.end.y - lip - gh - cell * 0.03, maxf(0.0, gx1 - gx0), gh)
-		var gcol := Color(glow_col, 0.55)
-		var grad := [0 if sh["left"] else int(gh * 0.5), 0 if sh["right"] else int(gh * 0.5)]
-		ci.draw_style_box(_box(gcol, [0, 0, grad[1], grad[0]], [], Color(0, 0, 0, 0), [0, 0, 0, 0]), gr)
-	# 4. bóng loáng: vệt trắng dọc mép trên, vệt mảnh dọc mép trái
-	for sh in shapes:
-		var r: Rect2 = sh["r"]
-		var sw := maxf(2.0, cell * 0.11)
-		if not sh["up"]:
-			var hx0 := r.position.x + (0.0 if sh["left"] else bw + rad * 0.55)
-			var hx1 := r.end.x - (0.0 if sh["right"] else bw + rad * 0.55)
-			var hr := Rect2(hx0, r.position.y + bw + cell * 0.05, maxf(0.0, hx1 - hx0), sw)
-			var half := int(sw * 0.5)
-			ci.draw_style_box(_box(Color(1, 1, 1, 0.55), [0 if sh["left"] else half, 0 if sh["right"] else half, 0 if sh["right"] else half, 0 if sh["left"] else half], [], Color(0, 0, 0, 0), [0, 0, 0, 0]), hr)
-		if not sh["left"]:
-			var vy0 := r.position.y + (0.0 if sh["up"] else bw + rad * 0.55 + sw + cell * 0.04)
-			var vy1 := r.end.y - (0.0 if sh["down"] else lip + rad * 0.5)
-			var vw := maxf(2.0, cell * 0.06)
-			var vr := Rect2(r.position.x + bw + cell * 0.05, vy0, vw, maxf(0.0, vy1 - vy0))
-			ci.draw_rect(vr, Color(1, 1, 1, 0.22))
-	# 5. chấm sáng ở góc trên trái của cả khối
-	var spec := Vector2(top_left) * cell + Vector2(cell * 0.25, cell * 0.30)
-	ci.draw_circle(spec, maxf(2.0, cell * 0.055), Color(1, 1, 1, 0.9))
+	# vệt sáng ở góc trên trái của cả khối (khung bằng ô, lùi theo khe giữa các khối)
+	var g := cell * 0.0625
+	draw_glare(ci, Vector2(top_left) * cell + Vector2(g, g), cell - 2.0 * g)
 	if inner_col.a > 0.0:
 		for c: Vector2i in cells:
 			var m := cell * 0.27
 			var ir := Rect2(c.x * cell + m, c.y * cell + m, cell - 2.0 * m, cell - 2.0 * m)
-			var ri := int(cell * 0.16)
-			ci.draw_style_box(_box(inner_col.lerp(Color.WHITE, 0.10), [ri, ri, ri, ri], [], _candy_edge(inner_col), [bw, bw, bw, lip]), ir)
-			ci.draw_circle(ir.position + Vector2(ir.size.x * 0.3, ir.size.y * 0.28), maxf(1.5, cell * 0.035), Color(1, 1, 1, 0.85))
+			var ri := int(cell * 0.14)
+			var lip := maxi(bw + 2, int(cell * 0.08))
+			ci.draw_style_box(_box(inner_col.lerp(Color.WHITE, 0.06), [ri, ri, ri, ri], [], _candy_edge(inner_col, 0.45), [bw, bw, bw, lip]), ir)
+			draw_glare(ci, ir.position, ir.size.x)
 	var anchor := anchor_cell(cells)
 	var center := (Vector2(anchor) + Vector2(0.5, 0.5)) * cell
 	if fog_hidden:
@@ -173,7 +152,8 @@ static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictiona
 		elif chained:
 			draw_arrow(ci, center + Vector2(0, -cell * 0.2), LevelData.dir_of(str(view.get("color", ""))), cell * 0.7)
 		else:
-			draw_arrow(ci, center, LevelData.dir_of(str(view.get("color", ""))), cell)
+			# hạ nhẹ xuống để không chạm vệt sáng ở góc trên trái
+			draw_arrow(ci, center + Vector2(0, cell * 0.05), LevelData.dir_of(str(view.get("color", ""))), cell)
 	if chained:
 		draw_chain(ci, cells, cell)
 		draw_lock(ci, center + Vector2(0, cell * 0.14), cell)

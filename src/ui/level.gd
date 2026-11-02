@@ -416,8 +416,8 @@ func on_back() -> void:
 func _start_level() -> void:
 	_set_state("intro")
 	_set_smash_mode(false)
-	# Level sinh trong game (sau L300, Daily Challenge): màn chờ ngắn, vẽ xong mới sinh.
-	if Game.challenge_needs_generation() if _challenge else Game.level_needs_generation():
+	# Daily Challenge sinh trong game: màn chờ ngắn, vẽ xong mới sinh.
+	if _challenge and Game.challenge_needs_generation():
 		tut_label.text = tr("common_loading")
 		await get_tree().process_frame
 		await get_tree().process_frame

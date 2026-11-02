@@ -143,7 +143,7 @@ Booster chưa mở mà nhận từ lịch quà thì vẫn vào kho, tới level 
 
 - **Demo:** L1–20, có đủ popup hết MOVES, quà 28 ngày, avatar và frame; chưa có cơ chế mới. Sau L20 hiện "Sắp có level mới". Nút Daily Challenge ở Home hiện khoá, ghi "Unlocked at Level 50". Quảng cáo và mua hàng dùng bản giả lập cho tới khi có cấu hình từ Horus.
 - **Bản phát hành đầu tiên:** L21–300 sinh trước bằng công cụ, solver kiểm và đóng gói sẵn; level dạy cơ chế làm tay.
-- **Sau L300:** sinh theo seed ngay trong game, solver kiểm trước khi chơi, có màn chờ ngắn nếu cần.
+- **Sau L300 (vòng lặp):** số level hiển thị tăng mãi (L301, L302…), nội dung quay lại từ level `content_loop_start_level` (mặc định 101) đến L300 rồi lặp tiếp. Cấu hình được qua Remote Config. Bản lưu chỉ giữ số hiển thị nên người chơi nâng cấp từ bản cũ (kể cả đã qua L300) tự nhận nội dung theo vòng lặp, không cần migrate. Daily Challenge vẫn sinh bàn trong game.
 - **Daily Challenge (L50):** dùng cùng bộ sinh. +100 gold cho lần thắng đầu tiên mỗi ngày, x2 bằng video như level thường, không có chuỗi ngày và bảng xếp hạng. Thua vẫn mất mạng như level thường.
 
 ## 5. Kinh tế (số của người dùng, cập nhật ngày 2026-11-01)
@@ -341,7 +341,24 @@ Horus SDK là JavaScript và `JavaScriptBridge` của Godot chỉ có ở bản 
 
 Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên có sẵn của người khác, rồi lưu thành file trong project. Game chạy offline nên bản build không gọi MCP và không cần máy chủ ComfyUI.
 
-**Vẫn vẽ bằng code:** hình khối, lưới, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
+**Concept theme: pudding (2026-11-01).** Khối trên bàn là viên pudding/gel bóng dạng khối đùn, theo ảnh duyệt `art/concepts/concept_candy_board_v1.png` (chất liệu tham khảo dòng game kẹo xếp hình, không dùng hình hay tên game đó). Mã màu bốn khối giữ nguyên trong `ThemeKit.BLOCK_COLORS` (vàng, xanh lá, xanh dương, tím), vì màu quyết định hướng; concept dùng màu sáng và ngả cyan hơn, nên bản vẽ tối hơn ảnh một chút ở cùng một mã màu. Thân khối vẽ bằng shader từ khoảng cách tới mép của hình khối (`src/ui/pudding.gd`, `src/ui/pudding.gdshader`), phần phủ bằng code (`BoardFx.draw_block`):
+
+| Lớp | Hình |
+| --- | --- |
+| Bóng đổ | Cùng hình khối, đen mờ, lệch xuống dưới, hẹp |
+| Thành đáy | Vạch nâu ấm đậm màu sát mép dưới, rồi một vạch sáng ngay phía trên |
+| Viền gel | Màu gốc pha trắng, mỏng ở trên và hai bên (khoảng 6% ô), sáng dần về mép, vạch sáng mảnh sát mép |
+| Dải đáy | Phần viền gel ở dưới dày hơn nhiều (khoảng 20% ô), nhạt và trong, sáng dần về mép |
+| Lòng khối | Màu gốc nằm lõm trong viền, mép chuyển mềm; mép trên và hai bên sáng nhẹ, tối dần về đáy lòng |
+| Vệt sáng | Cung trắng ôm góc trên trái của cả khối (đậm ở mép ngoài, mờ vào trong), một vạch ngắn bên dưới và một vệt mờ ngang ở mép trên |
+
+- Texture khoảng cách tới mép (SDF) dựng một lần cho mỗi hình khối rồi cache (không phụ thuộc màu hay cỡ ô, khoảng 2–17 ms mỗi hình trên máy dev); shader dùng SDF để tính viền, dải đáy, lòng và bóng, nên khối chữ L, T, ... đều ra đúng cấu trúc với ô lõm liền mạch.
+- Khối nhiều ô liền một viên: không viền, không khe giữa các ô trong khối; góc lồi bo, góc lõm mềm; chỉ một vệt sáng cho cả khối. Khe giữa các khối là 1/16 ô.
+- Cỡ ô là số nguyên (làm tròn xuống) để các ô của một khối khớp pixel, không lộ đường nối.
+- Mũi tên mù màu hạ nhẹ xuống dưới tâm ô để không chạm vệt sáng. Băng, xích, sương mù vẽ đè lên lớp pudding, giữ nguyên cách đọc. Khối hai lớp: lớp trong là viên pudding nhỏ có thành, viền và vệt sáng riêng.
+- Chưa áp dụng cho nền, khung cổng, đá, icon (giữ nét hiện tại). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá pudding/gel bóng (xem quy tắc prompt bên dưới) để cùng phong cách.
+
+**Vẫn vẽ bằng code (và shader):** hình khối, lưới, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
 
 | Việc | Công cụ | Ghi chú |
 | --- | --- | --- |
@@ -357,7 +374,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 | --- | --- | --- | --- |
 | `icon_app` | `icon`, nền đặc | 1024 → các cỡ bản build cần | Một khối màu trượt ra cổng |
 | `bg_home`, `bg_level` | `background` | 768×1664 → rộng 720 | Nền ít chi tiết, phần giữa yên để bàn cờ nổi; cắt được cho 360×640 |
-| `block_surface` | `image` | 512 → 128 | Vân xám lặp liền, code nhân với màu khối |
+| `block_surface` | Bỏ | | Không còn dùng: chất liệu pudding vẽ hoàn toàn bằng code (xem Concept theme) |
 | `ui_gold`, `ui_heart`, `ui_hint`, `ui_moves`, `ui_smash` | `icon`, nền trong | 1024 → 128 | Gold, mạng, 3 booster |
 | `ui_shop`, `ui_settings`, `ui_lock`, `ui_restart`, `ui_video`, `ui_gift`, `ui_profile`, `ui_sound`, `ui_music` | `icon`, nền trong | 1024 → 128 | Nút và trạng thái; tắt âm thì code vẽ gạch chéo |
 | `art_win`, `art_lose`, `art_no_lives` | `ui`, nền trong | 1024 → 512 | Thẻ thắng, popup thua, màn hết mạng |
@@ -379,7 +396,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 
 **Cách làm**
 
-1. Prompt nào cũng theo một bộ quy tắc: nét bo tròn, màu tươi, đổ bóng nhẹ, nền sạch, không chữ, không logo, không watermark. Màu khối ghi đúng mã màu đang dùng trong game. Không đưa tên hay ảnh của game gốc vào prompt hoặc ảnh tham chiếu.
+1. Prompt nào cũng theo một bộ quy tắc: nét bo tròn, màu tươi, chất liệu pudding/gel bóng (viền gel sáng mỏng, dải đáy dày nhạt, lòng lõm đậm màu, vệt sáng trắng ôm góc trên trái), đổ bóng nhẹ, nền sạch, không chữ, không logo, không watermark. Màu khối ghi đúng mã màu đang dùng trong game. Không đưa tên hay ảnh của game gốc vào prompt hoặc ảnh tham chiếu.
 2. Dùng seed cố định và `use_reprompt=false`, để prompt lưu lại đúng là prompt đã chạy. Ghi công cụ, prompt, seed, steps và SHA256 của từng file vào `art/manifest.json`.
 3. Tạo thư mục cha trước khi gửi job. MCP không ghi đè file, nên làm lại thì lưu tên mới (`_v2`). Job chưa xong thì gọi lại `collect_*` với cùng `prompt_id`, không gửi job mới.
 4. Bản gốc nằm trong `art/`, không vào bản build (loại khỏi export bằng filter hoặc `.gdignore`). File dùng trong game nằm trong `assets/`: PNG cho hình, Godot tự import; **WAV cho hiệu ứng** để giảm độ trễ, **Ogg cho nhạc nền** để lặp liền mạch. Thu nhỏ, cắt khoảng lặng và cân âm lượng bằng `ffmpeg`, chỉ là công cụ dev.
@@ -397,5 +414,6 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 - Luồng hết MOVES: một popup +3 MOVES tối đa 4 lần, giá 1.900 / 2.200 / 2.500 / 2.800, có video; bỏ qua thì xác nhận mất 1 mạng (từ L10) rồi thua. Thay cho bản popup A + B cũ.
 - Quà 28 ngày thay quà 7 ngày, có video nhận trước ô kế tiếp, popup chỉ mở khi bấm và hiện 7 ô.
 - Bỏ nhiệm vụ ngày, quà quay lại và `comeback_x2`.
+- Đổi concept hình khối sang pudding/gel bóng (ảnh duyệt `concept_candy_board_v1`), vẽ bằng code; bỏ tài nguyên `block_surface`.
 - Thêm avatar và frame, 6 cơ chế từ L21, bảng mở khoá, thưởng Daily Challenge, tiêu chí thư giãn.
 - Dùng AppLovin MAX, không có banner.

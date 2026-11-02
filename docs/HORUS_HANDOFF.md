@@ -83,7 +83,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `notif_first_week_days`, `_first_week_per_day`, `_lead_min`, `_daily_until_day` | 7, 3, 15, 14 |
 | `notif_sparse_days` | 16,18,21,24,27,30 |
 | `notif_earliest_hour`, `_latest_hour`, `_quiet_after_ignored`, `_ask_after_run` | 8, 22, 9, 2 |
-| `content_demo_max_level`, `content_release_pregen_level` | 20, 300 |
+| `content_demo_max_level`, `content_release_pregen_level` (level cuối có file), `content_loop_start_level` (sau level cuối lặp lại từ đây) | 20, 300, 101 |
 | `content_slack_easy`, `_slack_easy_until`, `_slack_hard`, `_slack_min`, `_slack_pct` | 3, 5, 1, 2, 10 |
 | `content_think_clap_sec` | 8 |
 | `content_build`, `content_support_email` | v1, support@horusvn.com |
