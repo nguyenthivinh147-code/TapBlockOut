@@ -330,10 +330,11 @@ Port từ các gói của dự án pixelflow. Mọi số nằm trong `Config.WEE
 
 - Mở khoá sau khi qua level HARD thứ 2 (`weekly_unlock_hard_index`). Bản demo dừng ở L20 nên không bao giờ mở; chỉ có ở bản phát hành.
 - Chu kỳ theo giờ máy: thứ Hai 06:00 đến thứ Hai 00:00 tuần sau. Thứ Hai 00:00-06:00 là Waiting (nút còn, layer chỉ có đếm ngược). Config tắt hoặc SKU sai là Locked.
-- Thắng level (không tính Daily Challenge) khi Active: Normal +1 key, Hard +3, VeryHard +5.
-- Main Tree 10 mốc, mỗi mốc có thưởng free và thưởng VIP. Bonus Bank mở khi đủ mốc cuối + có VIP + đã xem End popup; cứ 15 key thừa được 1 mốc, tối đa 10 mốc, mỗi mốc 400 gold.
+- Thắng level (không tính Daily Challenge) khi Active: Normal +1 key, Hard +3, VeryHard +5. Chỉ cộng key sau khi người chơi xem xong tutorial (cờ `s.weekly.tut_seen`, nằm trong bản lưu và không reset theo mùa); xem lần đầu mở layer, nên key thắng trước lúc đó không tính.
+- Main Tree: mốc khởi đầu 0 key (free 15 phút mạng vô hạn, VIP 150 gold, nhận được ngay) rồi 10 mốc (VIP mốc 3 key có thêm 30 phút mạng vô hạn), mỗi mốc có thưởng free và thưởng VIP. Bonus Bank mở khi đủ mốc cuối + có VIP + đã xem End popup; cứ 15 key thừa được 1 mốc, tối đa 10 mốc, mỗi mốc 400 gold.
 - VIP: +3 mạng tối đa trong tuần (cộng luôn vào số mạng hiện có; hết tuần hoặc sang Waiting thì bỏ, số mạng kẹp lại).
 - Sang mùa: chỉ VIP tự nhận mọi thưởng chưa claim; người không VIP không nhận lại phần free chưa claim. Sau đó reset điểm, VIP, danh sách đã nhận. Mùa không chơi thì không có popup cuối mùa.
+- Tutorial (`src/ui/weekly_pass_tutorial.gd`, theo video `pixelflow/Recordings/WeeklyPassTutorial.mp4`): lần đầu mở layer khi Active, sau khi popup hiện xong, overlay dim nền và khoét lỗ quanh target, 3 bước trên hàng mốc đầu tiên chưa nhận free (mốc khởi đầu): thưởng free ("Claim your first reward!"), thưởng VIP, thanh tiến độ. Chạm bất kỳ đâu để sang bước kế; bước cuối lưu cờ `tut_seen` rồi mở popup "How to earn rewards" (key theo độ khó, cách nhận thưởng, quyền lợi VIP). Đóng layer giữa chừng thì không lưu cờ, lần sau chạy lại. Nút "i" và biểu tượng chìa ở hàng tiến độ mở lại popup đó bất cứ lúc nào.
 
 **Chain Offer** (`src/meta/chain_offer.gd`)
 
@@ -425,7 +426,7 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 | Bóng đổ | Mềm, lệch xuống dưới, ám tím đậm | Lệch 0,11; mờ 0,14; đậm 32% |
 
 - Số đo hình học theo ảnh ref `art/concepts/ref_board_size.png`, màu giữ theo ảnh duyệt kẹo. Khung chiếm thêm 0,77 ô mỗi bên và 0,61 ô trên dưới, trọn khung 652×848 px ở 720×1280 (ảnh ref quy đổi là 651×842).
-- Màn level chỉ có thanh trên (Home, tên level, MOVES, restart) và hàng booster chiếm chiều cao, luôn giữ chỗ cho booster; chữ hướng dẫn và nhãn Phá khối phủ lên phần trên của bàn. Nhờ vậy khung không xê dịch giữa các level. Nền bàn trơn, không vẽ lưới ô.
+- Màn level chỉ có thanh trên (lượt, tên level, restart, bánh răng; Home nằm trong popup cài đặt) và hàng booster chiếm chiều cao, luôn giữ chỗ cho booster; chữ hướng dẫn và nhãn Phá khối phủ lên phần trên của bàn. Nhờ vậy khung không xê dịch giữa các level. Nền bàn trơn, không vẽ lưới ô.
 - Cổng nhịp đóng: thanh tối đi 55%, mũi tên mờ, hiện các vạch chắn ngang thanh; khi đổi trạng thái thì nháy sáng trong hình thanh. Khối bị cổng đóng chặn trượt qua khoảng trống tới mặt trong của thanh rồi bật về; hạt lúc khối thoát bắn ở mặt trong của thanh.
 - Nền bàn giữ màu cũ, chỉ đổi hình theo khung (tới đường giữa thanh, bo theo ống góc).
 
@@ -505,6 +506,7 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 - Quà 28 ngày thay quà 7 ngày, có video nhận trước ô kế tiếp, popup chỉ mở khi bấm và hiện 7 ô.
 - Bỏ nhiệm vụ ngày, quà quay lại và `comeback_x2`.
 - Đổi concept hình khối sang pudding/gel bóng (ảnh duyệt `concept_candy_board_v1`), vẽ bằng code; bỏ tài nguyên `block_surface`.
+- Đổi concept hình khối từ pudding sang kẹo cứng bóng có vệt chéo (ảnh tham chiếu của người dùng), vẫn vẽ bằng shader `src/ui/pudding.gdshader`.
 - Thêm avatar và frame, 6 cơ chế từ L21, bảng mở khoá, thưởng Daily Challenge, tiêu chí thư giãn.
 - Dùng AppLovin MAX, không có banner.
 
@@ -514,3 +516,6 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 - Đổi khung cổng từ bốn dải vát chéo sát bàn sang bốn thanh capsule và ống góc theo cùng ảnh; chấp nhận cỡ ô giảm khoảng 14% để giữ đúng tỉ lệ khung.
 - Khối thoát thì vỡ thành mảnh kẹo ở mặt trong thanh, mảnh bay xuyên qua thanh và được đè lên vùng ngoài bàn; bị chặn thì nhún, văng vụn, dư chấn lan sang khối sau. Áp dụng cả với đá và cổng đóng. Giữ mức rung nhẹ.
 - Bàn cờ cố định 14×19 ô, ô 42 px theo ảnh ref, không đổi theo số khối; khối xếp thành nhiều hình ở giữa bàn, có khoảng trống. Sinh lại L21–300; L1–20 giữ layout tay, trừ 12 level trước đây kín hoặc gần kín khung. Sương mù chỉ lộ khi khối kề rời đi. Đưa MOVES lên thanh trên, bỏ lưới ô trên nền bàn.
+- Thêm Weekly Pass, Chain Offer, Special Pack (mục 7). Weekly Pass chỉ có ở bản phát hành vì demo không có level HARD thứ 2 trong phạm vi L1-20.
+- Weekly Pass: thêm mốc khởi đầu 0 key, hàng tiến độ (nút "i", chìa, thanh tới mốc kế), tutorial 3 bước và popup "How to earn rewards"; key chỉ được cộng sau khi xem tutorial. Giảm chiều cao vùng cuộn của layer (640 xuống 500) vì panel vượt màn 720x1280.
+- Thêm loại thưởng "mạng vô hạn" (`inf_min`, phút; `s.lives.inf_until`): đang còn hạn thì thua không mất mạng, Home hiện "Mạng: vô hạn" cùng đếm ngược, cảnh báo mất mạng khi bỏ ván bị ẩn; cấp thêm khi còn hạn thì cộng dồn. Dùng cho mốc khởi đầu Weekly Pass (15 phút, theo video) và VIP mốc 3 key (30 phút).

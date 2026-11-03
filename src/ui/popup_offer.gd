@@ -5,6 +5,7 @@ extends Control
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 const Config := preload("res://src/config.gd")
 
 const BOOSTER_ORDER := ["hint", "move", "smash"]
@@ -91,46 +92,14 @@ func contents() -> Array[String]:
 
 
 func _build() -> void:
-	var dim := ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.7)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(dim)
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(center)
-	var panel := ThemeKit.make_panel()
-	panel.custom_minimum_size = Vector2(620, 0)
-	center.add_child(panel)
-	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 18)
-	panel.add_child(v)
+	var k := PopupKit.make(self, _title(), close)
+	var v: VBoxContainer = k.box
 
-	var title := ThemeKit.make_label(_title(), ThemeKit.FS_TITLE, ThemeKit.GOLD)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	v.add_child(title)
+	v.add_child(ThemeKit.make_icon("shop_" + sku, ThemeKit.ICON_SIZE * 2.0))
+	v.add_child(PopupKit.text(_body(), ThemeKit.FS_SMALL + 4))
+	v.add_child(_content_tiles())
 
-	var icon := TextureRect.new()
-	icon.texture = ThemeKit.icon("shop_" + sku)
-	icon.custom_minimum_size = Vector2(ThemeKit.ICON_SIZE * 1.5, ThemeKit.ICON_SIZE * 1.5)
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	v.add_child(icon)
-
-	var body := ThemeKit.make_label(_body(), ThemeKit.FS_BODY)
-	body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	v.add_child(body)
-
-	for line in contents():
-		var l := ThemeKit.make_label(line, ThemeKit.FS_BUTTON, ThemeKit.GOLD)
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		v.add_child(l)
-
-	time_label = ThemeKit.make_label("", ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
-	time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	time_label = PopupKit.text("", ThemeKit.FS_SMALL, ThemeKit.INK_DIM)
 	time_label.visible = false
 	v.add_child(time_label)
 	_update_time()
@@ -143,12 +112,25 @@ func _build() -> void:
 	later_button.pressed.connect(close)
 	v.add_child(later_button)
 
-	toast_label = ThemeKit.make_label("", ThemeKit.FS_SMALL)
-	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	toast_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	toast_label = PopupKit.text("", ThemeKit.FS_SMALL, ThemeKit.BROWN)
 	toast_label.modulate.a = 0.0
 	v.add_child(toast_label)
-	_animate_in.call_deferred(panel)
+	_animate_in.call_deferred(k.card)
+
+
+## Hàng ô thưởng theo nội dung gói: gold rồi từng booster.
+func _content_tiles() -> Control:
+	var info: Dictionary = Config.SKUS.get(sku, {})
+	var tiles: Array = []
+	var gold := int(info.get("gold", 0))
+	if gold > 0:
+		tiles.append(PopupKit.reward_tile(ThemeKit.icon("ui_gold"), tr("shop_gold_pack") % gold, 72))
+	var inv: Dictionary = info.get("inv", {})
+	for b in BOOSTER_ORDER:
+		if int(inv.get(b, 0)) > 0:
+			var caption := "%s %s" % [_booster_name(b), tr("booster_count") % int(inv[b])]
+			tiles.append(PopupKit.reward_tile(ThemeKit.icon("booster_" + b), caption, 72))
+	return PopupKit.row(tiles, 8)
 
 
 func _process(_delta: float) -> void:

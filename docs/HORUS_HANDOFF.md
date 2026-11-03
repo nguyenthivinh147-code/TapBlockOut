@@ -123,6 +123,7 @@ Tên và tham số chữ thường, `snake_case`, phẳng. Mọi sự kiện do 
 | `weekly_open` | points, vip (0/1) |
 | `weekly_claim` | kind (free, vip, bank, all), coins, points |
 | `weekly_vip` | points |
+| `weekly_tutorial` | points (xem xong tutorial lần đầu) |
 | `weekly_end` | coins |
 | `chain_start` | id, level |
 | `chain_claim` | id, step, type (free, ad, pay) |

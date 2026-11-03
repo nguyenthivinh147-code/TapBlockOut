@@ -5,6 +5,7 @@ extends Control
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 const RewardText := preload("res://src/ui/reward_text.gd")
 const Config := preload("res://src/config.gd")
 
@@ -72,33 +73,15 @@ func _rebuild() -> void:
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
 	_content = root
-	var dim := ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.7)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.add_child(dim)
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(center)
-	var panel := ThemeKit.make_panel()
-	panel.custom_minimum_size = Vector2(640, 0)
-	center.add_child(panel)
-	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 12)
-	panel.add_child(v)
-	var title := ThemeKit.make_label(tr("chain_title"), ThemeKit.FS_TITLE, ThemeKit.GOLD)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	v.add_child(title)
+	var k := PopupKit.make(root, tr("chain_title"), close, {"separation": 10})
+	close_button = k.close
+	close_button.name = "CloseButton"
+	var v: VBoxContainer = k.box
 
 	if view.is_empty():
-		var l := ThemeKit.make_label(tr("chain_expired"), ThemeKit.FS_BODY)
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		v.add_child(l)
+		v.add_child(PopupKit.text(tr("chain_expired")))
 	else:
-		time_label = ThemeKit.make_label(tr("chain_time_left") % fmt_time(int(view.seconds_left)),
-			ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
-		time_label.name = "TimeLabel"
-		time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		time_label = PopupKit.text(tr("chain_time_left") % fmt_time(int(view.seconds_left)), ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "TimeLabel")
 		v.add_child(time_label)
 		var count := int(view.count)
 		var step := int(view.step)
@@ -107,21 +90,10 @@ func _rebuild() -> void:
 		for i in range(first, mini(count, first + size)):
 			v.add_child(_node_row(i, view.steps[i], step))
 		if step >= count:
-			var done := ThemeKit.make_label(tr("chain_done"), ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
-			done.name = "DoneLabel"
-			done.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			done.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			v.add_child(done)
+			v.add_child(PopupKit.text(tr("chain_done"), ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "DoneLabel"))
 	if toast_text != "":
-		var tl := ThemeKit.make_label(toast_text, ThemeKit.FS_SMALL, ThemeKit.DANGER)
-		tl.name = "ToastLabel"
-		tl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		v.add_child(tl)
-	close_button = ThemeKit.make_button(tr("common_close"), "ghost")
-	close_button.name = "CloseButton"
-	close_button.pressed.connect(close)
-	v.add_child(close_button)
-	ThemeKit.popup_in.call_deferred(panel)
+		v.add_child(PopupKit.text(toast_text, ThemeKit.FS_SMALL, ThemeKit.INK_DANGER, "ToastLabel"))
+	PopupKit.show_in(k)
 
 
 ## Một hàng: số bước, thưởng, nút/nhãn trạng thái.
@@ -129,36 +101,36 @@ func _node_row(i: int, st: Dictionary, current: int) -> Control:
 	var state := "claimed" if i < current else ("claimable" if i == current else "locked")
 	node_states.append(state)
 	var type := str(st.get("type", "free"))
+	var well := ThemeKit.make_well(ThemeKit.WELL_HOT if state == "claimable" else ThemeKit.WELL,
+		ThemeKit.WELL_HEADER if state == "claimable" else Color(0, 0, 0, 0))
+	well.name = "Node%d" % i
 	var h := HBoxContainer.new()
-	h.name = "Node%d" % i
-	h.add_theme_constant_override("separation", 12)
-	var num := ThemeKit.make_label(tr("chain_step") % (i + 1), ThemeKit.FS_SMALL,
-		ThemeKit.TEXT if state == "claimable" else ThemeKit.TEXT_DIM)
-	num.custom_minimum_size = Vector2(120, 0)
-	h.add_child(num)
+	h.add_theme_constant_override("separation", 10)
+	well.add_child(h)
+	var txt := VBoxContainer.new()
+	txt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	txt.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_child(txt)
+	txt.add_child(ThemeKit.ink_label(tr("chain_step") % (i + 1), ThemeKit.FS_SMALL - 2, ThemeKit.BROWN))
 	var reward: Dictionary = RewardText.sku_reward(str(st.get("sku", ""))) if type == "pay" else st
-	var rl := ThemeKit.make_label(RewardText.text(reward), ThemeKit.FS_SMALL)
-	rl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var rl := ThemeKit.ink_label(RewardText.text(reward), ThemeKit.FS_SMALL)
 	rl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	h.add_child(rl)
+	txt.add_child(rl)
 	match state:
 		"claimed":
-			var cl := ThemeKit.make_label(tr("chain_claimed"), ThemeKit.FS_SMALL, ThemeKit.GOOD)
-			cl.custom_minimum_size = Vector2(200, 0)
-			h.add_child(cl)
+			h.add_child(ThemeKit.make_icon("ui_check", 72))
 		"claimable":
 			var label := tr("chain_free") if type == "free" else (tr("chain_ad") if type == "ad" \
 				else tr("chain_pay") % Platform.price(str(st.get("sku", ""))))
 			claim_button = ThemeKit.make_button(label, "primary" if type != "ad" else "video")
 			claim_button.name = "ClaimButton"
-			claim_button.custom_minimum_size = Vector2(200, 96)
+			claim_button.custom_minimum_size = Vector2(180, 96)
+			claim_button.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL + 2)
 			claim_button.pressed.connect(claim)
 			h.add_child(claim_button)
 		_:
-			var ll := ThemeKit.make_label(tr("chain_locked"), ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
-			ll.custom_minimum_size = Vector2(200, 0)
-			h.add_child(ll)
-	return h
+			h.add_child(ThemeKit.make_icon("ui_lock", 72))
+	return well
 
 
 func claim() -> void:

@@ -7,6 +7,7 @@ extends Control
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 const LevelScene := preload("res://scenes/level.tscn")
 
 var back_button: Button = null
@@ -27,12 +28,7 @@ func setup(_args: Dictionary = {}) -> void:
 
 
 func _label(text: String, size: int, color: Color, node_name: String) -> Label:
-	var l := ThemeKit.make_label(text, size, color)
-	l.name = node_name
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size.x = 560
-	return l
+	return PopupKit.text(text, size, color, node_name)
 
 
 func _build() -> void:
@@ -61,17 +57,14 @@ func _build() -> void:
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_ui.add_child(center)
-	var panel := ThemeKit.make_panel()
-	panel.name = "Panel"
-	center.add_child(panel)
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 24)
-	panel.add_child(box)
-	title_label = _label(tr("challenge_title"), ThemeKit.FS_TITLE, ThemeKit.TEXT, "TitleLabel")
-	box.add_child(title_label)
-	bonus_label = _label("", ThemeKit.FS_BODY, ThemeKit.GOLD, "BonusLabel")
+	var k := PopupKit.make_card(tr("challenge_title"), Callable(), {"separation": 24})
+	center.add_child(k.card)
+	title_label = k.title
+	var box: VBoxContainer = k.box
+	box.add_child(ThemeKit.make_sprite("big_calendar", 200))
+	bonus_label = _label("", ThemeKit.FS_BODY, ThemeKit.BROWN, "BonusLabel")
 	box.add_child(bonus_label)
-	done_label = _label(tr("challenge_done"), ThemeKit.FS_BODY, ThemeKit.TEXT_DIM, "DoneLabel")
+	done_label = _label(tr("challenge_done"), ThemeKit.FS_BODY, ThemeKit.INK_DIM, "DoneLabel")
 	box.add_child(done_label)
 	play_button = ThemeKit.make_button(tr("challenge_play"), "primary")
 	play_button.name = "PlayButton"

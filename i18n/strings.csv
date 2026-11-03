@@ -16,6 +16,8 @@ home_play,Play,Chơi
 home_play_level,Level %d,Level %d
 home_lives_full,Full,Đầy
 home_lives_next,Next life in %s,Mạng kế tiếp sau %s
+home_lives_unlimited,Lives: unlimited,Mạng: vô hạn
+home_lives_unlimited_left,Unlimited for %s,Vô hạn trong %s
 home_gift,Daily gift,Quà mỗi ngày
 home_shop,Shop,Cửa hàng
 home_weekend_sale,Weekend sale,Sale cuối tuần
@@ -269,6 +271,20 @@ weekly_end_title,Season ended,Mùa đã kết thúc
 weekly_end_vip,Your unclaimed rewards were collected for you: %s,Thưởng chưa nhận đã được trao cho bạn: %s
 weekly_end_free,You earned %d keys this season. A new season is coming!,Bạn đã kiếm được %d chìa trong mùa này. Mùa mới sắp đến!
 weekly_reward_gold,%d gold,%d gold
+weekly_start,Start,Khởi đầu
+weekly_reward_inf,Unlimited lives %d min,Mạng vô hạn %d phút
+weekly_tut_free_claim,Welcome to Weekly Pass! Claim your first reward!,Chào mừng đến Weekly Pass! Hãy nhận phần thưởng đầu tiên nào!
+weekly_tut_free_earn,Welcome to Weekly Pass! Earn keys to unlock rewards like this one!,Chào mừng đến Weekly Pass! Kiếm chìa để mở những phần thưởng như thế này!
+weekly_tut_vip,Activating VIP gives you access to unique rewards!,Mở VIP để nhận thêm những phần thưởng độc quyền!
+weekly_tut_progress,This is your progress. Tap this icon to learn how to earn rewards!,Đây là tiến độ của bạn. Chạm biểu tượng này để biết cách kiếm thưởng!
+weekly_howto_title,How to earn rewards,Cách kiếm thưởng
+weekly_howto_normal,Win a level,Thắng một level
+weekly_howto_hard,Win a HARD level,Thắng một level HARD
+weekly_howto_very_hard,Win a VERY HARD level,Thắng một level VERY HARD
+weekly_howto_points,+%d,+%d
+weekly_howto_claim,Collect keys to reach milestones. Then tap Claim to take the free reward.,Kiếm chìa để đạt các mốc. Sau đó chạm Nhận để lấy thưởng miễn phí.
+weekly_howto_vip,VIP unlocks the VIP reward of every milestone and +%d max hearts this week. It also opens the Bonus Bank.,VIP mở thưởng VIP ở mọi mốc và +%d mạng tối đa trong tuần này. VIP còn mở Kho thưởng thêm.
+weekly_howto_season,A new season starts every week. Free rewards you forgot are lost. VIP rewards are collected for you.,Mỗi tuần có một mùa mới. Thưởng miễn phí chưa nhận sẽ mất. Thưởng VIP sẽ tự được trao cho bạn.
 chain_title,Chain Offer,Chuỗi quà
 chain_time_left,Ends in %s,Kết thúc sau %s
 chain_step,Step %d,Bước %d
@@ -282,6 +298,161 @@ chain_done,All steps done. Come back for the next chain!,Đã xong mọi bước
 chain_failed,Couldn't complete this step. Please try again.,Chưa hoàn thành bước này. Bạn thử lại nhé.
 chain_expired,This chain has ended.,Chuỗi quà này đã kết thúc.
 home_home,Home,Trang chủ
-home_ranking_soon,Ranking soon,Xếp hạng sắp có
+home_ranking,Ranking,Xếp hạng
+home_ranking_soon,Soon,Sắp có
+home_ads_daily,ADS Daily,Quà video
 home_path_locked,Locked,Khoá
 home_path_cleared,Cleared,Đã qua
+common_coming_soon,Coming soon,Sắp có
+settings_gallery,UI preview,Xem trước UI
+settings_save,Save,Lưu
+settings_help_title,Help & Support,Trợ giúp
+settings_help_sub,How can we help?,Bạn cần giúp gì?
+settings_help_bug,Bug / crash,Lỗi / văng game
+settings_help_purchase,Purchase problem,Vấn đề mua hàng
+settings_help_idea,Suggestion,Góp ý
+settings_help_placeholder,Describe your issue...,Mô tả vấn đề của bạn...
+settings_help_send,Send,Gửi
+settings_help_note,Customer support email / FAQ,Email hỗ trợ / Câu hỏi thường gặp
+settings_lang_en,English,Tiếng Anh
+settings_lang_vi,Vietnamese,Tiếng Việt
+settings_lang_pt,Brazil,Bồ Đào Nha (Brazil)
+settings_lang_tr,Turkish,Thổ Nhĩ Kỳ
+settings_lang_de,German,Tiếng Đức
+settings_lang_fr,France,Tiếng Pháp
+settings_lang_id,Indonesian,Indonesia
+settings_lang_es,Spanish,Tây Ban Nha
+settings_lang_ru,Russian,Tiếng Nga
+settings_lang_ko,Korean,Tiếng Hàn
+boot_tagline,Tap · Slide · Clear,Chạm · Trượt · Dọn sạch
+boot_loading,Loading... %d%%,Đang tải... %d%%
+boot_update_title,Update Available,Có bản cập nhật
+boot_update_body,A new version is available. Update now for new levels and fixes.,Đã có phiên bản mới. Cập nhật ngay để có level mới và các bản sửa lỗi.
+boot_update_now,Update Now,Cập nhật ngay
+boot_later,Later,Để sau
+boot_download_title,Download Resources,Tải dữ liệu
+boot_download_sub,First-time content pack,Gói nội dung lần đầu
+boot_download_need,Extra content needed (%d MB),Cần thêm dữ liệu (%d MB)
+boot_download_wifi,Download on Wi-Fi only,Chỉ tải qua Wi-Fi
+boot_download_cell,Allow cellular data,Cho phép dùng dữ liệu di động
+boot_download_progress,%d%% · %d MB / %d MB,%d%% · %d MB / %d MB
+boot_download_go,Download,Tải xuống
+boot_skip,Skip for now,Bỏ qua lúc này
+boot_account_title,Select Account,Chọn tài khoản
+boot_account_body,Choose the account you want to continue.,Chọn tài khoản bạn muốn chơi tiếp.
+boot_account_warn,"Once you choose, the other will be deleted permanently.","Sau khi chọn, tài khoản còn lại sẽ bị xoá vĩnh viễn."
+boot_account_linked,Linked: Google / Game Center,Đã liên kết: Google / Game Center
+boot_select,Select,Chọn
+boot_tut_body,Tap a block to slide it out toward the matching coloured edge.,Chạm một khối để trượt nó ra cạnh cùng màu.
+boot_tap_continue,Tap to continue,Chạm để tiếp tục
+boot_offline_title,No Internet,Mất kết nối
+boot_offline_lost,Connection lost,Đã mất kết nối
+boot_offline_body,Please check your internet and try again.,Hãy kiểm tra Internet rồi thử lại.
+boot_retry,Retry,Thử lại
+ads_daily_sub,Watch ads to fill the reward track,Xem quảng cáo để đầy thanh thưởng
+ads_daily_progress,%d / %d ads watched,Đã xem %d / %d quảng cáo
+ads_daily_watch,Watch video,Xem video
+ads_daily_reset,Resets daily,Làm mới mỗi ngày
+ads_noads_one,No interstitial or banner ads,Không còn quảng cáo xen kẽ và banner
+ads_noads_two,Rewarded ads stay optional (x2 rewards),Video thưởng vẫn tuỳ chọn (x2 thưởng)
+ads_noads_three,Bonus gold bundle,Tặng thêm gói gold
+ads_noads_buy,%s · Remove Ads,%s · Bỏ quảng cáo
+ads_noads_bundle,Remove Ads + Bundle %s,Bỏ quảng cáo + Gói %s
+ads_notice_title,Notice,Thông báo
+ads_reward_title,Reward,Phần thưởng
+ads_reward_x2,Claim x2,Nhận x2
+level_new_mechanic,New Mechanic,Cơ chế mới
+level_speed_title,Hold to speed up,Giữ để tăng tốc
+level_speed_body,Blocks move 2x faster while held.,Khối chạy nhanh gấp đôi khi bạn giữ.
+level_speed_hold,Hold,Giữ
+booster_soon_body,You'll unlock this trick soon.,Bạn sắp mở khoá mẹo này rồi.
+booster_soon_keep,Keep playing!,Chơi tiếp nhé!
+booster_new_title,NEW BOOSTER!,BOOSTER MỚI!
+booster_new_short,New Booster,Booster mới
+booster_new_name,Capacity,Sức chứa
+booster_new_body,Add 2 slots to the conveyor!,Thêm 2 ô cho băng chuyền!
+booster_free_pick,FREE PICK,CHỌN MIỄN PHÍ
+booster_free_pick_body,Pick any block in the queue,Chọn một khối bất kỳ trong hàng chờ
+win_bonus_title,BONUS REWARD,THƯỞNG THÊM
+win_bonus_tap,Tap to stop the arrow,Chạm để dừng mũi tên
+win_bonus_total,= %d Gold,= %d Gold
+win_bonus_claim,Claim,Nhận
+win_rate_title,Rate Us,Đánh giá
+win_rate_body,Please rate and help us get better!,Hãy đánh giá để giúp game tốt hơn nhé!
+lose_keep_title,Keep Playing?,Chơi tiếp chứ?
+lose_keep_body,Quit now and lose 1 heart?,Thoát bây giờ sẽ mất 1 mạng?
+lose_keep_quit,Quit,Thoát
+lose_keep_note,Replay uses 1 heart. Quit returns to menu.,Chơi lại dùng 1 mạng. Thoát sẽ về menu.
+lose_helper_title,HELPER PACK,GÓI TRỢ GIÚP
+lose_helper_chest,Chest,Rương
+hearts_bundle_title,Heart Bundle,Gói mạng
+hearts_bundle_body,Infinite hearts,Mạng vô hạn
+hearts_hours,%d hours,%d giờ
+hearts_hour_one,1 hour,1 giờ
+hearts_support_title,Out of Hearts!,Hết mạng rồi!
+hearts_support_body,Keep playing without waiting. Includes hearts and helpers.,Chơi tiếp không cần chờ. Gồm mạng và đồ hỗ trợ.
+hearts_support_buy,%s · Get Pack,%s · Mua gói
+hearts_support_refill,Refill with Gold / Video,Nạp bằng Gold / Video
+shop_free_gold,Free Gold: +%d,Gold miễn phí: +%d
+shop_section_hearts,HEARTS,MẠNG
+shop_section_helpers,HELPER PACKS,GÓI TRỢ GIÚP
+shop_section_bundles,BUNDLES,GÓI TỔNG HỢP
+shop_heart_count,x%d,x%d
+shop_heart_inf,Infinite %dh,Vô hạn %d giờ
+shop_helper_great,Great Pack,Gói Lớn
+shop_helper_epic,Epic Pack,Gói Siêu Lớn
+shop_bundle_sweet,Sweet Bundle,Gói Ngọt Ngào
+shop_bundle_tasty,Tasty Bundle,Gói Hấp Dẫn
+shop_bundle_yummy,Yummy Bundle,Gói Tuyệt Hảo
+shop_bundle_desc,Gold + Hearts + Boosters,Gold + Mạng + Booster
+weekly_upsell_one,Chests full of gold and rewards,Rương đầy gold và phần thưởng
+weekly_upsell_two,Golden avatar frame and name,Khung avatar và tên vàng
+weekly_upsell_three,Max heart boost for more tries,Tăng mạng tối đa để chơi nhiều hơn
+lb_promoted,▲ TOP 10 PROMOTED,▲ TOP 10 ĐƯỢC THĂNG HẠNG
+lb_demoted,▼ BOTTOM 5 DEMOTED,▼ 5 NGƯỜI CUỐI BỊ XUỐNG HẠNG
+lb_you,You,Bạn
+lb_rank,Rank #%d %s,Hạng %d %s
+lb_league,%s League,Giải %s
+lb_league_bronze,Bronze,Đồng
+lb_league_silver,Silver,Bạc
+lb_league_gold,Gold,Vàng
+lb_league_platinum,Platinum,Bạch kim
+lb_league_diamond,Diamond,Kim cương
+lb_week_ends,Week ends in %s,Hết tuần sau %s
+lb_howto_title,How it works,Cách hoạt động
+lb_howto_1,Win levels to earn rank points,Thắng level để kiếm điểm xếp hạng
+lb_howto_2,Compete with 30 players weekly,Thi đấu cùng 30 người chơi mỗi tuần
+lb_howto_3,Top 10 get promoted to next league,Top 10 được thăng lên giải cao hơn
+lb_howto_4,Claim weekly gift on Monday,Nhận quà tuần vào thứ Hai
+lb_leagues_title,Leagues,Các giải đấu
+lb_leagues_sub,Rank up for bigger weekly rewards,Lên hạng để nhận thưởng tuần lớn hơn
+lb_weekly_reward,Weekly reward: %d gold,Thưởng tuần: %d gold
+lb_current,Current,Hiện tại
+lb_result_title,Weekly Result,Kết quả tuần
+lb_result_rank,You finished #%d,Bạn về hạng %d
+lb_result_promoted,▲ Promoted to %s League,▲ Lên giải %s
+streak_title,Win Streak,Chuỗi thắng
+streak_go,Let's go,Bắt đầu thôi
+streak_intro_1,Win levels in a row: streak +1 each win,Thắng liên tiếp: mỗi trận thắng +1 chuỗi
+streak_intro_2,Reach milestones: chests along the track,Đạt các mốc: có rương dọc đường
+streak_intro_3,Lose and the streak ends. Use Keep Playing to save it.,Thua là mất chuỗi. Dùng Chơi tiếp để giữ lại.
+streak_ends,Event ends in %s,Sự kiện kết thúc sau %s
+streak_current,Current streak,Chuỗi hiện tại
+streak_rewards_title,Rewards,Phần thưởng
+streak_row,Streak %d,Chuỗi %d
+streak_reward_gold,%d Gold,%d Gold
+streak_reward_hint,Hint x%d,Gợi ý x%d
+streak_reward_heart,%dh Infinite Hearts,%d giờ mạng vô hạn
+streak_reward_chest,Chest + Frame x%d,Rương + Khung x%d
+streak_rewards_note,Win a level every day to keep it alive,Thắng một level mỗi ngày để giữ chuỗi
+streak_end_title,STREAK ENDED,HẾT CHUỖI
+streak_end_final,Final streak: %d,Chuỗi cuối: %d
+streak_end_ready,Your rewards are ready!,Phần thưởng đã sẵn sàng!
+streak_chest,Chest,Rương
+streak_keep_title,Keep Your Streak?,Giữ chuỗi nhé?
+streak_keep_reset,It will reset if you quit,Thoát là chuỗi về 0
+streak_keep_body,Continue now to protect it,Chơi tiếp để giữ chuỗi
+streak_keep_ad,Continue,Chơi tiếp
+profile_name_title,Change Name,Đổi tên
+profile_name_rules,"Enter a nickname (3-14 characters), containing only English letters, numbers, underscores, periods, hyphens.","Nhập biệt danh (3-14 ký tự), chỉ gồm chữ cái tiếng Anh, số, gạch dưới, dấu chấm, gạch ngang."
+profile_name_taken,Name is already taken,Tên này đã có người dùng

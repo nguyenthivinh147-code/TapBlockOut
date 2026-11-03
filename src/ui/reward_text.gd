@@ -1,5 +1,5 @@
 extends RefCounted
-## Chuỗi mô tả một phần thưởng {coins, items} cho UI (Weekly Pass, Chain Offer).
+## Chuỗi mô tả một phần thưởng {coins, items, inf_min} cho UI (Weekly Pass, Chain Offer).
 
 const Config := preload("res://src/config.gd")
 
@@ -20,6 +20,8 @@ static func text(reward: Dictionary) -> String:
 	for k in BOOSTER_ORDER:
 		if int(items.get(k, 0)) > 0:
 			parts.append("%s %s" % [booster_name(k), TranslationServer.translate("booster_count") % int(items[k])])
+	if int(reward.get("inf_min", 0)) > 0:
+		parts.append(TranslationServer.translate("weekly_reward_inf") % int(reward.inf_min))
 	return ", ".join(parts)
 
 
