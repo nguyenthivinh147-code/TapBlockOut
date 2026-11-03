@@ -29,7 +29,8 @@ func test_defaults(t: T) -> void:
 	t.ok(s.coins > 0, "coins từ Config")
 	t.eq(s.lives.count, 10, "lives")
 	t.eq(s.cos.owned, ["avatar_00", "frame_00"], "cos.owned")
-	t.eq(s.settings.arrows, true, "settings.arrows")
+	t.eq(s.settings.sfx, true, "settings.sfx")
+	t.ok(not s.settings.has("arrows"), "không còn settings.arrows")
 	t.eq(s.offers.last_run, -999, "offers.last_run")
 	var s2 := SaveSchema.defaults()
 	s2.inv.hint = 5

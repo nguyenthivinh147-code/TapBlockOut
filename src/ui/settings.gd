@@ -1,5 +1,5 @@
 extends Control
-## Cài đặt: âm thanh, nhạc, rung, thông báo, mũi tên, ngôn ngữ, Privacy, Restore, hỗ trợ, phiên bản.
+## Cài đặt: âm thanh, nhạc, rung, thông báo, ngôn ngữ, Privacy, Restore, hỗ trợ, phiên bản.
 ## Chạm nhiều lần vào dòng phiên bản mở menu tester. setup(args: Dictionary); signal closed(result).
 
 signal closed(result: Variant)
@@ -13,7 +13,6 @@ const TOGGLES: Array[Dictionary] = [
 	{"key": "sfx", "label": "settings_sound", "on": "ic_sound_on", "off": "ic_sound_off"},
 	{"key": "haptics", "label": "settings_haptics", "on": "ic_vibrance_on", "off": "ic_vibrance_off"},
 	{"key": "notif", "label": "settings_notifications", "on": "ic_clock", "off": "ic_clock"},
-	{"key": "arrows", "label": "settings_arrows", "on": "ic_arrow", "off": "ic_arrow"},
 ]
 const ROW_ICON := 64.0
 const SCROLL_H := 800.0

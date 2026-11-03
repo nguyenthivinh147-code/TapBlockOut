@@ -163,7 +163,6 @@ settings_music,Music,Nhạc nền
 settings_haptics,Vibration,Rung
 settings_notifications,Notifications,Thông báo
 settings_notifications_off,Notifications are turned off in your device settings.,Thông báo đang tắt trong cài đặt của thiết bị.
-settings_arrows,Arrows on blocks (color-blind help),Mũi tên trên khối (hỗ trợ mù màu)
 settings_language,Language,Ngôn ngữ
 settings_language_auto,Device language,Theo thiết bị
 settings_language_en,English,English

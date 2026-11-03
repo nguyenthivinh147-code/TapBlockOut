@@ -148,16 +148,6 @@ func test_rejected_and_unknown(t: T) -> void:
 	v.queue_free()
 
 
-func test_arrow_setting(t: T) -> void:
-	var v := _make(_lv(3, 3, [_b("b1", "yellow", [[1, 1]])]))
-	t.eq(v.arrows_enabled, bool(Game.s.settings.get("arrows", true)), "theo cài đặt Game")
-	v.set_arrows(false)
-	t.eq(v.block_node("b1").show_arrow, false, "tắt mũi tên")
-	v.set_arrows(true)
-	t.eq(v.block_node("b1").show_arrow, true, "bật mũi tên")
-	v.queue_free()
-
-
 func test_highlight_and_smash(t: T) -> void:
 	var board := BoardState.new(_lv(4, 4, [_b("b1", "yellow", [[1, 1]]), _b("b2", "green", [[3, 3]])]))
 	var v := (load(SCENE) as PackedScene).instantiate() as Control

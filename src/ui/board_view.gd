@@ -69,7 +69,6 @@ class BlockNode extends Control:
 	var origin_cell: Vector2i = Vector2i.ZERO  # ô nhỏ nhất của khối
 	var cell_size: float = 64.0
 	var view: Dictionary = {}
-	var show_arrow: bool = true
 	var glow: float = 0.0
 	var busy: bool = false
 
@@ -96,7 +95,7 @@ class BlockNode extends Control:
 		if shadow != null:
 			BoardFx.Pudding.update_body(shadow.body, lc, cell_size, ramp)
 		_update_inner(lc)
-		BoardFx.draw_block(self, lc, cell_size, view, show_arrow)
+		BoardFx.draw_block(self, lc, cell_size, view)
 
 	## Nhún như thạch theo trục `axis` (dao động tắt dần), `amp` là độ nén lớn nhất. Khối hẹp trục kia nở ra bù.
 	func wobble(axis: Vector2, amp: float, dur: float) -> void:
@@ -124,7 +123,6 @@ class BlockNode extends Control:
 			BoardFx.Pudding.update_body(_inner[i], [Vector2i.ZERO], r.size.x, ThemeKit.block_ramp(inner_color), Color(0, 0, 0, 0), glow, r.position)
 
 
-var arrows_enabled: bool = true
 var input_enabled: bool = true
 
 var _board: BoardState = null
@@ -182,7 +180,6 @@ func setup(board: BoardState, area: Vector2 = Vector2.ZERO) -> void:
 	_clear()
 	if area != Vector2.ZERO:
 		_set_fixed_size(area)
-	arrows_enabled = _arrows_setting()
 	for id in board.block_ids():
 		_add_block(id)
 	_gate_state = board.gates()
@@ -212,13 +209,6 @@ func _set_fixed_size(area: Vector2) -> void:
 	if anchor_right != anchor_left or anchor_bottom != anchor_top:
 		set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	size = area
-
-
-func set_arrows(on: bool) -> void:
-	arrows_enabled = on
-	for id in _nodes:
-		_nodes[id].show_arrow = on
-		_nodes[id].queue_redraw()
 
 
 ## Đọc lại trạng thái từ board (sau khi cộng MOVES, phá khối, v.v.) không chạy hoạt ảnh.
@@ -305,12 +295,6 @@ func key_ids() -> Array[String]:
 	return out
 
 
-## Mũi tên hỗ trợ của khối đang hiện? Ẩn khi tắt cài đặt hoặc khi còn trong sương mù.
-func arrow_visible(id: String) -> bool:
-	var n: BlockNode = _nodes.get(id, null)
-	return n != null and BoardFx.arrow_shown(n.view, n.show_arrow)
-
-
 ## Số lớp hiệu ứng "bóng" (băng vỡ, vỏ bóc, sương tan, xích rơi) đang mờ dần.
 func ghost_count() -> int:
 	var k := 0
@@ -318,11 +302,6 @@ func ghost_count() -> int:
 		if ch.name.begins_with(GHOST_NAME) and not ch.is_queued_for_deletion():
 			k += 1
 	return k
-
-
-func _arrows_setting() -> bool:
-	var st: Variant = Game.s.get("settings", {})
-	return bool(st.get("arrows", true)) if st is Dictionary else true
 
 
 func _clear() -> void:
@@ -360,7 +339,6 @@ func _add_block(id: String) -> void:
 		_owner[c] = id
 	n.origin_cell = mn
 	n.view = v
-	n.show_arrow = arrows_enabled
 	var sh := ShadowNode.new()
 	sh.source = n
 	n.shadow = sh
@@ -794,7 +772,6 @@ func _spawn_ghost(n: BlockNode, old_view: Dictionary, grow: float, dur: float) -
 	g.origin_cell = n.origin_cell
 	g.cell_size = _cell
 	g.view = old_view
-	g.show_arrow = n.show_arrow
 	g.size = n.size
 	g.position = n.position
 	g.pivot_offset = n.size * 0.5

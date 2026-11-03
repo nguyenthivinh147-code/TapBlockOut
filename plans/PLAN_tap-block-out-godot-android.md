@@ -163,7 +163,7 @@ Mọi `tap` hợp lệ giảm 1 MOVES, kể cả `crack`, `chained`, `blocked`, 
   "lb": {"joined": false, "points": 0, "league": 0, "seed": 0, "day": -1, "seen_rank": 0,
          "bots": [], "risen": [], "pending": []},  # Leaderboard (design.md mục 7), src/meta/leaderboard.gd
   "notify": {"ignored": 0, "plan": [], "asked": false, "hours": []},
-  "settings": {"sfx": true, "music": true, "haptics": true, "notif": true, "arrows": true, "lang": ""},
+  "settings": {"sfx": true, "music": true, "haptics": true, "notif": true, "lang": ""},
   "meta": {"install_at": 0, "sessions": 0, "first_session_done": false, "rated": false, "ftue": []}
 }
 ```
@@ -446,7 +446,7 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 5.1: BoardView**
   - **Allowed Files:** `scenes/board_view.tscn`, `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `src/ui/pudding.gd`, `src/ui/pudding.gdshader`, `tests/test_ui_board.gd`.
-  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 ô mỗi bên và 0,61 ô trên dưới, `frame_rect()` trả về trọn khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; cỡ ô là số nguyên, cố định `Config.BOARD_CELL`, chỉ co khi vùng chứa nhỏ hơn bàn chuẩn), mũi tên hỗ trợ mù màu theo cài đặt. Khối thoát lao nhanh dần tới thanh cùng màu (tối đa 0,30 giây) rồi vỡ thành mảnh kẹo (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)`. Cơ chế mới để Task 9.2.
+  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 ô mỗi bên và 0,61 ô trên dưới, `frame_rect()` trả về trọn khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; cỡ ô là số nguyên, cố định `Config.BOARD_CELL`, chỉ co khi vùng chứa nhỏ hơn bàn chuẩn). Khối thoát lao nhanh dần tới thanh cùng màu (tối đa 0,30 giây) rồi vỡ thành mảnh kẹo (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)`. Cơ chế mới để Task 9.2.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_board`
 
 - [x] **Task 5.2: Home và Profile**
@@ -466,7 +466,7 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 5.5: Popup quà và Settings**
   - **Allowed Files:** `scenes/popup_daily.tscn`, `src/ui/popup_daily.gd`, `scenes/settings.tscn`, `src/ui/settings.gd`, `tests/test_ui_daily.gd`, `tests/test_ui_settings.gd`.
-  - **Specs:** Popup quà chỉ mở khi bấm, hiện đúng 7 ô của tuần đang đi, nút nhận, nút video nhận ô kế tiếp (không tự chạy). Settings: âm thanh, nhạc, rung, thông báo, mũi tên, ngôn ngữ, Privacy khi `has_privacy`, Restore, Contact support (mở `mailto:` tới `Config.CONTENT.support_email`), phiên bản. Chạm nhiều lần vào dòng phiên bản mở menu tester có nút mediation debugger (`Platform.open_debugger()`).
+  - **Specs:** Popup quà chỉ mở khi bấm, hiện đúng 7 ô của tuần đang đi, nút nhận, nút video nhận ô kế tiếp (không tự chạy). Settings: âm thanh, nhạc, rung, thông báo, ngôn ngữ, Privacy khi `has_privacy`, Restore, Contact support (mở `mailto:` tới `Config.CONTENT.support_email`), phiên bản. Chạm nhiều lần vào dòng phiên bản mở menu tester có nút mediation debugger (`Platform.open_debugger()`).
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_daily && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_settings`
 
 ### Phase 6: Ráp màn level
@@ -525,7 +525,7 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
 
 - [x] **Task 9.2: Hiển thị cơ chế**
   - **Allowed Files:** `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `scenes/board_view.tscn`, `tests/test_ui_mech.gd`.
-  - **Specs:** Vẽ đá, băng và nứt, xích và chìa, hai lớp và bóc lớp, sương mù (mũi tên ẩn tới khi lộ), cổng nhịp đóng mở. Âm thanh gọi `Sfx` theo bảng `design.md`, thiếu file thì im. Dùng `assets/ui/mech_*` nếu có, nếu không vẽ bằng code.
+  - **Specs:** Vẽ đá, băng và nứt, xích và chìa, hai lớp và bóc lớp, sương mù, cổng nhịp đóng mở. Âm thanh gọi `Sfx` theo bảng `design.md`, thiếu file thì im. Dùng `assets/ui/mech_*` nếu có, nếu không vẽ bằng code.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_mech`
 
 - [x] **Task 9.3: Sinh L21–300 và level dạy**

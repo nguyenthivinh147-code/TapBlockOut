@@ -1,9 +1,8 @@
 extends RefCounted
-## Vẽ khối và hiệu ứng cho BoardView: hình khối bo góc, mũi tên, băng, xích, hạt, rung.
+## Vẽ khối và hiệu ứng cho BoardView: hình khối bo góc, băng, xích, hạt, rung.
 ## Hàm tĩnh, không giữ trạng thái.
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
-const LevelData := preload("res://src/core/level_data.gd")
 const Pudding := preload("res://src/ui/pudding.gd")
 const FLASH_SHADER := preload("res://src/ui/impact_flash.gdshader")
 
@@ -26,11 +25,6 @@ static func mech_tex(mech_name: String) -> Texture2D:
 	if not _real_icon[mech_name]:
 		return null
 	return ThemeKit.icon(mech_name)
-
-
-## Mũi tên hỗ trợ mù màu có hiện không: tắt theo cài đặt, và ẩn khi khối còn trong sương mù.
-static func arrow_shown(view: Dictionary, show_arrow: bool) -> bool:
-	return show_arrow and not bool(view.get("is_fog_hidden", false))
 
 
 ## Các đoạn mép hướng lên của khối: {"x0", "x1", "y", "wall_left", "wall_right"} theo đơn vị ô.
@@ -124,7 +118,7 @@ static func draw_gloss(ci: CanvasItem, cells: Array, cell: float, at: Vector2 = 
 		_ribbon(ci, ctrl, cell, at, feather)
 
 
-## Ô gần trọng tâm nhất: nơi đặt mũi tên và biểu tượng.
+## Ô gần trọng tâm nhất: nơi đặt biểu tượng.
 static func anchor_cell(cells: Array) -> Vector2i:
 	var sum := Vector2.ZERO
 	for c: Vector2i in cells:
@@ -166,10 +160,10 @@ static func inner_rect(c: Vector2i, cell: float) -> Rect2:
 
 
 ## Vẽ phần nằm trên thân kẹo của một khối đa ô: vệt bóng (của khối và của viên trong khối hai lớp), rồi băng,
-## xích, sương, mũi tên. Thân (mép gối, sọc, bóng đổ) do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
+## xích, sương. Thân (mép gối, sọc, bóng đổ) do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
 ## theo concept `art/concepts/concept_candy_board_v5_stripe.png`.
 ## `cells` tính theo toạ độ ô gốc của chính CanvasItem này.
-static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictionary, show_arrow: bool) -> void:
+static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictionary) -> void:
 	var fog_hidden: bool = view.get("is_fog_hidden", false)
 	var chained: bool = view.get("chained", false)
 	var has_inner := str(view.get("inner_color", "")) != "" and not fog_hidden
@@ -185,15 +179,6 @@ static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictiona
 	var ice := int(view.get("ice", 0))
 	if ice > 0:
 		draw_ice(ci, cells, cell)
-	if arrow_shown(view, show_arrow):
-		if has_inner:
-			# khối hai lớp: mũi tên của lớp ngoài nằm lệch lên trên tâm ô
-			draw_arrow(ci, center + Vector2(0, -cell * 0.3), LevelData.dir_of(str(view.get("color", ""))), cell * 0.6)
-		elif chained:
-			draw_arrow(ci, center + Vector2(0, -cell * 0.2), LevelData.dir_of(str(view.get("color", ""))), cell * 0.7)
-		else:
-			# hạ nhẹ xuống để không chạm vệt bóng ở mép trên
-			draw_arrow(ci, center + Vector2(0, cell * 0.05), LevelData.dir_of(str(view.get("color", ""))), cell)
 	if chained:
 		draw_chain(ci, cells, cell)
 		draw_lock(ci, center + Vector2(0, cell * 0.14), cell)
@@ -207,7 +192,7 @@ static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictiona
 			draw_piece(ci, (Vector2(spot) + Vector2(0.5, 0.5)) * cell, cell * 0.34, cell)
 
 
-## Ô đặt huy hiệu mảnh: ô trên cùng (rồi phải nhất) khác ô mang mũi tên; khối một ô thì chính ô đó.
+## Ô đặt huy hiệu mảnh: ô trên cùng (rồi phải nhất) khác ô trọng tâm; khối một ô thì chính ô đó.
 static func piece_cell(cells: Array, anchor: Vector2i) -> Vector2i:
 	var best := anchor
 	for c: Vector2i in cells:
@@ -225,21 +210,6 @@ static func draw_piece(ci: CanvasItem, pos: Vector2, rad: float, cell: float) ->
 	ci.draw_arc(pos, rad, 0.0, TAU, 24, KEY_COLOR, maxf(1.5, cell * 0.05))
 	var r := rad * 0.86
 	ci.draw_texture_rect(ThemeKit.icon("lb_piece"), Rect2(pos - Vector2(r, r), Vector2(r, r) * 2.0), false)
-
-
-static func draw_arrow(ci: CanvasItem, center: Vector2, dir: Vector2i, cell: float) -> void:
-	var d := Vector2(dir)
-	if d == Vector2.ZERO:
-		return
-	var n := Vector2(-d.y, d.x)
-	var s := cell * 0.2
-	var tip := center + d * s
-	var pts := PackedVector2Array([tip, center - d * s * 0.7 + n * s * 0.95, center - d * s * 0.7 - n * s * 0.95])
-	var shadow := PackedVector2Array()
-	for p in pts:
-		shadow.append(p + Vector2(0, cell * 0.025))
-	ci.draw_colored_polygon(shadow, Color(0, 0, 0, 0.3))
-	ci.draw_colored_polygon(pts, Color(1, 1, 1, 0.92))
 
 
 static func draw_lock(ci: CanvasItem, center: Vector2, cell: float) -> void:

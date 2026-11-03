@@ -35,7 +35,7 @@ static func defaults() -> Dictionary:
 			"bots": [], "risen": [], "pending": [],
 		},
 		"notify": {"ignored": 0, "plan": [], "asked": false, "hours": []},
-		"settings": {"sfx": true, "music": true, "haptics": true, "notif": true, "arrows": true, "lang": ""},
+		"settings": {"sfx": true, "music": true, "haptics": true, "notif": true, "lang": ""},
 		"meta": {"install_at": 0, "sessions": 0, "first_session_done": false, "rated": false, "ftue": []},
 	}
 

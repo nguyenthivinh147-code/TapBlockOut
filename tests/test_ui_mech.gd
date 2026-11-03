@@ -131,7 +131,6 @@ func test_two_layers_peel(t: T) -> void:
 	var v := _view(board)
 	t.eq(v.block_node("b1").view["color"], "yellow", "lớp ngoài vàng")
 	t.eq(v.block_node("b1").view["inner_color"], "green", "lớp trong xanh lá")
-	t.ok(v.arrow_visible("b1"), "có mũi tên lớp ngoài")
 	var r := board.tap("b1")
 	t.eq(r["kind"], "peel", "bóc lớp")
 	v.apply_result(r)
@@ -156,34 +155,18 @@ func _fog_level() -> Dictionary:
 	])
 
 
-func test_fog_hides_arrow_until_revealed(t: T) -> void:
+func test_fog_reveal(t: T) -> void:
 	var board := BoardState.new(_fog_level())
 	var v := _view(board)
 	t.eq(v.block_node("c").view["is_fog_hidden"], true, "c trong sương mù")
-	t.ok(not v.arrow_visible("c"), "mũi tên ẩn khi sương mù")
-	t.ok(v.arrow_visible("n"), "khối thường vẫn có mũi tên")
 	var r := board.tap("n")
 	t.eq(r["kind"], "exit", "n thoát")
 	t.eq(r["revealed"], ["c"] as Array[String], "c lộ")
 	v.apply_result(r)
 	t.eq(v.block_node("c").view["is_fog_hidden"], false, "view hết sương")
-	t.ok(v.arrow_visible("c"), "mũi tên hiện khi đã lộ")
 	t.ok(v.ghost_count() >= 1, "sương tan mờ dần")
 	t.ok(await _wait_done(v), "exit xong")
 	t.eq(v.ghost_count(), 0, "bóng đã dọn")
-	v.set_arrows(false)
-	t.ok(not v.arrow_visible("c"), "tắt hỗ trợ thì không hiện dù đã lộ")
-	v.queue_free()
-
-
-func test_fog_with_arrows_off_stays_off(t: T) -> void:
-	var board := BoardState.new(_fog_level())
-	var v := _view(board)
-	v.set_arrows(false)
-	t.ok(not v.arrow_visible("c"), "ẩn khi sương và khi tắt")
-	t.ok(not v.arrow_visible("n"), "tắt hỗ trợ")
-	v.set_arrows(true)
-	t.ok(not v.arrow_visible("c"), "bật lại vẫn ẩn khi còn sương")
 	v.queue_free()
 
 

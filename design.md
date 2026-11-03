@@ -36,7 +36,7 @@ Game làm bằng **Godot 4.7.2, GDScript, xuất Android gốc**. Tài liệu Ho
 - `MOVES = số chạm tối thiểu do solver tính + dư`. Dư: L1–5 là 3; level thường `max(2, 10% số khối)`; level HARD là 1.
 - Nghĩ quá lâu rồi đi đúng (mặc định từ 8 giây): hiệu ứng vỗ tay.
 - Mỗi level có ít nhất một khối thoát được ngay. Solver kiểm 100% level trong unit test và lúc build.
-- Hỗ trợ người mù màu: mũi tên nhỏ trên khối, bật mặc định, tắt được trong Settings.
+- Khối không có mũi tên chỉ hướng: hướng đi đọc theo màu khối và thanh cổng cùng màu.
 
 ### Khi hết MOVES
 
@@ -133,7 +133,7 @@ Booster với cơ chế:
 
 - Phá khối: không dùng được trên đá; dùng trên băng, xích hoặc hai lớp thì xoá hẳn cả khối.
 - Gợi ý: chỉ khối đi được ngay, có tính cổng nhịp.
-- Sương mù: mũi tên hỗ trợ mù màu cũng ẩn tới khi lộ. Chạm khối chưa lộ vẫn tốn 1 MOVES nếu bị chặn.
+- Sương mù: chạm khối chưa lộ vẫn tốn 1 MOVES nếu bị chặn.
 
 ### Mở khoá theo level
 
@@ -456,7 +456,7 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 
 - Texture khoảng cách tới mép (SDF) dựng một lần cho mỗi hình khối rồi cache (không phụ thuộc màu hay cỡ ô, khoảng 4–35 ms mỗi hình trên máy dev); shader dùng SDF để tính mép gối, vạch đáy và bóng, nên khối chữ L, T, ... đều ra đúng cấu trúc, viền góc liền một nét. Mỗi điểm ảnh đọc texture tối đa 7 lần.
 - Cỡ ô là số nguyên (làm tròn xuống) để các ô của một khối khớp pixel.
-- Ảnh duyệt không có mũi tên trên khối, nhưng mũi tên mù màu vẫn bật mặc định (mục 2), hạ nhẹ xuống dưới tâm ô để không chạm vệt bóng. Băng tô trong hình khối bằng shader nên không tràn ra góc bo, nháy sáng Gợi ý cũng vậy; xích, sương mù vẽ đè lên lớp kẹo, giữ nguyên cách đọc. Khối hai lớp: viên trong dùng đúng shader và vệt bóng đó ở cỡ nhỏ hơn.
+- Khối không có mũi tên, đúng như ảnh duyệt. Băng tô trong hình khối bằng shader nên không tràn ra góc bo, nháy sáng Gợi ý cũng vậy; xích, sương mù vẽ đè lên lớp kẹo, giữ nguyên cách đọc. Khối hai lớp: viên trong dùng đúng shader và vệt bóng đó ở cỡ nhỏ hơn.
 - Chưa áp dụng cho nền, đá, icon (giữ nét hiện tại). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá kẹo gel bóng (xem quy tắc prompt bên dưới) để cùng phong cách.
 
 **Khung cổng (2026-11-02).** Khung theo cùng ảnh duyệt, vẽ bằng shader (`src/ui/candy_frame.gd`, `frame_bar.gdshader`, `frame_corner.gdshader`), số đo theo ô:
@@ -490,7 +490,7 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 - Trận thắng chờ tối đa 0,55 giây sau lần vỡ cuối trước khi hiện thẻ thắng; mảnh còn lại rơi tiếp đè lên thẻ tới hết đời.
 - Shader hiệu ứng được biên dịch sẵn khi vào màn đầu tiên.
 
-**Vẫn vẽ bằng code (và shader):** hình khối, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
+**Vẫn vẽ bằng code (và shader):** hình khối, cổng, hạt, và mọi chữ. Khối phải khớp từng ô, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
 
 | Việc | Công cụ | Ghi chú |
 | --- | --- | --- |
@@ -567,3 +567,4 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 
 - Nối logic Leaderboard (mục 7) thay cho bản UI giải đấu theo tuần: league theo tổng điểm, 7 league, chỉ lên không xuống, không có mùa. Điểm lấy từ khối ngôi sao trong level, cộng khi thắng. BXH 100 người toàn bot, bot tăng điểm mỗi ngày 7h00 GMT+7. Mở ở L8; tab Ranking không còn phụ thuộc `Config.ui_preview`.
 - Spec gốc ghi "7 League" nhưng chỉ liệt kê 6 khoảng điểm và nhắc tới "One Above All"; mình đặt One Above All là league thứ 7 từ 1.000 điểm, không có trần.
+- Bỏ mũi tên hỗ trợ mù màu trên khối và dòng bật tắt trong Settings (`settings.arrows`, chuỗi `settings_arrows`); mũi tên trên thanh khung cổng giữ nguyên. Bản lưu cũ còn khoá `arrows` thì để yên, không đọc nữa.
