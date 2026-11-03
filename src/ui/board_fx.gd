@@ -199,6 +199,32 @@ static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictiona
 		draw_lock(ci, center + Vector2(0, cell * 0.14), cell)
 	if bool(view.get("is_key", false)):
 		draw_key(ci, Vector2(anchor) * cell + Vector2(cell * 0.24, cell * 0.24), cell)
+	if bool(view.get("special", false)) and not fog_hidden:
+		var spot := piece_cell(cells, anchor)
+		if spot == anchor:
+			draw_piece(ci, Vector2(anchor) * cell + Vector2(cell * 0.74, cell * 0.26), cell * 0.26, cell)
+		else:
+			draw_piece(ci, (Vector2(spot) + Vector2(0.5, 0.5)) * cell, cell * 0.34, cell)
+
+
+## Ô đặt huy hiệu mảnh: ô trên cùng (rồi phải nhất) khác ô mang mũi tên; khối một ô thì chính ô đó.
+static func piece_cell(cells: Array, anchor: Vector2i) -> Vector2i:
+	var best := anchor
+	for c: Vector2i in cells:
+		if c == anchor:
+			continue
+		if best == anchor or c.y < best.y or (c.y == best.y and c.x > best.x):
+			best = c
+	return best
+
+
+## Khối đặc biệt của leaderboard: huy hiệu tròn trắng viền vàng có icon mảnh (`lb_piece`); `pos` là tâm, `rad` bán kính.
+static func draw_piece(ci: CanvasItem, pos: Vector2, rad: float, cell: float) -> void:
+	ci.draw_circle(pos + Vector2(0, cell * 0.04), rad, Color(0, 0, 0, 0.3))
+	ci.draw_circle(pos, rad, Color(1, 1, 1, 0.95))
+	ci.draw_arc(pos, rad, 0.0, TAU, 24, KEY_COLOR, maxf(1.5, cell * 0.05))
+	var r := rad * 0.86
+	ci.draw_texture_rect(ThemeKit.icon("lb_piece"), Rect2(pos - Vector2(r, r), Vector2(r, r) * 2.0), false)
 
 
 static func draw_arrow(ci: CanvasItem, center: Vector2, dir: Vector2i, cell: float) -> void:

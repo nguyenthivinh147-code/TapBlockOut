@@ -25,6 +25,7 @@ const WeeklyPass := preload("res://src/meta/weekly_pass.gd")
 const ChainOffer := preload("res://src/meta/chain_offer.gd")
 const PackConditions := preload("res://src/meta/pack_conditions.gd")
 const NotifPlan := preload("res://src/meta/notif_plan.gd")
+const Leaderboard := preload("res://src/meta/leaderboard.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const LevelLoop := preload("res://src/core/level_loop.gd")
@@ -143,6 +144,7 @@ func boot() -> void:
 	NotifPlan.note_open(s, t, _tz())
 	NotifPlan.note_return(s, t, "", Platform.enabled())
 	weekly_refresh()
+	lb_refresh()
 	Lives.tick(s, t)
 	_deliver_pending()
 	_recover_lost_ads()
@@ -243,6 +245,7 @@ func _on_resumed() -> void:
 	NotifPlan.note_open(s, t, _tz())
 	NotifPlan.note_return(s, t, "", Platform.enabled())
 	weekly_refresh()
+	lb_refresh()
 	Lives.tick(s, t)
 	ChainOffer.update(s, t)
 	lives_changed.emit()
@@ -427,7 +430,13 @@ func _begin_attempt(data: Dictionary, level: int, challenge: bool) -> Dictionary
 		"start_ms": Time.get_ticks_msec(), "free_used": {}, "ended": false,
 		"life_charged": false, "challenge": challenge, "hard": bool(data.get("hard", false)),
 		"day": today(), "replay": not challenge and level == _last_attempt_level,
+		"specials": [] as Array[String], "special_left": [] as Array[String], "pieces": 0,
 	}
+	if not challenge and lb_open():
+		lb_refresh()
+		var sp := Leaderboard.pick_specials(board.block_ids(), Leaderboard.pieces_for(difficulty_of(level)), level)
+		attempt["specials"] = sp
+		attempt["special_left"] = sp.duplicate()
 	if not challenge:
 		_last_attempt_level = level
 	var params := {"level": level, "runs": int(s.runs), "moves": board.moves_left(),
@@ -441,12 +450,29 @@ func _begin_attempt(data: Dictionary, level: int, challenge: bool) -> Dictionary
 
 
 ## Chạm khối qua Game để đếm lượt chạm (restart từ L10 tính theo số chạm).
+## Khối đặc biệt rời bàn thì res.piece = true (+1 mảnh leaderboard, cộng khi thắng).
 func tap(attempt: Dictionary, block_id: String) -> Dictionary:
 	var res: Dictionary = (attempt.board as BoardState).tap(block_id)
 	if res.kind != "rejected":
 		attempt["taps"] = int(attempt.taps) + 1
 		ftue("first_tap")
+	res["piece"] = res.kind == "exit" and _take_piece(attempt, block_id)
 	return res
+
+
+## Phá khối bằng Smash (UI đã trừ booster qua use_booster). Trả {ok, piece}: khối đặc biệt vẫn cho mảnh.
+func smash_block(attempt: Dictionary, block_id: String) -> Dictionary:
+	var ok := (attempt.board as BoardState).smash(block_id)
+	return {"ok": ok, "piece": ok and _take_piece(attempt, block_id)}
+
+
+func _take_piece(attempt: Dictionary, block_id: String) -> bool:
+	var left: Array = attempt.get("special_left", [])
+	if not left.has(block_id):
+		return false
+	left.erase(block_id)
+	attempt["pieces"] = int(attempt.get("pieces", 0)) + 1
+	return true
 
 
 func _touched(attempt: Dictionary) -> bool:
@@ -493,8 +519,12 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 		weekly_pts = WeeklyPass.add_points(s, weekly_state(), difficulty_of(level))
 		if weekly_pts > 0:
 			log_event("weekly_points", {"level": level, "points": weekly_pts, "total": WeeklyPass.points(s)})
+	var lb: Dictionary = {}
+	if not is_challenge:
+		lb = _lb_award(attempt)
 	if not is_challenge and level >= int(s.level):
 		s["level"] = level + 1
+	lb_refresh()
 	_last_win_level = level
 	_x2_pending = coins
 	_x2_free = level == 1
@@ -516,7 +546,7 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 		progress = Unlocks.feature_progress(level, _content_cap())
 	return {"coins": coins, "x2_available": avail, "x2_free": _x2_free, "rate_prompt": rate,
 		"progress": progress, "unlocked": progress.get("unlocked", [] as Array[String]),
-		"weekly_points": weekly_pts}
+		"weekly_points": weekly_pts, "lb": lb}
 
 
 func _content_cap() -> int:
@@ -1229,6 +1259,124 @@ func weekly_buy_vip() -> Dictionary:
 	if weekly_state() != WeeklyPass.ACTIVE or WeeklyPass.is_vip(s):
 		return {"status": "error", "sku": sku, "granted": false}
 	return await buy_sku(sku)
+
+
+# --- Leaderboard ---
+
+## Mở từ Config.UNLOCK.leaderboard (và Config.LEADERBOARD.enabled).
+func lb_open() -> bool:
+	return Leaderboard.enabled() and Unlocks.is_open("leaderboard", int(s.level))
+
+
+## Vào BXH khi vừa mở khoá, bù điểm bot theo ngày BXH. Gọi lúc boot, resume, bắt đầu level, trước khi đọc view.
+func lb_refresh() -> void:
+	if not lb_open():
+		return
+	var t := now()
+	if Leaderboard.join(s, t):
+		log_event("lb_join", {"level": int(s.level), "league": Leaderboard.league_id(Leaderboard.league(s))})
+		_queue_save()
+	if Leaderboard.grow(s, t) > 0:
+		_queue_save()
+
+
+## Cộng mảnh của level vừa thắng. Trả kết quả Leaderboard.add_points thêm league_id, league_min, next_min,
+## next_league ({} nếu không có mảnh). Người gọi lưu.
+func _lb_award(attempt: Dictionary) -> Dictionary:
+	var n := int(attempt.get("pieces", 0))
+	if n <= 0 or not lb_open():
+		return {}
+	lb_refresh()
+	var r := Leaderboard.add_points(s, n)
+	if r.is_empty():
+		return {}
+	var li := int(r.league_after)
+	r["league_id"] = Leaderboard.league_id(li)
+	r["league_min"] = Leaderboard.league_min(li)
+	r["next_min"] = Leaderboard.next_min(li)
+	r["next_league"] = "" if Leaderboard.is_top(li) else Leaderboard.league_id(li + 1)
+	log_event("lb_points", {"level": int(attempt.level), "points": n, "total": int(r.after), "rank": int(r.rank_after)})
+	for k in r.promoted:
+		log_event("lb_promote", {"league": Leaderboard.league_id(int(k)), "points": int(r.after)})
+	return r
+
+
+## Mọi thứ màn Leaderboard (tab League) cần: {open, unlock_level, league, league_index, league_count, points,
+## league_min, next_min, next_league, progress, rank, size, delta, top_percent, refresh_in, podium, rows, pending}.
+## podium: 3 hàng đầu; rows: tối đa view_size hàng quanh người chơi. Hàng như Leaderboard.standings.
+func lb_view() -> Dictionary:
+	lb_refresh()
+	var li := Leaderboard.league(s)
+	var rows := Leaderboard.standings(s)
+	var rank := Leaderboard.rank(s)
+	var seen := Leaderboard.seen_rank(s)
+	var pts := Leaderboard.points(s)
+	var lo := Leaderboard.league_min(li)
+	var nxt := Leaderboard.next_min(li)
+	return {
+		"open": lb_open(), "unlock_level": int(Config.UNLOCK.get("leaderboard", 0)),
+		"league": Leaderboard.league_id(li), "league_index": li, "league_count": Leaderboard.leagues().size(),
+		"points": pts, "league_min": lo, "next_min": nxt,
+		"next_league": "" if nxt < 0 else Leaderboard.league_id(li + 1),
+		"progress": 1.0 if nxt < 0 else clampf(float(pts - lo) / float(maxi(nxt - lo, 1)), 0.0, 1.0),
+		"rank": rank, "size": rows.size(), "delta": seen - rank if seen > 0 else 0,
+		"top_percent": Leaderboard.top_percent(s), "refresh_in": Leaderboard.seconds_to_grow(now()),
+		"podium": rows.slice(0, 3), "rows": Leaderboard.window(rows, rank),
+		"pending": not Leaderboard.pending(s).is_empty(),
+	}
+
+
+## Tab World Ranking: Leaderboard.world thêm points và league (id) của người chơi.
+func lb_world_view() -> Dictionary:
+	lb_refresh()
+	var w := Leaderboard.world(s, now())
+	w["points"] = Leaderboard.points(s)
+	w["league"] = Leaderboard.league_id(Leaderboard.league(s))
+	return w
+
+
+## Popup Leagues: {current, points, rows: [{id, min, max (-1 ở league cuối), reward, reached, current}]}.
+func lb_leagues_view() -> Dictionary:
+	var cur := Leaderboard.league(s)
+	var rows: Array = []
+	for i in Leaderboard.leagues().size():
+		var nxt := Leaderboard.next_min(i)
+		rows.append({"id": Leaderboard.league_id(i), "min": Leaderboard.league_min(i),
+			"max": nxt - 1 if nxt >= 0 else -1, "reward": Leaderboard.reward_of(i),
+			"reached": i <= cur and Leaderboard.joined(s), "current": i == cur})
+	return {"current": Leaderboard.league_id(cur), "points": Leaderboard.points(s), "rows": rows}
+
+
+## Người chơi mở màn Leaderboard: ghi hạng đang thấy (lần sau hiện ▲/▼ so với hạng này).
+func lb_opened() -> void:
+	if not lb_open():
+		return
+	Leaderboard.mark_seen(s)
+	log_event("lb_open", {"league": Leaderboard.league_id(Leaderboard.league(s)), "rank": Leaderboard.rank(s),
+		"points": Leaderboard.points(s)})
+	_queue_save()
+
+
+## Popup lên league đang chờ: {leagues: [id...], league (league cao nhất vừa vào), reward} hoặc {} nếu không có.
+func lb_pending_view() -> Dictionary:
+	var p := Leaderboard.pending(s)
+	if p.is_empty():
+		return {}
+	var ids: Array = []
+	for li in p:
+		ids.append(Leaderboard.league_id(int(li)))
+	return {"leagues": ids, "league": ids[ids.size() - 1], "reward": Leaderboard.pending_reward(s)}
+
+
+## Nhận thưởng các league đang chờ. Trả thưởng đã cộng ({} nếu không có).
+func lb_claim() -> Dictionary:
+	var r := Leaderboard.claim(s)
+	if r.is_empty():
+		return {}
+	_give(r, "lb_league")
+	log_event("lb_claim", {"league": Leaderboard.league_id(Leaderboard.league(s)), "coins": int(r.get("coins", 0))})
+	save_now()
+	return r
 
 
 # --- Chain Offer ---

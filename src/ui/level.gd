@@ -20,6 +20,7 @@ const WIN_CARD := "res://scenes/win_card.tscn"
 const LOSE_CARD := "res://scenes/lose_card.tscn"
 const SHOP_MINI := "res://scenes/shop_mini.tscn"
 const INGAME_SETTINGS := "res://scenes/popup_ingame_settings.tscn"
+const POPUP_LB_RESULT := "res://scenes/popup_lb_result.tscn"
 const BOOSTERS := ["hint", "move", "smash"]
 const FREE_PLACEMENT := "booster_free"
 const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
@@ -87,6 +88,10 @@ var board_view: Control = null
 var title_label: Label = null
 var hard_badge: Control = null
 var moves_label: Label = null
+## Chip đếm mảnh leaderboard đã nhặt / tổng khối đặc biệt (hàng booster); ẩn khi level không có khối đặc biệt.
+var piece_chip: VBoxContainer = null
+var piece_icon: TextureRect = null
+var piece_label: Label = null
 var tut_label: Label = null
 var clap_label: Label = null
 var toast_label: Label = null
@@ -237,6 +242,28 @@ func _build() -> void:
 	row.add_theme_constant_override("separation", 40)
 	row.custom_minimum_size.y = 168  # giữ chỗ cả khi booster chưa mở, để khung không xê dịch giữa các level
 	col.add_child(row)
+	# chip đếm mảnh leaderboard: nằm ở hàng này (cao cố định) để thanh trên không rộng thêm
+	piece_chip = VBoxContainer.new()
+	piece_chip.name = "PieceChip"
+	piece_chip.add_theme_constant_override("separation", 4)
+	piece_chip.visible = false
+	row.add_child(piece_chip)
+	var piece_box := ThemeKit.make_panel()
+	piece_box.custom_minimum_size = Vector2(120, 112)
+	piece_chip.add_child(piece_box)
+	var piece_col := VBoxContainer.new()
+	piece_col.alignment = BoxContainer.ALIGNMENT_CENTER
+	piece_col.add_theme_constant_override("separation", 0)
+	piece_box.add_child(piece_col)
+	piece_icon = ThemeKit.make_icon("lb_piece", 48)
+	piece_col.add_child(piece_icon)
+	piece_label = ThemeKit.make_label("", ThemeKit.FS_SMALL + 4, ThemeKit.GOLD)
+	piece_label.name = "PieceLabel"
+	piece_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	piece_col.add_child(piece_label)
+	var piece_cap := ThemeKit.make_label(tr("lb_pieces"), ThemeKit.FS_SMALL, ThemeKit.TEXT)
+	piece_cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	piece_chip.add_child(piece_cap)
 	for kind in BOOSTERS:
 		var c := VBoxContainer.new()
 		c.name = "Booster_" + kind
@@ -409,6 +436,7 @@ func _start_level(warn: bool = true) -> void:
 	(hard_badge as Label).text = tr("level_very_hard") if very_hard else tr("level_hard")
 	tut_label.text = _mech_hint()
 	board_view.setup(board)
+	board_view.set_specials(attempt.get("specials", []))
 	_refresh_hud()
 	while true:
 		var kind := Game.claim_gift()
@@ -515,6 +543,9 @@ func _refresh_hud() -> void:
 	if not _built or board == null:
 		return
 	moves_label.text = tr("level_moves_left") % board.moves_left()
+	var total := (attempt.get("specials", []) as Array).size()
+	piece_chip.visible = total > 0
+	piece_label.text = "%d/%d" % [int(attempt.get("pieces", 0)), total]
 	for kind in BOOSTERS:
 		var open := Unlocks.is_open(kind, _level)
 		var b: Button = booster_buttons[kind]
@@ -543,6 +574,36 @@ func _show_clap() -> void:
 	tw.tween_callback(func() -> void: clap_label.visible = false)
 
 
+## Tâm khối trên màn hình (toạ độ toàn cục), lấy trước khi khối rời bàn.
+func _block_center(id: String) -> Vector2:
+	var n: Control = board_view.block_node(id)
+	return n.get_global_rect().get_center() if n != null else board_view.get_global_rect().get_center()
+
+
+## Mảnh leaderboard bay từ khối vừa rời bàn về chip đếm mảnh, tới nơi thì chip nảy nhẹ.
+func _fly_piece(from: Vector2) -> void:
+	Sfx.play("sfx_coin")
+	var px := 64.0
+	var icon := ThemeKit.make_icon("lb_piece", px)
+	icon.name = "FlyingPiece"
+	_overlay.add_child(icon)
+	icon.size = Vector2(px, px)
+	icon.pivot_offset = icon.size * 0.5
+	icon.position = from - _overlay.global_position - icon.size * 0.5
+	var to := piece_icon.get_global_rect().get_center() - _overlay.global_position - icon.size * 0.5
+	var tw := icon.create_tween()
+	tw.tween_property(icon, "scale", Vector2(1.4, 1.4), 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(icon, "position", to, 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.parallel().tween_property(icon, "scale", Vector2(0.7, 0.7), 0.45)
+	tw.tween_callback(func() -> void:
+		icon.queue_free()
+		if is_instance_valid(piece_icon):
+			piece_icon.pivot_offset = piece_icon.size * 0.5
+			var pulse := piece_icon.create_tween()
+			pulse.tween_property(piece_icon, "scale", Vector2(1.25, 1.25), 0.08)
+			pulse.tween_property(piece_icon, "scale", Vector2.ONE, 0.14))
+
+
 # --- chạm khối ---
 
 func _on_block_tapped(id: String) -> void:
@@ -552,11 +613,14 @@ func _on_block_tapped(id: String) -> void:
 		_do_smash(id)
 		return
 	var idle_ms := Time.get_ticks_msec() - think_start_ms
+	var from := _block_center(id)
 	var res: Dictionary = Game.tap(attempt, id)
 	var kind := str(res.get("kind", "rejected"))
 	if kind == "rejected":
 		return
 	board_view.apply_result(res)
+	if bool(res.get("piece", false)):
+		_fly_piece(from)
 	if (kind == "exit" or kind == "peel") and idle_ms >= int(Config.CONTENT.think_clap_sec) * 1000:
 		_show_clap()
 	_tutorial_after(kind)
@@ -675,6 +739,13 @@ func _win_flow() -> void:
 		x2_offered = bool(wr.get("x2_offered", x2_offered))
 		x2_taken = bool(wr.get("x2_taken", false))
 		rate = bool(wr.get("rate_prompt", rate))
+	# Vừa lên league: popup nhận thưởng. Thưởng league đầu (lúc mới mở khoá) chờ tới khi mở màn Leaderboard.
+	var lb: Dictionary = res.get("lb", {})
+	var promo := Game.lb_pending_view()
+	if not (lb.get("promoted", []) as Array).is_empty() and not promo.is_empty():
+		await _popup_scene(POPUP_LB_RESULT, {"view": promo})
+		if _left:
+			return
 	_offer_id = ""
 	await Game.leave_win_card(x2_offered, x2_taken)
 	if _left:
@@ -816,8 +887,12 @@ func _do_smash(id: String) -> void:
 	_set_smash_mode(false)
 	if not Game.use_booster("smash"):
 		return
-	if board.smash(id):
+	var from := _block_center(id)
+	var r: Dictionary = Game.smash_block(attempt, id)
+	if bool(r.ok):
 		board_view.smash_anim(id)
+	if bool(r.piece):
+		_fly_piece(from)
 	_reset_think()
 	_refresh_hud()
 	if board.is_won():

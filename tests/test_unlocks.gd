@@ -15,7 +15,7 @@ func test_thresholds(t: T) -> void:
 	var table := {
 		"daily_gift": 4, "hint": 5, "shop": 5, "move": 12, "smash": 17, "lives": 10,
 		"starter": 10, "review": 10, "challenge": 50, "stone": 14, "ice": 30,
-		"chain": 40, "layer": 55, "fog": 70, "pulse": 90,
+		"chain": 40, "layer": 55, "fog": 70, "pulse": 90, "leaderboard": 8,
 	}
 	for f in table:
 		var lv: int = table[f]

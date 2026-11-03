@@ -17,7 +17,6 @@ const SCREENS := [
 	["4.2", "popup_bonus"], ["4.3", "popup_rate"], ["4.6", "popup_keep_playing"], ["4.7", "popup_helper_pack"],
 	["5.2", "popup_heart_bundle"], ["5.3", "popup_heart_support"],
 	["7.5", "popup_weekly_upsell"],
-	["8.1", "leaderboard"], ["8.2", "popup_lb_howto"], ["8.3", "popup_leagues"], ["8.4", "popup_lb_result"],
 	["9.1", "popup_streak_intro"], ["9.2", "streak_main"], ["9.3", "popup_streak_rewards"], ["9.4", "popup_streak_end"], ["9.5", "popup_streak_keep"],
 	["10.2", "popup_change_name"], ["10.4", "popup_language"], ["10.5", "popup_help"],
 	["11.1", "ad_loading"], ["11.2", "popup_notice"], ["11.3", "popup_reward"],

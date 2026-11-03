@@ -1,6 +1,6 @@
 extends Control
 ## Thẻ thắng: +gold, x2 (L1 miễn phí), Tiếp tục.
-## setup(args): kết quả Game.on_level_won ({coins, x2_available, x2_free, rate_prompt}).
+## setup(args): kết quả Game.on_level_won ({coins, x2_available, x2_free, rate_prompt, progress, lb}).
 ## x2: popup tự gọi Game.claim_x2 (xem video, hoặc miễn phí ở L1).
 ## closed(result): {x2_offered, x2_taken, rate_prompt, coins}. Bên gọi (level) gọi
 ## Game.leave_win_card(result.x2_offered, result.x2_taken) rồi mới sang level kế.
@@ -9,6 +9,7 @@ signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const PopupKit := preload("res://src/ui/popup_kit.gd")
+const LbKit := preload("res://src/ui/lb_kit.gd")
 const X2_PLACEMENT := "x2_coins"
 
 var _args: Dictionary = {}
@@ -23,6 +24,8 @@ var _pct: Label = null
 var _prog_after: float = 0.0
 var _prog_unlocked: bool = false
 var _feature_names: String = ""
+var _lb_points: Label = null
+var _lb_rank: Label = null
 
 
 func setup(args: Dictionary) -> void:
@@ -63,6 +66,7 @@ func _build() -> void:
 	_reward = ThemeKit.gold_label(tr("win_reward") % _coins(), ThemeKit.FS_TITLE + 12)
 	_reward.name = "RewardLabel"
 	row.add_child(_reward)
+	_build_lb(box)
 
 	_msg = _label("", ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "MessageLabel")
 	_msg.visible = false
@@ -122,6 +126,56 @@ func _build_progress(box: VBoxContainer) -> void:
 	box.add_child(row)
 
 
+## Leaderboard (args.lb = Game.on_level_won().lb): +điểm đếm dần, hạng cũ đếm tới hạng mới; vừa lên league thì
+## hiện tên league mới. Ẩn khi level không có mảnh.
+func _build_lb(box: VBoxContainer) -> void:
+	var lb: Dictionary = _args.get("lb", {})
+	if lb.is_empty():
+		return
+	var well := ThemeKit.make_well()
+	well.name = "LbRow"
+	var h := HBoxContainer.new()
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 12)
+	well.add_child(h)
+	h.add_child(ThemeKit.make_icon("lb_piece", 56))
+	_lb_points = ThemeKit.ink_label(tr("lb_win_points") % 0, ThemeKit.FS_SMALL + 4, ThemeKit.BROWN)
+	_lb_points.name = "LbPointsLabel"
+	h.add_child(_lb_points)
+	_lb_rank = ThemeKit.ink_label("", ThemeKit.FS_SMALL + 4, ThemeKit.INK_GOOD)
+	_lb_rank.name = "LbRankLabel"
+	h.add_child(_lb_rank)
+	if not (lb.get("promoted", []) as Array).is_empty():
+		_lb_rank.text = tr("lb_league") % LbKit.league_name(str(lb.get("league_id", "")))
+	else:
+		_lb_rank.text = tr("lb_win_rank") % int(lb.get("rank_before", 0))
+	box.add_child(well)
+
+
+func _animate_lb() -> void:
+	var lb: Dictionary = _args.get("lb", {})
+	if lb.is_empty() or _lb_points == null:
+		return
+	var tw := create_tween().set_parallel(true)
+	tw.tween_method(_set_lb_points, 0.0, float(lb.get("added", 0)), 0.6)
+	if (lb.get("promoted", []) as Array).is_empty():
+		tw.tween_method(_set_lb_rank, float(lb.get("rank_before", 0)), float(lb.get("rank_after", 0)), 0.9).set_trans(Tween.TRANS_SINE)
+	else:
+		_lb_rank.pivot_offset = _lb_rank.size * 0.5
+		_lb_rank.scale = Vector2(0.3, 0.3)
+		tw.tween_property(_lb_rank, "scale", Vector2.ONE, 0.4).set_delay(0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+func _set_lb_points(v: float) -> void:
+	if is_instance_valid(_lb_points):
+		_lb_points.text = tr("lb_win_points") % roundi(v)
+
+
+func _set_lb_rank(v: float) -> void:
+	if is_instance_valid(_lb_rank):
+		_lb_rank.text = tr("lb_win_rank") % roundi(v)
+
+
 func _animate_progress() -> void:
 	if _bar == null:
 		return
@@ -155,6 +209,7 @@ func _animate_in() -> void:
 	if _panel != null and is_instance_valid(_panel):
 		ThemeKit.popup_in(_panel)
 	_animate_progress()
+	_animate_lb()
 
 
 func _set_busy(v: bool) -> void:

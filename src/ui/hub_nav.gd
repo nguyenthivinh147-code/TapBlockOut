@@ -1,6 +1,6 @@
 extends PanelContainer
 ## Thanh dưới dùng chung Home, Shop, Leaderboard (component BottomBar): Shop · Home · Ranking.
-## Bấm phát tab("shop" | "home" | "ranking"). Ranking chỉ mở ở bản xem trước UI (Config.ui_preview).
+## Bấm phát tab("shop" | "home" | "ranking"). Ranking mở từ Config.UNLOCK.leaderboard (Game.lb_open).
 
 signal tab(tab_name: String)
 
@@ -87,9 +87,10 @@ func refresh() -> void:
 	shop_btn.disabled = not open
 	shop_btn.icon = ThemeKit.icon("ui_shop" if open else "ui_lock")
 	shop_caption.text = tr("home_shop") if open else tr("home_shop_locked") % int(Config.UNLOCK.shop)
-	var ranking_open := Config.ui_preview()
+	var ranking_open: bool = Game.lb_open()
 	ranking_btn.disabled = not ranking_open
-	ranking_caption.text = tr("home_ranking") if ranking_open else tr("home_ranking_soon")
+	ranking_btn.icon = ThemeKit.icon("ui_leaderboard" if ranking_open else "ui_lock")
+	ranking_caption.text = tr("home_ranking") if ranking_open else tr("common_locked_level") % int(Config.UNLOCK.get("leaderboard", 0))
 
 
 func _on_tab(tab_name: String) -> void:

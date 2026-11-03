@@ -19,7 +19,7 @@ Nguồn: file Figma `Tapblock`. Layout lấy từ page **Overview** (wireframe 1
 - Script `extends "res://src/ui/stub_ui.gd"`, scene cùng tên trong `scenes/`. Nhận `setup({"view": ...})`; không truyền thì lấy dữ liệu mẫu trong `src/ui/sample_data.gd`.
 - Nút chỉ phát `closed({"action": ...})`, không gọi `Game`, không mua hàng, không chạy quảng cáo. Tiền, giá, tên người chơi trên các màn này là số mẫu từ wireframe.
 - `Config.ui_preview()` chặn lối vào ở bản phát hành: chỉ bật khi `OS.is_debug_build()`, gồm cả APK xuất bằng `tools/export_apk.sh` (`--export-debug`). Bản `tools/export_release.sh` ẩn hết. `tests/test_ui_stubs.gd` kiểm điều này.
-- Lối vào khi xem trước: tab Ranking (Leaderboard), icon ADS Daily, Remove Ads, Win Streak trên Home, các mục Hearts, Helper Packs, Bundles trong Shop, nút bút chì ở Profile, nút Help trong cài đặt ở level, và **Settings > Xem trước UI** liệt kê toàn bộ màn theo số wireframe.
+- Lối vào khi xem trước: icon ADS Daily, Remove Ads, Win Streak trên Home, các mục Hearts, Helper Packs, Bundles trong Shop, nút bút chì ở Profile, nút Help trong cài đặt ở level, và **Settings > Xem trước UI** liệt kê toàn bộ màn theo số wireframe.
 
 Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, truyền `view` thật, đổi nút từ `closed({"action"})` sang hành động thật, bỏ khoá mẫu và điều kiện `ui_preview` của lối vào, sửa `design.md`.
 
@@ -46,7 +46,7 @@ Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, tru
 | 4.2, 4.3, 4.6, 4.7 | `popup_bonus`, `popup_rate`, `popup_keep_playing`, `popup_helper_pack` | Chỉ UI |
 | 5.2, 5.3 | `popup_heart_bundle`, `popup_heart_support` | Chỉ UI |
 | 7.5 | `popup_weekly_upsell` | Chỉ UI |
-| 8.1 đến 8.4 | `leaderboard`, `popup_lb_howto`, `popup_leagues`, `popup_lb_result` | Chỉ UI |
+| 8.1 đến 8.4 | `leaderboard`, `popup_lb_howto`, `popup_leagues`, `popup_lb_result` | Xong, có logic (design.md mục 7, Leaderboard). Hai tab League và World thay cho giải tuần; thêm `popup_lb_player` cho World. Phần dùng chung ở `src/ui/lb_kit.gd` |
 | 9.1 đến 9.5 | `popup_streak_intro`, `streak_main`, `popup_streak_rewards`, `popup_streak_end`, `popup_streak_keep` | Chỉ UI |
 | 10.2, 10.4, 10.5 | `popup_change_name`, `popup_language`, `popup_help` | Chỉ UI |
 | 11.1 đến 11.3, 6.3 | `ad_loading`, `popup_notice`, `popup_reward` | Chỉ UI |

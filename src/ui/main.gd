@@ -149,7 +149,7 @@ func _home_action(action: String, res: Dictionary) -> void:
 			if Unlocks.is_open("shop", int(Game.s.level)):
 				go("shop", {"source": "home"})
 		"ranking":
-			if Config.ui_preview():
+			if Game.lb_open():
 				go("leaderboard")
 		"settings":
 			_popup_then(SETTINGS, {}, true)

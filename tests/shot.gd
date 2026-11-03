@@ -7,6 +7,7 @@ const MAIN := "res://scenes/main.tscn"
 const OUT := "res://tests/shots/"
 const NOW := 1800000000
 const Gallery := preload("res://src/ui/ui_gallery.gd")
+const Leaderboard := preload("res://src/meta/leaderboard.gd")
 const ALL := ["home", "level", "popup_rescue", "popup_rescue_late", "win", "lose", "shop", "daily", "profile", "settings",
 	"no_lives", "offer", "offer_level", "shop_mini", "level_booster"]
 
@@ -32,7 +33,8 @@ func _initialize() -> void:
 func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	var names: Array = ALL.duplicate()
-	names.append_array(["weekly_pass", "chain_offer", "challenge", "ingame_settings"])
+	names.append_array(["weekly_pass", "chain_offer", "challenge", "ingame_settings",
+		"leaderboard", "leaderboard_world", "lb_result", "lb_leagues", "level_lb", "win_lb"])
 	for s in Gallery.SCREENS:
 		names.append(s[1])
 	for name in names:
@@ -211,6 +213,41 @@ func _shot(name: String) -> void:
 			await _fresh(10)
 			_main.open_popup("res://scenes/popup_ingame_settings.tscn", {})
 			await _settle()
+		"leaderboard", "leaderboard_world":
+			await _fresh(30)
+			g.lb_refresh()
+			g.lb_claim()
+			Leaderboard.add_points(g.s, 14)
+			_main.go("leaderboard", {"tab": "world" if name == "leaderboard_world" else "league"})
+			await _settle()
+		"lb_result":
+			await _fresh(30)
+			g.lb_refresh()
+			Leaderboard.add_points(g.s, 31)
+			_main.go("leaderboard")
+			await _settle()
+		"lb_leagues":
+			await _fresh(30)
+			g.lb_refresh()
+			g.lb_claim()
+			Leaderboard.add_points(g.s, 90)
+			g.lb_claim()
+			_main.open_popup("res://scenes/popup_leagues.tscn", {"view": g.lb_leagues_view()})
+			await _settle()
+		"level_lb":
+			await _fresh(9)
+			_main.go("level")
+			await _settle()
+		"win_lb":
+			await _fresh(9)
+			_main.go("level")
+			await _settle()
+			var att: Dictionary = g.start_attempt()
+			for id in att.board.block_ids():
+				g.smash_block(att, id)
+			var res: Dictionary = g.on_level_won(att)
+			_main.open_popup("res://scenes/win_card.tscn", res)
+			await _settle(1.5)
 		_:
 			await _fresh(10)
 			_main.open_popup("res://scenes/%s.tscn" % name, {})

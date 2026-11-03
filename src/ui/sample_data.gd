@@ -38,25 +38,6 @@ const HEART_BUNDLE := {"ends_in": "23:59:52", "rows": [
 ]}
 const HEART_SUPPORT := {"price": "$2.99"}
 const WEEKLY_UPSELL := {"price": "$4.99", "ends_in": "6d"}
-const LEADERBOARD := {
-	"league": "bronze", "ends_in": "2d 04h", "you_rank": 12, "you_delta": 3, "you_points": 960,
-	"rows": [
-		{"rank": 1, "name": "Player 1", "level": 120, "points": 1500},
-		{"rank": 2, "name": "Player 2", "level": 113, "points": 1370},
-		{"rank": 3, "name": "Player 3", "level": 106, "points": 1240},
-		{"rank": 4, "name": "Player 4", "level": 99, "points": 1110},
-		{"rank": 5, "name": "Player 5", "level": 92, "points": 980},
-		{"rank": 6, "name": "Player 6", "level": 85, "points": 850},
-	],
-}
-const LEAGUES := {"current": "bronze", "rows": [
-	{"id": "bronze", "gold": 100, "badge": "hex_red"},
-	{"id": "silver", "gold": 200, "badge": "hex_gray"},
-	{"id": "gold", "gold": 300, "badge": "hex_green"},
-	{"id": "platinum", "gold": 400, "badge": "hex_blue"},
-	{"id": "diamond", "gold": 500, "badge": "hex_purple"},
-]}
-const LB_RESULT := {"rank": 4, "promoted_to": "silver", "gold": 300, "hint": 2}
 const STREAK_MAIN := {"ends_in": "2d 11h", "streak": 3, "milestones": [6, 4, 2, 0]}
 const STREAK_REWARDS := {"rows": [
 	{"streak": 2, "kind": "gold", "amount": 200},

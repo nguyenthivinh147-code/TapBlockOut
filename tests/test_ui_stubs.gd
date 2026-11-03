@@ -73,7 +73,7 @@ func test_buttons_only_emit_closed(t: T) -> void:
 
 func test_view_arg_overrides_sample(t: T) -> void:
 	_g()
-	var node := _open("popup_lb_result", {"view": {"rank": 99, "promoted_to": "gold", "gold": 1, "hint": 1}})
+	var node := _open("popup_streak_end", {"view": {"streak": 99, "gold": 1, "hint": 1}})
 	var texts: Array = []
 	_walk_labels(node, texts)
 	t.ok(str(texts).contains("99"), "dùng view truyền vào")
@@ -84,7 +84,7 @@ func test_hidden_in_release(t: T) -> void:
 	_g()
 	Config.ui_preview_override = 0
 	var home := _open("home")
-	t.ok(home.find_child("RankingTab", true, false).disabled, "Ranking tắt")
+	t.ok(not home.find_child("RankingTab", true, false).disabled, "Ranking đã nối logic: mở theo level, không theo bản build")
 	var got: Array = []
 	home.closed.connect(func(r: Variant) -> void: got.append(r))
 	var labels: Array = []

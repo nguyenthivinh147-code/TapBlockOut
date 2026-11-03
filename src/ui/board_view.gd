@@ -149,6 +149,7 @@ var _hl_id: String = ""
 var _hl_tween: Tween = null
 var _shake_tw: Tween = null
 var _rng := RandomNumberGenerator.new()
+var _specials: Dictionary = {}  # id -> true: khối đặc biệt của leaderboard (vẽ huy hiệu mảnh)
 
 static var _fx_prewarmed: bool = false
 
@@ -252,6 +253,22 @@ func block_node(id: String) -> Control:
 	return _nodes.get(id, null)
 
 
+## Đánh dấu khối đặc biệt (gọi sau setup; setup xoá danh sách cũ).
+func set_specials(ids: Array) -> void:
+	_specials.clear()
+	for id in ids:
+		_specials[str(id)] = true
+	for id in _nodes:
+		var n: BlockNode = _nodes[id]
+		n.view["special"] = _specials.has(id)
+		n.queue_redraw()
+
+
+func is_special(id: String) -> bool:
+	var n: BlockNode = _nodes.get(id, null)
+	return n != null and bool(n.view.get("special", false))
+
+
 func block_count() -> int:
 	return _nodes.size()
 
@@ -310,6 +327,7 @@ func _arrows_setting() -> bool:
 
 func _clear() -> void:
 	clear_highlight()
+	_specials.clear()
 	for id in _nodes:
 		_nodes[id].queue_free()
 	_nodes.clear()
@@ -744,6 +762,7 @@ func _sync_states(animate: bool) -> void:
 				changed = true
 		if not changed:
 			continue
+		v["special"] = _specials.has(id)
 		n.view = v
 		n.queue_redraw()
 		if not animate:

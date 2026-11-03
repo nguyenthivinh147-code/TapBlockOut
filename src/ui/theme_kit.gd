@@ -101,6 +101,8 @@ const ICON_ALIAS := {
 	"booster_hint": "ui_hint",
 	"booster_move": "ui_moves",
 	"booster_smash": "ui_smash",
+	# mảnh leaderboard: dùng tạm ngôi sao cho tới khi có assets/ui/figma/lb_piece.png
+	"lb_piece": "ic_star1",
 }
 ## Tên UI -> icon Figma (assets/ui/figma/<tên>.png). Có trong bảng này thì ưu tiên hơn file cũ.
 const FIGMA_ICON := {

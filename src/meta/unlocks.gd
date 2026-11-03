@@ -10,7 +10,7 @@ const GIFT_ORDER := ["hint", "move", "smash"]
 ## Không hiện như một "tính năng mới" trên thanh tiến trình của thẻ thắng.
 const SILENT := ["starter", "review"]
 ## Mở màn/nút mới ở Home: thắng xong dẫn người chơi về Home để thấy.
-const HOME_FEATURES := ["daily_gift", "shop", "challenge", "lives"]
+const HOME_FEATURES := ["daily_gift", "shop", "challenge", "lives", "leaderboard"]
 
 
 ## `level` là level đang chơi/sắp chơi (người chơi đang ở level này).

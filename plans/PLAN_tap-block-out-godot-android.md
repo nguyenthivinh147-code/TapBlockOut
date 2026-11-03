@@ -78,7 +78,7 @@ src/config.gd
 src/core/      level_data.gd  board_state.gd  solver.gd  level_generator.gd  silhouette.gd
 src/meta/      save_schema.gd  save_store.gd  clock.gd  wallet.gd  lives.gd  unlocks.gd
                rescue_flow.gd  daily_calendar.gd  cosmetics.gd  shop_videos.gd
-               ad_pacing.gd  offers.gd  notif_plan.gd
+               ad_pacing.gd  offers.gd  notif_plan.gd  leaderboard.gd
 src/platform/  platform.gd (autoload Platform)  mock_*.gd  android_*.gd
 src/game/      game.gd (autoload Game)  sfx.gd (autoload Sfx)
 src/ui/        theme_kit.gd  ...script màn hình...
@@ -160,6 +160,8 @@ Mọi `tap` hợp lệ giảm 1 MOVES, kể cả `crack`, `chained`, `blocked`, 
   "offers": {"last_run": -999, "items": {}},
   "buys": [], "no_ads": false,
   "challenge": {"day": -1, "won": false},
+  "lb": {"joined": false, "points": 0, "league": 0, "seed": 0, "day": -1, "seen_rank": 0,
+         "bots": [], "risen": [], "pending": []},  # Leaderboard (design.md mục 7), src/meta/leaderboard.gd
   "notify": {"ignored": 0, "plan": [], "asked": false, "hours": []},
   "settings": {"sfx": true, "music": true, "haptics": true, "notif": true, "arrows": true, "lang": ""},
   "meta": {"install_at": 0, "sessions": 0, "first_session_done": false, "rated": false, "ftue": []}

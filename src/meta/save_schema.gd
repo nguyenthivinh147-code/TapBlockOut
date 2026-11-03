@@ -30,6 +30,10 @@ static func defaults() -> Dictionary:
 			"shown": false, "rotation": 0,
 		},
 		"challenge": {"day": -1, "won": false},
+		"lb": {
+			"joined": false, "points": 0, "league": 0, "seed": 0, "day": -1, "seen_rank": 0,
+			"bots": [], "risen": [], "pending": [],
+		},
 		"notify": {"ignored": 0, "plan": [], "asked": false, "hours": []},
 		"settings": {"sfx": true, "music": true, "haptics": true, "notif": true, "arrows": true, "lang": ""},
 		"meta": {"install_at": 0, "sessions": 0, "first_session_done": false, "rated": false, "ftue": []},

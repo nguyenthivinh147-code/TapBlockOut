@@ -236,6 +236,7 @@ feature_move,+3 Move,+3 Move
 feature_smash,Smash,Phá khối
 feature_lives,Lives,Mạng
 feature_challenge,Daily Challenge,Thử thách ngày
+feature_leaderboard,Ranking,Xếp hạng
 feature_stone,Stones,Đá
 feature_ice,Ice,Băng
 feature_chain,Chains,Xích
@@ -299,7 +300,6 @@ chain_failed,Couldn't complete this step. Please try again.,Chưa hoàn thành b
 chain_expired,This chain has ended.,Chuỗi quà này đã kết thúc.
 home_home,Home,Trang chủ
 home_ranking,Ranking,Xếp hạng
-home_ranking_soon,Soon,Sắp có
 home_ads_daily,ADS Daily,Quà video
 home_path_locked,Locked,Khoá
 home_path_cleared,Cleared,Đã qua
@@ -408,29 +408,44 @@ shop_bundle_desc,Gold + Hearts + Boosters,Gold + Mạng + Booster
 weekly_upsell_one,Chests full of gold and rewards,Rương đầy gold và phần thưởng
 weekly_upsell_two,Golden avatar frame and name,Khung avatar và tên vàng
 weekly_upsell_three,Max heart boost for more tries,Tăng mạng tối đa để chơi nhiều hơn
-lb_promoted,▲ TOP 10 PROMOTED,▲ TOP 10 ĐƯỢC THĂNG HẠNG
-lb_demoted,▼ BOTTOM 5 DEMOTED,▼ 5 NGƯỜI CUỐI BỊ XUỐNG HẠNG
+lb_title,Leaderboard,Bảng xếp hạng
+lb_tab_league,League,Giải đấu
+lb_tab_world,World,Thế giới
 lb_you,You,Bạn
 lb_rank,Rank #%d %s,Hạng %d %s
 lb_league,%s League,Giải %s
-lb_league_bronze,Bronze,Đồng
 lb_league_silver,Silver,Bạc
 lb_league_gold,Gold,Vàng
 lb_league_platinum,Platinum,Bạch kim
+lb_league_emerald,Emerald,Lục bảo
 lb_league_diamond,Diamond,Kim cương
-lb_week_ends,Week ends in %s,Hết tuần sau %s
+lb_league_immortal,Immortal,Bất tử
+lb_league_one_above_all,One Above All,Tối thượng
+lb_to_next,%d more to %s,Còn %d điểm lên %s
+lb_top_league,Top league reached!,Đã ở giải cao nhất!
+lb_top_percent,Top %d%%,Top %d%%
+lb_updates_in,Updates in %s,Cập nhật sau %s
+lb_world_rank,World rank #%s,Hạng thế giới %s
+lb_world_sub,%s players worldwide,%s người chơi trên thế giới
+lb_player_points,%d rank points,%d điểm xếp hạng
+lb_locked,Unlocked at Level %d,Mở khoá ở Level %d
 lb_howto_title,How it works,Cách hoạt động
-lb_howto_1,Win levels to earn rank points,Thắng level để kiếm điểm xếp hạng
-lb_howto_2,Compete with 30 players weekly,Thi đấu cùng 30 người chơi mỗi tuần
-lb_howto_3,Top 10 get promoted to next league,Top 10 được thăng lên giải cao hơn
-lb_howto_4,Claim weekly gift on Monday,Nhận quà tuần vào thứ Hai
+lb_howto_1,Break star blocks in levels to collect pieces,Phá khối ngôi sao trong level để nhặt mảnh
+lb_howto_2,Win the level: every piece is 1 rank point,Thắng level: mỗi mảnh là 1 điểm xếp hạng
+lb_howto_3,Climb past the other 99 players in your league,Vượt 99 người chơi khác trong giải của bạn
+lb_howto_4,Reach the next league's points to move up and get its reward,Đủ điểm của giải kế tiếp để lên giải và nhận thưởng
 lb_leagues_title,Leagues,Các giải đấu
-lb_leagues_sub,Rank up for bigger weekly rewards,Lên hạng để nhận thưởng tuần lớn hơn
-lb_weekly_reward,Weekly reward: %d gold,Thưởng tuần: %d gold
+lb_leagues_sub,Reach the points to move up and claim the reward,Đủ điểm để lên giải và nhận thưởng
+lb_league_range,%d–%d points,%d–%d điểm
+lb_league_range_top,%d+ points,Từ %d điểm
 lb_current,Current,Hiện tại
-lb_result_title,Weekly Result,Kết quả tuần
-lb_result_rank,You finished #%d,Bạn về hạng %d
-lb_result_promoted,▲ Promoted to %s League,▲ Lên giải %s
+lb_reached,Reached,Đã đạt
+lb_result_title,League Up!,Lên giải!
+lb_result_promoted,Welcome to %s League!,Chào mừng tới giải %s!
+lb_result_reward,Your reward,Phần thưởng của bạn
+lb_win_points,+%d rank points,+%d điểm xếp hạng
+lb_win_rank,Rank #%d,Hạng %d
+lb_pieces,Pieces,Mảnh
 streak_title,Win Streak,Chuỗi thắng
 streak_go,Let's go,Bắt đầu thôi
 streak_intro_1,Win levels in a row: streak +1 each win,Thắng liên tiếp: mỗi trận thắng +1 chuỗi

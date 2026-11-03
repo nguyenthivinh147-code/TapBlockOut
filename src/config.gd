@@ -34,7 +34,7 @@ const _ADS := {
 
 const _UNLOCK := {
 	"daily_gift": 4, "hint": 5, "shop": 5, "move": 12, "smash": 17,
-	"lives": 10, "starter": 10, "review": 10, "challenge": 50,
+	"lives": 10, "starter": 10, "review": 10, "challenge": 50, "leaderboard": 8,
 	"stone": 14, "ice": 30, "chain": 40, "layer": 55, "fog": 70, "pulse": 90,
 }
 
@@ -183,6 +183,42 @@ const _CHAIN := {
 	],
 }
 
+## Leaderboard theo league (design.md mục 7). Level từ Config.UNLOCK.leaderboard có `pieces_*` khối đặc biệt
+## (theo độ khó); phá một khối được 1 mảnh = 1 điểm, cộng khi thắng. League theo tổng điểm, chỉ lên không xuống.
+## leagues: {id, min, reward {coins, items, inf_min}, bot_base, players}. League đầu có min 0; reward nhận khi vào league.
+## bot_base: điểm tăng cơ bản mỗi ngày của bot; players: số người chơi mô phỏng của league, dùng cho Top %.
+## Bot tăng điểm mỗi ngày lúc `grow_hour` giờ ở múi GMT+`grow_tz_hours`:
+## tăng = bot_base + round(randi_range(bot_rand) * randf_range(bot_var)). Vắng lâu thì chỉ bù tối đa `grow_max_days` ngày.
+## BXH `board_size` người (người chơi + bot), UI hiện `view_size` người quanh người chơi. League cuối không có trần:
+## bot rải trong [min, min + top_span]. Avatar, frame của bot: `*_default_pct`% dùng mặc định, còn lại random đều.
+const _LEADERBOARD := {
+	"enabled": true,
+	"board_size": 100,
+	"view_size": 50,
+	"pieces_normal": 2,
+	"pieces_hard": 3,
+	"pieces_very_hard": 4,
+	"grow_tz_hours": 7,
+	"grow_hour": 7,
+	"grow_max_days": 14,
+	"bot_rand": [0, 4],
+	"bot_var": [0.5, 1.5],
+	"bot_avatar_default_pct": 80,
+	"bot_frame_default_pct": 85,
+	"carry_max": 10,
+	"top_span": 1000,
+	"world_size": 50,
+	"leagues": [
+		{"id": "silver", "min": 0, "reward": {"coins": 100, "items": {}}, "bot_base": 1, "players": 48000},
+		{"id": "gold", "min": 30, "reward": {"coins": 300, "items": {"hint": 1}}, "bot_base": 2, "players": 24000},
+		{"id": "platinum", "min": 80, "reward": {"coins": 500, "items": {"move": 1}}, "bot_base": 3, "players": 14000},
+		{"id": "emerald", "min": 180, "reward": {"coins": 800, "items": {"smash": 1}}, "bot_base": 4, "players": 8000},
+		{"id": "diamond", "min": 330, "reward": {"coins": 1200, "items": {"hint": 1, "move": 1}}, "bot_base": 5, "players": 4000},
+		{"id": "immortal", "min": 550, "reward": {"coins": 2000, "items": {"hint": 1, "move": 1, "smash": 1}}, "bot_base": 7, "players": 1600},
+		{"id": "one_above_all", "min": 1000, "reward": {"coins": 5000, "items": {"hint": 2, "move": 2, "smash": 2}, "inf_min": 60}, "bot_base": 10, "players": 400},
+	],
+}
+
 ## Offer. min_secs: không popup trong N giây đầu phiên đầu; gap_runs: cách nhau ít nhất N lượt.
 ## starter_pack: mở khi level > after_level hoặc runs >= at_run.
 const _OFFERS := {
@@ -256,6 +292,7 @@ static var NOTIF: Dictionary = _NOTIF.duplicate(true)
 static var PACKS: Dictionary = _PACKS.duplicate(true)
 static var WEEKLY: Dictionary = _WEEKLY.duplicate(true)
 static var CHAIN: Dictionary = _CHAIN.duplicate(true)
+static var LEADERBOARD: Dictionary = _LEADERBOARD.duplicate(true)
 static var CONTENT: Dictionary = _CONTENT.duplicate(true)
 static var SALE_WEEKDAYS: Array = _SALE_WEEKDAYS.duplicate(true)
 static var SALE_MODE: int = _SALE_MODE
@@ -300,6 +337,7 @@ static func reset() -> void:
 	PACKS = _PACKS.duplicate(true)
 	WEEKLY = _WEEKLY.duplicate(true)
 	CHAIN = _CHAIN.duplicate(true)
+	LEADERBOARD = _LEADERBOARD.duplicate(true)
 	CONTENT = _CONTENT.duplicate(true)
 	SALE_WEEKDAYS = _SALE_WEEKDAYS.duplicate(true)
 	SALE_MODE = _SALE_MODE
@@ -336,6 +374,7 @@ static func apply_remote(values: Dictionary) -> void:
 		"econ": ECON, "lives": LIVES, "ads": ADS, "unlock": UNLOCK,
 		"cosmetics": COSMETICS, "skus": SKUS, "offers": OFFERS,
 		"notif": NOTIF, "content": CONTENT, "weekly": WEEKLY, "chain": CHAIN,
+		"leaderboard": LEADERBOARD,
 	}
 	for raw_key in values:
 		var key := str(raw_key).to_lower()

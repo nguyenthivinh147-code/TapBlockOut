@@ -143,6 +143,7 @@ Booster với cơ chế:
 | Sau khi thắng L3 | Quà 28 ngày |
 | 5 / 12 / 17 | Gợi ý / +3 Move / Phá khối |
 | 5 | Shop và video gold |
+| 8 | Leaderboard (tab Ranking, khối ngôi sao trong level) |
 | 10 | Mạng, Starter Pack |
 | Sau L10 | Interstitial trong phiên đầu |
 | 10 | Hỏi đánh giá store (Rate us) |
@@ -157,7 +158,8 @@ Hai thẻ là popup chồng lên màn level (bàn cờ khoá input), không đ�
 
 - **Thắng:** sau khi khối cuối rời bàn chờ `win_delay_sec` (0,8 giây) rồi hiện thẻ. Thẻ có +40 gold, nút x2 (L1 miễn phí, sau đó rewarded; thất bại hiện thông báo và thử lại được), nút Tiếp tục.
 - **Thanh tiến trình tính năng:** chạy từ mốc mở gần nhất tới mốc kế trong bảng "Mở khoá theo level" (bỏ Starter, Rate us). Đạt 100% thì đổi dòng thành "Đã mở khoá …". Ẩn khi hết tính năng; bản demo chỉ tính mốc tới L20. Daily Challenge không có thanh.
-- **Sau Tiếp tục:** rời thẻ (interstitial `result_exit`, offer, xin quyền thông báo, hỏi đánh giá), rồi: vừa mở tính năng ở Home (quà ngày, shop, Daily Challenge, mạng) hoặc vừa thắng Daily Challenge thì về Home; còn lại vào thẳng level kế. Hết mạng thì sang màn hết mạng; hết level demo thì báo rồi về Home.
+- **Leaderboard trên thẻ thắng:** level có khối ngôi sao thì thẻ có thêm hàng "+N điểm xếp hạng" đếm dần và hạng cũ đếm tới hạng mới; vừa lên league thì hiện tên league mới, và sau khi bấm Tiếp tục hiện popup Lên giải (nhận thưởng) trước interstitial.
+- **Sau Tiếp tục:** rời thẻ (interstitial `result_exit`, offer, xin quyền thông báo, hỏi đánh giá), rồi: vừa mở tính năng ở Home (quà ngày, shop, Leaderboard, Daily Challenge, mạng) hoặc vừa thắng Daily Challenge thì về Home; còn lại vào thẳng level kế. Hết mạng thì sang màn hết mạng; hết level demo thì báo rồi về Home.
 - **Thua:** thẻ có chơi lại, về Home, `rescue_pack` nếu có. Không interstitial khi thua. Chơi lại từ L10 mà hết mạng thì sang màn hết mạng.
 - **Analytics:** `level_end` kèm `won`, `taps`, `moves_left`, `blocks_left`, `rescues`, `ms`, `replay`.
 
@@ -348,6 +350,47 @@ Port từ các gói của dự án pixelflow. Mọi số nằm trong `Config.WEE
 - Hiện icon ở Home từ L16, phải đã mua `starter_pack`, mua không giới hạn số lần. Mỗi lần chỉ một gói (gói đầu tiên đủ điều kiện trong `Config.PACKS`). Mở bằng popup offer chung; lúc weekend sale tự đổi sang SKU `_sale`.
 - Nội dung: 12.000 gold + 2 mỗi booster.
 
+### Leaderboard theo league (2026-11-03)
+
+Logic ở `src/meta/leaderboard.gd`, số ở `Config.LEADERBOARD`, bản lưu `s.lb`. Mở từ L8 (`Config.UNLOCK.leaderboard`), có cả trong bản demo. Game offline nên mọi người khác trên BXH là bot sinh trong máy (tỉ lệ bot 100%); BXH, World Ranking và Top % đều là mô phỏng.
+
+**Điểm**
+
+- Từ L8, mỗi level thường có khối ngôi sao (khối đặc biệt): Normal 2, Hard 3, Very Hard 4 khối (`pieces_*`), không quá số khối của level. Chọn ngẫu nhiên theo số level nên chơi lại cùng level thì cùng khối. Daily Challenge không có.
+- Khối ngôi sao rời bàn (thoát hoặc bị Smash) cho 1 mảnh, bay về chip đếm mảnh trên HUD. 1 mảnh = 1 điểm, cộng khi thắng level; thua hoặc bỏ ván thì mất mảnh của ván đó. Điểm cập nhật ngay trên máy.
+
+**League** (chỉ lên, không xuống hạng; thưởng nhận một lần khi vào league)
+
+| League | Điểm | Thưởng | Điểm tăng cơ bản của bot / ngày | Người chơi mô phỏng |
+| --- | --- | --- | --- | --- |
+| Silver | 0–29 | 100 gold | 1 | 48.000 |
+| Gold | 30–79 | 300 gold, 1 Hint | 2 | 24.000 |
+| Platinum | 80–179 | 500 gold, 1 Move | 3 | 14.000 |
+| Emerald | 180–329 | 800 gold, 1 Smash | 4 | 8.000 |
+| Diamond | 330–549 | 1.200 gold, 1 Hint, 1 Move | 5 | 4.000 |
+| Immortal | 550–999 | 2.000 gold, mỗi booster 1 | 7 | 1.600 |
+| One Above All | từ 1.000 | 5.000 gold, mỗi booster 2, 60 phút mạng vô hạn | 10 | 400 |
+
+Thưởng và người chơi mô phỏng là đề xuất của mình, chưa có số liệu thật. Thưởng Silver nhận khi mở màn Leaderboard lần đầu; các league sau nhận ở popup Lên giải ngay sau thẻ thắng. Đóng popup bằng X vẫn nhận thưởng.
+
+**BXH trong league**
+
+- Mỗi BXH 100 người: người chơi và 99 bot. Bot có tên, avatar, frame, cờ (mã quốc gia) random; 80% bot dùng avatar mặc định, 85% dùng frame mặc định, còn lại random đều trong catalog.
+- Lúc dựng BXH, điểm bot chia đều theo vị trí: vị trí k nằm trong dải rộng 1% khoảng điểm của league (Silver 0–29: mỗi vị trí cách nhau 0,3 điểm; Diamond 330–549: 2,2 điểm), dải thấp nhất dành cho người chơi vừa vào. Nhờ vậy chơi một level là lên vài hạng. League cuối không có trần: bot random đều trong 1.000–2.000 (`top_span`).
+- Hạng = 1 + số bot có điểm cao hơn; bằng điểm thì người chơi đứng trên.
+- Bot tăng điểm mỗi ngày lúc 7h00 GMT+7 (`grow_hour`, `grow_tz_hours`): điểm tăng = điểm tăng cơ bản của league + làm tròn(số ngẫu nhiên trong `bot_rand` [0, 4] × hệ số biến động trong `bot_var` [0,5; 1,5]). Mở game lại sau nhiều ngày thì bù từng ngày, tối đa 14 ngày (`grow_max_days`). Đồng hồ lùi thì không tăng.
+- Bot chạm điểm tối thiểu của league kế thì rời BXH (lên hạng) và một bot mới vào ở đáy league thay chỗ, để BXH luôn đủ 100. Bot vừa lên hạng được giữ lại (tối đa 10, `carry_max`); khi người chơi lên league, BXH mới gồm các bot đó rồi bot mới cho đủ 100.
+- UI hiện tối đa 50 người quanh người chơi (hạng 70 thì hạng 45 tới 94), podium top 3 luôn ở đầu danh sách, hàng của người chơi ghim dưới cùng, có ▲/▼ so với lần mở trước. BXH League chỉ để xem, không chạm vào người khác được.
+
+**Vị trí (Top %) và World Ranking**
+
+- Top % = số người có thứ hạng cao hơn / tổng người tham gia × 100%, làm tròn lên, ít nhất 1%. Người có thứ hạng cao hơn = mọi người ở league cao hơn + (hạng trong BXH − 1) / 100 × số người của league mình, theo cột "Người chơi mô phỏng". Ví dụ đứng đầu BXH Silver: 52.000 / 100.000 → Top 52%.
+- Tab World: 50 người đứng đầu thế giới (bot, điểm trên trần BXH league cuối, đổi theo ngày BXH), podium top 3. Người chơi đủ điểm thì chen vào danh sách; không thì hạng thế giới ước tính từ số người có thứ hạng cao hơn. Chạm một hàng để xem thẻ người chơi (avatar, cờ, league, hạng, điểm).
+
+**UI**: tab Ranking ở thanh dưới (khoá tới L8). Thẻ league có huy hiệu (chạm mở bảng 7 league), thanh tiến độ tới league kế, Top %, đếm ngược tới lần bot tăng điểm, nút "i" (Cách hoạt động); nút PLAY vào level. Huy hiệu league là vòng màu + cúp, mảnh là icon ngôi sao (`lb_piece` → `ic_star1`) cho tới khi có ảnh riêng.
+
+**Analytics**: `lb_join`, `lb_points` (level, points, total, rank), `lb_promote` (league), `lb_claim`, `lb_open`.
+
 ## 8. Kỹ thuật
 
 ### Quan hệ với Horus
@@ -519,3 +562,8 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 - Thêm Weekly Pass, Chain Offer, Special Pack (mục 7). Weekly Pass chỉ có ở bản phát hành vì demo không có level HARD thứ 2 trong phạm vi L1-20.
 - Weekly Pass: thêm mốc khởi đầu 0 key, hàng tiến độ (nút "i", chìa, thanh tới mốc kế), tutorial 3 bước và popup "How to earn rewards"; key chỉ được cộng sau khi xem tutorial. Giảm chiều cao vùng cuộn của layer (640 xuống 500) vì panel vượt màn 720x1280.
 - Thêm loại thưởng "mạng vô hạn" (`inf_min`, phút; `s.lives.inf_until`): đang còn hạn thì thua không mất mạng, Home hiện "Mạng: vô hạn" cùng đếm ngược, cảnh báo mất mạng khi bỏ ván bị ẩn; cấp thêm khi còn hạn thì cộng dồn. Dùng cho mốc khởi đầu Weekly Pass (15 phút, theo video) và VIP mốc 3 key (30 phút).
+
+**2026-11-03**
+
+- Nối logic Leaderboard (mục 7) thay cho bản UI giải đấu theo tuần: league theo tổng điểm, 7 league, chỉ lên không xuống, không có mùa. Điểm lấy từ khối ngôi sao trong level, cộng khi thắng. BXH 100 người toàn bot, bot tăng điểm mỗi ngày 7h00 GMT+7. Mở ở L8; tab Ranking không còn phụ thuộc `Config.ui_preview`.
+- Spec gốc ghi "7 League" nhưng chỉ liệt kê 6 khoảng điểm và nhắc tới "One Above All"; mình đặt One Above All là league thứ 7 từ 1.000 điểm, không có trần.
