@@ -67,3 +67,8 @@ func skip() -> void:
 
 func is_lost() -> bool:
 	return _lost
+
+
+## Số lần đã cứu thành công trong lượt này.
+func used() -> int:
+	return _used

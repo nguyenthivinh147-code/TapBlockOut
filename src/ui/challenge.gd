@@ -47,7 +47,7 @@ func _build() -> void:
 	add_child(_ui)
 	_ui.add_child(ThemeKit.make_background())
 
-	back_button = ThemeKit.make_button("", "secondary")
+	back_button = ThemeKit.make_button("", "icon")
 	back_button.name = "BackButton"
 	back_button.icon = ThemeKit.icon("ui_home")
 	back_button.expand_icon = true

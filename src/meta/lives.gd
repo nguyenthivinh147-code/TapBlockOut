@@ -6,8 +6,9 @@ const Config := preload("res://src/config.gd")
 const Wallet := preload("res://src/meta/wallet.gd")
 
 
-static func _max() -> int:
-	return int(Config.LIVES.max)
+## Mạng tối đa: cấu hình + thưởng tạm của Weekly Pass VIP (s.lives.bonus).
+static func max_for(s: Dictionary) -> int:
+	return int(Config.LIVES.max) + maxi(0, int((s.get("lives", {}) as Dictionary).get("bonus", 0)))
 
 
 static func _regen() -> int:
@@ -17,7 +18,7 @@ static func _regen() -> int:
 ## Cộng các mạng đã hồi tới `now`. Đầy thì không tích giờ. Giờ máy lùi thì kẹp lại.
 static func tick(s: Dictionary, now: int) -> void:
 	var l: Dictionary = s.lives
-	var mx := _max()
+	var mx := max_for(s)
 	var rg := maxi(_regen(), 1)
 	if int(l.count) >= mx:
 		l.count = mx
@@ -47,7 +48,7 @@ static func lose(s: Dictionary, now: int, level: int) -> bool:
 	var l: Dictionary = s.lives
 	if int(l.count) <= 0:
 		return false
-	var was_full := int(l.count) >= _max()
+	var was_full := int(l.count) >= max_for(s)
 	l.count = int(l.count) - 1
 	if was_full:
 		l.next_at = now + _regen()
@@ -59,8 +60,8 @@ static func add(s: Dictionary, n: int, now: int) -> void:
 		return
 	tick(s, now)
 	var l: Dictionary = s.lives
-	l.count = mini(_max(), int(l.count) + n)
-	if int(l.count) >= _max():
+	l.count = mini(max_for(s), int(l.count) + n)
+	if int(l.count) >= max_for(s):
 		l.next_at = 0
 	elif int(l.next_at) <= 0:
 		l.next_at = now + _regen()
@@ -69,7 +70,7 @@ static func add(s: Dictionary, n: int, now: int) -> void:
 ## Số giây tới mạng kế tiếp; 0 khi đã đầy.
 static func seconds_to_next(s: Dictionary, now: int) -> int:
 	tick(s, now)
-	if int(s.lives.count) >= _max():
+	if int(s.lives.count) >= max_for(s):
 		return 0
 	return maxi(0, int(s.lives.next_at) - now)
 
@@ -77,7 +78,7 @@ static func seconds_to_next(s: Dictionary, now: int) -> int:
 ## Đổi gold lấy `refill_lives` mạng. Đã đầy hoặc thiếu gold thì không trừ, trả false.
 static func refill_coins(s: Dictionary, now: int) -> bool:
 	tick(s, now)
-	if int(s.lives.count) >= _max():
+	if int(s.lives.count) >= max_for(s):
 		return false
 	if not Wallet.spend(s, int(Config.ECON.refill_coins)):
 		return false

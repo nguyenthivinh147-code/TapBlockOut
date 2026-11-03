@@ -147,7 +147,7 @@ func _exit_tree() -> void:
 
 
 func _icon_button(icon_name: String, node_name: String) -> Button:
-	var b := ThemeKit.make_button("", "secondary")
+	var b := ThemeKit.make_button("", "icon")
 	b.name = node_name
 	b.icon = ThemeKit.icon(icon_name)
 	b.expand_icon = true
@@ -424,7 +424,7 @@ func on_back() -> void:
 
 # --- bắt đầu level ---
 
-func _start_level() -> void:
+func _start_level(warn: bool = true) -> void:
 	_set_state("intro")
 	_set_smash_mode(false)
 	# Daily Challenge sinh trong game: màn chờ ngắn, vẽ xong mới sinh.
@@ -441,7 +441,10 @@ func _start_level() -> void:
 	board = attempt.board
 	_level = int(attempt.level)
 	title_label.text = tr("challenge_title") if _challenge else tr("level_title") % _level
-	hard_badge.visible = bool(attempt.get("hard", false))
+	var is_hard := bool(attempt.get("hard", false))
+	var very_hard := is_hard and not _challenge and Game.difficulty_of(_level) == "very_hard"
+	hard_badge.visible = is_hard
+	(hard_badge as Label).text = tr("level_very_hard") if very_hard else tr("level_hard")
 	tut_label.text = _mech_hint()
 	board_view.setup(board)
 	_refresh_hud()
@@ -455,6 +458,11 @@ func _start_level() -> void:
 		if _left:
 			return
 	_refresh_hud()
+	if warn and is_hard:
+		_set_state("dialog")
+		await _show_difficulty_banner(very_hard)
+		if _left:
+			return
 	_set_state("playing")
 	_reset_think()
 	if _level == 1:
@@ -462,7 +470,62 @@ func _start_level() -> void:
 		board_view.highlight(board.hint())
 
 
-## Level dạy cơ chế (21, 31, 46, 61, 81, 101): một dòng "Tên: luật" ở đầu level. Challenge không có.
+## Dải cảnh báo độ khó ngang bàn cờ: trượt vào, giữ ngắn, mờ đi rồi tự vào chơi. Chạm để bỏ qua.
+func _show_difficulty_banner(very_hard: bool) -> void:
+	await get_tree().process_frame
+	if _left:
+		return
+	var root := Control.new()
+	root.name = "DifficultyBanner"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	var dim := ColorRect.new()
+	dim.color = Color(0, 0, 0, 0.4)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(dim)
+	var band := ColorRect.new()
+	band.name = "Band"
+	band.color = ThemeKit.HARD_BANNER_VERY if very_hard else ThemeKit.HARD_BANNER
+	var rect := board_view.get_global_rect() if board_view != null else Rect2()
+	var cy := rect.get_center().y if rect.size.y > 0.0 else size.y * 0.5
+	var band_h := 120.0
+	band.position = Vector2(0, cy - band_h * 0.5)
+	band.size = Vector2(size.x, band_h)
+	band.pivot_offset = band.size * 0.5
+	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(band)
+	var text := ThemeKit.make_label(tr("level_very_hard") if very_hard else tr("level_hard"), ThemeKit.FS_HUGE)
+	text.name = "Text"
+	text.set_anchors_preset(Control.PRESET_FULL_RECT)
+	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	band.add_child(text)
+	add_child(root)
+	var skip := [false]
+	root.gui_input.connect(func(ev: InputEvent) -> void:
+		if ev is InputEventMouseButton and ev.pressed or ev is InputEventScreenTouch and ev.pressed:
+			skip[0] = true)
+	Sfx.play("button")
+	band.scale = Vector2(1, 0)
+	dim.modulate.a = 0.0
+	var tin := create_tween().set_parallel(true).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tin.tween_property(band, "scale:y", 1.0, 0.22)
+	tin.tween_property(dim, "modulate:a", 1.0, 0.22)
+	var deadline := Time.get_ticks_msec() + int(float(Config.CONTENT.hard_banner_sec) * 1000.0)
+	while not _left and not skip[0] and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	if _left or not is_instance_valid(root):
+		return
+	var tout := create_tween().set_parallel(true)
+	tout.tween_property(band, "modulate:a", 0.0, 0.18)
+	tout.tween_property(dim, "modulate:a", 0.0, 0.18)
+	await tout.finished
+	root.queue_free()
+
+
+## Level dạy cơ chế (14, 30, 40, 55, 70, 90): một dòng "Tên: luật" ở đầu level. Challenge không có.
 func _mech_hint() -> String:
 	if _challenge:
 		return ""
@@ -563,6 +626,10 @@ func _resolve() -> void:
 	if _left:
 		return
 	if board.is_won():
+		if DisplayServer.get_name() != "headless":
+			await get_tree().create_timer(float(Config.CONTENT.win_delay_sec)).timeout
+			if _left:
+				return
 		await _win_flow()
 	else:
 		await _rescue_flow()
@@ -651,6 +718,8 @@ func _win_flow() -> void:
 		Game.rate_now()
 	if _challenge:
 		_leave("home")
+	elif Game.next_after_win(res, false) == "home":
+		_leave("home")
 	elif not Game.level_exists(int(Game.s.level)):
 		var dlg := Dialog.new(tr("level_title") % int(Game.s.level), tr("level_demo_end"),
 			[{"id": "ok", "text": tr("common_ok"), "kind": "primary", "name": "OkButton"}])
@@ -709,7 +778,7 @@ func _on_restart_pressed() -> void:
 	if charged and not _can_play():
 		_leave("no_lives")
 		return
-	await _start_level()
+	await _start_level(false)
 
 
 # --- booster ---

@@ -270,3 +270,42 @@ func test_result_layout_rules(t: T) -> void:
 	t.eq(nodes[1].find_children("*", "Timer", true, false).size(), 0, "thẻ thua không đếm ngược")
 	for n in nodes:
 		n.free()
+
+
+func test_win_feature_progress(t: T) -> void:
+	var g := _g()
+	var res := _won(g, 3)
+	t.eq(res.unlocked, ["daily_gift"] as Array[String], "thắng L3 mở quà ngày")
+	t.eq(g.next_after_win(res, false), "home", "mở tính năng Home thì về Home")
+	var p := _mount("win_card", res)
+	t.ok(_lbl(p, "FeatureLabel").text.contains(p.tr("feature_daily_gift")), "tên tính năng")
+	await _wait_until(func() -> bool: return _lbl(p, "FeaturePercent").text == "100%")
+	t.eq(_lbl(p, "FeaturePercent").text, "100%", "thanh chạy tới 100%")
+	await _wait_until(func() -> bool: return _lbl(p, "FeatureLabel").text == p.tr("feature_unlocked") % p.tr("feature_daily_gift"))
+	t.ok(_lbl(p, "FeatureLabel").text == p.tr("feature_unlocked") % p.tr("feature_daily_gift"), "báo đã mở")
+	p.free()
+	var res2 := _won(g, 6)
+	t.eq(g.next_after_win(res2, false), "level", "không mở gì thì vào level kế")
+	t.eq(g.next_after_win(res2, true), "home", "challenge về Home")
+
+
+func test_win_no_progress_when_exhausted(t: T) -> void:
+	var g := _g()
+	var res := _won(g, 95)
+	t.eq(res.progress.has_next, false, "hết tính năng")
+	var p := _mount("win_card", res)
+	t.ok(p.find_child("FeatureProgress", true, false) == null, "ẩn thanh")
+	p.free()
+
+
+func test_level_end_params(t: T) -> void:
+	var g := _g()
+	g.s.level = 2
+	var a1: Dictionary = g.start_attempt()
+	g.on_level_lost(a1)
+	var a2: Dictionary = g.start_attempt()
+	g.on_level_lost(a2)
+	var ends: Array = _plat().an.named("level_end")
+	t.eq(int(ends[0].params.replay), 0, "lần đầu không phải chơi lại")
+	t.eq(int(ends[1].params.replay), 1, "lần hai là chơi lại")
+	t.ok(ends[1].params.has("blocks_left") and ends[1].params.has("rescues"), "có blocks_left, rescues")

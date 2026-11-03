@@ -130,8 +130,10 @@ var input_enabled: bool = true
 var _board: BoardState = null
 var _cell: float = 64.0
 var _origin: Vector2 = Vector2.ZERO
+var _inner: Rect2 = Rect2()  # vùng trong khung cổng (cố định), lưới level nằm giữa vùng này
 var _nodes: Dictionary = {}  # id -> BlockNode
 var _owner: Dictionary = {}  # Vector2i -> id
+var _vacated: Dictionary = {}  # Vector2i -> true: ô của khối đã đi, không vẽ nền nữa
 var _gate_state: Dictionary = {}  # cạnh -> đang mở?
 var _gate_prog: Dictionary = {}  # cạnh -> 0 (đóng) .. 1 (mở), đang chạy hoạt ảnh
 var _gate_tws: Dictionary = {}  # cạnh -> Tween
@@ -356,6 +358,8 @@ func _unmap(id: String) -> void:
 	for c in n.cells:
 		if _owner.get(c, "") == id:
 			_owner.erase(c)
+			_vacated[c] = true
+	queue_redraw()
 
 
 func _layout() -> void:

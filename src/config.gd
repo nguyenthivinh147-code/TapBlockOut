@@ -33,9 +33,9 @@ const _ADS := {
 }
 
 const _UNLOCK := {
-	"daily_gift": 4, "hint": 4, "shop": 5, "move": 6, "smash": 9,
-	"lives": 10, "starter": 10, "review": 18, "challenge": 50,
-	"stone": 21, "ice": 31, "chain": 46, "layer": 61, "fog": 81, "pulse": 101,
+	"daily_gift": 4, "hint": 5, "shop": 5, "move": 12, "smash": 17,
+	"lives": 10, "starter": 10, "review": 10, "challenge": 50,
+	"stone": 14, "ice": 30, "chain": 40, "layer": 55, "fog": 70, "pulse": 90,
 }
 
 ## 28 ô quà. Tổng: 6.650 gold, 5 hint, 5 move, 4 smash.
@@ -99,6 +99,86 @@ const _SKUS := {
 	"rescue_pack": {"usd": 0.99, "consumable": true, "inv": {"move": 1}},
 	"level_pack": {"usd": 4.99, "consumable": true, "gold": 2000,
 		"inv": {"hint": 1, "move": 1, "smash": 1}},
+	# Mua lại được mỗi tuần nên consumable; trạng thái VIP nằm ở s.weekly.vip.
+	"weekly_pass": {"usd": 4.99, "consumable": true, "weekly_vip": true},
+	"special_pack": {"usd": 10.99, "consumable": true, "gold": 12000,
+		"inv": {"hint": 2, "move": 2, "smash": 2}},
+	"special_pack_sale": {"usd": 5.49, "consumable": true, "gold": 12000,
+		"inv": {"hint": 2, "move": 2, "smash": 2}},
+	# Bước Pay của Chain Offer: thưởng lấy từ chính gói.
+	"chain_pack_1": {"usd": 0.99, "consumable": true, "gold": 1500},
+	"chain_pack_2": {"usd": 2.99, "consumable": true, "gold": 3000,
+		"inv": {"hint": 1, "move": 1}},
+}
+
+## Điều kiện hiện gói (PackConditionSO). level_appear: từ level này; purchase_limit: 0 = không giới hạn;
+## required: phải đã mua đủ các gói này; exclude: đã sở hữu gói nào trong đây thì ẩn.
+const _PACKS := {
+	"special_pack": {"sku": "special_pack", "level_appear": 16, "purchase_limit": 0,
+		"required": ["starter_pack"], "exclude": []},
+}
+
+## Weekly Pass. Chu kỳ: thứ Hai 06:00 -> thứ Hai 00:00 tuần sau (giờ máy); thứ Hai 00:00-06:00 là Waiting.
+## points: điểm key theo độ khó; unlock_hard_index: mở sau level HARD thứ N.
+## main: mỗi mốc {points, free, vip} với thưởng {coins, items}. bank: sau mốc cuối,
+## mỗi `bank_step` key thừa được 1 mốc, tối đa `bank_max` mốc, mỗi mốc là `bank_reward`.
+const _WEEKLY := {
+	"enabled": true,
+	"sku": "weekly_pass",
+	"unlock_hard_index": 2,
+	"start_hour": 6,
+	"vip_bonus_hearts": 3,
+	"points_normal": 1,
+	"points_hard": 3,
+	"points_very_hard": 5,
+	"bank_step": 15,
+	"bank_max": 10,
+	"bank_reward_coins": 400,
+	"main": [
+		{"points": 3, "free": {"coins": 100, "items": {}}, "vip": {"coins": 200, "items": {}}},
+		{"points": 8, "free": {"coins": 0, "items": {"hint": 1}}, "vip": {"coins": 300, "items": {"hint": 1}}},
+		{"points": 15, "free": {"coins": 150, "items": {}}, "vip": {"coins": 400, "items": {}}},
+		{"points": 25, "free": {"coins": 0, "items": {"move": 1}}, "vip": {"coins": 0, "items": {"move": 2}}},
+		{"points": 38, "free": {"coins": 200, "items": {}}, "vip": {"coins": 600, "items": {}}},
+		{"points": 52, "free": {"coins": 0, "items": {"smash": 1}}, "vip": {"coins": 0, "items": {"smash": 2}}},
+		{"points": 68, "free": {"coins": 300, "items": {}}, "vip": {"coins": 800, "items": {}}},
+		{"points": 85, "free": {"coins": 0, "items": {"hint": 1, "move": 1}}, "vip": {"coins": 500, "items": {"hint": 2, "move": 2}}},
+		{"points": 105, "free": {"coins": 400, "items": {}}, "vip": {"coins": 1000, "items": {}}},
+		{"points": 130, "free": {"coins": 500, "items": {"smash": 1}}, "vip": {"coins": 2000, "items": {"smash": 2}}},
+	],
+}
+
+## Chain Offer. days_to_existence: sống bấy nhiêu ngày từ lúc bật; days_to_reset: nghỉ bấy nhiêu ngày
+## sau khi hết hạn; level_unlock: từ level này; require_lose: -1 = xét sau mọi ván, khác -1 = chỉ sau
+## khi thua ở level không HARD. Chuỗi xoay vòng theo thứ tự. Bước: type free | ad | pay.
+const _CHAIN := {
+	"days_to_existence": 1,
+	"days_to_reset": 3,
+	"level_unlock": 24,
+	"require_lose": -1,
+	"window": 6,
+	"sequences": [
+		{"id": "chain_a", "steps": [
+			{"type": "free", "coins": 300, "items": {}},
+			{"type": "ad", "coins": 0, "items": {"hint": 1}},
+			{"type": "free", "coins": 500, "items": {}},
+			{"type": "pay", "sku": "chain_pack_1"},
+			{"type": "ad", "coins": 0, "items": {"move": 1}},
+			{"type": "free", "coins": 800, "items": {"smash": 1}},
+			{"type": "pay", "sku": "chain_pack_2"},
+			{"type": "ad", "coins": 1000, "items": {}},
+		]},
+		{"id": "chain_b", "steps": [
+			{"type": "free", "coins": 0, "items": {"move": 1}},
+			{"type": "ad", "coins": 400, "items": {}},
+			{"type": "free", "coins": 0, "items": {"hint": 1, "smash": 1}},
+			{"type": "pay", "sku": "chain_pack_2"},
+			{"type": "ad", "coins": 600, "items": {}},
+			{"type": "free", "coins": 1000, "items": {}},
+			{"type": "pay", "sku": "chain_pack_1"},
+			{"type": "ad", "coins": 0, "items": {"smash": 1}},
+		]},
+	],
 }
 
 ## Offer. min_secs: không popup trong N giây đầu phiên đầu; gap_runs: cách nhau ít nhất N lượt.
@@ -127,14 +207,17 @@ const _NOTIF := {
 
 const _CONTENT := {
 	"demo_max_level": 20,
-	"release_pregen_level": 300,
-	"loop_start_level": 101,
-	"slack_easy": 3,
-	"slack_easy_until": 5,
+	"release_pregen_level": 100,
+	"loop_start_level": 51,
+	"slack_easy": 5,
+	"slack_easy_until": 3,
 	"slack_hard": 1,
+	"very_hard_from_level": 100,
+	"hard_banner_sec": 1.2,
 	"slack_min": 2,
 	"slack_pct": 10,
 	"think_clap_sec": 8,
+	"win_delay_sec": 0.8,
 	"build": "v1",
 	"support_email": "support@horusvn.com",
 	"ftue_steps": ["open", "first_tap", "first_win", "first_x2", "first_booster", "run_2", "run_5", "level_10"],
@@ -152,7 +235,12 @@ const SHAPE_MAX_ASPECT := 1.9
 const SHAPE_ROUGHEN := 0.06
 
 ## Ngày sale theo Time.get_datetime_dict_from_unix_time().weekday (0 = Chủ nhật, 6 = thứ Bảy).
-const _SALE_WEEKDAYS := [6, 0]
+const _SALE_WEEKDAYS := [5, 6, 0]
+## Weekend sale cho ai: 1 = mọi người chơi, 2 = chỉ người chưa mua gói nào, 3 = tắt.
+## Remote Config: `weekend_sale_mode`.
+const _SALE_MODE := 1
+## Số % ghi trên nhãn sale (chỉ để hiển thị; giá thật do SKU `_sale` quyết định).
+const _SALE_PERCENT := 50
 
 static var ECON: Dictionary = _ECON.duplicate(true)
 static var LIVES: Dictionary = _LIVES.duplicate(true)
@@ -163,8 +251,13 @@ static var COSMETICS: Dictionary = _COSMETICS.duplicate(true)
 static var SKUS: Dictionary = _SKUS.duplicate(true)
 static var OFFERS: Dictionary = _OFFERS.duplicate(true)
 static var NOTIF: Dictionary = _NOTIF.duplicate(true)
+static var PACKS: Dictionary = _PACKS.duplicate(true)
+static var WEEKLY: Dictionary = _WEEKLY.duplicate(true)
+static var CHAIN: Dictionary = _CHAIN.duplicate(true)
 static var CONTENT: Dictionary = _CONTENT.duplicate(true)
 static var SALE_WEEKDAYS: Array = _SALE_WEEKDAYS.duplicate(true)
+static var SALE_MODE: int = _SALE_MODE
+static var SALE_PERCENT: int = _SALE_PERCENT
 
 
 ## Công tắc cho test: -1 theo OS.has_feature("demo"), 0 ép bản phát hành, 1 ép bản demo.
@@ -190,8 +283,13 @@ static func reset() -> void:
 	SKUS = _SKUS.duplicate(true)
 	OFFERS = _OFFERS.duplicate(true)
 	NOTIF = _NOTIF.duplicate(true)
+	PACKS = _PACKS.duplicate(true)
+	WEEKLY = _WEEKLY.duplicate(true)
+	CHAIN = _CHAIN.duplicate(true)
 	CONTENT = _CONTENT.duplicate(true)
 	SALE_WEEKDAYS = _SALE_WEEKDAYS.duplicate(true)
+	SALE_MODE = _SALE_MODE
+	SALE_PERCENT = _SALE_PERCENT
 
 
 ## Mọi id avatar hoặc frame (kind: "avatar" | "frame"), gồm cả *_00 mặc định ở đầu.
@@ -223,7 +321,7 @@ static func apply_remote(values: Dictionary) -> void:
 	var groups := {
 		"econ": ECON, "lives": LIVES, "ads": ADS, "unlock": UNLOCK,
 		"cosmetics": COSMETICS, "skus": SKUS, "offers": OFFERS,
-		"notif": NOTIF, "content": CONTENT,
+		"notif": NOTIF, "content": CONTENT, "weekly": WEEKLY, "chain": CHAIN,
 	}
 	for raw_key in values:
 		var key := str(raw_key).to_lower()
@@ -234,6 +332,16 @@ static func apply_remote(values: Dictionary) -> void:
 			var arr: Variant = _coerce(SALE_WEEKDAYS, raw)
 			if arr != null:
 				SALE_WEEKDAYS = arr
+			continue
+		if key == "weekend_sale_mode":
+			var mode: Variant = _coerce(SALE_MODE, raw)
+			if mode != null and int(mode) >= 1 and int(mode) <= 3:
+				SALE_MODE = int(mode)
+			continue
+		if key == "sale_percent":
+			var pct: Variant = _coerce(SALE_PERCENT, raw)
+			if pct != null and int(pct) <= 99:
+				SALE_PERCENT = int(pct)
 			continue
 		for g in groups:
 			if key.begins_with(g + "_"):
