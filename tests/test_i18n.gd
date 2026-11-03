@@ -99,7 +99,7 @@ func test_required_keys(t: T) -> void:
 	var d := _load()
 	for k in REQUIRED:
 		t.ok(d.keys.has(k), "có khoá bắt buộc " + k)
-	t.eq(d.keys.get("APP_NAME", {}).get("en", ""), "Tap Block Out", "APP_NAME en")
+	t.eq(d.keys.get("APP_NAME", {}).get("en", ""), "Candy Away", "APP_NAME en")
 	for g in GROUPS:
 		var n := 0
 		for k in d.keys:

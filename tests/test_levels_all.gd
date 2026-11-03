@@ -145,7 +145,7 @@ func test_shaped_levels_are_harder(t: T) -> void:
 				free0 += 1
 		blocks += n
 		count += 1
-	t.ok(float(blocks) / count >= 27.0, "trung bình %.1f khối mỗi level" % (float(blocks) / count))
+	t.ok(float(blocks) / count >= 27.0 * DifficultyCurve.COUNT_SCALE, "trung bình %.1f khối mỗi level" % (float(blocks) / count))
 	t.ok(float(free0) / blocks <= 0.3, "chỉ %.0f%% khối thoát được ngay lúc đầu" % (100.0 * free0 / blocks))
 
 

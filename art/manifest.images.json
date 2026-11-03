@@ -1437,12 +1437,12 @@
     "manifest": "images",
     "name": "booster_smash",
     "status": "used",
-    "tool": "mcp comfyui edit_game_image (image1 = bo cuc SVG, image2 = icon Figma)",
+    "tool": "mcp comfyui edit_game_image (ref = booster_smash.png cu)",
     "workflow": "image_qwen_image_2_1_edit",
     "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "Redraw the icon in <image1> as a polished mobile game icon in the exact rendering style of <image2>. Keep the same subject, composition, angle, silhouette and colors as <image1>: a candy mallet tilted with its head at the upper left, the barrel-shaped head is glossy pink with diagonal white candy stripes and darker pink rounded end caps, the handle is a red and white striped candy cane stick ending in a small pink ball, and three short yellow impact lines burst from the lower-left striking face. Render it like <image2>: soft 3D cartoon shading, smooth rich gradients, glossy hard-candy surface, thick darker outline in the same hue as each part (dark maroon around the hammer, dark orange around the yellow impact lines), bright white specular highlights, subtle inner rim light. Single icon, centered, generous padding, plain background. No text, no numbers, no letters, no bomb, no fuse, no extra objects, no drop shadow on the ground.",
+    "prompt": "Turn this candy hammer into a LOLLIPOP HAMMER, same angle (tilted 45 degrees, head upper-left, handle lower-right) and same glossy cartoon candy style with dark maroon outline. The hammer head is a short thick cylinder whose two flat round ends are big swirl lollipops: bright spiral of hot pink, white and light magenta, glossy hard candy with white shine highlights. The barrel between the two lollipop faces is wrapped in pink-white diagonal candy stripes. Handle is a white rounded lollipop stick with a small pink ribbon bow just under the head, ending in a round pink candy ball. Remove the yellow motion lines. Single object, centered, no text, no background.",
     "style_prompt": "",
-    "seed": 4301,
+    "seed": 7311,
     "steps": 25,
     "cfg": 1,
     "use_reprompt": false,
@@ -1452,16 +1452,47 @@
       1024,
       1024
     ],
-    "prompt_id": "c7093bea-df5b-42be-abae-5576b452562d",
-    "source": "art/images/booster_smash_ai.png",
-    "source_sha256": "b2a4ee35b2976650ba8774e4ce8e1ad789e71e38557752038748697647891ea0",
-    "reference": "art/images/booster_smash.svg (render 1024 px bang tools/render_svg_icons.gd), assets/ui/figma/ic_bomb.png",
+    "prompt_id": "d5063323-4ec0-449d-bb14-253cd3cb1dfc",
+    "source": "art/images/booster_smash_lollipop_ai.png",
+    "source_sha256": "2cc66310b3c14b7d1347c2ae7954e98a3e1dbee40893140080cc958539d03a24",
+    "reference": "assets/ui/booster_smash.png (ban bua keo cu)",
     "file": "assets/ui/booster_smash.png",
-    "file_sha256": "f222cc093de898448d7ad9eb4c1144fab4d6c5aaef0bac1069e73507c8b64321",
+    "file_sha256": "029d8d89fdb764e615a0eb46acc78cb9d6ecdd0f0b236c91905582a1becd5c11",
     "file_size": [
       256,
       256
     ],
-    "note": "Bua keo hong soc trang, can gay keo soc do, vach va cham vang; thay ic_bomb cho booster; MCP tu noi them cau 'Keep all desired foreground elements separate...' vao prompt; tools/fit_icon.gd (alpha 1-4 -> 0, 251-254 -> 255, cat vien, le 6%) -> 256 px; xem trong game L17"
+    "note": "2026-11-03: doi sang bua keo mut (hai mat keo xoan hong trang, than soc, no hong, can que trang); tools/fit_icon.gd --size=256; dung o dialog booster, win card, tester"
+  },
+  {
+    "manifest": "images",
+    "name": "fx_lollipop_hammer",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = booster_smash.png cu)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Turn this candy hammer into a LOLLIPOP HAMMER, same angle (tilted 45 degrees, head upper-left, handle lower-right) and same glossy cartoon candy style with dark maroon outline. The hammer head is a short thick cylinder whose two flat round ends are big swirl lollipops: bright spiral of hot pink, white and light magenta, glossy hard candy with white shine highlights. The barrel between the two lollipop faces is wrapped in pink-white diagonal candy stripes. Handle is a white rounded lollipop stick with a small pink ribbon bow just under the head, ending in a round pink candy ball. Remove the yellow motion lines. Single object, centered, no text, no background.",
+    "style_prompt": "",
+    "seed": 7311,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "d5063323-4ec0-449d-bb14-253cd3cb1dfc",
+    "source": "art/images/booster_smash_lollipop_ai.png",
+    "source_sha256": "2cc66310b3c14b7d1347c2ae7954e98a3e1dbee40893140080cc958539d03a24",
+    "reference": "assets/ui/booster_smash.png (ban bua keo cu)",
+    "file": "assets/ui/fx_lollipop_hammer.png",
+    "file_sha256": "addbe8d3d906595918cedc9bc8bbf694ec5f01def2104b8a7a737093f12cc221",
+    "file_size": [
+      384,
+      384
+    ],
+    "note": "Cung anh goc voi booster_smash, cat lon hon cho hieu ung bua giua man; tools/fit_icon.gd --size=384 --margin=0.02; dung trong src/ui/smash_fx.gd (GRIP/HEAD/FACE do theo anh nay)"
   }
 ]

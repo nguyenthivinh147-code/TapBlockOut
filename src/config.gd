@@ -256,6 +256,20 @@ const _CONTENT := {
 	"slack_pct": 10,
 	"think_clap_sec": 8,
 	"win_delay_sec": 0.8,
+	# Màn loading khi mở game: thanh chạy tới splash_hold trong ít nhất splash_min_sec giây (đứng đó nếu boot chưa
+	# xong), rồi đầy trong splash_fill_sec giây và vào Home.
+	"splash_min_sec": 1.5,
+	"splash_hold": 0.9,
+	"splash_fill_sec": 0.3,
+	# Màn chuyển cảnh khi vào level (level_curtain.gd): mỗi cánh trượt vào curtain_slide_sec (giảm tốc dần khi tới
+	# giữa), cánh hồng xuất phát
+	# khi cánh tím đã chạy curtain_pink_at thời gian của nó; logo bật từ mờ tới rõ trong curtain_logo_sec, giữ thêm
+	# curtain_hold_sec, rồi hai cánh trượt ra trong curtain_open_sec.
+	"curtain_slide_sec": 0.45,
+	"curtain_pink_at": 0.6,
+	"curtain_logo_sec": 0.4,
+	"curtain_hold_sec": 0.35,
+	"curtain_open_sec": 0.3,
 	"build": "v1",
 	"support_email": "support@horusvn.com",
 	"ftue_steps": ["open", "first_tap", "first_win", "first_x2", "first_booster", "run_2", "run_5", "level_10"],
@@ -273,8 +287,9 @@ const SHAPE_MAX_ASPECT := 1.9
 const SHAPE_ROUGHEN := 0.06
 ## Từ DifficultyCurve.SHAPED_FROM khối xếp theo hình vẽ tay trong `src/core/motifs.gd`: chọn cỡ hình có số ô (trừ đá) chia
 ## số khối trong khoảng MOTIF_FILL_MIN..MOTIF_FILL_MAX; khối cắt đối xứng theo trục của hình, không khoét rìa.
-const MOTIF_FILL_MIN := 2.3
-const MOTIF_FILL_MAX := 3.6
+## Từ khi gấp đôi số khối (DifficultyCurve.COUNT_SCALE) khoảng này giảm một nửa: hình giữ cỡ, khối nhỏ lại.
+const MOTIF_FILL_MIN := 1.15
+const MOTIF_FILL_MAX := 1.8
 
 ## Ngày sale theo Time.get_datetime_dict_from_unix_time().weekday (0 = Chủ nhật, 6 = thứ Bảy).
 const _SALE_WEEKDAYS := [5, 6, 0]

@@ -75,6 +75,47 @@ func test_tabs_keep_selection(t: T) -> void:
 	p.queue_free()
 
 
+## Mouse event at a control-local point, through the viewport like a real tap (pressed.emit() skips hit testing).
+func _mouse(c: Control, local: Vector2, down: Variant) -> void:
+	var at: Vector2 = c.get_global_transform_with_canvas() * local
+	var e: InputEvent
+	if down == null:
+		e = InputEventMouseMotion.new()
+		(e as InputEventMouseMotion).button_mask = MOUSE_BUTTON_MASK_LEFT
+	else:
+		e = InputEventMouseButton.new()
+		(e as InputEventMouseButton).button_index = MOUSE_BUTTON_LEFT
+		(e as InputEventMouseButton).pressed = down
+	e.position = at
+	e.global_position = at
+	_root().push_input(e, true)
+	await (Engine.get_main_loop() as SceneTree).process_frame
+
+
+func test_tab_tap_through_viewport(t: T) -> void:
+	_g()
+	var p := _profile()
+	await (Engine.get_main_loop() as SceneTree).process_frame
+	var tab: Control = p.tab_buttons["frame"]
+	await _mouse(tab, tab.size * 0.5, true)
+	await _mouse(tab, tab.size * 0.5, false)
+	t.ok(p.find_child("Grid_frame", true, false).visible, "chạm tab Frame thì sang lưới Frame (khung cuộn không che tab)")
+	tab = p.tab_buttons["avatar"]
+	await _mouse(tab, tab.size * 0.5, true)
+	await _mouse(tab, tab.size * 0.5, false)
+	t.ok(p.find_child("Grid_avatar", true, false).visible, "chạm tab Avatar thì quay lại")
+	var vp: Control = p.find_child("Grid_avatar", true, false).get_node("Viewport")
+	var content: Control = vp.get_node("Content")
+	var y0 := content.position.y
+	var at := Vector2(vp.size.x * 0.5, vp.size.y * 0.8)
+	await _mouse(vp, at, true)
+	for i in 6:
+		await _mouse(vp, at - Vector2(0, 30 * (i + 1)), null)
+	t.ok(content.position.y < y0 - 1.0, "kéo trên lưới vẫn cuộn")
+	await _mouse(vp, at - Vector2(0, 180), false)
+	p.queue_free()
+
+
 func test_prefab_size_and_touch(t: T) -> void:
 	_g()
 	var p := _profile()

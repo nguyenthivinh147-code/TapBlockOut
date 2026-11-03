@@ -39,9 +39,15 @@ func setup(h: Control, vp: Control, c: Control, cfg: Dictionary) -> void:
 	inertia = bool(cfg.get("inertia", true))
 	deceleration = float(cfg.get("decel", 0.135))
 	wheel = float(cfg.get("wheel", 1.0))
+	# A ScrollRect without its own graphic takes no raycasts in Unity: drags start on the viewport's image.
+	# Listening on the host instead would let its rect cover siblings drawn below it (Profile's tab row).
+	var target := host
 	if host.mouse_filter == Control.MOUSE_FILTER_IGNORE:
-		host.mouse_filter = Control.MOUSE_FILTER_PASS
-	host.gui_input.connect(_on_input)
+		if viewport != host and viewport.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+			target = viewport
+		else:
+			host.mouse_filter = Control.MOUSE_FILTER_PASS
+	target.gui_input.connect(_on_input)
 
 
 ## Scroll so content's top-left is at `pos` (viewport local units); stops motion.

@@ -25,16 +25,20 @@ const BASE_SEED := 20261101
 ## `rows`: mỗi chuỗi một hàng (y tăng xuống dưới), '.' ô trống, '#' đá, chữ cái là khối (cùng chữ = cùng khối).
 ## `blk[chữ]`: color (yellow lên, green trái, blue phải, purple xuống) và tuỳ chọn ice, chain (chữ khối chìa),
 ## inner (màu lớp trong), fog. `pulse`: cạnh có cổng nhịp và trạng thái mở ban đầu.
+## Số khối 4, 6, 8, 10 (gấp đôi bản đầu, DifficultyCurve.COUNT_SCALE). L3 chỉ D chờ G, L4 chỉ E chờ H.
 const EARLY := {
-	1: {"rows": ["A.B", "A.B", "..."],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "blue"}}},
-	2: {"rows": [".A.C", ".A.C", ".BB."],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "green"}, "C": {"color": "blue"}}},
-	3: {"rows": ["A.B", "A.B", "CC.", ".D."],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "blue"}, "C": {"color": "purple"}, "D": {"color": "blue"}}},
-	4: {"rows": [".A..", ".ABB", "GE..", "G.PP"],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "blue"}, "E": {"color": "yellow"},
-			"G": {"color": "green"}, "P": {"color": "purple"}}},
+	1: {"rows": ["AB.CC", "AB...", "...DD"],
+		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "blue"}}},
+	2: {"rows": ["A.B.C", "A.B.C", "DD.EE", ".FF.."],
+		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "green"},
+			"E": {"color": "blue"}, "F": {"color": "green"}}},
+	3: {"rows": ["A.BCC", "A.B..", "DD..E", "..F.E", "GGF.H"],
+		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "purple"},
+			"E": {"color": "blue"}, "F": {"color": "purple"}, "G": {"color": "purple"}, "H": {"color": "blue"}}},
+	4: {"rows": ["A.BB.C", "A....C", "DDE.FF", "..E...", "G.HH.I", "G...JI"],
+		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "green"},
+			"E": {"color": "purple"}, "F": {"color": "blue"}, "G": {"color": "green"}, "H": {"color": "purple"},
+			"I": {"color": "blue"}, "J": {"color": "purple"}}},
 }
 
 

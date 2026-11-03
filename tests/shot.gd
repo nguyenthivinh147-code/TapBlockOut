@@ -33,7 +33,7 @@ func _initialize() -> void:
 func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	var names: Array = ALL.duplicate()
-	names.append_array(["home_l1", "home_hard", "home_very_hard", "weekly_pass", "chain_offer", "challenge", "ingame_settings", "ingame_settings_life",
+	names.append_array(["lives_hub", "lives_full", "home_l1", "home_hard", "home_very_hard", "weekly_pass", "chain_offer", "challenge", "ingame_settings", "ingame_settings_life",
 		"settings_language", "profile_frames",
 		"leaderboard", "leaderboard_world", "lb_result", "lb_leagues", "level_lb", "win_lb", "level_booster_all"])
 	for s in Gallery.SCREENS:
@@ -196,6 +196,12 @@ func _shot(name: String) -> void:
 			await _fresh(10)
 			g.s.lives = {"count": 0, "next_at": NOW + 900}
 			_main.go("no_lives")
+			await _settle()
+		"lives_hub", "lives_full":
+			await _fresh(10)
+			if name == "lives_hub":
+				g.s.lives = {"count": 3, "next_at": NOW + 900}
+			_main.call("_home_action", "lives", {})
 			await _settle()
 		"offer":
 			await _fresh(8)

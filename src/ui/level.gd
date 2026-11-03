@@ -15,6 +15,9 @@ const Config := preload("res://src/config.gd")
 const Unlocks := preload("res://src/meta/unlocks.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const BoardViewScene := preload("res://scenes/board_view.tscn")
+const HintFx := preload("res://src/ui/hint_fx.gd")
+const MoveFx := preload("res://src/ui/move_fx.gd")
+const SmashFx := preload("res://src/ui/smash_fx.gd")
 
 const POPUP_RESCUE := "res://scenes/popup_rescue.tscn"
 const POPUP_OFFER := "res://scenes/popup_offer.tscn"
@@ -145,6 +148,8 @@ var board_view: Control = null
 var title_label: Label = null
 var hard_badge: Control = null
 var moves_label: Label = null
+## Khung MOVES chứa moves_label; dấu "+" của +Move bay tới và nảy khung này.
+var moves_chip: PanelContainer = null
 ## Chip đếm mảnh leaderboard đã nhặt / tổng khối đặc biệt (thanh trên, dưới chip lượt); ẩn khi level không có khối đặc biệt.
 var piece_chip: PanelContainer = null
 var piece_icon: TextureRect = null
@@ -169,6 +174,8 @@ var _level: int = 0
 var _smash_mode: bool = false
 var _offer_id: String = ""
 var _overlay: Control = null
+var _hint_fx: Control = null  # sao Gợi ý đang bay; còn bay thì bấm Gợi ý không làm gì
+var _moves_pending: int = 0  # lượt +Move đã cộng vào bàn nhưng dấu "+" chưa bay tới chip lượt
 var _toast_token: int = 0
 var _left: bool = false
 var _waiters: Array = []
@@ -194,9 +201,18 @@ func _exit_tree() -> void:
 
 
 func _icon_button(icon_name: String, node_name: String) -> Button:
-	var b := ThemeKit.make_icon_button(icon_name)
+	var b := ThemeKit.make_sprite_button(icon_name, Vector2(88, 88))
 	b.name = node_name
 	return b
+
+
+## Chữ trắng viền tím trên sprite HUD.
+func _hud_label(text: String, font_size: int) -> Label:
+	var l := ThemeKit.make_label(text, font_size)
+	l.add_theme_color_override("font_outline_color", ThemeKit.HUD_OUTLINE)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return l
 
 
 func _build() -> void:
@@ -205,7 +221,7 @@ func _build() -> void:
 	_built = true
 	theme = ThemeKit.make_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	var bg := ThemeKit.make_image_background(ThemeKit.LEVEL_BG_IMAGE, ThemeKit.LEVEL_BG_DIM, ThemeKit.LEVEL_BG)
+	var bg := ThemeKit.make_image_background(ThemeKit.LEVEL_BG_IMAGE, ThemeKit.LEVEL_BG_DIM, ThemeKit.LEVEL_BG, ThemeKit.LEVEL_BG_IMAGE_ALPHA)
 	bg.name = "Background"
 	add_child(bg)
 
@@ -229,13 +245,26 @@ func _build() -> void:
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", 12)
 	head.add_child(top)
-	var moves_chip := ThemeKit.make_panel()
+	# khung MOVES (sprite hud_moves_panel): chữ MOVES nhỏ ở trên, số lượt to ở dưới.
+	# Dòng chữ Baloo cao hơn mặt chữ nhiều nên hai nhãn xếp chồng với giãn âm, giữ khung thấp như nút tròn.
+	moves_chip = PanelContainer.new()
+	moves_chip.name = "MovesChip"
+	moves_chip.add_theme_stylebox_override("panel", ThemeKit.sprite_box("hud_moves_panel",
+		Vector4(44, 44, 44, 48), Vector4(10, 2, 10, 10)))
+	moves_chip.custom_minimum_size = Vector2(150, 104)
 	moves_chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	top.add_child(moves_chip)
-	moves_label = ThemeKit.make_label("", ThemeKit.FS_SMALL + 4, ThemeKit.GOLD)
+	var moves_col := VBoxContainer.new()
+	moves_col.alignment = BoxContainer.ALIGNMENT_CENTER
+	moves_col.add_theme_constant_override("separation", -22)
+	moves_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	moves_chip.add_child(moves_col)
+	var moves_cap := _hud_label(tr("level_moves").to_upper(), ThemeKit.FS_SMALL - 2)
+	moves_cap.name = "MovesCaption"
+	moves_col.add_child(moves_cap)
+	moves_label = _hud_label("", ThemeKit.FS_TITLE)
 	moves_label.name = "MovesLabel"
-	moves_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	moves_chip.add_child(moves_label)
+	moves_col.add_child(moves_label)
 	var mid := VBoxContainer.new()
 	mid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	mid.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -244,28 +273,20 @@ func _build() -> void:
 	title_label.name = "TitleLabel"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	mid.add_child(title_label)
-	var hard := Label.new()
+	var hard := _hud_label(tr("level_hard"), ThemeKit.FS_SMALL)
 	hard.name = "HardBadge"
-	hard.text = tr("level_hard")
-	hard.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hard.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL)
-	hard.add_theme_color_override("font_color", ThemeKit.TEXT)
-	var hs := StyleBoxFlat.new()
-	hs.bg_color = ThemeKit.HARD_BANNER_VERY
-	hs.set_corner_radius_all(14)
-	hs.content_margin_left = 16
-	hs.content_margin_right = 16
-	hs.content_margin_top = 2
-	hs.content_margin_bottom = 2
-	hard.add_theme_stylebox_override("normal", hs)
+	hard.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	# pill hud_pill cao 44: lề cắt dọc 20 + 22 nên nhãn không được thấp hơn 44
+	hard.add_theme_stylebox_override("normal", ThemeKit.sprite_box("hud_pill", Vector4(22, 20, 22, 22), Vector4(22, 0, 22, 4)))
+	hard.custom_minimum_size = Vector2(96, 44)
 	hard.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	hard.visible = false
 	hard_badge = hard
 	mid.add_child(hard)
-	restart_button = _icon_button("ui_restart", "RestartButton")
+	restart_button = _icon_button("hud_btn_restart", "RestartButton")
 	restart_button.pressed.connect(_on_restart_pressed)
 	top.add_child(restart_button)
-	settings_button = _icon_button("ui_settings", "SettingsButton")
+	settings_button = _icon_button("hud_btn_settings", "SettingsButton")
 	settings_button.pressed.connect(_on_settings_pressed)
 	top.add_child(settings_button)
 	# chip đếm mảnh leaderboard: hàng riêng dưới chip lượt (hàng trên không còn chỗ ngang khi tên level dài)
@@ -336,30 +357,24 @@ func _build() -> void:
 		var c := VBoxContainer.new()
 		c.name = "Booster_" + kind
 		c.add_theme_constant_override("separation", 4)
-		var b := ThemeKit.make_icon_button("booster_" + kind, 128, "booster")
+		var b := ThemeKit.make_sprite_button("hud_booster_" + kind, Vector2(144, 129))
 		b.name = "BoosterButton_" + kind
 		b.pressed.connect(_on_booster_pressed.bind(kind))
 		c.add_child(b)
-		var badge := Label.new()
+		# huy hiệu góc dưới phải: tròn xanh ghi số còn lại, hết kho thì đổi sang sprite dấu + (xem _refresh_hud)
+		var badge := _hud_label("", ThemeKit.FS_SMALL)
 		badge.name = "BoosterBadge_" + kind
-		badge.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL)
-		badge.add_theme_color_override("font_color", ThemeKit.TEXT)
-		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		var bs := StyleBoxFlat.new()
-		bs.bg_color = ThemeKit.DANGER
-		bs.set_corner_radius_all(18)
-		bs.content_margin_left = 10
-		bs.content_margin_right = 10
-		bs.content_margin_top = 0
-		bs.content_margin_bottom = 0
-		badge.add_theme_stylebox_override("normal", bs)
-		badge.custom_minimum_size = Vector2(36, 36)
-		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		badge.add_theme_stylebox_override("normal", ThemeKit.sprite_box("hud_badge_count"))
+		badge.custom_minimum_size = Vector2(52, 52)
 		b.add_child(badge)
-		badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		badge.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 		badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-		badge.offset_top = -8
-		badge.offset_right = 8
+		badge.grow_vertical = Control.GROW_DIRECTION_BEGIN
+		badge.offset_left = -42
+		badge.offset_top = -44
+		badge.offset_right = 10
+		badge.offset_bottom = 8
 		var lock := ThemeKit.make_icon("ui_lock", 64)
 		lock.name = "BoosterLock_" + kind
 		b.add_child(lock)
@@ -495,6 +510,7 @@ func on_back() -> void:
 func _start_level(warn: bool = true) -> void:
 	_set_state("intro")
 	_set_smash_mode(false)
+	_moves_pending = 0
 	# Daily Challenge sinh trong game: màn chờ ngắn, vẽ xong mới sinh.
 	if _challenge and Game.challenge_needs_generation():
 		tut_label.text = tr("common_loading")
@@ -637,7 +653,7 @@ func _touched() -> bool:
 func _refresh_hud() -> void:
 	if not _built or board == null:
 		return
-	moves_label.text = tr("level_moves_left") % board.moves_left()
+	moves_label.text = str(board.moves_left() - _moves_pending)
 	var total := (attempt.get("specials", []) as Array).size()
 	piece_chip.visible = total > 0
 	piece_label.text = "%d/%d" % [int(attempt.get("pieces", 0)), total]
@@ -649,7 +665,13 @@ func _refresh_hud() -> void:
 		var badge: Label = booster_badges[kind]
 		badge.visible = open
 		var n := int(Game.s.inv.get(kind, 0))
-		badge.text = (tr("booster_count") % n) if n > 0 else "+"
+		badge.text = (tr("booster_count") % n) if n > 0 else ""
+		badge.add_theme_stylebox_override("normal", _badge_box(n > 0))
+
+
+## Nền huy hiệu booster: tròn xanh trống (còn hàng, code ghi số) hoặc sprite dấu + (hết kho).
+func _badge_box(has_stock: bool) -> StyleBoxTexture:
+	return ThemeKit.sprite_box("hud_badge_count" if has_stock else "hud_badge_plus")
 
 
 func _unlock_level(kind: String) -> int:
@@ -951,6 +973,8 @@ func _on_booster_pressed(kind: String) -> void:
 	if not Unlocks.is_open(kind, _level):
 		_toast(tr("booster_locked") % _unlock_level(kind))
 		return
+	if kind == "hint" and is_instance_valid(_hint_fx):
+		return
 	if _smash_mode:
 		_set_smash_mode(false)
 		if kind == "smash":
@@ -969,16 +993,50 @@ func _use_booster(kind: String) -> void:
 				_toast(tr("level_hint_none"))
 				return
 			if Game.use_booster("hint"):
-				board_view.highlight(id)
+				_fly_hint(id)
 		"move":
 			if Game.use_booster("move"):
 				board.add_moves(int(Config.ECON.rescue_moves))
 				board_view.refresh()
 				Sfx.play("moves")
+				_fly_moves(int(Config.ECON.rescue_moves))
 		"smash":
 			_set_smash_mode(true)
 	_refresh_hud()
 	_reset_think()
+
+
+## Sao bay từ nút Gợi ý tới khối, chạm thì khối mới sáng lên. Người chơi đã đi nước khác hoặc khối đã rời bàn
+## trong lúc sao bay thì nháy gợi ý mới (không nảy), để booster không mất.
+func _fly_hint(id: String) -> void:
+	var taps := int(attempt.taps)
+	_hint_fx = HintFx.new()
+	_hint_fx.name = "HintFx"
+	_overlay.add_child(_hint_fx)
+	_hint_fx.start(booster_buttons.hint.get_global_rect().get_center(), _block_center(id), board_view.cell_size(),
+		func() -> void:
+			if state != "playing":
+				return
+			var same := int(attempt.taps) == taps and board_view.block_node(id) != null
+			var hid := id if same else board.hint()
+			if hid != "":
+				board_view.highlight(hid, same))
+
+
+## Dấu "+" bay từ nút +Move tới chip lượt; mỗi dấu chạm thì số lượt hiện tăng thêm phần của nó (bàn đã cộng sẵn).
+## Lượt mới bắt đầu trong lúc bay thì bỏ qua các dấu còn lại.
+func _fly_moves(n: int) -> void:
+	var a := attempt
+	_moves_pending += n
+	var fx := MoveFx.new()
+	fx.name = "MoveFx"
+	_overlay.add_child(fx)
+	fx.start(booster_buttons.move, moves_chip, n, func(share: int) -> void:
+		if not is_same(attempt, a):
+			return
+		_moves_pending = maxi(0, _moves_pending - share)
+		Sfx.play("sfx_coin")
+		_refresh_hud())
 
 
 func _set_smash_mode(on: bool) -> void:
@@ -988,20 +1046,37 @@ func _set_smash_mode(on: bool) -> void:
 		tut_label.visible = not on  # cùng một chỗ trên bàn
 
 
+## Bàn và kho cập nhật ngay; búa kẹo mút hiện giữa màn rồi bay tới gõ, khối chỉ vỡ (và mảnh mới bay) lúc búa chạm.
+## Trong lúc búa bay, bàn và các nút không nhận chạm (state "smashing").
 func _do_smash(id: String) -> void:
 	_set_smash_mode(false)
 	if not Game.use_booster("smash"):
 		return
 	var from := _block_center(id)
+	var target: Vector2 = board_view.strike_point(id)
 	var r: Dictionary = Game.smash_block(attempt, id)
-	if bool(r.ok):
-		board_view.smash_anim(id)
-	if bool(r.piece):
-		_fly_piece(from)
 	_reset_think()
 	_refresh_hud()
-	if board.is_won():
-		_resolve()
+	if not bool(r.ok):
+		if board.is_won():
+			_resolve()
+		return
+	var a := attempt
+	_set_state("smashing")
+	var fx := SmashFx.new()
+	fx.name = "SmashFx"
+	_overlay.add_child(fx)
+	fx.start(target, board_view.cell_size(), func() -> void:
+		if _left or not is_same(attempt, a):
+			return
+		board_view.smash_anim(id)
+		if bool(r.piece):
+			_fly_piece(from)
+		if state == "smashing":
+			_set_state("playing")
+		_reset_think()
+		if board.is_won():
+			_resolve())
 
 
 ## Booster hết kho: mua bằng gold, hoặc video miễn phí (một lần mỗi lượt) khi thiếu gold.

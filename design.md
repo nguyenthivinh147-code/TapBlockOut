@@ -1,4 +1,4 @@
-# Tap Block Out: thiết kế (design.md)
+# Candy Away: thiết kế (design.md)
 
 Trạng thái: **thiết kế chốt ngày 2026-11-01**, thay bản 2026-10-31.
 Nguồn: trao đổi với người dùng ngày 2026-11-01, `tap-block-out-color-puzzle-guideline.vi.md`, `GAME-GUIDE.md`, `AGENTS.md`, `README.md` của Horus, trang Google Play đọc ngày 2026-10-31.
@@ -17,6 +17,9 @@ Game làm bằng **Godot 4.7.2, GDScript, xuất Android gốc**. Tài liệu Ho
 
 ## 2. Thông số đã có
 
+- Tên game: **Candy Away**, dòng phụ "Tap Block Puzzle" (cả hai nằm trong logo `assets/ui/loading_logo.png`; chuỗi `APP_NAME`). Tên dự án, thư mục, package id `com.tungcv2.tapblockout` và plugin `tbo_platform` giữ tên cũ Tap Block Out vì đã gắn với cấu hình Horus.
+- Mở game: màn loading (`splash`) với nền kẹo `assets/ui/loading_bg.png`, logo, thanh tải và số phiên bản, rồi vào Home. Thanh chạy tới 90% trong ít nhất 1,5 giây, đứng đó nếu khởi động chưa xong, rồi đầy trong 0,3 giây (`Config.CONTENT.splash_*`). Boot splash của Godot (lúc engine nạp) dùng cùng ảnh, chưa có thanh tải.
+- Vào màn chơi (Home bấm Chơi, bấm Chơi ở màn Daily Challenge, nạp mạng xong ở màn hết mạng): màn chuyển cảnh `level_curtain` gồm hai cánh kẹo bóng. Cánh tím trượt từ phải vào nửa phải; khi nó gần tới nơi (60% thời gian trượt) cánh hồng trượt từ trái vào nửa trái, đè lên mép cánh tím. Cánh lao nhanh từ mép màn rồi giảm tốc dần khi tới giữa. Logo nhảy lên giữa màn, từ mờ nhoè và trong suốt tới rõ nét. Màn chơi dựng bên dưới, logo giữ một lúc rồi mờ đi, hai cánh trượt ra hai bên. Mỗi cánh trượt vào 0,45 giây, logo bật 0,4 giây, giữ 0,35 giây (`Config.CONTENT.curtain_*`). Màu theo ảnh mẫu: hồng `#fbd3df` → `#f6a9cf`, tím `#e0c1f0` → `#c9abf1`. Chạm và nút Back bị chặn suốt lúc chạy. Qua level kế trong màn chơi không có màn này.
 - Mục tiêu: game **thư giãn ASMR**, doanh thu **50% IAA, 50% IAP**. Đo theo cohort 30 ngày đầu: doanh thu quảng cáo so với IAP sau phí store. Chưa có số liệu thật nên tỉ lệ này chỉ kiểm chứng được từ soft launch; mọi tần suất, giới hạn video và giá nằm trong config, chỉnh được bằng Remote Config.
 - Hướng màn hình: **portrait**
 - Nền tảng: **chỉ Android** ở bản hiện tại, iOS phát triển sau. Không có bản web.
@@ -85,23 +88,25 @@ Luật chung:
 
 ### Đường cong độ khó L1–100
 
-Độ khó 100 level đầu bám file `difficulty_curve_levels_1-100.json` của PixelFlow (điểm 0–10, trung bình trượt 5 level), nạp vào `src/core/difficulty_curve.gd`. Bộ sinh đổi điểm thành số khối: chuẩn hoá min-max trên 100 level rồi nội suy 2–30 khối; level Hard +2 khối, VeryHard +3 khối, dư MOVES còn 1. Danh sách Hard: 24, 28, 33, 38, 44, 53, 59, 63, 68, 73, 79, 89, 93, 98. VeryHard: 29, 36, 45, 49, 54, 64, 69, 75, 82, 84, 95, 99 (huy hiệu và hộp thoại "rất khó" cho các level này và mọi level HARD từ L100). Cơ chế dày dần theo level kể từ level mở khoá. Bàn có cổng nhịp (L90+) tối đa 26 khối vì bộ sinh phải tìm được trạng thái cổng ban đầu không bắt chạm chờ, nên L91–99 thấp hơn đường cong.
+Độ khó 100 level đầu bám file `difficulty_curve_levels_1-100.json` của PixelFlow (điểm 0–10, trung bình trượt 5 level), nạp vào `src/core/difficulty_curve.gd`. Bộ sinh đổi điểm thành số khối: chuẩn hoá min-max trên 100 level rồi nội suy 2–30 khối; level Hard +2 khối, VeryHard +3 khối, dư MOVES còn 1. Danh sách Hard: 24, 28, 33, 38, 44, 53, 59, 63, 68, 73, 79, 89, 93, 98. VeryHard: 29, 36, 45, 49, 54, 64, 69, 75, 82, 84, 95, 99 (huy hiệu và hộp thoại "rất khó" cho các level này và mọi level HARD từ L100). Cơ chế dày dần theo level kể từ level mở khoá. Bàn có cổng nhịp (L90+) tối đa 52 khối (từ L130, khi bàn có tới 2 cổng, tối đa 40) vì bộ sinh phải tìm được trạng thái cổng ban đầu không bắt chạm chờ, nên L91–100 thấp hơn đường cong.
 
 **Từ L14 khó hơn (2026-11-03):** số khối trên nhân 1,3 (trần 40 khối), và lúc gán hướng bộ sinh ưu tiên mạnh hơn những khối bị chặn lúc đầu (số mũ trọng số 2, level Hard/VeryHard 3; trước L14 là 1 và 2), nên chuỗi chặn sâu hơn. Công thức dư MOVES giữ nguyên. Đo trên L14–100 so với bản trước: trung bình 21,4 → 29 khối, khối thoát được ngay lúc đầu 38% → 22% số khối, số lượt cần để dọn bàn (mỗi lượt cho mọi khối đang thông đường đi) 6,5 → 10. Số trong `src/core/difficulty_curve.gd` (`SHAPED_FROM`, `BOOST`, `BOOST_MAX`, `BLOCKED_POWER*`).
 
-Bốn level đầu làm tay trong `tools/gen_levels.gd` (bảng EARLY). L1–3 chắc chắn thắng: dư 5 MOVES, L1–2 không khối nào bị chặn, L3 chỉ một khối phải chờ.
+**Gấp đôi số khối mọi level (2026-11-03):** số khối tính như trên rồi nhân 2 (`DifficultyCurve.COUNT_SCALE`), nên đường cong là 4–60 khối trước L14 và tối đa 80 khối từ L14. Bàn và cỡ ô giữ nguyên. Hình vẽ tay lớn nhất chỉ khoảng 110 ô nên từ L14 hình giữ cỡ như cũ và khối nhỏ lại (khoảng ô/khối giảm một nửa, mục "Hình dạng level"); L5–13 giữ tỉ lệ ô/khối nên hình to gấp đôi. L1–4 làm tay lại với 4, 6, 8, 10 khối. Đo trên L14–100 so với bản trước: trung bình 29 → 57,9 khối; khối 1 ô 16% → 68%, 2 ô 26% → 24%, từ 3 ô trở lên 58% → 9%. Công thức dư MOVES giữ nguyên nên MOVES cũng tăng theo số khối.
+
+Bốn level đầu làm tay trong `tools/gen_levels.gd` (bảng EARLY). L1–3 chắc chắn thắng: dư 5 MOVES, L1–2 không khối nào bị chặn, L3 chỉ một khối phải chờ; L4 cũng chỉ một khối phải chờ.
 
 Mọi level thắng đều +40 gold.
 
 | Level | Màu | Khối | Ghi chú |
 | --- | --- | --- | --- |
-| 1 | 2 màu (vàng, xanh dương) | 2 | Chữ "Tap the block" |
-| 2 | 3 màu | 3 | Không khối bị chặn |
-| 3 | 3 màu | 4 | Một khối phải chờ |
-| 4 | Đủ 4 màu | 5 | Một khối phải chờ |
-| 5–13 | 4 màu | 6–11 | Gợi ý mở ở L5, Rate us ở L10, +3 Move mở ở L12 |
-| 14 | 4 màu | 16 | Level dạy Đá; từ đây khối xếp thành hình vẽ tay |
-| 15–29 | 4 màu | 19–31 | Phá khối mở ở L17; L24 là level HARD đầu tiên |
+| 1 | 2 màu (vàng, xanh dương) | 4 | Chữ "Tap the block" |
+| 2 | 3 màu | 6 | Không khối bị chặn |
+| 3 | 3 màu | 8 | Một khối phải chờ |
+| 4 | Đủ 4 màu | 10 | Một khối phải chờ |
+| 5–13 | 4 màu | 12–22 | Gợi ý mở ở L5, Rate us ở L10, +3 Move mở ở L12 |
+| 14 | 4 màu | 34 | Level dạy Gỗ; từ đây khối xếp thành hình vẽ tay |
+| 15–29 | 4 màu | 40–62 | Phá khối mở ở L17; L24 là level HARD đầu tiên |
 
 ### Hình dạng level
 
@@ -112,10 +117,10 @@ Bàn luôn 14×19 ô (mục 3), nên số khối chỉ quyết định hình to 
 | Từ L14 và Daily Challenge (`src/core/motifs.gd`) | 21 hình vẽ tay, mỗi hình 2–3 cỡ. Hình cơ bản: mũi tên (lên, xuống, trái, phải), tim, ngôi sao, chữ thập, chữ X, thoi rỗng, đồng hồ cát. Theme kẹo: kẹo bọc giấy, kẹo mút, cupcake, kem ốc quế, donut. Hình khác: hoa, cỏ bốn lá, bướm, cây thông, nhà, vương miện, nấm, tên lửa |
 | L5–13 | Bộ sinh với 9 dạng trong `src/core/silhouette.gd` (oval, thoi, tim, chữ thập, đồng hồ cát, vòm, vòng, mũi tên, nhà), khoét rìa ngẫu nhiên; dưới 6 khối thì xếp hình chữ nhật. Giữ nguyên, không sinh lại |
 | L1–4 | Làm tay (bảng EARLY), dịch vào giữa bàn |
-| Level dạy cơ chế (14, 30, 40, 55, 70, 90) | Sinh to như level thường theo hình vẽ tay, chỉ bật đúng cơ chế mới. Bộ sinh chỉ nhận level cho chạm thử cơ chế ngay lúc đầu: Đá có ít nhất 2 viên; Băng có khối nứt được; Xích có khối bị xích mà chìa thoát được ngay; Hai lớp có khối bóc được; Sương mù có khối ẩn màu; Cổng nhịp đóng lúc đầu và có khối đang chờ cổng |
+| Level dạy cơ chế (14, 30, 40, 55, 70, 90) | Sinh to như level thường theo hình vẽ tay, chỉ bật đúng cơ chế mới. Bộ sinh chỉ nhận level cho chạm thử cơ chế ngay lúc đầu: Gỗ có ít nhất 2 ô; Pudding có khối làm vỡ được; Xích có khối bị xích mà chìa thoát được ngay; Hộp giấy có hộp đẩy ra được; Sương mù có khối ẩn màu; Cổng nhịp đóng lúc đầu và có khối đang chờ cổng |
 
-- Hình vẽ tay (từ L14): mỗi bản vẽ rộng chẵn để nằm đúng giữa bàn 14 cột, tối đa 12×17, đối xứng trái phải hoặc trên dưới (chữ thập, chữ X, thoi, đồng hồ cát, kẹo bọc, donut, hoa, cỏ bốn lá đối xứng cả bốn góc). Không khoét rìa. Chọn cỡ có số ô (trừ đá) chia số khối trong 2,3–3,6 (`Config.MOTIF_FILL_MIN`, `MOTIF_FILL_MAX`). Level liền nhau đi cách nhau 8 bước trong danh sách hình nên ra hình khác nhóm.
-- Cắt khối từ L14: đá và cách cắt khối đối xứng theo trục của hình (lát nửa hình hoặc một phần tư rồi lật ra; khối chạm trục có thể vắt qua trục thành một khối đối xứng). Màu (hướng) vẫn gán tự do theo ván mô phỏng, nên màu không đối xứng. Số khối có thể lệch tối đa 2 so với đường cong vì mỗi lần gộp đối xứng bớt 1, 2 hoặc 4 khối.
+- Hình vẽ tay (từ L14): mỗi bản vẽ rộng chẵn để nằm đúng giữa bàn 14 cột, tối đa 12×17, đối xứng trái phải hoặc trên dưới (chữ thập, chữ X, thoi, đồng hồ cát, kẹo bọc, donut, hoa, cỏ bốn lá đối xứng cả bốn góc). Không khoét rìa. Chọn cỡ có số ô (trừ gỗ) chia số khối trong 1,15–1,8 (`Config.MOTIF_FILL_MIN`, `MOTIF_FILL_MAX`; trước khi gấp đôi số khối là 2,3–3,6). Level liền nhau đi cách nhau 8 bước trong danh sách hình nên ra hình khác nhóm.
+- Cắt khối từ L14: gỗ và cách cắt khối đối xứng theo trục của hình (lát nửa hình hoặc một phần tư rồi lật ra; khối chạm trục có thể vắt qua trục thành một khối đối xứng). Màu (hướng) vẫn gán tự do theo ván mô phỏng, nên màu không đối xứng. Số khối có thể lệch tối đa 2 so với đường cong vì mỗi lần gộp đối xứng bớt 1, 2 hoặc 4 khối.
 - Cỡ hình L5–13: số ô khoảng 2,4–3,4 lần số khối, khung hình tối đa 12×17 (chừa một ô mỗi phía), cao tối đa khoảng 1,9 lần rộng, khoét thêm khoảng 6% ô rìa để hình không quá đều. Hình lớn nhất trong ảnh ref là 10×17.
 - Sương mù: chỉ khối kề rời đi (thoát hoặc bị phá) mới làm lộ, ô trống sẵn quanh hình không tính. Nhờ vậy mọi khối sương mù đều ẩn lúc đầu, kể cả ở rìa hình.
 
@@ -123,21 +128,23 @@ Bàn luôn 14×19 ô (mục 3), nên số khối chỉ quyết định hình to 
 
 Nguyên tắc: cơ chế chỉ làm bàn cờ dễ hơn theo thời gian hoặc lặp lại theo chu kỳ, không có nước đi nào khiến level không thể thắng. Không timer. Solver phải chứng minh được từng level. Vì vậy không dùng đổi màu ngẫu nhiên hay khối mọc thêm.
 
-Mỗi cơ chế có một level dạy (chỉ cơ chế đó, xem "Hình dạng level") và một âm thanh riêng. Sau L90 chỉ phối hợp các cơ chế đã có.
+Mỗi cơ chế có một level dạy (chỉ cơ chế đó, xem "Hình dạng level") và một âm thanh riêng. Sau L90 chỉ phối hợp các cơ chế đã có. Mốc level theo `Config.UNLOCK` (bảng "Mở khoá theo level").
 
-| Từ level | Cơ chế | Luật | Âm thanh |
-| --- | --- | --- | --- |
-| 21 | Đá | Vật cản cố định, không trượt | Va đá trầm |
-| 31 | Băng | Cần 2 lần chạm, lần đầu làm nứt; chạm nứt tốn MOVES và đã tính vào `MOVES` | Băng nứt |
-| 46 | Xích và chìa | Khối bị xích chỉ đi được khi khối chìa đã thoát | Xích rơi |
-| 61 | Hai lớp | Thoát lớp ngoài thì lộ lớp trong, màu khác | Bóc lớp |
-| 81 | Sương mù | Không thấy màu cho tới khi một khối kề rời đi | Gió nhẹ |
-| 101 | Cổng nhịp | Cổng đóng/mở luân phiên sau mọi lần chạm, kể cả chạm bị chặn | Cổng cơ khí |
+Theme kẹo (2026-11-03) đổi hình ba vật cản, luật giữ nguyên; tên trong dữ liệu và code vẫn là `stone`, `ice`, `chained_by`, `inner_color`.
+
+| Từ level | Cơ chế | Luật | Hình | Âm thanh |
+| --- | --- | --- | --- | --- |
+| 14 | Gỗ (`stone`) | Vật cản cố định, không trượt | Khối gỗ nâu có vân, hai đường ghép ván, đinh bốn góc (`mech_stone`) | Va đá trầm |
+| 30 | Pudding (`ice`) | Cần 2 lần chạm, lần đầu làm vỡ lớp pudding; chạm này tốn MOVES và đã tính vào `MOVES` | Lớp pudding hồng gần trong suốt phủ trọn khối kẹo, tràn ra ngoài mép 0,1 ô, viền đậm hơn, bọt khí nhỏ, vệt sáng quét chéo mỗi 3,2 giây | Băng nứt |
+| 40 | Xích và chìa | Khối bị xích chỉ đi được khi khối chìa đã thoát | Xích thép bắt chéo chữ X qua trọn khung khối (khối hình L, T thêm chữ X cho ô nằm xa), ổ khoá vàng ở giữa | Xích rơi |
+| 55 | Hộp giấy (`inner_color`) | Lớp ngoài thoát thì lộ lớp trong, màu khác | Hộp giấy nhuộm màu hướng đi của lớp ngoài, băng dán chữ thập qua tâm hộp; kẹo bên trong bị che kín | Bóc lớp |
+| 70 | Sương mù | Không thấy màu cho tới khi một khối kề rời đi | | Gió nhẹ |
+| 90 | Cổng nhịp | Cổng đóng/mở luân phiên sau mọi lần chạm, kể cả chạm bị chặn | | Cổng cơ khí |
 
 Booster với cơ chế:
 
-- Phá khối: không dùng được trên đá; dùng trên băng, xích hoặc hai lớp thì xoá hẳn cả khối.
-- Gợi ý: chỉ khối đi được ngay, có tính cổng nhịp.
+- Phá khối: không dùng được trên gỗ; dùng trên pudding, xích hoặc hộp giấy thì xoá hẳn cả khối. Booster là búa kẹo mút (2026-11-03): chọn khối xong thì kho và bàn cập nhật ngay, búa bật ra giữa màn trên nền tia sáng xoay, lấp lánh một nhịp, thu nhỏ bay vồng tới khối và nhấc lên, rồi vung xuống cho mặt kẹo gõ đúng một ô của khối (khoảng 0,7 giây từ lúc chọn tới lúc gõ, `src/ui/smash_fx.gd`). Lúc gõ: loé trắng toàn màn, tia toả, hai vòng sóng hồng vàng, sao nổ, vòng 5 sao vàng xoay như bị choáng váng; khối vỡ tung thành mảnh kẹo đúng chất liệu (mỗi ô 8 mảnh tam giác, bắn toả khỏi chỗ gõ, hất lên rồi rơi) và bàn rung mạnh hơn va chạm thường. Búa bay thì bàn và các nút không nhận chạm; mảnh leaderboard (nếu có) bay về chip lúc búa gõ.
+- Gợi ý: chỉ khối đi được ngay, có tính cổng nhịp. Bấm thì một ngôi sao bay theo đường cong nhẹ từ nút Gợi ý tới khối (khoảng 0,8 giây), kéo đuôi mảnh màu cam hồng và bụi sao; chạm thì loé sáng, toả tia, khối nảy rồi nhấp nháy. Sao còn bay thì bấm Gợi ý không làm gì. Người chơi đi nước khác trong lúc sao bay thì khi chạm nháy gợi ý mới, booster không mất.
 - Sương mù: chạm khối chưa lộ vẫn tốn 1 MOVES nếu bị chặn.
 
 ### Mở khoá theo level
@@ -157,6 +164,8 @@ Booster với cơ chế:
 
 Hàng booster trong level luôn có đủ 3 ô. Ô chưa mở tô tối, có ổ khoá ở góc, không có nhãn số, chữ dưới ô ghi level mở ("Level 12"); chạm vào chỉ báo "Mở khoá ở Level N", không mở hộp mua. Booster chưa mở mà nhận từ lịch quà thì vẫn vào kho, tới level mở thì ô mới dùng được. Popup hết MOVES vẫn bán hoặc dùng +3 Move trước L12, vì món này áp dụng ngay. Quà hướng dẫn ở L5/L12/L17 vẫn tặng.
 
+Dùng +3 Move từ hàng booster: lượt cộng vào bàn ngay, nhưng chip lượt trên thanh trên tăng dần. Mỗi lượt là một dấu "+" bay từ nút tới chip, chạm chip thì số tăng 1; dấu cuối kèm loé sáng và chữ "+3" (cả quá trình khoảng 1 giây, chạm khối trong lúc bay vẫn được). +3 Move từ popup hết MOVES cộng thẳng, không có hiệu ứng này.
+
 ### Thẻ thắng và thẻ thua
 
 Hai thẻ là popup chồng lên màn level (bàn cờ khoá input), không đổi scene. Mỗi lượt chỉ kết thúc một lần: `attempt.ended` chặn cộng gold hai lần. Thẻ đọc `attempt.level`, không đọc `s.level` (đã tăng sau khi thắng).
@@ -170,7 +179,7 @@ Hai thẻ là popup chồng lên màn level (bàn cờ khoá input), không đ�
 
 ### Phạm vi
 
-- **Demo:** L1–20, có đủ popup hết MOVES, quà 28 ngày, avatar và frame; có Đá từ L14. Sau L20 hiện "Sắp có level mới". Icon Daily Challenge ở Home hiện khoá (icon tối, có ổ khoá), ribbon ghi "Level 50". Quảng cáo và mua hàng dùng bản giả lập cho tới khi có cấu hình từ Horus.
+- **Demo:** L1–20, có đủ popup hết MOVES, quà 28 ngày, avatar và frame; có Gỗ từ L14. Sau L20 hiện "Sắp có level mới". Icon Daily Challenge ở Home hiện khoá (icon tối, có ổ khoá), ribbon ghi "Level 50". Quảng cáo và mua hàng dùng bản giả lập cho tới khi có cấu hình từ Horus.
 - **Bản phát hành đầu tiên:** L1–100 sinh trước bằng công cụ theo đường cong độ khó, solver kiểm và đóng gói sẵn; L1–4 làm tay.
 - **Sau L100 (vòng lặp):** số level hiển thị tăng mãi (L101, L102…), nội dung quay lại từ level `content_loop_start_level` (mặc định 51) đến L100 rồi lặp tiếp. Cấu hình được qua Remote Config. Bản lưu chỉ giữ số hiển thị nên người chơi nâng cấp từ bản cũ (kể cả đã qua L300) tự nhận nội dung theo vòng lặp, không cần migrate. Daily Challenge vẫn sinh bàn trong game.
 - **Daily Challenge (L50):** dùng cùng bộ sinh. +100 gold cho lần thắng đầu tiên mỗi ngày, x2 bằng video như level thường, không có chuỗi ngày và bảng xếp hạng. Thua vẫn mất mạng như level thường.
@@ -445,7 +454,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 | Hình khối | Ô liền một viên, không đường nối; góc lồi bo, góc lõm bo mềm | Bo lồi 0,25; bo lõm 0,13; khe giữa hai khối 0,028 |
 | Bóng đổ | Ám chàm, không đen, mềm, lệch xuống dưới; nằm ở lớp riêng dưới mọi khối nên không đổ lên khối bên cạnh | Lệch 0,09; mờ 0,13; đậm 34% |
 | Mép gối | Đậm màu ở mép, chuyển mềm vào mặt, ánh sáng từ trên trái; mép phải tối hơn mép trái | Trên 0,02; hai bên 0,2; đáy 0,28; chuyển 0,11 |
-| Sọc | Dải chéo 45 độ lên phải, cạnh sắc, nửa đậm nửa nhạt; theo toạ độ ô nên khối cạnh nhau liền pha và sọc đi theo khối khi trượt; mờ đi khi qua mép gối | Chu kỳ ngang đúng 1 ô |
+| Sọc | Dải chéo 45 độ lên phải, cạnh sắc, nửa đậm nửa nhạt; theo toạ độ ô nên khối cạnh nhau liền pha và sọc đi theo khối khi trượt; mờ đi khi qua mép gối | Chu kỳ ngang đúng 1 ô; sọc nhạt pha 50% tông `stripe` vào `face`, trên mép gối 8% |
 | Sáng mặt | Pha trắng, mạnh nhất ở mép trên, nhạt dần xuống dưới | Tầm 0,6; tối đa 26% |
 | Vệt bóng | Mỗi mép hướng lên một vạch trắng mảnh. Đầu vạch ở góc lồi là đốm trắng móc nhẹ xuống; đầu vạch ở góc lõm là lưỡi liềm cong lên theo thành | Cách mép 0,14; vạch đậm 55%, đốm 100% |
 | Vạch đáy | Vạch sáng mảnh sát mép dưới, rõ hơn ở góc dưới phải | Cách mép 0,05 |
@@ -461,8 +470,8 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 
 - Texture khoảng cách tới mép (SDF) dựng một lần cho mỗi hình khối rồi cache (không phụ thuộc màu hay cỡ ô, khoảng 4–35 ms mỗi hình trên máy dev); shader dùng SDF để tính mép gối, vạch đáy và bóng, nên khối chữ L, T, ... đều ra đúng cấu trúc, viền góc liền một nét. Mỗi điểm ảnh đọc texture tối đa 7 lần.
 - Cỡ ô là số nguyên (làm tròn xuống) để các ô của một khối khớp pixel.
-- Khối không có mũi tên, đúng như ảnh duyệt. Băng tô trong hình khối bằng shader nên không tràn ra góc bo, nháy sáng Gợi ý cũng vậy; xích, sương mù vẽ đè lên lớp kẹo, giữ nguyên cách đọc. Khối hai lớp: viên trong dùng đúng shader và vệt bóng đó ở cỡ nhỏ hơn.
-- Chưa áp dụng cho nền, đá, icon (giữ nét hiện tại). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá kẹo gel bóng (xem quy tắc prompt bên dưới) để cùng phong cách.
+- Khối không có mũi tên, đúng như ảnh duyệt. Lớp pudding và hộp giấy vẽ trong cùng shader thân khối (`pudding.gdshader`) theo SDF nên ôm đúng mọi hình khối, nháy sáng Gợi ý cũng vậy; xích, sương mù vẽ đè lên lớp kẹo, giữ nguyên cách đọc.
+- Chưa áp dụng cho nền, icon (giữ nét hiện tại). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá kẹo gel bóng (xem quy tắc prompt bên dưới) để cùng phong cách.
 
 **Khung cổng (2026-11-02).** Khung theo cùng ảnh duyệt, vẽ bằng shader (`src/ui/candy_frame.gd`, `frame_bar.gdshader`, `frame_corner.gdshader`), số đo theo ô:
 
@@ -475,7 +484,8 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 
 - Số đo hình học theo ảnh ref `art/concepts/ref_board_size.png`, màu giữ theo ảnh duyệt kẹo. Khung chiếm thêm 0,77 ô mỗi bên và 0,61 ô trên dưới, trọn khung 652×848 px ở 720×1280 (ảnh ref quy đổi là 651×842).
 - Màn level chỉ có thanh trên (lượt, tên level, restart, bánh răng; Home nằm trong popup cài đặt; hàng dưới giữ chỗ cao cố định cho chip đếm mảnh, kể cả level không có mảnh) và hàng booster (luôn 3 ô) chiếm chiều cao; chữ hướng dẫn và nhãn Phá khối phủ lên phần trên của bàn. Nhờ vậy khung không xê dịch giữa các level. Nền bàn trơn, không vẽ lưới ô.
-- Nền màn level là ảnh `bg_level` (phong cảnh kẹo), giống nhau ở cả 3 độ khó, phủ một lớp dim đen trong suốt (`ThemeKit.LEVEL_BG_DIM`, 30%) để bàn cờ nổi; ảnh cắt kiểu cover nên không méo trên màn dài. Độ khó chỉ báo bằng huy hiệu HARD/VERY HARD và dải cảnh báo, không đổi màu nền. Thiếu ảnh thì còn nền màu `LEVEL_BG`.
+- HUD level dùng bộ sprite kẹo thạch tím `assets/ui/hud/` (theo `art/concepts/ref_hud_candy.png`): khung MOVES ghi "MOVES" nhỏ trên số lượt to; pill tím ghi HARD hoặc VERY HARD dưới tên level; restart và bánh răng là nút tròn; 3 booster là nút vuông bo có glyph trắng. Huy hiệu góc dưới phải ô booster là tròn xanh ghi số còn lại (`x2`), hết kho thì là sprite dấu + xanh. Chữ và số đều vẽ bằng code.
+- Nền màn level là ảnh `bg_level` (phong cảnh kẹo), giống nhau ở cả 3 độ khó, vẽ nhạt ở độ trong suốt 35% (`ThemeKit.LEVEL_BG_IMAGE_ALPHA`) trên nền hồng pastel `LEVEL_BG` (`#FFEEF4`, cùng màu nền Home) để nền ám hồng sáng; lớp dim `ThemeKit.LEVEL_BG_DIM` để trong suốt hoàn toàn (bảng tím đậm đã đủ nổi trên nền sáng); ảnh cắt kiểu cover nên không méo trên màn dài. Độ khó chỉ báo bằng huy hiệu HARD/VERY HARD và dải cảnh báo, không đổi màu nền. Thiếu ảnh thì còn nền màu `LEVEL_BG`.
 - Cổng nhịp đóng: thanh tối đi 55%, mũi tên mờ, hiện các vạch chắn ngang thanh; khi đổi trạng thái thì nháy sáng trong hình thanh. Khối bị cổng đóng chặn trượt qua khoảng trống tới mặt trong của thanh rồi bật về; hạt lúc khối thoát bắn ở mặt trong của thanh.
 - Nền bàn giữ màu cũ, chỉ đổi hình theo khung (tới đường giữa thanh, bo theo ống góc).
 
@@ -484,6 +494,7 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 | Khoảnh khắc | Diễn biến | Số đo |
 | --- | --- | --- |
 | Khối lao tới thanh | Nhanh dần, dài ra theo hướng lao, tới đúng mặt trong của thanh cùng màu | 0,14–0,30 giây tuỳ quãng đường; dài ra 9% |
+| Gió hút vào thanh (2026-11-03) | Khi khối thoát gần chạm thanh cùng màu và suốt lúc bị nghiền, vệt gió thon trắng pha màu thanh, dài ngắn khác nhau, hiện sát mặt trong của thanh, chạy nhanh dần vào thanh, chụm dần về đoạn khối phủ như phễu, chạm thanh thì bị nuốt vào. Thanh giữ nguyên hình dạng và kích thước, vệt không vẽ lên thanh. Vệt nằm dưới lớp khối nên khối che phần vệt trùng làn của nó. Chỉ khi khối thoát, dội vào cổng đóng thì không có (`src/ui/suck_wind.gd`) | 14 vệt rải đều từ 0,08 giây trước lúc chạm tới lúc khối trôi hết qua thanh, mỗi vệt sống 0,16–0,24 giây; đầu vệt hiện cách thanh 0,1–0,8 ô, toả ra 0,9 ô ngoài hai đầu đoạn, sát thanh còn 70% độ lệch; dài 0,3–1,4 ô, dày 0,07 ô; màu thanh pha 60% trắng, đậm 70% |
 | Nghiền qua thanh (theo video ref `art/concepts/2026-11-03_08-48-53.mp4`) | Không nổ một lần: khối trôi đều tiếp qua thanh, phần đã qua mặt trong của thanh bị cắt đi như lùa dưới thanh. Mỗi ô đang vắt qua thanh phun ra khối vuông nhỏ ở mặt ngoài thanh, theo phần diện tích vừa qua, nên vụn ra liên tục suốt lúc khối đi qua; kèm vài sao lấp lánh lúc bắt đầu. Khối vuông lấy màu đúng chỗ đang qua thanh trên khối (sọc, mép) và có mặt bên đùn xuống (tối theo hướng mặt, vạch sáng ở mép trên) nên trông như hạt kẹo cứng | Trôi 9 ô/giây; 22 khối vuông mỗi ô diện tích; cạnh khối vuông khoảng 0,15–0,24 ô (nửa đường chéo 0,11–0,17 ô), dày 0,8 lần nửa đường chéo; 6 sao |
 | Vụn bay | Phun ra khỏi thanh theo hướng khối đi, toả hình nón rộng sang hai bên, chậm dần, trôi nhẹ chứ không rơi, vừa bay vừa lật; bay đè lên cả vùng ngoài bàn, nút và chữ; nhỏ dần và mờ ở cuối | 3,5–9 ô/giây theo hướng đi, ngang tới ±1 lần; hãm 1,8/giây; trọng lực 3 ô/giây²; xoay 3–9 rad/giây; sống 0,75–1,15 giây; bay xa khoảng 1,5–4,5 ô (trước đây 0,7–2,2 ô) |
 | Thanh bị va | Bật ra rồi nảy về, sóng sáng chạy dọc thanh từ điểm va, mũi tên phồng lên | 0,45 giây; bật 0,1 ô |
@@ -491,7 +502,20 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 | Loé sáng | Chỉ khi va chạm: quầng sáng, sao bốn cánh và vòng sóng toả ra, kèm sao lấp lánh. Khối thoát không loé, không rung bàn | Rộng 1,8 ô, 4 sao |
 | Va chạm | Khối đi va nhún theo trục va, tâm nhún ở điểm chạm rồi về chỗ cũ không vượt quá; vụn kẹo và sao văng ra ở điểm chạm | Nhún 15%, 0,46 giây; 4 vụn mỗi khối, văng 2–5 ô/giây |
 | Khối bị va | Giật lùi rồi về đúng ô, nhún theo, dư chấn lan sang tối đa 2 khối nằm ngay phía sau, mỗi khối yếu đi một nửa | Nhún 10%; lùi 0,1 ô; trễ 0,05 giây mỗi khối |
-| Chạm đá, cổng đóng | Chỉ khối kẹo nhún và văng vụn; cổng đóng còn có thanh bị va | Như trên |
+| Chạm cổng đóng | Chỉ khối kẹo nhún và văng vụn; thanh bị va | Như trên |
+| Gỗ | Ảnh khối gỗ (`mech_stone`) phủ kín ô vuông. Người chơi chạm vào ô gỗ: gỗ nhún, dằm gỗ văng nhẹ, không tốn MOVES | Như "Va gỗ", độ mạnh 70% |
+
+**Hiệu ứng vật cản (2026-11-03).** Gọn, mỗi khoảnh khắc dưới 0,9 giây, không chặn thao tác; có loé sáng sao bốn cánh và sao lấp lánh như va chạm thường. Code ở `src/ui/obstacle_fx.gd`, nối trong `board_view.gd`; số đo cỡ theo ô.
+
+| Khoảnh khắc | Diễn biến | Số đo |
+| --- | --- | --- |
+| Va gỗ | Ô gỗ bị ép theo hướng va rồi nảy về (dao động tắt dần); dằm gỗ thon văng ngược về phía khối va, xoay theo hướng bay rồi rơi; mùn cưa bốc nhẹ; loé vàng cam | Ép 16%, 0,32 giây; 7 dằm, 4–10 ô/giây; 6 đốm mùn; loé 2 ô |
+| Va khối pudding | Khối bị va nhún mạnh như thạch; vài giọt pudding bắn ra; loé hồng | Nhún gấp 2,2 lần khối thường; 6 giọt |
+| Pudding vỡ (lần chạm đầu) | Khối nảy, loé trắng; lớp pudding phồng ra và mờ đi; bọt pudding bóng toả tròn rồi rơi, giọt nhỏ bắn xa; loé hồng lớn với vòng sóng, sao lấp lánh | Lớp pudding to 1,28 lần trong 0,3 giây; 16 bọt, 14 giọt; loé rộng bằng khối + 2,2 ô |
+| Va hoặc chạm khối bị xích | Khối rung (khi chạm), tia lửa thép toả nhanh từ ổ khoá hoặc điểm va, loé trắng nhỏ; khối chìa phồng lên để chỉ chỗ | 9 tia, sống 0,32 giây; loé 1,3 ô |
+| Xích đứt (chìa đã thoát) | Ổ khoá bật quai, phóng to, xoay và bay lên rồi mờ; mắt xích văng tung, xoay rồi rơi; lớp xích phồng ra mờ dần; tia lửa vàng, loé vàng lớn, sao lấp lánh | Ổ khoá 0,55 giây, to 1,6 lần, bay lên 0,9 ô; 12 mắt xích, 12 tia lửa |
+| Va hộp giấy | Bụi giấy và 3 mẩu giấy bay lả; loé màu giấy nhỏ | Loé 1,3 ô |
+| Hộp bay ra (lớp ngoài thoát) | Hộp giấy lao về thanh cùng màu như khối thoát (có gió hút), kẹo bên trong ở lại, nảy và loé, sao lấp lánh màu mới; tới thanh thì thanh lăn và hộp rách tung thành giấy vụn (màu hộp, giấy kraft, băng dán) bay lả theo hướng đi | 0,16–0,30 giây tới thanh; 22 mẩu giấy, sống 0,9 giây |
 
 - Khối còn trong sương mù: vụn va chạm dùng màu xám để không lộ màu. Khi nghiền thì đã thoát nên vụn dùng đúng màu thật.
 - Trận thắng chờ khối cuối nghiền xong thêm 0,25 giây rồi mới hiện thẻ thắng; vụn còn lại bay tiếp đè lên thẻ tới hết đời.
@@ -516,7 +540,8 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 | `bg_level` | Ảnh có sẵn (`art/images/bg_level_candy.png`) | 880×1787 → rộng 720 | Phong cảnh kẹo, giữa là bãi cát trống cho bàn cờ; code phủ dim và cắt kiểu cover theo màn |
 | `block_surface` | Bỏ | | Không còn dùng: chất liệu khối vẽ hoàn toàn bằng code (xem Concept theme) |
 | `ui_gold`, `ui_heart`, `ui_hint`, `ui_moves`, `ui_smash` | `icon`, nền trong | 1024 → 128 | Gold, mạng, 3 booster (bản cũ; booster nay dùng `booster_*`) |
-| `booster_hint`, `booster_move`, `booster_smash` | `edit_game_image`, nền trong: ảnh 1 là bố cục vẽ tay `art/images/booster_*.svg` (xuất bằng `tools/render_svg_icons.gd`), ảnh 2 là icon Figma (`ic_gold`, Smash dùng `ic_bomb`); cắt bằng `tools/fit_icon.gd` | 1024 → 256 | Bóng đèn đế kẹo sọc; mũi tên vòng cung xanh sọc chéo như khối, dấu cộng vàng; búa kẹo hồng cán gậy kẹo. Mũi tên Move để hở, không khép vòng, để khỏi lẫn với nút restart |
+| `booster_hint`, `booster_move`, `booster_smash` | `edit_game_image`, nền trong: ảnh 1 là bố cục vẽ tay `art/images/booster_*.svg` (xuất bằng `tools/render_svg_icons.gd`), ảnh 2 là icon Figma (`ic_gold`, Smash dùng `ic_bomb`); cắt bằng `tools/fit_icon.gd` | 1024 → 256 | Bóng đèn đế kẹo sọc; mũi tên vòng cung xanh sọc chéo như khối, dấu cộng vàng; búa kẹo mút (hai mặt kẹo xoắn hồng trắng, thân sọc, nơ hồng, cán que trắng; 2026-11-03 sửa từ `booster_smash.png` cũ, ảnh gốc `art/images/booster_smash_lollipop_ai.png`, cùng ảnh cắt 384 px làm `fx_lollipop_hammer` cho hiệu ứng Phá khối). Mũi tên Move để hở, không khép vòng, để khỏi lẫn với nút restart |
+| `hud_btn_restart`, `hud_btn_settings`, `hud_booster_hint`, `hud_booster_move`, `hud_booster_smash`, `hud_panel`, `hud_moves_panel`, `hud_pill`, `hud_badge_plus`, `hud_badge_count` (`assets/ui/hud/`) | `edit_game_image`, nền trong, tham chiếu `art/concepts/ref_hud_candy.png` (cắt từng nút ở `art/images/hud_ref/`); cắt bằng `tools/fit_icon.gd --solid=200` | 1024 → 192 (nút tròn), 256 (booster), 288×185 (khung MOVES, 9-slice ~44 px), 96×44 (pill, 9-slice ~22 px), 96 (huy hiệu) | Bộ HUD kẹo thạch tím theo ảnh ref: nút tròn restart, bánh răng; 3 booster vuông bo có glyph trắng hồng (búa kẹo mút mặt xoắn hồng, sửa 2026-11-03 từ ảnh nút cũ; số 3 trong vòng mũi tên, bóng đèn); khung MOVES và pill độ khó để trống, chữ và số vẽ bằng code; huy hiệu xanh dấu + (hết booster) và tròn trống (số còn lại). `hud_panel` (squircle, cạnh cong nên không 9-slice) chưa dùng |
 | `ui_shop`, `ui_settings`, `ui_lock`, `ui_restart`, `ui_video`, `ui_gift`, `ui_profile`, `ui_sound`, `ui_music` | `icon`, nền trong | 1024 → 128 | Nút và trạng thái; tắt âm thì code vẽ gạch chéo |
 | `art_win`, `art_lose`, `art_no_lives` | `ui`, nền trong | 1024 → 512 | Thẻ thắng, popup thua, màn hết mạng |
 | `avatar_00`–`avatar_12` | `icon`, nền trong | 1024 → 256 | Avatar; `00` là mặc định |
@@ -580,3 +605,6 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 - Dựng lại Settings, cài đặt trong màn và Profile theo khung hi-fi Figma (node 47:3486). Settings: bốn icon bật tắt (âm thanh, rung, nhạc, thông báo) thay cho dòng On/Off, nút Support và Language, ngôn ngữ chọn trong popup Language; Privacy, Restore là chữ gạch chân; số phiên bản nằm dưới góc phải popup. Cài đặt trong màn: Home và Restart gắn "-1 tim" khi bỏ ván sẽ mất mạng. Profile: chạm ô để chọn, một nút dưới lưới (đang đeo, Đeo, hoặc giá gold kèm nút video); tab Avatar và Frame. Figma có biệt danh và UID nhưng game chưa có tài khoản, nên ô tên hiện "Người chơi" và dòng UID hiện gold.
 - Tăng độ khó từ L14 (mức "vừa"): số khối nhân 1,3, trần 40; bộ sinh ưu tiên khối bị chặn lúc đầu mạnh hơn; công thức dư MOVES giữ nguyên. Từ L14 khối xếp theo 21 hình vẽ tay (`src/core/motifs.gd`, ba nhóm: hình cơ bản, theme kẹo, hình khác; không dùng hoa văn sinh ngẫu nhiên). Ô, đá và cách cắt khối đối xứng theo hình, màu (hướng) vẫn tự do. Level dạy cơ chế bỏ bảng làm tay nhỏ, sinh to như level thường và chỉ bật cơ chế mới. Bàn có cổng nhịp tối đa 26 khối (trước là 20). Sinh lại L14–100 bằng lệnh phát hành (cờ `--teach` đổi tên thành `--early`); L1–13 không đổi.
 - Menu tester mở bằng 10 lần chạm nhanh vào số phiên bản trong Settings (trước là 7) hoặc phím F1 ở mọi màn. Bản debug (`Config.account_tool()`, gồm APK demo) có thêm phần sửa tài khoản: gold, level, số booster gợi ý, +3 Move, phá khối (Save), và Xoá tài khoản (chạm hai lần). Xoá tài khoản xoá file lưu, `.bak`, bản sao cloud và trạng thái mua giả lập, rồi chạy lại như lần cài đầu; bản lưu mới ghi đè bản cloud. Mua hàng thật trên Google Play vẫn giữ, Restore lấy lại được. Bản phát hành chỉ còn nút mediation debugger.
+- Gấp đôi số khối mọi level (`DifficultyCurve.COUNT_SCALE` = 2): L1–4 làm tay lại (4, 6, 8, 10 khối), sinh lại L5–100 bằng lệnh phát hành. Hình vẽ tay giữ cỡ, khối nhỏ lại (`MOTIF_FILL_MIN`, `MOTIF_FILL_MAX` 2,3–3,6 → 1,15–1,8), phần lớn khối giờ chỉ 1 ô. Bàn có cổng nhịp tối đa 52 khối, từ L130 (tới 2 cổng) tối đa 40 để sinh trong game vẫn dưới 200 ms.
+- Đổi tên game thành Candy Away (dòng phụ "Tap Block Puzzle"); package id và tên dự án giữ nguyên. Thêm màn loading khi mở game, art từ `concept_loading_v1_s2102` (nền, khối kẹo) và `concept_loading_v1_s2103` (logo).
+- Theme kẹo cho vật cản: đá thành khối gỗ nâu, băng thành lớp pudding gần trong suốt phủ trọn khối, xích quấn chữ X qua cả khối kèm ổ khoá vàng, hai lớp thành hộp giấy (che kín kẹo bên trong, lớp ngoài bay ra thanh rồi rách tung). Thêm hiệu ứng va chạm và mất vật cản theo chất liệu (mục 8). Luật, dữ liệu level và tên trong code giữ nguyên. Icon popup mới `mech_stone`, `mech_ice`, `mech_layer` tạo bằng MCP ComfyUI; âm thanh chưa đổi. Bảng "Cơ chế sau bản demo" sửa mốc level cho khớp `Config.UNLOCK` (trước ghi 21/31/46/61/81/101).

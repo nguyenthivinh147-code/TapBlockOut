@@ -1,5 +1,5 @@
 keys,en,vi
-APP_NAME,Tap Block Out,Tap Block Out
+APP_NAME,Candy Away,Candy Away
 common_ok,OK,OK
 common_cancel,Cancel,Huỷ
 common_close,Close,Đóng
@@ -100,6 +100,10 @@ no_lives_wait,Wait,Đợi
 no_lives_home,Back to Home,Về trang chủ
 no_lives_not_enough_gold,Not enough gold,Chưa đủ gold
 no_lives_lives,Lives: %d/%d,Mạng: %d/%d
+no_lives_more_title,More lives,Thêm mạng
+no_lives_more_body,Top up your lives with gold or a video.,Nạp thêm mạng bằng gold hoặc xem video nhé.
+no_lives_full_body,Your lives are full. Go play!,Mạng đã đầy. Chơi thôi!
+no_lives_unlimited_body,You have unlimited lives right now.,Bạn đang có mạng vô hạn.
 ads_watch,Watch video,Xem video
 ads_loading,Loading video...,Đang tải video...
 ads_not_available,No video is available right now. Please try again later.,Hiện chưa có video. Bạn thử lại sau nhé.
@@ -170,7 +174,7 @@ settings_language_vi,Tiếng Việt,Tiếng Việt
 settings_privacy,Privacy settings,Cài đặt quyền riêng tư
 settings_restore,Restore purchases,Khôi phục giao dịch
 settings_support,Support,Hỗ trợ
-settings_support_subject,Tap Block Out support,Hỗ trợ Tap Block Out
+settings_support_subject,Candy Away support,Hỗ trợ Candy Away
 settings_version,Version %s,Phiên bản %s
 settings_on,On,Bật
 settings_off,Off,Tắt
@@ -204,14 +208,14 @@ tut_shop_unlocked,The shop is now open.,Cửa hàng đã mở.
 tut_lives_intro,"From now on, losing a level uses 1 life. Lives come back over time.","Từ giờ, thua một level sẽ dùng 1 mạng. Mạng sẽ hồi dần theo thời gian."
 mech_new,New: %s,Mới: %s
 mech_got_it,Got it,Đã hiểu
-mech_stone,Stone,Đá
-mech_stone_desc,Stones never move. Slide the blocks around them.,Đá không bao giờ di chuyển. Hãy trượt các khối qua bên cạnh.
-mech_ice,Ice,Băng
-mech_ice_desc,"Tap once to crack the ice, then tap again to slide.","Chạm một lần để làm nứt băng, chạm lần nữa để trượt."
+mech_stone,Wood,Gỗ
+mech_stone_desc,Wooden blocks never move. Slide the candies around them.,Khối gỗ không bao giờ di chuyển. Hãy trượt kẹo qua bên cạnh.
+mech_ice,Pudding,Pudding
+mech_ice_desc,"Tap once to burst the pudding, then tap again to slide.","Chạm một lần để làm vỡ lớp pudding, chạm lần nữa để trượt."
 mech_chain,Chain,Xích
-mech_chain_desc,A chained block can only move after its key block has left.,Khối bị xích chỉ đi được sau khi khối chìa đã thoát.
-mech_layer,Layers,Hai lớp
-mech_layer_desc,Peel off the outer layer to reveal a new color.,Bóc lớp ngoài để lộ ra màu mới bên trong.
+mech_chain_desc,A chained candy can only move after its key block has left.,Kẹo bị xích chỉ đi được sau khi khối chìa đã thoát.
+mech_layer,Paper box,Hộp giấy
+mech_layer_desc,Send the box out to reveal the candy inside. It has a new color!,Đẩy hộp giấy ra ngoài để lộ viên kẹo bên trong. Kẹo có màu mới!
 mech_fog,Fog,Sương mù
 mech_fog_desc,Colors stay hidden until a neighboring block leaves.,Màu sẽ ẩn cho tới khi khối bên cạnh rời đi.
 mech_pulse,Pulse gate,Cổng nhịp

@@ -16,6 +16,8 @@ const BOOST := 1.3
 const BOOST_MAX := 40
 const BLOCKED_POWER := 2
 const BLOCKED_POWER_HARD := 3
+## Hệ số nhân cuối cùng cho mọi level (2026-11-03: gấp đôi số khối). Bộ sinh giữ cỡ hình, khối nhỏ lại.
+const COUNT_SCALE := 2
 
 ## Điểm độ khó đã làm mượt (x100), L1 ở chỉ số 0.
 const SCORE := [
@@ -62,7 +64,8 @@ static func color_count(id: int) -> int:
 	return 4
 
 
-## Số khối mục tiêu: điểm chuẩn hoá theo min-max trên 100 level, nội suy MIN_BLOCKS..MAX_BLOCKS; từ SHAPED_FROM nhân BOOST.
+## Số khối mục tiêu: điểm chuẩn hoá theo min-max trên 100 level, nội suy MIN_BLOCKS..MAX_BLOCKS; từ SHAPED_FROM nhân BOOST;
+## cuối cùng nhân COUNT_SCALE.
 static func block_count(id: int) -> int:
 	var lo: float = SCORE.min() / 100.0
 	var hi: float = SCORE.max() / 100.0
@@ -75,7 +78,7 @@ static func block_count(id: int) -> int:
 	n = clampi(n, MIN_BLOCKS, MAX_BLOCKS)
 	if id >= SHAPED_FROM:
 		n = mini(BOOST_MAX, roundi(n * BOOST))
-	return n
+	return n * COUNT_SCALE
 
 
 ## Số mũ trọng số "khối bị chặn lúc đầu" khi bộ sinh gán hướng: càng lớn càng ít khối thoát được ngay.

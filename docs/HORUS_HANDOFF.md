@@ -1,4 +1,4 @@
-# Bàn giao cho đội Horus: Tap Block Out (Android, Godot 4.7.2)
+# Bàn giao cho đội Horus: Candy Away (Android, Godot 4.7.2)
 
 Cập nhật 2026-11-01. Game là app Android gốc làm bằng Godot (không phải bản web, không dùng Horus SDK JavaScript). Quảng cáo dùng AppLovin MAX, mua hàng dùng Google Play Billing, Firebase (Analytics, Remote Config, Crashlytics), Adjust, Play Games Saved Games, In-App Review, thông báo local: tất cả nằm trong plugin Android tự viết `TboPlatform` và plugin Godot Google Play Billing 3.3.0. Mã nguồn ghép cấu hình lúc build, thiếu cấu hình thì mô-đun tương ứng tự tắt, game vẫn chạy (không crash).
 

@@ -1,4 +1,4 @@
-# Tap Block Out (Godot 4.7.2, Android)
+# Candy Away (dự án TapBlockOut, Godot 4.7.2, Android)
 
 Game xếp khối trên Android gốc, làm bằng Godot (không phải bản web). Quảng cáo, mua hàng, Firebase, Adjust, Play Games nằm trong plugin Android `TboPlatform` và plugin Billing; thiếu cấu hình thì mô-đun tương ứng tự tắt, game vẫn chạy.
 

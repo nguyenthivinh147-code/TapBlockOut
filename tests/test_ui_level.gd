@@ -105,7 +105,7 @@ func _blocked_level() -> Array:
 	return [0, ""]
 
 
-## Nền màn level: ảnh bg_level nằm dưới cùng, lớp dim phủ trên ảnh; giống nhau ở mọi độ khó.
+## Nền màn level: màu LEVEL_BG dưới cùng, ảnh bg_level trong suốt phủ lên, lớp dim phủ trên ảnh; giống nhau ở mọi độ khó.
 func _check_bg(t: T, lv: Control, label: String) -> void:
 	var bg := lv.get_node_or_null("Background")
 	t.ok(bg != null and bg.get_index() == 0, "%s: nền nằm dưới cùng" % label)
@@ -113,6 +113,8 @@ func _check_bg(t: T, lv: Control, label: String) -> void:
 		return
 	var pic := bg.get_node_or_null("Image") as TextureRect
 	t.ok(pic != null and pic.texture.resource_path == ThemeKit.LEVEL_BG_IMAGE, "%s: ảnh nền bg_level" % label)
+	t.ok((bg as ColorRect).color == ThemeKit.LEVEL_BG, "%s: màu nền sau ảnh" % label)
+	t.ok(pic != null and is_equal_approx(pic.modulate.a, ThemeKit.LEVEL_BG_IMAGE_ALPHA), "%s: ảnh nền trong suốt" % label)
 	var dim := bg.get_node_or_null("Dim") as ColorRect
 	t.ok(dim != null and dim.color == ThemeKit.LEVEL_BG_DIM, "%s: có lớp dim" % label)
 	t.ok(pic != null and dim != null and dim.get_index() > pic.get_index(), "%s: dim phủ trên ảnh" % label)
@@ -131,7 +133,7 @@ func test_hud_level1(t: T) -> void:
 	await _wait_until(_playing.bind(lv))
 	t.eq(lv.state, "playing", "vào chơi")
 	t.eq(lv.title_label.text, lv.tr("level_title") % 1, "tên level")
-	t.eq(lv.moves_label.text, lv.tr("level_moves_left") % lv.board.moves_left(), "MOVES")
+	t.eq(lv.moves_label.text, str(lv.board.moves_left()), "MOVES")
 	t.ok(not lv.hard_badge.visible, "không HARD")
 	_check_bg(t, lv, "L1")
 	for k in ["hint", "move", "smash"]:
@@ -241,7 +243,7 @@ func test_rescue_inventory(t: T) -> void:
 	t.ok(await _wait_until(_playing.bind(lv)), "chơi tiếp")
 	t.eq(lv.board.moves_left(), 3, "+3 MOVES")
 	t.eq(int(g.s.inv.move), 0, "trừ kho")
-	t.eq(lv.moves_label.text, lv.tr("level_moves_left") % 3, "HUD cập nhật")
+	t.eq(lv.moves_label.text, str(3), "HUD cập nhật")
 	lv.free()
 
 
@@ -313,8 +315,15 @@ func test_booster_gift_and_hint(t: T) -> void:
 	t.eq(lv.booster_badges.hint.text, lv.tr("booster_count") % 1, "nhãn số còn lại")
 	lv.booster_buttons.hint.pressed.emit()
 	t.eq(int(g.s.inv.hint), 0, "dùng gợi ý")
-	t.eq(lv.board_view.highlighted_id(), lv.board.hint(), "nháy khối đi được")
-	t.eq(lv.booster_badges.hint.text, "+", "hết kho hiện dấu +")
+	t.ok(lv.get_node_or_null("LocalPopups/HintFx") != null, "sao gợi ý bay từ nút")
+	t.eq(lv.board_view.highlighted_id(), "", "chưa nháy khi sao còn bay")
+	lv.booster_buttons.hint.pressed.emit()
+	t.eq(int(g.s.inv.hint), 0, "bấm lại lúc sao bay không tốn thêm")
+	var hint_id: String = lv.board.hint()
+	t.ok(await _wait_until(func() -> bool: return lv.board_view.highlighted_id() == hint_id), "sao chạm thì nháy khối đi được")
+	t.ok(await _wait_until(func() -> bool: return lv.get_node_or_null("LocalPopups/HintFx") == null), "hiệu ứng tự xoá")
+	t.eq(lv.booster_badges.hint.text, "", "hết kho không ghi số")
+	t.ok((lv.booster_badges.hint.get_theme_stylebox("normal") as StyleBoxTexture).texture.resource_path.ends_with("hud_badge_plus.png"), "hết kho hiện sprite dấu +")
 	lv.free()
 
 
@@ -596,7 +605,9 @@ func test_main_navigation(t: T) -> void:
 	t.eq(m.current_name, "home", "vào Home")
 	t.eq(int(g.s.meta.sessions), 1, "Game.boot đã chạy")
 	m.current_screen.find_child("PlayButton", true, false).pressed.emit()
-	t.eq(m.current_name, "level", "Chơi -> level")
+	t.ok(m.curtain != null, "Chơi mở màn chuyển cảnh")
+	t.eq(m.current_name, "home", "Home còn đó tới khi hai cánh khép")
+	t.ok(await _wait_until(func() -> bool: return m.current_name == "level" and m.curtain == null), "Chơi -> level")
 	await _wait_until(func() -> bool: return m.current_screen.state == "playing")
 	m.current_screen.on_back()
 	await _wait_until(func() -> bool: return m.current_name == "home")

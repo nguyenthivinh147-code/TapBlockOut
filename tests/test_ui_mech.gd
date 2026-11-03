@@ -71,6 +71,8 @@ func test_fixture_loads_all_mechanics(t: T) -> void:
 	v.block_tapped.connect(func(id: String) -> void: seen.append(id))
 	_click(v, v.cell_center(sc))
 	t.eq(seen.size(), 0, "chạm đá không phát block_tapped")
+	t.eq(_fx_named(v, "WoodChips"), 1, "chạm gỗ văng dằm gỗ")
+	t.eq(_fx_named(v, "WoodKnock"), 1, "ô gỗ nhún")
 	t.eq(v.block_node("b1").view["ice"], 1, "b1 có băng")
 	t.eq(v.block_node("b2").view["chained"], true, "b2 bị xích")
 	t.eq(v.key_ids(), ["b3"] as Array[String], "b3 là chìa")
@@ -90,7 +92,8 @@ func test_ice_crack(t: T) -> void:
 	t.eq(r["kind"], "crack", "lần 1 nứt")
 	v.apply_result(r)
 	t.eq(v.block_node("b1").view["ice"], 0, "băng hết sau khi nứt")
-	t.ok(v.ghost_count() >= 1, "lớp băng vỡ mờ dần")
+	t.ok(v.ghost_count() >= 1, "lớp pudding vỡ bay ra")
+	t.ok(_fx_named(v, "JellyBurst") >= 1, "bọt pudding toả ra")
 	t.eq(v.block_count(), 2, "khối còn nguyên")
 	t.ok(await _wait_done(v), "crack xong")
 	t.eq(v.ghost_count(), 0, "bóng đã dọn")
@@ -110,6 +113,7 @@ func test_chain_and_key(t: T) -> void:
 	var r := board.tap("b2")
 	t.eq(r["kind"], "chained", "chạm khối xích")
 	v.apply_result(r)
+	t.ok(_fx_named(v, "ChainSparks") >= 1, "xích bị giật toé lửa")
 	t.ok(await _wait_done(v), "chained xong")
 	t.eq(v.block_node("b2").view["chained"], true, "vẫn xích")
 	t.eq(v.key_ids(), ["b3"] as Array[String], "chìa vẫn còn")
@@ -119,7 +123,9 @@ func test_chain_and_key(t: T) -> void:
 	v.apply_result(r)
 	t.eq(v.block_node("b2").view["chained"], false, "b2 hết xích")
 	t.eq(v.key_ids().size(), 0, "không còn chìa")
-	t.ok(v.ghost_count() >= 1, "xích rơi mờ dần")
+	t.ok(v.ghost_count() >= 1, "xích đứt bay ra")
+	t.ok(_fx_named(v, "ChainLinks") >= 1, "mắt xích văng")
+	t.ok(_fx_named(v, "LockPop") >= 1, "ổ khoá bật bay")
 	t.ok(await _wait_done(v), "exit xong")
 	t.eq(v.ghost_count(), 0, "bóng đã dọn")
 	t.eq(v.block_count(), 3, "còn 3 khối")
@@ -136,8 +142,9 @@ func test_two_layers_peel(t: T) -> void:
 	v.apply_result(r)
 	t.eq(v.block_node("b1").view["color"], "green", "đổi sang lớp trong")
 	t.eq(v.block_node("b1").view["inner_color"], "", "hết lớp trong")
-	t.ok(v.ghost_count() >= 1, "vỏ ngoài bay ra mờ dần")
+	t.ok(v.ghost_count() >= 1, "hộp giấy bay ra")
 	t.ok(await _wait_done(v), "peel xong")
+	t.ok(_fx_named(v, "PaperBits") >= 1, "hộp rách thành giấy vụn ở thanh")
 	t.eq(v.ghost_count(), 0, "bóng đã dọn")
 	t.eq(v.block_count(), 1, "khối ở lại")
 	t.eq(v.block_node("b1").scale, Vector2.ONE, "scale về 1")
@@ -297,3 +304,7 @@ func _mech_in_holder(t: T, w: int, h: int, holder_size: Vector2) -> void:
 func test_mech_fit_in_holder(t: T) -> void:
 	for dims in [Vector2i(5, 5), Vector2i(8, 11), Vector2i(7, 7), Vector2i(6, 9)]:
 		await _mech_in_holder(t, dims.x, dims.y, Vector2(664, 936))
+
+
+func _fx_named(v: Control, prefix: String) -> int:
+	return v.get_node("Fx").get_children().filter(func(n: Node) -> bool: return n.name.begins_with(prefix) and not n.is_queued_for_deletion()).size()

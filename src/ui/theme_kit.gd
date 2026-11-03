@@ -42,15 +42,18 @@ const DANGER := Color("F2581F")
 const HARD_BANNER := Color("B757FA")
 const HARD_BANNER_VERY := Color("C31F1F")
 const VIDEO := Color("2F92E0")
-const SCRIM := Color(0.0, 0.016, 0.059, 0.8)
+# Opacity of every popup's full-screen dim: SCRIM here and the Unity prefabs' dim image (UnityUI._setup_image).
+const POPUP_DIM_ALPHA := 0.85
+const SCRIM := Color(0.0, 0.016, 0.059, POPUP_DIM_ALPHA)
 # Theme Slate (Gameplay)
 const SLATE_BG := Color("504D73")
 const SLATE_SURFACE := Color("3D3A63")
-# Gameplay background: one picture for every difficulty under a translucent dim so the board stands out
-# (LEVEL_BG shows if the picture is missing), and the board panel behind the blocks.
-const LEVEL_BG := Color("B3CBFF")
+# Gameplay background: one picture for every difficulty, drawn faint at LEVEL_BG_IMAGE_ALPHA over the pastel pink LEVEL_BG
+# (same as Home; alone if the picture is missing), LEVEL_BG_DIM left clear, and the board panel behind the blocks.
+const LEVEL_BG := Color("FFEEF4")
 const LEVEL_BG_IMAGE := "res://assets/bg/bg_level.png"
-const LEVEL_BG_DIM := Color(0, 0, 0, 0.3)
+const LEVEL_BG_IMAGE_ALPHA := 0.35
+const LEVEL_BG_DIM := Color(0, 0, 0, 0)
 const BOARD_BG := Color("504B98")
 # Chữ và khối trên thân popup kem (Theme Warm + Popup Lavender)
 const INK_DIM := Color("6C74AE")
@@ -103,7 +106,9 @@ const FONT: FontFile = preload("res://assets/fonts/baloo.res")
 const MIN_BUTTON := Vector2(96, 96)
 const RADIUS := 24
 const ICON_SIZE := 96
-const ICON_DIRS := ["res://assets/ui/", "res://assets/ui/figma/", "res://assets/avatars/", "res://assets/frames/"]
+const ICON_DIRS := ["res://assets/ui/", "res://assets/ui/figma/", "res://assets/ui/hud/", "res://assets/avatars/", "res://assets/frames/"]
+## Viền chữ trên sprite HUD tím (khung MOVES, pill độ khó, huy hiệu booster).
+const HUD_OUTLINE := Color("5B1F9E")
 const FIGMA_DIR := "res://assets/ui/figma/"
 const PILL_DIR := "res://assets/ui/figma/pill/"
 ## Tên UI hay gọi mà file mang tên khác.
@@ -189,7 +194,7 @@ static func make_background(top: Color = BG_TOP, bottom: Color = BG_BOTTOM) -> C
 
 ## Full-screen picture background (scaled to cover, centered) under a translucent `dim` layer.
 ## Missing picture leaves the flat `fallback` color.
-static func make_image_background(path: String, dim: Color, fallback: Color = BG) -> ColorRect:
+static func make_image_background(path: String, dim: Color, fallback: Color = BG, image_alpha: float = 1.0) -> ColorRect:
 	var r := ColorRect.new()
 	r.color = fallback
 	r.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -199,6 +204,7 @@ static func make_image_background(path: String, dim: Color, fallback: Color = BG
 		var pic := TextureRect.new()
 		pic.name = "Image"
 		pic.texture = tex
+		pic.modulate.a = image_alpha
 		pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		pic.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -343,6 +349,39 @@ static func make_icon_button(icon_name: String, px: int = 96, kind: String = "ic
 	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	b.custom_minimum_size = Vector2(px, px)
 	return b
+
+
+## Nút mà sprite là cả nút (assets/ui/hud/): không nền tile, hover sáng hơn, pressed tối hơn, disabled xám.
+static func make_sprite_button(icon_name: String, px: Vector2) -> Button:
+	var b := Button.new()
+	b.focus_mode = Control.FOCUS_NONE
+	b.icon = icon(icon_name)
+	b.expand_icon = true
+	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	b.custom_minimum_size = px
+	for st in ["normal", "hover", "pressed", "disabled", "focus"]:
+		b.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	b.add_theme_color_override("icon_normal_color", Color.WHITE)
+	b.add_theme_color_override("icon_hover_color", Color(1.08, 1.08, 1.08))
+	b.add_theme_color_override("icon_pressed_color", Color(0.82, 0.82, 0.82))
+	b.add_theme_color_override("icon_hover_pressed_color", Color(0.82, 0.82, 0.82))
+	b.add_theme_color_override("icon_disabled_color", Color(0.55, 0.55, 0.6, 0.9))
+	return b
+
+
+## StyleBox 9-slice từ sprite HUD. margin = lề cắt (trái, trên, phải, dưới) theo px ảnh; content = lề chữ.
+static func sprite_box(icon_name: String, margin: Vector4 = Vector4.ZERO, content: Vector4 = Vector4.ZERO) -> StyleBoxTexture:
+	var s := StyleBoxTexture.new()
+	s.texture = icon(icon_name)
+	s.texture_margin_left = margin.x
+	s.texture_margin_top = margin.y
+	s.texture_margin_right = margin.z
+	s.texture_margin_bottom = margin.w
+	s.content_margin_left = content.x
+	s.content_margin_top = content.y
+	s.content_margin_right = content.z
+	s.content_margin_bottom = content.w
+	return s
 
 
 static func make_panel() -> PanelContainer:

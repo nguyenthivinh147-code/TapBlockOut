@@ -39,6 +39,7 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
   - Toggle có `ToggleGroup` (ButtonGroup) và `ToggleAnimator`.
 - Layout: `HorizontalLayoutGroup`, `VerticalLayoutGroup`, `GridLayoutGroup`, `LayoutElement`, `ContentSizeFitter` chạy như Unity khi `build()` và khi gọi `relayout()`. Con của layout group lưu ở 0,0 trong prefab, Unity xếp lúc chạy.
 - Auto size đo cỡ preferred (ContentSizeFitter, layout group điều khiển cỡ con) ở `fontSizeMax` như `TMP_Text.GetPreferredWidth`, rồi `fit_text` co chữ trong rect đó.
+- Dim của popup: Image đen, không sprite, không material, chặn raycast, phủ kín cha (anchor 0..1, offset 0) lấy alpha `ThemeKit.POPUP_DIM_ALPHA` (85%) thay cho alpha trong prefab, để mọi popup cùng độ tối. Popup dựng tay (`PopupKit`, `StubUI`) dùng `ThemeKit.SCRIM` cùng alpha đó.
 - Mask: `clip_children`. RectMask2D: `clip_contents`. CanvasGroup: alpha bằng `modulate.a`; `blocksRaycasts` và `interactable` áp xuống cây con.
 - CutoutMaskUI (Image có stencil NotEqual, chỉ vẽ ngoài hình của Mask cha): Mask cha thôi `clip_children`, graphic của nó ẩn khi `showMaskGraphic` tắt, shader `cutout_mask.gdshader` khoét sprite của Mask khỏi ảnh. Mask có cả con thường lẫn CutoutMaskUI thì con thường không bị cắt (có cảnh báo).
 - ScrollRect (`u_scroll.gd`): kéo, đàn hồi (`SmoothDamp`), quán tính (`decelerationRate`). Nút trong content đổi sang `MOUSE_FILTER_PASS` để kéo được.
@@ -115,7 +116,7 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `popup_notice` | `PopupOkLayer` |
 | `popup_reward` | `PopupRewardLayer` |
 | `popup_update` | `CheckUpdateLayer` |
-| `download_data`, `splash` | `DownloadDataLayer` |
+| `download_data`, `splash` | `DownloadDataLayer`; `Loadingscreen` và `CandySort_logo` thay bằng `assets/ui/loading_bg.png` (9:16, phủ kín màn) và `assets/ui/loading_logo.png` (tên game có sẵn trong logo) |
 | `select_account` | `SelectAccountLayer` |
 | `popup_no_internet` | `MaintainInternetLayer` |
 | `tutorial_intro` | `MainTutorialLayer` |

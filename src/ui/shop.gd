@@ -3,7 +3,7 @@ extends Control
 ## Thân màn là ShopCashLayer của color-cube-match-puzzle (unity_ui.gd): ScrollRect với thẻ Remove Ads, các thẻ gói
 ## (Starter, Level, Rescue), tiêu đề Gold, gói lớn và lưới gold (FreeGoldPack là video gold mỗi ngày của game).
 ## Thanh trên, thanh dưới dùng chung với Home (HubTop, HubNav) đè lên trên như CurrencyLayer, BottomBarLayer của Unity.
-## setup({source}); signal closed({bought: bool, action?}); action: shop, profile, settings, no_lives, ranking.
+## setup({source}); signal closed({bought: bool, action?}); action: shop, profile, settings, lives, ranking.
 
 signal closed(result: Variant)
 
@@ -150,6 +150,7 @@ func _hub_bars() -> void:
 	margin.add_theme_constant_override("margin_top", 40)
 	page.add_child(margin)
 	var top := HubTop.new()
+	top.hide_side_buttons()
 	top.action.connect(_on_hub_action)
 	top.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	margin.add_child(top)

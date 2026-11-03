@@ -19,7 +19,8 @@ const float SOFT = 0.11;          // chuyển từ mép sang mặt
 const float REACH_TOP = 0.6;      // tầm sáng từ mép trên xuống
 const float REACH_BOTTOM = 0.35;  // tầm đổi màu về đáy
 const float TOP_GLOW = 0.26;
-const float STRIPE_IN_BEVEL = 0.15;
+const float STRIPE_A = 0.5;          // sọc nhạt pha bấy nhiêu tông stripe vào mặt
+const float STRIPE_IN_BEVEL = 0.08;
 const float RIGHT_DARK = 0.22;    // mép phải tối hơn mép trái, ánh sáng từ trên trái
 const float RIM_AT = 0.05;        // vạch sáng đáy, cách mép
 const float RIM_W = 0.022;
@@ -41,7 +42,7 @@ vec3 candy_color(vec2 c, float d) {
 	float near_top = clamp(-dist(c - vec2(0.0, REACH_TOP)) / REACH_TOP, 0.0, 1.0);
 	float near_bottom = clamp(-dist(c + vec2(0.0, REACH_BOTTOM)) / REACH_BOTTOM, 0.0, 1.0);
 
-	vec3 top_col = mix(face.rgb, stripe.rgb, band);
+	vec3 top_col = mix(face.rgb, stripe.rgb, band * STRIPE_A);
 	top_col = mix(top_col, vec3(1.0), TOP_GLOW * near_top);
 
 	// mép gối: một mẫu SDF lệch lên cho cả ba bề dày, nên viền góc liền một nét

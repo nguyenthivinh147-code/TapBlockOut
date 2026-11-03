@@ -5,6 +5,7 @@ const Motifs := preload("res://src/core/motifs.gd")
 const Gen := preload("res://src/core/level_generator.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const Config := preload("res://src/config.gd")
+const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 
 func _set_of(cells: Array) -> Dictionary:
@@ -77,8 +78,9 @@ func test_arrows_point_four_ways(t: T) -> void:
 
 
 func test_every_size_band_has_choices(t: T) -> void:
-	# Mỗi số khối mục tiêu từ 15 tới 40 có ít nhất 8 hình vừa (không tính đá).
-	for n in range(15, 41):
+	# Mỗi số khối mục tiêu từ 15 tới 40 (nhân COUNT_SCALE) có ít nhất 8 hình vừa (không tính đá).
+	var k := DifficultyCurve.COUNT_SCALE
+	for n in range(15 * k, 40 * k + 1):
 		var kinds := {}
 		for kind in Motifs.KINDS:
 			for v in Motifs.variants(kind):
@@ -98,7 +100,7 @@ func test_symmetric_tiling(t: T) -> void:
 			var sym_v: bool = v["sym_v"]
 			var cells: Array[Vector2i] = []
 			cells.assign(v["cells"])
-			var n := roundi(cells.size() / 2.9)
+			var n := roundi(cells.size() / ((Config.MOTIF_FILL_MIN + Config.MOTIF_FILL_MAX) / 2.0))
 			var rng := Gen._rng(n, tried)
 			var stones := Gen._place_stones_sym(cells, w, h, 2, sym_h, sym_v, rng)
 			var groups := Gen._tile_sym(cells, w, h, stones, n, sym_h, sym_v, rng)
@@ -141,7 +143,8 @@ func test_symmetric_tiling(t: T) -> void:
 func test_picker_uses_every_kind(t: T) -> void:
 	var seen := {}
 	for id in range(14, 14 + Motifs.KINDS.size() * 4):
-		for n in [18, 26, 34]:
+		for base in [18, 26, 34]:
+			var n: int = base * DifficultyCurve.COUNT_SCALE
 			var v := Gen._pick_motif(id, 0, n, 0, Gen._rng(id, n))
 			t.ok(not v.is_empty(), "L%d %d khối có hình" % [id, n])
 			if not v.is_empty():
@@ -152,7 +155,7 @@ func test_picker_uses_every_kind(t: T) -> void:
 	var prev := ""
 	var same := 0
 	for id in range(14, 101):
-		var kind: String = Gen._pick_motif(id, 0, 26, 0, Gen._rng(id, 0)).get("kind", "")
+		var kind: String = Gen._pick_motif(id, 0, 26 * DifficultyCurve.COUNT_SCALE, 0, Gen._rng(id, 0)).get("kind", "")
 		if kind == prev:
 			same += 1
 		prev = kind

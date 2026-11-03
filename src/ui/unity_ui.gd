@@ -9,6 +9,7 @@ const UImage := preload("res://src/ui/u_image.gd")
 const UButton := preload("res://src/ui/u_button.gd")
 const UAnim := preload("res://src/ui/u_anim.gd")
 const UScroll := preload("res://src/ui/u_scroll.gd")
+const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const TMP_SHADER := preload("res://src/ui/tmp_text.gdshader")
 const CUTOUT_SHADER := preload("res://src/ui/cutout_mask.gdshader")
 const FONT: FontFile = preload("res://assets/fonts/baloo.res")
@@ -223,6 +224,8 @@ static func _node(spec: Dictionary, parent: Control, v: UView, path: String, ray
 	if spec.has("img"):
 		var img: Control = c if c is UImage else _child_image(c)
 		_setup_image(img, spec.img, Vector2(r[8], r[9]))
+		if _is_dim(spec, r):
+			img.color.a = ThemeKit.POPUP_DIM_ALPHA
 		if bool(spec.img.get("rt", false)) and not (c is UButton):
 			c.mouse_filter = Control.MOUSE_FILTER_PASS
 	elif spec.has("raw"):
@@ -333,6 +336,22 @@ static func _setup_image(img: Control, d: Dictionary, pivot: Vector2) -> void:
 	# A disabled Image component draws nothing but its children still show.
 	if not bool(d.get("on", true)):
 		img.color.a = 0.0
+
+
+## A popup's full-screen dim: a plain black, raycast-blocking Image stretched exactly over its parent (no sprite,
+## no material such as LoadLevelProcess's SwirlMask). Each prefab picks its own alpha; the game uses one for all.
+static func _is_dim(spec: Dictionary, r: Array) -> bool:
+	var d: Dictionary = spec.img
+	if d.get("sp") != null or d.get("mat") != null or not bool(d.get("rt", false)) or not bool(d.get("on", true)):
+		return false
+	var col := Color(str(d.get("c", "ffffffff")))
+	if col.r != 0.0 or col.g != 0.0 or col.b != 0.0 or col.a == 0.0:
+		return false
+	var full := [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]
+	for i in full.size():
+		if float(r[i]) != full[i]:
+			return false
+	return true
 
 
 static func _setup_raw(img: Control, d: Dictionary) -> void:

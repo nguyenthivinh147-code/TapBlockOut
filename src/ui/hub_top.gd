@@ -1,7 +1,8 @@
 extends Control
 ## Thanh trên dùng chung Home, Shop, Leaderboard (Figma "main menu" > Frame 1893566669): avatar, mạng, vàng, settings.
 ## Toạ độ theo khung Figma rộng 886, co theo rộng thật. Tự nghe Game và tự đếm hồi mạng.
-## Bấm nút phát action("profile" | "no_lives" | "shop" | "settings").
+## Bấm nút phát action("profile" | "lives" | "shop" | "settings").
+## Shop, Leaderboard gọi hide_side_buttons(): chỉ còn mạng và vàng.
 
 signal action(action_name: String)
 
@@ -218,13 +219,16 @@ func refresh_lives() -> void:
 		_fb.apply(size.x / DESIGN_W)
 
 
+## Hides the avatar and settings buttons (Shop, Leaderboard keep only lives and gold).
+func hide_side_buttons() -> void:
+	profile_btn.visible = false
+	settings_btn.visible = false
+
+
 func _fire(action_name: String) -> void:
 	action.emit(action_name)
 
 
-## Dấu + cạnh mạng: sang màn hết mạng khi chưa đầy.
+## Chip mạng: mở popup tim (kể cả khi đầy mạng; lúc đó popup chỉ báo đầy).
 func _on_lives_plus() -> void:
-	var lv: Dictionary = Game.lives_view()
-	if bool(lv.get("infinite", false)) or int(lv.get("count", 0)) >= int(lv.get("max", 0)):
-		return
-	action.emit("no_lives")
+	action.emit("lives")

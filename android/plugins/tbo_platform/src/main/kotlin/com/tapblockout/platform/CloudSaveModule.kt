@@ -66,7 +66,7 @@ class CloudSaveModule(private val host: Host) {
                 }
                 try {
                     snap.snapshotContents.writeBytes(json.toByteArray(Charsets.UTF_8))
-                    val change = SnapshotMetadataChange.Builder().setDescription("Tap Block Out")
+                    val change = SnapshotMetadataChange.Builder().setDescription("Candy Away")
                     val o = Json.objectOrNull(json)
                     if (o != null) {
                         if (o.has("play_ms")) change.setPlayedTimeMillis(o.optLong("play_ms"))

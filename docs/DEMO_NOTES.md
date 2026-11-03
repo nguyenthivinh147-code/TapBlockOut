@@ -1,4 +1,4 @@
-# Ghi chú bản demo Tap Block Out
+# Ghi chú bản demo Candy Away
 
 Dành cho người duyệt bản thử. Không cần biết lập trình.
 

@@ -1789,9 +1789,9 @@
     "tool": "mcp comfyui edit_game_image (tham chieu ui_gold)",
     "workflow": "image_qwen_image_2_1_edit",
     "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "Use <image1> only as the style reference (glossy rounded cartoon icon, soft highlights, gentle drop shadow, vivid colors). Create a completely new, different icon: a single chunky rounded grey boulder stone, smooth cool grey #8A8F98 with lighter grey highlights and a few soft darker facets, centered with generous padding, game obstacle piece. No coin, no star, no text, no logo, no watermark.",
+    "prompt": "Use <image1> only as the style reference (glossy rounded cartoon icon, soft highlights, gentle drop shadow, vivid colors). Create a completely new, different icon: a single chunky square wooden block seen from the front, rounded corners, warm brown wood #9A5B2E with clear wood grain lines and two horizontal plank seams, lighter honey-brown bevel highlight on the top edge, darker brown edges, four tiny metal nail heads in the corners, filling most of the frame with small padding, game obstacle tile. No coin, no star, no text, no logo, no watermark.",
     "style_prompt": "",
-    "seed": 3001,
+    "seed": 3101,
     "steps": 25,
     "cfg": 1,
     "use_reprompt": false,
@@ -1800,17 +1800,17 @@
       512,
       512
     ],
-    "prompt_id": "564fc902-9ff0-44e9-8ff8-697ee8e7bc63",
-    "source": "art/images/mech_stone.png",
-    "source_sha256": "78442f2f9100c8731dcf3de2098e0ee6fe5bab75c19a9a3f09b8be1c36b6080a",
+    "prompt_id": "1e961b99-f0dd-4157-9b7d-d5c2d902d8e1",
+    "source": "art/images/mech_wood.png",
+    "source_sha256": "3393b2f1993cc32ee5a68d898ff440f832193f40bba25b02bb52e9aa5a23a6b6",
     "reference": "art/images/ui_gold.png",
     "file": "assets/ui/mech_stone.png",
-    "file_sha256": "db31715abbad27e67bc7173f8614e6c43c9126a4d41d96c2e853db898e26548c",
+    "file_sha256": "edebdaadef169b441c6ad510e11683d2b1be6589dd894504122150b5338487b6",
     "file_size": [
       128,
       128
     ],
-    "note": "Cac cho edit_game_image custom_size 512x512; tools/resize_images.trim_square (le 6%) -> 128 px; xem bang mat o 48-128 px"
+    "note": "Theme kẹo 2026-11-03: thay đá bằng khối gỗ (dùng cả cho ô gỗ trên bàn). Cac cho edit_game_image custom_size 512x512; trim_square (le 6%) -> 128 px"
   },
   {
     "manifest": "images",
@@ -1819,9 +1819,9 @@
     "tool": "mcp comfyui edit_game_image (tham chieu ui_gold)",
     "workflow": "image_qwen_image_2_1_edit",
     "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "Use <image1> only as the style reference (glossy rounded cartoon icon, soft highlights, gentle drop shadow, vivid colors). Create a completely new, different icon: a single chunky rounded ice cube with a white crack line across it, translucent pale icy blue #BFE6FF with bright white highlights and soft cyan shading, centered with generous padding. No coin, no star, no text, no logo, no watermark.",
+    "prompt": "Use <image1> only as the style reference (glossy rounded cartoon icon, soft highlights, gentle drop shadow, vivid colors). Create a completely new, different icon: a single wobbly translucent pudding jelly cube, pale strawberry-cream pink #FFD3E2, glossy and see-through, with bright white specular highlights, a few tiny air bubbles inside and one thin white crack line, centered with generous padding. No coin, no star, no text, no logo, no watermark.",
     "style_prompt": "",
-    "seed": 3002,
+    "seed": 3102,
     "steps": 25,
     "cfg": 1,
     "use_reprompt": false,
@@ -1830,17 +1830,47 @@
       512,
       512
     ],
-    "prompt_id": "bd80f57c-e685-4ba6-8539-495546279a54",
-    "source": "art/images/mech_ice.png",
-    "source_sha256": "0a09cf6e8da68dfd3854c4b53a3e3df949e19ea847c609aedd064f5c677b3bac",
+    "prompt_id": "2cfbca74-72bb-4723-8fcb-6c86a240907a",
+    "source": "art/images/mech_pudding.png",
+    "source_sha256": "7c72153f661dbdf81248625216276bbcc7b014fba70667e3db41befd287eb4c7",
     "reference": "art/images/ui_gold.png",
     "file": "assets/ui/mech_ice.png",
-    "file_sha256": "4e1afcdfbd58ead64e97be66b335c85cbe54bece800fbc196c8f87b0afdb36b6",
+    "file_sha256": "2e91e7ec5dccc99f33b5da9e8505dc7c11f18e4820d755488ae4eea6d5dc4c56",
     "file_size": [
       128,
       128
     ],
-    "note": "Cac cho edit_game_image custom_size 512x512; tools/resize_images.trim_square (le 6%) -> 128 px; xem bang mat o 48-128 px"
+    "note": "Theme kẹo 2026-11-03: thay băng bằng pudding. Cac cho edit_game_image custom_size 512x512; trim_square (le 6%) -> 128 px"
+  },
+  {
+    "manifest": "images",
+    "name": "mech_layer",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (tham chieu ui_gold)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Use <image1> only as the style reference (glossy rounded cartoon icon, soft highlights, gentle drop shadow, vivid colors). Create a completely new, different icon: a single closed cardboard paper box, kraft brown paper #C99A63 with a cream paper tape strip across the top and down the front, soft fold edges, lid slightly overlapping, centered with generous padding. No coin, no star, no text, no logo, no watermark.",
+    "style_prompt": "",
+    "seed": 3103,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      512,
+      512
+    ],
+    "prompt_id": "7992c454-4a39-4a4b-a10d-0d02dd790db4",
+    "source": "art/images/mech_box.png",
+    "source_sha256": "980948c4acf42f05c30f294eeb6747975747c08bb8c0129888e33a4580d0e5bc",
+    "reference": "art/images/ui_gold.png",
+    "file": "assets/ui/mech_layer.png",
+    "file_sha256": "685c282b8cf4f4b43e8f1391d3e41772019d4469809e653f5cf7b7b1c3360fcc",
+    "file_size": [
+      128,
+      128
+    ],
+    "note": "Theme kẹo 2026-11-03: thay hai lớp bằng hộp giấy. Cac cho edit_game_image custom_size 512x512; trim_square (le 6%) -> 128 px"
   },
   {
     "manifest": "images",
@@ -1998,12 +2028,12 @@
     "manifest": "images",
     "name": "booster_smash",
     "status": "used",
-    "tool": "mcp comfyui edit_game_image (image1 = bo cuc SVG, image2 = icon Figma)",
+    "tool": "mcp comfyui edit_game_image (ref = booster_smash.png cu)",
     "workflow": "image_qwen_image_2_1_edit",
     "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "Redraw the icon in <image1> as a polished mobile game icon in the exact rendering style of <image2>. Keep the same subject, composition, angle, silhouette and colors as <image1>: a candy mallet tilted with its head at the upper left, the barrel-shaped head is glossy pink with diagonal white candy stripes and darker pink rounded end caps, the handle is a red and white striped candy cane stick ending in a small pink ball, and three short yellow impact lines burst from the lower-left striking face. Render it like <image2>: soft 3D cartoon shading, smooth rich gradients, glossy hard-candy surface, thick darker outline in the same hue as each part (dark maroon around the hammer, dark orange around the yellow impact lines), bright white specular highlights, subtle inner rim light. Single icon, centered, generous padding, plain background. No text, no numbers, no letters, no bomb, no fuse, no extra objects, no drop shadow on the ground.",
+    "prompt": "Turn this candy hammer into a LOLLIPOP HAMMER, same angle (tilted 45 degrees, head upper-left, handle lower-right) and same glossy cartoon candy style with dark maroon outline. The hammer head is a short thick cylinder whose two flat round ends are big swirl lollipops: bright spiral of hot pink, white and light magenta, glossy hard candy with white shine highlights. The barrel between the two lollipop faces is wrapped in pink-white diagonal candy stripes. Handle is a white rounded lollipop stick with a small pink ribbon bow just under the head, ending in a round pink candy ball. Remove the yellow motion lines. Single object, centered, no text, no background.",
     "style_prompt": "",
-    "seed": 4301,
+    "seed": 7311,
     "steps": 25,
     "cfg": 1,
     "use_reprompt": false,
@@ -2013,17 +2043,340 @@
       1024,
       1024
     ],
-    "prompt_id": "c7093bea-df5b-42be-abae-5576b452562d",
-    "source": "art/images/booster_smash_ai.png",
-    "source_sha256": "b2a4ee35b2976650ba8774e4ce8e1ad789e71e38557752038748697647891ea0",
-    "reference": "art/images/booster_smash.svg (render 1024 px bang tools/render_svg_icons.gd), assets/ui/figma/ic_bomb.png",
+    "prompt_id": "d5063323-4ec0-449d-bb14-253cd3cb1dfc",
+    "source": "art/images/booster_smash_lollipop_ai.png",
+    "source_sha256": "2cc66310b3c14b7d1347c2ae7954e98a3e1dbee40893140080cc958539d03a24",
+    "reference": "assets/ui/booster_smash.png (ban bua keo cu)",
     "file": "assets/ui/booster_smash.png",
-    "file_sha256": "f222cc093de898448d7ad9eb4c1144fab4d6c5aaef0bac1069e73507c8b64321",
+    "file_sha256": "029d8d89fdb764e615a0eb46acc78cb9d6ecdd0f0b236c91905582a1becd5c11",
     "file_size": [
       256,
       256
     ],
-    "note": "Bua keo hong soc trang, can gay keo soc do, vach va cham vang; thay ic_bomb cho booster; MCP tu noi them cau 'Keep all desired foreground elements separate...' vao prompt; tools/fit_icon.gd (alpha 1-4 -> 0, 251-254 -> 255, cat vien, le 6%) -> 256 px; xem trong game L17"
+    "note": "2026-11-03: doi sang bua keo mut (hai mat keo xoan hong trang, than soc, no hong, can que trang); tools/fit_icon.gd --size=256; dung o dialog booster, win card, tester"
+  },
+  {
+    "manifest": "images",
+    "name": "fx_lollipop_hammer",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = booster_smash.png cu)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Turn this candy hammer into a LOLLIPOP HAMMER, same angle (tilted 45 degrees, head upper-left, handle lower-right) and same glossy cartoon candy style with dark maroon outline. The hammer head is a short thick cylinder whose two flat round ends are big swirl lollipops: bright spiral of hot pink, white and light magenta, glossy hard candy with white shine highlights. The barrel between the two lollipop faces is wrapped in pink-white diagonal candy stripes. Handle is a white rounded lollipop stick with a small pink ribbon bow just under the head, ending in a round pink candy ball. Remove the yellow motion lines. Single object, centered, no text, no background.",
+    "style_prompt": "",
+    "seed": 7311,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "d5063323-4ec0-449d-bb14-253cd3cb1dfc",
+    "source": "art/images/booster_smash_lollipop_ai.png",
+    "source_sha256": "2cc66310b3c14b7d1347c2ae7954e98a3e1dbee40893140080cc958539d03a24",
+    "reference": "assets/ui/booster_smash.png (ban bua keo cu)",
+    "file": "assets/ui/fx_lollipop_hammer.png",
+    "file_sha256": "addbe8d3d906595918cedc9bc8bbf694ec5f01def2104b8a7a737093f12cc221",
+    "file_size": [
+      384,
+      384
+    ],
+    "note": "Cung anh goc voi booster_smash, cat lon hon cho hieu ung bua giua man; tools/fit_icon.gd --size=384 --margin=0.02; dung trong src/ui/smash_fx.gd (GRIP/HEAD/FACE do theo anh nay)"
+  },
+  {
+    "manifest": "images",
+    "name": "hud_btn_restart",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref art/concepts/ref_hud_candy.png)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Redraw ref crop: round purple candy button, white-pink clockwise refresh arrow; glossy purple jelly-candy button, violet-to-magenta gradient, bright rim light on top edge, darker lower lip, white glossy highlight upper left; no text",
+    "seed": 5101,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "source": "art/images/hud_btn_restart_ai.png",
+    "source_sha256": "8bafa796b37d58ea63f3361f8bfd80f6192243467d2346c217a5ca2bf8f4e7ab",
+    "reference": "art/images/hud_ref/restart.png",
+    "file": "assets/ui/hud/hud_btn_restart.png",
+    "file_sha256": "105e1f932826ced5f6c6e24b7bbd179b6a94fc0d85664adf16f1c3b9667a9041",
+    "file_size": [
+      192,
+      192
+    ],
+    "note": "HUD ingame theo ref (MOVES, restart, settings, booster); chu va so ve bang code; tools/fit_icon.gd --margin=0.02 --solid=200 square 192; dung trong src/ui/level.gd"
+  },
+  {
+    "manifest": "images",
+    "name": "hud_btn_settings",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref art/concepts/ref_hud_candy.png)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Redraw ref crop: round purple candy button, white-pink cog with 8 rounded teeth and center hole; glossy purple jelly-candy button, violet-to-magenta gradient, bright rim light on top edge, darker lower lip, white glossy highlight upper left; no text",
+    "seed": 5102,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "source": "art/images/hud_btn_settings_ai.png",
+    "source_sha256": "00fb4feaf7f2d0d0580f65037cae49979c38151686a914ec03b6508dedae2bbf",
+    "reference": "art/images/hud_ref/settings.png",
+    "file": "assets/ui/hud/hud_btn_settings.png",
+    "file_sha256": "38a6c953a19711ef776414506a60c985152b85bad7c8f18d7bba512e01e1a8aa",
+    "file_size": [
+      192,
+      192
+    ],
+    "note": "HUD ingame theo ref (MOVES, restart, settings, booster); chu va so ve bang code; tools/fit_icon.gd --margin=0.02 --solid=200 square 192; dung trong src/ui/level.gd"
+  },
+  {
+    "manifest": "images",
+    "name": "hud_booster_hint",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref art/concepts/ref_hud_candy.png)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Redraw ref booster squircle, replace glyph with white-pink light bulb and 3 rays, remove green plus badge; glossy purple jelly-candy button, violet-to-magenta gradient, bright rim light on top edge, darker lower lip, white glossy highlight upper left; no text",
+    "seed": 5105,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1120,
+      960
+    ],
+    "source": "art/images/hud_booster_hint_ai.png",
+    "source_sha256": "62c03b4f34a6407a0fc867f30d60ce04c6e85f20a593f6c1ff500bca6c1c9b76",
+    "reference": "art/images/hud_ref/b_hint.png",
+    "file": "assets/ui/hud/hud_booster_hint.png",
+    "file_sha256": "0cce927b76d3e249d6a8c34ef1a623515bbbbbcaf2ce979590d49ecf7b752491",
+    "file_size": [
+      256,
+      229
+    ],
+    "note": "HUD ingame theo ref (MOVES, restart, settings, booster); chu va so ve bang code; tools/fit_icon.gd --margin=0.02 --solid=200 --keep-aspect 256; dung trong src/ui/level.gd"
+  },
+  {
+    "manifest": "images",
+    "name": "hud_booster_move",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref art/concepts/ref_hud_candy.png)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Keep hud_booster_hint button, replace bulb with bold number 3 inside two curved arrows forming a ring; glossy purple jelly-candy button, violet-to-magenta gradient, bright rim light on top edge, darker lower lip, white glossy highlight upper left; no text",
+    "seed": 5118,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1120,
+      960
+    ],
+    "source": "art/images/hud_booster_move_ai.png",
+    "source_sha256": "c8042ff8d7b0db0fcd37d684fa5ea1e5a8b31debac1d68126ef19bb8e0e131be",
+    "reference": "art/images/hud_booster_hint_ai.png",
+    "file": "assets/ui/hud/hud_booster_move.png",
+    "file_sha256": "ba472e2577a0ebad5d7381790799a5e290d5b4406e367f7f55283b3e155f037e",
+    "file_size": [
+      256,
+      229
+    ],
+    "note": "HUD ingame theo ref (MOVES, restart, settings, booster); chu va so ve bang code; tools/fit_icon.gd --margin=0.02 --solid=200 --keep-aspect 256; dung trong src/ui/level.gd"
+  },
+  {
+    "manifest": "images",
+    "name": "hud_booster_smash",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = hud_booster_smash.png cu)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Keep this exact glossy purple jelly-candy rounded square button, same size, gradient, rim light, lower lip and highlight. Replace only the white mallet glyph with a LOLLIPOP HAMMER glyph tilted 45 degrees (head upper-right, handle lower-left): the hammer head is a short thick barrel whose round flat end facing the viewer is a swirl lollipop with a pink and white spiral; barrel white-pink; handle is a white rounded lollipop stick. Soft white-pink colors like the original glyph, glossy, readable at small size. No text.",
+    "seed": 5118,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1088,
+      960
+    ],
+    "source": "art/images/hud_booster_smash_lollipop_ai.png",
+    "source_sha256": "d4739739587e5ec3125fda024248ffc986d4633b05a84985c0a75f56d2daa030",
+    "reference": "assets/ui/hud/hud_booster_smash.png (ban bua trang cu)",
+    "file": "assets/ui/hud/hud_booster_smash.png",
+    "file_sha256": "3d2ffedaecaf65b864372f15eab4b485ec485923c8ed5e31fa89e4c52aef60a5",
+    "file_size": [
+      256,
+      225
+    ],
+    "note": "2026-11-03: glyph doi sang bua keo mut mat xoan hong; tools/fit_icon.gd --margin=0.02 --solid=200 --keep-aspect --size=256; dung trong src/ui/level.gd",
+    "style_prompt": "",
+    "prompt_id": "c6dc5900-d9c1-49c1-b900-c30cb8b9edeb"
+  },
+  {
+    "manifest": "images",
+    "name": "hud_panel",
+    "status": "new",
+    "tool": "mcp comfyui edit_game_image (ref art/concepts/ref_hud_candy.png)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Keep hud_booster_hint button, remove glyph: empty squircle (curved sides, not 9-slice); glossy purple jelly-candy button, violet-to-magenta gradient, bright rim light on top edge, darker lower lip, white glossy highlight upper left; no text",
+    "seed": 5115,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1120,
+      960
+    ],
+    "source": "art/images/hud_panel_ai.png",
+    "source_sha256": "8a1fbe0fdbda655447a84a53d70080897b405d0410eb926d833524c8869e7652",
+    "reference": "art/images/hud_booster_hint_ai.png",
+    "file": "assets/ui/hud/hud_panel.png",
+    "file_sha256": "bf913102ac57912c032ce9e0978c0b449aa87d61f45623bbf7c4e379e845f30f",
+    "file_size": [
+      256,
+      229
+    ],
+    "note": "HUD ingame theo ref (MOVES, restart, settings, booster); chu va so ve bang code; tools/fit_icon.gd --margin=0.02 --solid=200 --keep-aspect 256"
+  },
+  {
+    "manifest": "images",
+    "name": "hud_moves_panel",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref art/concepts/ref_hud_candy.png)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Redraw hud_panel as a 3:2 rounded rectangle with straight edges (custom_size 1536x1024), empty; 9-slice margin about 44 px; glossy purple jelly-candy button, violet-to-magenta gradient, bright rim light on top edge, darker lower lip, white glossy highlight upper left; no text",
+    "seed": 5119,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1536,
+      1024
+    ],
+    "source": "art/images/hud_moves_panel_ai.png",
+    "source_sha256": "47b60385b0c1a9decfa1a16ad9ac90321d3678fa922caa07108602b1daa9b5e6",
+    "reference": "art/images/hud_panel_ai.png",
+    "file": "assets/ui/hud/hud_moves_panel.png",
+    "file_sha256": "cfa7f44727091b98bcdf90b71cceb4b499de2997a2bd4a041caa7ef9d385bf34",
+    "file_size": [
+      288,
+      185
+    ],
+    "note": "HUD ingame theo ref (MOVES, restart, settings, booster); chu va so ve bang code; tools/fit_icon.gd --margin=0.02 --solid=200 --keep-aspect 288; dung trong src/ui/level.gd"
+  },
+  {
+    "manifest": "images",
+    "name": "hud_pill",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref art/concepts/ref_hud_candy.png)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Keep only the Hard pill from the ref, empty capsule; 9-slice margin about 22 px; glossy purple jelly-candy button, violet-to-magenta gradient, bright rim light on top edge, darker lower lip, white glossy highlight upper left; no text",
+    "seed": 5107,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1440,
+      736
+    ],
+    "source": "art/images/hud_pill_ai.png",
+    "source_sha256": "96e45ee357b4199ff0367fa0c2eafd921c4af1af6e0f32d4752d79c091845d12",
+    "reference": "art/images/hud_ref/moves.png",
+    "file": "assets/ui/hud/hud_pill.png",
+    "file_sha256": "340000d92a914dc7ac310e2b7efb1b915db8eba7c2cb3ec0ec4e86eb5abcdc59",
+    "file_size": [
+      96,
+      44
+    ],
+    "note": "HUD ingame theo ref (MOVES, restart, settings, booster); chu va so ve bang code; tools/fit_icon.gd --margin=0.02 --solid=200 --keep-aspect 96; dung trong src/ui/level.gd"
+  },
+  {
+    "manifest": "images",
+    "name": "hud_badge_plus",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref art/concepts/ref_hud_candy.png)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Round glossy lime-green candy badge with thick white plus; glossy purple jelly-candy button, violet-to-magenta gradient, bright rim light on top edge, darker lower lip, white glossy highlight upper left; no text",
+    "seed": 5108,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1056,
+      992
+    ],
+    "source": "art/images/hud_badge_plus_ai.png",
+    "source_sha256": "2a278ff867f9fe80ef4966685460fa03aec2a6d3fec4981cd8b6b38acd023ef1",
+    "reference": "art/images/hud_ref/plus.png",
+    "file": "assets/ui/hud/hud_badge_plus.png",
+    "file_sha256": "d9ad0bd050bd3abd5acdb938ee5568612a2f9cafd6f1d4d3cb2f8c769705720c",
+    "file_size": [
+      96,
+      96
+    ],
+    "note": "HUD ingame theo ref (MOVES, restart, settings, booster); chu va so ve bang code; tools/fit_icon.gd --margin=0.02 --solid=200 square 96; dung trong src/ui/level.gd"
+  },
+  {
+    "manifest": "images",
+    "name": "hud_badge_count",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref art/concepts/ref_hud_candy.png)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "hud_badge_plus with the plus removed: empty green badge for the booster count; glossy purple jelly-candy button, violet-to-magenta gradient, bright rim light on top edge, darker lower lip, white glossy highlight upper left; no text",
+    "seed": 5116,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1056,
+      992
+    ],
+    "source": "art/images/hud_badge_count_ai.png",
+    "source_sha256": "7e7f378b21f0f1fc007f8c7aebb821a89e2d84d7efad158de47ef52e42889dd2",
+    "reference": "art/images/hud_badge_plus_ai.png",
+    "file": "assets/ui/hud/hud_badge_count.png",
+    "file_sha256": "4e4e7524c6bd28973da1317d1a216b138dbde4297a379c7a780276837b60c5bd",
+    "file_size": [
+      96,
+      96
+    ],
+    "note": "HUD ingame theo ref (MOVES, restart, settings, booster); chu va so ve bang code; tools/fit_icon.gd --margin=0.02 --solid=200 square 96; dung trong src/ui/level.gd"
   },
   {
     "manifest": "audio",

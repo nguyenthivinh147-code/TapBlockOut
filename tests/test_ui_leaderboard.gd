@@ -79,6 +79,20 @@ func test_ranking_tab_unlock(t: T) -> void:
 	home.free()
 
 
+func test_hub_top_hides_profile_and_settings(t: T) -> void:
+	_g()
+	for scene in ["shop", "leaderboard"]:
+		var n := _mount(scene, {"source": "test"} if scene == "shop" else {})
+		var top: Control = n.find_child("HubTop", true, false)
+		t.ok(not top.profile_btn.visible, scene + ": ẩn avatar")
+		t.ok(not top.settings_btn.visible, scene + ": ẩn settings")
+		t.ok(top.gold_label.is_visible_in_tree(), scene + ": còn vàng")
+		n.free()
+	var home := _mount("home")
+	t.ok(home.profile_btn.visible and home.settings_btn.visible, "Home giữ avatar, settings")
+	home.free()
+
+
 func test_league_tab(t: T) -> void:
 	var g := _g()
 	g.lb_claim()
@@ -213,7 +227,7 @@ func test_level_hud_and_piece(t: T) -> void:
 	lv._do_smash(str(sp[0]))
 	t.eq(int(lv.attempt.pieces), 1, "phá khối đặc biệt được 1 mảnh")
 	t.eq(lv.piece_label.text, "1/%d" % sp.size(), "HUD cập nhật")
-	t.ok(lv.find_child("FlyingPiece", true, false) != null, "mảnh bay về chip")
+	t.ok(await _wait_until(func() -> bool: return lv.find_child("FlyingPiece", true, false) != null), "búa gõ xong thì mảnh bay về chip")
 	lv.free()
 	_g(5)
 	lv = (load("res://scenes/level.tscn") as PackedScene).instantiate() as Control

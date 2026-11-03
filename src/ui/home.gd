@@ -3,7 +3,7 @@ extends Control
 ## Mọi node đặt theo toạ độ Figma, co theo rộng màn (s = rộng / 886). Phần trên neo đỉnh, nút Chơi và thanh dưới neo đáy;
 ## đường level co lại khi màn thấp hơn khung Figma.
 ## Chỉ đọc Game; không tự mở popup. Điều hướng qua closed({"action": ...}):
-## play, no_lives, profile, gift, shop, ranking, settings, challenge, offer (kèm "id"),
+## play, no_lives, lives, profile, gift, shop, ranking, settings, challenge, offer (kèm "id"),
 ## preview (kèm "scene": màn đã dựng UI, chưa nối logic; chỉ hiện khi Config.ui_preview).
 
 signal closed(result: Variant)
@@ -15,6 +15,7 @@ const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 const HubTop := preload("res://src/ui/hub_top.gd")
 const HubNav := preload("res://src/ui/hub_nav.gd")
 const FigmaBox := preload("res://src/ui/figma_box.gd")
+const HomeSparkles := preload("res://src/ui/home_sparkles.gd")
 
 const DESIGN_W := 886.0
 ## Khung Figma 1920 trừ dải ADS 120.
@@ -32,7 +33,11 @@ const NAV_TOP := 1552.0
 ## Tab bên của thanh dưới (cao 146, đỉnh 1654): đáy của cột icon không chạm xuống đây.
 const NAV_SIDE_TOP := 1654.0
 
-const BG_NORMAL := Color("77A5FF")
+const BG_NORMAL := Color("FFEEF4")
+## Hoạ tiết kẹo chìm xuống: lòng hình đậm hơn nền, viền sáng lộ ra ở mép dưới (lớp sáng lệch xuống, nằm dưới).
+const CANDY_SHADOW := Color("F2C2D2")
+const CANDY_LIGHT := Color("FFFFFF")
+const CANDY_OFFSET := 2.0
 const BG_HARD_TOP := Color("3454AC")
 const BG_HARD_BOTTOM := Color("DEE1F2")
 const RIBBON_STROKE := Color("9E4D0F")
@@ -86,7 +91,8 @@ var _tier: String = ""
 var _path_mode: String = "mid"
 var _bg: ColorRect = null
 var _bg_grad: TextureRect = null
-var _pattern: TextureRect = null
+var _pattern: Control = null
+var _sparkles: Control = null
 var _top_shade: TextureRect = null
 var _rail: TextureRect = null
 var _glow: TextureRect = null
@@ -246,7 +252,7 @@ func _build() -> void:
 	theme = ThemeKit.make_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
-	# nền: thường xanh trơn; Hard/Super Hard dải #3454AC -> #DEE1F2
+	# nền: thường hồng #FFEEF4; Hard/Super Hard dải #3454AC -> #DEE1F2; hoạ tiết kẹo chìm và sao lấp lánh ở mọi độ khó
 	_bg = ColorRect.new()
 	_bg.name = "Background"
 	_bg.color = BG_NORMAL
@@ -256,10 +262,23 @@ func _build() -> void:
 	_bg_grad = _gradient_rect([[0.0, BG_HARD_TOP], [0.844, BG_HARD_BOTTOM]])
 	_bg_grad.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_bg.add_child(_bg_grad)
-	_pattern = _tex_rect(UiAtlas.file_tex("home_pattern.png"))
-	_pattern.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_pattern = Control.new()
+	_pattern.name = "CandyPattern"
 	_pattern.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_pattern.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_bg.add_child(_pattern)
+	for layer in [[CANDY_LIGHT, CANDY_OFFSET], [CANDY_SHADOW, 0.0]]:
+		var tile := _tex_rect(UiAtlas.file_tex("home_candy_pattern.png"))
+		tile.stretch_mode = TextureRect.STRETCH_TILE
+		tile.set_anchors_preset(Control.PRESET_FULL_RECT)
+		tile.offset_top = layer[1]
+		tile.offset_bottom = layer[1]
+		tile.self_modulate = layer[0]
+		_pattern.add_child(tile)
+	_sparkles = HomeSparkles.new()
+	_sparkles.name = "Sparkles"
+	_sparkles.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_bg.add_child(_sparkles)
 
 	# đường ray dọc, mờ dần ở hai đầu
 	_rail = _tex_rect(UiAtlas.file_tex("home_rail.png"))
@@ -527,8 +546,8 @@ func _refresh_path(level: int, ended: bool) -> void:
 	var hard := _tier != ""
 	_bg_grad.visible = hard
 	_top_shade.visible = hard
-	_pattern.modulate = Color(1, 1, 1, 0.1) if hard else Color(0.1, 0.2, 0.5, 0.05)
-	_rail.modulate = Color(1, 1, 1, 0.75) if hard else Color(1, 1, 1, 0.55)
+	_pattern.modulate = Color(1, 1, 1, 0.12) if hard else Color(1, 1, 1, 0.35)
+	_rail.modulate = Color(1, 1, 1, 0.75) if hard else Color(1, 0.8, 0.9, 0.55)
 	_path_mode = "first" if level <= 1 else "mid"
 	if _path_mode == "first":
 		_set_node(path_nodes[0], level + 2, "locked", hard)

@@ -123,6 +123,7 @@ func _build() -> void:
 	_play.name = "PlayButton"
 
 	_top = HubTop.new()
+	_top.hide_side_buttons()
 	_top.action.connect(_act)
 	add_child(_top)
 	_nav = HubNav.new("ranking")

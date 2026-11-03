@@ -17,13 +17,16 @@ const Motifs := preload("res://src/core/motifs.gd")
 const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 ## Cắt khối đối xứng có thể lệch số khối mục tiêu tới 2.
-const MAX_BLOCKS := DifficultyCurve.BOOST_MAX + 2
+const MAX_BLOCKS := DifficultyCurve.BOOST_MAX * DifficultyCurve.COUNT_SCALE + 2
 ## Khung lớn nhất của hình: chừa một ô mỗi phía trên bàn cố định.
 const MAX_W := Config.BOARD_W - 2
 const MAX_H := Config.BOARD_H - 2
 const MAX_TRIES := 60
-## Bàn có cổng nhịp: giữ ít khối để tìm được trạng thái cổng ban đầu không bắt chạm chờ.
-const GATE_MAX_BLOCKS := 26
+## Bàn có cổng nhịp: giữ ít khối để tìm được trạng thái cổng ban đầu không bắt chạm chờ. Từ GATE2_FROM bàn có tới 2
+## cổng, khó tìm hơn nên trần thấp hơn (GATE2_MAX_BLOCKS) để sinh trong game vẫn nhanh.
+const GATE_MAX_BLOCKS := 52
+const GATE2_MAX_BLOCKS := 40
+const GATE2_FROM := 130
 const BLOCK_CAP := 5
 ## Bước nhảy trong Motifs.KINDS giữa hai level liền nhau (nguyên tố cùng nhau với số hình), để hình kế tiếp khác nhóm.
 const MOTIF_STRIDE := 8
@@ -79,6 +82,11 @@ static func _target_count(id: int, _rng: RandomNumberGenerator, attempt: int) ->
 	return maxi(2, DifficultyCurve.block_count(id) - attempt / 20)
 
 
+## Trần số khối của bàn có cổng nhịp ở level `id`.
+static func _gate_max(id: int) -> int:
+	return GATE2_MAX_BLOCKS if id >= GATE2_FROM else GATE_MAX_BLOCKS
+
+
 static func _enabled(id: int, mech: String, rng: RandomNumberGenerator, attempt: int) -> bool:
 	var unlock: int = int(Config.UNLOCK.get(mech, 1 << 30))
 	if id < unlock:
@@ -106,7 +114,7 @@ static func _attempt(id: int, s: int, attempt: int) -> Dictionary:
 		feats[m] = _enabled(id, m, rng, attempt)
 	var n := _target_count(id, rng, attempt)
 	if feats["pulse"]:
-		n = mini(n, GATE_MAX_BLOCKS)
+		n = mini(n, _gate_max(id))
 	var mirror := ""
 	if n >= 8 and n % 2 == 0 and rng.randf() < 0.35:
 		mirror = "h" if rng.randf() < 0.5 else "v"
@@ -141,7 +149,7 @@ static func _attempt_motif(id: int, s: int, attempt: int) -> Dictionary:
 			feats[m] = m == teach
 	var n := _target_count(id, rng, attempt)
 	if feats["pulse"]:
-		n = mini(n, GATE_MAX_BLOCKS)
+		n = mini(n, _gate_max(id))
 	var n_stones := 0
 	if feats["stone"]:
 		@warning_ignore("integer_division")
@@ -811,7 +819,7 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 		var cols: Array = sides.keys()
 		cols.sort()
 		_shuffle(cols, rng)
-		var want := 1 if id < 130 or cols.size() < 2 else 2
+		var want := 1 if id < GATE2_FROM or cols.size() < 2 else 2
 		for k in mini(want, cols.size()):
 			var col: int = cols[k]
 			var open := rng.randf() < 0.5

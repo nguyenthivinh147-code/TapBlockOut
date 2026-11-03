@@ -253,6 +253,43 @@ func test_no_lives_video(t: T) -> void:
 	p.free()
 
 
+## Opened from the heart on the top bar with lives left: stays open, and refilling goes back Home, never into a level.
+func test_no_lives_from_hub(t: T) -> void:
+	var g := _g()
+	g.s.level = 10
+	g.s.lives = {"count": 3, "next_at": NOW + 900}
+	g.s.coins = 5000
+	var p := _mount("no_lives", {"source": "hub"})
+	var st := _watch(p)
+	t.ok(not st.has("r"), "còn mạng vẫn mở")
+	t.eq(_lbl(p, "LivesLabel").text, "3", "số mạng")
+	t.eq((p.get("_title") as Label).text, p.tr("no_lives_more_title"), "tiêu đề Thêm mạng")
+	t.eq(_lbl(p, "BodyLabel").text, p.tr("no_lives_more_body"), "lời giải thích khi còn mạng")
+	t.ok(_btn(p, "GoldButton").is_visible_in_tree() and _btn(p, "VideoButton").is_visible_in_tree(), "có nút nạp")
+	t.ok(_lbl(p, "NextLabel").is_visible_in_tree(), "có đếm ngược")
+	_btn(p, "GoldButton").pressed.emit()
+	t.eq(st.get("r"), "home", "nạp xong về Home")
+	p.free()
+
+
+## Full lives: the heart popup still opens, without the video and gold buttons or the countdown.
+func test_no_lives_from_hub_full(t: T) -> void:
+	var g := _g()
+	g.s.level = 10
+	g.s.lives = {"count": int(g.lives_view().max), "next_at": 0}
+	var p := _mount("no_lives", {"source": "hub"})
+	var st := _watch(p)
+	t.ok(not st.has("r"), "đầy mạng vẫn mở")
+	t.eq(_lbl(p, "BodyLabel").text, p.tr("no_lives_full_body"), "báo đầy mạng")
+	t.ok(not _btn(p, "GoldButton").is_visible_in_tree(), "ẩn nút gold")
+	t.ok(not _btn(p, "VideoButton").is_visible_in_tree(), "ẩn nút video")
+	t.ok(not _lbl(p, "NextLabel").is_visible_in_tree() and not _lbl(p, "FullLabel").is_visible_in_tree(), "ẩn đếm ngược")
+	t.ok(not _lbl(p, "NoAdsLabel").visible, "không báo thiếu video")
+	_btn(p, "HomeButton").pressed.emit()
+	t.eq(st.get("r"), "home", "đóng về Home")
+	p.free()
+
+
 func test_no_lives_no_ads_message(t: T) -> void:
 	var g := _g()
 	_no_lives_state(g)

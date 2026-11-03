@@ -119,6 +119,16 @@ func _on_play_pressed() -> void:
 	if not bool(Game.lives_view().get("can_play", true)):
 		_close("no_lives")
 		return
+	var h := _host()
+	if h != null and h.has_method("curtain_swap"):
+		h.call("curtain_swap", _open_level)
+	else:
+		_open_level()
+
+
+func _open_level() -> void:
+	if _left or level_node != null:
+		return
 	_ui.visible = false
 	level_node = LevelScene.instantiate() as Control
 	add_child(level_node)

@@ -1,9 +1,10 @@
 extends RefCounted
 ## Builder Unity UI (unity_ui.gd): build hai lần một owner, Slider, auto size với ContentSizeFitter, Animator tắt sẵn
-## và OnDisplayLayout, AnimScaleButton, TMP_InputField, CutoutMaskUI.
+## và OnDisplayLayout, AnimScaleButton, TMP_InputField, CutoutMaskUI, alpha dim popup.
 const T := preload("res://tests/t.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
+const ThemeKit := preload("res://src/ui/theme_kit.gd")
 
 const INPUT := "Panel/ProfileMenu/PlayerInfo/InputField (TMP)"
 
@@ -131,4 +132,20 @@ func test_cutout(t: T) -> void:
 	var mr: Vector4 = m.get_shader_parameter("mask_rect")
 	t.near(mr.z, icon.size.x, 0.01, "lỗ theo cỡ icon")
 	t.near(mr.x, -bg.position.x, 0.01, "lỗ theo vị trí icon")
+	o.free()
+
+
+func test_popup_dim_alpha(t: T) -> void:
+	var o := _owner()
+	# Prefab alphas: cc, fc, 7a, ff (a button), dim nested in a panel.
+	for case in [["PopupOkLayer", "Bg"], ["PopupReviveLayer", "Bg"], ["PopupNextMonth", "Bg"],
+			["PopupRemoveAds", "Continue"], ["LeaderboardWeeklyResultLayer", "WeekResultPanel/Dim"]]:
+		var v := UnityUI.build(o, case[0], {"reveal": false})
+		var img: Control = UnityUI.image_of(v.node(case[1]))
+		t.near(img.color.a, ThemeKit.POPUP_DIM_ALPHA, 0.0001, "%s dim 85%%" % case[0])
+	# Not a dim: the loading swirl (material) and the hard-level band (taller than the screen) keep theirs.
+	var load := UnityUI.build(o, "LoadLevelProcess", {"reveal": false})
+	t.near(UnityUI.image_of(load.node("BG")).color.a, 1.0, 0.0001, "nền loading giữ alpha")
+	var warn := UnityUI.build(o, "WarningHardLevelLayer", {"reveal": false})
+	t.near(UnityUI.image_of(warn.node("Panel/WarningExtreme/Dim")).color.a, float(0xa6) / 255.0, 0.001, "dải cảnh báo giữ alpha")
 	o.free()

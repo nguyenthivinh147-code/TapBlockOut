@@ -11,13 +11,17 @@ const POPUP_OFFER := "res://scenes/popup_offer.tscn"
 const SETTINGS := "res://scenes/settings.tscn"
 const WEEKLY_PASS := "res://scenes/weekly_pass.tscn"
 const CHAIN_OFFER := "res://scenes/chain_offer.tscn"
+const NO_LIVES := "res://scenes/no_lives.tscn"
 const TESTER := "res://scenes/tester_menu.tscn"
 const TesterMenu := preload("res://src/ui/tester_menu.gd")
+const LevelCurtain := preload("res://src/ui/level_curtain.gd")
 
 var current_screen: Node = null
 var current_name: String = ""
 var popup_layer: Control = null
 var is_booted: bool = false
+## Màn chuyển cảnh đang chạy (go_curtain); null khi không có.
+var curtain: Control = null
 
 
 func _ready() -> void:
@@ -32,11 +36,29 @@ func _ready() -> void:
 
 
 func _boot() -> void:
+	go("splash", {"view": {"percent": 0, "version": _version()}})
+	var splash := current_screen
+	var c: Dictionary = Config.CONTENT
+	var hold := float(c.splash_hold)
+	var bar := create_tween()
+	bar.tween_method(Callable(splash, "set_progress"), 0.0, hold, float(c.splash_min_sec)) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	await Game.boot()
+	if bar.is_running():
+		await bar.finished
+	var fill := create_tween()
+	fill.tween_method(Callable(splash, "set_progress"), hold, 1.0, float(c.splash_fill_sec))
+	await fill.finished
 	go("home")
 	is_booted = true
 	booted.emit()
 	_chain_autoshow()
+
+
+## "v0.1.0" theo application/config/version; trống thì Splash ẩn dòng version.
+func _version() -> String:
+	var v := str(ProjectSettings.get_setting("application/config/version", ""))
+	return "v" + v if v != "" else ""
 
 
 ## Chain Offer tự mở đúng một lần mỗi chuỗi, khi người chơi đang ở Home.
@@ -66,6 +88,26 @@ func go(screen: String, args: Dictionary = {}) -> void:
 		node.call("setup", args)
 	if screen == "home" and is_booted:
 		_chain_autoshow.call_deferred()
+
+
+## Như go(), có màn chuyển cảnh vào màn chơi.
+func go_curtain(screen: String, args: Dictionary = {}) -> void:
+	await curtain_swap(go.bind(screen, args))
+
+
+## Màn chuyển cảnh: hai cánh kẹo khép lại kèm logo, gọi swap (dựng màn chơi bên dưới) rồi mở ra.
+## Chạm và Back bị chặn suốt lúc chạy; đang có một màn chuyển cảnh thì bỏ qua.
+func curtain_swap(swap: Callable) -> void:
+	if curtain != null:
+		return
+	curtain = LevelCurtain.new()
+	curtain.name = "LevelCurtain"
+	add_child(curtain)
+	await curtain.close()
+	if swap.is_valid():
+		swap.call()
+	await curtain.open()
+	curtain = null
 
 
 ## Đưa một node popup đã dựng sẵn vào lớp popup; nó phải có signal closed (Back đóng được).
@@ -113,6 +155,8 @@ func _on_screen_closed(result: Variant, screen: String, node: Node) -> void:
 	elif result is String:
 		action = result
 	match screen:
+		"splash":
+			pass
 		"home":
 			_home_action(action, result as Dictionary if result is Dictionary else {})
 		"level":
@@ -122,7 +166,7 @@ func _on_screen_closed(result: Variant, screen: String, node: Node) -> void:
 				go("home")
 		"no_lives":
 			if action == "refilled":
-				go("level")
+				go_curtain("level")
 			else:
 				go("home")
 		"shop", "leaderboard":
@@ -137,9 +181,11 @@ func _on_screen_closed(result: Variant, screen: String, node: Node) -> void:
 func _home_action(action: String, res: Dictionary) -> void:
 	match action:
 		"play":
-			go("level")
+			go_curtain("level")
 		"no_lives":
 			go("no_lives")
+		"lives":
+			_popup_then(NO_LIVES, {"source": "hub"}, false)
 		"profile":
 			go("profile")
 		"challenge":
@@ -219,7 +265,7 @@ func _on_tester_closed(result: Variant) -> void:
 
 
 func _notification(what: int) -> void:
-	if what != NOTIFICATION_WM_GO_BACK_REQUEST or popup_layer == null:
+	if what != NOTIFICATION_WM_GO_BACK_REQUEST or popup_layer == null or curtain != null:
 		return
 	var top := _top_popup()
 	if top != null:

@@ -45,13 +45,6 @@ static func make_shadow() -> Control:
 	return b
 
 
-## Viên trong của khối hai lớp: thân kèm bóng đổ, vì bóng rơi lên chính khối ngoài.
-static func make_inner() -> Control:
-	var b := Body.new()
-	(b.material as ShaderMaterial).set_shader_parameter("shadow_a", SHADOW_A)
-	return b
-
-
 ## Đặt lại thân khối theo ô và màu hiện tại. `cells` theo toạ độ ô gốc của BlockNode, `at` là góc ô gốc.
 ## `ramp` có deep, side, face, stripe; `overlay` phủ trong hình khối, `flash` 0..1 là nháy sáng.
 static func update_body(body: Control, cells: Array, cell: float, ramp: Dictionary, overlay: Color = Color(0, 0, 0, 0), flash: float = 0.0, at: Vector2 = Vector2.ZERO) -> void:
@@ -65,6 +58,16 @@ static func update_body(body: Control, cells: Array, cell: float, ramp: Dictiona
 	m.set_shader_parameter("overlay", overlay)
 	m.set_shader_parameter("flash", flash)
 	body.queue_redraw()
+
+
+## Lớp vật cản trên thân: `jelly` lớp pudding phủ trọn khối, `paper` hộp giấy thay thân kẹo, `tape` tâm băng dán
+## của hộp (toạ độ ô của khối), `candy_a` 0 thì chỉ còn lớp pudding.
+static func set_layers(body: Control, jelly: float, paper: float, tape: Vector2 = Vector2(-9, -9), candy_a: float = 1.0) -> void:
+	var m: ShaderMaterial = body.material
+	m.set_shader_parameter("jelly", jelly)
+	m.set_shader_parameter("paper", paper)
+	m.set_shader_parameter("tape", tape)
+	m.set_shader_parameter("candy_a", candy_a)
 
 
 ## Đặt các tham số chất liệu chung (`candy_body.gdshaderinc`) cho một material.

@@ -2,6 +2,7 @@ extends RefCounted
 const T := preload("res://tests/t.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const Config := preload("res://src/config.gd")
+const CandyFrame := preload("res://src/ui/candy_frame.gd")
 const SCENE := "res://scenes/board_view.tscn"
 
 
@@ -116,6 +117,30 @@ func test_exit_animation(t: T) -> void:
 	t.ok(done, "animation_done phát")
 	t.eq(v.block_count(), 1, "node khối đã xoá")
 	t.ok(not v.is_animating(), "hết hoạt ảnh")
+	v.queue_free()
+
+
+## Khối thoát lao đi: vệt gió hút nằm dưới lớp khối, ở trước mặt trong của thanh cùng màu, tự xoá khi xong.
+func test_exit_suck_wind(t: T) -> void:
+	var board := BoardState.new(_lv(5, 5, [_b("b1", "blue", [[1, 2]])]))
+	var v := (load(SCENE) as PackedScene).instantiate() as Control
+	_root().add_child(v)
+	v.setup(board, Vector2(720, 900))
+	v.apply_result(board.tap("b1"))
+	var wind: Control = v.get_node("Shadows").get_node_or_null("SuckWind")
+	t.ok(wind != null, "có vệt gió ở lớp dưới các khối")
+	var inner: Rect2 = CandyFrame.inner_rect(v.board_rect(), v.cell_size())
+	t.near(wind._mouth.x, inner.end.x, 0.5, "vệt hút về mặt trong của thanh phải, không lấn lên thanh")
+	t.near(wind._mouth.y, v.cell_center(Vector2i(1, 2)).y, 0.5, "vệt chụm về ngang hàng khối")
+	t.eq(wind._streaks.size(), 14, "14 vệt")
+	var cell: float = v.cell_size()
+	var first := INF
+	for s: Dictionary in wind._streaks:
+		t.ok(float(s["from"]) >= 0.1 * cell - 0.01 and float(s["from"]) <= 0.8 * cell + 0.01, "vệt hiện cách thanh 0,1–0,8 ô")
+		first = minf(first, float(s["delay"]))
+	t.ok(first > 0.05, "vệt chỉ hiện khi khối đã gần chạm thanh")
+	wind._process(1.0)
+	t.ok(wind.is_queued_for_deletion(), "hết vệt thì tự xoá")
 	v.queue_free()
 
 

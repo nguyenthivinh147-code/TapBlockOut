@@ -83,8 +83,10 @@ func test_ramp_follows_block_state(t: T) -> void:
 	t.eq(fog["face"], BoardFx.FOG_COLOR, "sương mù giấu màu")
 	var chained := BoardFx.block_ramp({"color": "blue", "chained": true})
 	t.ok(chained["face"].get_luminance() < ThemeKit.block_color("blue").get_luminance(), "xích làm tối")
-	t.eq(BoardFx.block_overlay({"ice": 0}).a, 0.0, "không băng thì không phủ")
-	t.ok(BoardFx.block_overlay({"ice": 2}).a > BoardFx.block_overlay({"ice": 1}).a, "băng dày phủ đậm hơn")
+	t.eq(BoardFx.block_layers({"ice": 0})["jelly"], 0.0, "không pudding thì không phủ")
+	t.eq(BoardFx.block_layers({"ice": 1})["jelly"], 1.0, "pudding phủ trọn khối")
+	t.eq(BoardFx.block_layers({"inner_color": "green"})["paper"], 1.0, "khối hai lớp là hộp giấy")
+	t.eq(BoardFx.block_layers({"inner_color": ""})["paper"], 0.0, "hết lớp ngoài là kẹo")
 
 
 func test_top_runs_find_every_upward_edge(t: T) -> void:
@@ -131,13 +133,18 @@ func test_shadow_stays_under_blocks_and_follows(t: T) -> void:
 	v.queue_free()
 
 
-func test_inner_pieces_follow_two_layer_state(t: T) -> void:
-	var board := BoardState.new(_lv([_b("d", "yellow", [[1, 1], [1, 2]], {"inner_color": "blue"})]))
+func test_paper_box_follows_two_layer_state(t: T) -> void:
+	var board := BoardState.new(_lv([_b("d", "yellow", [[1, 1], [1, 2]], {"inner_color": "blue"}), _b("e", "green", [[4, 4]], {"ice": 1})]))
 	var v := _make(board)
 	await _frames()
-	var n: Control = v.block_node("d")
-	t.eq(n._inner.size(), 2, "mỗi ô một viên trong")
+	var box: ShaderMaterial = v.block_node("d")._body.material
+	var jelly: ShaderMaterial = v.block_node("e")._body.material
+	t.eq(box.get_shader_parameter("paper"), 1.0, "khối hai lớp vẽ thành hộp giấy")
+	t.eq(box.get_shader_parameter("tape"), Vector2(0.5, 1.0), "băng dán qua tâm hộp")
+	t.eq(jelly.get_shader_parameter("jelly"), 1.0, "pudding phủ khối")
 	v.apply_result(board.tap("d"))
+	v.apply_result(board.tap("e"))
 	await _frames()
-	t.eq(n._inner.size(), 0, "bóc lớp thì hết viên trong")
+	t.eq(box.get_shader_parameter("paper"), 0.0, "hộp bay đi thì lộ kẹo")
+	t.eq(jelly.get_shader_parameter("jelly"), 0.0, "pudding vỡ thì hết phủ")
 	v.queue_free()

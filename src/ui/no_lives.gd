@@ -1,7 +1,10 @@
 extends Control
 ## Màn hết mạng: đếm ngược, nạp bằng gold, xem video (+1 mạng), về Home.
-## setup(args): không cần khoá nào. Dữ liệu lấy từ Game.lives_view().
-## closed(result): "refilled" (đã có mạng, quay lại chơi) | "home".
+## setup(args): {source?}; "hub" là mở từ tim trên thanh trên, dạng popup đè lên màn đang mở: tiêu đề "Thêm mạng",
+## không tự đóng khi còn mạng; đầy mạng (hoặc vô hạn) thì ẩn nút video, nút gold và đếm ngược.
+## Dữ liệu lấy từ Game.lives_view().
+## closed(result): "refilled" (đã có mạng, quay lại chơi) | "home". Mở từ hub thì không bao giờ "refilled":
+## nạp xong cũng là "home".
 ## Không có video thì hiện dòng báo, vẫn chờ được.
 ## Dựng theo PopupMoreHeartLayer (color-cube-match-puzzle): tim kèm số mạng, "mạng kế tiếp" và chip đồng hồ,
 ## nút video (AdsBtn) và nút gold (GoldBtn: +N tim, giá gold). X và chạm nền (NavigationBackButton) là về Home.
@@ -22,10 +25,12 @@ const CHIP_W := 340.0
 var ui: RefCounted = null
 var _busy: bool = false
 var _built: bool = false
+var _from_hub: bool = false
 var _title: Label
 var _lives_lbl: Label
 var _next_lbl: Label
 var _full_lbl: Label
+var _body: Label
 var _gold_btn: Button
 var _video_btn: Button
 var _no_ads_lbl: Label
@@ -34,8 +39,9 @@ var _timer: Timer
 var _beat: Tween = null
 
 
-func setup(_args: Dictionary = {}) -> void:
+func setup(args: Dictionary = {}) -> void:
 	_busy = false
+	_from_hub = str(args.get("source", "")) == "hub"
 	if not _built:
 		_build()
 		_built = true
@@ -89,8 +95,8 @@ func _build() -> void:
 	ui.text("Panel/Content/GameObject/GoldBtn/Image/Out", "+%d" % int(Config.ECON.refill_lives))
 
 	var panel: Control = ui.node("Panel")
-	var body := _note(panel, tr("no_lives_body"), NOTE_Y[0], "BodyLabel")
-	body.visible = true
+	_body = _note(panel, "", NOTE_Y[0], "BodyLabel")
+	_body.visible = true
 	_no_ads_lbl = _note(panel, tr("no_lives_no_ads"), NOTE_Y[1], "NoAdsLabel")
 	_msg = _note(panel, "", NOTE_Y[2], "MessageLabel")
 	_msg.visible = false
@@ -151,17 +157,30 @@ func _heart_beat() -> void:
 		tw.tween_property(heart, "scale", base, 0.35).set_trans(loop[0]).set_ease(loop[1]))
 
 
-## Làm mới số liệu từ Game.lives_view(); đóng "refilled" khi đã có mạng.
+## Làm mới số liệu từ Game.lives_view(); đóng "refilled" khi đã có mạng (trừ khi mở từ hub).
 func refresh() -> void:
 	if not _built or _busy:
 		return
 	var v: Dictionary = Game.lives_view()
 	var count := int(v.count)
 	var mx := int(v.max)
-	if bool(v.can_play):
+	if not _from_hub and bool(v.can_play):
 		_finish("refilled")
 		return
+	var infinite := bool(v.infinite)
+	var full := infinite or count >= mx
+	UnityUI.set_text(_title, tr("no_lives_more_title" if _from_hub else "no_lives_title"))
+	var body := "no_lives_body"
+	if _from_hub:
+		body = "no_lives_unlimited_body" if infinite else ("no_lives_full_body" if full else "no_lives_more_body")
+	UnityUI.set_text(_body, tr(body))
 	UnityUI.set_text(_lives_lbl, str(count))
+	ui.show("Panel/Content/Description", not full)
+	ui.show("Panel/Content/GameObject", not full)
+	if full:
+		_no_ads_lbl.visible = false
+		_msg.visible = false
+		return
 	var secs := int(v.seconds_to_next)
 	UnityUI.set_text(_next_lbl, tr("no_lives_next") % format_time(secs))
 	var regen := int(Config.LIVES.regen_sec)
@@ -177,7 +196,7 @@ func refresh() -> void:
 
 func _finish(result: Variant) -> void:
 	_timer.stop()
-	closed.emit(result)
+	closed.emit("home" if _from_hub and result == "refilled" else result)
 
 
 func _show_msg(text: String) -> void:

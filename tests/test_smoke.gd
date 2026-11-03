@@ -15,4 +15,4 @@ func test_autoloads(t: T) -> void:
 
 func test_translation_stub(t: T) -> void:
 	TranslationServer.set_locale("en")
-	t.eq(str(TranslationServer.translate("APP_NAME")), "Tap Block Out", "dịch en")
+	t.eq(str(TranslationServer.translate("APP_NAME")), "Candy Away", "dịch en")

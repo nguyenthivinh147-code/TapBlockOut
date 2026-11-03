@@ -19,6 +19,10 @@ const BIT_DRAG := 1.8  # mỗi giây, hãm nhẹ hơn vụn va chạm để bay 
 const BIT_GRAVITY := 3.0  # ô/giây², trôi nhẹ chứ không rơi
 const BIT_DEPTH := 0.8  # bề dày theo bán kính, gần như khối lập phương
 const BIT_SPIN := Vector2(3.0, 9.0)  # rad/giây
+const SHATTER_SPEED := Vector2(4.0, 10.0)  # ô/giây, mảnh khối bị búa gõ bắn toả khỏi điểm gõ
+const SHATTER_LIFT := Vector2(1.5, 4.5)  # ô/giây, hất lên thêm
+const SHATTER_LIFE := Vector2(0.5, 0.85)
+const SHATTER_JITTER := 0.16  # điểm cắt lệch khỏi giữa cạnh và giữa ô, theo ô
 const DEPTH := 0.16  # bề dày mảnh tối đa, theo ô
 const DEPTH_RATIO := 0.55  # mảnh nhỏ thì mỏng theo: bề dày tối đa bằng chừng này lần bán kính mảnh
 const DEPTH_GROW := 0.08  # giây, bề dày hiện dần khi mảnh vừa ra
@@ -114,6 +118,29 @@ static func chips(parent: Node, cells: Array, cell: float, ramp: Dictionary, xf:
 		var speed := rng.randf_range(CHIP_SPEED.x, CHIP_SPEED.y) * cell
 		var vel := -dir * speed * rng.randf_range(0.25, 0.7) + perp * speed * rng.randf_range(-0.7, 0.7) + Vector2.UP * cell * rng.randf_range(0.4, 1.6)
 		node._add_shard(poly, cell, xf, vel, rng.randf_range(CHIP_LIFE.x, CHIP_LIFE.y), rng)
+	node._commit()
+	parent.add_child(node)
+	return node
+
+
+## Khối vỡ tung khi bị búa gõ: mỗi ô tách thành 8 mảnh tam giác quanh một tâm lệch, mảnh bắn toả khỏi điểm gõ `at`
+## (toạ độ ô của khối), hất lên rồi rơi.
+static func shatter(parent: Node, cells: Array, cell: float, ramp: Dictionary, xf: Transform2D, at: Vector2, rng: RandomNumberGenerator) -> Control:
+	var node: Control = new()
+	node._setup_material(cells, cell, ramp)
+	for c in cells:
+		var o := Vector2(c)
+		var j := func() -> float: return rng.randf_range(-SHATTER_JITTER, SHATTER_JITTER)
+		var mid := o + Vector2(0.5 + j.call(), 0.5 + j.call())
+		var rim: Array[Vector2] = [o, o + Vector2(0.5 + j.call(), 0.0), o + Vector2(1.0, 0.0), o + Vector2(1.0, 0.5 + j.call()),
+			o + Vector2.ONE, o + Vector2(0.5 + j.call(), 1.0), o + Vector2(0.0, 1.0), o + Vector2(0.0, 0.5 + j.call())]
+		for i in rim.size():
+			var poly := PackedVector2Array([rim[i], rim[(i + 1) % rim.size()], mid])
+			var away := _centroid(poly) - at
+			var dir := away.normalized() if away.length() > 0.05 else Vector2.from_angle(rng.randf() * TAU)
+			var speed := rng.randf_range(SHATTER_SPEED.x, SHATTER_SPEED.y) * cell
+			var vel := dir.rotated(rng.randf_range(-0.35, 0.35)) * speed + Vector2.UP * cell * rng.randf_range(SHATTER_LIFT.x, SHATTER_LIFT.y)
+			node._add_shard(poly, cell, xf, vel, rng.randf_range(SHATTER_LIFE.x, SHATTER_LIFE.y), rng)
 	node._commit()
 	parent.add_child(node)
 	return node

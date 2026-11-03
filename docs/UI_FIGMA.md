@@ -13,7 +13,7 @@ Nguồn: file Figma `Tapblock`. Layout lấy từ page **Overview** (wireframe 1
 - Icon `ic_*` tìm thấy trực tiếp theo tên. Tên cũ ánh xạ sang icon Figma qua `ThemeKit.FIGMA_ICON`, bảng này ưu tiên hơn file trong `assets/ui/`.
 - Popup dựng bằng `src/ui/popup_kit.gd`: nền mờ, khung kem, ribbon tiêu đề, nút X. Chữ trên thân kem dùng `ThemeKit.ink_label` hoặc `PopupKit.text`, số vàng dùng `ThemeKit.gold_label`.
 - Màn có khung hi-fi (frame 886×1920, như node `47:3486`: Setting, Ingame Setting, Language, Profile) dựng bằng `PopupKit.make_fig`: số trong code là px đọc thẳng từ Figma, gốc là góc trên trái popup, cả khối thu theo `PopupKit.FIG_SCALE` (720/886). Đặt phần tử bằng `fig_box`, `fig_text`, `fig_icon`, `fig_button`, `fig_toggle`, `fig_link`. `fig_button` co sprite atlas về đúng cao nút (`UiAtlas.fit_box`) nên đầu tròn không méo, và nới vùng chạm lên 96 px màn hình mà hình nút vẫn đúng cỡ Figma. Chữ dài (tiếng Việt) tự thu cỡ cho vừa.
-- Home, Shop, Leaderboard dùng chung `src/ui/hub_top.gd` (avatar, mạng, vàng, settings) và `src/ui/hub_nav.gd` (Shop, Home, Ranking).
+- Home, Shop, Leaderboard dùng chung `src/ui/hub_top.gd` (avatar, mạng, vàng, settings) và `src/ui/hub_nav.gd` (Shop, Home, Ranking). Shop và Leaderboard ẩn avatar và settings (`hide_side_buttons()`), chỉ còn mạng và vàng.
 
 ## Home (Figma section "Meta", node 18:37)
 
@@ -22,8 +22,8 @@ Nguồn: file Figma `Tapblock`. Layout lấy từ page **Overview** (wireframe 1
 - Toạ độ chính (px thiết kế): hàng trên y 35 (avatar 124 ở x 11, chip mạng 272x105 ở x 189, chip vàng ở x 477, settings 88 ở x 795); cột icon 194x176 ở x 12 (trái) và x 682 (phải) từ y 221, bước 213 (tự rút bước khi nhiều mục); nút PLAY pill 387x165 ở (256, 1274); thanh dưới 886x248 từ y 1552.
 - Đường level: level 1 dùng bố cục khung thường (hai mốc khoá 220 ở y 211 và 525, mốc hiện tại 290 ở y 868). Từ level 2 dùng bố cục khung Hard (khoá 220 ở y 149, hiện tại 290 ở y 513, vừa qua 220 ở y 941). Mốc hiện tại: kim cương xanh (thường), lục giác đỏ có đầu lâu (`hard`), lục giác tím có đầu lâu sừng (`very_hard`); mốc vừa qua là lục giác xanh có dấu tích; mốc khoá xám có ổ khoá (kim cương khi level hiện tại là thường, lục giác khi khó).
 - Nút PLAY: pill xanh/đỏ/tím theo độ khó; khó thì có chữ độ khó cỡ 36 phía trên chữ PLAY cỡ 102. Chữ độ khó dùng khoá `level_hard`, `level_very_hard` ("VERY HARD", Figma ghi "SUPER HARD").
-- Nền: thường `#77A5FF`; Hard và Super Hard dải `#3454AC` → `#DEE1F2`, phủ thêm lớp `#3454AC` mờ dần trên 566 px đầu. Ảnh rời export từ Figma: `home_glow.png` (fx 1), `home_pattern.png` (nền hình mèo), `home_rail.png` (ray), `home_banner.png` (ribbon vàng).
-- Ngoài khung Figma, giữ theo logic game: icon Daily Challenge ở cột trái (khoá ghi "Level 50"), icon ưu đãi có hạn ở đầu cột phải (ribbon ghi thời gian còn), Special Pack, Weekend Sale, Weekly Pass, Chain Offer ở cột phải; mạng ẩn trước khi mở; avatar và frame là đồ người chơi đang đeo. Chip mạng: số mạng trên icon tim, thanh ghi "FULL" hoặc thời gian tới mạng kế.
+- Nền (theme kẹo, khác Figma): thường `#FFEEF4`; Hard và Super Hard dải `#3454AC` → `#DEE1F2`, phủ thêm lớp `#3454AC` mờ dần trên 566 px đầu. Mọi độ khó có hoạ tiết kẹo chìm mờ (`home_candy_pattern.png`, tile 512 px sinh bằng `tools/gen_home_candy_pattern.py`, vẽ hai lớp: lòng hình hồng đậm hơn nền, lớp trắng lệch xuống 2 px làm viền sáng ở mép dưới để hình chìm xuống; độ mờ 35%, Hard 12%) và sao 4 cánh lấp lánh (`src/ui/home_sparkles.gd`). Ảnh rời export từ Figma: `home_glow.png` (fx 1), `home_rail.png` (ray), `home_banner.png` (ribbon vàng); `home_pattern.png` (nền hình mèo) không còn dùng.
+- Ngoài khung Figma, giữ theo logic game: icon Daily Challenge ở cột trái (khoá ghi "Level 50"), icon ưu đãi có hạn ở đầu cột phải (ribbon ghi thời gian còn), Special Pack, Weekend Sale, Weekly Pass, Chain Offer ở cột phải; mạng ẩn trước khi mở; avatar và frame là đồ người chơi đang đeo. Chip mạng: số mạng trên icon tim, thanh ghi "FULL" hoặc thời gian tới mạng kế; chạm mở popup tim (`no_lives` với `source: "hub"`) đè lên màn đang mở, dim 85%: tiêu đề "Thêm mạng"; chưa đầy thì có nút video, nút gold và đếm ngược, đầy mạng (hoặc vô hạn) thì ẩn cả ba và báo đầy. Nạp xong hoặc đóng đều quay lại màn cũ, không vào level.
 - Chụp để so: `tests/shot.gd` với `--only=home,home_l1,home_hard,home_very_hard`.
 - Mọi nút tối thiểu 96×96. Dấu + trên chip tiền tệ chỉ là hình; vùng chạm là cả chip.
 - Font: Baloo, style theo material TextMeshPro "Baloo Outline - Black" của color-cube-match-puzzle (chữ trắng, viền đen, bóng đen lệch xuống). `assets/fonts/baloo.res` là `FontFile` MSDF dựng từ atlas SDF trong `Baloo Bhaijaan Regular 400 SDF.asset` bằng `tools/gen_baloo_font.gd` (project đó không còn file TTF gốc). Font là mặc định cho mọi chữ qua `gui/theme/custom_font` trong `project.godot` và `ThemeKit.make_theme()`; atlas có đủ chữ tiếng Việt.
@@ -44,7 +44,7 @@ Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, tru
 |---|---|---|
 | 2.1 | Home | Xong, có logic |
 | 2.2 | `popup_daily` | Xong, có logic. Game có 7 ô mỗi tuần như wireframe; thêm dòng tuần và ô thứ 7 chiếm cả hàng |
-| 3.2, 3.4 | Dải cảnh báo độ khó, HUD level | Xong, có logic. Bánh răng mở 3.5; Home nằm trong popup đó |
+| 3.2, 3.4 | Dải cảnh báo độ khó, HUD level | Xong, có logic. Bánh răng mở 3.5; Home nằm trong popup đó. Nút và khung HUD nay dùng sprite `assets/ui/hud/` theo ảnh ref kẹo (xem `design.md`), không còn icon Figma trên tile |
 | 3.5 | `popup_ingame_settings` | Xong, có logic. Theo hi-fi "Ingame/Setting"; nút xanh là Restart (Figma ghi giá 100 gold), "-1 tim" gắn cả Home và Restart khi bỏ ván mất mạng |
 | 3.6, 3.10 | Hộp thoại trong `level.gd` | Xong, có logic. Dùng hộp thoại chung thay vì scene riêng |
 | 4.1, 4.4, 4.5 | `win_card`, `popup_rescue`, `lose_card` | Xong, có logic. Rescue giữ nội dung +3 Lượt của game, không phải "Out of Space" |
@@ -55,7 +55,8 @@ Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, tru
 | 7.6 | `weekly_pass`, `popup_weekly_tutorial` | Xong, có logic. Dạng card, chưa toàn màn hình |
 | 10.1, 10.3 | `profile`, `settings` | Xong, có logic, theo hi-fi node `47:3486`. Settings thêm icon thông báo (Figma có 3 icon), Restore và Privacy là chữ gạch chân; nút Language mở popup Language riêng trong `settings.gd` (3 lựa chọn thật), không dùng stub 10.4. Profile: ô tên hiện "Người chơi", dòng UID hiện gold; món chưa có hiện khoá trên ô, nút giá kèm nút video |
 | Ngoài wireframe | `challenge` | Xong, có logic |
-| 1.1 đến 1.6 | `splash`, `popup_update`, `download_data`, `select_account`, `tutorial_intro`, `popup_no_internet` | Chỉ UI |
+| 1.1 | `splash` | Xong, có logic: màn loading khi mở game, `main.gd` chạy thanh tải trong lúc `Game.boot()` (design.md mục 2) |
+| 1.2 đến 1.6 | `popup_update`, `download_data`, `select_account`, `tutorial_intro`, `popup_no_internet` | Chỉ UI |
 | 2.3 | ADS Daily | Xong, có logic, nằm trong Shop (khối `AdsDaily`, dùng video gold `shop_coins`: 5 ô mỗi ngày, mỗi ô 200 gold). Không có lối vào trên Home; `popup_ads_daily` chỉ còn trong danh sách xem trước |
 | 2.4 | `popup_remove_ads` | Chỉ UI |
 | 3.1, 3.3, 3.7, 3.8, 3.9, 3.11 | `load_transition`, `popup_mechanic`, `booster_soon`, `booster_unlocked`, `popup_free_pick`, `speedup_tutorial` | Chỉ UI |
