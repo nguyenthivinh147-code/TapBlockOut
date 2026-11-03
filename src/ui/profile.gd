@@ -3,21 +3,20 @@ extends Control
 ## tabs (ToggleAnimator swaps the grid and its button group), 3-column grids of Profile_AvtCells / Profile_FrameCells
 ## clones with the game's avatar and frame pictures. The button under the grid follows ProfileUICoreLayer: Used (worn),
 ## OK = equip (owned), Buy with the gold price (not owned); the game's video unlock is a copy of SaveButton on the blue
-## pill beside Buy. The UID row shows the game's gold (no accounts). Only Game and Sfx are called.
+## pill beside Buy. The UID row shows the game's gold (no accounts). Only Game and Sfx are called. Static nodes are in
+## scenes/profile.tscn; the cells follow Config.cosmetic_ids and are cloned here.
 ## closed({"action": "back"}) on X, the dim or Back.
 
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
-const UnityKit := preload("res://src/ui/unity_kit.gd")
 const UView := preload("res://src/ui/u_view.gd")
 const Config := preload("res://src/config.gd")
 
 const CHANGE_NAME := "res://scenes/popup_change_name.tscn"
 const KINDS: Array[String] = ["avatar", "frame"]
 const LAYER := "ProfileLayer"
-const MENU := "Panel/ProfileMenu"
 const INFO := "Panel/ProfileMenu/PlayerInfo"
 const UID := "Panel/ProfileMenu/PlayerInfo/UID but very DeviceID"
 ## Per kind: tab toggle, scroll host, grid content, pooled cell, button group (ProfileUICoreLayer fields).
@@ -31,18 +30,9 @@ const PARTS := {
 		"cell": "Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells",
 		"image": "FrameImage", "group": "Panel/ProfileMenu/FrameButtonGroup", "label": "profile_frames"},
 }
-## RewardItemSO gold and the TV of video buttons (PopupRewardLayer x2).
-const GOLD_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_3"
-const VIDEO_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_5"
-const BLUE_PILL := "Resources_moved_UI_Maincenter:UI_Maincenter_51"
 ## Buy and video side by side: 286-wide pills 20 apart (SettingMainMenuLayer's two pills sit 20 apart).
 const PAIR_X := 153.0
 const BTN_Y := -364.0
-## Gold in the UID row: icon over the "UID:" label, amount in the DeviceID text.
-const GOLD_RECT := Rect2(4, -6, 60, 60)
-## Status line under the popup (not enough gold, video errors): VersionText style, 30 below the panel.
-const STATUS_GAP := 30.0
-const STATUS_H := 60.0
 
 var gold_label: Label = null
 var name_label: Label = null
@@ -153,10 +143,13 @@ func _build() -> void:
 		return
 	_built = true
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	# Profile is a screen here (a popup over the main menu in Unity): the game background sits under the dim.
-	add_child(ThemeKit.make_background())
+	# scenes/profile.tscn holds the game background under the dim (Profile is a screen here, a popup over the main
+	# menu in Unity), the gold icon, both VideoButtons and StatusLabel, and hides CopyBtn, the tabs' red dots and the
+	# pooled cells. Layer nodes keep their prefab names there (a renamed instanced node loses its overrides): renamed
+	# here.
 	ui = UnityUI.build(self, LAYER)
-	# The prefab root sits at x -5; UICoreLayer.SetShowOrHide puts the layer at anchoredPosition 0 when shown.
+	# The prefab root sits at x -5; UICoreLayer.SetShowOrHide puts the layer at anchoredPosition 0 when shown. Set
+	# here: a scene does not keep an instanced node's offset changed back to 0.
 	var rr: Dictionary = ui.root.get_meta("u_rect")
 	rr.pos = Vector2.ZERO
 	UnityUI.apply_rect(ui.root)
@@ -167,14 +160,15 @@ func _build() -> void:
 	back_btn = ui.on_click("Panel/ProfileMenu/Top/btnTurnOff", _close)
 	back_btn.name = "BackButton"
 	ui.on_click("Bg", _close)
-	_build_info()
+	_wire_info()
 	for kind in KINDS:
-		_build_kind(kind)
-	_build_status()
+		_wire_kind(kind)
+	status_label = %StatusLabel
+	status_label.text = ""
 
 
 ## PlayerInfo: worn avatar and frame, nickname box, gold where Unity shows the device id.
-func _build_info() -> void:
+func _wire_info() -> void:
 	preview = ui.node(INFO + "/CurrentAvt")
 	preview.name = "Preview"
 	ui.text(INFO + "/Label", tr("profile_nickname"))
@@ -187,24 +181,19 @@ func _build_info() -> void:
 		edit.get_parent().remove_child(edit)
 		edit.queue_free()
 	ui.text(UID, "")
-	ui.show(UID + "/CopyBtn", false)
-	UnityKit.sprite(ui.node(UID), GOLD_ICON, GOLD_RECT)
 	gold_label = ui.label(UID + "/DeviceID")
 	gold_label.name = "GoldLabel"
 
 
 ## One kind: tab toggle, pooled cells (ProfileUICoreLayer.SetupAvatarList / SetupFrameList), button group.
-func _build_kind(kind: String) -> void:
+func _wire_kind(kind: String) -> void:
 	var p: Dictionary = PARTS[kind]
 	var tab := ui.button(str(p.tab))
 	tab.name = "Tab_" + kind
 	ui.text(str(p.tab) + "/Text (TMP)", tr(str(p.label)))
-	# NotifyElement red dot: the game has no "new item" notices.
-	ui.show(str(p.tab) + "/Image", false)
 	tab.connect("clicked", _on_tab.bind(kind))
 	tab_buttons[kind] = tab
 	ui.node(str(p.scroll)).name = "Grid_" + kind
-	ui.show(str(p.cell), false)
 	var group := ButtonGroup.new()
 	for id in Config.cosmetic_ids(kind):
 		var v: RefCounted = ui.clone(str(p.cell))
@@ -227,35 +216,14 @@ func _build_kind(kind: String) -> void:
 	_actions[kind] = {"save": save, "used": used, "buy": buy, "video": _video_button(g)}
 
 
-## The game's video unlock: SaveButton copy on the blue pill, TV left of the text like PopupRewardLayer's x2.
+## The game's video unlock (VideoButton in the scene): SaveButton copy on the blue pill, TV left of the text like
+## PopupRewardLayer's x2.
 func _video_button(group: String) -> Button:
-	var s := UnityKit.spec(LAYER, group + "/SaveButton")
-	s.n = "VideoButton"
-	s.img.sp = BLUE_PILL
-	var t: Dictionary = (s.ch as Array)[0]
-	t.txt.mat = UnityKit.BUTTONS.blue[1]
-	t.txt.s = tr("ads_watch")
-	# Text right of the 76-unit TV at x 16 (left inset 96).
-	t.r[4] = float(t.r[4]) + 48.0
-	t.r[6] = float(t.r[6]) - 96.0
-	var v: RefCounted = UnityKit.add(ui.node(group), s)
-	UnityKit.sprite(v.root, VIDEO_ICON, Rect2(16, 24, 76, 76))
-	(v.root as Button).connect("clicked", _on_video_selected)
-	(v.root as Control).visible = false
-	return v.root as Button
-
-
-## Status line under the popup: VersionText of SettingMainMenuLayer (white atlas text), centred.
-func _build_status() -> void:
-	var s := UnityKit.spec("SettingMainMenuLayer", "VersionText")
-	s.n = "StatusLabel"
-	s.txt.s = ""
-	s.txt.h = 2
-	var menu := ui.node(MENU)
-	var mr: Dictionary = menu.get_meta("u_rect")
-	var bottom := (mr.pos as Vector2).y - (mr.size as Vector2).y * 0.5
-	s.r = [0.5, 0.5, 0.5, 0.5, 0, bottom - STATUS_GAP - STATUS_H * 0.5, (mr.size as Vector2).x, STATUS_H, 0.5, 0.5]
-	status_label = UnityKit.add(ui.node("Panel"), s).root as Label
+	var b := ui.node(group).get_node("VideoButton") as Button
+	UnityUI.set_text(b.get_node("Text (TMP)") as Label, tr("ads_watch"))
+	b.connect("clicked", _on_video_selected)
+	b.visible = false
+	return b
 
 
 func _kind_of(id: String) -> String:

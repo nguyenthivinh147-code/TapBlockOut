@@ -3,7 +3,8 @@ extends Control
 ## music icons in the cream well, Home (red) and Retry (green) in the button row, version under the popup.
 ## setup({"life_cost": bool}): true shows the -1 heart on Home (GameplaySettingsUI.removeHeartUI) and on Retry (a copy
 ## of Home's heart; the game also costs a life on retry). With Config.ui_preview a Help row (copy of PolicyButton) opens
-## popup_help. closed("home" | "retry"); X, the dim and Back emit null. Level goes on through its life-loss confirm.
+## popup_help. Static nodes are in scenes/popup_ingame_settings.tscn. closed("home" | "retry"); X, the dim and Back
+## emit null. Level goes on through its life-loss confirm.
 
 signal closed(result: Variant)
 
@@ -50,10 +51,11 @@ func _build() -> void:
 		return
 	_built = true
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# The hidden Language pill, the Retry heart and HelpButton are in scenes/popup_ingame_settings.tscn. Layer nodes
+	# keep their prefab names there (a renamed instanced node loses its overrides): renamed here.
 	ui = UnityUI.build(self, LAYER)
 	ui.text("Panel/PauseMenu/Image/txtHeader", tr("settings_title"))
 	ui.text("VersionText", str(Config.CONTENT.build))
-	ui.show(CONTENT + "/Language", false)
 	var x := ui.on_click("Panel/PauseMenu/Top/btnTurnOff", _finish.bind(null))
 	x.name = "CloseX"
 	ui.on_click("Bg", _finish.bind(null))
@@ -69,23 +71,31 @@ func _build() -> void:
 	ui.text(GROUP + "/HomeButton/Text (TMP)", tr("level_home"))
 	ui.text(GROUP + "/RetryButton/Text (TMP)", tr("level_restart"))
 	_badges()
-	if Config.ui_preview():
-		_help_row()
+	_help_row()
 
 
-## -1 heart on Home (prefab node) and Retry (copy at the same corner); named LifeBadge only while shown.
+## -1 heart on Home (prefab node) and Retry (LifeBadge, a copy at the same corner in the scene); the Home heart is
+## named LifeBadge only while shown, the copy is removed without the cost.
 func _badges() -> void:
 	var heart := ui.node(GROUP + "/HomeButton/Image")
 	heart.visible = _life_cost
+	var copy := retry_button.get_node("LifeBadge")
 	if not _life_cost:
+		retry_button.remove_child(copy)
+		copy.queue_free()
 		return
 	heart.name = "LifeBadge"
-	var s := UnityKit.spec(LAYER, GROUP + "/HomeButton/Image")
-	s.n = "LifeBadge"
-	UnityKit.add(retry_button, s)
 
 
+## HelpButton (a copy of PolicyButton in the scene) only with Config.ui_preview: the popup grows by one row and the
+## button row keeps its distance from the top. Other builds remove it.
 func _help_row() -> void:
+	help_button = %HelpButton
+	if not Config.ui_preview():
+		help_button.get_parent().remove_child(help_button)
+		help_button.queue_free()
+		help_button = null
+		return
 	var panel := ui.node(PANEL)
 	var size := UnityUI.rect_size(panel)
 	UnityKit.set_size(panel, size + Vector2(0, ROW_H))
@@ -97,12 +107,9 @@ func _help_row() -> void:
 	var vr: Dictionary = vt.get_meta("u_rect")
 	vr.pos = (vr.pos as Vector2) - Vector2(0, ROW_H * 0.5)
 	UnityUI.apply_rect(vt)
-	var s := UnityKit.spec("SettingMainMenuLayer", "Panel/PauseMenu/Content/PolicyButton")
-	s.n = "HelpButton"
-	s.r[5] = ROW_Y
-	var v: RefCounted = UnityKit.add(ui.node(CONTENT), s)
-	help_button = v.root as Button
-	Settings.underline(v.text("Text (TMP)", tr("settings_help_title")))
+	var l := help_button.get_node("Text (TMP)") as Label
+	UnityUI.set_text(l, tr("settings_help_title"))
+	Settings.underline(l)
 	help_button.connect("clicked", _on_help)
 
 

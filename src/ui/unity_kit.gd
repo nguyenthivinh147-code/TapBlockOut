@@ -52,13 +52,20 @@ static func spec(layer: String, p: String) -> Dictionary:
 ## hidden; put content in v.node("Panel/Content") (whole panel, below the 130-unit header strip).
 ## on_close runs for the X and a tap on the dim, like PopupOkUICoreLayer.closeButtons.
 static func popup(owner: Control, title: String, size: Vector2 = Vector2(724, 660), on_close: Callable = Callable()) -> RefCounted:
-	var v := UnityUI.build(owner, FRAME)
-	v.text("Panel/Image/txtHeader", title)
+	var v := frame(owner, title, on_close)
 	for p in ["Panel/Content/Description", "Panel/Content/Image", "Panel/Content/Button"]:
 		v.show(p, false)
 	set_size(v.node("Panel"), size)
 	for p in ["Panel/Bg"]:
 		set_size(v.node(p), size)
+	return v
+
+
+## The PopupOkLayer frame a screen's scene already holds as popup() left it (size, hidden parts, content):
+## sets the title and wires the close buttons.
+static func frame(owner: Control, title: String, on_close: Callable = Callable()) -> RefCounted:
+	var v := UnityUI.build(owner, FRAME)
+	v.text("Panel/Image/txtHeader", title)
 	if on_close.is_valid():
 		for b in v.field("closeButtons", "PopupOkUICoreLayer"):
 			(b as Button).connect("clicked", on_close)

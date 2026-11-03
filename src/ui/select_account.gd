@@ -5,7 +5,6 @@ extends "res://src/ui/stub_ui.gd"
 ## mirrored below the centre. Not wired to logic.
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
-const UnityKit := preload("res://src/ui/unity_kit.gd")
 
 const ITEM := "Panel/AccountItem"
 
@@ -15,15 +14,13 @@ func _sample() -> Dictionary:
 
 
 func _build() -> void:
+	# Linked (the message text mirrored below the centre) is a node of scenes/select_account.tscn; the hidden
+	# AccountItem template (SelectAccountItem.Awake) too.
 	ui = UnityUI.build(self, "SelectAccountLayer")
 	ui.text("Title", tr("boot_account_title"))
 	ui.text("Text (TMP)", "%s\n%s" % [tr("boot_account_body"), tr("boot_account_warn")])
-	var linked := UnityKit.spec("SelectAccountLayer", "Text (TMP)")
-	linked.n = "Linked"
-	linked.r[5] = -float(linked.r[5])
-	UnityKit.add(ui.node(""), linked).text("", tr("boot_account_linked"))
-	# SelectAccountItem.Awake hides the template; the pool shows one copy per account.
-	ui.show(ITEM, false)
+	UnityUI.set_text(%Linked, tr("boot_account_linked"))
+	# The pool shows one copy per account.
 	for a in view.get("accounts", []):
 		_account(a)
 	ui.relayout("Panel")

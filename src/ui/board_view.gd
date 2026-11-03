@@ -1,6 +1,8 @@
 extends Control
 ## Vẽ bàn cờ: nền trơn, đá, khối bo góc, khung cổng (`CandyFrame`); nhận chạm; chạy hoạt ảnh kết quả.
 ## Dùng: setup(board) rồi nối block_tapped; level gọi board.tap(id) và đưa kết quả vào apply_result().
+## Khung cổng và các lớp (Shadows, Blocks, Links, Fx) nằm sẵn trong scenes/board_view.tscn; khối, nền bàn, gỗ và hiệu ứng
+## sinh hoặc vẽ lúc chạy theo bàn.
 ## Ô cỡ cố định Config.BOARD_CELL, chỉ co khi vùng chứa (`size` hoặc setup(board, area)) không đủ cho bàn chuẩn; đổi size thì tự xếp lại.
 
 const BoardState := preload("res://src/core/board_state.gd")
@@ -168,29 +170,29 @@ static var _fx_prewarmed: bool = false
 
 
 func _init() -> void:
-	clip_contents = true
-	mouse_filter = Control.MOUSE_FILTER_STOP
-	_frame = CandyFrame.new()
-	add_child(_frame)
-	_shadow_root = _make_layer("Shadows")
-	_blocks_root = _make_layer("Blocks")
-	_links = _make_layer("Links")
-	_links.draw.connect(_draw_links)
-	_fx_root = _make_layer("Fx")
 	resized.connect(_layout)
 
 
-func _make_layer(layer_name: String) -> Control:
-	var c := Control.new()
-	c.name = layer_name
-	c.set_anchors_preset(Control.PRESET_FULL_RECT)
-	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(c)
-	return c
+func _ready() -> void:
+	_bind()
+
+
+## Frame and the Shadows, Blocks, Links, Fx layers are nodes of scenes/board_view.tscn. Safe to call more than once.
+func _bind() -> void:
+	if _frame != null:
+		return
+	_frame = get_node("Frame") as CandyFrame
+	_frame.bind()
+	_shadow_root = get_node("Shadows")
+	_blocks_root = get_node("Blocks")
+	_links = get_node("Links")
+	_links.draw.connect(_draw_links)
+	_fx_root = get_node("Fx")
 
 
 ## `area` khác 0 thì đặt luôn kích thước vùng vẽ; bàn tự co vừa vùng đó. Không đặt custom_minimum_size để không phình quá vùng chứa.
 func setup(board: BoardState, area: Vector2 = Vector2.ZERO) -> void:
+	_bind()
 	_board = board
 	_clear()
 	if area != Vector2.ZERO:

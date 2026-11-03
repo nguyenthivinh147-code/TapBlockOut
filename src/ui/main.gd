@@ -18,7 +18,8 @@ const LevelCurtain := preload("res://src/ui/level_curtain.gd")
 
 var current_screen: Node = null
 var current_name: String = ""
-var popup_layer: Control = null
+## Background and PopupLayer are nodes of scenes/main.tscn.
+@onready var popup_layer: Control = $PopupLayer
 var is_booted: bool = false
 ## Màn chuyển cảnh đang chạy (go_curtain); null khi không có.
 var curtain: Control = null
@@ -26,12 +27,6 @@ var curtain: Control = null
 
 func _ready() -> void:
 	theme = ThemeKit.make_theme()
-	add_child(ThemeKit.make_background())
-	popup_layer = Control.new()
-	popup_layer.name = "PopupLayer"
-	popup_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
-	popup_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(popup_layer)
 	_boot()
 
 

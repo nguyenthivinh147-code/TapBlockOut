@@ -2,7 +2,8 @@ extends Control
 ## Thẻ thua: Thử lại, Về Home, và Gói Cứu Nguy nếu Game báo. Bố cục LossPanel của EndGameUILayer
 ## (color-cube-match-puzzle): khung bạc có tranh, ribbon xanh, hàng nút Home / Replay. Dòng chữ dưới khung là bản sao
 ## chữ "Still Wanna Play?" của prefab; Gói Cứu Nguy là bản sao HelperPack của PopupReviveLayer, đặt dưới hàng nút như
-## prefab đó (khung đẩy lên cho vừa).
+## prefab đó (khung đẩy lên cho vừa). Dòng chữ và dòng thông báo là node trong scenes/lose_card.tscn; dòng mất mạng và
+## Gói Cứu Nguy chỉ thêm lúc chạy khi có.
 ## setup(args): {offer: String ("rescue_pack" khi Game.check_offer báo, bằng cách nghe offer_ready), life_charged: bool,
 ##   price_text: String (tuỳ chọn, mặc định lấy giá store của SKU)}.
 ## closed(result): "retry" | "home". Bên gọi tự bắt đầu lượt mới (hoặc chuyển no_lives).
@@ -35,12 +36,12 @@ var _pack_box: Control = null
 var _msg: Label = null
 
 
+## Runs once: the layer and the lines are nodes of scenes/lose_card.tscn (callers open a new card each time).
 func setup(args: Dictionary) -> void:
+	if ui != null:
+		return
 	_args = args
 	_busy = false
-	for c in get_children():
-		remove_child(c)
-		c.queue_free()
 	_build()
 
 
@@ -70,17 +71,21 @@ func _build() -> void:
 	UnityUI.apply_rect(frame)
 	var y := bottom + shift
 
-	_line("BodyLabel", tr("lose_body"), 54.0, y - BODY_H * 0.5, BODY_H)
+	# BodyLabel and MessageLabel are nodes of the scene; the life line and the pack are added only when they show.
+	_place(%BodyLabel, y - BODY_H * 0.5, BODY_H)
+	UnityUI.set_text(%BodyLabel, tr("lose_body"))
 	y -= BODY_H
 	if life:
-		_line("LifeLabel", tr("lose_life_lost"), 40.0, y - LIFE_H * 0.5, LIFE_H)
+		var l := _line("LifeLabel", tr("lose_life_lost"), 40.0, y - LIFE_H * 0.5, LIFE_H)
+		ui.node(LOSS).move_child(l, (%MessageLabel as Control).get_index())
 		y -= LIFE_H
 	var row: Control = ui.node(ROW)
 	var rr: Dictionary = row.get_meta("u_rect")
 	rr.pos = Vector2((rr.pos as Vector2).x, y - ROW_H)
 	UnityUI.apply_rect(row)
 	y -= ROW_H
-	_msg = _line("MessageLabel", "", 40.0, y - MSG_H * 0.5, MSG_H)
+	_msg = %MessageLabel
+	_place(_msg, y - MSG_H * 0.5, MSG_H)
 	_msg.visible = false
 	if pack:
 		_build_pack(y - MSG_H - PACK_H * 0.5)
@@ -109,6 +114,14 @@ func _line(node_name: String, text: String, size: float, y: float, h: float) -> 
 	s.txt.auto = [18.0, size]
 	s.txt.w = true
 	return UnityKit.add(ui.node(LOSS), s).root as Label
+
+
+## Moves a line of the scene to its row of the stack, centred at y (canvas units), like _line places a new one.
+func _place(l: Label, y: float, h: float) -> void:
+	var r: Dictionary = l.get_meta("u_rect")
+	r.pos = Vector2(0, y)
+	r.size = Vector2(687.5, h)
+	UnityUI.apply_rect(l)
 
 
 ## Rescue Pack as PopupReviveLayer's HelperPack: game icon in place of the pack art, the pack text where the item

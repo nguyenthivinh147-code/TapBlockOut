@@ -1,0 +1,6907 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="1_sxxap"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="2_t1rlq"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup2.png" id="3_v605l"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="4_7jp1u"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="5_dqcld"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="6_7wi8m"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="7_rpb0q"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Shop_Packs_Atlas.png" id="8_fc42y"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Shop_Packs_Atlas1.png" id="9_dpxgy"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/blurred.png" id="10_0ioi8"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/fx_1.png" id="11_kj0ns"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/StarterPack.png" id="12_ah8b3"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Gold3.png" id="13_biyaa"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_booster1.png" id="14_ffirs"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_booster3_1.png" id="15_k20fj"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_booster2_1.png" id="16_gciwy"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_SpecialPack.png" id="17_g27kn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_doo33"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mxlwq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddt0v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h2gdv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7eiga"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5qnjs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_seggr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_issvh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ccf2h"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u3svk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qff0r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4d6u"]
+shader = ExtResource("5_dqcld")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/underlay_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fo5hw"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("6_7wi8m")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0dsdr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6wg5i"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7hwyq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3tyys"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2iuo7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0to6l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2pv5n"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i0jus"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7cjhn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwd8w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bilu7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6eisv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gv6e4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lqf8l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nmdej"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kfan1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w3xta"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lb4u4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cxnm0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a8n6l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_agilx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6dfw1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ng31"]
+shader = ExtResource("5_dqcld")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dyp3a"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ue4w1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wo25h"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l515u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lvxo7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_00kmy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_scc6r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bxlb2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sbdpe"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_38xxq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3741q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p81n2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
+shader = ExtResource("5_dqcld")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r4m0g"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hx4xg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c0gbk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qrilk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8otkb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i51eo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1xcn8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y2qno"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cp8hr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r5jjt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h44lx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tdy6u"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oskr3"]
+shader = ExtResource("5_dqcld")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.40392157, 0.14901961, 0.011764706, 1)
+shader_parameter/underlay_color = Color(0.24313726, 0.03137255, 0.03137255, 1)
+shader_parameter/face_edge = 0.45
+shader_parameter/outline_half = 0.12
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.2925
+shader_parameter/underlay_offset = Vector2(0, -0.84)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddugn"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qemct"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k7iyn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n7ilh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mxqb1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p4tw1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_afmnh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k6aw3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rlwra"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rqfx1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kx0am"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0tw55"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gtkg5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d38pu"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qp8cg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_la1fl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_30gwf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sjlfi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dl1t8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bfxm8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ib8ji"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o0y17"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kb783"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x5sig"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m60ei"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nrplt"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hwtlu"]
+shader = ExtResource("5_dqcld")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.5372549, 0.12156863, 0, 1)
+shader_parameter/underlay_color = Color(0.5411765, 0.12156863, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fefu4"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
+shader = ExtResource("5_dqcld")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mqlfk"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lod6a"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jv4fr"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_arufo"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_08uwv"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("5_dqcld")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_milmg"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+
+[sub_resource type="FontVariation" id="FontVariation_2d730"]
+base_font = ExtResource("6_7wi8m")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4ds0y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aktux"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8g880"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yo2su"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_57s2v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jx2pb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7finh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7n6ab"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wawjn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ye5g4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h6vvc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hb6lb"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hscdh"]
+shader = ExtResource("5_dqcld")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/underlay_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yjcek"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_26rnf"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dj672"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_itwip"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0w1pi"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4xt2t"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ramy8"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pqhy6"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hhj4j"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wxnd3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6vy5d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qiou2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jfoa2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yrvpt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wwlro"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jrtku"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_040nj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uqkd2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_duo08"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3jgq6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_02efo"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hv5of"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aggs7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lyfql"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nxjr7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0x3e4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sgn40"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i5la0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cecoq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_op6yx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rfo86"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pbyaj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3j0vl"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i6eq3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=1525948844]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "PopupOfferLayer"
+
+[node name="PopupOfferLayer" type="Control" parent="." unique_id=1438759891]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [{
+"arg": null,
+"method": "PlayAllAnimationsSync",
+"target": "7219197735921211012"
+}],
+"adsButton": {
+"node": "2976045016534427140"
+},
+"breakEnable": "0",
+"closeButtons": [{
+"node": "3406546784345224705"
+}, {
+"node": "4811059741127286920"
+}],
+"contentText": {
+"node": "709436973652917155"
+},
+"continueButton": {
+"node": "5574240142023803685"
+},
+"debugOnOff": "0",
+"freeButton": {
+"node": "1339644751495733574"
+},
+"goldButton": {
+"node": "5438834759037099096"
+},
+"goldPriceText": {
+"node": "7784152293346974185"
+},
+"icon": {
+"node": "4744323366569815401"
+},
+"name": "PopupOfferUICoreLayer",
+"popSound": {
+"asset": "sfx_openpopup.mp3"
+},
+"productIds": ["cube.sort.color.special.pack", "cube.sort.color.starter.pack"],
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+},
+"titleText": {
+"node": "2809704552690345925"
+}
+}, {
+"OnCompleteAnim": [],
+"OnStartAnim": [],
+"dimCanvasGroup": {
+"node": "3406546784345224705"
+},
+"duration": "0.4",
+"easeType": "26",
+"name": "DialogueReveal",
+"panelRect": {
+"node": "4537244515830882521"
+}
+}, {
+"_animations": [{
+"node": "5438834759037099096"
+}, {
+"node": "2976045016534427140"
+}, {
+"node": "1339644751495733574"
+}],
+"_delayBetweenAnims": "0",
+"_initialDelay": "0",
+"_playOnEnable": "0",
+"name": "UIAnimationGroup"
+}],
+"id": "7219197735921211012",
+"n": "PopupOfferLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Bg" type="Button" parent="PopupOfferLayer" unique_id=932648611]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_doo33")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_mxlwq")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ddt0v")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_h2gdv")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7eiga")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_5qnjs")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_seggr")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_issvh")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_ccf2h")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_u3svk")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qff0r")
+flat = true
+script = ExtResource("1_sxxap")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "3406546784345224705",
+"tr": 0.0
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"id": "3406546784345224705",
+"img": {
+"c": "000000fc",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" type="Control" parent="PopupOfferLayer/Bg" unique_id=468702735]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="Panel" type="Control" parent="PopupOfferLayer" unique_id=1142807832]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4537244515830882521",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": false,
+"eh": true,
+"ew": true,
+"pad": [0.0, 0.0, 100.0, 100.0],
+"rev": false,
+"sh": false,
+"sp": -200.0,
+"sw": false,
+"t": "v"
+},
+"n": "Panel",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="BuyBoster" type="Control" parent="PopupOfferLayer/Panel" unique_id=1531886759]
+anchors_preset = 0
+offset_left = -362.0
+offset_top = 100.0
+offset_right = 362.0
+offset_bottom = 938.51
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5505950304007009561",
+"n": "BuyBoster",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 724.0, 838.51, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -519.255),
+"size": Vector2(724, 838.51)
+}
+
+[node name="Bg (1)" type="Control" parent="PopupOfferLayer/Panel/BuyBoster" unique_id=1766300976]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("3_v605l")
+region = Rect2(0, 0, 800, 800)
+border = Vector4(120, 120, 120, 120)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8264433027405069733",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Popup2",
+"t": 1.0
+},
+"n": "Bg (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="PopupOfferLayer/Panel/BuyBoster" unique_id=2137842259]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -225.0
+offset_top = -581.0
+offset_right = 225.0
+offset_bottom = -239.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(384, 1332, 368, 108)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4025011949368557571",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 410.0, 450.0, 342.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 410),
+"size": Vector2(450, 342)
+}
+
+[node name="txtHeader" type="Label" parent="PopupOfferLayer/Panel/BuyBoster/Image" unique_id=2020820972]
+material = SubResource("ShaderMaterial_g4d6u")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -147.63
+offset_top = -52.0
+offset_right = 147.63
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fo5hw")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "BUY BOOSTER"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "2809704552690345925",
+"n": "txtHeader",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 295.26, 104.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "BUY BOOSTER",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(295.26, 104)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "BUY BOOSTER",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Top" type="Control" parent="PopupOfferLayer/Panel/BuyBoster" unique_id=1158903155]
+anchors_preset = 0
+anchor_right = 1.0
+offset_bottom = 130.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "960523223670233931",
+"n": "Top",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -65.0, 0.0, 130.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -65),
+"size": Vector2(0, 130)
+}
+
+[node name="btnTurnOff" type="Button" parent="PopupOfferLayer/Panel/BuyBoster/Top" unique_id=1030365064]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_bottom = 64.0
+pivot_offset_ratio = Vector2(1, 0)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0dsdr")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_6wg5i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_7hwyq")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_3tyys")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_2iuo7")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_0to6l")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_2pv5n")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_i0jus")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_7cjhn")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_uwd8w")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bilu7")
+flat = true
+script = ExtResource("1_sxxap")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4811059741127286920",
+"tr": 1.0
+},
+"id": "4811059741127286920",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+"t": 0.0
+},
+"n": "btnTurnOff",
+"r": [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 64.0, 64.0, 1.0, 1.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(64, 64)
+}
+
+[node name="image" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Top/btnTurnOff" unique_id=2021604689]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(300, 516, 96, 96)
+pivot = Vector2(1, 1)
+fill_method = 4
+
+[node name="Content" type="Control" parent="PopupOfferLayer/Panel/BuyBoster" unique_id=1641347153]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5267989572481793134",
+"n": "Content",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Preview" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content" unique_id=743489379]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4487537127718328958",
+"n": "Preview",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content/Preview" unique_id=1724958946]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 52.0
+offset_top = 110.10005
+offset_right = -52.0
+offset_bottom = -220.00005
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(1166, 523, 188, 290)
+border = Vector4(50, 50, 50, 50)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6827516525641077591",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+"t": 1.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 54.95, -104.0, -330.1001, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 54.95),
+"size": Vector2(-104, -330.1001)
+}
+
+[node name="Content" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content/Preview" unique_id=1495644115]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -60.49995
+offset_bottom = 0.0001487732
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4501977270069256822",
+"n": "Content",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 30.2499, 0.0, 60.5001, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 30.2499),
+"size": Vector2(0, 60.5001)
+}
+
+[node name="Icon" type="Button" parent="PopupOfferLayer/Panel/BuyBoster/Content/Preview/Content" unique_id=751037703]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -216.0
+offset_right = 128.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_6eisv")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_gv6e4")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_lqf8l")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_nmdej")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_kfan1")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_w3xta")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_lb4u4")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_cxnm0")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_a8n6l")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_agilx")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_6dfw1")
+flat = true
+script = ExtResource("1_sxxap")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4744323366569815401",
+"tr": 1.0
+},
+"id": "4744323366569815401",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 1.0
+},
+"n": "Icon",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 88.0, 256.0, 256.0, 0.5, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 88),
+"size": Vector2(256, 256)
+}
+
+[node name="image" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content/Preview/Content/Icon" unique_id=2060213678]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+kind = 1
+fill_method = 4
+
+[node name="Description" type="Label" parent="PopupOfferLayer/Panel/BuyBoster/Content" unique_id=136677063]
+material = SubResource("ShaderMaterial_1ng31")
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58.698902
+offset_top = 450.67007
+offset_right = -58.7011
+offset_bottom = 605.3446
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dyp3a")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 60
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Add 1 box and continue!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "709436973652917155",
+"n": "Description",
+"r": [0.0, 1.0, 1.0, 1.0, -0.0011, -528.0073, -117.4, 154.6745, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 60.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Add 1 box and continue!",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-0.0011, -528.0073),
+"size": Vector2(-117.4, 154.6745)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 60.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Add 1 box and continue!",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="GameObject" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content" unique_id=169655142]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -303.3
+offset_top = -196.55
+offset_right = 303.3
+offset_bottom = -65.45
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1293563584350354942",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": false,
+"eh": false,
+"ew": false,
+"pad": [5.0, 5.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 35.0,
+"sw": false,
+"t": "h"
+},
+"n": "GameObject",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 131.0, 606.6, 131.1, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 131),
+"size": Vector2(606.6, 131.1)
+}
+
+[node name="Continue" type="Button" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject" unique_id=1220816644]
+visible = false
+layout_mode = 0
+offset_top = 5.550003
+offset_right = 280.0
+offset_bottom = 125.55
+pivot_offset_ratio = Vector2(0.5, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ue4w1")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_wo25h")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_l515u")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_lvxo7")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_00kmy")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_scc6r")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_bxlb2")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_sbdpe")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_38xxq")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_3741q")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_p81n2")
+flat = true
+script = ExtResource("1_sxxap")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5574240142023803685",
+"tr": 1.0
+},
+"id": "5574240142023803685",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_30",
+"t": 1.0
+},
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 8.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "h"
+},
+"n": "Continue",
+"r": [0.0, 1.0, 0.0, 1.0, 140.0, -125.55, 280.0, 120.0, 0.5, 0.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(140, -125.55),
+"size": Vector2(280, 120)
+}
+
+[node name="image" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/Continue" unique_id=435966108]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("7_rpb0q")
+region = Rect2(1792, 809, 256, 270)
+border = Vector4(128, 128, 128, 128)
+border_scale = 0.5
+kind = 1
+pivot = Vector2(0.5, 0)
+fill_method = 4
+
+[node name="Out" type="Label" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/Continue" unique_id=357190922]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+offset_left = 30.5
+offset_top = 15.310001
+offset_right = 249.5
+offset_bottom = 96.69
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_r4m0g")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Continue"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "6843049101351088955",
+"n": "Out",
+"r": [0.0, 1.0, 0.0, 1.0, 140.0, -56.0, 219.14, 81.38, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Continue",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(140, -56),
+"size": Vector2(219, 81.38)
+}
+metadata/u_txt = {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Continue",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="GoldBtn" type="Button" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject" unique_id=26704815]
+layout_mode = 0
+offset_left = 5.799988
+offset_top = 5.550003
+offset_right = 285.8
+offset_bottom = 125.55
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hx4xg")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_c0gbk")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_qrilk")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_8otkb")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_i51eo")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_1xcn8")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_y2qno")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_cp8hr")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_r5jjt")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_h44lx")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tdy6u")
+flat = true
+script = ExtResource("1_sxxap")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5438834759037099096",
+"tr": 1.0
+},
+"cs": [{
+"_duration": "0.4",
+"_ease": "11",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "5438834759037099096",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_50",
+"t": 0.0
+},
+"n": "GoldBtn",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 280.0, 120.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(145.79999, -65.55),
+"size": Vector2(280, 120)
+}
+
+[node name="image" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/GoldBtn" unique_id=1838473043]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(0, 1160, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+fill_method = 4
+
+[node name="Out" type="Label" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/GoldBtn" unique_id=677469731]
+material = SubResource("ShaderMaterial_oskr3")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -118.62355
+offset_top = 9.449999
+offset_right = 118.62355
+offset_bottom = 60.15
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ddugn")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Purchase"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "1060060458544899262",
+"n": "Out",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -34.8, 237.2471, 50.7, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 36.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Purchase",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -34.8),
+"size": Vector2(237.2471, 50.7)
+}
+metadata/u_txt = {
+"auto": [18.0, 36.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Purchase",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Price" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/GoldBtn" unique_id=891037029]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -70.30475
+offset_bottom = -13.095251
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4735718485263195002",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [1.0, 16.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 10.0,
+"sw": false,
+"t": "h"
+},
+"n": "Price",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 41.7, 0.0, 57.2095, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 41.7),
+"size": Vector2(0, 57.2095)
+}
+
+[node name="Image" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/GoldBtn/Price" unique_id=1701335590]
+anchors_preset = 0
+offset_left = 1.0
+offset_top = 0.6047478
+offset_right = 1.0
+offset_bottom = 56.604748
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(780, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4040055384007707585",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [56.0, 56.0]
+},
+"n": "Image",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 56.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(1, -28.604748),
+"size": Vector2(0, 56)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/GoldBtn/Price" unique_id=193602399]
+material = SubResource("ShaderMaterial_oskr3")
+layout_mode = 0
+offset_left = 11.0
+offset_top = 3.6047478
+offset_right = 11.0
+offset_bottom = 53.604748
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qemct")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "7784152293346974185",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "100",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(11, -28.604748),
+"size": Vector2(0, 50)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "100",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="AdsBtn" type="Button" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject" unique_id=671610933]
+layout_mode = 0
+offset_left = 320.8
+offset_top = 5.550003
+offset_right = 600.8
+offset_bottom = 125.55
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_k7iyn")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_n7ilh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_mxqb1")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_p4tw1")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_afmnh")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_k6aw3")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_rlwra")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_rqfx1")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_kx0am")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_0tw55")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gtkg5")
+flat = true
+script = ExtResource("1_sxxap")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "2976045016534427140",
+"tr": 1.0
+},
+"cs": [{
+"_duration": "0.4",
+"_ease": "11",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "2976045016534427140",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "AdsBtn",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 280.0, 120.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(460.8, -65.55),
+"size": Vector2(280, 120)
+}
+
+[node name="image" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/AdsBtn" unique_id=1795285718]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+fill_method = 4
+
+[node name="Image" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/AdsBtn" unique_id=958871387]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -76.5
+offset_top = -33.69
+offset_right = 19.5
+offset_bottom = 62.31
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(1299, 0, 256, 256)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4337462217869718966",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_5",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [64.0, 64.0]
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, -28.5, -14.31, 96.0, 96.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-28.5, -14.31),
+"size": Vector2(96, 96)
+}
+
+[node name="Out" type="Label" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/AdsBtn" unique_id=148433767]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -68.1
+offset_top = 15.310001
+offset_right = 68.1
+offset_bottom = 96.69
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_d38pu")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "FREE"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "5028444773256912849",
+"n": "Out",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -56.0, 136.2, 81.38, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "FREE",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -56),
+"size": Vector2(136.2, 81.38)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "FREE",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="FreeBtn" type="Button" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject" unique_id=727593275]
+visible = false
+layout_mode = 0
+offset_left = 652.0
+offset_top = 5.550003
+offset_right = 932.0
+offset_bottom = 125.55
+pivot_offset_ratio = Vector2(0.5, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qp8cg")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_la1fl")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_30gwf")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_sjlfi")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_dl1t8")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_bfxm8")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ib8ji")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_o0y17")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_kb783")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_x5sig")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_m60ei")
+flat = true
+script = ExtResource("1_sxxap")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "1339644751495733574",
+"tr": 1.0
+},
+"cs": [{
+"_duration": "0.4",
+"_ease": "11",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.9",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "1339644751495733574",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [16.0, 16.0, 0.0, 8.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "h"
+},
+"n": "FreeBtn",
+"r": [0.0, 1.0, 0.0, 1.0, 792.0, -125.55, 280.0, 120.0, 0.5, 0.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(792, -125.55),
+"size": Vector2(280, 120)
+}
+
+[node name="image" type="Control" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/FreeBtn" unique_id=1032523320]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+preserve_aspect = true
+pivot = Vector2(0.5, 0)
+fill_method = 4
+
+[node name="Out" type="Label" parent="PopupOfferLayer/Panel/BuyBoster/Content/GameObject/FreeBtn" unique_id=565803908]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+offset_left = 78.5
+offset_top = 15.310001
+offset_right = 201.5
+offset_bottom = 96.69
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nrplt")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "FREE"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "7459961522659636903",
+"n": "Out",
+"r": [0.0, 1.0, 0.0, 1.0, 140.0, -56.0, 121.82, 81.38, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "FREE",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(140, -56),
+"size": Vector2(123, 81.38)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "FREE",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="StarterPack" type="Control" parent="PopupOfferLayer/Panel" unique_id=454069617]
+anchors_preset = 0
+offset_left = -403.0
+offset_top = 738.51
+offset_right = 403.0
+offset_bottom = 1160.51
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"discountLine": {
+"node": "752003633177278843"
+},
+"name": "ShopStarter",
+"nameTxt": {
+"node": "6233196526558070490"
+},
+"priceTxt": {
+"node": "6217376099153372395"
+},
+"productID": "cube.sort.color.starter.pack",
+"productIDRequired": ["cube.sort.color.starter.pack"],
+"productIdDiscounted": "cube.sort.color.starter.pack.discount",
+"purchaseButton": {
+"node": "5109904629688155997"
+},
+"sellBadgeObj": {
+"node": "8002636195428349505"
+},
+"sellBadgeTxt": {
+"node": "6850807834567937569"
+}
+}, {
+"name": "ShopLastChanceItem",
+"packTimeCounter": {
+"node": "559995427539847541"
+},
+"productID": "cube.sort.color.starter.pack",
+"productIdDiscounted": "cube.sort.color.starter.pack.discount"
+}],
+"id": "7683373236769593623",
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [-1.0, 422.0]
+},
+"n": "StarterPack",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 806.0, 422.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -949.51),
+"size": Vector2(806, 422)
+}
+
+[node name="BG (1)" type="Control" parent="PopupOfferLayer/Panel/StarterPack" unique_id=1855113992]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("8_fc42y")
+region = Rect2(0, 314, 512, 312)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8557560463259944950",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_2",
+"t": 0.0
+},
+"n": "BG (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="BlurredBorder" type="Control" parent="PopupOfferLayer/Panel/StarterPack" unique_id=1586490649]
+clip_children = 2
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 14.0
+offset_right = -18.0
+offset_bottom = -10.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("9_dpxgy")
+region = Rect2(512, 0, 512, 312)
+color = Color(1, 1, 1, 0.011764706)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1014030995802867982",
+"img": {
+"c": "ffffff03",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_Shop_Packs_Atlas1:UI_Shop_Packs_Atlas1_1",
+"t": 0.0
+},
+"mask": {
+"show": true
+},
+"n": "BlurredBorder",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, -2.0, -36.0, -24.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -2),
+"size": Vector2(-36, -24)
+}
+
+[node name="Blurred" type="Control" parent="PopupOfferLayer/Panel/StarterPack/BlurredBorder" unique_id=1744757330]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1190.0
+offset_top = -125.0
+offset_right = -390.0
+offset_bottom = 125.0
+rotation = -0.7853982
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("10_0ioi8")
+region = Rect2(0, 0, 360, 360)
+color = Color(1, 0.9764706, 0.8666667, 0.69803923)
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "Blurred",
+"on": true
+},
+"id": "4886121858088565486",
+"img": {
+"c": "fff9ddb2",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "blurred",
+"t": 0.0
+},
+"n": "Blurred",
+"r": [0.5, 0.5, 0.5, 0.5, -790.0, 0.0, 800.0, 250.0, 0.5, 0.5],
+"z": 45.0
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-790, 0),
+"size": Vector2(800, 250)
+}
+
+[node name="Image (1)" type="Control" parent="PopupOfferLayer/Panel/StarterPack" unique_id=1727470375]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -435.2224
+offset_top = -307.32242
+offset_right = 61.0224
+offset_bottom = 188.92241
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+color = Color(0.78431374, 0.4117647, 1, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "1022070378409706512",
+"img": {
+"c": "c869ffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, -187.1, 59.2, 496.2448, 496.2448, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-187.1, 59.2),
+"size": Vector2(496.2448, 496.2448)
+}
+
+[node name="Image (3)" type="Control" parent="PopupOfferLayer/Panel/StarterPack/Image (1)" unique_id=1850067189]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.07035
+offset_top = -0.07035
+offset_right = 0.07035
+offset_bottom = 0.07035
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+color = Color(0.78431374, 0.4117647, 1, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8362137279457114229",
+"img": {
+"c": "c869ffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image (3)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.1407, 0.1407, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0.1407, 0.1407)
+}
+
+[node name="VortexRotate" type="Control" parent="PopupOfferLayer/Panel/StarterPack" unique_id=1803165892]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -106.0
+offset_right = -140.0
+offset_bottom = -6.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "2398062199249140743",
+"n": "VortexRotate",
+"r": [0.5, 0.5, 0.5, 0.5, -190.0, 56.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-190, 56),
+"size": Vector2(100, 100)
+}
+
+[node name="Vortex_rotate" type="Control" parent="PopupOfferLayer/Panel/StarterPack/VortexRotate" unique_id=1817025482]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.5
+offset_top = -157.5
+offset_right = 157.5
+offset_bottom = 157.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("11_kj0ns")
+region = Rect2(0, 0, 256, 256)
+color = Color(0.99607843, 1, 0.7294118, 1)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "SimpleUIRotator",
+"rotateOnStart": "1",
+"rotationSpeed": "-20",
+"targetUI": {
+"node": "3852615220431204861"
+}
+}],
+"id": "3852615220431204861",
+"img": {
+"c": "feffbaff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "fx_1",
+"t": 0.0
+},
+"n": "Vortex_rotate",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 315.0, 315.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(315, 315)
+}
+
+[node name="Image (2)" type="Control" parent="PopupOfferLayer/Panel/StarterPack" unique_id=2145883664]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -337.1
+offset_top = -199.0
+offset_right = -37.100006
+offset_bottom = 101.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("12_ah8b3")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4374250899382120147",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "StarterPack",
+"t": 0.0
+},
+"n": "Image (2)",
+"r": [0.5, 0.5, 0.5, 0.5, -187.1, 49.0, 300.0, 300.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-187.1, 49),
+"size": Vector2(300, 300)
+}
+
+[node name="Effect_star" type="Control" parent="PopupOfferLayer/Panel/StarterPack" unique_id=1578641194]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -342.0
+offset_top = -195.0
+offset_right = -42.0
+offset_bottom = 105.0
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"id": "7878053473503545211",
+"n": "Effect_star",
+"r": [0.5, 0.5, 0.5, 0.5, -192.0, 45.0, 300.0, 300.0, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-192, 45),
+"size": Vector2(300, 300)
+}
+
+[node name="Particle System" type="Control" parent="PopupOfferLayer/Panel/StarterPack/Effect_star" unique_id=1375968893]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "8113760914630828535",
+"n": "Particle System",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="PackName" type="Label" parent="PopupOfferLayer/Panel/StarterPack" unique_id=1788183185]
+material = SubResource("ShaderMaterial_hwtlu")
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 52.214996
+offset_top = -129.45801
+offset_right = 486.7654
+offset_bottom = -30.542
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fefu4")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 63
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "WELCOME PACK"
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "6233196526558070490",
+"n": "PackName",
+"r": [0.0, 0.0, 0.0, 0.0, 269.4902, 80.0, 434.5504, 98.916, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 62.8,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "WELCOME PACK",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(269.4902, 80),
+"size": Vector2(434.5504, 98.916)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 62.8,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "WELCOME PACK",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ItemContainer" type="Control" parent="PopupOfferLayer/Panel/StarterPack" unique_id=1772357592]
+anchors_preset = 0
+anchor_right = 1.0
+offset_left = 347.0384
+offset_top = -1.0
+offset_right = -20.398392
+offset_bottom = 271.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"horizontalLayoutGroup": null,
+"name": "ShopProductSetup",
+"plusItemPrefab": {
+"asset": "dc2bb501aba259a429e763c3ac8e1902"
+},
+"productID": "wool.scape.starter.pack",
+"productSO": {
+"asset": "IAPProductSO.asset"
+},
+"rewardItemPrefab": null,
+"rewardPerRow": "2",
+"verticalLayoutGroup": {
+"node": "8984017911180774808"
+}
+}],
+"id": "8984017911180774808",
+"n": "ItemContainer",
+"r": [0.0, 1.0, 1.0, 1.0, 163.32, -135.0, -367.4368, 272.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(163.32, -135),
+"size": Vector2(-367.4368, 272)
+}
+
+[node name="Row(Clone)" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer" unique_id=779637366]
+anchors_preset = 0
+offset_left = 148.2816
+offset_top = 22.0
+offset_right = 248.2816
+offset_bottom = 126.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6055463162428056673",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 198.2816, -74.0, 100.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(198.2816, -74),
+"size": Vector2(100, 104)
+}
+
+[node name="ShopRewardItem(Clone)" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/Row(Clone)" unique_id=554786132]
+anchors_preset = 0
+offset_left = -49.8
+offset_top = 2.0
+offset_right = 50.2
+offset_bottom = 102.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("13_biyaa")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "3832749908967079366"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "1864962400718952668"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "1",
+"iconImg": {
+"node": "3832749908967079366"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "1864962400718952668"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "3832749908967079366",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Gold3",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 0.2, -52.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0.2, -52),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/Row(Clone)/ShopRewardItem(Clone)" unique_id=249032118]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mqlfk")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "1500"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "1864962400718952668",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1500",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.4),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1500",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Plus(Clone)" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/Row(Clone)" unique_id=1873031077]
+anchors_preset = 0
+offset_left = 73.2
+offset_top = 60.0
+offset_right = 101.2
+offset_bottom = 88.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("7_rpb0q")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2522915053162281036",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 87.2, -74.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(87.2, -74),
+"size": Vector2(28, 28)
+}
+
+[node name="ShopRewardItem(Clone) (1)" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/Row(Clone)" unique_id=459184643]
+anchors_preset = 0
+offset_left = 119.96001
+offset_top = 18.3
+offset_right = 199.96
+offset_bottom = 98.3
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "183380330641488544"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "3069836971625727944"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "183380330641488544"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "3069836971625727944"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "183380330641488544",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone) (1)",
+"r": [0.0, 1.0, 0.0, 1.0, 159.96, -58.3, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(159.96, -58.3),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgVoHanTim" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/Row(Clone)/ShopRewardItem(Clone) (1)" unique_id=1898843442]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(0, 259, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterMagnet 1",
+"on": true
+},
+"id": "2273357515718829323",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16",
+"t": 0.0
+},
+"n": "ImgVoHanTim",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/Row(Clone)/ShopRewardItem(Clone) (1)" unique_id=851661934]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -25.9
+offset_right = 60.0
+offset_bottom = 22.1
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lod6a")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "30m"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "3069836971625727944",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 1.9, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "30m",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 1.9),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "30m",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@16" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer" unique_id=1597539769]
+anchors_preset = 0
+offset_left = 82.2816
+offset_top = 146.0
+offset_right = 314.28162
+offset_bottom = 250.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6038579775968186917",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 198.2816, -198.0, 232.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(198.2816, -198),
+"size": Vector2(232, 104)
+}
+
+[node name="ShopRewardItem(Clone)" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16" unique_id=1387063565]
+anchors_preset = 0
+offset_left = 97.7
+offset_top = 0.5099983
+offset_right = 177.7
+offset_bottom = 80.509995
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(542, 663, 72, 72)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "6558915848720743892"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "7569309039813365920"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "6558915848720743892"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "7569309039813365920"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "6558915848720743892",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_37",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 137.7, -40.51, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(137.7, -40.51),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterMagnet" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16/ShopRewardItem(Clone)" unique_id=580760745]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("14_ffirs")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterMagnet",
+"on": true
+},
+"id": "3770677761041920330",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster1",
+"t": 0.0
+},
+"n": "ImgBoosterMagnet",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16/ShopRewardItem(Clone)" unique_id=406113777]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -3.2000008
+offset_right = 60.0
+offset_bottom = 44.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_jv4fr")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x2"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "7569309039813365920",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -20.8, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x2",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -20.8),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x2",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ShopRewardItem(Clone) (2)" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16" unique_id=1135159579]
+anchors_preset = 0
+offset_left = -27.1
+offset_top = 0.5099983
+offset_right = 52.9
+offset_bottom = 80.509995
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("15_k20fj")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "6069621433154458173"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "2636547473438179158"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "6069621433154458173"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "2636547473438179158"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "6069621433154458173",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "ic_booster3_1",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone) (2)",
+"r": [0.0, 1.0, 0.0, 1.0, 12.9, -40.51, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(12.9, -40.51),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterCapacity" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16/ShopRewardItem(Clone) (2)" unique_id=1473092343]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("15_k20fj")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterCapacity",
+"on": true
+},
+"id": "4608199748476977247",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster3_1",
+"t": 0.0
+},
+"n": "ImgBoosterCapacity",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16/ShopRewardItem(Clone) (2)" unique_id=1451456756]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -3.2000008
+offset_right = 60.0
+offset_bottom = 44.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_arufo")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2636547473438179158",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -20.8, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -20.8),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Plus(Clone)" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16" unique_id=1590410515]
+anchors_preset = 0
+offset_left = 185.5
+offset_top = 38.0
+offset_right = 213.5
+offset_bottom = 66.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("7_rpb0q")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5289414101605177741",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 199.5, -52.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(199.5, -52),
+"size": Vector2(28, 28)
+}
+
+[node name="Plus(Clone) (1)" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16" unique_id=1585315910]
+anchors_preset = 0
+offset_left = 59.5
+offset_top = 38.0
+offset_right = 87.5
+offset_bottom = 66.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("7_rpb0q")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6121665467304415563",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone) (1)",
+"r": [0.0, 1.0, 0.0, 1.0, 73.5, -52.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(73.5, -52),
+"size": Vector2(28, 28)
+}
+
+[node name="@Control@17" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16" unique_id=74664477]
+anchors_preset = 0
+offset_left = 218.92001
+offset_top = 1.5
+offset_right = 298.92
+offset_bottom = 81.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(614, 663, 72, 72)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "7485294730906975247"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "3986257730286426894"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "4",
+"iconImg": {
+"node": "7485294730906975247"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "3986257730286426894"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "7485294730906975247",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_38",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 258.92, -41.5, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(258.92, -41.5),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterStorage" type="Control" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16/@Control@17" unique_id=2009642006]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("16_gciwy")
+region = Rect2(0, 0, 256, 256)
+border_scale = 4.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterStorage",
+"on": true
+},
+"id": "3979445236564751429",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster2_1",
+"t": 0.0
+},
+"n": "ImgBoosterStorage",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/StarterPack/ItemContainer/@Control@16/@Control@17" unique_id=1711308573]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -2.2000008
+offset_right = 60.0
+offset_bottom = 45.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_08uwv")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "3986257730286426894",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -21.8, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -21.8),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="PopupOfferLayer/Panel/StarterPack" unique_id=1225383171]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -133.90001
+offset_top = 7.4
+offset_right = 0.4
+offset_bottom = 62.32
+pivot_offset_ratio = Vector2(1, 0)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(400, 515, 116, 72)
+border = Vector4(58, 35, 58, 37)
+border_scale = 0.6666666666666666
+kind = 1
+pivot = Vector2(1, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"canvasGroup": null,
+"coolDownText": {
+"node": "1282823356950578858"
+},
+"name": "PackTimeCounter",
+"productId": "cube.sort.color.starter.pack"
+}],
+"id": "559995427539847541",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_21",
+"t": 1.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, 0.4, -7.4, 134.3, 54.92, 1.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(0.4, -7.4),
+"size": Vector2(134.3, 54.92)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/StarterPack/Image" unique_id=1506253876]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_milmg")
+theme_override_constants/line_spacing = -3
+theme_override_fonts/font = SubResource("FontVariation_2d730")
+theme_override_font_sizes/font_size = 25
+theme_override_colors/font_color = Color(0.8039216, 0.1254902, 0.27058825, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "1D -12:12:12"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"id": "1282823356950578858",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 46.0],
+"c": "cd2045ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 24.55,
+"h": 2.0,
+"ls": 0.0,
+"m": [10.0, 5.0, 10.0, 5.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1D -12:12:12",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 46.0],
+"c": "cd2045ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 24.55,
+"h": 2.0,
+"ls": 0.0,
+"m": [10.0, 5.0, 10.0, 5.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1D -12:12:12",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="PopupOfferLayer/Panel/StarterPack/Image" unique_id=1060556309]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -137.4773
+offset_top = -32.2166
+offset_right = -80.1227
+offset_bottom = 25.138
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("7_rpb0q")
+region = Rect2(1198, 589, 128, 128)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8375532845282683650",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_79",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, -108.8, 3.5393, 57.3546, 57.3546, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-108.8, 3.5393),
+"size": Vector2(57.3546, 57.3546)
+}
+
+[node name="Button_Purchase" type="Button" parent="PopupOfferLayer/Panel/StarterPack" unique_id=154382480]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -280.3
+offset_top = -130.0
+offset_right = -54.300003
+offset_bottom = -26.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4ds0y")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_aktux")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_8g880")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_yo2su")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_57s2v")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_jx2pb")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_7finh")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_7n6ab")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_wawjn")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ye5g4")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_h6vvc")
+flat = true
+script = ExtResource("1_sxxap")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5109904629688155997",
+"tr": 1.0
+},
+"id": "5109904629688155997",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.25,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "Button_Purchase",
+"r": [1.0, 0.0, 1.0, 0.0, -167.3, 78.0, 226.0, 104.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-167.3, 78),
+"size": Vector2(226, 104)
+}
+
+[node name="image" type="Control" parent="PopupOfferLayer/Panel/StarterPack/Button_Purchase" unique_id=1986197590]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.4444444444444444
+preserve_aspect = true
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/StarterPack/Button_Purchase" unique_id=1457359191]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_right = -16.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hb6lb")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "149,000d"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "6217376099153372395",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, -32.0, -8.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "149,000d",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(-32, -8)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "149,000d",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="DiscountLine" type="Control" parent="PopupOfferLayer/Panel/StarterPack/Button_Purchase" unique_id=1089403785]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 16.1228
+offset_right = 50.0
+offset_bottom = 21.1228
+rotation = -0.17418386
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+kind = 1
+color = Color(1, 0, 0, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "752003633177278843",
+"img": {
+"c": "ff0000ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "DiscountLine",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -18.6228, 100.0, 5.0, 0.5, 0.5],
+"z": 9.98
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -18.6228),
+"size": Vector2(100, 5)
+}
+
+[node name="SellBadge" type="Control" parent="PopupOfferLayer/Panel/StarterPack" unique_id=1228579902]
+visible = false
+anchors_preset = 0
+offset_left = -13.0741005
+offset_top = -16.0741
+offset_right = 113.0741
+offset_bottom = 110.0741
+rotation = -0.20926498
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(1100, 912, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8002636195428349505",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_78",
+"t": 0.0
+},
+"n": "SellBadge",
+"r": [0.0, 1.0, 0.0, 1.0, 50.0, -47.0, 126.1482, 126.1482, 0.5, 0.5],
+"z": 11.99
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(50, -47),
+"size": Vector2(126.1482, 126.1482)
+}
+
+[node name="SellBadgeTxt" type="Label" parent="PopupOfferLayer/Panel/StarterPack/SellBadge" unique_id=1297201585]
+material = SubResource("ShaderMaterial_hscdh")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -59.957
+offset_top = -36.0215
+offset_right = 69.868805
+offset_bottom = 34.883904
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_yjcek")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 52
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "-60%"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "6850807834567937569",
+"n": "SellBadgeTxt",
+"r": [0.5, 0.5, 0.5, 0.5, 4.9559, 0.5688, 129.8258, 70.9054, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 1.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 51.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-60%",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(4.9559, 0.5688),
+"size": Vector2(129.8258, 70.9054)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 1.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 51.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-60%",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="SpecialPack" type="Control" parent="PopupOfferLayer/Panel" unique_id=21735512]
+anchors_preset = 0
+offset_left = -403.0
+offset_top = 960.51
+offset_right = 403.0
+offset_bottom = 1382.51
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"btnSoldOutPeriod": {
+"node": "8097763924483688396"
+},
+"discountLine": {
+"node": "6136635824340338191"
+},
+"name": "ShopSpecial",
+"nameTxt": {
+"node": "497904141029297814"
+},
+"priceTxt": {
+"node": "441533658638347431"
+},
+"productID": "cube.sort.color.special.pack",
+"productIDRequired": [],
+"productIdDiscounted": "cube.sort.color.special.pack.discount",
+"purchaseButton": {
+"node": "1621908521968842513"
+},
+"purchasePeriodTxt": {
+"node": "561551363152198057"
+},
+"sellBadgeObj": {
+"node": "6598472915900049053"
+},
+"sellBadgeTxt": {
+"node": "8961016465788563304"
+},
+"triggerProductIds": ["cube.sort.color.starter.pack", "cube.sort.color.starter.pack.discount"]
+}],
+"id": "4235909617855172955",
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [-1.0, 422.0]
+},
+"n": "SpecialPack",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 806.0, 422.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -1171.51),
+"size": Vector2(806, 422)
+}
+
+[node name="BGPeriod" type="Control" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=312692313]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.0
+offset_top = -273.0
+offset_right = 190.0
+offset_bottom = -129.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(384, 1731, 380, 144)
+border = Vector4(191, 72, 189, 72)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8803601994093910527",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_79",
+"t": 1.0
+},
+"n": "BGPeriod",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 201.0, 380.0, 144.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 201),
+"size": Vector2(380, 144)
+}
+
+[node name="txtPeriod" type="Label" parent="PopupOfferLayer/Panel/SpecialPack/BGPeriod" unique_id=361295078]
+material = SubResource("ShaderMaterial_g4d6u")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -211.785
+offset_top = -76.458
+offset_right = 211.785
+offset_bottom = 22.458
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_26rnf")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 45
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "3/Month"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "561551363152198057",
+"n": "txtPeriod",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 27.0, 423.57, 98.916, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "3/Month",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 27),
+"size": Vector2(423.57, 98.916)
+}
+metadata/u_txt = {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "3/Month",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="BG (1)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=550105237]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("8_fc42y")
+region = Rect2(512, 0, 512, 312)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2786221821937536954",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_1",
+"t": 0.0
+},
+"n": "BG (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="BlurredBorder" type="Control" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=1095716679]
+clip_children = 2
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 14.0
+offset_right = -18.0
+offset_bottom = -10.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("9_dpxgy")
+region = Rect2(512, 0, 512, 312)
+color = Color(1, 1, 1, 0.011764706)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1061109123064010",
+"img": {
+"c": "ffffff03",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_Shop_Packs_Atlas1:UI_Shop_Packs_Atlas1_1",
+"t": 0.0
+},
+"mask": {
+"show": true
+},
+"n": "BlurredBorder",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, -2.0, -36.0, -24.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -2),
+"size": Vector2(-36, -24)
+}
+
+[node name="Blurred" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/BlurredBorder" unique_id=1160066047]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1190.0
+offset_top = -125.0
+offset_right = -390.0
+offset_bottom = 125.0
+rotation = -0.7853982
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("10_0ioi8")
+region = Rect2(0, 0, 360, 360)
+color = Color(1, 0.9764706, 0.8666667, 0.69803923)
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "Blurred",
+"on": true
+},
+"id": "5611405090279265066",
+"img": {
+"c": "fff9ddb2",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "blurred",
+"t": 0.0
+},
+"n": "Blurred",
+"r": [0.5, 0.5, 0.5, 0.5, -790.0, 0.0, 800.0, 250.0, 0.5, 0.5],
+"z": 45.0
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-790, 0),
+"size": Vector2(800, 250)
+}
+
+[node name="Image (1)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=417609845]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -435.2224
+offset_top = -307.32242
+offset_right = 61.0224
+offset_bottom = 188.92241
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+color = Color(0.78431374, 0.4117647, 1, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "6793457399635201116",
+"img": {
+"c": "c869ffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, -187.1, 59.2, 496.2448, 496.2448, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-187.1, 59.2),
+"size": Vector2(496.2448, 496.2448)
+}
+
+[node name="Image (3)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/Image (1)" unique_id=699476360]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.07035
+offset_top = -0.07035
+offset_right = 0.07035
+offset_bottom = 0.07035
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+color = Color(0.78431374, 0.4117647, 1, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2622341382498005049",
+"img": {
+"c": "c869ffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image (3)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.1407, 0.1407, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0.1407, 0.1407)
+}
+
+[node name="VortexRotate" type="Control" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=1044521249]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -110.0
+offset_right = -130.0
+offset_bottom = -10.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3143023676575283283",
+"n": "VortexRotate",
+"r": [0.5, 0.5, 0.5, 0.5, -180.0, 60.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-180, 60),
+"size": Vector2(100, 100)
+}
+
+[node name="Vortex_rotate" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/VortexRotate" unique_id=1190117741]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.5
+offset_top = -157.5
+offset_right = 157.5
+offset_bottom = 157.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("11_kj0ns")
+region = Rect2(0, 0, 256, 256)
+color = Color(1, 1, 0.6862745, 1)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "SimpleUIRotator",
+"rotateOnStart": "1",
+"rotationSpeed": "-20",
+"targetUI": {
+"node": "4588849838299329961"
+}
+}],
+"id": "4588849838299329961",
+"img": {
+"c": "ffffafff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "fx_1",
+"t": 0.0
+},
+"n": "Vortex_rotate",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 315.0, 315.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(315, 315)
+}
+
+[node name="Image (2)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=2115772364]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -337.1
+offset_top = -225.41
+offset_right = -37.100006
+offset_bottom = 74.59
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("17_g27kn")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7844245937149224607",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_SpecialPack",
+"t": 0.0
+},
+"n": "Image (2)",
+"r": [0.5, 0.5, 0.5, 0.5, -187.1, 75.41, 300.0, 300.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-187.1, 75.41),
+"size": Vector2(300, 300)
+}
+
+[node name="Effect_star" type="Control" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=87977298]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -353.0
+offset_top = -193.0
+offset_right = -53.0
+offset_bottom = 107.0
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"id": "5779244252999541485",
+"n": "Effect_star",
+"r": [0.5, 0.5, 0.5, 0.5, -203.0, 43.0, 300.0, 300.0, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-203, 43),
+"size": Vector2(300, 300)
+}
+
+[node name="Particle System" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/Effect_star" unique_id=901163936]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5618708323906061409",
+"n": "Particle System",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=2086727367]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -348.219
+offset_top = 199.0834
+offset_right = -55.181
+offset_bottom = 263.5166
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("7_rpb0q")
+region = Rect2(961, 1667, 104, 104)
+border = Vector4(32, 30, 32, 31)
+border_scale = 0.6666666666666666
+kind = 1
+color = Color(0.078431375, 0.12941177, 0.40392157, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"cs": [{
+"canvasGroup": null,
+"coolDownText": {
+"node": "4730375073294388966"
+},
+"name": "PackTimeCounter",
+"productId": "wool.scape.starter.pack"
+}],
+"id": "6317893616309436729",
+"img": {
+"c": "142167ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_10",
+"t": 1.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, -201.7, -231.3, 293.038, 64.4332, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-201.7, -231.3),
+"size": Vector2(293.038, 64.4332)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/SpecialPack/Image" unique_id=1761180115]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 41.01875
+offset_right = 4.9591064e-05
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dj672")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "1D -12:12:12"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"id": "4730375073294388966",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 20.5094, 0.0, -41.0187, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 46.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 39.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [10.0, 5.0, 10.0, 5.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1D -12:12:12",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(20.5094, 0),
+"size": Vector2(-41.0187, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 46.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 39.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [10.0, 5.0, 10.0, 5.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1D -12:12:12",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/Image" unique_id=706360529]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -137.4773
+offset_top = -32.2166
+offset_right = -80.1227
+offset_bottom = 25.138
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("7_rpb0q")
+region = Rect2(1198, 589, 128, 128)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2617704800644424526",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_79",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, -108.8, 3.5393, 57.3546, 57.3546, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-108.8, 3.5393),
+"size": Vector2(57.3546, 57.3546)
+}
+
+[node name="PackName" type="Label" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=1600189365]
+material = SubResource("ShaderMaterial_g4d6u")
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 52.214996
+offset_top = -129.45801
+offset_right = 475.785
+offset_bottom = -30.542
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_itwip")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Special pack"
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "497904141029297814",
+"n": "PackName",
+"r": [0.0, 0.0, 0.0, 0.0, 264.0, 80.0, 423.57, 98.916, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Special pack",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(264, 80),
+"size": Vector2(423.57, 98.916)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Special pack",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ItemContainer" type="Control" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=1410304904]
+anchors_preset = 0
+anchor_right = 1.0
+offset_left = 347.0384
+offset_top = -1.0
+offset_right = -20.398392
+offset_bottom = 271.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"horizontalLayoutGroup": null,
+"name": "ShopProductSetup",
+"plusItemPrefab": {
+"asset": "dc2bb501aba259a429e763c3ac8e1902"
+},
+"productID": "wool.scape.starter.pack",
+"productSO": {
+"asset": "IAPProductSO.asset"
+},
+"rewardItemPrefab": null,
+"rewardPerRow": "2",
+"verticalLayoutGroup": {
+"node": "3226141569767917012"
+}
+}],
+"id": "3226141569767917012",
+"n": "ItemContainer",
+"r": [0.0, 1.0, 1.0, 1.0, 163.32, -135.0, -367.4368, 272.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(163.32, -135),
+"size": Vector2(-367.4368, 272)
+}
+
+[node name="Row(Clone)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer" unique_id=952497879]
+anchors_preset = 0
+offset_left = 148.2816
+offset_top = 22.0
+offset_right = 248.2816
+offset_bottom = 126.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "315667260015569965",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 198.2816, -74.0, 100.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(198.2816, -74),
+"size": Vector2(100, 104)
+}
+
+[node name="ShopRewardItem(Clone) (2)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/Row(Clone)" unique_id=545585293]
+anchors_preset = 0
+offset_left = 109.2
+offset_top = 20.099998
+offset_right = 189.2
+offset_bottom = 100.1
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(0, 259, 256, 256)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "5500373117781145353"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "6879670571038389021"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "5500373117781145353"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "6879670571038389021"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "5500373117781145353",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone) (2)",
+"r": [0.0, 1.0, 0.0, 1.0, 149.2, -60.1, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(149.2, -60.1),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgVoHanTim" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/Row(Clone)/ShopRewardItem(Clone) (2)" unique_id=104865843]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(0, 259, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterMagnet 1",
+"on": true
+},
+"id": "4928649959935934664",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16",
+"t": 0.0
+},
+"n": "ImgVoHanTim",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/Row(Clone)/ShopRewardItem(Clone) (2)" unique_id=941666318]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -27.2
+offset_right = 60.0
+offset_bottom = 20.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0w1pi")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "30m"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "6879670571038389021",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 3.2, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "30m",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 3.2),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "30m",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Plus(Clone)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/Row(Clone)" unique_id=1149862943]
+anchors_preset = 0
+offset_left = 67.6
+offset_top = 52.300003
+offset_right = 95.6
+offset_bottom = 80.3
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("7_rpb0q")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6347989260532159576",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 81.6, -66.3, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(81.6, -66.3),
+"size": Vector2(28, 28)
+}
+
+[node name="ShopRewardItem(Clone)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/Row(Clone)" unique_id=1258810598]
+anchors_preset = 0
+offset_left = -46.47
+offset_top = 2.0
+offset_right = 53.53
+offset_bottom = 102.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("13_biyaa")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "7302731547628189066"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "5298915380823986320"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "1",
+"iconImg": {
+"node": "7302731547628189066"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "5298915380823986320"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "7302731547628189066",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Gold3",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 3.53, -52.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(3.53, -52),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/Row(Clone)/ShopRewardItem(Clone)" unique_id=1757347378]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4xt2t")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "2500"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "5298915380823986320",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "2500",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.4),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "2500",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@18" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer" unique_id=484266655]
+anchors_preset = 0
+offset_left = 82.2816
+offset_top = 146.0
+offset_right = 314.28162
+offset_bottom = 250.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "262741862953982569",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 198.2816, -198.0, 232.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(198.2816, -198),
+"size": Vector2(232, 104)
+}
+
+[node name="ShopRewardItem(Clone)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18" unique_id=54223302]
+anchors_preset = 0
+offset_left = 97.7
+offset_top = 0.5099983
+offset_right = 177.7
+offset_bottom = 80.509995
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(542, 663, 72, 72)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "823553091292099992"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "4135356059994069228"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "823553091292099992"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "4135356059994069228"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "823553091292099992",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_37",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 137.7, -40.51, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(137.7, -40.51),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterMagnet" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18/ShopRewardItem(Clone)" unique_id=290846932]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("14_ffirs")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterMagnet",
+"on": true
+},
+"id": "6608840332827774610",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster1",
+"t": 0.0
+},
+"n": "ImgBoosterMagnet",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18/ShopRewardItem(Clone)" unique_id=820204128]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -3.2000008
+offset_right = 60.0
+offset_bottom = 44.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ramy8")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x3"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4135356059994069228",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -20.8, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -20.8),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ShopRewardItem(Clone) (1)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18" unique_id=953598168]
+anchors_preset = 0
+offset_left = -27.1
+offset_top = 0.5099983
+offset_right = 52.9
+offset_bottom = 80.509995
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("15_k20fj")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "5972711446795252460"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "8859260433015689092"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "5972711446795252460"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "8859260433015689092"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "5972711446795252460",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "ic_booster3_1",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone) (1)",
+"r": [0.0, 1.0, 0.0, 1.0, 12.9, -40.51, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(12.9, -40.51),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterCapacity" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18/ShopRewardItem(Clone) (1)" unique_id=929419081]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("15_k20fj")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterCapacity",
+"on": true
+},
+"id": "2720835126085516073",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster3_1",
+"t": 0.0
+},
+"n": "ImgBoosterCapacity",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18/ShopRewardItem(Clone) (1)" unique_id=266890194]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -3.2000008
+offset_right = 60.0
+offset_bottom = 44.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pqhy6")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x3"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "8859260433015689092",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -20.8, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -20.8),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Plus(Clone)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18" unique_id=696848053]
+anchors_preset = 0
+offset_left = 185.5
+offset_top = 38.0
+offset_right = 213.5
+offset_bottom = 66.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("7_rpb0q")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1805921474210451905",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 199.5, -52.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(199.5, -52),
+"size": Vector2(28, 28)
+}
+
+[node name="Plus(Clone) (1)" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18" unique_id=908948490]
+anchors_preset = 0
+offset_left = 59.5
+offset_top = 38.0
+offset_right = 87.5
+offset_bottom = 66.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("7_rpb0q")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "332329949614217479",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone) (1)",
+"r": [0.0, 1.0, 0.0, 1.0, 73.5, -52.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(73.5, -52),
+"size": Vector2(28, 28)
+}
+
+[node name="@Control@19" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18" unique_id=386050930]
+anchors_preset = 0
+offset_left = 218.92001
+offset_top = 1.5
+offset_right = 298.92
+offset_bottom = 81.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(614, 663, 72, 72)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "4001784705725641795"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "7438295478500758338"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "4",
+"iconImg": {
+"node": "4001784705725641795"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "7438295478500758338"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "4001784705725641795",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_38",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 258.92, -41.5, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(258.92, -41.5),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterStorage" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18/@Control@19" unique_id=1682313746]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+tex = ExtResource("16_gciwy")
+region = Rect2(0, 0, 256, 256)
+border_scale = 4.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterStorage",
+"on": true
+},
+"id": "1366883521971676662",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster2_1",
+"t": 0.0
+},
+"n": "ImgBoosterStorage",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/SpecialPack/ItemContainer/@Control@18/@Control@19" unique_id=1084291449]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -2.2000008
+offset_right = 60.0
+offset_bottom = 45.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hhj4j")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x3"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "7438295478500758338",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -21.8, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -21.8),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Button_Purchase" type="Button" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=175231383]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -280.3
+offset_top = -130.0
+offset_right = -54.300003
+offset_bottom = -26.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wxnd3")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_6vy5d")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_qiou2")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_jfoa2")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_yrvpt")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_wwlro")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_jrtku")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_040nj")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_uqkd2")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_duo08")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3jgq6")
+flat = true
+script = ExtResource("1_sxxap")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "1621908521968842513",
+"tr": 1.0
+},
+"id": "1621908521968842513",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.25,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "Button_Purchase",
+"r": [1.0, 0.0, 1.0, 0.0, -167.3, 78.0, 226.0, 104.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-167.3, 78),
+"size": Vector2(226, 104)
+}
+
+[node name="image" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/Button_Purchase" unique_id=1755586543]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.4444444444444444
+preserve_aspect = true
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/SpecialPack/Button_Purchase" unique_id=1245258923]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_right = -16.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_02efo")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "149,000d"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "441533658638347431",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, -32.0, -8.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "149,000d",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(-32, -8)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "149,000d",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="DiscountLine" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/Button_Purchase" unique_id=2054937727]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 16.1228
+offset_right = 50.0
+offset_bottom = 21.1228
+rotation = -0.17418386
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+kind = 1
+color = Color(1, 0, 0, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "6136635824340338191",
+"img": {
+"c": "ff0000ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "DiscountLine",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -18.6228, 100.0, 5.0, 0.5, 0.5],
+"z": 9.98
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -18.6228),
+"size": Vector2(100, 5)
+}
+
+[node name="Button_Soldout" type="Button" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=601051457]
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -280.3
+offset_top = -130.0
+offset_right = -54.300003
+offset_bottom = -26.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hv5of")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_aggs7")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_lyfql")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_nxjr7")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0x3e4")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_sgn40")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_i5la0")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_cecoq")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_op6yx")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_rfo86")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_pbyaj")
+flat = true
+script = ExtResource("1_sxxap")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "8097763924483688396",
+"tr": 1.0
+},
+"id": "8097763924483688396",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.25,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "Button_Soldout",
+"r": [1.0, 0.0, 1.0, 0.0, -167.3, 78.0, 226.0, 104.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-167.3, 78),
+"size": Vector2(226, 104)
+}
+
+[node name="image" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/Button_Soldout" unique_id=2017108056]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.4444444444444444
+preserve_aspect = true
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="PopupOfferLayer/Panel/SpecialPack/Button_Soldout" unique_id=534139840]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_right = -16.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3j0vl")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 53
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Sold out"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4758695121265069014",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, -32.0, -8.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 53.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Sold out",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(-32, -8)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 53.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Sold out",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="DiscountLine" type="Control" parent="PopupOfferLayer/Panel/SpecialPack/Button_Soldout" unique_id=1620709686]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 16.1228
+offset_right = 50.0
+offset_bottom = 21.1228
+rotation = -0.17418386
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_t1rlq")
+kind = 1
+color = Color(1, 0, 0, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "6505617095367211823",
+"img": {
+"c": "ff0000ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "DiscountLine",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -18.6228, 100.0, 5.0, 0.5, 0.5],
+"z": 9.98
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -18.6228),
+"size": Vector2(100, 5)
+}
+
+[node name="SellBadge" type="Control" parent="PopupOfferLayer/Panel/SpecialPack" unique_id=402501387]
+visible = false
+anchors_preset = 0
+offset_left = -13.0741005
+offset_top = -16.0741
+offset_right = 113.0741
+offset_bottom = 110.0741
+rotation = -0.20926498
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_t1rlq")
+tex = ExtResource("4_7jp1u")
+region = Rect2(1100, 912, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "6598472915900049053",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_78",
+"t": 0.0
+},
+"n": "SellBadge",
+"r": [0.0, 1.0, 0.0, 1.0, 50.0, -47.0, 126.1482, 126.1482, 0.5, 0.5],
+"z": 11.99
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(50, -47),
+"size": Vector2(126.1482, 126.1482)
+}
+
+[node name="SellBadgeTxt" type="Label" parent="PopupOfferLayer/Panel/SpecialPack/SellBadge" unique_id=468457607]
+material = SubResource("ShaderMaterial_hscdh")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -59.957
+offset_top = -36.0215
+offset_right = 69.868805
+offset_bottom = 34.883904
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_i6eq3")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 52
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "-60%"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "8961016465788563304",
+"n": "SellBadgeTxt",
+"r": [0.5, 0.5, 0.5, 0.5, 4.9559, 0.5688, 129.8258, 70.9054, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 1.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 51.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-60%",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(4.9559, 0.5688),
+"size": Vector2(129.8258, 70.9054)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 1.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 51.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-60%",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}

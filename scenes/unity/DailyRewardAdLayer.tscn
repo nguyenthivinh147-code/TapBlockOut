@@ -1,0 +1,3921 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="1_0yac2"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="2_npvd4"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/fx_1.png" id="3_1o70p"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/PopupDailyRewardAd.png" id="4_6i75j"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup_SpecialPack_Title.png" id="5_8q2hu"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="6_f772r"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="7_ansaq"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Shop_Popup_Atlas.png" id="8_8olaq"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/DailyRewardIcon.png" id="9_hd6to"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="10_6gdri"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="11_lveua"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/TV.png" id="12_lunxu"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/arrow_notify.png" id="13_24i85"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ufq3p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dpm3b"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wav31"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_315ew"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8kn8w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j0b35"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x8le3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uq2n4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_325ta"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3kuwb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ayld7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4d6u"]
+shader = ExtResource("6_f772r")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/underlay_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m3awi"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("7_ansaq")
+spacing_glyph = -1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lenqp"]
+shader = ExtResource("6_f772r")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.7764706, 0.72156864, 0.5647059, 1)
+shader_parameter/underlay_color = Color(0.5921569, 0.5921569, 0.5921569, 1)
+shader_parameter/face_edge = 0.27310924062499997
+shader_parameter/outline_half = 0.201680675
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.27310924062499997
+shader_parameter/underlay_offset = Vector2(0, 0)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qfway"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_51gwy"]
+base_font = ExtResource("7_ansaq")
+spacing_glyph = -2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o1wlb"]
+shader = ExtResource("6_f772r")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(1, 1, 1, 1)
+shader_parameter/underlay_color = Color(0.5921569, 0.5921569, 0.5921569, 1)
+shader_parameter/face_edge = 0.33516482812500004
+shader_parameter/outline_half = 0.263736275
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.33516482812500004
+shader_parameter/underlay_offset = Vector2(0, 0)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kmop5"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_grybq"]
+shader = ExtResource("6_f772r")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.22352941, 0.06666667, 0.003921569, 1)
+shader_parameter/underlay_color = Color(0.22352941, 0.06666667, 0.003921569, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.05828571516
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.1445)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2elab"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_10kr7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o2p8q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xg2qy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_svj6m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_57sxd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ye63q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_af26g"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8bwba"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5e7tf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ecbus"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_glya0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vhbwm"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("6_f772r")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ismbj"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qejyp"]
+shader = ExtResource("6_f772r")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qow6o"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l5ne1"]
+content_margin_left = 114.3
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5gl1h"]
+content_margin_left = 114.3
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_evdlr"]
+content_margin_left = 114.3
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tr7wx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_16dux"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j4k1e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ur27s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cm8bn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xy4a8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r1jbv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o2bti"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nki3u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rf6en"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dqgfm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
+shader = ExtResource("6_f772r")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wsdjm"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ey7gw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_12b8l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q28a8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dt7kf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dtqk0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5lhu7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8npc4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lr01e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3fory"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ci75y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lwfuu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pun8e"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ktcat"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8yg2w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4rsrw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uktt4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h31fx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fyudk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r24x4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_it2lw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yrkga"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kuann"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aw7q0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pgrrh"]
+shader = ExtResource("6_f772r")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.047058824, 0.0627451, 0.06666667, 1)
+shader_parameter/underlay_color = Color(0.047058824, 0.0627451, 0.06666667, 1)
+shader_parameter/face_edge = 0.45
+shader_parameter/outline_half = 0.12
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.2925
+shader_parameter/underlay_offset = Vector2(0, -1.176)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rkcm2"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=1786822199]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "DailyRewardAdLayer"
+
+[node name="DailyRewardAdLayer" type="Control" parent="." unique_id=366133227]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnCompleteAnim": [],
+"OnStartAnim": [],
+"dimCanvasGroup": {
+"node": "3406546784345224705"
+},
+"duration": "0.4",
+"easeType": "26",
+"mUICoreLayer": {
+"node": "7219197735921211012"
+},
+"name": "ShowPopupAnimation",
+"panelRect": {
+"node": "5505950304007009561"
+}
+}, {
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"_fullAdsGO": {
+"node": "2382194424614418942"
+},
+"adsCallbackTimeout": "5",
+"breakEnable": "0",
+"claimFreeButton": {
+"node": "6897215301846292973"
+},
+"dailyRewardsAdSo": {
+"asset": "DailyRewadsAdSO.asset"
+},
+"debugOnOff": "0",
+"milestoneContainer": {
+"node": "4308124051409623028"
+},
+"milestonePrefab": {
+"node": "2077038129044046517"
+},
+"name": "UIDailyRewardAdsLayer",
+"progressAnimDuration": "0.5",
+"slider": {
+"node": "109712882915880025"
+},
+"watchAdsButton": {
+"node": "1339644751495733574"
+}
+}],
+"id": "7219197735921211012",
+"n": "DailyRewardAdLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Bg" type="Button" parent="DailyRewardAdLayer" unique_id=466083397]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ufq3p")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_dpm3b")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_wav31")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_315ew")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_8kn8w")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_j0b35")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_x8le3")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_uq2n4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_325ta")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_3kuwb")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ayld7")
+flat = true
+script = ExtResource("1_0yac2")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "3406546784345224705",
+"tr": 0.0
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"button": {
+"node": "3406546784345224705"
+},
+"name": "NavigationBackButton"
+}],
+"id": "3406546784345224705",
+"img": {
+"c": "000000cc",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" type="Control" parent="DailyRewardAdLayer/Bg" unique_id=499288205]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="Panel" type="Control" parent="DailyRewardAdLayer" unique_id=539344873]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -401.0
+offset_top = -605.0
+offset_right = 401.0
+offset_bottom = 605.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5505950304007009561",
+"n": "Panel",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 802.0, 1210.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(802, 1210)
+}
+
+[node name="LightRotate" type="Control" parent="DailyRewardAdLayer/Panel" unique_id=839989863]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = -268.1
+offset_right = 400.0
+offset_bottom = 531.9
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6567253990882937163",
+"img": {
+"c": "ffffff01",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "LightRotate",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -131.9, 800.0, 800.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -131.9),
+"size": Vector2(800, 800)
+}
+
+[node name="Image" type="Control" parent="DailyRewardAdLayer/Panel/LightRotate" unique_id=1053793180]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -400.0
+offset_right = 400.0
+offset_bottom = 400.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+tex = ExtResource("3_1o70p")
+region = Rect2(0, 0, 256, 256)
+color = Color(0.98039216, 0.8980392, 0.23529412, 0.5019608)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "SimpleUIRotator",
+"rotateOnStart": "1",
+"rotationSpeed": "-30",
+"targetUI": {
+"node": "2656270512849195126"
+}
+}],
+"id": "2656270512849195126",
+"img": {
+"c": "fae53c80",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "fx_1",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 800.0, 800.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(800, 800)
+}
+
+[node name="Image (1)" type="Control" parent="DailyRewardAdLayer/Panel/LightRotate" unique_id=276350739]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -400.0
+offset_right = 400.0
+offset_bottom = 400.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+tex = ExtResource("3_1o70p")
+region = Rect2(0, 0, 256, 256)
+color = Color(0.98039216, 0.8980392, 0.23529412, 0.5019608)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "SimpleUIRotator",
+"rotateOnStart": "1",
+"rotationSpeed": "-60",
+"targetUI": {
+"node": "5663236867474045511"
+}
+}],
+"id": "5663236867474045511",
+"img": {
+"c": "fae53c80",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "fx_1",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 800.0, 800.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(800, 800)
+}
+
+[node name="Bg (1)" type="Control" parent="DailyRewardAdLayer/Panel" unique_id=500146775]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("4_6i75j")
+region = Rect2(0, 0, 1024, 1024)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8264433027405069733",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "PopupDailyRewardAd",
+"t": 0.0
+},
+"n": "Bg (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="DailyRewardAdLayer/Panel" unique_id=952386109]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -437.49
+offset_top = -281.64
+offset_right = 437.49
+offset_bottom = 251.56001
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+tex = ExtResource("5_8q2hu")
+region = Rect2(0, 0, 512, 168.06107)
+border_scale = 1.0234375
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8513809667308969529",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "Popup_SpecialPack_Title",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 15.04, 874.98, 533.2, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 15.04),
+"size": Vector2(874.98, 533.2)
+}
+
+[node name="txtHeader" type="Label" parent="DailyRewardAdLayer/Panel/Image" unique_id=2072161220]
+visible = false
+material = SubResource("ShaderMaterial_g4d6u")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -107.2
+offset_right = 256.0
+offset_bottom = -7.200001
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_m3awi")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 65
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "SPECIAL PACK"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": false,
+"id": "2809704552690345925",
+"n": "txtHeader",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 57.2, 512.0, 100.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 65.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 65.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "SPECIAL PACK",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 57.2),
+"size": Vector2(512, 100)
+}
+metadata/u_txt = {
+"auto": [18.0, 65.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 65.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "SPECIAL PACK",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="txtHeader BG2" type="Label" parent="DailyRewardAdLayer/Panel" unique_id=2073083408]
+material = SubResource("ShaderMaterial_lenqp")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -347.0
+offset_top = -144.06845
+offset_right = 353.0
+offset_bottom = 100.06845
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qfway")
+theme_override_constants/line_spacing = -64
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 120
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "DAILY REWARD"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "4012796850892073600",
+"n": "txtHeader BG2",
+"r": [0.5, 1.0, 0.5, 1.0, 3.0, 22.0, 700.0, 244.1369, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG2",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "DAILY REWARD",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(3, 22),
+"size": Vector2(700, 244.1369)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG2",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "DAILY REWARD",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="txtHeader BG1" type="Label" parent="DailyRewardAdLayer/Panel" unique_id=1161602551]
+material = SubResource("ShaderMaterial_o1wlb")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -347.0
+offset_top = -154.06856
+offset_right = 353.0
+offset_bottom = 103.53395
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kmop5")
+theme_override_constants/line_spacing = -64
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 120
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "DAILY REWARD"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "5136404966631929488",
+"n": "txtHeader BG1",
+"r": [0.5, 1.0, 0.5, 1.0, 3.0, 25.2673, 700.0, 257.6025, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "DAILY REWARD",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(3, 25.2673),
+"size": Vector2(700, 257.6025)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "DAILY REWARD",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="txtHeader" type="Label" parent="DailyRewardAdLayer/Panel" unique_id=1131294579]
+material = SubResource("ShaderMaterial_grybq")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -347.0
+offset_top = -163.06845
+offset_right = 353.0
+offset_bottom = 81.06845
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2elab")
+theme_override_constants/line_spacing = -64
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 120
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "DAILY REWARD"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "3432904330000802518",
+"n": "txtHeader",
+"r": [0.5, 1.0, 0.5, 1.0, 3.0, 41.0, 700.0, 244.1369, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - SpecialPack",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "DAILY REWARD",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(3, 41),
+"size": Vector2(700, 244.1369)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - SpecialPack",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "DAILY REWARD",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="btnTurnOff" type="Button" parent="DailyRewardAdLayer/Panel" unique_id=1933127009]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -68.3
+offset_top = 6.6
+offset_right = -18.3
+offset_bottom = 56.6
+pivot_offset_ratio = Vector2(1, 0)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_10kr7")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_o2p8q")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_xg2qy")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_svj6m")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_57sxd")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_ye63q")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_af26g")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_8bwba")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_5e7tf")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ecbus")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_glya0")
+flat = true
+script = ExtResource("1_0yac2")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4811059741127286920",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "4811059741127286920"
+},
+"name": "NavigationBackButton"
+}],
+"id": "4811059741127286920",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_9",
+"t": 0.0
+},
+"n": "btnTurnOff",
+"r": [1.0, 1.0, 1.0, 1.0, -18.3, -6.6, 50.0, 50.0, 1.0, 1.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(-18.3, -6.6),
+"size": Vector2(50, 50)
+}
+
+[node name="image" type="Control" parent="DailyRewardAdLayer/Panel/btnTurnOff" unique_id=1753280680]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(976, 917, 48, 48)
+pivot = Vector2(1, 1)
+fill_method = 4
+
+[node name="Top" type="Control" parent="DailyRewardAdLayer/Panel" unique_id=2085181401]
+anchors_preset = 0
+anchor_right = 1.0
+offset_top = -65.0
+offset_bottom = 65.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "960523223670233931",
+"n": "Top",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 130.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 130)
+}
+
+[node name="Content" type="Control" parent="DailyRewardAdLayer/Panel" unique_id=1380682619]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -401.0
+offset_right = 401.0
+offset_bottom = 1210.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5267989572481793134",
+"n": "Content",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -605.0, 802.0, 1210.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -605),
+"size": Vector2(802, 1210)
+}
+
+[node name="RewardsImage" type="Control" parent="DailyRewardAdLayer/Panel/Content" unique_id=1727327366]
+anchors_preset = 0
+anchor_right = 1.0
+offset_left = 53.8
+offset_top = 93.7
+offset_bottom = 537.75
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5099775367605020856",
+"n": "RewardsImage",
+"r": [0.0, 1.0, 1.0, 1.0, 26.9, -93.7, -53.8, 444.05, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(26.9, -93.7),
+"size": Vector2(-53.8, 444.05)
+}
+
+[node name="Image" type="Control" parent="DailyRewardAdLayer/Panel/Content/RewardsImage" unique_id=507282199]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -365.6322
+offset_top = -311.51614
+offset_right = 307.4002
+offset_bottom = 361.51614
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("9_hd6to")
+region = Rect2(0, 0, 1024, 1024)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3706040224825927311",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "DailyRewardIcon",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, -29.116, -25.0, 673.0324, 673.0323, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-29.116, -25),
+"size": Vector2(673.0324, 673.0323)
+}
+
+[node name="Image (1)" type="Control" parent="DailyRewardAdLayer/Panel/Content/RewardsImage" unique_id=517763742]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 50.520004
+offset_top = -150.0
+offset_right = 350.52002
+offset_bottom = 150.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(659, 872, 152, 152)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "5393018246251779400",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_3",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, 200.52, 0.0, 300.0, 300.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(200.52, 0),
+"size": Vector2(300, 300)
+}
+
+[node name="Image (6)" type="Control" parent="DailyRewardAdLayer/Panel/Content/RewardsImage" unique_id=2116552680]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -425.9
+offset_top = -127.8
+offset_right = -175.9
+offset_bottom = 122.2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(822, 872, 152, 152)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "4172188367272429505",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_4",
+"t": 0.0
+},
+"n": "Image (6)",
+"r": [0.5, 0.5, 0.5, 0.5, -300.9, 2.8, 250.0, 250.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-300.9, 2.8),
+"size": Vector2(250, 250)
+}
+
+[node name="Image (4)" type="Control" parent="DailyRewardAdLayer/Panel/Content/RewardsImage" unique_id=1049262867]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -390.3
+offset_top = -62.800003
+offset_right = -90.3
+offset_bottom = 237.2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(659, 872, 152, 152)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "6651237068717192857",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_3",
+"t": 0.0
+},
+"n": "Image (4)",
+"r": [0.5, 0.5, 0.5, 0.5, -240.3, -87.2, 300.0, 300.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-240.3, -87.2),
+"size": Vector2(300, 300)
+}
+
+[node name="Image (7)" type="Control" parent="DailyRewardAdLayer/Panel/Content/RewardsImage" unique_id=325310901]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 157.4
+offset_top = -20.099998
+offset_right = 307.4
+offset_bottom = 129.9
+rotation = 0.13386676
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(0, 259, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "1536071778172695404",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16",
+"t": 0.0
+},
+"n": "Image (7)",
+"r": [0.5, 0.5, 0.5, 0.5, 232.4, -54.9, 150.0, 150.0, 0.5, 0.5],
+"z": -7.67
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(232.4, -54.9),
+"size": Vector2(150, 150)
+}
+
+[node name="Image (2)" type="Control" parent="DailyRewardAdLayer/Panel/Content/RewardsImage" unique_id=1745617924]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.940002
+offset_top = -56.4
+offset_right = 268.06
+offset_bottom = 243.6
+rotation = 0.13386676
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(659, 872, 152, 152)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "9124808669835117966",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_3",
+"t": 0.0
+},
+"n": "Image (2)",
+"r": [0.5, 0.5, 0.5, 0.5, 118.06, -93.6, 300.0, 300.0, 0.5, 0.5],
+"z": -7.67
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(118.06, -93.6),
+"size": Vector2(300, 300)
+}
+
+[node name="Image (3)" type="Control" parent="DailyRewardAdLayer/Panel/Content/RewardsImage" unique_id=333322411]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -269.7
+offset_top = -15.699997
+offset_right = -19.699997
+offset_bottom = 234.3
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(822, 872, 152, 152)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8242294333381155939",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_4",
+"t": 0.0
+},
+"n": "Image (3)",
+"r": [0.5, 0.5, 0.5, 0.5, -144.7, -109.3, 250.0, 250.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-144.7, -109.3),
+"size": Vector2(250, 250)
+}
+
+[node name="Image (5)" type="Control" parent="DailyRewardAdLayer/Panel/Content/RewardsImage" unique_id=1657526014]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 172.22
+offset_top = 10.699997
+offset_right = 372.22
+offset_bottom = 210.7
+rotation = 0.13386676
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(822, 872, 152, 152)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8297162362062973247",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_4",
+"t": 0.0
+},
+"n": "Image (5)",
+"r": [0.5, 0.5, 0.5, 0.5, 272.22, -110.7, 200.0, 200.0, 0.5, 0.5],
+"z": -7.67
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(272.22, -110.7),
+"size": Vector2(200, 200)
+}
+
+[node name="Preview" type="Control" parent="DailyRewardAdLayer/Panel/Content" unique_id=1411162290]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -352.0
+offset_top = -411.0
+offset_right = 352.0
+offset_bottom = 571.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4487537127718328958",
+"n": "Preview",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -80.0, 704.0, 982.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -80),
+"size": Vector2(704, 982)
+}
+
+[node name="Platform" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview" unique_id=135912621]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -315.0
+offset_top = -755.0
+offset_right = 315.0
+offset_bottom = -531.0
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"id": "6827516525641077591",
+"n": "Platform",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 531.0, 630.0, 224.0, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 531),
+"size": Vector2(630, 224)
+}
+
+[node name="Time" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Platform" unique_id=182596519]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -119.0
+offset_top = 92.0
+offset_right = 119.0
+offset_bottom = 160.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"canvasGroup": {
+"node": "7219197735921211012"
+},
+"coolDownText": {
+"node": "6354292504849692510"
+},
+"name": "PackTimeCounter",
+"productId": "yarn.dom.starter.pack"
+}],
+"id": "4625296428681908418",
+"n": "Time",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -126.0, 238.0, 68.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -126),
+"size": Vector2(238, 68)
+}
+
+[node name="Icon clock" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Platform/Time" unique_id=1363247753]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -34.4
+offset_top = -49.0
+offset_right = 48.6
+offset_bottom = 34.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+tex = ExtResource("11_lveua")
+region = Rect2(1198, 589, 128, 128)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2560461129848747563",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_79",
+"t": 0.0
+},
+"n": "Icon clock",
+"r": [0.0, 0.5, 0.0, 0.5, 7.1, 7.5, 83.0, 83.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(7.1, 7.5),
+"size": Vector2(83, 83)
+}
+
+[node name="Text (TMP)" type="Label" parent="DailyRewardAdLayer/Panel/Content/Preview/Platform/Time" unique_id=1676405910]
+material = SubResource("ShaderMaterial_g4d6u")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -55.300003
+offset_top = -25.0
+offset_right = 99.3
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vhbwm")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "19:30:00
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "6354292504849692510",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 22.0, 0.0, 154.6, 50.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "19:30:00
+",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(22, 0),
+"size": Vector2(154.6, 50)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "19:30:00
+",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Bottom" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview" unique_id=1085501710]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -363.0
+offset_top = -280.0
+offset_right = 341.0
+offset_bottom = -101.0
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1202159839655760811",
+"n": "Bottom",
+"r": [0.5, 0.0, 0.5, 0.0, -11.0, 101.0, 704.0, 179.0, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(-11, 101),
+"size": Vector2(704, 179)
+}
+
+[node name="Slider" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom" unique_id=1709626475]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 38.28585
+offset_top = -22.34205
+offset_right = -28.16085
+offset_bottom = 22.34205
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "109712882915880025",
+"n": "Slider",
+"r": [0.0, 0.5, 1.0, 0.5, 5.0625, 0.0, -66.4467, 44.6841, 0.5, 0.5],
+"slider": {
+"dir": 0.0,
+"fill": "2016837688701230760",
+"handle": "6600541649784568074",
+"inter": false,
+"max": 1.0,
+"min": 0.0,
+"value": 0.0,
+"whole": false
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(5.0625, 0),
+"size": Vector2(-66.4467, 44.6841)
+}
+
+[node name="Background (2)" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider" unique_id=1135024365]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -7.73255
+offset_top = -5.1161
+offset_right = 11.570351
+offset_bottom = 5.1161
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("11_lveua")
+region = Rect2(509, 1667, 104, 104)
+border = Vector4(52, 52, 52, 52)
+border_scale = 0.5376344086021505
+kind = 1
+color = Color(0.15686275, 0.07058824, 0.30980393, 0.74509805)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9042484367757845325",
+"img": {
+"c": "28124fbe",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.86,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_14",
+"t": 1.0
+},
+"n": "Background (2)",
+"r": [0.0, 0.0, 1.0, 1.0, 1.9189, 0.0, 19.3029, 10.2322, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(1.9189, 0),
+"size": Vector2(19.3029, 10.2322)
+}
+
+[node name="Background" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider" unique_id=1891511563]
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(1099, 1012, 198, 144)
+border = Vector4(80, 0, 80, 0)
+border_scale = 0.3921568627450981
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "6719662319566346950",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.55,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_84",
+"t": 1.0
+},
+"n": "Background",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Background (1)" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider" unique_id=1821206793]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 11.3978
+offset_top = -5e-05
+offset_right = 8.1252
+offset_bottom = 5e-05
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("11_lveua")
+region = Rect2(509, 1667, 104, 104)
+border = Vector4(52, 52, 52, 52)
+border_scale = 0.4464285714285714
+kind = 1
+color = Color(0.101960786, 0.03137255, 0.3019608, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3585253710639271300",
+"img": {
+"c": "1a084dff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.24,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_14",
+"t": 1.0
+},
+"n": "Background (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 9.7615, 0.0, -3.2726, 0.0001, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(9.7615, 0),
+"size": Vector2(-3.2726, 0.0001)
+}
+
+[node name="Fill Area" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider" unique_id=1041973503]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 5.4028
+offset_bottom = -5.4028
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7140184074278119614",
+"n": "Fill Area",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, -10.8056, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, -10.8056)
+}
+
+[node name="Fill" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/Fill Area" unique_id=888292741]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.69
+offset_top = -3.9552
+offset_bottom = 3.9552
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(768, 1488, 500, 60)
+border = Vector4(60, 0, 0, 0)
+border_scale = 0.6622516556291391
+kind = 3
+fill_amount = 0.0
+metadata/u = {
+"a": true,
+"id": "2016837688701230760",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 0.0,
+"fc": true,
+"fm": 0.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.51,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_85",
+"t": 3.0
+},
+"n": "Fill",
+"r": [0.0, 0.0, 0.0, 0.0, 6.345, 0.0, -12.69, 7.9104, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(6.345, 0),
+"size": Vector2(-12.69, 7.9104)
+}
+
+[node name="Handle Slide Area" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider" unique_id=949034186]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6689838492267149800",
+"n": "Handle Slide Area",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -20.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-20, 0)
+}
+
+[node name="Handle" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/Handle Slide Area" unique_id=1921410409]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 18.1203
+offset_top = 1.49605
+offset_right = 46.2583
+offset_bottom = -1.4004501
+scale = Vector2(-1.32, 1)
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(768, 1488, 500, 60)
+border = Vector4(60, 0, 0, 0)
+border_scale = 0.6993006993006994
+kind = 1
+pivot = Vector2(0, 0.5)
+metadata/u = {
+"a": true,
+"id": "6600541649784568074",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 0.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.43,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_85",
+"t": 1.0
+},
+"n": "Handle",
+"r": [0.0, 0.0, 0.0, 0.0, 18.1203, -0.0478, 28.138, -2.8965, 0.0, 0.5],
+"s": [-1.32, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(18.1203, -0.0478),
+"size": Vector2(28.138, -2.8965)
+}
+
+[node name="Image" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider" unique_id=1093578653]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -358.7236
+offset_top = -66.3429
+offset_right = -231.2764
+offset_bottom = 53.142902
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("12_lunxu")
+region = Rect2(0, 0, 1024, 1024)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6090557198419879289",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": true,
+"sp": "TV",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, -295.0, 6.6, 127.4472, 119.4858, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-295, 6.6),
+"size": Vector2(127.4472, 119.4858)
+}
+
+[node name="MilestonesParent" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider" unique_id=788730186]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.054474e-05
+offset_right = -18.22705
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4308124051409623028",
+"n": "MilestonesParent",
+"r": [0.0, 0.0, 1.0, 1.0, -9.1135, 0.0, -18.2271, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-9.1135, 0),
+"size": Vector2(-18.2271, 0)
+}
+
+[node name="Milestone" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent" unique_id=1279568365]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -186.89294
+offset_top = -35.09295
+offset_right = -116.707054
+offset_bottom = 35.09295
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(1736, 1736, 312, 312)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"milestoneText": {
+"node": "4184768898903591191"
+},
+"name": "MilestoneItem",
+"rewardItem": {
+"node": "476730044620427603"
+},
+"rewardsContainer": {
+"node": "134806259177050657"
+},
+"scaleItemNext": {
+"node": "7037754404529690190"
+},
+"tickMark": {
+"node": "4974032823653668702"
+}
+}],
+"id": "2077038129044046517",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_12",
+"t": 0.0
+},
+"n": "Milestone",
+"r": [0.5, 0.5, 0.5, 0.5, -151.8, 0.0, 70.1859, 70.1859, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-151.8, 0),
+"size": Vector2(70.1859, 70.1859)
+}
+
+[node name="Image" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone" unique_id=206626266]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -38.0
+offset_top = -31.0
+offset_right = 2.0
+offset_bottom = 9.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(400, 595, 64, 64)
+border_scale = 2.7777777777777777
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "35851232035334939",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 0.36,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_30",
+"t": 0.0
+},
+"n": "Image",
+"r": [1.0, 0.0, 1.0, 0.0, -18.0, 11.0, 40.0, 40.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-18, 11),
+"size": Vector2(40, 40)
+}
+
+[node name="Text (TMP)" type="Label" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone" unique_id=993434867]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -44.9
+offset_right = 14.0
+offset_bottom = 19.1
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ismbj")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(0.14901961, 0.08235294, 0.2901961, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4184768898903591191",
+"n": "Text (TMP)",
+"r": [1.0, 0.0, 1.0, 0.0, -18.0, 12.9, 64.0, 64.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "26154aff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-18, 12.9),
+"size": Vector2(64, 64)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "26154aff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ScaleMilestone" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone" unique_id=709945988]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -50.0
+offset_right = 68.0
+offset_bottom = 50.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7037754404529690190",
+"n": "ScaleMilestone",
+"r": [0.5, 0.5, 0.5, 0.5, 18.0, 0.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(18, 0),
+"size": Vector2(100, 100)
+}
+
+[node name="ChildScaleMilestone" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone" unique_id=1296425036]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -54.0
+offset_top = -50.0
+offset_right = 46.0
+offset_bottom = 50.0
+scale = Vector2(0.8, 0.8)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "55798059600177018",
+"n": "ChildScaleMilestone",
+"r": [0.5, 0.5, 0.5, 0.5, -4.0, 0.0, 100.0, 100.0, 0.5, 0.5],
+"s": [0.8, 0.8]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-4, 0),
+"size": Vector2(100, 100)
+}
+
+[node name="RewardsParent" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone/ChildScaleMilestone" unique_id=171756003]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -52.5
+offset_top = -87.3944
+offset_right = 52.5
+offset_bottom = 14.907
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"fit": {
+"h": 2.0,
+"v": 0.0
+},
+"id": "134806259177050657",
+"lay": {
+"al": 0.0,
+"ch": false,
+"cw": false,
+"eh": true,
+"ew": true,
+"pad": [15.0, 15.0, 5.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "h"
+},
+"n": "RewardsParent",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -14.907, 0.0, 102.3014, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, -14.907),
+"size": Vector2(105, 102.3014)
+}
+
+[node name="RewardBG" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone/ChildScaleMilestone/RewardsParent" unique_id=884795305]
+anchors_preset = 0
+anchor_right = 1.0
+offset_bottom = 87.8019
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(525, 515, 116, 72)
+border = Vector4(31, 27, 23, 23)
+kind = 1
+color = Color(0.12156863, 0.07450981, 0.30588236, 1)
+pivot = Vector2(0.5, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9190856347297452205",
+"img": {
+"c": "1f134eff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_22",
+"t": 1.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "RewardBG",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -87.8019, 0.0, 87.8019, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, -87.8019),
+"size": Vector2(0, 87.8019)
+}
+
+[node name="ItemReward" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone/ChildScaleMilestone/RewardsParent" unique_id=1950434642]
+anchors_preset = 0
+offset_left = 15.0
+offset_top = 5.0
+offset_right = 90.0
+offset_bottom = 80.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "8405198736662171338"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "5322902558262437320"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "476730044620427603",
+"n": "ItemReward",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 75.0, 75.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(52.5, -42.5),
+"size": Vector2(75, 75)
+}
+
+[node name="Icon Item" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone/ChildScaleMilestone/RewardsParent/ItemReward" unique_id=1084944176]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(780, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8405198736662171338",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+"t": 0.0
+},
+"n": "Icon Item",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -6.0, -6.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-6, -6)
+}
+
+[node name="Quantity" type="Label" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone/ChildScaleMilestone/RewardsParent/ItemReward" unique_id=1442764050]
+material = SubResource("ShaderMaterial_qejyp")
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -29.659899
+offset_bottom = 19.3813
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qow6o")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "200"
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "5322902558262437320",
+"n": "Quantity",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, -19.3813, 0.0, 49.0412, 0.5, 0.0],
+"txt": {
+"auto": [22.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.7,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Black",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "200",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, -19.3813),
+"size": Vector2(0, 49.0412)
+}
+metadata/u_txt = {
+"auto": [22.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.7,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Black",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "200",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ObjTick" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone/ChildScaleMilestone" unique_id=123075351]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -100.0
+offset_right = 50.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4974032823653668702",
+"n": "ObjTick",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 50.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 50),
+"size": Vector2(100, 100)
+}
+
+[node name="TickBG" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone/ChildScaleMilestone/ObjTick" unique_id=267024553]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -52.5218
+offset_top = -35.5341
+offset_right = 52.188602
+offset_bottom = 50.2701
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(525, 515, 116, 72)
+border = Vector4(31, 27, 23, 23)
+kind = 1
+color = Color(0, 0, 0, 0.7490196)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1724305443715372138",
+"img": {
+"c": "000000bf",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_22",
+"t": 1.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "TickBG",
+"r": [0.5, 1.0, 0.5, 1.0, -0.1666, -7.368, 104.7104, 85.8042, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-0.1666, -7.368),
+"size": Vector2(104.7104, 85.8042)
+}
+
+[node name="Tick" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone/ChildScaleMilestone/ObjTick" unique_id=1781765596]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -42.5
+offset_top = -42.5
+offset_right = 42.5
+offset_bottom = 42.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(0, 516, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3014637054875795054",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_17",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "Tick",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 0.0, 85.0, 85.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(85, 85)
+}
+
+[node name="Arrow" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone/ChildScaleMilestone" unique_id=1010990722]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -15.0
+offset_top = -0.39290047
+offset_right = 15.0
+offset_bottom = 22.0071
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("13_24i85")
+region = Rect2(0, 0, 256, 186.49007)
+border_scale = 1.1796875
+color = Color(0.10980392, 0.050980393, 0.3019608, 1)
+pivot = Vector2(0.5, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3080207214598975663",
+"img": {
+"c": "1c0d4dff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "arrow_notify",
+"t": 0.0
+},
+"n": "Arrow",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -22.0071, 30.0, 22.4, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, -22.0071),
+"size": Vector2(30, 22.4)
+}
+
+[node name="Bottom (1)" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview" unique_id=32000282]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -324.5
+offset_top = -623.80005
+offset_right = 324.5
+offset_bottom = -358.2
+scale = Vector2(0.9, 0.9)
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7033725936885056064",
+"n": "Bottom (1)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 358.2, 649.0, 265.6, 0.5, 0.0],
+"s": [0.9, 0.9]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 358.2),
+"size": Vector2(649, 265.6)
+}
+
+[node name="BG" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom (1)" unique_id=56821496]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(660, 724, 152, 144)
+border = Vector4(40, 40, 40, 40)
+kind = 1
+color = Color(0, 0, 0, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8938538180291187757",
+"img": {
+"c": "000000ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_7",
+"t": 1.0
+},
+"n": "BG",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="BG (1)" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom (1)" unique_id=278432837]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(660, 724, 152, 144)
+border = Vector4(40, 40, 40, 40)
+kind = 1
+color = Color(0, 0, 0, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5551557336095221440",
+"img": {
+"c": "000000ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_7",
+"t": 1.0
+},
+"n": "BG (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Group" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom (1)" unique_id=718767723]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3648901393824065303",
+"lay": {
+"al": 0.0,
+"ch": false,
+"cw": false,
+"eh": true,
+"ew": true,
+"pad": [12.0, 12.0, 12.0, 12.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "v"
+},
+"n": "Group",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="DescText" type="Label" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom (1)/Group" unique_id=264501958]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 651.4
+offset_bottom = 92.0
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_l5ne1")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Watch a short clip"
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4702666193458096268",
+"n": "DescText",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 639.4, 80.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [114.3, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Watch a short clip",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(331.7, -52),
+"size": Vector2(639.4, 80)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [114.3, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Watch a short clip",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom (1)/Group/DescText" unique_id=1652070169]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -40.0
+offset_right = 90.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("11_lveua")
+region = Rect2(1792, 0, 256, 256)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1627140439449049689",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_7",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.5, 0.0, 0.5, 10.0, 0.0, 80.0, 80.0, 0.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(10, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="DescText (1)" type="Label" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom (1)/Group" unique_id=326009701]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+offset_left = 12.0
+offset_top = 92.0
+offset_right = 651.4
+offset_bottom = 172.0
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5gl1h")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Boost your progress"
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "809725637617178715",
+"n": "DescText (1)",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 639.4, 80.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [114.3, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Boost your progress",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(331.7, -132),
+"size": Vector2(639.4, 80)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [114.3, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Boost your progress",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom (1)/Group/DescText (1)" unique_id=1992330680]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 21.5
+offset_top = -30.0
+offset_right = 81.5
+offset_bottom = 30.0
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(0, 516, 96, 96)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9187919585689691907",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_17",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.5, 0.0, 0.5, 21.5, 0.0, 60.0, 60.0, 0.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(21.5, 0),
+"size": Vector2(60, 60)
+}
+
+[node name="DescText (2)" type="Label" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom (1)/Group" unique_id=162079633]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+offset_left = 12.0
+offset_top = 172.0
+offset_right = 651.4
+offset_bottom = 252.0
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_evdlr")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Collect daily treats"
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4062666552730660295",
+"n": "DescText (2)",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 639.4, 80.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [114.3, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Collect daily treats",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(331.7, -212),
+"size": Vector2(639.4, 80)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [114.3, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Collect daily treats",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="DailyRewardAdLayer/Panel/Content/Preview/Bottom (1)/Group/DescText (2)" unique_id=307939670]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -40.0
+offset_right = 90.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(659, 872, 152, 152)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7308350159150888125",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_3",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.5, 0.0, 0.5, 10.0, 0.0, 80.0, 80.0, 0.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(10, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="GameObject" type="Control" parent="DailyRewardAdLayer/Panel/Content" unique_id=2135539189]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -303.3
+offset_top = -97.5
+offset_right = 303.3
+offset_bottom = 39.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1293563584350354942",
+"n": "GameObject",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 29.0, 606.6, 137.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 29),
+"size": Vector2(606.6, 137)
+}
+
+[node name="WatchAdsBtn" type="Button" parent="DailyRewardAdLayer/Panel/Content/GameObject" unique_id=1012713509]
+layout_mode = 0
+offset_left = 77.611694
+offset_right = 528.9883
+offset_bottom = 140.0
+pivot_offset_ratio = Vector2(0.5, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tr7wx")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_16dux")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_j4k1e")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_ur27s")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_cm8bn")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_xy4a8")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_r1jbv")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_o2bti")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_nki3u")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_rf6en")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_dqgfm")
+flat = true
+script = ExtResource("1_0yac2")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "1339644751495733574",
+"tr": 1.0
+},
+"id": "1339644751495733574",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 0.73,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_8",
+"t": 1.0
+},
+"n": "WatchAdsBtn",
+"r": [0.0, 1.0, 0.0, 1.0, 303.3, -140.0, 451.3766, 140.0, 0.5, 0.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(303.3, -140),
+"size": Vector2(451.3766, 140)
+}
+
+[node name="image" type="Control" parent="DailyRewardAdLayer/Panel/Content/GameObject/WatchAdsBtn" unique_id=1165769428]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(816, 767, 204, 100)
+border = Vector4(40, 0, 40, 0)
+border_scale = 1.36986301369863
+kind = 1
+preserve_aspect = true
+pivot = Vector2(0.5, 0)
+fill_method = 4
+
+[node name="Out" type="Label" parent="DailyRewardAdLayer/Panel/Content/GameObject/WatchAdsBtn" unique_id=2103092685]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 70.0
+offset_top = 10.0
+offset_right = -50.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wsdjm")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Watch Clip"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "7459961522659636903",
+"n": "Out",
+"r": [0.0, 0.0, 1.0, 1.0, 10.0, 5.0, -120.0, -30.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Watch Clip",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(10, 5),
+"size": Vector2(-120, -30)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Watch Clip",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="DailyRewardAdLayer/Panel/Content/GameObject/WatchAdsBtn" unique_id=2057904005]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -78.0
+offset_top = -29.0
+offset_right = 27.510002
+offset_bottom = 76.5057
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("11_lveua")
+region = Rect2(1792, 0, 256, 256)
+pivot = Vector2(0, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9143920295785258158",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_7",
+"t": 0.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, -78.0, 29.0, 105.51, 105.5057, 0.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0, 1),
+"pos": Vector2(-78, 29),
+"size": Vector2(105.51, 105.5057)
+}
+
+[node name="ClaimFreeBtn" type="Button" parent="DailyRewardAdLayer/Panel/Content/GameObject" unique_id=515576818]
+visible = false
+layout_mode = 0
+offset_left = 77.611694
+offset_right = 528.9883
+offset_bottom = 140.0
+pivot_offset_ratio = Vector2(0.5, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ey7gw")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_12b8l")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_q28a8")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_dt7kf")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_dtqk0")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_5lhu7")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_8npc4")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_lr01e")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_3fory")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ci75y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lwfuu")
+flat = true
+script = ExtResource("1_0yac2")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "6897215301846292973",
+"tr": 1.0
+},
+"id": "6897215301846292973",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 0.73,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_8",
+"t": 1.0
+},
+"n": "ClaimFreeBtn",
+"r": [0.0, 1.0, 0.0, 1.0, 303.3, -140.0, 451.3766, 140.0, 0.5, 0.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(303.3, -140),
+"size": Vector2(451.3766, 140)
+}
+
+[node name="image" type="Control" parent="DailyRewardAdLayer/Panel/Content/GameObject/ClaimFreeBtn" unique_id=2126643100]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+tex = ExtResource("8_8olaq")
+region = Rect2(816, 767, 204, 100)
+border = Vector4(40, 0, 40, 0)
+border_scale = 1.36986301369863
+kind = 1
+preserve_aspect = true
+pivot = Vector2(0.5, 0)
+fill_method = 4
+
+[node name="Out" type="Label" parent="DailyRewardAdLayer/Panel/Content/GameObject/ClaimFreeBtn" unique_id=1757110547]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 70.0
+offset_top = 10.0
+offset_right = -50.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pun8e")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 49
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Claim reward"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "3729293035626265759",
+"n": "Out",
+"r": [0.0, 0.0, 1.0, 1.0, 10.0, 5.0, -120.0, -30.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 49.35,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Claim reward",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(10, 5),
+"size": Vector2(-120, -30)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 49.35,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Claim reward",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="DailyRewardAdLayer/Panel/Content/GameObject/ClaimFreeBtn" unique_id=1170391528]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -486.88
+offset_top = -31.7841
+offset_right = -381.37
+offset_bottom = 73.7216
+mouse_filter = 1
+script = ExtResource("2_npvd4")
+tex = ExtResource("11_lveua")
+region = Rect2(1792, 0, 256, 256)
+pivot = Vector2(0, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "4667441936266474370",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_7",
+"t": 0.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, -486.88, 31.7841, 105.51, 105.5057, 0.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0, 1),
+"pos": Vector2(-486.88, 31.7841),
+"size": Vector2(105.51, 105.5057)
+}
+
+[node name="FullAdsBtn" type="Button" parent="DailyRewardAdLayer/Panel/Content/GameObject" unique_id=616735384]
+visible = false
+layout_mode = 0
+offset_left = 77.611694
+offset_right = 528.9883
+offset_bottom = 140.0
+pivot_offset_ratio = Vector2(0.5, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ktcat")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_8yg2w")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4rsrw")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_uktt4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_h31fx")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_fyudk")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_r24x4")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_it2lw")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_yrkga")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_kuann")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_aw7q0")
+flat = true
+script = ExtResource("1_0yac2")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "2382194424614418942",
+"tr": 1.0
+},
+"id": "2382194424614418942",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 0.73,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_74",
+"t": 1.0
+},
+"n": "FullAdsBtn",
+"r": [0.0, 1.0, 0.0, 1.0, 303.3, -140.0, 451.3766, 140.0, 0.5, 0.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(303.3, -140),
+"size": Vector2(451.3766, 140)
+}
+
+[node name="image" type="Control" parent="DailyRewardAdLayer/Panel/Content/GameObject/FullAdsBtn" unique_id=1750528911]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_npvd4")
+tex = ExtResource("10_6gdri")
+region = Rect2(383, 1555, 380, 168)
+border = Vector4(192, 88, 188, 80)
+border_scale = 1.36986301369863
+kind = 1
+preserve_aspect = true
+pivot = Vector2(0.5, 0)
+fill_method = 4
+
+[node name="Out" type="Label" parent="DailyRewardAdLayer/Panel/Content/GameObject/FullAdsBtn" unique_id=1491687002]
+material = SubResource("ShaderMaterial_pgrrh")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 70.0
+offset_top = 10.0
+offset_right = -50.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_rkcm2")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Watch Clip"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "5137152190781128690",
+"n": "Out",
+"r": [0.0, 0.0, 1.0, 1.0, 10.0, 5.0, -120.0, -30.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Gray",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Watch Clip",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(10, 5),
+"size": Vector2(-120, -30)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Gray",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Watch Clip",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}

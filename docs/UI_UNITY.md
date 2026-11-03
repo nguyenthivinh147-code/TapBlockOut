@@ -14,12 +14,13 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
   - `_assets.json`: ScriptableObject nhỏ, ví dụ `RewardItemSO`, `VersionDataSO`.
 - Texture copy sang `assets/ui/cc/`. File `.import` mang `process/size_limit` bằng cỡ tối đa Android mà Unity đặt (ví dụ `light1.png` 256), nên trên máy thật ảnh có cùng độ phân giải với Unity.
 - Chạy lại: `node tools/unity_ui_export.mjs`, rồi để editor tự import (hoặc `--import` khi editor đóng). Không sửa tay file trong `data/ui_unity/` và `assets/ui/cc/`.
+- Mỗi layout được bake thành scene node `scenes/unity/<Prefab>.tscn` (`tools/bake_unity_ui.gd`); game dựng từ scene này, không từ JSON. Bake lại sau mỗi lần xuất (ghi đè chỉnh sửa trong editor). Xem `docs/UI_NODES.md`.
 - Xem cây một prefab: `node tools/unity_ui_tree.mjs PopupOkLayer --all` in đường dẫn UView, anchor, kích thước, sprite, chữ, script và field.
 - Bảng sprite có nhãn: `tools/godot.sh --path . --resolution 1600x1600 -s res://tools/unity_sprite_sheet.gd -- --filter=Maincenter`, ảnh ra `tests/shots/sprites.png`.
 
 ## Tỉ lệ co và đơn vị
 
-- `UnityUI.build()` tạo node `Canvas`, co theo `CustomCanvasScaler`: reference 886×1920; khớp chiều cao khi rộng/cao > 0.45, ngược lại khớp chiều rộng. Ở 720×1280, 1 đơn vị Unity bằng 0.667 px; ở 720×1560, bằng 0.8125 px.
+- `UnityUI.build()` dùng node `Canvas` của layer (có sẵn trong scene màn, hoặc instance `scenes/unity/<Prefab>.tscn`), co theo `CustomCanvasScaler`: reference 886×1920; khớp chiều cao khi rộng/cao > 0.45, ngược lại khớp chiều rộng. Ở 720×1280, 1 đơn vị Unity bằng 0.667 px; ở 720×1560, bằng 0.8125 px.
 - Mọi số trong code (vị trí, kích thước, cỡ chữ, viền) là đơn vị Unity, đọc thẳng từ prefab.
 - RectTransform chuyển sang anchor/offset của Godot (`UnityUI.apply_rect`, meta `u_rect`). Pivot dùng `pivot_offset_ratio`.
 

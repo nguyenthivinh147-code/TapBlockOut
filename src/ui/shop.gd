@@ -3,6 +3,10 @@ extends Control
 ## Thân màn là ShopCashLayer của color-cube-match-puzzle (unity_ui.gd): ScrollRect với thẻ Remove Ads, các thẻ gói
 ## (Starter, Level, Rescue), tiêu đề Gold, gói lớn và lưới gold (FreeGoldPack là video gold mỗi ngày của game).
 ## Thanh trên, thanh dưới dùng chung với Home (HubTop, HubNav) đè lên trên như CurrencyLayer, BottomBarLayer của Unity.
+## scenes/shop.tscn giữ layer đã chỉnh cho game: nền gradient thay UIGradient của "BG (2)" (_topColor 485A98,
+## _bottomColor 3C4988), ExitBtn và các thẻ không dùng ẩn, Viewport cắt theo rect, rect chữ thẻ Remove Ads và nút
+## video; cùng Toast, khung Hub. Script điền chữ, giá, món theo SKU, thẻ preview, đặt các giá trị trùng mặc định của
+## Godot (_defaults); HubTop, HubNav dựng lúc chạy.
 ## setup({source}); signal closed({bought: bool, action?}); action: shop, profile, settings, lives, ranking.
 
 signal closed(result: Variant)
@@ -32,9 +36,6 @@ const FADE_IN := 0.3
 const GOLD_ICONS := ["Gold1", "Gold2", "Gold3", "Gold4", "Gold5"]
 const HEART_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_15"
 const HEART_INF_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_16"
-## UIGradient on "BG (2)" (_topColor, _bottomColor).
-const BG_TOP := Color(0.28235295, 0.3529412, 0.59607846)
-const BG_BOTTOM := Color(0.23529413, 0.28627452, 0.53333336)
 const BOOSTERS := ["hint", "move", "smash"]
 ## ShopProductSetup: rewardPerRow 3, rows 104 high, VerticalLayoutGroup spacing 20, HorizontalLayoutGroup spacing 2.
 const PER_ROW := 3
@@ -75,34 +76,22 @@ func setup(args: Dictionary) -> void:
 
 
 func _build() -> void:
-	for c in get_children():
-		c.queue_free()
 	buy_buttons.clear()
 	price_labels.clear()
 	theme = ThemeKit.make_theme()
+	# The layer as the shop shows it is saved in scenes/shop.tscn (see the header), with Toast and the Hub
+	# containers; this fills texts, prices and items. Prefab nodes keep their Unity names in the scene (an
+	# instanced scene's nodes cannot be renamed), so renames happen here.
 	ui = UnityUI.build(self, LAYER, {"reveal": false})
-	_gradient_bg()
-	# The shared bottom bar replaces the exit button (closeButton hidden when showBottomBar).
-	ui.show("GameObject/GameObject/ExitBtn", false)
 	_fit_panel()
-	# Builder gap: a Mask inside the Viewport's Mask does not clip in Godot (nested clip_children), so the
-	# rectangular Viewport mask clips by rect and the cards' BlurredBorder masks work.
-	var vp: Control = ui.node(SCROLL + "/Viewport")
-	vp.clip_children = CanvasItem.CLIP_CHILDREN_DISABLED
-	vp.clip_contents = true
-	vp.call("set_color", Color(1, 1, 1, 0))  # showMaskGraphic off
+	_defaults()
 
 	var catalog: Array = Game.shop_catalog()
-	for t in ["/NoAdsTitle/Text (TMP)", "/BundleTitle/Text (TMP)", "/GoldTitle/Text (TMP)"]:
-		one_line(ui.label(C + t))
 	ui.text(C + "/NoAdsTitle/Text (TMP)", tr("shop_remove_ads"))
-	ui.show(C + "/Shop_RemoveAdsBundle", false)
 	_remove_ads_card()
 	ui.text(C + "/BundleTitle/Text (TMP)", tr("shop_section_other"))
 	for sku in PACK_CARDS:
 		_pack_card(str(PACK_CARDS[sku]), sku)
-	for p in ["BundleTasty", "BundleYummy", "SmallPack", "GreatPack", "EpicPack"]:
-		ui.show(C + "/" + p, false)
 	ui.text(C + "/GoldTitle/Text (TMP)", tr("shop_section_gold"))
 	_gold_cards(catalog)
 	_video_card()
@@ -113,14 +102,27 @@ func _build() -> void:
 	ui.relayout(C)
 	_fade_in()
 
-	toast_label = UnityKit.label(ui.node(""), "", Rect2(0, 0, 100, 100), 44.0, "ffffffff", "Baloo Outline - Black")
-	toast_label.name = "Toast"
+	toast_label = %Toast
 	toast_label.modulate.a = 0.0
 	_fit_panel()
 
 	_hub_bars()
 	if not resized.is_connected(_fit_panel):
 		resized.connect(_fit_panel)
+
+
+## Changes to the layer's nodes that set a Godot default value: the scene does not keep those as overrides of an
+## instanced scene's nodes, so they are made here.
+func _defaults() -> void:
+	# Builder gap: a Mask inside the Viewport's Mask does not clip in Godot (nested clip_children), so the
+	# rectangular Viewport mask clips by rect (and its graphic is clear) and the cards' BlurredBorder masks work.
+	ui.node(SCROLL + "/Viewport").clip_children = CanvasItem.CLIP_CHILDREN_DISABLED
+	for t in ["/NoAdsTitle/Text (TMP)", "/BundleTitle/Text (TMP)", "/GoldTitle/Text (TMP)"]:
+		one_line(ui.label(C + t))
+	# One line like "10,000" in the prefab: bigger amounts grow past the rect instead of wrapping.
+	ui.label(C + "/Shop_GoldBigPack/GoldQuantityTxt").autowrap_mode = TextServer.AUTOWRAP_OFF
+	# RestorePurchase is hidden in the prefab (see _restore_row).
+	ui.show(C + "/RestorePurchase", true)
 
 
 func _fit_panel() -> void:
@@ -135,46 +137,24 @@ func _fit_panel() -> void:
 
 
 ## HubTop and HubNav over the layer, like Home (CurrencyLayer and BottomBarLayer sit over ShopCashLayer in Unity).
+## The Hub VBoxContainer and its HubMargin are nodes of the scene; the bars are built here.
 func _hub_bars() -> void:
-	var page := VBoxContainer.new()
-	page.name = "Hub"
-	page.set_anchors_preset(Control.PRESET_FULL_RECT)
-	page.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	page.add_theme_constant_override("separation", 0)
-	add_child(page)
-	var margin := MarginContainer.new()
-	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_theme_constant_override("margin_left", 20)
-	margin.add_theme_constant_override("margin_right", 20)
-	margin.add_theme_constant_override("margin_top", 40)
-	page.add_child(margin)
-	var top := HubTop.new()
+	var page: Control = %Hub
+	# UnityUI.build moves the layer's Canvas above the screen's other children: the bars go back on top.
+	move_child(page, -1)
+	var top: HubTop = HubTop.create()
+	top.set_meta("u_rt", true)
 	top.hide_side_buttons()
 	top.action.connect(_on_hub_action)
 	top.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	margin.add_child(top)
+	%HubMargin.add_child(top)
 	coins_label = top.gold_label
-	var nav := HubNav.new("shop")
+	var nav: HubNav = HubNav.create("shop")
+	nav.set_meta("u_rt", true)
 	nav.tab.connect(_on_tab)
 	page.add_child(nav)
 	nav.refresh()
 	close_button = nav.home_btn
-
-
-## Builder gap: UIGradient (vertex colours bottom -> top) is not drawn; a gradient texture stands in for it.
-func _gradient_bg() -> void:
-	var g := Gradient.new()
-	g.set_color(0, BG_TOP)
-	g.set_color(1, BG_BOTTOM)
-	var tex := GradientTexture2D.new()
-	tex.gradient = g
-	tex.fill_from = Vector2(0, 0)
-	tex.fill_to = Vector2(0, 1)
-	tex.width = 4
-	tex.height = 256
-	ui.texture("BG (2)", tex)
-	ui.image("BG (2)").call("set_color", Color.WHITE)
 
 
 func _fade_in() -> void:
@@ -210,14 +190,7 @@ func _anchor(c: Control, amin: Vector2, amax: Vector2, pos: Vector2, sz: Vector2
 func _remove_ads_card() -> void:
 	var p := C + "/Shop_RemoveAds"
 	ui.text(p + "/PackName", tr("shop_remove_ads"))
-	# One game sentence instead of three short lines: the description takes the rect of all three.
-	ui.show(p + "/InterAdsTxt", false)
-	ui.show(p + "/BannerAdsTxt", false)
-	var d: Label = ui.node(p + "/Description")
-	var r: Dictionary = d.get_meta("u_rect")
-	r.pos = Vector2((r.pos as Vector2).x, -113.0)
-	r.size = Vector2((r.size as Vector2).x, 160.0)
-	UnityUI.apply_rect(d)
+	# One game sentence instead of three short lines: in the scene the description takes the rect of all three.
 	ui.text(p + "/Description", _pack_desc("remove_ads"))
 	_buy_button(p + "/Button_Purchase", "remove_ads")
 
@@ -225,9 +198,6 @@ func _remove_ads_card() -> void:
 func _pack_card(card: String, sku: String) -> void:
 	var p := C + "/" + card
 	ui.text(p + "/PackName", _pack_title(sku))
-	for x in ["/Image", "/SellBadge", "/BGPeriod", "/Button_Soldout"]:
-		if ui.has(p + x):
-			ui.show(p + x, false)
 	fill_items(ui.node(p + "/ItemContainer"), sku_items(sku))
 	_buy_button(p + "/Button_Purchase", sku)
 
@@ -261,8 +231,6 @@ func _gold_cards(catalog: Array) -> void:
 		var p := ""
 		if i == catalog.size() - 1 or i >= tiles.size():
 			p = C + "/Shop_GoldBigPack"
-			# One line like "10,000" in the prefab: bigger amounts grow past the rect instead of wrapping.
-			ui.label(p + "/GoldQuantityTxt").autowrap_mode = TextServer.AUTOWRAP_OFF
 			ui.text(p + "/GoldQuantityTxt", fmt_n0(int(e.gold)))
 		else:
 			p = C + "/SmallPack#2/" + str(tiles[i])
@@ -277,8 +245,7 @@ func _gold_cards(catalog: Array) -> void:
 			_sale_badge(ui.node(p), "-%d%%" % int(e.sale_percent))
 	# Weekend sale: the big pack's PopularTag ribbon carries the game's sale line.
 	ui.show(C + "/Shop_GoldBigPack/PopularTag", any_sale)
-	if any_sale:
-		ui.text(C + "/Shop_GoldBigPack/PopularTag/PopularTag", tr("shop_sale_weekend"))
+	ui.text(C + "/Shop_GoldBigPack/PopularTag/PopularTag", tr("shop_sale_weekend"))
 
 
 ## SellBadge of the pack cards (StarterPack/SellBadge), at the tile's top-left corner like on the cards.
@@ -286,6 +253,7 @@ func _sale_badge(parent: Control, text: String) -> void:
 	var s := UnityKit.spec(LAYER, C + "/StarterPack/SellBadge")
 	s.a = true
 	var v: RefCounted = UnityKit.add(parent, s, Rect2(-22, -26, 100, 100))
+	v.root.set_meta("u_rt", true)
 	v.text("SellBadgeTxt", text)
 
 
@@ -294,18 +262,10 @@ func _video_card() -> void:
 	var p := C + "/SmallPack#2/FreeGoldPack"
 	ui.node(p).name = "AdsDaily"
 	ui.text(p + "/GoldQuantity", fmt_n0(int(Config.ECON.shop_video_coins)))
-	ui.show(p + "/Button_Free", false)
-	ui.show(p + "/Button_Ads", true)
-	ui.show(p + "/Image", true)
 	video_button = ui.button(p + "/Button_Ads")
 	video_button.connect("clicked", watch_video)
-	# The game's "Watch video" is longer than Unity's "0/5": it moves right of the TV icon (icon right edge -46).
-	var bt: Label = ui.label(p + "/Button_Ads/Text (TMP)")
-	var br: Dictionary = bt.get_meta("u_rect")
-	br.pos = Vector2(24, (br.pos as Vector2).y)
-	br.size = Vector2(136, (br.size as Vector2).y)
-	UnityUI.apply_rect(bt)
-	UnityUI.set_text(bt, tr("ads_daily_watch"))
+	# The game's "Watch video" is longer than Unity's "0/5": the scene moves it right of the TV icon.
+	ui.text(p + "/Button_Ads/Text (TMP)", tr("ads_daily_watch"))
 	_video_text = ui.label(p + "/Image/Text (TMP)")
 	_refresh_video()
 	if Game.shop_videos_left() > 0:
@@ -324,7 +284,6 @@ func _refresh_video() -> void:
 ## RestorePurchase (iOS only in Unity); the game offers it on every platform.
 func _restore_row() -> void:
 	var p := C + "/RestorePurchase"
-	ui.show(p, true)
 	ui.text(p + "/Button/Text (TMP)", tr("shop_restore"))
 	restore_button = ui.button(p + "/Button")
 	restore_button.connect("clicked", restore)
@@ -401,6 +360,7 @@ static func fill_items(ic: Control, items: Array) -> void:
 			var s: Dictionary = specs[j]
 			var sz := Vector2(float(s.r[6]), float(s.r[7]))
 			var v: RefCounted = UnityKit.add(ic, s, Rect2(Vector2(x, y + (ROW_H - sz.y) * 0.5), sz))
+			v.root.set_meta("u_rt", true)
 			if j % 2 == 0:
 				_item_fill(v, row[j / 2])
 			x += sz.x + ITEM_GAP
@@ -445,6 +405,7 @@ func _add_preview_sections() -> void:
 	at = _preview_title(content, at, tr("shop_section_hearts"))
 	var grid := UnityKit.add(content, UnityKit.spec(LAYER, C + "/SmallPack#2"))
 	grid.root.name = "HeartPacks"
+	grid.root.set_meta("u_rt", true)
 	content.move_child(grid.root, at)
 	at += 1
 	for c in grid.root.get_children():
@@ -465,6 +426,7 @@ func _add_preview_sections() -> void:
 		s.a = true
 		var hv: RefCounted = UnityKit.add(content, s)
 		hv.root.name = "Helper%d" % i
+		hv.root.set_meta("u_rt", true)
 		content.move_child(hv.root, at)
 		at += 1
 		hv.text("PackName", tr(str(hp.title)))
@@ -482,6 +444,7 @@ func _add_preview_sections() -> void:
 		s.a = true
 		var v: RefCounted = UnityKit.add(content, s)
 		v.root.name = card + "Preview"
+		v.root.set_meta("u_rt", true)
 		content.move_child(v.root, at)
 		at += 1
 		v.text("PackName", tr(str(bd.title)))
@@ -491,6 +454,7 @@ func _add_preview_sections() -> void:
 
 func _preview_title(content: Control, at: int, text: String) -> int:
 	var v := UnityKit.add(content, UnityKit.spec(LAYER, C + "/BundleTitle"))
+	v.root.set_meta("u_rt", true)
 	one_line(v.label("Text (TMP)"))
 	v.text("Text (TMP)", text)
 	content.move_child(v.root, at)

@@ -1,10 +1,8 @@
 extends Control
 ## Khung bàn theo concept kẹo: bốn thanh capsule là bốn cổng, bốn ống góc hồng đỏ nằm dưới đầu thanh.
 ## BoardView gọi layout(board, cell) khi xếp lại, set_gate() và set_flash() khi cổng đổi.
+## Node `Frame` và các thanh, ống góc (ColorRect có shader) nằm sẵn trong scenes/board_view.tscn; script chỉ xếp chỗ.
 ## Mọi số hình học tính theo ô, đo từ `art/concepts/ref_board_size.png`; màu lấy từ `art/concepts/concept_candy_board_v5_stripe.png`.
-
-const BAR_SHADER := preload("res://src/ui/frame_bar.gdshader")
-const CORNER_SHADER := preload("res://src/ui/frame_corner.gdshader")
 
 const SIDES := ["up", "left", "right", "down"]
 ## axis: từ mép bàn tới đường giữa thanh; thick: bề dày; inset: từ mép ngoài khung tới đầu thanh.
@@ -65,25 +63,20 @@ var _spin: Dictionary = {}  # cạnh -> góc quay hiện tại của đoạn b�
 var _cell: float = 64.0
 
 
-func _init() -> void:
-	name = "Frame"
-	set_anchors_preset(Control.PRESET_FULL_RECT)
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+func _ready() -> void:
+	bind()
+
+
+## Finds the corner and bar parts of scenes/board_view.tscn (Corner_<key>, Bar_<side>, each with its own shader
+## material). Safe to call more than once.
+func bind() -> void:
+	if not _bars.is_empty():
+		return
 	for key in CORNERS:
-		_corners[key] = _make_part(CORNER_SHADER)
+		_corners[key] = get_node("Corner_" + key)
 	for side in SIDES:
-		_bars[side] = _make_part(BAR_SHADER)
+		_bars[side] = get_node("Bar_" + side)
 		_open[side] = 1.0
-
-
-func _make_part(shader: Shader) -> ColorRect:
-	var part := ColorRect.new()
-	part.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var m := ShaderMaterial.new()
-	m.shader = shader
-	part.material = m
-	add_child(part)
-	return part
 
 
 ## Khung chiếm thêm bao nhiêu ô mỗi phía quanh bàn (lấy phía lớn hơn của mỗi trục để bàn vẫn ở giữa).

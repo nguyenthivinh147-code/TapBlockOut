@@ -1,0 +1,1338 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="1_8ygst"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup2.png" id="2_cxfxu"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="3_ld4to"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="4_wt6pf"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="5_aar4b"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="6_0rubn"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="7_njur5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4d6u"]
+shader = ExtResource("4_wt6pf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/underlay_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x8ya5"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("5_aar4b")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_muin4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rt6k2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nc2vw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_845de"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_611nx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xq5eq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0fji0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qx5uj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_adory"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2d48t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sbqi3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dfqr5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n5y73"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0c7rf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wyq1x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5wjvw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sytlg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xgk0a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cnw3c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u4eug"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cnc87"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s2y8f"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
+shader = ExtResource("4_wt6pf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_teyff"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("4_wt6pf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w7bui"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=1120516618]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "PopupRatingLayer"
+
+[node name="PopupRatingLayer" type="Control" parent="." unique_id=2134727432]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [{
+"arg": true,
+"method": "set_enabled",
+"target": "3386221321213642454"
+}],
+"OnHideLayer": [],
+"OnHideLayout": [{
+"arg": false,
+"method": "set_enabled",
+"target": "3386221321213642454"
+}],
+"OnShowLayer": [],
+"breakEnable": "0",
+"button": {
+"node": "8113718371564240341"
+},
+"closeButtons": [{
+"node": "2750634203823560167"
+}],
+"debugOnOff": "0",
+"inAppReviewManager": {
+"node": "7219197735921211012"
+},
+"name": "PopupRatingUICoreLayer"
+}, {
+"OnCompleteAnim": [],
+"OnStartAnim": [],
+"dimCanvasGroup": {
+"node": "5227445294147618665"
+},
+"duration": "0.4",
+"easeType": "26",
+"name": "DialogueReveal",
+"panelRect": {
+"node": "5505950304007009561"
+}
+}, {
+"name": "InAppReviewManager"
+}],
+"id": "7219197735921211012",
+"n": "PopupRatingLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Dim" type="Control" parent="PopupRatingLayer" unique_id=891110478]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_8ygst")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"id": "5227445294147618665",
+"img": {
+"c": "000000cc",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Dim",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Panel" type="Control" parent="PopupRatingLayer" unique_id=1383280302]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -362.0
+offset_top = -326.55
+offset_right = 362.0
+offset_bottom = 326.55
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5505950304007009561",
+"n": "Panel",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 724.0, 653.1, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(724, 653.1)
+}
+
+[node name="Bg" type="Control" parent="PopupRatingLayer/Panel" unique_id=1251509567]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_8ygst")
+tex = ExtResource("2_cxfxu")
+region = Rect2(0, 0, 800, 800)
+border = Vector4(120, 120, 120, 120)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7015428857272264045",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Popup2",
+"t": 1.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="PopupRatingLayer/Panel" unique_id=1409411723]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -237.5966
+offset_top = -81.74
+offset_right = 237.5966
+offset_bottom = 81.74
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_8ygst")
+tex = ExtResource("3_ld4to")
+region = Rect2(384, 1332, 368, 108)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6846540274179373805",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 0.0, 475.1932, 163.48, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(475.1932, 163.48)
+}
+
+[node name="txtHeader" type="Label" parent="PopupRatingLayer/Panel/Image" unique_id=1853523813]
+material = SubResource("ShaderMaterial_g4d6u")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -227.7163
+offset_top = -52.0
+offset_right = 227.7163
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_x8ya5")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Rate us"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "4532371269527757320",
+"n": "txtHeader",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 455.4326, 104.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Rate us",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(455.4326, 104)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Rate us",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Star" type="Control" parent="PopupRatingLayer/Panel" unique_id=1459405763]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -310.0
+offset_top = -436.0
+offset_right = 310.0
+offset_bottom = -232.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_8ygst")
+tex = ExtResource("3_ld4to")
+region = Rect2(1166, 523, 188, 290)
+border = Vector4(50, 50, 50, 50)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "Rating",
+"on": false
+},
+"id": "3386221321213642454",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+"t": 1.0
+},
+"n": "Star",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 334.0, 620.0, 204.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 334),
+"size": Vector2(620, 204)
+}
+
+[node name="StarBase1" type="Control" parent="PopupRatingLayer/Panel/Star" unique_id=118501410]
+anchors_preset = 0
+offset_left = 8.0
+offset_top = 32.0
+offset_right = 148.0
+offset_bottom = 172.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_8ygst")
+tex = ExtResource("6_0rubn")
+region = Rect2(199, 678, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3346579898651389955",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_74",
+"t": 0.0
+},
+"n": "StarBase1",
+"r": [0.0, 1.0, 0.0, 1.0, 78.0, -102.0, 140.0, 140.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(78, -102),
+"size": Vector2(140, 140)
+}
+
+[node name="UIParticle" type="Control" parent="PopupRatingLayer/Panel/Star/StarBase1" unique_id=2118737363]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.0
+offset_top = 2.0
+offset_right = -1.0
+offset_bottom = 2.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"id": "2447758577406077263",
+"n": "UIParticle",
+"r": [0.5, 0.5, 0.5, 0.5, -1.0, -2.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-1, -2),
+"size": Vector2(0, 0)
+}
+
+[node name="StarFill1" type="Control" parent="PopupRatingLayer/Panel/Star/StarBase1" unique_id=53417572]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_8ygst")
+tex = ExtResource("6_0rubn")
+region = Rect2(0, 1198, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "295046907240715780",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_73",
+"t": 0.0
+},
+"n": "StarFill1",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="StarBase2" type="Control" parent="PopupRatingLayer/Panel/Star" unique_id=116037008]
+anchors_preset = 0
+offset_left = 124.0
+offset_top = 32.0
+offset_right = 264.0
+offset_bottom = 172.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_8ygst")
+tex = ExtResource("6_0rubn")
+region = Rect2(199, 678, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3960820773973631664",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_74",
+"t": 0.0
+},
+"n": "StarBase2",
+"r": [0.0, 1.0, 0.0, 1.0, 194.0, -102.0, 140.0, 140.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(194, -102),
+"size": Vector2(140, 140)
+}
+
+[node name="UIParticle" type="Control" parent="PopupRatingLayer/Panel/Star/StarBase2" unique_id=467728131]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 3.5
+offset_top = 2.0
+offset_right = 3.5
+offset_bottom = 2.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"id": "4371759856342097555",
+"n": "UIParticle",
+"r": [0.5, 0.5, 0.5, 0.5, 3.5, -2.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(3.5, -2),
+"size": Vector2(0, 0)
+}
+
+[node name="StarFill2" type="Control" parent="PopupRatingLayer/Panel/Star/StarBase2" unique_id=171126650]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_8ygst")
+tex = ExtResource("6_0rubn")
+region = Rect2(0, 1198, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7355607500348883632",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_73",
+"t": 0.0
+},
+"n": "StarFill2",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="StarBase3" type="Control" parent="PopupRatingLayer/Panel/Star" unique_id=1035187741]
+anchors_preset = 0
+offset_left = 240.0
+offset_top = 32.0
+offset_right = 380.0
+offset_bottom = 172.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_8ygst")
+tex = ExtResource("6_0rubn")
+region = Rect2(199, 678, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4891357838247673880",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_74",
+"t": 0.0
+},
+"n": "StarBase3",
+"r": [0.0, 1.0, 0.0, 1.0, 310.0, -102.0, 140.0, 140.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(310, -102),
+"size": Vector2(140, 140)
+}
+
+[node name="UIParticle" type="Control" parent="PopupRatingLayer/Panel/Star/StarBase3" unique_id=1179848164]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 1.0
+offset_top = 2.0
+offset_right = 1.0
+offset_bottom = 2.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"id": "4945347862920166909",
+"n": "UIParticle",
+"r": [0.5, 0.5, 0.5, 0.5, 1.0, -2.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(1, -2),
+"size": Vector2(0, 0)
+}
+
+[node name="StarFill3" type="Control" parent="PopupRatingLayer/Panel/Star/StarBase3" unique_id=326047980]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_8ygst")
+tex = ExtResource("6_0rubn")
+region = Rect2(0, 1198, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1569497214449419067",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_73",
+"t": 0.0
+},
+"n": "StarFill3",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="StarBase4" type="Control" parent="PopupRatingLayer/Panel/Star" unique_id=963063062]
+anchors_preset = 0
+offset_left = 356.0
+offset_top = 32.0
+offset_right = 496.0
+offset_bottom = 172.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_8ygst")
+tex = ExtResource("6_0rubn")
+region = Rect2(199, 678, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4334055439764866941",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_74",
+"t": 0.0
+},
+"n": "StarBase4",
+"r": [0.0, 1.0, 0.0, 1.0, 426.0, -102.0, 140.0, 140.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(426, -102),
+"size": Vector2(140, 140)
+}
+
+[node name="UIParticle" type="Control" parent="PopupRatingLayer/Panel/Star/StarBase4" unique_id=1148351738]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.5
+offset_top = 2.0
+offset_right = -1.5
+offset_bottom = 2.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"id": "3063908997086614846",
+"n": "UIParticle",
+"r": [0.5, 0.5, 0.5, 0.5, -1.5, -2.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-1.5, -2),
+"size": Vector2(0, 0)
+}
+
+[node name="StarFill4" type="Control" parent="PopupRatingLayer/Panel/Star/StarBase4" unique_id=1051979239]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_8ygst")
+tex = ExtResource("6_0rubn")
+region = Rect2(0, 1198, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2638819104844178100",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_73",
+"t": 0.0
+},
+"n": "StarFill4",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="StarBase5" type="Control" parent="PopupRatingLayer/Panel/Star" unique_id=1505924488]
+anchors_preset = 0
+offset_left = 472.0
+offset_top = 32.0
+offset_right = 612.0
+offset_bottom = 172.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_8ygst")
+tex = ExtResource("6_0rubn")
+region = Rect2(199, 678, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9189019843991362219",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_74",
+"t": 0.0
+},
+"n": "StarBase5",
+"r": [0.0, 1.0, 0.0, 1.0, 542.0, -102.0, 140.0, 140.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(542, -102),
+"size": Vector2(140, 140)
+}
+
+[node name="UIParticle" type="Control" parent="PopupRatingLayer/Panel/Star/StarBase5" unique_id=2139977776]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 0.1
+offset_top = 2.0
+offset_right = 0.1
+offset_bottom = 2.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"id": "116369283124374752",
+"n": "UIParticle",
+"r": [0.5, 0.5, 0.5, 0.5, 0.1, -2.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0.1, -2),
+"size": Vector2(0, 0)
+}
+
+[node name="StarFill5" type="Control" parent="PopupRatingLayer/Panel/Star/StarBase5" unique_id=644736831]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_8ygst")
+tex = ExtResource("6_0rubn")
+region = Rect2(0, 1198, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "240142603455809755",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_73",
+"t": 0.0
+},
+"n": "StarFill5",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Top" type="Control" parent="PopupRatingLayer/Panel" unique_id=1821608571]
+anchors_preset = 0
+anchor_right = 1.0
+offset_bottom = 130.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7827310412597054464",
+"n": "Top",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -65.0, 0.0, 130.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -65),
+"size": Vector2(0, 130)
+}
+
+[node name="btnTurnOff" type="Button" parent="PopupRatingLayer/Panel/Top" unique_id=2029974965]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_bottom = 80.0
+pivot_offset_ratio = Vector2(1, 0)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_muin4")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_rt6k2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_nc2vw")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_845de")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_611nx")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_xq5eq")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_0fji0")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_qx5uj")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_adory")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_2d48t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_sbqi3")
+flat = true
+script = ExtResource("7_njur5")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "2750634203823560167",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "2750634203823560167"
+},
+"name": "NavigationBackButton"
+}],
+"id": "2750634203823560167",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+"t": 0.0
+},
+"n": "btnTurnOff",
+"r": [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 80.0, 80.0, 1.0, 1.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="image" type="Control" parent="PopupRatingLayer/Panel/Top/btnTurnOff" unique_id=1849235801]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_8ygst")
+tex = ExtResource("3_ld4to")
+region = Rect2(300, 516, 96, 96)
+pivot = Vector2(1, 1)
+fill_method = 4
+
+[node name="Ok" type="Button" parent="PopupRatingLayer/Panel" unique_id=1415671335]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -188.0
+offset_right = 140.0
+offset_bottom = -68.0
+pivot_offset_ratio = Vector2(0.5, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dfqr5")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_n5y73")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_0c7rf")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_wyq1x")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_5wjvw")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_sytlg")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_xgk0a")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_cnw3c")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_u4eug")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_cnc87")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_s2y8f")
+flat = true
+script = ExtResource("7_njur5")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "8113718371564240341",
+"tr": 1.0
+},
+"id": "8113718371564240341",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "Ok",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 68.0, 280.0, 120.0, 0.5, 0.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 68),
+"size": Vector2(280, 120)
+}
+
+[node name="image" type="Control" parent="PopupRatingLayer/Panel/Ok" unique_id=1659763315]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_8ygst")
+tex = ExtResource("3_ld4to")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+pivot = Vector2(0.5, 0)
+fill_method = 4
+
+[node name="Out" type="Label" parent="PopupRatingLayer/Panel/Ok" unique_id=475469923]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_teyff")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Yes"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "5814779943950924207",
+"n": "Out",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, 0.0, -8.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Yes",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(0, -8)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Yes",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupRatingLayer/Panel" unique_id=987032827]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -303.2699
+offset_top = -269.0658
+offset_right = 303.2699
+offset_bottom = -95.9342
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_w7bui")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(0.07058824, 0.42745098, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Please rate and help us get better!"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "9142881438627692719",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 182.5, 606.5398, 173.1316, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "126dccff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Please rate and help us get better!",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 182.5),
+"size": Vector2(606.5398, 173.1316)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "126dccff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Please rate and help us get better!",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}

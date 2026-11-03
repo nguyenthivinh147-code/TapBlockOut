@@ -1,9 +1,9 @@
 extends Control
 ## Tester menu, opened by 10 quick taps on the version in Settings or by F1 (main.gd). No prefab: PopupOkLayer frame
-## (UnityKit). With Config.account_tool (debug builds) it edits the account: gold, level and booster counts in
-## copies of PopupEditNameLayer's input field, Save, and Delete account (tap twice). Mediation debugger is always
-## there. setup(args: Dictionary); signal closed(result): null when closed, {"action": "changed"} after Save,
-## {"action": "wiped"} after Delete account; the opener rebuilds its screen for both.
+## (UnityKit) in scenes/tester_menu.tscn. With Config.account_tool (debug builds) it edits the account: gold, level
+## and booster counts in copies of PopupEditNameLayer's input field, Save, and Delete account (tap twice), built here.
+## Mediation debugger is always there. setup(args: Dictionary); signal closed(result): null when closed,
+## {"action": "changed"} after Save, {"action": "wiped"} after Delete account; the opener rebuilds its screen for both.
 
 signal closed(result: Variant)
 
@@ -66,14 +66,21 @@ func _build() -> void:
 	add_to_group(GROUP)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	var account := Config.account_tool()
-	ui = UnityKit.popup(self, tr("settings_tester_title"), SIZE_FULL if account else SIZE_SMALL, close)
+	# The PopupOkLayer frame (description, well and button row hidden) and DebuggerButton are in
+	# scenes/tester_menu.tscn; the popup size, the button's place and the account rows follow the build.
+	ui = UnityKit.frame(self, tr("settings_tester_title"), close)
+	var size := SIZE_FULL if account else SIZE_SMALL
+	UnityKit.set_size(ui.node("Panel"), size)
+	UnityKit.set_size(ui.node("Panel/Bg"), size)
 	var content: Control = ui.node("Panel/Content")
 	if account:
 		_build_account(content)
-	var b: RefCounted = UnityKit.button(content, "blue", tr("settings_tester_debugger"),
-		DEBUG_BTN if account else DEBUG_BTN_SMALL, _on_debugger)
-	debugger_button = b.root as Button
-	debugger_button.name = "DebuggerButton"
+	debugger_button = %DebuggerButton
+	# Last in Content, after the account rows, as when it was built.
+	content.move_child(debugger_button, -1)
+	UnityKit.place(debugger_button, DEBUG_BTN if account else DEBUG_BTN_SMALL)
+	UnityUI.set_text(debugger_button.get_node("Out") as Label, tr("settings_tester_debugger"))
+	debugger_button.connect("clicked", _on_debugger)
 
 
 ## A cream well of label + number field rows, then Save (green) and Delete account (red).

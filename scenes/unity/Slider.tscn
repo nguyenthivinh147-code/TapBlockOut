@@ -1,0 +1,219 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="1_3v81i"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="2_q31bh"]
+
+[node name="Canvas" type="Control" unique_id=465265458]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "Slider"
+
+[node name="Slider" type="Control" parent="." unique_id=1021210127]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = 197.0
+offset_right = 300.0
+offset_bottom = 277.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6109928512297137465",
+"n": "Slider",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -237.0, 600.0, 80.0, 0.5, 0.5],
+"slider": {
+"dir": 0.0,
+"fill": "1055796078134408685",
+"handle": "2997341410301354593",
+"inter": false,
+"max": 1.0,
+"min": 0.0,
+"value": 0.11,
+"whole": false
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -237),
+"size": Vector2(600, 80)
+}
+
+[node name="Background" type="Control" parent="Slider" unique_id=1241795637]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_3v81i")
+tex = ExtResource("2_q31bh")
+region = Rect2(1453, 1666, 128, 92)
+border = Vector4(43, 0, 41, 0)
+border_scale = 0.9090909090909091
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6159021087723854739",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.1,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_60",
+"t": 1.0
+},
+"n": "Background",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Fill Area" type="Control" parent="Slider" unique_id=856684967]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.64005
+offset_top = 4.4
+offset_right = -4.12005
+offset_bottom = -6.36
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "8806500678376450195",
+"n": "Fill Area",
+"r": [0.0, 0.0, 1.0, 1.0, -0.24, 0.98, -7.7601, -10.76, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-0.24, 0.98),
+"size": Vector2(-7.7601, -10.76)
+}
+
+[node name="Fill" type="Control" parent="Slider/Fill Area" unique_id=2079437844]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_3v81i")
+tex = ExtResource("2_q31bh")
+region = Rect2(1486, 1783, 92, 68)
+border = Vector4(41, 0, 41, 0)
+border_scale = 0.9090909090909091
+kind = 1
+metadata/u = {
+"a": true,
+"id": "1055796078134408685",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 0.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.1,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_61",
+"t": 1.0
+},
+"n": "Fill",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Handle Slide Area" type="Control" parent="Slider" unique_id=209926490]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "511653947599562809",
+"n": "Handle Slide Area",
+"r": [0.0, 0.0, 1.0, 1.0, 5.0, 0.0, -10.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(5, 0),
+"size": Vector2(-10, 0)
+}
+
+[node name="Handle" type="Control" parent="Slider/Handle Slide Area" unique_id=133732909]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -76.5
+offset_top = -2.0
+offset_right = 3.5
+offset_bottom = -2.0
+pivot_offset_ratio = Vector2(1, 0.5)
+mouse_filter = 2
+script = ExtResource("1_3v81i")
+tex = ExtResource("2_q31bh")
+region = Rect2(82, 1445, 128, 128)
+pivot = Vector2(1, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2997341410301354593",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_62",
+"t": 0.0
+},
+"n": "Handle",
+"r": [0.0, 0.0, 0.0, 0.0, 3.5, 2.0, 80.0, 0.0, 1.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(1, 0.5),
+"pos": Vector2(3.5, 2),
+"size": Vector2(80, 0)
+}

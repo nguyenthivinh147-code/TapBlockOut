@@ -1,0 +1,4631 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="1_n0ib6"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_WinLose_Atlas.png" id="2_dcvns"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/fx_1.png" id="3_t0v1i"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/winbg.png" id="4_wkyrl"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="5_kxo8o"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="6_v2fdu"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Leaderboard_Atlas.png" id="7_seou7"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Av_02.png" id="8_vb4r3"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="9_613og"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="10_blgu0"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_MysteryContainer.png" id="11_fl68m"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="12_2f21n"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fphxa"]
+shader = ExtResource("5_kxo8o")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/underlay_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_adtn3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_51gwy"]
+base_font = ExtResource("6_v2fdu")
+spacing_glyph = -2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("5_kxo8o")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1yjut"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("6_v2fdu")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_362jd"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
+shader = ExtResource("5_kxo8o")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.085714287
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.491428570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yj00k"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_51n3p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0i65p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tlx28"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x73sc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_662jh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fg2no"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p5gey"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hjtfr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_62i26"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ooegh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lm2np"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qejyp"]
+shader = ExtResource("5_kxo8o")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ildq"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2d730"]
+base_font = ExtResource("6_v2fdu")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i7m0w"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2h1jq"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j5nr6"]
+shader = ExtResource("5_kxo8o")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.085714287
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.491428570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ggodn"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ix7ar"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ugbt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kh73j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v5rr4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_175cg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e83fd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0pt3u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xpgyc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2qpau"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2apsa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ljlhg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vwunx"]
+shader = ExtResource("5_kxo8o")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.40392157, 0.14901961, 0.011764706, 1)
+shader_parameter/underlay_color = Color(0.24313726, 0.03137255, 0.03137255, 1)
+shader_parameter/face_edge = 0.45
+shader_parameter/outline_half = 0.12
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.2925
+shader_parameter/underlay_offset = Vector2(0, -0.84)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mf3eg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oskr3"]
+shader = ExtResource("5_kxo8o")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.40392157, 0.14901961, 0.011764706, 1)
+shader_parameter/underlay_color = Color(0.24313726, 0.03137255, 0.03137255, 1)
+shader_parameter/face_edge = 0.45
+shader_parameter/outline_half = 0.12
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.2925
+shader_parameter/underlay_offset = Vector2(0, -0.84)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3hyaw"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ql08c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kn2uk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4r0ro"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_14ena"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_af6tt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_we1i8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ph56q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5e0bi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1rroj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k7qpy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dmxsi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k4sw3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hp54o"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h3mui"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_utljd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_56bo8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wsot3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h7jk0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_557ax"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1fpsk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5sx7b"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_arj5n"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gapda"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_emeax"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yi71g"]
+shader = ExtResource("5_kxo8o")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uqmm3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4qxhn"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=1220619338]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "WinPanel"
+
+[node name="WinPanel" type="Control" parent="." unique_id=2101116660]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnClaimReward": [],
+"_leaderboardUserCard": {
+"node": "1171023310710632622"
+},
+"_levelShowAdsBtn": "4",
+"adsCallbackTimeout": "7",
+"canvasGroup": {
+"node": "3562333777916183687"
+},
+"claimButton": {
+"node": "6380610255338462664"
+},
+"claimTxts": [{
+"node": "2453229551950804635"
+}, {
+"node": "8648473731239980926"
+}],
+"continueButton": {
+"node": "1624971037030105769"
+},
+"freeButton": {
+"node": "1896448471903350067"
+},
+"handleSlider": {
+"node": "7017849916091399594"
+},
+"hideAnimDuration": "0.4",
+"levelConfigSO": {
+"asset": "LevelConfigSO.asset"
+},
+"levelLoopConfigSO": {
+"asset": "LevelLoopConfig.asset"
+},
+"mechanicDescriptionSO": {
+"asset": "MechanicDescriptionSO.asset"
+},
+"mechanicProgressGroup": {
+"node": "655672643472329570"
+},
+"name": "VictoryPanel",
+"nextMechanicImage": {
+"node": "6703206104915816289"
+},
+"panelRect": {
+"node": "3562333777916183687"
+},
+"progressAnimDuration": "0.8",
+"progressSlider": {
+"node": "3878425241648546003"
+},
+"progressText": {
+"node": "864670383544369285"
+},
+"rankPointImage": {
+"node": "1115530081318512960"
+},
+"rewardPrefab": {
+"asset": "Reward.prefab"
+},
+"rewardsParent": {
+"node": "1963858567992476799"
+},
+"uiAnimationManager": {
+"node": "1889753722223203143"
+},
+"vfxWinGame": {
+"node": "509406172288762237"
+}
+}],
+"id": "3562333777916183687",
+"n": "WinPanel",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="WinPanel" type="Control" parent="WinPanel" unique_id=1250832270]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -443.0
+offset_top = -387.9
+offset_right = 443.0
+offset_bottom = 84.899994
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "974254281416510003",
+"lay": {
+"al": 7.0,
+"ch": false,
+"cw": false,
+"eh": true,
+"ew": true,
+"pad": [0.0, 0.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 95.7,
+"sw": false,
+"t": "v"
+},
+"n": "WinPanel",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 151.5, 886.0, 472.8, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 151.5),
+"size": Vector2(886, 472.8)
+}
+
+[node name="Panel" type="Control" parent="WinPanel/WinPanel" unique_id=1033676597]
+anchors_preset = 0
+offset_left = 69.0
+offset_right = 817.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6574447455987329330",
+"n": "Panel",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 748.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(443, 0),
+"size": Vector2(748, 0)
+}
+
+[node name="Left" type="Control" parent="WinPanel/WinPanel/Panel" unique_id=12839582]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -203.64455
+offset_top = -179.54456
+offset_right = -44.55545
+offset_bottom = -20.455452
+scale = Vector2(-1, 1)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "2276223011517919532",
+"n": "Left",
+"r": [0.5, 0.5, 0.5, 0.5, -124.1, 100.0, 159.0891, 159.0891, 0.5, 0.5],
+"s": [-1.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-124.1, 100),
+"size": Vector2(159.0891, 159.0891)
+}
+
+[node name="Image (2)" type="Control" parent="WinPanel/WinPanel/Panel/Left" unique_id=771105878]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 19.0
+offset_top = -125.6889
+offset_right = 231.0
+offset_bottom = 86.3111
+rotation = 0.22968534
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("2_dcvns")
+region = Rect2(411, 292, 200, 200)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"duration": "1",
+"infiniteLoop": "0",
+"loopCount": "2",
+"name": "CurveDrivenImageScaler",
+"playOnStart": "1",
+"rectTransform": null,
+"restartOnPlay": "1",
+"scaleXCurve": {
+"m_Curve": [{
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0",
+"value": "1",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0.33333334",
+"outSlope": "0",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.1661571",
+"value": "1.3495419",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.0122726755",
+"inWeight": "0.33333334",
+"outSlope": "-0.0122726755",
+"outWeight": "0.53379935",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.3173778",
+"value": "1.2268002",
+"weightedMode": "0"
+}, {
+"inSlope": "0.049838897",
+"inWeight": "0.33333334",
+"outSlope": "0.049838897",
+"outWeight": "0.7958985",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.4734508",
+"value": "1.3484242",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.018237649",
+"inWeight": "0.33333334",
+"outSlope": "-0.018237649",
+"outWeight": "0.48905605",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.62345076",
+"value": "1.2342842",
+"weightedMode": "0"
+}, {
+"inSlope": "0.62071234",
+"inWeight": "0.5109442",
+"outSlope": "0.62071234",
+"outWeight": "0.5113282",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.73452926",
+"value": "1.4231858",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.8092693",
+"inWeight": "0.47022066",
+"outSlope": "-0.8092693",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.8568666",
+"value": "1.4187576",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "1",
+"value": "1",
+"weightedMode": "0"
+}],
+"m_PostInfinity": "2",
+"m_PreInfinity": "2",
+"m_RotationOrder": "4",
+"serializedVersion": "2"
+},
+"scaleYCurve": {
+"m_Curve": [{
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0",
+"value": "1",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0.33333334",
+"outSlope": "0",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.17313907",
+"value": "0.7395138",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.016342577",
+"inWeight": "0.33333334",
+"outSlope": "-0.016342577",
+"outWeight": "0.5239429",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.32451236",
+"value": "0.8352353",
+"weightedMode": "0"
+}, {
+"inSlope": "0.03852009",
+"inWeight": "0.33333334",
+"outSlope": "0.03852009",
+"outWeight": "0.5485205",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.46627733",
+"value": "0.7396206",
+"weightedMode": "0"
+}, {
+"inSlope": "0.037352655",
+"inWeight": "0.33333334",
+"outSlope": "0.037352655",
+"outWeight": "0.5594521",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.6245123",
+"value": "0.82976955",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.92336184",
+"inWeight": "0.42850685",
+"outSlope": "-0.92336184",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.752136",
+"value": "0.6329972",
+"weightedMode": "0"
+}, {
+"inSlope": "0.5839286",
+"inWeight": "0.5505186",
+"outSlope": "0.5839286",
+"outWeight": "0.45332864",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.8599721",
+"value": "0.6320843",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "1",
+"value": "1",
+"weightedMode": "0"
+}],
+"m_PostInfinity": "2",
+"m_PreInfinity": "2",
+"m_RotationOrder": "4",
+"serializedVersion": "2"
+},
+"startOffset": "0.188"
+}],
+"id": "5632481920984342394",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_6",
+"t": 0.0
+},
+"n": "Image (2)",
+"r": [0.5, 0.5, 0.5, 0.5, 19.0, 19.6889, 212.0, 212.0, 0.0, 0.5],
+"z": -13.16
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(19, 19.6889),
+"size": Vector2(212, 212)
+}
+
+[node name="Image (1)" type="Control" parent="WinPanel/WinPanel/Panel/Left" unique_id=2111215117]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.7
+offset_top = -106.8
+offset_right = 118.3
+offset_bottom = 62.2
+rotation = 6.2404246
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("2_dcvns")
+region = Rect2(411, 292, 200, 200)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"duration": "1",
+"infiniteLoop": "0",
+"loopCount": "2",
+"name": "CurveDrivenImageScaler",
+"playOnStart": "1",
+"rectTransform": null,
+"restartOnPlay": "1",
+"scaleXCurve": {
+"m_Curve": [{
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0",
+"value": "1",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0.33333334",
+"outSlope": "0",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.1661571",
+"value": "1.3495419",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.0122726755",
+"inWeight": "0.33333334",
+"outSlope": "-0.0122726755",
+"outWeight": "0.53379935",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.3173778",
+"value": "1.2268002",
+"weightedMode": "0"
+}, {
+"inSlope": "0.049838897",
+"inWeight": "0.33333334",
+"outSlope": "0.049838897",
+"outWeight": "0.7958985",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.4734508",
+"value": "1.3484242",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.018237649",
+"inWeight": "0.33333334",
+"outSlope": "-0.018237649",
+"outWeight": "0.48905605",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.62345076",
+"value": "1.2342842",
+"weightedMode": "0"
+}, {
+"inSlope": "0.62071234",
+"inWeight": "0.5109442",
+"outSlope": "0.62071234",
+"outWeight": "0.5113282",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.73452926",
+"value": "1.4231858",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.8092693",
+"inWeight": "0.47022066",
+"outSlope": "-0.8092693",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.8568666",
+"value": "1.4187576",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "1",
+"value": "1",
+"weightedMode": "0"
+}],
+"m_PostInfinity": "2",
+"m_PreInfinity": "2",
+"m_RotationOrder": "4",
+"serializedVersion": "2"
+},
+"scaleYCurve": {
+"m_Curve": [{
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0",
+"value": "1",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0.33333334",
+"outSlope": "0",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.17313907",
+"value": "0.7395138",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.016342577",
+"inWeight": "0.33333334",
+"outSlope": "-0.016342577",
+"outWeight": "0.5239429",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.32451236",
+"value": "0.8352353",
+"weightedMode": "0"
+}, {
+"inSlope": "0.03852009",
+"inWeight": "0.33333334",
+"outSlope": "0.03852009",
+"outWeight": "0.5485205",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.46627733",
+"value": "0.7396206",
+"weightedMode": "0"
+}, {
+"inSlope": "0.037352655",
+"inWeight": "0.33333334",
+"outSlope": "0.037352655",
+"outWeight": "0.5594521",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.6245123",
+"value": "0.82976955",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.92336184",
+"inWeight": "0.42850685",
+"outSlope": "-0.92336184",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.752136",
+"value": "0.6329972",
+"weightedMode": "0"
+}, {
+"inSlope": "0.5839286",
+"inWeight": "0.5505186",
+"outSlope": "0.5839286",
+"outWeight": "0.45332864",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.8599721",
+"value": "0.6320843",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "1",
+"value": "1",
+"weightedMode": "0"
+}],
+"m_PostInfinity": "2",
+"m_PreInfinity": "2",
+"m_RotationOrder": "4",
+"serializedVersion": "2"
+},
+"startOffset": "0.143"
+}],
+"id": "5986473547953290497",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_6",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, -50.7, 22.3, 169.0, 169.0, 0.0, 0.5],
+"z": -357.55
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(-50.7, 22.3),
+"size": Vector2(169, 169)
+}
+
+[node name="Right" type="Control" parent="WinPanel/WinPanel/Panel" unique_id=1463934729]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 50.075447
+offset_top = -179.54456
+offset_right = 209.16455
+offset_bottom = -20.455452
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7325157161366927530",
+"n": "Right",
+"r": [0.5, 0.5, 0.5, 0.5, 129.62, 100.0, 159.0891, 159.0891, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(129.62, 100),
+"size": Vector2(159.0891, 159.0891)
+}
+
+[node name="Image (2)" type="Control" parent="WinPanel/WinPanel/Panel/Right" unique_id=166818199]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 9.2
+offset_top = -135.0
+offset_right = 221.2
+offset_bottom = 77.0
+rotation = 0.22968534
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("2_dcvns")
+region = Rect2(411, 292, 200, 200)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"duration": "1",
+"infiniteLoop": "0",
+"loopCount": "2",
+"name": "CurveDrivenImageScaler",
+"playOnStart": "1",
+"rectTransform": null,
+"restartOnPlay": "1",
+"scaleXCurve": {
+"m_Curve": [{
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0",
+"value": "1",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0.33333334",
+"outSlope": "0",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.1661571",
+"value": "1.3495419",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.0122726755",
+"inWeight": "0.33333334",
+"outSlope": "-0.0122726755",
+"outWeight": "0.53379935",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.3173778",
+"value": "1.2268002",
+"weightedMode": "0"
+}, {
+"inSlope": "0.049838897",
+"inWeight": "0.33333334",
+"outSlope": "0.049838897",
+"outWeight": "0.7958985",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.4734508",
+"value": "1.3484242",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.018237649",
+"inWeight": "0.33333334",
+"outSlope": "-0.018237649",
+"outWeight": "0.48905605",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.62345076",
+"value": "1.2342842",
+"weightedMode": "0"
+}, {
+"inSlope": "0.62071234",
+"inWeight": "0.5109442",
+"outSlope": "0.62071234",
+"outWeight": "0.5113282",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.73452926",
+"value": "1.4231858",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.8092693",
+"inWeight": "0.47022066",
+"outSlope": "-0.8092693",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.8568666",
+"value": "1.4187576",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "1",
+"value": "1",
+"weightedMode": "0"
+}],
+"m_PostInfinity": "2",
+"m_PreInfinity": "2",
+"m_RotationOrder": "4",
+"serializedVersion": "2"
+},
+"scaleYCurve": {
+"m_Curve": [{
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0",
+"value": "1",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0.33333334",
+"outSlope": "0",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.17313907",
+"value": "0.7395138",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.016342577",
+"inWeight": "0.33333334",
+"outSlope": "-0.016342577",
+"outWeight": "0.5239429",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.32451236",
+"value": "0.8352353",
+"weightedMode": "0"
+}, {
+"inSlope": "0.03852009",
+"inWeight": "0.33333334",
+"outSlope": "0.03852009",
+"outWeight": "0.5485205",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.46627733",
+"value": "0.7396206",
+"weightedMode": "0"
+}, {
+"inSlope": "0.037352655",
+"inWeight": "0.33333334",
+"outSlope": "0.037352655",
+"outWeight": "0.5594521",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.6245123",
+"value": "0.82976955",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.92336184",
+"inWeight": "0.42850685",
+"outSlope": "-0.92336184",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.752136",
+"value": "0.6329972",
+"weightedMode": "0"
+}, {
+"inSlope": "0.5839286",
+"inWeight": "0.5505186",
+"outSlope": "0.5839286",
+"outWeight": "0.45332864",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.8599721",
+"value": "0.6320843",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "1",
+"value": "1",
+"weightedMode": "0"
+}],
+"m_PostInfinity": "2",
+"m_PreInfinity": "2",
+"m_RotationOrder": "4",
+"serializedVersion": "2"
+},
+"startOffset": "0.188"
+}],
+"id": "5981421874864414014",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_6",
+"t": 0.0
+},
+"n": "Image (2)",
+"r": [0.5, 0.5, 0.5, 0.5, 9.2, 29.0, 212.0, 212.0, 0.0, 0.5],
+"z": -13.16
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(9.2, 29),
+"size": Vector2(212, 212)
+}
+
+[node name="Image (1)" type="Control" parent="WinPanel/WinPanel/Panel/Right" unique_id=349414487]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -57.8
+offset_top = -106.8
+offset_right = 111.2
+offset_bottom = 62.2
+rotation = -0.042760566
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("2_dcvns")
+region = Rect2(411, 292, 200, 200)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"duration": "1",
+"infiniteLoop": "0",
+"loopCount": "2",
+"name": "CurveDrivenImageScaler",
+"playOnStart": "1",
+"rectTransform": null,
+"restartOnPlay": "1",
+"scaleXCurve": {
+"m_Curve": [{
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0",
+"value": "1",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0.33333334",
+"outSlope": "0",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.1661571",
+"value": "1.3495419",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.0122726755",
+"inWeight": "0.33333334",
+"outSlope": "-0.0122726755",
+"outWeight": "0.53379935",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.3173778",
+"value": "1.2268002",
+"weightedMode": "0"
+}, {
+"inSlope": "0.049838897",
+"inWeight": "0.33333334",
+"outSlope": "0.049838897",
+"outWeight": "0.7958985",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.4734508",
+"value": "1.3484242",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.018237649",
+"inWeight": "0.33333334",
+"outSlope": "-0.018237649",
+"outWeight": "0.48905605",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.62345076",
+"value": "1.2342842",
+"weightedMode": "0"
+}, {
+"inSlope": "0.62071234",
+"inWeight": "0.5109442",
+"outSlope": "0.62071234",
+"outWeight": "0.5113282",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.73452926",
+"value": "1.4231858",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.8092693",
+"inWeight": "0.47022066",
+"outSlope": "-0.8092693",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.8568666",
+"value": "1.4187576",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "1",
+"value": "1",
+"weightedMode": "0"
+}],
+"m_PostInfinity": "2",
+"m_PreInfinity": "2",
+"m_RotationOrder": "4",
+"serializedVersion": "2"
+},
+"scaleYCurve": {
+"m_Curve": [{
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0",
+"value": "1",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0.33333334",
+"outSlope": "0",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.17313907",
+"value": "0.7395138",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.016342577",
+"inWeight": "0.33333334",
+"outSlope": "-0.016342577",
+"outWeight": "0.5239429",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.32451236",
+"value": "0.8352353",
+"weightedMode": "0"
+}, {
+"inSlope": "0.03852009",
+"inWeight": "0.33333334",
+"outSlope": "0.03852009",
+"outWeight": "0.5485205",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.46627733",
+"value": "0.7396206",
+"weightedMode": "0"
+}, {
+"inSlope": "0.037352655",
+"inWeight": "0.33333334",
+"outSlope": "0.037352655",
+"outWeight": "0.5594521",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.6245123",
+"value": "0.82976955",
+"weightedMode": "0"
+}, {
+"inSlope": "-0.92336184",
+"inWeight": "0.42850685",
+"outSlope": "-0.92336184",
+"outWeight": "0.33333334",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.752136",
+"value": "0.6329972",
+"weightedMode": "0"
+}, {
+"inSlope": "0.5839286",
+"inWeight": "0.5505186",
+"outSlope": "0.5839286",
+"outWeight": "0.45332864",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "0.8599721",
+"value": "0.6320843",
+"weightedMode": "0"
+}, {
+"inSlope": "0",
+"inWeight": "0",
+"outSlope": "0",
+"outWeight": "0",
+"serializedVersion": "3",
+"tangentMode": "0",
+"time": "1",
+"value": "1",
+"weightedMode": "0"
+}],
+"m_PostInfinity": "2",
+"m_PreInfinity": "2",
+"m_RotationOrder": "4",
+"serializedVersion": "2"
+},
+"startOffset": "0.143"
+}],
+"id": "3329700015874067977",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_6",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, -57.8, 22.3, 169.0, 169.0, 0.0, 0.5],
+"z": 2.45
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(-57.8, 22.3),
+"size": Vector2(169, 169)
+}
+
+[node name="AnimGroup" type="Control" parent="WinPanel/WinPanel/Panel" unique_id=1935974661]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -346.0
+offset_right = 346.0
+offset_bottom = 337.0
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 20.0,
+"override_sort": false
+},
+"cs": [{
+"autoStartOnEnable": "1",
+"name": "UIAnimationManager",
+"uiAnimations": [{
+"node": "2033894252852016971"
+}, {
+"node": "8692772464648313097"
+}, {
+"node": "5986473547953290497"
+}, {
+"node": "5632481920984342394"
+}, {
+"node": "3329700015874067977"
+}, {
+"node": "5981421874864414014"
+}]
+}],
+"id": "1889753722223203143",
+"n": "AnimGroup",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 0.0, 692.0, 337.0, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(692, 337)
+}
+
+[node name="LightRotate" type="Control" parent="WinPanel/WinPanel/Panel/AnimGroup" unique_id=1901079507]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -346.0
+offset_top = -514.5
+offset_right = 346.0
+offset_bottom = -150.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7740219226750786919",
+"img": {
+"c": "ffffff01",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "LightRotate",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 332.5, 692.0, 364.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 332.5),
+"size": Vector2(692, 364)
+}
+
+[node name="Image" type="Control" parent="WinPanel/WinPanel/Panel/AnimGroup/LightRotate" unique_id=1997056830]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = 200.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("3_t0v1i")
+region = Rect2(0, 0, 256, 256)
+color = Color(0.98039216, 0.8980392, 0.23529412, 0.5019608)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "SimpleUIRotator",
+"rotateOnStart": "1",
+"rotationSpeed": "-50",
+"targetUI": {
+"node": "2033894252852016971"
+}
+}],
+"id": "2033894252852016971",
+"img": {
+"c": "fae53c80",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "fx_1",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 400.0, 400.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(400, 400)
+}
+
+[node name="Image (1)" type="Control" parent="WinPanel/WinPanel/Panel/AnimGroup/LightRotate" unique_id=754280448]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = 200.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("3_t0v1i")
+region = Rect2(0, 0, 256, 256)
+color = Color(0.98039216, 0.8980392, 0.23529412, 0.5019608)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "SimpleUIRotator",
+"rotateOnStart": "1",
+"rotationSpeed": "-100",
+"targetUI": {
+"node": "8692772464648313097"
+}
+}],
+"id": "8692772464648313097",
+"img": {
+"c": "fae53c80",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "fx_1",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 400.0, 400.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(400, 400)
+}
+
+[node name="@Control@78" type="Control" parent="WinPanel/WinPanel/Panel/AnimGroup/LightRotate" unique_id=97652127]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 29.0
+offset_top = -227.0
+offset_right = 179.0
+offset_bottom = -77.0
+pivot_offset_ratio = Vector2(1, 1)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("2_dcvns")
+region = Rect2(589, 0, 140, 140)
+pivot = Vector2(1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1346637319940016958",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_2",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.0, 0.5, 0.0, 179.0, 77.0, 150.0, 150.0, 1.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(1, 0),
+"pos": Vector2(179, 77),
+"size": Vector2(150, 150)
+}
+
+[node name="Image (2)" type="Control" parent="WinPanel/WinPanel/Panel/AnimGroup/LightRotate" unique_id=2054464861]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -328.0
+offset_top = -227.0
+offset_right = -178.0
+offset_bottom = -77.0
+scale = Vector2(-1, 1)
+pivot_offset_ratio = Vector2(1, 1)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("2_dcvns")
+region = Rect2(589, 0, 140, 140)
+pivot = Vector2(1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7542137401074740114",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_2",
+"t": 0.0
+},
+"n": "Image (2)",
+"r": [0.5, 0.0, 0.5, 0.0, -178.0, 77.0, 150.0, 150.0, 1.0, 0.0],
+"s": [-1.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(1, 0),
+"pos": Vector2(-178, 77),
+"size": Vector2(150, 150)
+}
+
+[node name="Cup" type="Control" parent="WinPanel/WinPanel/Panel/AnimGroup/LightRotate" unique_id=1027994590]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.0
+offset_top = -141.89551
+offset_right = 125.0
+offset_bottom = 108.1045
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("2_dcvns")
+region = Rect2(0, 292, 200, 200)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3513376554083934441",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_4",
+"t": 0.0
+},
+"n": "Cup",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 16.8955, 250.0, 250.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 16.8955),
+"size": Vector2(250, 250)
+}
+
+[node name="Image" type="Control" parent="WinPanel/WinPanel/Panel" unique_id=1498749219]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -346.0
+offset_top = -180.1502
+offset_right = 346.0
+offset_bottom = 90.3898
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("4_wkyrl")
+region = Rect2(0, 0, 1024, 419.2)
+border_scale = 1.25
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2797593359160172019",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "winbg",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 180.1502, 692.0, 270.54, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 180.1502),
+"size": Vector2(692, 270.54)
+}
+
+[node name="Text (TMP)" type="Label" parent="WinPanel/WinPanel/Panel/Image" unique_id=1579651382]
+material = SubResource("ShaderMaterial_fphxa")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -146.25
+offset_top = -31.3
+offset_right = 146.25
+offset_bottom = 96.7
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_adtn3")
+theme_override_constants/line_spacing = -9
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 76
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "YOU WIN"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "6103585462646830365",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -32.7, 292.5, 128.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 80.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 75.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "YOU WIN",
+"st": 17.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -32.7),
+"size": Vector2(292.5, 128)
+}
+metadata/u_txt = {
+"auto": [18.0, 80.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 75.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "YOU WIN",
+"st": 17.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="PlayerLeaderboardItem" type="Control" parent="WinPanel/WinPanel" unique_id=266722096]
+anchors_preset = 0
+offset_left = 43.0
+offset_top = 95.7
+offset_right = 843.0
+offset_bottom = 245.7
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"_avatarConfigSO": {
+"asset": "AvatarConfigSO.asset"
+},
+"_avatarImage": {
+"node": "5865505006047565279"
+},
+"_frameConfigSO": {
+"asset": "FrameIconSO.asset"
+},
+"_frameImage": {
+"node": "8151144877862903233"
+},
+"_imageStates": [{
+"node": "4153833255427706304"
+}, {
+"node": "5315759998963421372"
+}, {
+"node": "3766293980860725399"
+}, {
+"node": "5636998708985936513"
+}, {
+"node": "263114586676426562"
+}],
+"_leaderboardTopRewardsSO": {
+"asset": "LeaderboardTopRewards.asset"
+},
+"_nameText": {
+"node": "1654869801327632585"
+},
+"_rankPointImage": {
+"node": "1115530081318512960"
+},
+"_rankPointSprite": {
+"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_2"
+},
+"_rankPointText": {
+"node": "1560249975054797924"
+},
+"_rankPositionText": {
+"node": "7314466775110233140"
+},
+"_shinyEffectForUGUI": {
+"node": "3766293980860725399"
+},
+"milestoneItem": {
+"node": "4153833255427706304"
+},
+"name": "UILeaderboardUserCard"
+}, {
+"_userCard": {
+"node": "1171023310710632622"
+},
+"name": "UILeaderboardUserCardLoader"
+}, {
+"dataLoader": {
+"_underlyingValue": {
+"node": "1171023310710632622"
+}
+},
+"flexible": "0",
+"ignoreLayout": "0",
+"name": "DynamicScrollViewElement",
+"numPerRow": "1",
+"rectTransform": {
+"node": "1171023310710632622"
+}
+}],
+"id": "1171023310710632622",
+"n": "PlayerLeaderboardItem",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 800.0, 150.0, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(443, -95.7),
+"size": Vector2(800, 150)
+}
+
+[node name="BG" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem" unique_id=407200046]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("7_seou7")
+region = Rect2(524, 636, 500, 94)
+border = Vector4(30, 30, 30, 30)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"AutoPlayDuration": "1",
+"AutoPlayInterval": "3",
+"PlayAutomatic": "1",
+"name": "ShinyEffectForUGUI"
+}],
+"id": "3766293980860725399",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "UI-Effect-Shiny",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_28",
+"t": 0.0
+},
+"n": "BG",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="RankNumberTxt" type="Label" parent="WinPanel/WinPanel/PlayerLeaderboardItem" unique_id=1214840037]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 29.1
+offset_top = -57.555
+offset_right = 117.6
+offset_bottom = 57.555
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1yjut")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 50
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "7314466775110233140",
+"n": "RankNumberTxt",
+"r": [0.0, 0.5, 0.0, 0.5, 29.1, 0.0, 88.5, 115.11, 0.0, 0.5],
+"txt": {
+"auto": null,
+"c": "000000ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 50.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "4",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(29.1, 0),
+"size": Vector2(88.5, 115.11)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "000000ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 50.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "4",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem/RankNumberTxt" unique_id=1728237517]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.5
+offset_top = -35.0
+offset_right = 32.5
+offset_bottom = 35.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("7_seou7")
+region = Rect2(620, 0, 60, 60)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5315759998963421372",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_14",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 65.0, 70.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(65, 70)
+}
+
+[node name="PlayerArrow" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem" unique_id=1633064330]
+visible = false
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -11.98
+offset_top = -25.0
+offset_right = 38.02
+offset_bottom = 25.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("7_seou7")
+region = Rect2(54, 164, 40, 52)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "263114586676426562",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_7",
+"t": 0.0
+},
+"n": "PlayerArrow",
+"r": [0.0, 0.5, 0.0, 0.5, 13.02, 0.0, 50.0, 50.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(13.02, 0),
+"size": Vector2(50, 50)
+}
+
+[node name="Avatar" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem" unique_id=426405114]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 124.1
+offset_top = -40.0
+offset_right = 204.1
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("8_vb4r3")
+region = Rect2(0, 0, 512, 512)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5865505006047565279",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Av_02",
+"t": 0.0
+},
+"n": "Avatar",
+"r": [0.0, 0.5, 0.0, 0.5, 124.1, 0.0, 80.0, 80.0, 0.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(124.1, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Frame" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem/Avatar" unique_id=785838647]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.0
+offset_top = -45.0
+offset_right = 45.0
+offset_bottom = 45.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(756, 816, 168, 168)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8151144877862903233",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
+"t": 0.0
+},
+"n": "Frame",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 90.0, 90.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(90, 90)
+}
+
+[node name="PlayerName" type="Label" parent="WinPanel/WinPanel/PlayerLeaderboardItem" unique_id=117935950]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -181.4
+offset_top = -45.6
+offset_right = 114.0
+offset_bottom = 45.6
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_362jd")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 45
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Playera5cd46"
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "1654869801327632585",
+"n": "PlayerName",
+"r": [0.5, 0.5, 0.5, 0.5, -181.4, 0.0, 295.4, 91.2, 0.0, 0.5],
+"txt": {
+"auto": [18.0, 45.0],
+"c": "000000ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Playera5cd46",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(-181.4, 0),
+"size": Vector2(295.4, 91.2)
+}
+metadata/u_txt = {
+"auto": [18.0, 45.0],
+"c": "000000ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Playera5cd46",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="PointPanel" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem" unique_id=735005332]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -175.48
+offset_top = -25.0
+offset_right = -30.0
+offset_bottom = 25.0
+pivot_offset_ratio = Vector2(1, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("7_seou7")
+region = Rect2(860, 64, 76, 60)
+border = Vector4(30, 0, 30, 0)
+kind = 1
+pivot = Vector2(1, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5636998708985936513",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_19",
+"t": 1.0
+},
+"n": "PointPanel",
+"r": [1.0, 0.5, 1.0, 0.5, -30.0, 0.0, 145.48, 50.0, 1.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(1, 0.5),
+"pivot": Vector2(1, 0.5),
+"pos": Vector2(-30, 0),
+"size": Vector2(145.48, 50)
+}
+
+[node name="RankPointIcon" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem/PointPanel" unique_id=450696432]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -25.1
+offset_top = -35.0
+offset_right = 44.9
+offset_bottom = 35.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(517, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1115530081318512960",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_2",
+"t": 0.0
+},
+"n": "RankPointIcon",
+"r": [0.0, 0.5, 0.0, 0.5, 9.9, 0.0, 70.0, 70.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(9.9, 0),
+"size": Vector2(70, 70)
+}
+
+[node name="PointText" type="Label" parent="WinPanel/WinPanel/PlayerLeaderboardItem/PointPanel" unique_id=1034606871]
+material = SubResource("ShaderMaterial_jm0a0")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.85
+offset_top = -21.7
+offset_right = 56.65
+offset_bottom = 21.7
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_yj00k")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "24"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "1560249975054797924",
+"n": "PointText",
+"r": [0.5, 0.5, 0.5, 0.5, 12.4, 0.0, 88.5, 43.4, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 31.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "24",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(12.4, 0),
+"size": Vector2(88.5, 43.4)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 31.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "24",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Gift" type="Button" parent="WinPanel/WinPanel/PlayerLeaderboardItem" unique_id=1586386450]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 115.0
+offset_top = -35.0
+offset_right = 185.0
+offset_bottom = 35.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_51n3p")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_0i65p")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_tlx28")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_x73sc")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_662jh")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_fg2no")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_p5gey")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_hjtfr")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_62i26")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ooegh")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lm2np")
+flat = true
+script = ExtResource("10_blgu0")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4153833255427706304",
+"tr": 1.0
+},
+"cs": [{
+"giftButton": {
+"node": "4153833255427706304"
+},
+"giftPanel": {
+"node": "7658038423205253357"
+},
+"graphicRaycaster": null,
+"name": "GiftPanelController"
+}, {
+"milestoneText": null,
+"name": "MilestoneItem",
+"rewardItem": {
+"node": "782096031071672660"
+},
+"rewardsContainer": {
+"node": "7658038423205253357"
+},
+"tickMark": null
+}],
+"id": "4153833255427706304",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_30",
+"t": 0.0
+},
+"n": "Gift",
+"r": [0.5, 0.5, 0.5, 0.5, 150.0, 0.0, 70.0, 70.0, 0.5, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(150, 0),
+"size": Vector2(70, 70)
+}
+
+[node name="image" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem/Gift" unique_id=406195640]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("7_seou7")
+region = Rect2(0, 219, 52, 52)
+fill_method = 4
+
+[node name="RewardsParent" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem/Gift" unique_id=1239865384]
+z_index = 1
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -45.0
+offset_top = -96.8998
+offset_right = 45.0
+offset_bottom = 0.0002
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 100.0,
+"override_sort": true
+},
+"fit": {
+"h": 2.0,
+"v": 0.0
+},
+"id": "7658038423205253357",
+"lay": {
+"al": 0.0,
+"ch": false,
+"cw": false,
+"eh": true,
+"ew": true,
+"pad": [15.0, 15.0, 5.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "h"
+},
+"n": "RewardsParent",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -0.0002, 0.0, 96.9, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, -0.0002),
+"size": Vector2(90, 96.9)
+}
+
+[node name="RewardBG" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem/Gift/RewardsParent" unique_id=1008906708]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -45.0
+offset_right = 45.0
+offset_bottom = 95.45
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("7_seou7")
+region = Rect2(279, 0, 168, 124)
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3775631738158372663",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "RewardBG",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 0.0, 90.0, 95.45, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(90, 95.45)
+}
+
+[node name="ItemReward4" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem/Gift/RewardsParent" unique_id=1230310741]
+anchors_preset = 0
+offset_left = 15.0
+offset_top = 5.0
+offset_right = 75.0
+offset_bottom = 65.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "1409961800021648185"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "7393982272894648671"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "782096031071672660",
+"n": "ItemReward4",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 60.0, 60.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(45, -35),
+"size": Vector2(60, 60)
+}
+
+[node name="Icon Item" type="Control" parent="WinPanel/WinPanel/PlayerLeaderboardItem/Gift/RewardsParent/ItemReward4" unique_id=1945938113]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(780, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1409961800021648185",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+"t": 0.0
+},
+"n": "Icon Item",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -10.0, -10.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-10, -10)
+}
+
+[node name="Quantity" type="Label" parent="WinPanel/WinPanel/PlayerLeaderboardItem/Gift/RewardsParent/ItemReward4" unique_id=1458362945]
+material = SubResource("ShaderMaterial_qejyp")
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -17.04
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0ildq")
+theme_override_constants/line_spacing = -3
+theme_override_fonts/font = SubResource("FontVariation_2d730")
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "200"
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "7393982272894648671",
+"n": "Quantity",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 17.04, 0.5, 0.0],
+"txt": {
+"auto": [22.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 22.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Black",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "200",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 17.04)
+}
+metadata/u_txt = {
+"auto": [22.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 22.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Black",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "200",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="NewFeatureUnlock" type="Control" parent="WinPanel/WinPanel" unique_id=2039660737]
+anchors_preset = 0
+offset_left = 24.799988
+offset_top = 341.4
+offset_right = 861.2
+offset_bottom = 557.1
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "655672643472329570",
+"n": "NewFeatureUnlock",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 836.4, 215.7, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(443, -449.25),
+"size": Vector2(836.4, 215.7)
+}
+
+[node name="RewardsText" type="Label" parent="WinPanel/WinPanel/NewFeatureUnlock" unique_id=1484927043]
+material = SubResource("ShaderMaterial_jm0a0")
+layout_mode = 0
+offset_left = 124.3
+offset_top = -93.2
+offset_right = 578.7
+offset_bottom = 34.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_i7m0w")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 58
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "New Feature"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "4538538543248604004",
+"n": "RewardsText",
+"r": [0.0, 1.0, 0.0, 1.0, 351.5, 29.2, 454.4, 128.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 58.2],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 58.2,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "New Feature",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(351.5, 29.2),
+"size": Vector2(454.4, 128)
+}
+metadata/u_txt = {
+"auto": [18.0, 58.2],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 58.2,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "New Feature",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Slider" type="Control" parent="WinPanel/WinPanel/NewFeatureUnlock" unique_id=275341345]
+anchors_preset = 0
+anchor_right = 1.0
+offset_left = 62.88
+offset_right = -181.9
+offset_bottom = 108.7
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3878425241648546003",
+"n": "Slider",
+"r": [0.0, 1.0, 1.0, 1.0, -59.51, 0.0, -244.78, 108.7, 0.5, 1.0],
+"slider": {
+"dir": 0.0,
+"fill": "5815449251277920679",
+"handle": "7017849916091399594",
+"inter": false,
+"max": 1.0,
+"min": 0.0,
+"value": 0.176,
+"whole": false
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(-59.51, 0),
+"size": Vector2(-244.78, 108.7)
+}
+
+[node name="Background" type="Control" parent="WinPanel/WinPanel/NewFeatureUnlock/Slider" unique_id=2084507429]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(1099, 1012, 198, 144)
+border = Vector4(80, 0, 80, 0)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7937265772619563234",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_84",
+"t": 1.0
+},
+"n": "Background",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Fill Area" type="Control" parent="WinPanel/WinPanel/NewFeatureUnlock/Slider" unique_id=1461026458]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 14.0
+offset_bottom = -14.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "8003085376250458906",
+"n": "Fill Area",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, -28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, -28)
+}
+
+[node name="Fill" type="Control" parent="WinPanel/WinPanel/NewFeatureUnlock/Slider/Fill Area" unique_id=1445734364]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 23.99995
+offset_right = -27.99995
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(768, 1488, 500, 60)
+border = Vector4(60, 0, 0, 0)
+border_scale = 0.6622516556291391
+kind = 3
+fill_amount = 0.176
+metadata/u = {
+"a": true,
+"id": "5815449251277920679",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 0.176,
+"fc": true,
+"fm": 0.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.51,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_85",
+"t": 3.0
+},
+"n": "Fill",
+"r": [0.0, 0.0, 0.0, 0.0, -2.0, 0.0, -51.9999, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-2, 0),
+"size": Vector2(-51.9999, 0)
+}
+
+[node name="Handle Slide Area" type="Control" parent="WinPanel/WinPanel/NewFeatureUnlock/Slider" unique_id=67644484]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5265020537158786028",
+"n": "Handle Slide Area",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -20.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-20, 0)
+}
+
+[node name="Handle" type="Control" parent="WinPanel/WinPanel/NewFeatureUnlock/Slider/Handle Slide Area" unique_id=894620146]
+visible = false
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 7.65
+offset_top = 14.0
+offset_right = 31.449999
+offset_bottom = -14.0
+scale = Vector2(-1, 1)
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(768, 1488, 500, 60)
+border = Vector4(60, 0, 0, 0)
+kind = 1
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "7017849916091399594",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_85",
+"t": 1.0
+},
+"n": "Handle",
+"r": [0.0, 0.0, 0.0, 0.0, 7.65, 0.0, 23.8, -28.0, 0.0, 0.5],
+"s": [-1.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(7.65, 0),
+"size": Vector2(23.8, -28)
+}
+
+[node name="ProgressText" type="Label" parent="WinPanel/WinPanel/NewFeatureUnlock/Slider" unique_id=988739954]
+material = SubResource("ShaderMaterial_jm0a0")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -227.2
+offset_top = -64.0
+offset_right = 227.2
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2h1jq")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 58
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "4/5"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "864670383544369285",
+"n": "ProgressText",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 454.4, 128.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 58.2],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 58.2,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "4/5",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(454.4, 128)
+}
+metadata/u_txt = {
+"auto": [18.0, 58.2],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 58.2,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "4/5",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="WinPanel/WinPanel/NewFeatureUnlock/Slider" unique_id=1273528499]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 228.91
+offset_top = -107.6
+offset_right = 408.91
+offset_bottom = 72.4
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(939, 1888, 160, 160)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2064785291701220897",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_95",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 318.91, 17.6, 180.0, 180.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(318.91, 17.6),
+"size": Vector2(180, 180)
+}
+
+[node name="FeatureImage" type="Control" parent="WinPanel/WinPanel/NewFeatureUnlock/Slider/Image" unique_id=1332508369]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = -75.0
+offset_right = 75.0
+offset_bottom = 75.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("11_fl68m")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6703206104915816289",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_MysteryContainer",
+"t": 0.0
+},
+"n": "FeatureImage",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 150.0, 150.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(150, 150)
+}
+
+[node name="BG" type="Control" parent="WinPanel" unique_id=1886522483]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = 197.61499
+offset_bottom = 1054.385
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6047756085230943575",
+"n": "BG",
+"r": [0.0, 0.5, 1.0, 0.5, 0.0, -626.0, 0.0, 856.77, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -626),
+"size": Vector2(0, 856.77)
+}
+
+[node name="RewardGroup" type="Control" parent="WinPanel/BG" unique_id=543870767]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -443.0
+offset_right = 443.0
+offset_bottom = 320.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(384, 1877, 380, 171)
+border = Vector4(191, 72, 189, 72)
+border_scale = 0.8
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4101177043273136221",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.25,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_89",
+"t": 0.0
+},
+"n": "RewardGroup",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -160.0, 886.0, 320.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -160),
+"size": Vector2(886, 320)
+}
+
+[node name="RewardsText" type="Label" parent="WinPanel/BG/RewardGroup" unique_id=1717363837]
+material = SubResource("ShaderMaterial_j5nr6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -343.75
+offset_top = -271.87
+offset_right = 343.75
+offset_bottom = -143.87
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ggodn")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 58
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "REWARDS"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "5898824128604044530",
+"n": "RewardsText",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 207.87, 687.5, 128.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 58.2],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 58.2,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "REWARDS",
+"st": 17.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 207.87),
+"size": Vector2(687.5, 128)
+}
+metadata/u_txt = {
+"auto": [18.0, 58.2],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 58.2,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "REWARDS",
+"st": 17.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Rewards" type="Control" parent="WinPanel/BG/RewardGroup" unique_id=1372182151]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1963858567992476799",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": false,
+"eh": true,
+"ew": true,
+"pad": [0.0, 0.0, -100.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": -300.0,
+"sw": false,
+"t": "h"
+},
+"n": "Rewards",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="GameObject" type="Control" parent="WinPanel/BG" unique_id=426213042]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -361.59995
+offset_top = 361.5
+offset_right = 361.59995
+offset_bottom = 498.7
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7940946474485234012",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": false,
+"eh": false,
+"ew": true,
+"pad": [0.0, 0.0, 137.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 41.5,
+"sw": false,
+"t": "h"
+},
+"n": "GameObject",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -498.7, 723.1999, 137.2, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, -498.7),
+"size": Vector2(723.1999, 137.2)
+}
+
+[node name="FreeBtn" type="Button" parent="WinPanel/BG/GameObject" unique_id=894670738]
+layout_mode = 0
+offset_top = 71.100006
+offset_right = 332.0
+offset_bottom = 203.1
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ix7ar")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_8ugbt")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_kh73j")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_v5rr4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_175cg")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_e83fd")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_0pt3u")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_xpgyc")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_2qpau")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_2apsa")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ljlhg")
+flat = true
+script = ExtResource("10_blgu0")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 1)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c8ff"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "1896448471903350067",
+"tr": 1.0
+},
+"cs": [{
+"duration": "0.7",
+"ease": "26",
+"endScale": "1.1",
+"name": "AnimScaleButton",
+"targetRect": {
+"node": "1896448471903350067"
+}
+}],
+"id": "1896448471903350067",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_50",
+"t": 0.0
+},
+"n": "FreeBtn",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 332.0, 132.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(166, -137.1),
+"size": Vector2(332, 132)
+}
+
+[node name="image" type="Control" parent="WinPanel/BG/GameObject/FreeBtn" unique_id=33922634]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(0, 1160, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="WinPanel/BG/GameObject/FreeBtn" unique_id=618392880]
+material = SubResource("ShaderMaterial_vwunx")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -72.31
+offset_right = 150.0
+offset_bottom = 6.4900017
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mf3eg")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "FREE"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "3004686988553718528",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 32.91, 300.0, 78.8, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "FREE",
+"st": 17.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 32.91),
+"size": Vector2(300, 78.8)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "FREE",
+"st": 17.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="GameObject (1)" type="Control" parent="WinPanel/BG/GameObject/FreeBtn" unique_id=911718870]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -62.2
+offset_top = 47.36875
+offset_right = 74.8
+offset_bottom = 117.63125
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"fit": {
+"h": 2.0,
+"v": 0.0
+},
+"id": "418971399698745292",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 10.0,
+"sw": false,
+"t": "h"
+},
+"n": "GameObject (1)",
+"r": [0.5, 1.0, 0.5, 1.0, 6.3, -82.5, 0.0, 70.2625, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(6.3, -82.5),
+"size": Vector2(137, 70.2625)
+}
+
+[node name="Text (TMP)" type="Label" parent="WinPanel/BG/GameObject/FreeBtn/GameObject (1)" unique_id=963134576]
+material = SubResource("ShaderMaterial_oskr3")
+layout_mode = 0
+offset_top = 5.4775486
+offset_right = 67.0
+offset_bottom = 64.78495
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3hyaw")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 68
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "10"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "2453229551950804635",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 59.3074, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 68.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "10",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(33.5, -35.13125),
+"size": Vector2(67, 59.3074)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 68.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "10",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="WinPanel/BG/GameObject/FreeBtn/GameObject (1)" unique_id=79730269]
+anchors_preset = 0
+offset_left = 77.0
+offset_top = 5.1312485
+offset_right = 137.0
+offset_bottom = 65.13125
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(780, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4042842472943424438",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [0.0, 0.0],
+"pref": [60.0, 60.0]
+},
+"n": "Image",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 60.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(107, -35.13125),
+"size": Vector2(60, 60)
+}
+
+[node name="ClaimBtn" type="Button" parent="WinPanel/BG/GameObject" unique_id=1380537126]
+layout_mode = 0
+offset_left = 373.5
+offset_top = 71.100006
+offset_right = 705.5
+offset_bottom = 203.1
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ql08c")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_kn2uk")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4r0ro")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_14ena")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_af6tt")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_we1i8")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ph56q")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_5e0bi")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_1rroj")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_k7qpy")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_dmxsi")
+flat = true
+script = ExtResource("10_blgu0")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 1)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c8ff"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "6380610255338462664",
+"tr": 1.0
+},
+"cs": [{
+"duration": "0.7",
+"ease": "26",
+"endScale": "1.1",
+"name": "AnimScaleButton",
+"targetRect": {
+"node": "6380610255338462664"
+}
+}],
+"id": "6380610255338462664",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_50",
+"t": 0.0
+},
+"n": "ClaimBtn",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 332.0, 132.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(539.5, -137.1),
+"size": Vector2(332, 132)
+}
+
+[node name="image" type="Control" parent="WinPanel/BG/GameObject/ClaimBtn" unique_id=347197820]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(0, 1160, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="WinPanel/BG/GameObject/ClaimBtn" unique_id=1894103888]
+material = SubResource("ShaderMaterial_vwunx")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = -1.0529003
+offset_right = 150.0
+offset_bottom = 59.052902
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_k4sw3")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Claim"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "5776309526213870584",
+"n": "Text (TMP)",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -29.0, 300.0, 60.1058, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Claim",
+"st": 17.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -29),
+"size": Vector2(300, 60.1058)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Claim",
+"st": 17.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="GameObject (1)" type="Control" parent="WinPanel/BG/GameObject/ClaimBtn" unique_id=1338646342]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -62.2
+offset_top = 47.36875
+offset_right = 74.8
+offset_bottom = 117.63125
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"fit": {
+"h": 2.0,
+"v": 0.0
+},
+"id": "6096312031829579415",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 10.0,
+"sw": false,
+"t": "h"
+},
+"n": "GameObject (1)",
+"r": [0.5, 1.0, 0.5, 1.0, 6.3, -82.5, 0.0, 70.2625, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(6.3, -82.5),
+"size": Vector2(137, 70.2625)
+}
+
+[node name="Text (TMP)" type="Label" parent="WinPanel/BG/GameObject/ClaimBtn/GameObject (1)" unique_id=503003237]
+material = SubResource("ShaderMaterial_oskr3")
+layout_mode = 0
+offset_top = 5.4775486
+offset_right = 67.0
+offset_bottom = 64.78495
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hp54o")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 68
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "10"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "8648473731239980926",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 59.3074, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 68.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "10",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(33.5, -35.13125),
+"size": Vector2(67, 59.3074)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 68.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "10",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="WinPanel/BG/GameObject/ClaimBtn/GameObject (1)" unique_id=1616892566]
+anchors_preset = 0
+offset_left = 77.0
+offset_top = 5.1312485
+offset_right = 137.0
+offset_bottom = 65.13125
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(780, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4830062603749961800",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [0.0, 0.0],
+"pref": [60.0, 60.0]
+},
+"n": "Image",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 60.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(107, -35.13125),
+"size": Vector2(60, 60)
+}
+
+[node name="Image" type="Control" parent="WinPanel/BG/GameObject/ClaimBtn" unique_id=892809852]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -71.7
+offset_top = -29.31
+offset_right = 24.3
+offset_bottom = 66.69
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(1299, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3753686290702555309",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_5",
+"t": 0.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, -23.7, -18.69, 96.0, 96.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-23.7, -18.69),
+"size": Vector2(96, 96)
+}
+
+[node name="ContinueBtn" type="Button" parent="WinPanel/BG/GameObject" unique_id=1943397988]
+layout_mode = 0
+offset_left = 747.0
+offset_top = 71.100006
+offset_right = 1079.0
+offset_bottom = 203.1
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h3mui")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_utljd")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_56bo8")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_wsot3")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_h7jk0")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_557ax")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_1fpsk")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_5sx7b")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_arj5n")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_gapda")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_emeax")
+flat = true
+script = ExtResource("10_blgu0")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(1, 1, 1, 1)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "ffffffff"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "1624971037030105769",
+"tr": 1.0
+},
+"id": "1624971037030105769",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "ContinueBtn",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 332.0, 132.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(913, -137.1),
+"size": Vector2(332, 132)
+}
+
+[node name="image" type="Control" parent="WinPanel/BG/GameObject/ContinueBtn" unique_id=2068202761]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_n0ib6")
+tex = ExtResource("9_613og")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="WinPanel/BG/GameObject/ContinueBtn" unique_id=1746301333]
+material = SubResource("ShaderMaterial_yi71g")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -33.85
+offset_right = 150.0
+offset_bottom = 33.85
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_uqmm3")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 49
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Continue"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "1765547571985282142",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 300.0, 67.7, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 60.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 49.3,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Continue",
+"st": 17.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(300, 67.7)
+}
+metadata/u_txt = {
+"auto": [18.0, 60.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 49.3,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Continue",
+"st": 17.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="GameObject" type="Control" parent="WinPanel/BG/GameObject/ContinueBtn" unique_id=1667713039]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -57.2
+offset_top = 47.36875
+offset_right = 69.8
+offset_bottom = 117.63125
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"fit": {
+"h": 2.0,
+"v": 0.0
+},
+"id": "5055775129021251129",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "h"
+},
+"n": "GameObject",
+"r": [0.5, 1.0, 0.5, 1.0, 6.3, -82.5, 126.58, 70.2625, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(6.3, -82.5),
+"size": Vector2(127, 70.2625)
+}
+
+[node name="Text (TMP)" type="Label" parent="WinPanel/BG/GameObject/ContinueBtn/GameObject" unique_id=580367776]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+offset_top = 5.4775486
+offset_right = 67.0
+offset_bottom = 64.78495
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4qxhn")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 68
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "10"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "68971059647518367",
+"n": "Text (TMP)",
+"r": [0.0, 1.0, 0.0, 1.0, 33.29, -35.1312, 66.58, 59.3074, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 68.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "10",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(33.5, -35.13125),
+"size": Vector2(67, 59.3074)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 68.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "10",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="WinPanel/BG/GameObject/ContinueBtn/GameObject" unique_id=141178921]
+anchors_preset = 0
+offset_left = 67.0
+offset_top = 5.1312485
+offset_right = 127.0
+offset_bottom = 65.13125
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_n0ib6")
+tex = ExtResource("12_2f21n")
+region = Rect2(512, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3020163519648858267",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_2",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [0.0, 0.0],
+"pref": [60.0, 60.0]
+},
+"n": "Image",
+"r": [0.0, 1.0, 0.0, 1.0, 96.58, -35.1312, 60.0, 60.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(97, -35.13125),
+"size": Vector2(60, 60)
+}
+
+[node name="FireWorkEndgame" type="Control" parent="WinPanel/BG" unique_id=501456017]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 767.0
+offset_top = 228.9133
+offset_right = 867.0
+offset_bottom = 328.9133
+rotation = -0.65554565
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"id": "509406172288762237",
+"n": "FireWorkEndgame",
+"r": [0.5, 0.5, 0.5, 0.5, 817.0, -278.9133, 100.0, 100.0, 0.5, 0.5],
+"z": 37.56
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(817, -278.9133),
+"size": Vector2(100, 100)
+}
+
+[node name="FireWorkEndgame (1)" type="Control" parent="WinPanel/BG/FireWorkEndgame" unique_id=234577529]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1301.0
+offset_top = -976.0
+offset_right = -1201.0
+offset_bottom = -876.0
+rotation = 1.2541935
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6123136587975603404",
+"n": "FireWorkEndgame (1)",
+"r": [0.5, 0.5, 0.5, 0.5, -1251.0, 926.0, 100.0, 100.0, 0.5, 0.5],
+"z": -71.86
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-1251, 926),
+"size": Vector2(100, 100)
+}

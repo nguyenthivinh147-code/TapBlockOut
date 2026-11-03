@@ -1,0 +1,115 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="1_hef4d"]
+
+[node name="Canvas" type="Control" unique_id=1896205037]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "LoadLevelProcess"
+
+[node name="LoadLevelProcess" type="Control" parent="." unique_id=834515635]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"_progressAnimDuration": "0.5",
+"_swirlTransition": {
+"node": "5393293856497901906"
+},
+"breakEnable": "0",
+"debugOnOff": "0",
+"name": "LoadLevelProcess"
+}],
+"id": "7219197735921211012",
+"n": "LoadLevelProcess",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="BG" type="Control" parent="LoadLevelProcess" unique_id=511454893]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_hef4d")
+color = Color(0, 0, 0, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"_aspectRatio": "2",
+"_center": {
+"x": "0.5",
+"y": "0.5"
+},
+"_color": {
+"a": "1",
+"b": "0",
+"g": "0",
+"r": "0"
+},
+"_duration": "1",
+"_material": {
+"asset": "SwirlMask.mat"
+},
+"_progress": "1",
+"_softness": "0.1",
+"_swirl": "3",
+"name": "SwirlTransitionUI"
+}],
+"id": "5393293856497901906",
+"img": {
+"c": "000000ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "SwirlMask",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "BG",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}

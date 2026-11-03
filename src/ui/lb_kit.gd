@@ -61,6 +61,7 @@ static func league_badge(id: String, px: float) -> Control:
 	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var img := UImage.new()
 	img.name = "Trophy"
+	img.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	img.set_anchors_preset(Control.PRESET_FULL_RECT)
 	img.preserve_aspect = true
 	var sp := UnityUI.sprite_info(league_sprite(id))

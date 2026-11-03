@@ -1,0 +1,2094 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="1_27ipc"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="2_oy4hg"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="3_5pwah"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="4_cxyev"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="5_ufudx"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Leaderboard_Atlas.png" id="6_0e6b2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t3qrc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l8c1l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vfc4u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_icgi4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jpkhp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5nkfu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i5rq7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1x18x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sd112"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pc0n4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_stffx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hwtlu"]
+shader = ExtResource("4_cxyev")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.5372549, 0.12156863, 0, 1)
+shader_parameter/underlay_color = Color(0.5411765, 0.12156863, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aldv7"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("5_ufudx")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gkyv7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6018f"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i1ua6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pw0du"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_34hrc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ebbj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k5jio"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_55pfv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dpfru"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e11kf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gtjro"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ut15b"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5xha1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fw0xp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8r1c2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lwsdr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yigmw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_om2cv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_swu6v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_asctl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oebsn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fbueq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_six7w"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l5rv4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dj7kq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mhbt6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ptt8s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dnbnp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_exjnh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_36q3e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g3rk4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ybmgt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pjp0y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1f2ak"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pvqap"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qejyp"]
+shader = ExtResource("4_cxyev")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dvabd"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3f4by"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u0ips"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sa3h7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_74nn1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_chn0g"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tutfb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u56un"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hyou7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jis80"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hg2sd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hf38x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x8f5g"]
+
+[node name="Canvas" type="Control" unique_id=1355631586]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "BottomBarLayer"
+
+[node name="BottomBarLayer" type="Control" parent="." unique_id=114729847]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"animShowUIElement": null,
+"bottomBarToggles": [{
+"node": "1525116957172944686"
+}, {
+"node": "4165908520715539598"
+}, {
+"node": "8688772847455922467"
+}],
+"breakEnable": "0",
+"comingSoonButton": null,
+"debugOnOff": "0",
+"mainMenuNotify": {
+"node": "541797465010940438"
+},
+"name": "BottomBarUICoreLayer"
+}, {
+"configSO": {
+"asset": "FreeGoldConfigSO.asset"
+},
+"name": "MainMenuNotify",
+"numberRankUpTxt": {
+"node": "4278580858579348551"
+}
+}, {
+"_blockToggles": [{
+"Button": {
+"node": "5371431660526846541"
+},
+"Toggle": {
+"node": "4165908520715539598"
+}
+}],
+"name": "BottomBarBlockButton"
+}],
+"id": "541797465010940438",
+"n": "BottomBarLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Panel" type="Control" parent="BottomBarLayer" unique_id=1500044409]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"ForcePush": "0",
+"animShowUI": null,
+"moveMode": "0",
+"moveUpPercent": "100",
+"name": "UIAdsBannerResize",
+"targetToAdjust": {
+"node": "3668434486979587279"
+}
+}],
+"id": "4074601363243872955",
+"n": "Panel",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="BottomBar" type="Control" parent="BottomBarLayer/Panel" unique_id=631284298]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -160.0
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "ToggleGroup"
+}, {
+"AdsHeight": "0",
+"duration": "0.5",
+"ease": "5",
+"endPosition": {
+"x": "0",
+"y": "0"
+},
+"name": "AnimShowUIElement",
+"overrideEndPosition": {
+"x": "0",
+"y": "0"
+},
+"overrideIngame": "0",
+"overrideStartPosition": {
+"x": "0",
+"y": "0"
+},
+"rectTransform": {
+"node": "3668434486979587279"
+},
+"startPosition": {
+"x": "0",
+"y": "-240"
+}
+}],
+"id": "3668434486979587279",
+"lay": {
+"al": 0.0,
+"ch": true,
+"cw": true,
+"eh": true,
+"ew": true,
+"pad": [0.0, 0.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "h"
+},
+"n": "BottomBar",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 160.0, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 160)
+}
+
+[node name="BG" type="Control" parent="BottomBarLayer/Panel/BottomBar" unique_id=1794116441]
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+color = Color(0.14509805, 0.42352942, 0.7019608, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "9126913047188180747",
+"img": {
+"c": "256cb3ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "BG",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="BG (1)" type="Control" parent="BottomBarLayer/Panel/BottomBar/BG" unique_id=1727856084]
+anchors_preset = 0
+anchor_right = 1.0
+offset_top = -51.409897
+offset_bottom = 9.6098995
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+color = Color(0, 0.07450981, 0.14901961, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4236424084402358321",
+"img": {
+"c": "001326ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "BG (1)",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, 20.9, 0.0, 61.0198, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 20.9),
+"size": Vector2(0, 61.0198)
+}
+
+[node name="Shop" type="Button" parent="BottomBarLayer/Panel/BottomBar" unique_id=1770440479]
+layout_mode = 0
+offset_bottom = 160.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t3qrc")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_l8c1l")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_vfc4u")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_icgi4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_jpkhp")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_5nkfu")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_i5rq7")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_1x18x")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_sd112")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_pc0n4")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_stffx")
+toggle_mode = true
+flat = true
+script = ExtResource("2_oy4hg")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "ShopUIToggle",
+"switchAnimator": {
+"node": "1525116957172944686"
+},
+"tabType": "2"
+}, {
+"OnValueChange": [],
+"changeColor": "0",
+"changeSprite": "0",
+"flexibleOff": {
+"x": "1",
+"y": "1"
+},
+"flexibleOn": {
+"x": "1.2",
+"y": "1"
+},
+"gameObjects": [],
+"hasIcon": "1",
+"hasTitle": "1",
+"icon": {
+"node": "6064247110983249770"
+},
+"iconAnchorOff": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconAnchorOn": {
+"x": "0",
+"y": "75",
+"z": "0"
+},
+"iconScaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"iconScaleOn": {
+"x": "1.5",
+"y": "1.5",
+"z": "1.5"
+},
+"isSmoothIcon": "1",
+"isSmoothScaleChange": "0",
+"isSmoothSpriteChange": "0",
+"isSmoothTitle": "1",
+"layoutElement": null,
+"name": "ToggleAnimator",
+"offColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"offObjects": [],
+"offSprite": null,
+"onColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"onObjects": [],
+"onSprite": null,
+"scaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"scaleOn": {
+"x": "1.2",
+"y": "1.2",
+"z": "1.2"
+},
+"scaleType": "0",
+"sizeDeltaOff": {
+"x": "1",
+"y": "1"
+},
+"sizeDeltaOn": {
+"x": "1.2",
+"y": "1.2"
+},
+"targetImage": {
+"node": "2790576288332518492"
+},
+"timeSmoothIcon": "0.2",
+"timeSmoothScale": "0.2",
+"timeSmoothSprite": "0.2",
+"timeSmoothTitle": "0.2",
+"title": {
+"node": "759091681175929297"
+},
+"toggle": {
+"node": "1525116957172944686"
+}
+}],
+"id": "1525116957172944686",
+"n": "Shop",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"snd": true,
+"tog": {
+"c": ["ffffffff", "ffffffff", "ffffffff", "ffffffff"],
+"dur": 0.1,
+"graphic": "3673968078928573181",
+"group": "3668434486979587279",
+"inter": true,
+"mult": 1.0,
+"on": false,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "2790576288332518492",
+"tr": 1.0
+},
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -80),
+"size": Vector2(0, 160)
+}
+
+[node name="Background" type="Control" parent="BottomBarLayer/Panel/BottomBar/Shop" unique_id=783397915]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(936, 523, 228, 132)
+border = Vector4(40, 40, 40, 0)
+border_scale = 0.6666666666666666
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2790576288332518492",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_62",
+"t": 1.0
+},
+"n": "Background",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Checkmark" type="Control" parent="BottomBarLayer/Panel/BottomBar/Shop/Background" unique_id=2000202096]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -180.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(936, 672, 228, 132)
+border = Vector4(40, 40, 40, 0)
+border_scale = 0.6666666666666666
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3673968078928573181",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_63",
+"t": 1.0
+},
+"n": "Checkmark",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 90.0, 0.0, 180.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 90),
+"size": Vector2(0, 180)
+}
+
+[node name="Image" type="Control" parent="BottomBarLayer/Panel/BottomBar/Shop" unique_id=2116003694]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(258, 1, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6064247110983249770",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_1",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 128.0, 128.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(128, 128)
+}
+
+[node name="Text (TMP)" type="Label" parent="BottomBarLayer/Panel/BottomBar/Shop" unique_id=1303279897]
+material = SubResource("ShaderMaterial_hwtlu")
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -81.4724
+offset_right = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_aldv7")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 59
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "SHOP"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "759091681175929297",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, -48.0, 81.4724, 0.5, 0.0],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 59.35,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "SHOP",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 0),
+"size": Vector2(-48, 81.4724)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 59.35,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "SHOP",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="@Control@3" type="Control" parent="BottomBarLayer/Panel/BottomBar/Shop" unique_id=2124384282]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -83.667
+offset_top = 5.6000023
+offset_right = -19.667
+offset_bottom = 69.6
+pivot_offset_ratio = Vector2(0.1, 0.9)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(1100, 816, 96, 96)
+color = Color(1, 1, 1, 0)
+pivot = Vector2(0.1, 0.1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"OnNotifyStateActive": [{
+"arg": null,
+"method": "StartScaleAnim",
+"target": "6698791566017602888"
+}],
+"OnNotifyStateInActive": [{
+"arg": null,
+"method": "StopScaleAnim",
+"target": "6698791566017602888"
+}],
+"keyName": "1",
+"name": "NotifyElement",
+"notifyGO": null,
+"notifyImge": {
+"node": "6698791566017602888"
+}
+}, {
+"ActiveOnStart": "0",
+"duration": "0.5",
+"loopCount": "-1",
+"name": "UIAnimScale",
+"rectTransforms": [{
+"node": "6698791566017602888"
+}],
+"scaleValue": "1.2"
+}],
+"id": "6698791566017602888",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_73",
+"t": 0.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, -77.267, -63.2, 64.0, 64.0, 0.1, 0.1]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0.1, 0.1),
+"pos": Vector2(-77.267, -63.2),
+"size": Vector2(64, 64)
+}
+
+[node name="Home" type="Button" parent="BottomBarLayer/Panel/BottomBar" unique_id=1291488322]
+layout_mode = 0
+offset_bottom = 160.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gkyv7")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_6018f")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_i1ua6")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_pw0du")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_34hrc")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_5ebbj")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k5jio")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_55pfv")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_dpfru")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_e11kf")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gtjro")
+toggle_mode = true
+button_pressed = true
+flat = true
+script = ExtResource("2_oy4hg")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "HomeUIToggle",
+"switchAnimator": {
+"node": "4165908520715539598"
+},
+"tabType": "1"
+}, {
+"OnValueChange": [],
+"changeColor": "0",
+"changeSprite": "0",
+"flexibleOff": {
+"x": "1",
+"y": "1"
+},
+"flexibleOn": {
+"x": "1.2",
+"y": "1"
+},
+"gameObjects": [],
+"hasIcon": "1",
+"hasTitle": "1",
+"icon": {
+"node": "3519057903359736688"
+},
+"iconAnchorOff": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconAnchorOn": {
+"x": "0",
+"y": "75",
+"z": "0"
+},
+"iconScaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"iconScaleOn": {
+"x": "1.5",
+"y": "1.5",
+"z": "1.5"
+},
+"isSmoothIcon": "1",
+"isSmoothScaleChange": "0",
+"isSmoothSpriteChange": "0",
+"isSmoothTitle": "0",
+"layoutElement": null,
+"name": "ToggleAnimator",
+"offColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"offObjects": [],
+"offSprite": null,
+"onColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"onObjects": [],
+"onSprite": null,
+"scaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"scaleOn": {
+"x": "1.2",
+"y": "1.2",
+"z": "1.2"
+},
+"scaleType": "0",
+"sizeDeltaOff": {
+"x": "1",
+"y": "1"
+},
+"sizeDeltaOn": {
+"x": "1.2",
+"y": "1.2"
+},
+"targetImage": {
+"node": "5371431660526846541"
+},
+"timeSmoothIcon": "0.2",
+"timeSmoothScale": "0.2",
+"timeSmoothSprite": "0.2",
+"timeSmoothTitle": "0.2",
+"title": {
+"node": "9091951256603889885"
+},
+"toggle": {
+"node": "4165908520715539598"
+}
+}],
+"id": "4165908520715539598",
+"n": "Home",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"snd": true,
+"tog": {
+"c": ["ffffffff", "ffffffff", "ffffffff", "ffffffff"],
+"dur": 0.1,
+"graphic": "8480378384939570699",
+"group": "3668434486979587279",
+"inter": true,
+"mult": 1.0,
+"on": true,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5371431660526846541",
+"tr": 1.0
+},
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -80),
+"size": Vector2(0, 160)
+}
+
+[node name="Background" type="Button" parent="BottomBarLayer/Panel/BottomBar/Home" unique_id=779367204]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ut15b")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_5xha1")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_fw0xp")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_8r1c2")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_lwsdr")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_yigmw")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_om2cv")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_swu6v")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_asctl")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_oebsn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_fbueq")
+flat = true
+script = ExtResource("2_oy4hg")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5371431660526846541",
+"tr": 0.0
+},
+"id": "5371431660526846541",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_62",
+"t": 1.0
+},
+"n": "Background",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" type="Control" parent="BottomBarLayer/Panel/BottomBar/Home/Background" unique_id=608135307]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(936, 523, 228, 132)
+border = Vector4(40, 40, 40, 0)
+border_scale = 0.6666666666666666
+kind = 1
+fill_method = 4
+
+[node name="Checkmark" type="Control" parent="BottomBarLayer/Panel/BottomBar/Home/Background" unique_id=751451140]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -180.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(936, 672, 228, 132)
+border = Vector4(40, 40, 40, 0)
+border_scale = 0.6666666666666666
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8480378384939570699",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_63",
+"t": 1.0
+},
+"n": "Checkmark",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 90.0, 0.0, 180.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 90),
+"size": Vector2(0, 180)
+}
+
+[node name="Image" type="Control" parent="BottomBarLayer/Panel/BottomBar/Home" unique_id=1511625176]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(0, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3519057903359736688",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_0",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 128.0, 128.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(128, 128)
+}
+
+[node name="Text (TMP)" type="Label" parent="BottomBarLayer/Panel/BottomBar/Home" unique_id=1077504067]
+material = SubResource("ShaderMaterial_hwtlu")
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -81.4724
+offset_right = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_six7w")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 59
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "HOME"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "9091951256603889885",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, -48.0, 81.4724, 0.5, 0.0],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 59.35,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "HOME",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 0),
+"size": Vector2(-48, 81.4724)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 59.35,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "HOME",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Leaderboard" type="Control" parent="BottomBarLayer/Panel/BottomBar" unique_id=2070624616]
+anchors_preset = 0
+offset_bottom = 160.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"OnValueChange": [],
+"changeColor": "0",
+"changeSprite": "0",
+"flexibleOff": {
+"x": "1",
+"y": "1"
+},
+"flexibleOn": {
+"x": "1.2",
+"y": "1"
+},
+"gameObjects": [],
+"hasIcon": "1",
+"hasTitle": "1",
+"icon": {
+"node": "1299165269604100357"
+},
+"iconAnchorOff": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconAnchorOn": {
+"x": "0",
+"y": "75",
+"z": "0"
+},
+"iconScaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"iconScaleOn": {
+"x": "1.5",
+"y": "1.5",
+"z": "1.5"
+},
+"isSmoothIcon": "1",
+"isSmoothScaleChange": "0",
+"isSmoothSpriteChange": "0",
+"isSmoothTitle": "1",
+"layoutElement": null,
+"name": "ToggleAnimator",
+"offColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"offObjects": [],
+"offSprite": null,
+"onColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"onObjects": [],
+"onSprite": null,
+"scaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"scaleOn": {
+"x": "1.2",
+"y": "1.2",
+"z": "1.2"
+},
+"scaleType": "0",
+"sizeDeltaOff": {
+"x": "1",
+"y": "1"
+},
+"sizeDeltaOn": {
+"x": "1.2",
+"y": "1.2"
+},
+"targetImage": {
+"node": "6001221642335399878"
+},
+"timeSmoothIcon": "0.2",
+"timeSmoothScale": "0.2",
+"timeSmoothSprite": "0.2",
+"timeSmoothTitle": "0.2",
+"title": {
+"node": "3860889560034116447"
+},
+"toggle": {
+"node": "401802645665651629"
+}
+}, {
+"activeGO": {
+"node": "401802645665651629"
+},
+"inactiveGO": {
+"node": "1007082979669727697"
+},
+"name": "LeaderboardUIToggle",
+"switchAnimator": {
+"node": "8688772847455922467"
+},
+"tabType": "3"
+}],
+"id": "8688772847455922467",
+"n": "Leaderboard",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -80),
+"size": Vector2(0, 160)
+}
+
+[node name="ActiveGroup" type="Button" parent="BottomBarLayer/Panel/BottomBar/Leaderboard" unique_id=633774889]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_l5rv4")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_dj7kq")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_mhbt6")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_ptt8s")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_dnbnp")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_exjnh")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_36q3e")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_g3rk4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_ybmgt")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_pjp0y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_1f2ak")
+toggle_mode = true
+flat = true
+script = ExtResource("2_oy4hg")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)])
+sound = true
+metadata/u = {
+"a": true,
+"id": "401802645665651629",
+"n": "ActiveGroup",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"snd": true,
+"tog": {
+"c": ["ffffffff", "ffffffff", "ffffffff", "ffffffff"],
+"dur": 0.1,
+"graphic": "7480922655154072052",
+"group": "3668434486979587279",
+"inter": true,
+"mult": 1.0,
+"on": false,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "6001221642335399878",
+"tr": 1.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Background" type="Control" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/ActiveGroup" unique_id=2132924453]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(936, 523, 228, 132)
+border = Vector4(40, 40, 40, 0)
+border_scale = 0.6666666666666666
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6001221642335399878",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_62",
+"t": 1.0
+},
+"n": "Background",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Checkmark" type="Control" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/ActiveGroup/Background" unique_id=1607778031]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -180.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(936, 672, 228, 132)
+border = Vector4(40, 40, 40, 0)
+border_scale = 0.6666666666666666
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7480922655154072052",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_63",
+"t": 1.0
+},
+"n": "Checkmark",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 90.0, 0.0, 180.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 90),
+"size": Vector2(0, 180)
+}
+
+[node name="Image" type="Control" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/ActiveGroup" unique_id=2075725201]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(517, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1299165269604100357",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_2",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 128.0, 128.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(128, 128)
+}
+
+[node name="Text (TMP)" type="Label" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/ActiveGroup" unique_id=348783828]
+material = SubResource("ShaderMaterial_hwtlu")
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -81.4724
+offset_right = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pvqap")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "LEADERBOARD"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "3860889560034116447",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, -48.0, 81.4724, 0.5, 0.0],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.7,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "LEADERBOARD",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 0),
+"size": Vector2(-48, 81.4724)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.7,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "LEADERBOARD",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="@Control@4" type="Control" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/ActiveGroup" unique_id=1929511544]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -83.667
+offset_top = 5.6000023
+offset_right = -19.667
+offset_bottom = 69.6
+pivot_offset_ratio = Vector2(0.1, 0.9)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(1100, 816, 96, 96)
+color = Color(1, 1, 1, 0)
+pivot = Vector2(0.1, 0.1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"OnNotifyStateActive": [{
+"arg": null,
+"method": "StartScaleAnim",
+"target": "5313515785542322939"
+}],
+"OnNotifyStateInActive": [{
+"arg": null,
+"method": "StopScaleAnim",
+"target": "5313515785542322939"
+}],
+"keyName": "3",
+"name": "NotifyElement",
+"notifyGO": null,
+"notifyImge": {
+"node": "5313515785542322939"
+}
+}, {
+"ActiveOnStart": "0",
+"duration": "0.5",
+"loopCount": "-1",
+"name": "UIAnimScale",
+"rectTransforms": [{
+"node": "5313515785542322939"
+}],
+"scaleValue": "1.2"
+}],
+"id": "5313515785542322939",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_73",
+"t": 0.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, -77.267, -63.2, 64.0, 64.0, 0.1, 0.1]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0.1, 0.1),
+"pos": Vector2(-77.267, -63.2),
+"size": Vector2(64, 64)
+}
+
+[node name="Image (1)" type="Control" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/ActiveGroup" unique_id=1162994118]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -173.13501
+offset_top = -181.5
+offset_right = 123.535
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(765, 595, 168, 140)
+border = Vector4(32, 32, 111, 60)
+kind = 1
+pivot = Vector2(0.5, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"OnNotifyStateActive": [],
+"OnNotifyStateInActive": [],
+"keyName": "4",
+"name": "NotifyElement",
+"notifyGO": {
+"node": "6128841508034280015"
+},
+"notifyImge": {
+"node": "4233948847484343322"
+}
+}],
+"id": "6128841508034280015",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_34",
+"t": 1.0
+},
+"n": "Image (1)",
+"r": [0.5, 1.0, 0.5, 1.0, -24.8, 0.0, 296.67, 181.5, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(-24.8, 0),
+"size": Vector2(296.67, 181.5)
+}
+
+[node name="Text (TMP) (1)" type="Label" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/ActiveGroup/Image (1)" unique_id=946189857]
+material = SubResource("ShaderMaterial_qejyp")
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 15.0
+offset_top = 13.2
+offset_right = -15.0
+offset_bottom = 83.0
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dvabd")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 45
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Your rank:"
+horizontal_alignment = 1
+metadata/u = {
+"a": true,
+"id": "1682983818338815150",
+"n": "Text (TMP) (1)",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -13.2, -30.0, 69.8, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Black",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Your rank:",
+"st": 0.0,
+"v": 256.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -13.2),
+"size": Vector2(-30, 69.8)
+}
+metadata/u_txt = {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Black",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Your rank:",
+"st": 0.0,
+"v": 256.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Text (TMP) (2)" type="Label" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/ActiveGroup/Image (1)" unique_id=1550417971]
+material = SubResource("ShaderMaterial_qejyp")
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 28.260002
+offset_top = 64.49
+offset_right = -147.15
+offset_bottom = 134.29001
+grow_horizontal = 0
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3f4by")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 45
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "4"
+horizontal_alignment = 2
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "4278580858579348551",
+"n": "Text (TMP) (2)",
+"r": [0.0, 1.0, 1.0, 1.0, -59.445, -64.49, -175.41, 69.8, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 4.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Black",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "4",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(-59.445, -64.49),
+"size": Vector2(-175.41, 69.8)
+}
+metadata/u_txt = {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 4.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Black",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "4",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/ActiveGroup/Image (1)" unique_id=941319836]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 9.5
+offset_top = -15.780001
+offset_right = 59.5
+offset_bottom = 34.22
+pivot_offset_ratio = Vector2(0.1, 0.9)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+tex = ExtResource("6_0e6b2")
+region = Rect2(152, 164, 52, 52)
+pivot = Vector2(0.1, 0.1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4233948847484343322",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_9",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 14.5, -29.22, 50.0, 50.0, 0.1, 0.1]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.1, 0.1),
+"pos": Vector2(14.5, -29.22),
+"size": Vector2(50, 50)
+}
+
+[node name="DeactiveGroup" type="Button" parent="BottomBarLayer/Panel/BottomBar/Leaderboard" unique_id=1928872966]
+visible = false
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_u0ips")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_sa3h7")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_74nn1")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_chn0g")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_tutfb")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_u56un")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_hyou7")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_jis80")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_hg2sd")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_hf38x")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_x8f5g")
+flat = true
+script = ExtResource("2_oy4hg")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "3638168977867219094",
+"tr": 1.0
+},
+"id": "1007082979669727697",
+"n": "DeactiveGroup",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Background" type="Control" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/DeactiveGroup" unique_id=782349874]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(936, 523, 228, 132)
+border = Vector4(40, 40, 40, 0)
+border_scale = 0.6666666666666666
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3638168977867219094",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_62",
+"t": 1.0
+},
+"n": "Background",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="BottomBarLayer/Panel/BottomBar/Leaderboard/DeactiveGroup" unique_id=1694664981]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_27ipc")
+tex = ExtResource("3_5pwah")
+region = Rect2(98, 515, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5903952428824068157",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_18",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 128.0, 128.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(128, 128)
+}

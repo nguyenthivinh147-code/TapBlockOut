@@ -1,0 +1,659 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="1_20y4h"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup2.png" id="2_u6mvj"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="3_2g6on"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="4_ea8vm"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="5_3tbbx"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="6_fgh0u"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("3_2g6on")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ecbi3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("4_ea8vm")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_60dnx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_luo4m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gotfl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m0bkd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3e85r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wtsgi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1okd7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uqerb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ilcio"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_evkao"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iig5i"]
+
+[node name="Canvas" type="Control" unique_id=88385224]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "SpeedUpTutorialLayer"
+
+[node name="SpeedUpTutorialLayer" type="Control" parent="." unique_id=1722772808]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 32767.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"breakEnable": "0",
+"debugOnOff": "0",
+"name": "UISpeedUpTutorialLayer",
+"tutorialSteps": [{
+"node": "2278075681059089971"
+}]
+}, {
+"debugLog": "0",
+"name": "SafeAreaUIAdjuster",
+"rectPanelSafes": [{
+"node": "5676859109278462881"
+}]
+}],
+"id": "5676859109278462881",
+"n": "SpeedUpTutorialLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Panel" type="Control" parent="SpeedUpTutorialLayer" unique_id=970659876]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -386.2
+offset_top = -583.39
+offset_right = 386.2
+offset_bottom = -383.39
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "8521110720646267982",
+"n": "Panel",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 483.39, 772.4, 200.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 483.39),
+"size": Vector2(772.4, 200)
+}
+
+[node name="Image" type="Control" parent="SpeedUpTutorialLayer/Panel" unique_id=2143585656]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_20y4h")
+tex = ExtResource("2_u6mvj")
+region = Rect2(0, 0, 800, 800)
+border = Vector4(120, 120, 120, 120)
+border_scale = 0.4587155963302752
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "265319172560652174",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.18,
+"rt": true,
+"sp": "Popup2",
+"t": 1.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="NPC" type="Control" parent="SpeedUpTutorialLayer/Panel" unique_id=20312672]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -169.43256
+offset_top = -176.23256
+offset_right = 136.83255
+offset_bottom = 130.03255
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3913578804408113379",
+"n": "NPC",
+"r": [0.0, 0.5, 0.0, 0.5, -16.3, 23.1, 306.2651, 306.2651, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-16.3, 23.1),
+"size": Vector2(306.2651, 306.2651)
+}
+
+[node name="Canvas" type="Control" parent="SpeedUpTutorialLayer/Panel" unique_id=637035173]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"id": "3576783509056098112",
+"n": "Canvas",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Text (TMP)" type="Label" parent="SpeedUpTutorialLayer/Panel/Canvas" unique_id=49792630]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_right = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ecbi3")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Tap here to double the conveyor speed"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "3340748270032341426",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -40.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 44.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Tap here to double the conveyor speed",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-40, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 44.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Tap here to double the conveyor speed",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="GameObject" type="Control" parent="SpeedUpTutorialLayer" unique_id=625383673]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -886.0
+offset_bottom = 1920.0
+pivot_offset_ratio = Vector2(1, 0)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6689267149989120801",
+"n": "GameObject",
+"r": [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 886.0, 1920.0, 1.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(886, 1920)
+}
+
+[node name="Block" type="Control" parent="SpeedUpTutorialLayer/GameObject" unique_id=1759840640]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 1
+script = ExtResource("1_20y4h")
+color = Color(1, 1, 1, 0)
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9106521653725269209",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Block",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Step1" type="Control" parent="SpeedUpTutorialLayer/GameObject" unique_id=978481035]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "TutController_Step1",
+"on": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"animator": {
+"node": "2278075681059089971"
+},
+"canvasGroup": {
+"node": "2278075681059089971"
+},
+"name": "SpeedUpStep",
+"prefab": {
+"node": "2278075681059089971"
+},
+"speedUpTutorialData": {
+"asset": "SpeedUpTutorialSO.asset"
+},
+"stepIndex": "1",
+"targetButton": {
+"node": "6586465823932898560"
+}
+}],
+"id": "2278075681059089971",
+"n": "Step1",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Hand" type="Control" parent="SpeedUpTutorialLayer/GameObject/Step1" unique_id=1282136557]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 298.02
+offset_top = -753.07
+offset_right = 398.02
+offset_bottom = -653.07
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4250250045236606069",
+"n": "Hand",
+"r": [0.5, 0.5, 0.5, 0.5, 348.02, 703.07, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(348.02, 703.07),
+"size": Vector2(100, 100)
+}
+
+[node name="TargetButton" type="Button" parent="SpeedUpTutorialLayer/GameObject/Step1/Hand" unique_id=1672860735]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -193.522
+offset_top = -110.3
+offset_right = 45.778
+offset_bottom = 26.300003
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_60dnx")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_luo4m")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_gotfl")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_m0bkd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_3e85r")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_wtsgi")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_1okd7")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_uqerb")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_ilcio")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_evkao")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_iig5i")
+flat = true
+script = ExtResource("5_3tbbx")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "6586465823932898560",
+"tr": 1.0
+},
+"id": "6586465823932898560",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "TargetButton",
+"r": [0.5, 0.5, 0.5, 0.5, -73.872, 42.0, 239.3, 136.6, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-73.872, 42),
+"size": Vector2(239.3, 136.6)
+}
+
+[node name="image" type="Control" parent="SpeedUpTutorialLayer/GameObject/Step1/Hand/TargetButton" unique_id=1008180219]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_20y4h")
+kind = 1
+color = Color(1, 1, 1, 0)
+fill_method = 4
+
+[node name="TapFx" type="Control" parent="SpeedUpTutorialLayer/GameObject/Step1/Hand" unique_id=1559966913]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -135.27411
+offset_top = -129.27411
+offset_right = 15.274101
+offset_bottom = 21.274101
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_20y4h")
+tex = ExtResource("6_fgh0u")
+region = Rect2(52, 641, 128, 128)
+color = Color(1, 1, 1, 0.19607843)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2638067187781154079",
+"img": {
+"c": "ffffff32",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_63",
+"t": 0.0
+},
+"n": "TapFx",
+"r": [0.5, 0.5, 0.5, 0.5, -60.0, 54.0, 150.5482, 150.5482, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-60, 54),
+"size": Vector2(150.5482, 150.5482)
+}
+
+[node name="TapFx2" type="Control" parent="SpeedUpTutorialLayer/GameObject/Step1/Hand" unique_id=874597721]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -90.6
+offset_right = -20.0
+offset_bottom = -10.599998
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_20y4h")
+tex = ExtResource("6_fgh0u")
+region = Rect2(52, 773, 56, 56)
+color = Color(1, 1, 1, 0.40392157)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "1566819623762813551",
+"img": {
+"c": "ffffff67",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_64",
+"t": 0.0
+},
+"n": "TapFx2",
+"r": [0.5, 0.5, 0.5, 0.5, -60.0, 50.6, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-60, 50.6),
+"size": Vector2(80, 80)
+}
+
+[node name="HandSprite" type="Control" parent="SpeedUpTutorialLayer/GameObject/Step1/Hand" unique_id=1392568456]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -212.6
+offset_top = -44.2
+offset_right = -64.600006
+offset_bottom = 103.8
+scale = Vector2(-1.25, 1.25)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_20y4h")
+tex = ExtResource("6_fgh0u")
+region = Rect2(766, 264, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5313378795592166384",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_19",
+"t": 0.0
+},
+"n": "HandSprite",
+"r": [0.5, 0.5, 0.5, 0.5, -138.6, -29.8, 148.0, 148.0, 0.5, 0.5],
+"s": [-1.25, 1.25]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-138.6, -29.8),
+"size": Vector2(148, 148)
+}

@@ -23,11 +23,11 @@ var _msg: Label = null
 var ui: RefCounted = null
 
 
+## Runs once: the layer is a node of scenes/popup_rescue.tscn (the caller opens a new popup for every offer).
 func setup(args: Dictionary) -> void:
+	if ui != null:
+		return
 	_args = args
-	for c in get_children():
-		remove_child(c)
-		c.queue_free()
 	_build()
 
 

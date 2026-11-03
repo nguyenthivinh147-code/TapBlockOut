@@ -1,0 +1,1664 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="1_ptweb"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="2_57jss"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_league1.png" id="3_47d5g"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="4_e6yhg"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="5_4gxkj"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="6_jnsxb"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_league3.png" id="7_5r3xb"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_league2.png" id="8_nms6f"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_ranking2.png" id="9_x4bmy"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_ranking1.png" id="10_wpwip"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_neqsn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yuvxc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nvmec"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y1gxa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_osyph"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0gimx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5f8lh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x16e5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c4nvh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cjmmb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rhiu8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("4_e6yhg")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ye6ff"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("5_4gxkj")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x1w6l"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wqikg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b1ri6"]
+shader = ExtResource("4_e6yhg")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.22352941, 0.06666667, 0.003921569, 1)
+shader_parameter/underlay_color = Color(0.22352941, 0.06666667, 0.003921569, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.05828571516
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.1445)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5jeaa"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_51gwy"]
+base_font = ExtResource("5_4gxkj")
+spacing_glyph = -2
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vunfw"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3pbh3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3g6n2"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lrqyu"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mw5pm"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s8d6t"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ce380"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=1314979314]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "PopupWinStreakInfo"
+
+[node name="PopupWinStreakInfo" type="Control" parent="." unique_id=2106947101]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"id": "4690541560169085059",
+"n": "PopupWinStreakInfo",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 0),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Panel" type="Button" parent="PopupWinStreakInfo" unique_id=1571878270]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_neqsn")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_yuvxc")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_nvmec")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_y1gxa")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_osyph")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_0gimx")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_5f8lh")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_x16e5")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_c4nvh")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_cjmmb")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rhiu8")
+flat = true
+script = ExtResource("1_ptweb")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4416965250531763950",
+"tr": 1.0
+},
+"id": "4416965250531763950",
+"img": {
+"c": "000000fc",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Panel",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" type="Control" parent="PopupWinStreakInfo/Panel" unique_id=1367073761]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_57jss")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="LeaguesDesc" type="Control" parent="PopupWinStreakInfo/Panel" unique_id=1327468321]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"_animDuration": "0.8",
+"_delayBetweenSteps": "0.3",
+"_step1": {
+"node": "4202317718471214780"
+},
+"_step2": {
+"node": "1507915892260074308"
+},
+"_step3": {
+"node": "6178694998781776502"
+},
+"_step4": {
+"node": "7419449410973632042"
+},
+"name": "LeaderboarDescriptionAnim"
+}],
+"id": "7100209783628716400",
+"n": "LeaguesDesc",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(100, 100)
+}
+
+[node name="Step1" type="Control" parent="PopupWinStreakInfo/Panel/LeaguesDesc" unique_id=713156446]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -396.3
+offset_top = -758.0
+offset_right = 3.699997
+offset_bottom = -358.0
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_57jss")
+tex = ExtResource("3_47d5g")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4202317718471214780",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "ic_league1",
+"t": 0.0
+},
+"n": "Step1",
+"r": [0.5, 0.5, 0.5, 0.5, -196.3, 558.0, 400.0, 400.0, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-196.3, 558),
+"size": Vector2(400, 400)
+}
+
+[node name="Desc" type="Label" parent="PopupWinStreakInfo/Panel/LeaguesDesc/Step1" unique_id=1675572455]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -202.8
+offset_top = -28.6
+offset_right = 202.8
+offset_bottom = 109.9
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ye6ff")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 45
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Collect points as you complete levels!"
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "1856720778199893786",
+"n": "Desc",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 28.6, 405.6, 138.5, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.9,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Collect points as you complete levels!",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 28.6),
+"size": Vector2(405.6, 138.5)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.9,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Collect points as you complete levels!",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="PopupWinStreakInfo/Panel/LeaguesDesc/Step1" unique_id=564924950]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 291.02
+offset_top = -40.5
+offset_right = 491.02
+offset_bottom = 159.5
+rotation = 1.0471976
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_57jss")
+tex = ExtResource("6_jnsxb")
+region = Rect2(1279, 1868, 180, 180)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6767676485681947947",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_98",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 391.02, -59.5, 200.0, 200.0, 0.5, 0.5],
+"z": -60.0
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(391.02, -59.5),
+"size": Vector2(200, 200)
+}
+
+[node name="Step2" type="Control" parent="PopupWinStreakInfo/Panel/LeaguesDesc" unique_id=525676633]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 29.699997
+offset_top = -458.9
+offset_right = 429.7
+offset_bottom = -58.899994
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_57jss")
+tex = ExtResource("7_5r3xb")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1507915892260074308",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "ic_league3",
+"t": 0.0
+},
+"n": "Step2",
+"r": [0.5, 0.5, 0.5, 0.5, 229.7, 258.9, 400.0, 400.0, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(229.7, 258.9),
+"size": Vector2(400, 400)
+}
+
+[node name="Desc" type="Label" parent="PopupWinStreakInfo/Panel/LeaguesDesc/Step2" unique_id=193664938]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -208.0
+offset_top = -26.29
+offset_right = 208.0
+offset_bottom = 124.245995
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_x1w6l")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 39
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Rank among the TOP 10 players to move up to the next league!"
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2815883722066423637",
+"n": "Desc",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 26.29, 416.0, 150.536, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 38.85,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Rank among the TOP 10 players to move up to the next league!",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 26.29),
+"size": Vector2(416, 150.536)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 38.85,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Rank among the TOP 10 players to move up to the next league!",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image (1)" type="Control" parent="PopupWinStreakInfo/Panel/LeaguesDesc/Step2" unique_id=998500491]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -173.7
+offset_top = 360.1999
+offset_right = 26.300003
+offset_bottom = 560.1999
+rotation = 2.9862583
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_57jss")
+tex = ExtResource("6_jnsxb")
+region = Rect2(1279, 1868, 180, 180)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6088827250832427555",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_98",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, -73.7, -460.1999, 200.0, 200.0, 0.5, 0.5],
+"z": -171.1
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-73.7, -460.1999),
+"size": Vector2(200, 200)
+}
+
+[node name="Step3" type="Control" parent="PopupWinStreakInfo/Panel/LeaguesDesc" unique_id=1876417919]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -398.5
+offset_top = -3.300003
+offset_right = 1.5
+offset_bottom = 396.7
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_57jss")
+tex = ExtResource("8_nms6f")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6178694998781776502",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "ic_league2",
+"t": 0.0
+},
+"n": "Step3",
+"r": [0.5, 0.5, 0.5, 0.5, -198.5, -196.7, 400.0, 400.0, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-198.5, -196.7),
+"size": Vector2(400, 400)
+}
+
+[node name="Desc" type="Label" parent="PopupWinStreakInfo/Panel/LeaguesDesc/Step3" unique_id=201966573]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.755
+offset_top = -45.7
+offset_right = 200.755
+offset_bottom = 92.8
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wqikg")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Finish in the TOP 5 and receive rewards!"
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "1688478639772790211",
+"n": "Desc",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 45.7, 401.51, 138.5, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 43.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Finish in the TOP 5 and receive rewards!",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 45.7),
+"size": Vector2(401.51, 138.5)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 43.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Finish in the TOP 5 and receive rewards!",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="txtHeader" type="Label" parent="PopupWinStreakInfo/Panel/LeaguesDesc" unique_id=2031876375]
+material = SubResource("ShaderMaterial_b1ri6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -354.405
+offset_top = -847.76843
+offset_right = 360.405
+offset_bottom = -603.6316
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5jeaa")
+theme_override_constants/line_spacing = -53
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 100
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "HOW TO PLAY?"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "8330690810238500552",
+"n": "txtHeader",
+"r": [0.5, 0.5, 0.5, 0.5, 3.0, 725.7, 714.81, 244.1369, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 100.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - StarterPack",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "HOW TO PLAY?",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(3, 725.7),
+"size": Vector2(714.81, 244.1369)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 100.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - StarterPack",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "HOW TO PLAY?",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Desc" type="Label" parent="PopupWinStreakInfo/Panel/LeaguesDesc" unique_id=117108461]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = 526.0
+offset_right = 400.0
+offset_bottom = 664.5
+grow_horizontal = 2
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vunfw")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 53
+theme_override_colors/font_color = Color(0.99607843, 0.88235295, 0.07450981, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "League rankings are updated every Monday."
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "7419449410973632042",
+"n": "Desc",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -526.0, 800.0, 138.5, 0.5, 1.0],
+"s": [0.0, 0.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "fee113ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 52.8,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "League rankings are updated every Monday.",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -526),
+"size": Vector2(800, 138.5)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "fee113ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 52.8,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "League rankings are updated every Monday.",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="RankingDesc" type="Control" parent="PopupWinStreakInfo/Panel" unique_id=367858952]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"cs": [{
+"_animDuration": "0.8",
+"_delayBetweenSteps": "0.3",
+"_step1": {
+"node": "4582546163241076050"
+},
+"_step2": {
+"node": "9144115114903407410"
+},
+"_step3": {
+"node": "5048440439018444809"
+},
+"_step4": {
+"node": "456178163822094666"
+},
+"name": "LeaderboarDescriptionAnim"
+}],
+"id": "3198927028337197346",
+"n": "RankingDesc",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(100, 100)
+}
+
+[node name="Step1" type="Control" parent="PopupWinStreakInfo/Panel/RankingDesc" unique_id=1308865103]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -396.3
+offset_top = -733.4
+offset_right = 3.699997
+offset_bottom = -333.40002
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_57jss")
+tex = ExtResource("3_47d5g")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4582546163241076050",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "ic_league1",
+"t": 0.0
+},
+"n": "Step1",
+"r": [0.5, 0.5, 0.5, 0.5, -196.3, 533.4, 400.0, 400.0, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-196.3, 533.4),
+"size": Vector2(400, 400)
+}
+
+[node name="Desc" type="Label" parent="PopupWinStreakInfo/Panel/RankingDesc/Step1" unique_id=1038330880]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -202.8
+offset_top = -28.6
+offset_right = 202.8
+offset_bottom = 109.9
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3pbh3")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 51
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Earn points by completing levels!"
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "525871820016723742",
+"n": "Desc",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 28.6, 405.6, 138.5, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 50.5,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Earn points by completing levels!",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 28.6),
+"size": Vector2(405.6, 138.5)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 50.5,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Earn points by completing levels!",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="PopupWinStreakInfo/Panel/RankingDesc/Step1" unique_id=1493442366]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 291.02
+offset_top = 21.579903
+offset_right = 491.02
+offset_bottom = 221.5799
+rotation = 1.0471976
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_57jss")
+tex = ExtResource("6_jnsxb")
+region = Rect2(1279, 1868, 180, 180)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9213948754824043310",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_98",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 391.02, -121.5799, 200.0, 200.0, 0.5, 0.5],
+"z": -60.0
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(391.02, -121.5799),
+"size": Vector2(200, 200)
+}
+
+[node name="Step2" type="Control" parent="PopupWinStreakInfo/Panel/RankingDesc" unique_id=1334691651]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 29.700104
+offset_top = -376.9
+offset_right = 429.7001
+offset_bottom = 23.100006
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_57jss")
+tex = ExtResource("9_x4bmy")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9144115114903407410",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "ic_ranking2",
+"t": 0.0
+},
+"n": "Step2",
+"r": [0.5, 0.5, 0.5, 0.5, 229.7001, 176.9, 400.0, 400.0, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(229.7001, 176.9),
+"size": Vector2(400, 400)
+}
+
+[node name="Desc" type="Label" parent="PopupWinStreakInfo/Panel/RankingDesc/Step2" unique_id=1849275360]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -208.0
+offset_top = -26.29
+offset_right = 208.0
+offset_bottom = 124.245995
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3g6n2")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 57
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Be one of the TOP 3 players"
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "806746121692088831",
+"n": "Desc",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 26.29, 416.0, 150.536, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 57.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Be one of the TOP 3 players",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 26.29),
+"size": Vector2(416, 150.536)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 57.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Be one of the TOP 3 players",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image (1)" type="Control" parent="PopupWinStreakInfo/Panel/RankingDesc/Step2" unique_id=1466652069]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -173.7001
+offset_top = 353.1
+offset_right = 26.299896
+offset_bottom = 553.1
+rotation = 2.9862583
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_57jss")
+tex = ExtResource("6_jnsxb")
+region = Rect2(1279, 1868, 180, 180)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5849952797341737929",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_98",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, -73.7001, -453.1, 200.0, 200.0, 0.5, 0.5],
+"z": -171.1
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-73.7001, -453.1),
+"size": Vector2(200, 200)
+}
+
+[node name="Step3" type="Control" parent="PopupWinStreakInfo/Panel/RankingDesc" unique_id=260316710]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -398.5
+offset_top = 58.700012
+offset_right = 1.5
+offset_bottom = 458.7
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_57jss")
+tex = ExtResource("10_wpwip")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5048440439018444809",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "ic_ranking1",
+"t": 0.0
+},
+"n": "Step3",
+"r": [0.5, 0.5, 0.5, 0.5, -198.5, -258.7, 400.0, 400.0, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-198.5, -258.7),
+"size": Vector2(400, 400)
+}
+
+[node name="Desc" type="Label" parent="PopupWinStreakInfo/Panel/RankingDesc/Step3" unique_id=907262248]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.755
+offset_top = -45.7
+offset_right = 200.755
+offset_bottom = 92.8
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lrqyu")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 53
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Get featured in the Hall of Frame"
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2154281050142622009",
+"n": "Desc",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 45.7, 401.51, 138.5, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 52.8,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Get featured in the Hall of Frame",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 45.7),
+"size": Vector2(401.51, 138.5)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 52.8,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Get featured in the Hall of Frame",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="txtHeader (1)" type="Label" parent="PopupWinStreakInfo/Panel/RankingDesc" unique_id=184270857]
+material = SubResource("ShaderMaterial_b1ri6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -354.405
+offset_top = -834.4685
+offset_right = 360.405
+offset_bottom = -590.33154
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mw5pm")
+theme_override_constants/line_spacing = -53
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 100
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "HOW TO PLAY?"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "629508787164465312",
+"n": "txtHeader (1)",
+"r": [0.5, 0.5, 0.5, 0.5, 3.0, 712.4, 714.81, 244.1369, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 100.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - StarterPack",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "HOW TO PLAY?",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(3, 712.4),
+"size": Vector2(714.81, 244.1369)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 100.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - StarterPack",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "HOW TO PLAY?",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Desc" type="Label" parent="PopupWinStreakInfo/Panel/RankingDesc" unique_id=1499001289]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = 561.3
+offset_right = 400.0
+offset_bottom = 699.8
+grow_horizontal = 2
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_s8d6t")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 53
+theme_override_colors/font_color = Color(0.99607843, 0.88235295, 0.07450981, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "The Hall of Fame updates weekly and displays the TOP 3 positions"
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "456178163822094666",
+"n": "Desc",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -561.3, 800.0, 138.5, 0.5, 1.0],
+"s": [0.0, 0.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "fee113ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 52.8,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "The Hall of Fame updates weekly and displays the TOP 3 positions",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -561.3),
+"size": Vector2(800, 138.5)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "fee113ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 52.8,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "The Hall of Fame updates weekly and displays the TOP 3 positions",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="TapToContinueTxt" type="Label" parent="PopupWinStreakInfo/Panel" unique_id=513001310]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -245.9
+offset_top = 1750.4
+offset_right = 245.9
+offset_bottom = 1845.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ce380")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 35
+theme_override_colors/font_color = Color(1, 1, 1, 0.48235294)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Tap to continue"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "8982093110051392268",
+"n": "TapToContinueTxt",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -1798.0, 491.8, 95.2, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffff7b",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Tap to continue",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -1798),
+"size": Vector2(491.8, 95.2)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffff7b",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Tap to continue",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}

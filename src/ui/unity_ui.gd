@@ -15,6 +15,12 @@ const CUTOUT_SHADER := preload("res://src/ui/cutout_mask.gdshader")
 const FONT: FontFile = preload("res://assets/fonts/baloo.res")
 
 const DIR := "res://data/ui_unity/"
+## tools/bake_screen.gd: build the static tree only (no reveal, animations, auto size, scroll or button wiring).
+static var baking := false
+## One scene per layout, made by tools/bake_unity_ui.gd: the source of truth for every prefab layout.
+const BAKED := "res://scenes/unity/"
+## Metas adopt() sets on nodes; a copied subtree drops them before it is wired again.
+const RUNTIME_METAS := ["u_built", "u_slider", "u_input", "u_placeholder", "u_scale_loop", "u_fitting"]
 const REF := Vector2(886, 1920)
 ## TMP font asset "Baloo Bhaijaan Regular 400 SDF": line height and spacing in em/100.
 const TMP_POINT := 32.0
@@ -95,23 +101,31 @@ static func canvas_scale(vp: Vector2) -> float:
 	return vp.y / REF.y if vp.x / vp.y > 0.45 else vp.x / REF.x
 
 
-## Builds layer `layer` into owner. opts: reveal (default true) plays DialogueReveal on the next frame.
+## Builds layer `layer` into owner from its baked scene (BAKED, tools/bake_unity_ui.gd), or from the JSON when the
+## scene is missing. A Canvas of that layer already in owner (the screen's .tscn instances it) is used as is.
+## opts: reveal (default true) plays DialogueReveal on the next frame.
 static func build(owner: Control, layer: String, opts: Dictionary = {}) -> UView:
 	var data := layout(layer)
-	var canvas := Control.new()
-	canvas.name = "Canvas"
-	canvas.set_meta("u_canvas", true)
-	canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	owner.add_child(canvas)
+	var canvas := _baked_canvas(owner, layer)
+	if canvas == null:
+		canvas = instance(layer)
+		owner.add_child(canvas)
+	else:
+		# Drawn above what the screen added before building, as if it were added now.
+		owner.move_child(canvas, -1)
+	canvas.set_meta("u_built", true)
 	_fit_canvas(canvas, owner)
 	# One refit for every canvas of the owner: bound callables with the same number of binds compare equal, so a
 	# second build into the same owner could not connect a handler of its own.
 	if not owner.has_meta("u_fit"):
 		owner.set_meta("u_fit", true)
 		owner.resized.connect(_fit_canvases.bind(owner))
-	var v := build_subtree(data.get("root", {}), canvas, canvas)
+	var v := adopt(_prefab_root(canvas), canvas)
+	v.layer = layer
 	# Children of layout groups are saved at 0,0; Unity places them at runtime.
 	relayout(v.root)
+	if baking:
+		return v
 	if not v.reveal_cfg.is_empty() and bool(opts.get("reveal", true)):
 		_reveal_start(v)
 		play_reveal.call_deferred(v)
@@ -121,6 +135,95 @@ static func build(owner: Control, layer: String, opts: Dictionary = {}) -> UView
 			if cs.get(ev) is Array:
 				invoke_calls.call_deferred(v, cs[ev])
 	return v
+
+
+## New Canvas of a layer: its baked scene, else built from the JSON (no runtime wiring yet, see adopt).
+static func instance(layer: String) -> Control:
+	var path := BAKED + layer + ".tscn"
+	if ResourceLoader.exists(path):
+		var ps: PackedScene = load(path)
+		return ps.instantiate() as Control
+	return make_canvas(layer)
+
+
+## Canvas holding the prefab root of a layer, made from the JSON: what tools/bake_unity_ui.gd saves.
+static func make_canvas(layer: String) -> Control:
+	var canvas := Control.new()
+	canvas.name = "Canvas"
+	canvas.set_meta("u_canvas", true)
+	canvas.set_meta("u_layer", layer)
+	canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_make(layout(layer).get("root", {}), canvas, "", true, true)
+	return canvas
+
+
+## A Canvas of `layer` placed in owner by its scene and not built yet.
+static func _baked_canvas(owner: Control, layer: String) -> Control:
+	for c in owner.get_children():
+		if c is Control and c.has_meta("u_canvas") and str(c.get_meta("u_layer", "")) == layer and not c.has_meta("u_built") \
+				and not c.is_queued_for_deletion():
+			return c
+	return null
+
+
+static func _prefab_root(canvas: Control) -> Control:
+	for c in canvas.get_children():
+		if c is Control and c.has_meta("u"):
+			return c
+	return null
+
+
+## Unwired instance of a baked layer that clone() copies templates from; frees it with the last view using it.
+class Pristine extends RefCounted:
+	var canvas: Control = null
+	var paths := {}
+
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_PREDELETE and is_instance_valid(canvas):
+			canvas.free()
+
+
+static func pristine_of(layer: String) -> Pristine:
+	var p := Pristine.new()
+	p.canvas = instance(layer)
+	_collect_paths(_prefab_root(p.canvas), "", p.paths)
+	return p
+
+
+## Pristine copy of a layer node (Unity path from the prefab root, "" is the root), not in the tree and not wired;
+## null when the layer has no node there.
+static func pristine_copy(src: Pristine, p: String) -> Control:
+	var n: Variant = src.paths.get(p)
+	if n == null:
+		return null
+	return strip_runtime((n as Control).duplicate())
+
+
+static func _collect_paths(c: Control, path: String, out: Dictionary) -> void:
+	if c == null:
+		return
+	out[path] = c
+	var counts := {}
+	for ch in c.get_children():
+		if not (ch is Control and ch.has_meta("u")):
+			continue
+		var n := str((ch.get_meta("u") as Dictionary).get("n", "Node"))
+		counts[n] = int(counts.get(n, 0)) + 1
+		var key := n if counts[n] == 1 else "%s#%d" % [n, counts[n]]
+		_collect_paths(ch, key if path == "" else path + "/" + key, out)
+
+
+## Drops what adopt() adds at runtime (Animator, ScrollRect, input editors) from a copied subtree.
+static func strip_runtime(c: Control) -> Control:
+	for n in c.find_children("*", "", true, false):
+		if n.has_meta("u_rt") and is_instance_valid(n):
+			n.get_parent().remove_child(n)
+			n.free()
+	for n in [c] + c.find_children("*", "Control", true, false):
+		for m in RUNTIME_METAS:
+			if n.has_meta(m):
+				n.remove_meta(m)
+	return c
 
 
 ## Runs exported UnityEvent calls [{target, method, arg}] on built nodes.
@@ -175,16 +278,69 @@ static func _fit_canvas(canvas: Control, owner: Control) -> void:
 
 ## Builds one prefab subtree under parent; returns a view whose root is the new node.
 static func build_subtree(spec: Dictionary, parent: Control, canvas: Control) -> UView:
+	var root := _make(spec, parent, "", true, true)
+	root.set_meta("u_sub", true)
+	return adopt(root, canvas)
+
+
+## Wires a made or baked prefab subtree for runtime: node lookup, text auto size, Animators, button tints, scroll,
+## sliders, input fields, cutouts and the prefab's custom scripts. Properties saved in the scene are kept.
+static func adopt(root: Control, canvas: Control) -> UView:
 	var v := UView.new()
 	v.canvas = canvas
-	v.root = _node(spec, parent, v, "", true, true)
-	_scripts(v)
+	v.root = root
+	if root != null:
+		_wire(root, v, "")
+		if baking:
+			_collect(v.root, v)
+		else:
+			_scripts(v)
 	return v
 
 
-# --- nodes ---
+static func _wire(c: Control, v: UView, path: String) -> void:
+	var spec: Dictionary = c.get_meta("u", {})
+	v.paths[path] = c
+	v.ids[str(spec.get("id", ""))] = c
+	if c.has_meta("u_rect"):
+		rect_from_node(c)
+	if c is UButton:
+		var img := c.get_node_or_null("image")
+		if img is UImage:
+			(c as UButton).image = img
+	if c is Label and c.has_meta("u_txt") and (c.get_meta("u_txt") as Dictionary).get("auto") != null and not baking:
+		var fit := fit_text.bind(c)
+		if not c.resized.is_connected(fit):
+			c.resized.connect(fit)
+		_fit_later.call_deferred(c)
+	var counts := {}
+	for ch in c.get_children():
+		if not (ch is Control and ch.has_meta("u")):
+			continue
+		# A piece added with build_subtree (UnityKit) or clone() keeps its own view, as when it was built.
+		if ch.has_meta("u_sub"):
+			v.subs.append(adopt(ch, v.canvas))
+			continue
+		var n := str((ch.get_meta("u") as Dictionary).get("n", "Node"))
+		counts[n] = int(counts.get(n, 0)) + 1
+		var key := n if counts[n] == 1 else "%s#%d" % [n, counts[n]]
+		_wire(ch, v, key if path == "" else path + "/" + key)
+	if baking:
+		return
+	# A disabled Animator keeps the prefab's values until it is enabled (set_enabled, UView.animator()).
+	if spec.has("anim") and spec.anim.get("controller") != null and c.get_node_or_null("Animator") == null:
+		var clip := anim_clip(str(spec.anim.controller))
+		if not clip.is_empty():
+			var a := UAnim.new()
+			a.name = "Animator"
+			a.set_meta("u_rt", true)
+			a.enabled = bool(spec.anim.get("on", true))
+			c.add_child(a)
+			a.setup(c, clip)
 
-static func _node(spec: Dictionary, parent: Control, v: UView, path: String, rays: bool, inter: bool) -> Control:
+
+## Makes one prefab node and its children with every property the prefab sets; adopt() wires them.
+static func _make(spec: Dictionary, parent: Control, path: String, rays: bool, inter: bool) -> Control:
 	var c: Control
 	if spec.has("btn") or spec.has("tog"):
 		c = UButton.new()
@@ -192,6 +348,7 @@ static func _node(spec: Dictionary, parent: Control, v: UView, path: String, ray
 		c = Label.new()
 	elif spec.has("img") or spec.has("raw"):
 		c = UImage.new()
+		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	else:
 		c = Control.new()
 		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -208,8 +365,6 @@ static func _node(spec: Dictionary, parent: Control, v: UView, path: String, ray
 	c.scale = Vector2(sc[0], sc[1])
 	c.rotation = deg_to_rad(-float(spec.get("z", 0.0)))
 	c.visible = bool(spec.get("a", true))
-	v.paths[path] = c
-	v.ids[str(spec.get("id", ""))] = c
 
 	var cg: Dictionary = spec.get("cg", {})
 	if not cg.is_empty():
@@ -249,17 +404,7 @@ static func _node(spec: Dictionary, parent: Control, v: UView, path: String, ray
 		var n := str(ch.get("n", "Node"))
 		counts[n] = int(counts.get(n, 0)) + 1
 		var key := n if counts[n] == 1 else "%s#%d" % [n, counts[n]]
-		_node(ch, c, v, key if path == "" else path + "/" + key, rays, inter)
-
-	# A disabled Animator keeps the prefab's values until it is enabled (set_enabled, UView.animator()).
-	if spec.has("anim") and spec.anim.get("controller") != null:
-		var clip := anim_clip(str(spec.anim.controller))
-		if not clip.is_empty():
-			var a := UAnim.new()
-			a.name = "Animator"
-			a.enabled = bool(spec.anim.get("on", true))
-			c.add_child(a)
-			a.setup(c, clip)
+		_make(ch, c, key if path == "" else path + "/" + key, rays, inter)
 	return c
 
 
@@ -272,6 +417,7 @@ static func _safe_name(n: String) -> String:
 static func _child_image(c: Control) -> Control:
 	var img := UImage.new()
 	img.name = "image"
+	img.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	img.set_anchors_preset(Control.PRESET_FULL_RECT)
 	c.add_child(img)
 	if c is UButton:
@@ -310,6 +456,20 @@ static func apply_rect(c: Control) -> void:
 	c.offset_top = -omax.y
 	c.offset_bottom = -omin.y
 	c.pivot_offset_ratio = Vector2(pv.x, 1.0 - pv.y)
+
+
+## Unity rect (meta "u_rect") read back from the control's anchors, offsets and pivot: a node moved or resized in
+## the editor keeps that rect when layout groups, fitters or sliders apply it again. A fresh dictionary, so scene
+## instances and copies do not share it.
+static func rect_from_node(c: Control) -> void:
+	var pv := Vector2(c.pivot_offset_ratio.x, 1.0 - c.pivot_offset_ratio.y)
+	var omin := Vector2(c.offset_left, -c.offset_bottom)
+	var omax := Vector2(c.offset_right, -c.offset_top)
+	var sz := omax - omin
+	c.set_meta("u_rect", {
+		"amin": Vector2(c.anchor_left, 1.0 - c.anchor_bottom), "amax": Vector2(c.anchor_right, 1.0 - c.anchor_top),
+		"pos": omin + sz * pv, "size": sz, "pivot": pv,
+	})
 
 
 ## Size the Unity rect resolves to inside its parent (Godot may grow a Label past it).
@@ -426,9 +586,6 @@ static func _setup_text(l: Label, t: Dictionary) -> void:
 	l.visible = l.visible and bool(t.get("on", true))
 	_text_size(l, float(t.get("fs", 36.0)))
 	l.text = str(t.get("s", ""))
-	if t.get("auto") != null:
-		l.resized.connect(fit_text.bind(l))
-		_fit_later.call_deferred(l)
 
 
 ## Font size plus TMP spacing (normalSpacingOffset, characterSpacing, lineSpacing) at that size.
@@ -652,6 +809,7 @@ static func input_field(v: UView, c: Control, multiline: bool) -> Control:
 		le.editable = not bool(d.get("ro", false))
 		e = le
 	e.name = "Input"
+	e.set_meta("u_rt", true)
 	e.set_anchors_preset(Control.PRESET_FULL_RECT)
 	e.material = label.material
 	e.add_theme_font_override("font", label.get_theme_font("font"))
@@ -761,6 +919,7 @@ static func _scripts(v: UView) -> void:
 		if spec.has("scroll"):
 			var sc := UScroll.new()
 			sc.name = "ScrollRect"
+			sc.set_meta("u_rt", true)
 			c.add_child(sc)
 			sc.setup(c, v.ids.get(str(spec.scroll.get("viewport", ""))), v.ids.get(str(spec.scroll.get("content", ""))), spec.scroll)
 			_pass_buttons(v.ids.get(str(spec.scroll.get("content", ""))))
@@ -781,7 +940,8 @@ static func _collect(c: Control, v: UView) -> void:
 	for cs in spec.get("cs", []):
 		v.scripts.append({"node": c, "cs": cs})
 	for ch in c.get_children():
-		if ch is Control and ch.has_meta("u"):
+		# A u_sub piece wires its own scripts in its own view.
+		if ch is Control and ch.has_meta("u") and not ch.has_meta("u_sub"):
 			_collect(ch, v)
 
 

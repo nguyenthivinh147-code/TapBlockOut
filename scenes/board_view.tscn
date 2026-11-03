@@ -1,12 +1,119 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/ui/board_view.gd" id="1"]
+[ext_resource type="Script" path="res://src/ui/candy_frame.gd" id="2_ytdny"]
+[ext_resource type="Shader" path="res://src/ui/frame_corner.gdshader" id="3_mb0si"]
+[ext_resource type="Shader" path="res://src/ui/frame_bar.gdshader" id="4_nelce"]
 
-[node name="BoardView" type="Control"]
-layout_mode = 3
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7ciif"]
+resource_local_to_scene = true
+shader = ExtResource("3_mb0si")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8sex3"]
+resource_local_to_scene = true
+shader = ExtResource("3_mb0si")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qu5oc"]
+resource_local_to_scene = true
+shader = ExtResource("3_mb0si")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dxymy"]
+resource_local_to_scene = true
+shader = ExtResource("3_mb0si")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pejy1"]
+resource_local_to_scene = true
+shader = ExtResource("4_nelce")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bbyi7"]
+resource_local_to_scene = true
+shader = ExtResource("4_nelce")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_85iml"]
+resource_local_to_scene = true
+shader = ExtResource("4_nelce")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gwkx2"]
+resource_local_to_scene = true
+shader = ExtResource("4_nelce")
+
+[node name="BoardView" type="Control" unique_id=2071560130]
+clip_contents = true
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="Frame" type="Control" parent="." unique_id=965703161]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_ytdny")
+
+[node name="Corner_tl" type="ColorRect" parent="Frame" unique_id=194799347]
+material = SubResource("ShaderMaterial_7ciif")
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Corner_tr" type="ColorRect" parent="Frame" unique_id=10093636]
+material = SubResource("ShaderMaterial_8sex3")
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Corner_bl" type="ColorRect" parent="Frame" unique_id=204946562]
+material = SubResource("ShaderMaterial_qu5oc")
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Corner_br" type="ColorRect" parent="Frame" unique_id=642990993]
+material = SubResource("ShaderMaterial_dxymy")
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Bar_up" type="ColorRect" parent="Frame" unique_id=986923715]
+material = SubResource("ShaderMaterial_pejy1")
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Bar_left" type="ColorRect" parent="Frame" unique_id=1316759106]
+material = SubResource("ShaderMaterial_bbyi7")
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Bar_right" type="ColorRect" parent="Frame" unique_id=593396951]
+material = SubResource("ShaderMaterial_85iml")
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Bar_down" type="ColorRect" parent="Frame" unique_id=1461228014]
+material = SubResource("ShaderMaterial_gwkx2")
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Shadows" type="Control" parent="." unique_id=160870467]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Blocks" type="Control" parent="." unique_id=1445309903]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Links" type="Control" parent="." unique_id=1178846694]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Fx" type="Control" parent="." unique_id=210279839]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2

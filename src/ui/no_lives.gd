@@ -9,18 +9,15 @@ extends Control
 ## Dựng theo PopupMoreHeartLayer (color-cube-match-puzzle): tim kèm số mạng, "mạng kế tiếp" và chip đồng hồ,
 ## nút video (AdsBtn) và nút gold (GoldBtn: +N tim, giá gold). X và chạm nền (NavigationBackButton) là về Home.
 ## Không bán BundleHeart (game không có gói này ở đây): chỗ của nó dành cho dòng giải thích và thông báo.
+## Ba dòng dưới popup (giải thích, không có video, thông báo), chip đồng hồ nới rộng (340) và đồng hồ làm mới là node
+## trong scenes/no_lives.tscn.
 
 signal closed(result: Variant)
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
-const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Config := preload("res://src/config.gd")
 const VIDEO_PLACEMENT := "refill_life"
 const LAYER := "PopupMoreHeartLayer"
-## Lines under the popup (where BundleHeart sits), from the panel's bottom edge: body, no-video note, message.
-const NOTE_Y := [-150.0, -290.0, -400.0]
-## The chip holds "All lives back in h:mm:ss": wider than the prefab's 246 (sliced pill).
-const CHIP_W := 340.0
 
 var ui: RefCounted = null
 var _busy: bool = false
@@ -58,83 +55,43 @@ static func format_time(sec: int) -> String:
 
 func _build() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	# The scene saves the layer as the game uses it (BundleHeart and unused parts hidden, wider chip, auto sized
+	# texts) plus the three lines under the popup and the refresh timer; this only names, fills and wires.
 	ui = UnityUI.build(self, LAYER)
 	_title = ui.text("Panel/Image/txtHeader", tr("no_lives_title"))
 	var home: Button = ui.button("Panel/Top/btnTurnOff")
 	home.name = "HomeButton"
 	home.connect("clicked", _on_home_pressed)
 	ui.on_click("Bg", _on_home_pressed)
-	ui.show("Panel/BundleHeart", false)
-	var pc := "Panel/Content/Preview/Content"
-	for p in [pc + "/Amount_Backup", pc + "/Infinite", pc + "/Continue (1)", "Panel/Content/Description/Text (TMP)#2"]:
-		ui.show(p, false)
-	_lives_lbl = ui.label(pc + "/HeartIcon/Text (TMP)")
+	_lives_lbl = ui.label("Panel/Content/Preview/Content/HeartIcon/Text (TMP)")
 	_lives_lbl.name = "LivesLabel"
 	_next_lbl = ui.label("Panel/Content/Description/Text (TMP)")
 	_next_lbl.name = "NextLabel"
-	var chip: Control = ui.node("Panel/Content/Description/Image")
-	UnityKit.set_size(chip, Vector2(CHIP_W, (chip.get_meta("u_rect").size as Vector2).y))
 	_full_lbl = ui.label("Panel/Content/Description/Image/Text (TMP)")
 	_full_lbl.name = "FullLabel"
-	var fr: Dictionary = _full_lbl.get_meta("u_rect")
-	fr.pos = Vector2(38, (fr.pos as Vector2).y)
-	fr.size = Vector2(CHIP_W - 100.0, (fr.size as Vector2).y)
-	UnityUI.apply_rect(_full_lbl)
-	_auto_size(_full_lbl, 38.0, true)
 
 	_video_btn = ui.button("Panel/Content/GameObject/AdsBtn")
 	_video_btn.name = "VideoButton"
 	_video_btn.connect("clicked", _on_video_pressed)
-	var vt: Label = ui.label("Panel/Content/GameObject/AdsBtn/Out")
-	_auto_size(vt, 56.0, true)
-	UnityUI.set_text(vt, tr("no_lives_video"))
+	ui.text("Panel/Content/GameObject/AdsBtn/Out", tr("no_lives_video"))
 	_gold_btn = ui.button("Panel/Content/GameObject/GoldBtn")
 	_gold_btn.name = "GoldButton"
 	_gold_btn.connect("clicked", _on_gold_pressed)
 	ui.label("Panel/Content/GameObject/GoldBtn/Price/Text (TMP)").name = "GoldPrice"
 	ui.text("Panel/Content/GameObject/GoldBtn/Image/Out", "+%d" % int(Config.ECON.refill_lives))
 
-	var panel: Control = ui.node("Panel")
-	_body = _note(panel, "", NOTE_Y[0], "BodyLabel")
+	_body = %BodyLabel
 	_body.visible = true
-	_no_ads_lbl = _note(panel, tr("no_lives_no_ads"), NOTE_Y[1], "NoAdsLabel")
-	_msg = _note(panel, "", NOTE_Y[2], "MessageLabel")
+	_no_ads_lbl = %NoAdsLabel
+	UnityUI.set_text(_no_ads_lbl, tr("no_lives_no_ads"))
+	_msg = %MessageLabel
 	_msg.visible = false
 	ui.relayout("Panel/Content/GameObject")
 
-	_timer = Timer.new()
-	_timer.wait_time = 1.0
-	_timer.one_shot = false
+	_timer = %RefreshTimer
 	_timer.timeout.connect(refresh)
-	add_child(_timer)
 	_timer.start()
 	_heart_beat.call_deferred()
-
-
-## White outlined line on the dim under the popup (Baloo Outline - Black, like text on art in the prefabs).
-func _note(panel: Control, text: String, y: float, node_name: String) -> Label:
-	var l := UnityKit.label(panel, text, Rect2(0, 0, 100, 100), 40.0, "ffffffff", "Baloo Outline - Black")
-	l.name = node_name
-	var r: Dictionary = l.get_meta("u_rect")
-	r.amin = Vector2(0.5, 0)
-	r.amax = Vector2(0.5, 0)
-	r.pos = Vector2(0, y)
-	r.size = Vector2(760, 120)
-	r.pivot = Vector2(0.5, 0.5)
-	UnityUI.apply_rect(l)
-	return l
-
-
-## TMP auto size (and word wrap) on a text the prefab sized for a shorter Unity string. The text spec is shared
-## with the layout cache, so it is copied before the change.
-func _auto_size(l: Label, max_size: float, wrap: bool) -> void:
-	var t: Dictionary = (l.get_meta("u_txt") as Dictionary).duplicate(true)
-	t.auto = [18.0, max_size]
-	t.w = wrap
-	l.set_meta("u_txt", t)
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if wrap else TextServer.AUTOWRAP_OFF
-	if not l.resized.is_connected(UnityUI.fit_text):
-		l.resized.connect(UnityUI.fit_text.bind(l))
 
 
 ## HeartAnimation (StartHeartAnimation on show): intro from StartScale, then a squash pulse to EndScale and back.

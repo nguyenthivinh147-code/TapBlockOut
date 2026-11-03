@@ -1,0 +1,535 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="1_pc8al"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="2_nou4n"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="3_cwa0v"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="4_3eo4e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mfoua"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_weuug"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kkjgy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_knn7n"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mylfg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xhrlg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wotnc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e8feh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_racd0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a3t4i"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0gadi"]
+
+[node name="Canvas" type="Control" unique_id=143268541]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "Profile_AvtCells"
+
+[node name="Profile_AvtCells" type="Button" parent="." unique_id=637695824]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 38.0
+offset_right = 190.0
+offset_bottom = 198.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mfoua")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_weuug")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_kkjgy")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_knn7n")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_mylfg")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_xhrlg")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_wotnc")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_e8feh")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_racd0")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_a3t4i")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0gadi")
+toggle_mode = true
+flat = true
+script = ExtResource("1_pc8al")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"cs": [{
+"avatarImage": {
+"node": "1732982201131741401"
+},
+"equipSign": {
+"node": "8134117388489207808"
+},
+"lockGO": {
+"node": "4129303435138865636"
+},
+"name": "AvatarItem",
+"selectClip": {
+"asset": "sfx_chooseava.mp3"
+},
+"toggle": null
+}, {
+"OnValueChange": [],
+"changeColor": "0",
+"changeSprite": "0",
+"flexibleOff": {
+"x": "1",
+"y": "1"
+},
+"flexibleOn": {
+"x": "1.2",
+"y": "1"
+},
+"gameObjects": [{
+"node": "7221706750059985616"
+}],
+"hasIcon": "0",
+"hasTitle": "0",
+"icon": null,
+"iconAnchorOff": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconAnchorOn": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconScaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"iconScaleOn": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"isSmoothIcon": "0",
+"isSmoothScaleChange": "0",
+"isSmoothSpriteChange": "0",
+"isSmoothTitle": "0",
+"layoutElement": null,
+"name": "ToggleAnimator",
+"offColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"offObjects": [],
+"offSprite": null,
+"onColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"onObjects": [],
+"onSprite": null,
+"scaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"scaleOn": {
+"x": "1.2",
+"y": "1.2",
+"z": "1.2"
+},
+"scaleType": "0",
+"sizeDeltaOff": {
+"x": "1",
+"y": "1"
+},
+"sizeDeltaOn": {
+"x": "1.2",
+"y": "1.2"
+},
+"targetImage": {
+"node": "1732982201131741401"
+},
+"timeSmoothIcon": "0.2",
+"timeSmoothScale": "0.2",
+"timeSmoothSprite": "0.2",
+"timeSmoothTitle": "0.2",
+"title": null,
+"toggle": {
+"node": "1732982201131741401"
+}
+}, {
+"effectImages": [{
+"Image": {
+"node": "1732982201131741401"
+},
+"NormalColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"PressColor": {
+"a": "1",
+"b": "0.78431374",
+"g": "0.78431374",
+"r": "0.78431374"
+},
+"colorTransitionDuration": "0.1"
+}, {
+"Image": {
+"node": "7221706750059985616"
+},
+"NormalColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"PressColor": {
+"a": "1",
+"b": "0.78431374",
+"g": "0.78431374",
+"r": "0.78431374"
+},
+"colorTransitionDuration": "0.1"
+}],
+"name": "PressEffect",
+"selectable": {
+"node": "1732982201131741401"
+}
+}],
+"id": "1732982201131741401",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_75",
+"t": 0.0
+},
+"n": "Profile_AvtCells",
+"r": [0.0, 1.0, 0.0, 1.0, 110.0, -118.0, 160.0, 160.0, 0.5, 0.5],
+"tog": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"graphic": null,
+"group": null,
+"inter": true,
+"mult": 1.0,
+"on": false,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "1732982201131741401",
+"tr": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(110, -118),
+"size": Vector2(160, 160)
+}
+
+[node name="image" type="Control" parent="Profile_AvtCells" unique_id=2057473281]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_nou4n")
+tex = ExtResource("3_cwa0v")
+region = Rect2(756, 1160, 168, 168)
+fill_method = 4
+
+[node name="Select" type="Control" parent="Profile_AvtCells" unique_id=1624376722]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -15.85255
+offset_top = -15.85255
+offset_right = 15.85255
+offset_bottom = 15.85255
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_nou4n")
+tex = ExtResource("3_cwa0v")
+region = Rect2(928, 988, 168, 168)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7221706750059985616",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_66",
+"t": 0.0
+},
+"n": "Select",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 31.7051, 31.7051, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(31.7051, 31.7051)
+}
+
+[node name="Image" type="Control" parent="Profile_AvtCells" unique_id=1078194786]
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_nou4n")
+tex = ExtResource("3_cwa0v")
+region = Rect2(756, 816, 168, 168)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8631120396696554243",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Lock" type="Control" parent="Profile_AvtCells" unique_id=1731761817]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_nou4n")
+tex = ExtResource("4_3eo4e")
+region = Rect2(1297, 1667, 104, 104)
+border = Vector4(32, 50, 32, 35)
+border_scale = 1.1764705882352942
+kind = 1
+color = Color(0.76862746, 0.76862746, 0.76862746, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4129303435138865636",
+"img": {
+"c": "c4c4c4ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 0.85,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_23",
+"t": 1.0
+},
+"n": "Lock",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="Profile_AvtCells/Lock" unique_id=1869343531]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_nou4n")
+tex = ExtResource("3_cwa0v")
+region = Rect2(756, 1160, 168, 168)
+color = Color(0, 0, 0, 0.4)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9053159022957177274",
+"img": {
+"c": "00000066",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_75",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image (1)" type="Control" parent="Profile_AvtCells/Lock" unique_id=798911054]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 12.604252
+offset_top = 8.604252
+offset_right = 69.48215
+offset_bottom = 65.48215
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_nou4n")
+tex = ExtResource("3_cwa0v")
+region = Rect2(98, 515, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3205580977354719160",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_18",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, 41.0432, -37.0432, 56.8779, 56.8779, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(41.0432, -37.0432),
+"size": Vector2(56.8779, 56.8779)
+}
+
+[node name="Equipped" type="Control" parent="Profile_AvtCells" unique_id=551838940]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -3.1956
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "8134117388489207808",
+"n": "Equipped",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 1.0978, -2.0, -4.1956, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 1.0978),
+"size": Vector2(-2, -4.1956)
+}
+
+[node name="Equipped (1)" type="Control" parent="Profile_AvtCells/Equipped" unique_id=669020181]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -74.0539
+offset_top = -78.9583
+offset_right = 2.6539001
+offset_bottom = -2.2504997
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_nou4n")
+tex = ExtResource("3_cwa0v")
+region = Rect2(0, 516, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4670076871419325284",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_17",
+"t": 0.0
+},
+"n": "Equipped (1)",
+"r": [1.0, 0.0, 1.0, 0.0, -35.7, 40.6044, 76.7078, 76.7078, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-35.7, 40.6044),
+"size": Vector2(76.7078, 76.7078)
+}

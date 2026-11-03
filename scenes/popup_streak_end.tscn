@@ -1,12 +1,1497 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/ui/popup_streak_end.gd" id="1"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="3_u03rg"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="4_dd160"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/popup7.png" id="5_nkr6y"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup_Winstreak_Title.png" id="6_pd7ix"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="7_ksali"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="8_v0kbg"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/BG_Winstreak_intro.png" id="9_brwe1"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="10_otpqv"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="11_v7xpc"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_star1.png" id="12_3h536"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Shop_Popup_Atlas.png" id="13_jooiq"]
+[ext_resource type="Texture2D" path="res://assets/ui/booster_hint.png" id="14_5k5au"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Winstreak_Atlas.png" id="15_bhql8"]
+[ext_resource type="PackedScene" path="res://scenes/unity/PopupWinStreakEnd.tscn" id="u0"]
 
-[node name="PopupStreakEnd" type="Control"]
-layout_mode = 3
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k0dg7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2ffwc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ij0wj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3t5vw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1m7n5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hhlh1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fasfc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u5agk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hipfg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wa03l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_35neh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_138nv"]
+shader = ExtResource("7_ksali")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.35686275, 0.11764706, 0.003921569, 1)
+shader_parameter/underlay_color = Color(0.35686275, 0.11764706, 0.003921569, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("8_v0kbg")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_me63l"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2byxc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m6ndj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ygokg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qjw0f"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mwvwq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5im7c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_npwa1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s7nbm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ppf3g"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2hqj5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oieta"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("7_ksali")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4d777"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gnoqe"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_24uc0"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wcb6f"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e76qs"]
+shader = ExtResource("7_ksali")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_d3rrv"]
+base_font = ExtResource("8_v0kbg")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y4jsd"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h60sk"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_calkv"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="PopupStreakEnd" type="Control" unique_id=1383992190]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="Canvas" parent="." unique_id=582771015 instance=ExtResource("u0")]
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "PopupWinStreakEnd"
+
+[node name="PopupWinStreakEnd" parent="Canvas" index="0" unique_id=449818251]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"breakEnable": "0",
+"closeButton": {
+"node": "8212019710555167539"
+},
+"debugOnOff": "0",
+"name": "UIPopupWinStreakEnd",
+"nextEventText": {
+"node": "2003580577652247090"
+},
+"streakResultText": {
+"node": "3041794538424741371"
+}
+}],
+"id": "9067958016228944272",
+"n": "PopupWinStreakEnd",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 0),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Dim" parent="Canvas/PopupWinStreakEnd" index="0" unique_id=627465151]
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_k0dg7")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_2ffwc")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ij0wj")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_3t5vw")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1m7n5")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_hhlh1")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_fasfc")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_u5agk")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_hipfg")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_wa03l")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_35neh")
+flat = true
+script = ExtResource("3_u03rg")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "297599859262534063",
+"tr": 0.0
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"name": "HideLastLayerButton"
+}],
+"id": "297599859262534063",
+"img": {
+"c": "000000f5",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Dim",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" parent="Canvas/PopupWinStreakEnd/Dim" index="0" unique_id=485078566]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_dd160")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="Panel" parent="Canvas/PopupWinStreakEnd" index="1" unique_id=516478861]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -416.0156
+offset_top = -499.99994
+offset_right = 416.0156
+offset_bottom = 499.99994
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_dd160")
+tex = ExtResource("5_nkr6y")
+region = Rect2(0, 0, 425, 510.81732)
+border_scale = 1.9576470588235293
+fill_method = 4
+metadata/u = {
+"a": true,
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"id": "8529842003749268378",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "popup7",
+"t": 0.0
+},
+"n": "Panel",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 832.0312, 999.9999, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(832.0312, 999.9999)
+}
+
+[node name="Image" parent="Canvas/PopupWinStreakEnd/Panel" index="0" unique_id=629518151]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -436.0
+offset_top = -798.1406
+offset_right = 436.0
+offset_bottom = -317.85934
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_dd160")
+tex = ExtResource("6_pd7ix")
+region = Rect2(0, 0, 512, 281.83487)
+border_scale = 1.703125
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7049749776199527371",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Popup_Winstreak_Title",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 558.0, 872.0, 480.2813, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 558),
+"size": Vector2(872, 480.28128)
+}
+
+[node name="Text (TMP)" parent="Canvas/PopupWinStreakEnd/Panel" index="1" unique_id=1138779064]
+material = SubResource("ShaderMaterial_138nv")
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = -26.0
+offset_right = 300.0
+offset_bottom = 74.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 0.96862745, 0.59607846, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -7
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 60
+theme_override_styles/normal = SubResource("StyleBoxEmpty_me63l")
+text = "STREAK ENDED"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4702999881980301320",
+"n": "Text (TMP)",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -24.0, 600.0, 100.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "fff798ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 60.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Brown",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Win Streak End",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -24),
+"size": Vector2(600, 100)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "fff798ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 60.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Brown",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Win Streak End",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@32" parent="Canvas/PopupWinStreakEnd/Panel" index="2" unique_id=1050852214]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -345.32358
+offset_top = 112.0
+offset_right = 345.262
+offset_bottom = 820.5582
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_dd160")
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7588186165404880482",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, -0.0308, -466.2791, 690.5856, 708.5582, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-0.030792236, -466.2791),
+"size": Vector2(690.5856, 708.5582)
+}
+
+[node name="Image" parent="Canvas/PopupWinStreakEnd/Panel/@Control@32" index="0" unique_id=890924874]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_dd160")
+tex = ExtResource("9_brwe1")
+region = Rect2(0, 0, 505, 511.75134)
+border_scale = 1.4811881188118812
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8671946337631325205",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": true,
+"sp": "BG_Winstreak_intro",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Button" parent="Canvas/PopupWinStreakEnd/Panel" index="3" unique_id=1225139566]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.0
+offset_top = 501.0
+offset_right = 125.0
+offset_bottom = 601.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2byxc")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_m6ndj")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ygokg")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_qjw0f")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_mwvwq")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_5im7c")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_npwa1")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_s7nbm")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_ppf3g")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_2hqj5")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_oieta")
+flat = true
+script = ExtResource("3_u03rg")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "8212019710555167539",
+"tr": 1.0
+},
+"cs": [{
+"name": "HideLastLayerButton"
+}],
+"id": "8212019710555167539",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.9,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "Button",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -551.0, 250.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -551),
+"size": Vector2(250, 100)
+}
+
+[node name="image" parent="Canvas/PopupWinStreakEnd/Panel/Button" index="0" unique_id=654076680]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_dd160")
+tex = ExtResource("10_otpqv")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.3448275862068966
+fill_method = 4
+
+[node name="Text (TMP)" parent="Canvas/PopupWinStreakEnd/Panel/Button" index="1" unique_id=2001218337]
+material = SubResource("ShaderMaterial_iqna6")
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 45
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4d777")
+text = "Claim"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "6751540995429652801",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Quit",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Quit",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@33" parent="Canvas/PopupWinStreakEnd/Panel" index="4" unique_id=1933764132]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = 288.0
+offset_right = 250.0
+offset_bottom = 348.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_dd160")
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4694162613527847905",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 12.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -387.0, 500.0, 150.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -318),
+"size": Vector2(500, 60)
+}
+
+[node name="Text (TMP)" parent="Canvas/PopupWinStreakEnd/Panel/@Control@33" index="0" unique_id=260122112]
+visible = false
+material = SubResource("ShaderMaterial_iqna6")
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gnoqe")
+text = "Sự kiện sẽ bắt đầu lại sau một khoảng thời gian."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": false,
+"id": "3041794538424741371",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 30.2,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Sự kiện sẽ bắt đầu lại sau một khoảng thời gian.",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 30.2,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Sự kiện sẽ bắt đầu lại sau một khoảng thời gian.",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Text (TMP) (1)" parent="Canvas/PopupWinStreakEnd/Panel/@Control@33" index="1" unique_id=274511349]
+material = SubResource("ShaderMaterial_iqna6")
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(0.6156863, 0.4117647, 0.09411765, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 42
+theme_override_styles/normal = SubResource("StyleBoxEmpty_24uc0")
+text = "Your rewards are ready!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4086043311122758545",
+"n": "Text (TMP) (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "9d6918ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 42.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "This event has ended. Come back later!",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "9d6918ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 42.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "This event has ended. Come back later!",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@34" parent="Canvas/PopupWinStreakEnd/Panel" index="5" unique_id=1178636962]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -165.0
+offset_top = 206.0
+offset_right = 165.0
+offset_bottom = 286.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_dd160")
+tex = ExtResource("11_v7xpc")
+region = Rect2(623, 1679, 103, 92)
+border = Vector4(32, 32, 38, 43)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4864387337740788034",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_40",
+"t": 1.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -246.0, 250.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -246),
+"size": Vector2(330, 80)
+}
+
+[node name="Image" parent="Canvas/PopupWinStreakEnd/Panel/@Control@34" index="0" unique_id=1717419354]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -153.0
+offset_top = -37.0
+offset_right = -93.0
+offset_bottom = 23.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_dd160")
+tex = ExtResource("12_3h536")
+region = Rect2(0, 0, 192, 192)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "246407034402493142",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_79",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, -83.0, 7.0, 60.0, 60.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-123, 7),
+"size": Vector2(60, 60)
+}
+
+[node name="Text (TMP)" parent="Canvas/PopupWinStreakEnd/Panel/@Control@34" index="1" unique_id=868758718]
+material = SubResource("ShaderMaterial_iqna6")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -92.7724
+offset_top = -30.2
+offset_right = 153.2276
+offset_bottom = 19.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(0.4627451, 0.37254903, 0.29411766, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wcb6f")
+text = "Final streak: 5"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2003580577652247090",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 30.2276, 5.2, 166.4551, 50.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "765f4bff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "New Text",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(30.2276, 5.200001),
+"size": Vector2(246, 50)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "765f4bff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "New Text",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Rewards" type="Control" parent="Canvas/PopupWinStreakEnd/Panel" index="6" unique_id=1564506447]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = 352.0
+offset_right = 250.0
+offset_bottom = 484.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_dd160")
+tex = ExtResource("13_jooiq")
+region = Rect2(660, 724, 152, 144)
+border = Vector4(40, 40, 40, 40)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8950698479098063295",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_7",
+"t": 1.0
+},
+"n": "Rewards",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -418.0, 500.0, 132.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -418),
+"size": Vector2(500, 132)
+}
+metadata/u_sub = true
+
+[node name="Reward1" type="Control" parent="Canvas/PopupWinStreakEnd/Panel/Rewards" unique_id=296974452]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -167.5
+offset_top = -66.5
+offset_right = -82.5
+offset_bottom = 18.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_dd160")
+tex = ExtResource("10_otpqv")
+region = Rect2(780, 0, 256, 256)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2826891885502268661",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+"t": 0.0
+},
+"n": "Reward1",
+"r": [0.5, 0.5, 0.5, 0.5, -125.0, 24.0, 85.0, 85.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-125, 24),
+"size": Vector2(85, 85)
+}
+metadata/u_sub = true
+
+[node name="Text (TMP)" type="Label" parent="Canvas/PopupWinStreakEnd/Panel/Rewards/Reward1" unique_id=1878001395]
+material = SubResource("ShaderMaterial_e76qs")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.5
+offset_top = 0.20000076
+offset_right = 60.5
+offset_bottom = 50.2
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_d3rrv")
+theme_override_font_sizes/font_size = 45
+theme_override_styles/normal = SubResource("StyleBoxEmpty_y4jsd")
+text = "200"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "2626837682429918243",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -25.2, 121.0, 50.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "200",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -25.2),
+"size": Vector2(121, 50)
+}
+metadata/u_txt = {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "200",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Reward2" type="Control" parent="Canvas/PopupWinStreakEnd/Panel/Rewards" unique_id=1807663063]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -42.5
+offset_top = -66.5
+offset_right = 42.5
+offset_bottom = 18.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_dd160")
+tex = ExtResource("14_5k5au")
+region = Rect2(0, 0, 256, 256)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2826891885502268661",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_37",
+"t": 0.0
+},
+"n": "Reward2",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 24.0, 85.0, 85.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 24),
+"size": Vector2(85, 85)
+}
+metadata/u_sub = true
+
+[node name="Text (TMP)" type="Label" parent="Canvas/PopupWinStreakEnd/Panel/Rewards/Reward2" unique_id=1879567675]
+material = SubResource("ShaderMaterial_e76qs")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.5
+offset_top = 0.20000076
+offset_right = 60.5
+offset_bottom = 50.2
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_d3rrv")
+theme_override_font_sizes/font_size = 45
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h60sk")
+text = "x2"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "2626837682429918243",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -25.2, 121.0, 50.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x2",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -25.2),
+"size": Vector2(121, 50)
+}
+metadata/u_txt = {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x2",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Reward3" type="Control" parent="Canvas/PopupWinStreakEnd/Panel/Rewards" unique_id=130345455]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 82.5
+offset_top = -66.5
+offset_right = 167.5
+offset_bottom = 18.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_dd160")
+tex = ExtResource("15_bhql8")
+region = Rect2(410, 824, 200, 200)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2826891885502268661",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_6",
+"t": 0.0
+},
+"n": "Reward3",
+"r": [0.5, 0.5, 0.5, 0.5, 125.0, 24.0, 85.0, 85.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(125, 24),
+"size": Vector2(85, 85)
+}
+metadata/u_sub = true
+
+[node name="Text (TMP)" type="Label" parent="Canvas/PopupWinStreakEnd/Panel/Rewards/Reward3" unique_id=931700736]
+material = SubResource("ShaderMaterial_e76qs")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.5
+offset_top = 0.20000076
+offset_right = 60.5
+offset_bottom = 50.2
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_d3rrv")
+theme_override_font_sizes/font_size = 45
+theme_override_styles/normal = SubResource("StyleBoxEmpty_calkv")
+text = "Chest"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "2626837682429918243",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -25.2, 121.0, 50.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Chest",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -25.2),
+"size": Vector2(121, 50)
+}
+metadata/u_txt = {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Chest",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[editable path="Canvas"]

@@ -1,0 +1,4786 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="1_n60pe"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="2_2lhgf"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup2.png" id="3_2l5ie"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="4_yrgev"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="5_e3xcn"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="6_wvm26"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="7_bhcmq"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Shop_Packs_Atlas1.png" id="8_7q5um"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/blurred.png" id="9_lg3th"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/BundleTim.png" id="10_pv2rd"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Gold3.png" id="11_fkvki"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_booster1.png" id="12_f0eov"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_booster2_1.png" id="13_simfm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o2f1c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m5u46"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f0hms"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r6qyg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ouerq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_epxea"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e5iro"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kwlv6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xyv1d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l5d6n"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_txt20"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4d6u"]
+shader = ExtResource("5_e3xcn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/underlay_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ki6oj"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("6_wvm26")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a0a75"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i2tbp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b5oh1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_au0ip"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7m0p0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7pe02"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_piqcw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6xl8x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yu5de"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l0wnw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qbgey"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hscdh"]
+shader = ExtResource("5_e3xcn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/underlay_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_64jra"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_51gwy"]
+base_font = ExtResource("6_wvm26")
+spacing_glyph = -2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("5_e3xcn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_13h5b"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q8pai"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kw5k8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j1xy1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2h5jr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t6yla"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bwdcl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_018xn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0o7j1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ctob"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6bp7v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wsabe"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
+shader = ExtResource("5_e3xcn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xmmyo"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xn3kl"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vyv44"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jov8o"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4vobs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_esbd3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8pyjn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ybir"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8x5wf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3qk86"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hllju"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_008qw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_47cb8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3ah40"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m4r7x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_byr70"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t3hbq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jhapr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_slxwf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3sewu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bvf75"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uluak"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sg6ua"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y18fj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b3oce"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aqw55"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hwwob"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
+shader = ExtResource("5_e3xcn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.085714287
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.491428570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ny2en"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x01hl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n02m0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g8ia3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_53mv8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ej1jy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tnu36"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k3u5o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nurt2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r7fek"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j6i4u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6m8rl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v0ht0"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oskr3"]
+shader = ExtResource("5_e3xcn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.40392157, 0.14901961, 0.011764706, 1)
+shader_parameter/underlay_color = Color(0.24313726, 0.03137255, 0.03137255, 1)
+shader_parameter/face_edge = 0.45
+shader_parameter/outline_half = 0.12
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.2925
+shader_parameter/underlay_offset = Vector2(0, -0.84)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lhcyf"]
+content_margin_left = 0.3397
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ncxv0"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
+shader = ExtResource("5_e3xcn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n53qk"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_avduk"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0w7p0"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eb6j7"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4h60t"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b3g3j"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+
+[sub_resource type="FontVariation" id="FontVariation_2d730"]
+base_font = ExtResource("6_wvm26")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_485vp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ts5gs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pxkjx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_362jk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fskd4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nw11j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x5qk2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iv2ni"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dierj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ffys"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_04nif"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rnp68"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6nclg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=1241923796]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "PopupMoreHeartLayer"
+
+[node name="PopupMoreHeartLayer" type="Control" parent="." unique_id=139436101]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [{
+"arg": null,
+"method": "StopHeartAnimation",
+"target": "4501977270069256822"
+}, {
+"arg": null,
+"method": "StopHeartAnimation",
+"target": "4501977270069256822"
+}],
+"OnHideLayout": [],
+"OnShowLayer": [{
+"arg": null,
+"method": "StartHeartAnimation",
+"target": "4501977270069256822"
+}, {
+"arg": null,
+"method": "StartHeartAnimation",
+"target": "4501977270069256822"
+}, {
+"arg": null,
+"method": "PlayAllAnimationsSync",
+"target": "7219197735921211012"
+}],
+"breakEnable": "0",
+"buttonsGO": {
+"node": "1293563584350354942"
+},
+"continueButton": {
+"node": "109691478321621477"
+},
+"debugOnOff": "0",
+"goldButton": {
+"node": "5438834759037099096"
+},
+"goldCostText": {
+"node": "7784152293346974185"
+},
+"heartAmountGO": {
+"node": "4744323366569815401"
+},
+"heartConfig": {
+"asset": "HeartConfigSO.asset"
+},
+"heartCountText": {
+"node": "6816933647213374539"
+},
+"infiniteHeartGO": {
+"node": "8286534332033261983"
+},
+"name": "PopupMoreHeartUICoreLayer",
+"textFullHeartGO": {
+"node": "5374125950271030531"
+},
+"textNextLiveGO": {
+"node": "6503394394479215523"
+},
+"timeRecoverGO": {
+"node": "5709600373618598212"
+},
+"timeRecoverText": {
+"node": "269415934970967192"
+},
+"titleText": {
+"node": "2809704552690345925"
+},
+"watchAdButton": {
+"node": "2976045016534427140"
+}
+}, {
+"OnCompleteAnim": [],
+"OnStartAnim": [],
+"dimCanvasGroup": {
+"node": "3406546784345224705"
+},
+"duration": "0.4",
+"easeType": "26",
+"name": "DialogueReveal",
+"panelRect": {
+"node": "5505950304007009561"
+}
+}, {
+"_animations": [{
+"node": "109691478321621477"
+}, {
+"node": "5574240142023803685"
+}, {
+"node": "5438834759037099096"
+}, {
+"node": "2976045016534427140"
+}],
+"_delayBetweenAnims": "0",
+"_initialDelay": "0",
+"_playOnEnable": "0",
+"name": "UIAnimationGroup"
+}],
+"id": "7219197735921211012",
+"n": "PopupMoreHeartLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Bg" type="Button" parent="PopupMoreHeartLayer" unique_id=1444461989]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_o2f1c")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_m5u46")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_f0hms")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_r6qyg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ouerq")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_epxea")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_e5iro")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_kwlv6")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_xyv1d")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_l5d6n")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_txt20")
+flat = true
+script = ExtResource("1_n60pe")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "3406546784345224705",
+"tr": 0.0
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"button": {
+"node": "3406546784345224705"
+},
+"name": "NavigationBackButton"
+}],
+"id": "3406546784345224705",
+"img": {
+"c": "000000fc",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" type="Control" parent="PopupMoreHeartLayer/Bg" unique_id=1197898168]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="Panel" type="Control" parent="PopupMoreHeartLayer" unique_id=29083132]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -362.0
+offset_top = -303.15
+offset_right = 362.0
+offset_bottom = 303.15
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5505950304007009561",
+"n": "Panel",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 724.0, 606.3, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(724, 606.3)
+}
+
+[node name="Bg (1)" type="Control" parent="PopupMoreHeartLayer/Panel" unique_id=1784749627]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -136.0
+offset_bottom = -136.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+tex = ExtResource("3_2l5ie")
+region = Rect2(0, 0, 800, 800)
+border = Vector4(120, 120, 120, 120)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8264433027405069733",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Popup2",
+"t": 1.0
+},
+"n": "Bg (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 136.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 136),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="PopupMoreHeartLayer/Panel" unique_id=829910351]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_top = -307.0
+offset_right = 225.0
+offset_bottom = 35.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(384, 1332, 368, 108)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4025011949368557571",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 136.0, 450.0, 342.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 136),
+"size": Vector2(450, 342)
+}
+
+[node name="txtHeader" type="Label" parent="PopupMoreHeartLayer/Panel/Image" unique_id=190965993]
+material = SubResource("ShaderMaterial_g4d6u")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -167.6
+offset_top = -52.0
+offset_right = 167.6
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ki6oj")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 37
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Refill your heart?"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "2809704552690345925",
+"n": "txtHeader",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 335.2, 104.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Refill your heart?",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(335.2, 104)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Refill your heart?",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Top" type="Control" parent="PopupMoreHeartLayer/Panel" unique_id=1452058231]
+anchors_preset = 0
+anchor_right = 1.0
+offset_top = -201.0
+offset_bottom = -71.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "960523223670233931",
+"n": "Top",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, 136.0, 0.0, 130.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 136),
+"size": Vector2(0, 130)
+}
+
+[node name="btnTurnOff" type="Button" parent="PopupMoreHeartLayer/Panel/Top" unique_id=827486847]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_top = 52.6
+offset_bottom = 116.6
+pivot_offset_ratio = Vector2(1, 0)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_a0a75")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_i2tbp")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_b5oh1")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_au0ip")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7m0p0")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_7pe02")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_piqcw")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_6xl8x")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_yu5de")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_l0wnw")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qbgey")
+flat = true
+script = ExtResource("1_n60pe")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4811059741127286920",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "4811059741127286920"
+},
+"name": "NavigationBackButton"
+}],
+"id": "4811059741127286920",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+"t": 0.0
+},
+"n": "btnTurnOff",
+"r": [1.0, 1.0, 1.0, 1.0, 0.0, -52.6, 64.0, 64.0, 1.0, 1.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(0, -52.6),
+"size": Vector2(64, 64)
+}
+
+[node name="image" type="Control" parent="PopupMoreHeartLayer/Panel/Top/btnTurnOff" unique_id=2111806731]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(300, 516, 96, 96)
+pivot = Vector2(1, 1)
+fill_method = 4
+
+[node name="Content" type="Control" parent="PopupMoreHeartLayer/Panel" unique_id=1571252456]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -136.0
+offset_bottom = -136.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5267989572481793134",
+"n": "Content",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 136.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 136),
+"size": Vector2(0, 0)
+}
+
+[node name="Preview" type="Control" parent="PopupMoreHeartLayer/Panel/Content" unique_id=492224645]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4487537127718328958",
+"n": "Preview",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="PopupMoreHeartLayer/Panel/Content/Preview" unique_id=1606625116]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 68.0
+offset_top = -202.7
+offset_right = -68.0
+offset_bottom = 57.300003
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(1166, 523, 188, 290)
+border = Vector4(50, 50, 50, 50)
+kind = 1
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6827516525641077591",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+"t": 1.0
+},
+"n": "Image",
+"r": [0.0, 0.5, 1.0, 0.5, 0.0, 202.7, -136.0, 260.0, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 202.7),
+"size": Vector2(-136, 260)
+}
+
+[node name="Content" type="Control" parent="PopupMoreHeartLayer/Panel/Content/Preview" unique_id=2023249841]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"DefaultScale": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"EndScale": {
+"x": "0.94",
+"y": "0.85",
+"z": "1"
+},
+"FirstDuration": "0.75",
+"HeartAnimIntroEaseType": "28",
+"HeartAnimLoopEaseType": "26",
+"HeartAnimLoopType": "1",
+"HeartIconTransform": {
+"node": "4744323366569815401"
+},
+"PulseDuration": "0.35",
+"PulseScale": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"StartScale": {
+"x": "1.15",
+"y": "1.15",
+"z": "1"
+},
+"name": "HeartAnimation"
+}, {
+"DefaultScale": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"EndScale": {
+"x": "0.94",
+"y": "0.85",
+"z": "1"
+},
+"FirstDuration": "0.75",
+"HeartAnimIntroEaseType": "28",
+"HeartAnimLoopEaseType": "26",
+"HeartAnimLoopType": "1",
+"HeartIconTransform": {
+"node": "8286534332033261983"
+},
+"PulseDuration": "0.35",
+"PulseScale": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"StartScale": {
+"x": "1.15",
+"y": "1.15",
+"z": "1"
+},
+"name": "HeartAnimation"
+}],
+"id": "4501977270069256822",
+"n": "Content",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Amount_Backup" type="Control" parent="PopupMoreHeartLayer/Panel/Content/Preview/Content" unique_id=1926228353]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.1891
+offset_top = -230.6891
+offset_right = 120.1891
+offset_bottom = 9.689102
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+tex = ExtResource("7_bhcmq")
+region = Rect2(663, 542, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "7427426778629675455",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_77",
+"t": 0.0
+},
+"n": "Amount_Backup",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 110.5, 240.3782, 240.3782, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 110.5),
+"size": Vector2(240.3782, 240.3782)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/Content/Preview/Content/Amount_Backup" unique_id=1080996674]
+material = SubResource("ShaderMaterial_hscdh")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -95.0
+offset_right = 100.0
+offset_bottom = 105.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_64jra")
+theme_override_constants/line_spacing = -15
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 120
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "4367969274420383421",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -5.0, 200.0, 200.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 120.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "0
+",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -5),
+"size": Vector2(200, 200)
+}
+metadata/u_txt = {
+"auto": [18.0, 120.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "0
+",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="HeartIcon" type="Control" parent="PopupMoreHeartLayer/Panel/Content/Preview/Content" unique_id=317163123]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.84
+offset_top = -181.9
+offset_right = -30.839996
+offset_bottom = 18.099998
+scale = Vector2(0.9742, 0.9742)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(259, 259, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4744323366569815401",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_15",
+"t": 0.0
+},
+"n": "HeartIcon",
+"r": [0.5, 0.5, 0.5, 0.5, -130.84, 81.9, 200.0, 200.0, 0.5, 0.5],
+"s": [0.9742, 0.9742]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-130.84, 81.9),
+"size": Vector2(200, 200)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/Content/Preview/Content/HeartIcon" unique_id=1036527991]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -89.46
+offset_top = -58.9
+offset_right = 60.54
+offset_bottom = 91.1
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.0265, 1.0265)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_13h5b")
+theme_override_constants/line_spacing = -13
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 109
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "6816933647213374539",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, -14.46, -16.1, 150.0, 150.0, 0.5, 0.5],
+"s": [1.0265, 1.0265],
+"txt": {
+"auto": [18.0, 120.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 109.3,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "0
+",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-14.46, -16.1),
+"size": Vector2(150, 150)
+}
+metadata/u_txt = {
+"auto": [18.0, 120.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 109.3,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "0
+",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Infinite" type="Control" parent="PopupMoreHeartLayer/Panel/Content/Preview/Content" unique_id=1363198338]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.1891
+offset_top = -230.6891
+offset_right = 120.1891
+offset_bottom = 9.689102
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+tex = ExtResource("7_bhcmq")
+region = Rect2(1264, 1040, 148, 148)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8286534332033261983",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_78",
+"t": 0.0
+},
+"n": "Infinite",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 110.5, 240.3782, 240.3782, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 110.5),
+"size": Vector2(240.3782, 240.3782)
+}
+
+[node name="Continue (1)" type="Button" parent="PopupMoreHeartLayer/Panel/Content/Preview/Content" unique_id=364775218]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -187.86
+offset_right = 140.0
+offset_bottom = -67.86
+pivot_offset_ratio = Vector2(0.5, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_q8pai")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_kw5k8")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_j1xy1")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_2h5jr")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t6yla")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_bwdcl")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_018xn")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_0o7j1")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_8ctob")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_6bp7v")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wsabe")
+flat = true
+script = ExtResource("1_n60pe")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "109691478321621477",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "109691478321621477"
+},
+"name": "NavigationBackButton"
+}, {
+"_duration": "0.25",
+"_ease": "5",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "109691478321621477",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 8.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "h"
+},
+"n": "Continue (1)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 67.86, 280.0, 120.0, 0.5, 0.0],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 67.86),
+"size": Vector2(280, 120)
+}
+
+[node name="image" type="Control" parent="PopupMoreHeartLayer/Panel/Content/Preview/Content/Continue (1)" unique_id=1412746111]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+pivot = Vector2(0.5, 0)
+fill_method = 4
+
+[node name="Out" type="Label" parent="PopupMoreHeartLayer/Panel/Content/Preview/Content/Continue (1)" unique_id=1680761780]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+offset_left = 30.330147
+offset_top = 15.310001
+offset_right = 249.66986
+offset_bottom = 96.69
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xmmyo")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Continue"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "1868886368325511314",
+"n": "Out",
+"r": [0.0, 1.0, 0.0, 1.0, 140.0, -56.0, 219.49, 81.38, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Continue",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(140, -56),
+"size": Vector2(219.3397, 81.38)
+}
+metadata/u_txt = {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Continue",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Description" type="Control" parent="PopupMoreHeartLayer/Panel/Content" unique_id=1969133510]
+anchors_preset = 0
+anchor_right = 1.0
+offset_left = 320.89984
+offset_top = 132.16275
+offset_right = -77.20006
+offset_bottom = 286.83725
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "709436973652917155",
+"n": "Description",
+"r": [0.0, 1.0, 1.0, 1.0, 121.8499, -209.5, -398.0999, 154.6745, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(121.8499, -209.5),
+"size": Vector2(-398.0999, 154.6745)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/Content/Description" unique_id=1428000451]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -286.0
+offset_top = -65.0
+offset_right = 286.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xn3kl")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Next heart in"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "6503394394479215523",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 65.0, 572.0, 50.0, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 50.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Next heart in",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 65),
+"size": Vector2(572, 50)
+}
+metadata/u_txt = {
+"auto": [18.0, 50.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Next heart in",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="PopupMoreHeartLayer/Panel/Content/Description" unique_id=1297078941]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -123.25675
+offset_top = 14.0
+offset_right = 123.25675
+offset_bottom = 90.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(400, 515, 116, 72)
+border = Vector4(58, 35, 58, 37)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5709600373618598212",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_21",
+"t": 1.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -52.0, 246.5135, 76.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -52),
+"size": Vector2(246.5135, 76)
+}
+
+[node name="Image" type="Control" parent="PopupMoreHeartLayer/Panel/Content/Description/Image" unique_id=230136049]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -49.2
+offset_right = -46.0
+offset_bottom = 32.8
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(1828, 16, 220, 220)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7650949468119467986",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, -87.0, 8.2, 82.0, 82.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-87, 8.2),
+"size": Vector2(82, 82)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/Content/Description/Image" unique_id=1690998411]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -52.55035
+offset_top = -31.857399
+offset_right = 98.40935
+offset_bottom = 29.437
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vyv44")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 38
+theme_override_colors/font_color = Color(0.16078432, 0.32941177, 0.5294118, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "19:38"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "269415934970967192",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 22.9295, 1.2102, 150.9597, 61.2944, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "295487ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 38.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "19:38",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(22.9295, 1.2102),
+"size": Vector2(150.9597, 61.2944)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "295487ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 38.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "19:38",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="@Label@13" type="Label" parent="PopupMoreHeartLayer/Panel/Content/Description" unique_id=1721666439]
+visible = false
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_jov8o")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Looks like your hearts are full!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": false,
+"id": "5374125950271030531",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Looks like your hearts are full!",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Looks like your hearts are full!",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Continue" type="Button" parent="PopupMoreHeartLayer/Panel/Content/Description/@Label@13" unique_id=1601600207]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -261.85
+offset_top = 128.97
+offset_right = 18.150002
+offset_bottom = 248.97
+pivot_offset_ratio = Vector2(0.5, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4vobs")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_esbd3")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_8pyjn")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_7ybir")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_8x5wf")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_3qk86")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_hllju")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_008qw")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_47cb8")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_3ah40")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_m4r7x")
+flat = true
+script = ExtResource("1_n60pe")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5574240142023803685",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "5574240142023803685"
+},
+"name": "NavigationBackButton"
+}, {
+"_duration": "0.25",
+"_ease": "5",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "5574240142023803685",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 8.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "h"
+},
+"n": "Continue",
+"r": [0.5, 0.0, 0.5, 0.0, -121.85, -248.97, 280.0, 120.0, 0.5, 0.0],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(-121.85, -248.97),
+"size": Vector2(280, 120)
+}
+
+[node name="image" type="Control" parent="PopupMoreHeartLayer/Panel/Content/Description/@Label@13/Continue" unique_id=714262659]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+pivot = Vector2(0.5, 0)
+fill_method = 4
+
+[node name="Out" type="Label" parent="PopupMoreHeartLayer/Panel/Content/Description/@Label@13/Continue" unique_id=1516647735]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+offset_left = 30.330147
+offset_top = 15.310001
+offset_right = 249.66986
+offset_bottom = 96.69
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_byr70")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Continue"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "6843049101351088955",
+"n": "Out",
+"r": [0.0, 1.0, 0.0, 1.0, 140.0, -56.0, 219.49, 81.38, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Continue",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(140, -56),
+"size": Vector2(219.3397, 81.38)
+}
+metadata/u_txt = {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Continue",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="GameObject" type="Control" parent="PopupMoreHeartLayer/Panel/Content" unique_id=793300388]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -303.3
+offset_top = -196.55
+offset_right = 303.3
+offset_bottom = -65.45
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1293563584350354942",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": false,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 30.0,
+"sw": false,
+"t": "h"
+},
+"n": "GameObject",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 131.0, 606.6, 131.1, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 131),
+"size": Vector2(606.6, 131.1)
+}
+
+[node name="AdsBtn" type="Button" parent="PopupMoreHeartLayer/Panel/Content/GameObject" unique_id=741613138]
+layout_mode = 0
+offset_left = 8.299988
+offset_top = 5.550003
+offset_right = 288.3
+offset_bottom = 125.55
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t3hbq")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_jhapr")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_slxwf")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_3sewu")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_bvf75")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_uluak")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_sg6ua")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_y18fj")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_b3oce")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_aqw55")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hwwob")
+flat = true
+script = ExtResource("1_n60pe")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "2976045016534427140",
+"tr": 1.0
+},
+"cs": [{
+"_duration": "0.4",
+"_ease": "11",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "2976045016534427140",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_51",
+"t": 0.0
+},
+"n": "AdsBtn",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 280.0, 120.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(148.29999, -65.55),
+"size": Vector2(280, 120)
+}
+
+[node name="image" type="Control" parent="PopupMoreHeartLayer/Panel/Content/GameObject/AdsBtn" unique_id=1460902079]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(0, 1332, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+fill_method = 4
+
+[node name="Image" type="Control" parent="PopupMoreHeartLayer/Panel/Content/GameObject/AdsBtn" unique_id=996575584]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -70.5
+offset_top = -42.72
+offset_right = 25.5
+offset_bottom = 53.28
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(1299, 0, 256, 256)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4337462217869718966",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_5",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [64.0, 64.0]
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, -22.5, -5.28, 96.0, 96.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-22.5, -5.28),
+"size": Vector2(96, 96)
+}
+
+[node name="Out" type="Label" parent="PopupMoreHeartLayer/Panel/Content/GameObject/AdsBtn" unique_id=1580833818]
+material = SubResource("ShaderMaterial_jm0a0")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -101.445
+offset_top = 24.610004
+offset_right = 101.445
+offset_bottom = 105.990005
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ny2en")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Claim"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "5028444773256912849",
+"n": "Out",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -65.3, 202.89, 81.38, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Claim",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -65.3),
+"size": Vector2(202.89, 81.38)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Claim",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="GoldBtn" type="Button" parent="PopupMoreHeartLayer/Panel/Content/GameObject" unique_id=884090776]
+layout_mode = 0
+offset_left = 318.3
+offset_top = 5.550003
+offset_right = 598.3
+offset_bottom = 125.55
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_x01hl")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_n02m0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_g8ia3")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_53mv8")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ej1jy")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_tnu36")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_k3u5o")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_nurt2")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_r7fek")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_j6i4u")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_6m8rl")
+flat = true
+script = ExtResource("1_n60pe")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5438834759037099096",
+"tr": 1.0
+},
+"cs": [{
+"_duration": "0.4",
+"_ease": "11",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "5438834759037099096",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_50",
+"t": 0.0
+},
+"n": "GoldBtn",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 280.0, 120.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(458.3, -65.55),
+"size": Vector2(280, 120)
+}
+
+[node name="image" type="Control" parent="PopupMoreHeartLayer/Panel/Content/GameObject/GoldBtn" unique_id=926384321]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(0, 1160, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+fill_method = 4
+
+[node name="Image" type="Control" parent="PopupMoreHeartLayer/Panel/Content/GameObject/GoldBtn" unique_id=1947997147]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -49.95
+offset_top = -14.21
+offset_right = 20.05
+offset_bottom = 55.79
+pivot_offset_ratio = Vector2(1, 0)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(259, 259, 256, 256)
+preserve_aspect = true
+pivot = Vector2(1, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3601068479239200487",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_15",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [64.0, 64.0]
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, 20.05, 14.21, 70.0, 70.0, 1.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(20.05, 14.21),
+"size": Vector2(70, 70)
+}
+
+[node name="Out" type="Label" parent="PopupMoreHeartLayer/Panel/Content/GameObject/GoldBtn/Image" unique_id=1328061998]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.1
+offset_top = -25.0
+offset_right = 19.9
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v0ht0")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "+1"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "1060060458544899262",
+"n": "Out",
+"r": [0.5, 0.5, 0.5, 0.5, -5.1, 0.0, 50.0, 50.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "+1",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-5.1, 0),
+"size": Vector2(50, 50)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "+1",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Price" type="Control" parent="PopupMoreHeartLayer/Panel/Content/GameObject/GoldBtn" unique_id=1158718152]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -25.0
+offset_bottom = 25.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4735718485263195002",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [0.0, 16.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 10.0,
+"sw": false,
+"t": "h"
+},
+"n": "Price",
+"r": [0.0, 0.5, 1.0, 0.5, 0.0, 0.0, 0.0, 50.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 50)
+}
+
+[node name="Image" type="Control" parent="PopupMoreHeartLayer/Panel/Content/GameObject/GoldBtn/Price" unique_id=1276305752]
+anchors_preset = 0
+offset_bottom = 50.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(780, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4040055384007707585",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [50.0, 50.0]
+},
+"n": "Image",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -25),
+"size": Vector2(0, 50)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/Content/GameObject/GoldBtn/Price" unique_id=2002525950]
+material = SubResource("ShaderMaterial_oskr3")
+layout_mode = 0
+offset_left = 10.0
+offset_right = 10.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lhcyf")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "7784152293346974185",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "100",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(10, -25),
+"size": Vector2(0, 50)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.3397, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "100",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="BundleHeart" type="Control" parent="PopupMoreHeartLayer/Panel" unique_id=1303104882]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -403.0
+offset_top = 506.0
+offset_right = 403.0
+offset_bottom = 928.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"discountLine": {
+"node": "8897089867347657526"
+},
+"name": "SmallBundlePack",
+"nameTxt": {
+"node": "2852947345578458263"
+},
+"priceTxt": {
+"node": "2837260990027128486"
+},
+"productID": "cube.sort.color.heart.pack",
+"productIDRequired": [],
+"productIdDiscounted": "",
+"purchaseButton": {
+"node": "4034504426529359120"
+},
+"sellBadgeObj": {
+"node": "2168593660488780812"
+},
+"sellBadgeTxt": {
+"node": "3316199792552129644"
+}
+}],
+"id": "1997245321055085402",
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [-1.0, 422.0]
+},
+"n": "BundleHeart",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -717.0, 806.0, 422.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -717),
+"size": Vector2(806, 422)
+}
+
+[node name="BG (1)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart" unique_id=1100388599]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+tex = ExtResource("8_7q5um")
+region = Rect2(0, 0, 512, 312)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "564630759883734459",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Packs_Atlas1:UI_Shop_Packs_Atlas1_0",
+"t": 0.0
+},
+"n": "BG (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="BlurredBorder" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart" unique_id=1797399225]
+clip_children = 2
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 14.0
+offset_right = -18.0
+offset_bottom = -10.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("8_7q5um")
+region = Rect2(512, 0, 512, 312)
+color = Color(1, 1, 1, 0.011764706)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "745830572999720238",
+"img": {
+"c": "ffffff03",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_Shop_Packs_Atlas1:UI_Shop_Packs_Atlas1_1",
+"t": 0.0
+},
+"mask": {
+"show": true
+},
+"n": "BlurredBorder",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, -2.0, -36.0, -24.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -2),
+"size": Vector2(-36, -24)
+}
+
+[node name="Blurred" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/BlurredBorder" unique_id=217190791]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1190.0
+offset_top = -125.0
+offset_right = -390.0
+offset_bottom = 125.0
+rotation = -0.7853982
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+tex = ExtResource("9_lg3th")
+region = Rect2(0, 0, 360, 360)
+color = Color(1, 0.9764706, 0.8666667, 0.69803923)
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "Blurred",
+"on": true
+},
+"id": "5153748360996654798",
+"img": {
+"c": "fff9ddb2",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "blurred",
+"t": 0.0
+},
+"n": "Blurred",
+"r": [0.5, 0.5, 0.5, 0.5, -790.0, 0.0, 800.0, 250.0, 0.5, 0.5],
+"z": 45.0
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-790, 0),
+"size": Vector2(800, 250)
+}
+
+[node name="Image (1)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart" unique_id=1176582610]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -435.2224
+offset_top = -307.32242
+offset_right = 61.0224
+offset_bottom = 188.92241
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+color = Color(0.78431374, 0.4117647, 1, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "9167192290855681629",
+"img": {
+"c": "c869ffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, -187.1, 59.2, 496.2448, 496.2448, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-187.1, 59.2),
+"size": Vector2(496.2448, 496.2448)
+}
+
+[node name="Image (3)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/Image (1)" unique_id=680563654]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.07035
+offset_top = -0.07035
+offset_right = 0.07035
+offset_bottom = 0.07035
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+color = Color(0.78431374, 0.4117647, 1, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "367941415579025976",
+"img": {
+"c": "c869ffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image (3)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.1407, 0.1407, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0.1407, 0.1407)
+}
+
+[node name="Image (2)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart" unique_id=1861390810]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -337.1
+offset_top = -199.0
+offset_right = -37.100006
+offset_bottom = 101.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("10_pv2rd")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5594316596319556766",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "BundleTim",
+"t": 0.0
+},
+"n": "Image (2)",
+"r": [0.5, 0.5, 0.5, 0.5, -187.1, 49.0, 300.0, 300.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-187.1, 49),
+"size": Vector2(300, 300)
+}
+
+[node name="Effect_star" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart" unique_id=627992981]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -211.0
+offset_right = -40.0
+offset_bottom = 89.0
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"id": "3067615818608537741",
+"n": "Effect_star",
+"r": [0.5, 0.5, 0.5, 0.5, -190.0, 61.0, 300.0, 300.0, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-190, 61),
+"size": Vector2(300, 300)
+}
+
+[node name="Particle System" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/Effect_star" unique_id=1308993627]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3990177318218044929",
+"n": "Particle System",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="PackName" type="Label" parent="PopupMoreHeartLayer/Panel/BundleHeart" unique_id=2079432865]
+material = SubResource("ShaderMaterial_hscdh")
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 52.214996
+offset_top = -129.45801
+offset_right = 475.785
+offset_bottom = -30.542
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ncxv0")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 63
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "BUNDLE HEART"
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "2852947345578458263",
+"n": "PackName",
+"r": [0.0, 0.0, 0.0, 0.0, 264.0, 80.0, 423.57, 98.916, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 63.35,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "BUNDLE HEART",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(264, 80),
+"size": Vector2(423.57, 98.916)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 63.35,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "BUNDLE HEART",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ItemContainer" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart" unique_id=1399186636]
+anchors_preset = 0
+anchor_right = 1.0
+offset_left = 347.0384
+offset_top = -1.0
+offset_right = -20.398392
+offset_bottom = 271.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"horizontalLayoutGroup": {
+"asset": "ee4bb794e6f85404db083b9581793e8b"
+},
+"name": "ShopProductSetup",
+"plusItemPrefab": {
+"asset": "dc2bb501aba259a429e763c3ac8e1902"
+},
+"productID": "wool.scape.starter.pack",
+"productSO": {
+"asset": "IAPProductSO.asset"
+},
+"rewardItemPrefab": {
+"asset": "999d04b0ad20d7e4c94d9168a7d92caa"
+},
+"rewardPerRow": "2",
+"verticalLayoutGroup": {
+"node": "989336136155723733"
+}
+}],
+"id": "989336136155723733",
+"n": "ItemContainer",
+"r": [0.0, 1.0, 1.0, 1.0, 163.32, -135.0, -367.4368, 272.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(163.32, -135),
+"size": Vector2(-367.4368, 272)
+}
+
+[node name="Row(Clone)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer" unique_id=1395032431]
+anchors_preset = 0
+offset_left = 148.2816
+offset_top = 22.0
+offset_right = 248.2816
+offset_bottom = 126.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "2674615774241709612",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 198.2816, -74.0, 100.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(198.2816, -74),
+"size": Vector2(100, 104)
+}
+
+[node name="ShopRewardItem(Clone)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/Row(Clone)" unique_id=2069885932]
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 2.0
+offset_right = 120.0
+offset_bottom = 102.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("11_fkvki")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "4911139065745442699"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "7563472479398240913"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "1",
+"iconImg": {
+"node": "4911139065745442699"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "7563472479398240913"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "4911139065745442699",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Gold3",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 70.0, -52.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(70, -52),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/Row(Clone)/ShopRewardItem(Clone)" unique_id=1904846316]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_n53qk")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "900"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "7563472479398240913",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "900",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.4),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "900",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Plus(Clone)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/Row(Clone)" unique_id=175690229]
+visible = false
+anchors_preset = 0
+offset_left = 73.2
+offset_top = 60.0
+offset_right = 101.2
+offset_bottom = 88.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("7_bhcmq")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "5914429821551673857",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 87.2, -74.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(87.2, -74),
+"size": Vector2(28, 28)
+}
+
+[node name="ShopRewardItem(Clone) (1)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/Row(Clone)" unique_id=1021877494]
+visible = false
+anchors_preset = 0
+offset_left = 119.96001
+offset_top = 18.3
+offset_right = 199.96
+offset_bottom = 98.3
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(0, 259, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": false,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "8330542455627989229"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "6596989775049489797"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "8330542455627989229"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "6596989775049489797"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "8330542455627989229",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone) (1)",
+"r": [0.0, 1.0, 0.0, 1.0, 159.96, -58.3, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(159.96, -58.3),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/Row(Clone)/ShopRewardItem(Clone) (1)" unique_id=458804806]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -25.9
+offset_right = 60.0
+offset_bottom = 22.1
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_avduk")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "30m"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "6596989775049489797",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 1.9, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "30m",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 1.9),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "30m",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@14" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer" unique_id=2146849460]
+anchors_preset = 0
+offset_left = 82.2816
+offset_top = 146.0
+offset_right = 314.28162
+offset_bottom = 250.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "2511371447089801320",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 198.2816, -198.0, 232.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(198.2816, -198),
+"size": Vector2(232, 104)
+}
+
+[node name="ShopRewardItem(Clone)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14" unique_id=1027763517]
+anchors_preset = 0
+offset_left = 97.7
+offset_top = 0.5099983
+offset_right = 177.7
+offset_bottom = 80.509995
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(542, 663, 72, 72)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "3031631181209946009"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "1737511213829663469"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "3031631181209946009"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "1737511213829663469"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "3031631181209946009",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_37",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 137.7, -40.51, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(137.7, -40.51),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterMagnet" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14/ShopRewardItem(Clone)" unique_id=1044164050]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+tex = ExtResource("12_f0eov")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterMagnet",
+"on": true
+},
+"id": "7363207598167430918",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster1",
+"t": 0.0
+},
+"n": "ImgBoosterMagnet",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14/ShopRewardItem(Clone)" unique_id=309601896]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -3.2000008
+offset_right = 60.0
+offset_bottom = 44.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0w7p0")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "1737511213829663469",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -20.8, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -20.8),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ShopRewardItem(Clone) (2)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14" unique_id=1076796103]
+anchors_preset = 0
+offset_left = -27.1
+offset_top = 0.5099983
+offset_right = 52.9
+offset_bottom = 80.509995
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(259, 259, 256, 256)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "2678753100175337584"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "6161367104711148827"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "2678753100175337584"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "6161367104711148827"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "2678753100175337584",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_15",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone) (2)",
+"r": [0.0, 1.0, 0.0, 1.0, 12.9, -40.51, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(12.9, -40.51),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgVoHanTim" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14/ShopRewardItem(Clone) (2)" unique_id=1572760892]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(259, 259, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterMagnet 1",
+"on": true
+},
+"id": "8427284799054821129",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_15",
+"t": 0.0
+},
+"n": "ImgVoHanTim",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14/ShopRewardItem(Clone) (2)" unique_id=1284204583]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -3.2000008
+offset_right = 60.0
+offset_bottom = 44.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_eb6j7")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x5"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "6161367104711148827",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -20.8, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x5",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -20.8),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x5",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Plus(Clone)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14" unique_id=1158495697]
+anchors_preset = 0
+offset_left = 185.5
+offset_top = 38.0
+offset_right = 213.5
+offset_bottom = 66.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("7_bhcmq")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4066945422025286592",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 199.5, -52.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(199.5, -52),
+"size": Vector2(28, 28)
+}
+
+[node name="Plus(Clone) (1)" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14" unique_id=994287123]
+anchors_preset = 0
+offset_left = 59.5
+offset_top = 38.0
+offset_right = 87.5
+offset_bottom = 66.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("7_bhcmq")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2730290813511478022",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone) (1)",
+"r": [0.0, 1.0, 0.0, 1.0, 73.5, -52.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(73.5, -52),
+"size": Vector2(28, 28)
+}
+
+[node name="@Control@15" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14" unique_id=94327293]
+anchors_preset = 0
+offset_left = 218.92001
+offset_top = 1.5
+offset_right = 298.92
+offset_bottom = 81.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(614, 663, 72, 72)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "1654629414773294658"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "5063592996579647811"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "4",
+"iconImg": {
+"node": "1654629414773294658"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "5063592996579647811"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "1654629414773294658",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_38",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 258.92, -41.5, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(258.92, -41.5),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterStorage" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14/@Control@15" unique_id=29138001]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+tex = ExtResource("13_simfm")
+region = Rect2(0, 0, 256, 256)
+border_scale = 4.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterStorage",
+"on": true
+},
+"id": "5697382837748874106",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster2_1",
+"t": 0.0
+},
+"n": "ImgBoosterStorage",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/BundleHeart/ItemContainer/@Control@14/@Control@15" unique_id=1429007408]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -2.2000008
+offset_right = 60.0
+offset_bottom = 45.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4h60t")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "5063592996579647811",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -21.8, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -21.8),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart" unique_id=2090848034]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -133.90001
+offset_top = 7.4
+offset_right = 0.4
+offset_bottom = 62.32
+pivot_offset_ratio = Vector2(1, 0)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(400, 515, 116, 72)
+border = Vector4(58, 35, 58, 37)
+border_scale = 0.6666666666666666
+kind = 1
+pivot = Vector2(1, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"cs": [{
+"canvasGroup": null,
+"coolDownText": {
+"node": "6979161337506348263"
+},
+"name": "PackTimeCounter",
+"productId": "cube.sort.color.starter.pack"
+}],
+"id": "8562178066593526584",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_21",
+"t": 1.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, 0.4, -7.4, 134.3, 54.92, 1.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(0.4, -7.4),
+"size": Vector2(134.3, 54.92)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/BundleHeart/Image" unique_id=296941801]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_b3g3j")
+theme_override_constants/line_spacing = -3
+theme_override_fonts/font = SubResource("FontVariation_2d730")
+theme_override_font_sizes/font_size = 25
+theme_override_colors/font_color = Color(0.8039216, 0.1254902, 0.27058825, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "1D -12:12:12"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"id": "6979161337506348263",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 46.0],
+"c": "cd2045ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 24.55,
+"h": 2.0,
+"ls": 0.0,
+"m": [10.0, 5.0, 10.0, 5.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1D -12:12:12",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 46.0],
+"c": "cd2045ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 24.55,
+"h": 2.0,
+"ls": 0.0,
+"m": [10.0, 5.0, 10.0, 5.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1D -12:12:12",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/Image" unique_id=1466676166]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -137.4773
+offset_top = -32.2166
+offset_right = -80.1227
+offset_bottom = 25.138
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("7_bhcmq")
+region = Rect2(1198, 589, 128, 128)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "372859746599391567",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_79",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, -108.8, 3.5393, 57.3546, 57.3546, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-108.8, 3.5393),
+"size": Vector2(57.3546, 57.3546)
+}
+
+[node name="Button_Purchase" type="Button" parent="PopupMoreHeartLayer/Panel/BundleHeart" unique_id=1608358814]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -280.3
+offset_top = -130.0
+offset_right = -54.300003
+offset_bottom = -26.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_485vp")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ts5gs")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_pxkjx")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_362jk")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_fskd4")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_nw11j")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_x5qk2")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_iv2ni")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_dierj")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_6ffys")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_04nif")
+flat = true
+script = ExtResource("1_n60pe")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4034504426529359120",
+"tr": 1.0
+},
+"id": "4034504426529359120",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.25,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "Button_Purchase",
+"r": [1.0, 0.0, 1.0, 0.0, -167.3, 78.0, 226.0, 104.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-167.3, 78),
+"size": Vector2(226, 104)
+}
+
+[node name="image" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/Button_Purchase" unique_id=914867668]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.4444444444444444
+preserve_aspect = true
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="PopupMoreHeartLayer/Panel/BundleHeart/Button_Purchase" unique_id=1483897070]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_right = -16.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_rnp68")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 54
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "59,000d"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2837260990027128486",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, -32.0, -8.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 53.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "59,000d",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(-32, -8)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 53.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "59,000d",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="DiscountLine" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart/Button_Purchase" unique_id=1489176680]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 16.1228
+offset_right = 50.0
+offset_bottom = 21.1228
+rotation = -0.17418386
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_2lhgf")
+kind = 1
+color = Color(1, 0, 0, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8897089867347657526",
+"img": {
+"c": "ff0000ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "DiscountLine",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -18.6228, 100.0, 5.0, 0.5, 0.5],
+"z": 9.98
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -18.6228),
+"size": Vector2(100, 5)
+}
+
+[node name="SellBadge" type="Control" parent="PopupMoreHeartLayer/Panel/BundleHeart" unique_id=1778171861]
+visible = false
+anchors_preset = 0
+offset_left = -13.0741005
+offset_top = -16.0741
+offset_right = 113.0741
+offset_bottom = 110.0741
+rotation = -0.20926498
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_2lhgf")
+tex = ExtResource("4_yrgev")
+region = Rect2(1100, 912, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "2168593660488780812",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_78",
+"t": 0.0
+},
+"n": "SellBadge",
+"r": [0.0, 1.0, 0.0, 1.0, 50.0, -47.0, 126.1482, 126.1482, 0.5, 0.5],
+"z": 11.99
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(50, -47),
+"size": Vector2(126.1482, 126.1482)
+}
+
+[node name="SellBadgeTxt" type="Label" parent="PopupMoreHeartLayer/Panel/BundleHeart/SellBadge" unique_id=1775534872]
+material = SubResource("ShaderMaterial_hscdh")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -59.957
+offset_top = -36.0215
+offset_right = 69.868805
+offset_bottom = 34.883904
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_6nclg")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 52
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "-60%"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "3316199792552129644",
+"n": "SellBadgeTxt",
+"r": [0.5, 0.5, 0.5, 0.5, 4.9559, 0.5688, 129.8258, 70.9054, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 1.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 51.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-60%",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(4.9559, 0.5688),
+"size": Vector2(129.8258, 70.9054)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 1.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 51.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-60%",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}

@@ -6,7 +6,9 @@ extends Control
 ## Layout of LeaderboardLayer (color-cube-match-puzzle): tab League = LeaguesContent (league badges row, league
 ## card with countdown, list of PlayerLeaderboardItem, sticky card of the player), tab World = RankingContent
 ## (top 3, world rank, list). HubTop / HubNav stay the game's shared bars; the panel starts below HubTop and the
-## lists end above PLAY and HubNav. Added from copies of prefab nodes: league progress strip, PLAY button.
+## lists end above PLAY and HubNav. Added from copies of prefab nodes: league progress strip, PLAY button; both are
+## nodes of scenes/leaderboard.tscn with the layer (Canvas) and the Tick timer. Rows, badges, HubTop / HubNav are
+## built at runtime.
 
 signal closed(result: Variant)
 
@@ -36,14 +38,13 @@ const LINE_ABOVE := 20.34
 const TABS_H := 139.0
 const LIST_TOP := 276.2
 const LINE1_Y := 270.1
-const CARD_BOTTOM := 261.0
 const WORLD_TOP := 546.4
 const ROW_H := 150.0
 const ROW_W := 800.0
 const LIST_PAD := 20.0
 ## Gap between HubTop and the tabs (Unity: currency bar bottom ~80, tabs top 123).
 const TABS_GAP := 16.0
-## League progress strip under the league card: a copy of TimeRemainBG.
+## League progress strip under the league card (a copy of TimeRemainBG in the scene): its height.
 const PROGRESS_H := 100.0
 ## PLAY: PopupOkLayer pill at SettingLanguage Save's 400 x 120, above HubNav.
 const PLAY := Vector2(400, 120)
@@ -66,7 +67,7 @@ var _tick: Timer = null
 var _top: HubTop = null
 var _nav: HubNav = null
 var _play: Control = null
-var _progress: RefCounted = null
+var _progress: Control = null
 var _badges: Array = []
 var _scroll_host: Control = null
 var _scroll_y := INF
@@ -79,7 +80,9 @@ func setup(args: Dictionary = {}) -> void:
 	tab = str(args.get("tab", "league"))
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	_build()
-	_show_pending.call_deferred()
+	# Not while tools/bake_screen.gd saves the scene: the popup would be saved with it.
+	if not UnityUI.baking:
+		_show_pending.call_deferred()
 
 
 func _ready() -> void:
@@ -87,6 +90,8 @@ func _ready() -> void:
 
 
 func _build() -> void:
+	# The league progress strip, PLAY and the Tick timer are nodes of scenes/leaderboard.tscn. Prefab nodes keep
+	# their Unity names there (an instanced scene's nodes cannot be renamed or removed), so that is done here.
 	ui = UnityUI.build(self, LAYER)
 	for p in [LIST + "Viewport/Content/PlayerLeaderboardItem", LIST + "Viewport/Content/ArrowIndicator",
 			WLIST + "Viewport/Content/PlayerLeaderboardItem"]:
@@ -108,7 +113,6 @@ func _build() -> void:
 	var info: Control = ui.on_click(LC + "TimeRemainBG/DescButton", _open.bind(POPUP_HOWTO, {}))
 	info.name = "InfoButton"
 	ui.on_click(RC + "LastWeekLeaders/Title/DescButton", _open.bind(POPUP_HOWTO, {}))
-	ui.show(LC + "RankProgressBG/RankProgress/RankBadge", false)
 
 	for id in ["league", "world"]:
 		var p := TABS + ("Leagues" if id == "league" else "Ranking")
@@ -117,59 +121,31 @@ func _build() -> void:
 		b.name = "Tab_" + id
 		b.connect("clicked", _set_tab.bind(id))
 		tab_buttons[id] = b
-	_add_progress()
+	_progress = %LeagueProgress
 
-	_play = UnityKit.button(ui.root, "green", tr("home_play"), Rect2(Vector2.ZERO, PLAY), _on_play).root
-	_play.name = "PlayButton"
+	_play = %PlayButton
+	UnityUI.set_text(_play.get_node("Out") as Label, tr("home_play"))
+	_play.connect("clicked", _on_play)
 
-	_top = HubTop.new()
+	_top = HubTop.create()
+	_top.set_meta("u_rt", true)
 	_top.hide_side_buttons()
 	_top.action.connect(_act)
 	add_child(_top)
-	_nav = HubNav.new("ranking")
+	_nav = HubNav.create("ranking")
+	_nav.set_meta("u_rt", true)
 	_nav.tab.connect(_on_tab)
 	add_child(_nav)
 	_nav.refresh()
 
-	_tick = Timer.new()
-	_tick.wait_time = 1.0
+	_tick = %Tick
 	_tick.timeout.connect(_on_tick)
-	add_child(_tick)
 	_tick.start()
 	resized.connect(_layout)
 	_layout()
 	if tab == "world":
 		(tab_buttons.world as Button).button_pressed = true
 	_fill()
-
-
-## League progress (game content Unity has no slot for): a copy of TimeRemainBG under the league card with the
-## Slider prefab (points to the next league) and two texts in TimeText's style (goal, top percent).
-func _add_progress() -> void:
-	var s := UnityKit.spec(LAYER, LC + "TimeRemainBG")
-	s.n = "LeagueProgress"
-	s.ch = []
-	s.r = [0, 1, 1, 1, 0, -CARD_BOTTOM, 0, PROGRESS_H, 0.5, 1]
-	_progress = UnityKit.add(ui.node(LC.trim_suffix("/")), s)
-	# Keep it right after the card, before the list (draw order like the prefab siblings).
-	ui.node(LC.trim_suffix("/")).move_child(_progress.root, ui.node(LC + "TimeRemainBG").get_index() + 1)
-	var bar := UnityKit.spec("Slider", "")
-	bar.n = "LeagueBar"
-	bar.r = [0.5, 1, 0.5, 1, 0, -12, 610, 40, 0.5, 1]
-	var bv: RefCounted = UnityKit.add(_progress.root, bar)
-	bv.show("Handle Slide Area", false)
-	var pts := UnityKit.spec(LAYER, CARD + "Image/TimeText")
-	pts.n = "PointsText"
-	pts.r = [0.5, 0.5, 0.5, 0.5, 0, 0, 400, 46, 0.5, 0.5]
-	UnityKit.add(bv.root, pts)
-	for d in [["GoalLabel", 1, -305.0, 0.0, 400.0], ["TopPercentLabel", 4, 305.0, 1.0, 200.0]]:
-		var t := UnityKit.spec(LAYER, CARD + "Image/TimeText")
-		t.n = d[0]
-		t.txt.h = d[1]
-		t.txt.fs = 32.0
-		t.txt.auto = [18.0, 32.0]
-		t.r = [0.5, 1, 0.5, 1, d[2], -58, d[4], 40, d[3], 1]
-		UnityKit.add(_progress.root, t)
 
 
 ## Places HubTop / HubNav like Home and fits the prefab panel between them (canvas units).
@@ -335,13 +311,13 @@ func _fill_badges(current: String) -> void:
 
 func _fill_progress() -> void:
 	var nxt := int(view.next_min)
-	var bar: Control = _progress.root.get_node("LeagueBar")
+	var bar: Control = _progress.get_node("LeagueBar")
 	UnityUI.set_slider(bar, float(view.progress))
 	UnityUI.set_text(bar.get_node("PointsText") as Label,
 		("%d/%d" % [int(view.points), nxt]) if nxt >= 0 else LbKit.fmt_int(int(view.points)))
 	var goal := tr("lb_top_league") if nxt < 0 else tr("lb_to_next") % [nxt - int(view.points), LbKit.league_name(str(view.next_league))]
-	UnityUI.set_text(_progress.root.get_node("GoalLabel") as Label, goal)
-	UnityUI.set_text(_progress.root.get_node("TopPercentLabel") as Label, tr("lb_top_percent") % int(view.top_percent))
+	UnityUI.set_text(_progress.get_node("GoalLabel") as Label, goal)
+	UnityUI.set_text(_progress.get_node("TopPercentLabel") as Label, tr("lb_top_percent") % int(view.top_percent))
 
 
 # --- tab World ---
@@ -350,13 +326,9 @@ func _fill_world() -> void:
 	var w := Game.lb_world_view()
 	UnityUI.set_text(ui.node(RC + "LastWeekLeaders/Title/Text (TMP)") as Label, tr("lb_world_sub") % LbKit.fmt_int(int(w.total)))
 	UnityUI.set_text(ui.node(RC + "WeekResults/Title/Text (TMP)") as Label, tr("lb_world_rank") % LbKit.fmt_int(int(w.rank)))
-	# RemainTime pill: the week countdown slot shows the player's top percent (no clock: not a time).
-	var pct: Label = ui.label(RC + "WeekResults/Title/RemainTime/Text (TMP) (1)")
-	UnityUI.set_text(pct, tr("lb_top_percent") % int(w.top_percent))
-	var pr: Dictionary = pct.get_meta("u_rect")
-	pr.pos = Vector2(0, (pr.pos as Vector2).y)
-	UnityUI.apply_rect(pct)
-	ui.show(RC + "WeekResults/Title/RemainTime/Image", false)
+	# RemainTime pill: the week countdown slot shows the player's top percent (no clock: not a time); the scene
+	# hides its clock icon and centres the text.
+	ui.text(RC + "WeekResults/Title/RemainTime/Text (TMP) (1)", tr("lb_top_percent") % int(w.top_percent))
 	var rows: Array = w.rows
 	for i in 3:
 		var top: Control = ui.node(RC + "LastWeekLeaders/Leaders/Top%d" % (i + 1))

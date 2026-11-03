@@ -1,0 +1,240 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/hub_nav.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/atlas_main.png" id="2_y4n43"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_store.png" id="3_a7cjq"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_home.png" id="4_7vi2r"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_leaderboard.png" id="5_k7h5s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oki0t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fau2e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y5ghp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m7wrp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ojbuo"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_55qdw"]
+texture = ExtResource("2_y4n43")
+texture_margin_left = 30.0
+texture_margin_top = 30.0
+texture_margin_right = 30.0
+texture_margin_bottom = 24.0
+region_rect = Rect2(937, 524, 226, 144)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8gll6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xrmdq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jedgs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yymvn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_108ip"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p6mvy"]
+texture = ExtResource("2_y4n43")
+texture_margin_left = 30.0
+texture_margin_top = 30.0
+texture_margin_right = 30.0
+texture_margin_bottom = 24.0
+region_rect = Rect2(937, 672, 226, 140)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_66252"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_24n2w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7il6d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wdwd0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_da214"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r235s"]
+texture = ExtResource("2_y4n43")
+texture_margin_left = 30.0
+texture_margin_top = 30.0
+texture_margin_right = 30.0
+texture_margin_bottom = 24.0
+region_rect = Rect2(937, 524, 226, 144)
+
+[node name="NavBar" type="Control" unique_id=1051884145]
+anchors_preset = 0
+offset_right = 886.0
+offset_bottom = 248.0
+mouse_filter = 2
+script = ExtResource("1")
+
+[node name="ShopButton" type="Button" parent="." unique_id=365281049]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 0
+offset_top = 102.0
+offset_right = 274.0
+offset_bottom = 248.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_fau2e")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_y5ghp")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_m7wrp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ojbuo")
+metadata/fb_rect = Rect2(0, 102, 274, 146)
+
+[node name="Panel" type="Panel" parent="ShopButton" unique_id=475905551]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 268.0
+offset_bottom = 146.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_55qdw")
+metadata/fb_rect = Rect2(6, 6, 262, 140)
+
+[node name="Icon" type="TextureRect" parent="ShopButton" unique_id=1561852812]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 32.0
+offset_right = 185.0
+offset_bottom = 128.0
+mouse_filter = 2
+texture = ExtResource("3_a7cjq")
+expand_mode = 1
+stretch_mode = 5
+metadata/fb_rect = Rect2(89, 32, 96, 96)
+
+[node name="Caption" type="Label" parent="ShopButton" unique_id=699535063]
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 98.0
+offset_right = 264.0
+offset_bottom = 138.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 26
+text = "Shop"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/fb_rect = Rect2(10, 98, 254, 40)
+metadata/fb_font = [26.0, 3.0, 250.0]
+
+[node name="HomeTab" type="Button" parent="." unique_id=1770140379]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 0
+offset_left = 274.0
+offset_right = 612.0
+offset_bottom = 248.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_8gll6")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_xrmdq")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_jedgs")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_yymvn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_108ip")
+metadata/fb_rect = Rect2(274, 0, 338, 248)
+
+[node name="Panel" type="Panel" parent="HomeTab" unique_id=1337990813]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 67.0
+offset_right = 332.0
+offset_bottom = 249.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_p6mvy")
+metadata/fb_rect = Rect2(6, 67, 326, 182)
+
+[node name="Icon" type="TextureRect" parent="HomeTab" unique_id=1161179235]
+layout_mode = 0
+offset_left = 85.0
+offset_top = -1.0
+offset_right = 253.0
+offset_bottom = 167.0
+mouse_filter = 2
+texture = ExtResource("4_7vi2r")
+expand_mode = 1
+stretch_mode = 5
+metadata/fb_rect = Rect2(85, -1, 168, 168)
+
+[node name="Caption" type="Label" parent="HomeTab" unique_id=1545705938]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 167.0
+offset_right = 319.0
+offset_bottom = 249.3125
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.5411765, 0.1254902, 0.12156863, 1)
+theme_override_colors/font_outline_color = Color(0.5411765, 0.1254902, 0.12156863, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 60
+text = "Home"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/fb_rect = Rect2(19, 167, 300, 68)
+metadata/fb_font = [60.0, 3.0, 290.0]
+
+[node name="RankingTab" type="Button" parent="." unique_id=378428721]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 0
+offset_left = 612.0
+offset_top = 102.0
+offset_right = 886.0
+offset_bottom = 248.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_66252")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_24n2w")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7il6d")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_wdwd0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_da214")
+metadata/fb_rect = Rect2(612, 102, 274, 146)
+
+[node name="Panel" type="Panel" parent="RankingTab" unique_id=1849457611]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 268.0
+offset_bottom = 146.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_r235s")
+metadata/fb_rect = Rect2(6, 6, 262, 140)
+
+[node name="Icon" type="TextureRect" parent="RankingTab" unique_id=1019677145]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 32.0
+offset_right = 185.0
+offset_bottom = 128.0
+mouse_filter = 2
+texture = ExtResource("5_k7h5s")
+expand_mode = 1
+stretch_mode = 5
+metadata/fb_rect = Rect2(89, 32, 96, 96)
+
+[node name="Caption" type="Label" parent="RankingTab" unique_id=1465772715]
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 98.0
+offset_right = 264.0
+offset_bottom = 138.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 26
+text = "Ranking"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/fb_rect = Rect2(10, 98, 254, 40)
+metadata/fb_font = [26.0, 3.0, 250.0]

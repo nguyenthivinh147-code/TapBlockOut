@@ -1,31 +1,68 @@
+@tool
 extends Control
 ## Unity UI Image (Simple, Sliced, Tiled, Filled) drawn in _draw, in Unity canvas units.
 ## unity_ui.gd assigns the sprite with set_texture(); without a sprite it fills with color like Unity's white Image.
+## Callers set mouse_filter (usually IGNORE): a scene sets built-in properties before the script, so _init must not.
 
 enum { SIMPLE, SLICED, TILED, FILLED }
 
-var tex: Texture2D = null
+@export var tex: Texture2D = null:
+	set(x):
+		tex = x
+		queue_redraw()
 ## Sprite region in the imported texture (px).
-var region := Rect2()
+@export var region := Rect2():
+	set(x):
+		region = x
+		queue_redraw()
 ## 9-slice border in the imported texture (px): left, top, right, bottom.
-var border := Vector4.ZERO
+@export var border := Vector4.ZERO:
+	set(x):
+		border = x
+		queue_redraw()
 ## Canvas units per imported texture px for borders (100 / ppu / ppu_multiplier / import scale).
-var border_scale := 1.0
-var kind := SIMPLE
-var color := Color.WHITE
-var preserve_aspect := false
+@export var border_scale := 1.0:
+	set(x):
+		border_scale = x
+		queue_redraw()
+@export var kind := SIMPLE:
+	set(x):
+		kind = x
+		queue_redraw()
+@export var color := Color.WHITE:
+	set(x):
+		color = x
+		queue_redraw()
+@export var preserve_aspect := false:
+	set(x):
+		preserve_aspect = x
+		queue_redraw()
 ## Unity pivot (y up), used by preserve_aspect.
-var pivot := Vector2(0.5, 0.5)
-var fill_center := true
+@export var pivot := Vector2(0.5, 0.5):
+	set(x):
+		pivot = x
+		queue_redraw()
+@export var fill_center := true:
+	set(x):
+		fill_center = x
+		queue_redraw()
 ## Filled: 0 horizontal, 1 vertical (no prefab uses Radial).
-var fill_method := 0
-var fill_amount := 1.0
-var fill_origin := 0
-var uv_rect := Rect2(0, 0, 1, 1)
-
-
-func _init() -> void:
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+@export var fill_method := 0:
+	set(x):
+		fill_method = x
+		queue_redraw()
+@export var fill_amount := 1.0:
+	set(x):
+		fill_amount = x
+		queue_redraw()
+@export var fill_origin := 0:
+	set(x):
+		fill_origin = x
+		queue_redraw()
+@export var uv_rect := Rect2(0, 0, 1, 1):
+	set(x):
+		uv_rect = x
+		queue_redraw()
 
 
 func set_texture(t: Texture2D, r: Rect2 = Rect2(), b: Vector4 = Vector4.ZERO, scale: float = 1.0) -> void:

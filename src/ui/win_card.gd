@@ -1,6 +1,8 @@
 extends Control
 ## Thẻ thắng: +gold, x2 (L1 miễn phí), Tiếp tục. Bố cục WinPanel của EndGameUILayer (color-cube-match-puzzle):
 ## cúp và kèn, ribbon tiêu đề, thẻ người chơi trên bảng xếp hạng, thanh tính năng kế tiếp, dải phần thưởng, hàng nút.
+## Ô thưởng gold và dòng thông báo là node trong scenes/win_card.tscn; ô điểm xếp hạng và dòng gợi ý x2 thêm lúc chạy
+## khi có.
 ## setup(args): kết quả Game.on_level_won ({coins, x2_available, x2_free, rate_prompt, progress, lb}).
 ## x2: popup tự gọi Game.claim_x2 (xem video, hoặc miễn phí ở L1). Nút x2 là FreeBtn (miễn phí) hoặc ClaimBtn (video).
 ## closed(result): {x2_offered, x2_taken, rate_prompt, coins}. Bên gọi (level) gọi
@@ -23,8 +25,7 @@ const CARD := "Panel/WinPanel/WinPanel/PlayerLeaderboardItem"
 const FEATURE := "Panel/WinPanel/WinPanel/NewFeatureUnlock"
 const REWARDS := "Panel/WinPanel/BG/RewardGroup/Rewards"
 const ROW := "Panel/WinPanel/BG/GameObject"
-## RewardItemSO icons: gold (RewardType.Gold, ItemId 0) and rank point (RewardType.RankPoint).
-const GOLD_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_3"
+## RewardItemSO icon of rank points (RewardType.RankPoint); the gold one is saved in the scene.
 const RANK_POINT_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_2"
 ## UILeaderboardUserCard image states of the player's own card: medal for rank 1..3, none from rank 4.
 ## (Its own-card background UI_Leaderboard_Atlas_29 is not in _sprites.json, so the prefab background stays.)
@@ -55,13 +56,14 @@ var _lb_total: Label = null
 var _lb_name: Label = null
 
 
+## Runs once: the layer, the gold reward and the message line are nodes of scenes/win_card.tscn (callers open a new
+## card each time).
 func setup(args: Dictionary) -> void:
+	if ui != null:
+		return
 	_args = args
 	_busy = false
 	_x2_taken = false
-	for c in get_children():
-		remove_child(c)
-		c.queue_free()
 	_build()
 
 
@@ -88,14 +90,15 @@ func _build() -> void:
 # --- rewards (VictoryPanel.InitRewards: one Reward.prefab per item) ---
 
 func _build_rewards() -> void:
-	var gold := _reward_item(GOLD_ICON, tr("win_reward") % _coins())
-	gold.node("RewardIcon").name = "CoinIcon"
-	_reward = gold.label("RewardText")
-	_reward.name = "RewardLabel"
+	# The gold Reward.prefab (CoinIcon, RewardLabel) is a node of the scene; the rank point one shows only with the
+	# leaderboard.
+	_reward = %GoldReward.get_node("RewardLabel")
+	UnityUI.set_text(_reward, tr("win_reward") % _coins())
 	var lb: Dictionary = _args.get("lb", {})
 	if not lb.is_empty():
 		# VictoryPanel adds a RankPoint reward when the leaderboard is open.
 		var rp := _reward_item(RANK_POINT_ICON, tr("lb_win_points") % 0)
+		rp.root.name = "LbPointReward"
 		rp.node("RewardIcon").name = "LbPointIcon"
 		_lb_points = rp.label("RewardText")
 		_lb_points.name = "LbPointsLabel"
@@ -116,8 +119,8 @@ func _reward_item(icon: String, text: String) -> RefCounted:
 ## league in the name slot. Hidden when the level had no pieces.
 func _build_lb() -> void:
 	var lb: Dictionary = _args.get("lb", {})
+	ui.show(CARD, not lb.is_empty())
 	if lb.is_empty():
-		ui.show(CARD, false)
 		return
 	ui.node(CARD).name = "LbRow"
 	ui.show(CARD + "/Gift", false)
@@ -179,8 +182,8 @@ func _set_lb_rank(v: float) -> void:
 ## Thanh tiến trình tới tính năng kế tiếp (Unlocks.feature_progress). Ẩn khi hết tính năng để mở.
 func _build_progress() -> void:
 	var p: Dictionary = _args.get("progress", {})
+	ui.show(FEATURE, bool(p.get("has_next", false)))
 	if not bool(p.get("has_next", false)):
-		ui.show(FEATURE, false)
 		return
 	ui.node(FEATURE).name = "FeatureProgress"
 	_prog_before = float(p.before)
@@ -199,11 +202,11 @@ func _build_progress() -> void:
 	var first := str(p.features[0]) if not (p.features as Array).is_empty() else ""
 	var icon := str(FEATURE_ICONS.get(first, "mech_" + first))
 	var feature_image := FEATURE + "/Slider/Image/FeatureImage"
-	if icon != "" and ThemeKit.has_real_icon(icon):
+	var real := icon != "" and ThemeKit.has_real_icon(icon)
+	ui.show(feature_image, real)
+	if real:
 		ui.texture(feature_image, ThemeKit.icon(icon))
 		UnityUI.image_of(ui.node(feature_image)).preserve_aspect = true
-	else:
-		ui.show(feature_image, false)
 
 
 ## Smooth step from the value before this win to the value after, like AnimateProgressFill.
@@ -247,6 +250,7 @@ func _build_buttons() -> void:
 		# SetupButtonState: FreeBtn on the first claim, ClaimBtn (video) after; both show the doubled gold.
 		var keep := "FreeBtn" if free else "ClaimBtn"
 		ui.show(ROW + ("/ClaimBtn" if free else "/FreeBtn"), false)
+		ui.show(ROW + "/" + keep, true)
 		_x2_path = ROW + "/" + keep
 		_x2_btn = ui.button(_x2_path)
 		_x2_btn.name = "X2Button"
@@ -261,14 +265,15 @@ func _build_buttons() -> void:
 		ui.relayout(ROW + "/" + keep + "/GameObject (1)")
 		_x2_btn.connect("clicked", _on_x2_pressed)
 		if free:
-			_line("X2HintLabel", tr("tut_x2"), 604.0)
+			var hint := _line("X2HintLabel", tr("tut_x2"), 604.0)
+			hint.get_parent().move_child(hint, (%MessageLabel as Control).get_index())
 		else:
 			Game.offer_video(X2_PLACEMENT)
 	else:
 		ui.show(ROW + "/FreeBtn", false)
 		ui.show(ROW + "/ClaimBtn", false)
 	ui.relayout(ROW)
-	_msg = _line("MessageLabel", "", 684.0)
+	_msg = %MessageLabel
 	_msg.visible = false
 
 

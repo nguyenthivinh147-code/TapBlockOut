@@ -1,0 +1,2076 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="1_h0bym"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="2_3r0vg"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="3_vsuou"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="4_kro70"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Leaderboard_Atlas.png" id="5_olhuo"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Av_02.png" id="6_jnx31"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="7_qbb7g"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_Silver.png" id="8_3bi4t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x0ytn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w3q2m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t6oxp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jnhlq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rvwox"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wk8g0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qf8qr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vdr0y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4djsh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jvrg2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uosrx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lenqp"]
+shader = ExtResource("3_vsuou")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.7764706, 0.72156864, 0.5647059, 1)
+shader_parameter/underlay_color = Color(0.5921569, 0.5921569, 0.5921569, 1)
+shader_parameter/face_edge = 0.27310924062499997
+shader_parameter/outline_half = 0.201680675
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.27310924062499997
+shader_parameter/underlay_offset = Vector2(0, 0)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lp23m"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_51gwy"]
+base_font = ExtResource("4_kro70")
+spacing_glyph = -2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o1wlb"]
+shader = ExtResource("3_vsuou")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(1, 1, 1, 1)
+shader_parameter/underlay_color = Color(0.5921569, 0.5921569, 0.5921569, 1)
+shader_parameter/face_edge = 0.33516482812500004
+shader_parameter/outline_half = 0.263736275
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.33516482812500004
+shader_parameter/underlay_offset = Vector2(0, 0)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1r4ap"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b1ri6"]
+shader = ExtResource("3_vsuou")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.22352941, 0.06666667, 0.003921569, 1)
+shader_parameter/underlay_color = Color(0.22352941, 0.06666667, 0.003921569, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.05828571516
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.1445)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u038l"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
+shader = ExtResource("3_vsuou")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.085714287
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.491428570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fe0hx"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("4_kro70")
+spacing_glyph = -1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("3_vsuou")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qrswi"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mmqng"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6cb35"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bqlxs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x0swa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j4rn5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2wkm7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_heuqi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o2fcp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xph12"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2n02t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iji3a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ajibj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_30u5t"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qejyp"]
+shader = ExtResource("3_vsuou")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gqp3c"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2d730"]
+base_font = ExtResource("4_kro70")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_634d8"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jrmrh"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o23k6"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=1033301589]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "LeaderboardWeeklyResultLayer"
+
+[node name="LeaderboardWeeklyResultLayer" type="Control" parent="." unique_id=9186741]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"_claimButton": {
+"node": "980441896894915091"
+},
+"_leaderboardRankBadgesSO": {
+"asset": "LeaderboardRankBadges.asset"
+},
+"_nextLeagueRankImage": {
+"node": "6271762784238358391"
+},
+"_nextLeagueTitleText": {
+"node": "7679687400158638901"
+},
+"_rewardItemPrefab": {
+"asset": "Reward.prefab"
+},
+"_rewardsContainer": {
+"node": "1083441996742235378"
+},
+"_rewardsRoot": {
+"node": "7377194112630835842"
+},
+"_rewardsTitleText": {
+"node": "4140824162051827840"
+},
+"_userCard": {
+"node": "3441891036103241530"
+},
+"_yourRankTitleText": {
+"node": "2947025365127128848"
+},
+"breakEnable": "0",
+"debugOnOff": "0",
+"name": "UILeaderboardWeeklyResultLayer"
+}, {
+"OnCompleteAnim": [],
+"OnStartAnim": [],
+"dimCanvasGroup": {
+"node": "9014538030371899602"
+},
+"duration": "0.4",
+"easeType": "26",
+"mUICoreLayer": {
+"node": "9014538030371899602"
+},
+"name": "ShowPopupAnimation",
+"panelRect": {
+"node": "3483087242810025200"
+}
+}],
+"id": "9014538030371899602",
+"n": "LeaderboardWeeklyResultLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 0),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="WeekResultPanel" type="Control" parent="LeaderboardWeeklyResultLayer" unique_id=1260858391]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "UIWeeklyResultPopup"
+}],
+"id": "3483087242810025200",
+"n": "WeekResultPanel",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Dim" type="Button" parent="LeaderboardWeeklyResultLayer/WeekResultPanel" unique_id=1885949837]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_x0ytn")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_w3q2m")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t6oxp")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_jnhlq")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_rvwox")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_wk8g0")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_qf8qr")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_vdr0y")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_4djsh")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_jvrg2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_uosrx")
+flat = true
+script = ExtResource("1_h0bym")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "980441896894915091",
+"tr": 1.0
+},
+"id": "980441896894915091",
+"img": {
+"c": "000000fc",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Dim",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/Dim" unique_id=1840643645]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_3r0vg")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="Image" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel" unique_id=1806133513]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -429.49
+offset_top = -35.700012
+offset_right = 445.49
+offset_bottom = 497.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4987718814771618618",
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 8.0, -230.9, 874.98, 533.2, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(8, -230.9),
+"size": Vector2(874.98, 533.2)
+}
+
+[node name="txtHeader BG2" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/Image" unique_id=1885750134]
+material = SubResource("ShaderMaterial_lenqp")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -279.1233
+offset_top = -124.06845
+offset_right = 269.1233
+offset_bottom = 120.06845
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lp23m")
+theme_override_constants/line_spacing = -64
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 120
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "KẾT QUẢ GIẢI ĐẤU"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "7554536589019376135",
+"n": "txtHeader BG2",
+"r": [0.5, 0.5, 0.5, 0.5, -5.0, 2.0, 548.2466, 244.1369, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG2",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "KẾT QUẢ GIẢI ĐẤU",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-5, 2),
+"size": Vector2(548.2466, 244.1369)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG2",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "KẾT QUẢ GIẢI ĐẤU",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="txtHeader BG1" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/Image" unique_id=326410755]
+material = SubResource("ShaderMaterial_o1wlb")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -279.1233
+offset_top = -134.06845
+offset_right = 269.1233
+offset_bottom = 123.53406
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1r4ap")
+theme_override_constants/line_spacing = -64
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 120
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Kết quả giải đấu"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "7334299362679365237",
+"n": "txtHeader BG1",
+"r": [0.5, 0.5, 0.5, 0.5, -5.0, 5.2672, 548.2466, 257.6025, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Kết quả giải đấu",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-5, 5.2672),
+"size": Vector2(548.2466, 257.6025)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Kết quả giải đấu",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="txtHeader" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/Image" unique_id=1905739201]
+material = SubResource("ShaderMaterial_b1ri6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -279.1233
+offset_top = -143.06845
+offset_right = 269.1233
+offset_bottom = 101.06845
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_u038l")
+theme_override_constants/line_spacing = -64
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 120
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "KẾT QUẢ GIẢI ĐẤU"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "8606947916706690826",
+"n": "txtHeader",
+"r": [0.5, 0.5, 0.5, 0.5, -5.0, 21.0, 548.2466, 244.1369, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - StarterPack",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "KẾT QUẢ GIẢI ĐẤU",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-5, 21),
+"size": Vector2(548.2466, 244.1369)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - StarterPack",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "KẾT QUẢ GIẢI ĐẤU",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="YourRankTxt" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel" unique_id=1730702935]
+material = SubResource("ShaderMaterial_jm0a0")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -245.9
+offset_top = 377.5
+offset_right = 245.9
+offset_bottom = 472.7
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fe0hx")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 69
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Hạng của bạn:"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2947025365127128848",
+"n": "YourRankTxt",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -425.1, 491.8, 95.2, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 69.35,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Hạng của bạn:",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -425.1),
+"size": Vector2(491.8, 95.2)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 69.35,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Hạng của bạn:",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="PlayerLeaderboardItem" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel" unique_id=2044782843]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 481.5
+offset_right = 400.0
+offset_bottom = 631.5
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"_avatarConfigSO": {
+"asset": "AvatarConfigSO.asset"
+},
+"_avatarImage": {
+"node": "7990009641233713739"
+},
+"_frameConfigSO": {
+"asset": "FrameIconSO.asset"
+},
+"_frameImage": {
+"node": "5664100899217228373"
+},
+"_imageStates": [{
+"node": "441673271221031508"
+}, {
+"node": "8521124235523985192"
+}, {
+"node": "846908442239444739"
+}, {
+"node": "8196241962976814357"
+}, {
+"node": "4333174796415232214"
+}],
+"_leaderboardTopRewardsSO": {
+"asset": "LeaderboardTopRewards.asset"
+},
+"_nameText": {
+"node": "2986737057297383261"
+},
+"_rankPointImage": {
+"node": "3530657613317650132"
+},
+"_rankPointSprite": {
+"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_2"
+},
+"_rankPointText": {
+"node": "3036373668225029104"
+},
+"_rankPositionText": {
+"node": "6487002129797264288"
+},
+"_shinyEffectForUGUI": {
+"node": "846908442239444739"
+},
+"milestoneItem": {
+"node": "441673271221031508"
+},
+"name": "UILeaderboardUserCard"
+}, {
+"_userCard": {
+"node": "3441891036103241530"
+},
+"name": "UILeaderboardUserCardLoader"
+}, {
+"dataLoader": {
+"_underlyingValue": {
+"node": "3441891036103241530"
+}
+},
+"flexible": "0",
+"ignoreLayout": "0",
+"name": "DynamicScrollViewElement",
+"numPerRow": "1",
+"rectTransform": {
+"node": "3441891036103241530"
+}
+}],
+"id": "3441891036103241530",
+"n": "PlayerLeaderboardItem",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -481.5, 800.0, 150.0, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -481.5),
+"size": Vector2(800, 150)
+}
+
+[node name="BG" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem" unique_id=1478092992]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_3r0vg")
+tex = ExtResource("5_olhuo")
+region = Rect2(524, 636, 500, 94)
+border = Vector4(30, 30, 30, 30)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"AutoPlayDuration": "1",
+"AutoPlayInterval": "3",
+"PlayAutomatic": "1",
+"name": "ShinyEffectForUGUI"
+}],
+"id": "846908442239444739",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "UI-Effect-Shiny",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_28",
+"t": 0.0
+},
+"n": "BG",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="RankNumberTxt" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem" unique_id=74664901]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 12.4
+offset_top = -57.555
+offset_right = 100.9
+offset_bottom = 57.555
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qrswi")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 50
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "6487002129797264288",
+"n": "RankNumberTxt",
+"r": [0.0, 0.5, 0.0, 0.5, 12.4, 0.0, 88.5, 115.11, 0.0, 0.5],
+"txt": {
+"auto": null,
+"c": "000000ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 50.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "4",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(12.4, 0),
+"size": Vector2(88.5, 115.11)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "000000ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 50.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "4",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem/RankNumberTxt" unique_id=1541861247]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.5
+offset_top = -35.0
+offset_right = 32.5
+offset_bottom = 35.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_3r0vg")
+tex = ExtResource("5_olhuo")
+region = Rect2(620, 0, 60, 60)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8521124235523985192",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_14",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 65.0, 70.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(65, 70)
+}
+
+[node name="PlayerArrow" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem" unique_id=1404356053]
+visible = false
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -11.98
+offset_top = -25.0
+offset_right = 38.02
+offset_bottom = 25.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_3r0vg")
+tex = ExtResource("5_olhuo")
+region = Rect2(54, 164, 40, 52)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "4333174796415232214",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_7",
+"t": 0.0
+},
+"n": "PlayerArrow",
+"r": [0.0, 0.5, 0.0, 0.5, 13.02, 0.0, 50.0, 50.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(13.02, 0),
+"size": Vector2(50, 50)
+}
+
+[node name="Avatar" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem" unique_id=1512868170]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 124.1
+offset_top = -40.0
+offset_right = 204.1
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("2_3r0vg")
+tex = ExtResource("6_jnx31")
+region = Rect2(0, 0, 512, 512)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7990009641233713739",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Av_02",
+"t": 0.0
+},
+"n": "Avatar",
+"r": [0.0, 0.5, 0.0, 0.5, 124.1, 0.0, 80.0, 80.0, 0.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(124.1, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Frame" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem/Avatar" unique_id=1854027233]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.0
+offset_top = -45.0
+offset_right = 45.0
+offset_bottom = 45.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_3r0vg")
+tex = ExtResource("7_qbb7g")
+region = Rect2(756, 816, 168, 168)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5664100899217228373",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
+"t": 0.0
+},
+"n": "Frame",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 90.0, 90.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(90, 90)
+}
+
+[node name="PlayerName" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem" unique_id=1900844722]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -181.4
+offset_top = -45.6
+offset_right = 114.0
+offset_bottom = 45.6
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mmqng")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 45
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Playera5cd46"
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2986737057297383261",
+"n": "PlayerName",
+"r": [0.5, 0.5, 0.5, 0.5, -181.4, 0.0, 295.4, 91.2, 0.0, 0.5],
+"txt": {
+"auto": [18.0, 45.0],
+"c": "000000ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Playera5cd46",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(-181.4, 0),
+"size": Vector2(295.4, 91.2)
+}
+metadata/u_txt = {
+"auto": [18.0, 45.0],
+"c": "000000ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Playera5cd46",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="PointPanel" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem" unique_id=1517971677]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -175.48
+offset_top = -25.0
+offset_right = -30.0
+offset_bottom = 25.0
+pivot_offset_ratio = Vector2(1, 0.5)
+mouse_filter = 1
+script = ExtResource("2_3r0vg")
+tex = ExtResource("5_olhuo")
+region = Rect2(860, 64, 76, 60)
+border = Vector4(30, 0, 30, 0)
+kind = 1
+pivot = Vector2(1, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8196241962976814357",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_19",
+"t": 1.0
+},
+"n": "PointPanel",
+"r": [1.0, 0.5, 1.0, 0.5, -30.0, 0.0, 145.48, 50.0, 1.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(1, 0.5),
+"pivot": Vector2(1, 0.5),
+"pos": Vector2(-30, 0),
+"size": Vector2(145.48, 50)
+}
+
+[node name="RankPointIcon" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem/PointPanel" unique_id=135070528]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -25.1
+offset_top = -35.0
+offset_right = 44.9
+offset_bottom = 35.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_3r0vg")
+tex = ExtResource("7_qbb7g")
+region = Rect2(517, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3530657613317650132",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_2",
+"t": 0.0
+},
+"n": "RankPointIcon",
+"r": [0.0, 0.5, 0.0, 0.5, 9.9, 0.0, 70.0, 70.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(9.9, 0),
+"size": Vector2(70, 70)
+}
+
+[node name="PointText" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem/PointPanel" unique_id=704332697]
+material = SubResource("ShaderMaterial_jm0a0")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.85
+offset_top = -21.7
+offset_right = 56.65
+offset_bottom = 21.7
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_6cb35")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "24"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "3036373668225029104",
+"n": "PointText",
+"r": [0.5, 0.5, 0.5, 0.5, 12.4, 0.0, 88.5, 43.4, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 31.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "24",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(12.4, 0),
+"size": Vector2(88.5, 43.4)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 31.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "24",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Gift" type="Button" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem" unique_id=1050839637]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 115.0
+offset_top = -35.0
+offset_right = 185.0
+offset_bottom = 35.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_bqlxs")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_x0swa")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_j4rn5")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_2wkm7")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_heuqi")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_o2fcp")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_xph12")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_2n02t")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_iji3a")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ajibj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_30u5t")
+flat = true
+script = ExtResource("1_h0bym")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "441673271221031508",
+"tr": 1.0
+},
+"cs": [{
+"giftButton": {
+"node": "441673271221031508"
+},
+"giftPanel": {
+"node": "6179663856590262137"
+},
+"graphicRaycaster": null,
+"name": "GiftPanelController"
+}, {
+"milestoneText": null,
+"name": "MilestoneItem",
+"rewardItem": {
+"node": "3845743009192085184"
+},
+"rewardsContainer": {
+"node": "6179663856590262137"
+},
+"tickMark": null
+}],
+"id": "441673271221031508",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_30",
+"t": 0.0
+},
+"n": "Gift",
+"r": [0.5, 0.5, 0.5, 0.5, 150.0, 0.0, 70.0, 70.0, 0.5, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(150, 0),
+"size": Vector2(70, 70)
+}
+
+[node name="image" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem/Gift" unique_id=246982485]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_3r0vg")
+tex = ExtResource("5_olhuo")
+region = Rect2(0, 219, 52, 52)
+fill_method = 4
+
+[node name="RewardsParent" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem/Gift" unique_id=312105136]
+z_index = 1
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -45.0
+offset_top = -96.8998
+offset_right = 45.0
+offset_bottom = 0.0002
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 100.0,
+"override_sort": true
+},
+"fit": {
+"h": 2.0,
+"v": 0.0
+},
+"id": "6179663856590262137",
+"lay": {
+"al": 0.0,
+"ch": false,
+"cw": false,
+"eh": true,
+"ew": true,
+"pad": [15.0, 15.0, 5.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "h"
+},
+"n": "RewardsParent",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -0.0002, 0.0, 96.9, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, -0.0002),
+"size": Vector2(90, 96.9)
+}
+
+[node name="RewardBG" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem/Gift/RewardsParent" unique_id=662163120]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -45.0
+offset_right = 45.0
+offset_bottom = 95.45
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 1
+script = ExtResource("2_3r0vg")
+tex = ExtResource("5_olhuo")
+region = Rect2(279, 0, 168, 124)
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "856246714662504611",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "RewardBG",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 0.0, 90.0, 95.45, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(90, 95.45)
+}
+
+[node name="ItemReward4" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem/Gift/RewardsParent" unique_id=1187957266]
+anchors_preset = 0
+offset_left = 15.0
+offset_top = 5.0
+offset_right = 75.0
+offset_bottom = 65.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "3176570590005443757"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "6420146688055893707"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "3845743009192085184",
+"n": "ItemReward4",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 60.0, 60.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(45, -35),
+"size": Vector2(60, 60)
+}
+
+[node name="Icon Item" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem/Gift/RewardsParent/ItemReward4" unique_id=2131514520]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_3r0vg")
+tex = ExtResource("7_qbb7g")
+region = Rect2(780, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3176570590005443757",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+"t": 0.0
+},
+"n": "Icon Item",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -10.0, -10.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-10, -10)
+}
+
+[node name="Quantity" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/PlayerLeaderboardItem/Gift/RewardsParent/ItemReward4" unique_id=989041266]
+material = SubResource("ShaderMaterial_qejyp")
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -17.04
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gqp3c")
+theme_override_constants/line_spacing = -3
+theme_override_fonts/font = SubResource("FontVariation_2d730")
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "200"
+horizontal_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "6420146688055893707",
+"n": "Quantity",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 17.04, 0.5, 0.0],
+"txt": {
+"auto": [22.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 22.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Black",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "200",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 17.04)
+}
+metadata/u_txt = {
+"auto": [22.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 22.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Black",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "200",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="NextLeagueTxt" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel" unique_id=1456767779]
+material = SubResource("ShaderMaterial_jm0a0")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -245.9
+offset_top = 659.2
+offset_right = 245.9
+offset_bottom = 754.39996
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_634d8")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 62
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Giải đấu tiếp theo:"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "7679687400158638901",
+"n": "NextLeagueTxt",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -706.8, 491.8, 95.2, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 62.1,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Giải đấu tiếp theo:",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -706.8),
+"size": Vector2(491.8, 95.2)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 62.1,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Giải đấu tiếp theo:",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@8" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel" unique_id=2106293366]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -175.0
+offset_top = 773.0
+offset_right = 175.0
+offset_bottom = 1123.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_3r0vg")
+tex = ExtResource("8_3bi4t")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6271762784238358391",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_Silver",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -948.0, 350.0, 350.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -948),
+"size": Vector2(350, 350)
+}
+
+[node name="RewardGroup" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel" unique_id=529596411]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -443.0
+offset_top = 1233.6
+offset_right = 443.0
+offset_bottom = 1553.6
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_3r0vg")
+tex = ExtResource("7_qbb7g")
+region = Rect2(384, 1877, 380, 171)
+border = Vector4(191, 72, 189, 72)
+border_scale = 0.8
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7377194112630835842",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.25,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_89",
+"t": 0.0
+},
+"n": "RewardGroup",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -1393.6, 886.0, 320.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -1393.6),
+"size": Vector2(886, 320)
+}
+
+[node name="NextLeagueTxt (1)" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/RewardGroup" unique_id=32092441]
+material = SubResource("ShaderMaterial_jm0a0")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -245.9
+offset_top = -97.95
+offset_right = 245.9
+offset_bottom = -2.75
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_jrmrh")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 69
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Phần thưởng"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "4140824162051827840",
+"n": "NextLeagueTxt (1)",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 50.35, 491.8, 95.2, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 69.35,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Phần thưởng",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 50.35),
+"size": Vector2(491.8, 95.2)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 69.35,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Phần thưởng",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Rewards" type="Control" parent="LeaderboardWeeklyResultLayer/WeekResultPanel/RewardGroup" unique_id=1551733757]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1083441996742235378",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": false,
+"eh": true,
+"ew": true,
+"pad": [0.0, 0.0, -100.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": -300.0,
+"sw": false,
+"t": "h"
+},
+"n": "Rewards",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="TapToContinueTxt" type="Label" parent="LeaderboardWeeklyResultLayer/WeekResultPanel" unique_id=411443480]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -245.9
+offset_top = 1631.47
+offset_right = 245.9
+offset_bottom = 1726.6699
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_o23k6")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 45
+theme_override_colors/font_color = Color(1, 1, 1, 0.48235294)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Chạm để tiếp tục"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "8702407558258300356",
+"n": "TapToContinueTxt",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -1679.07, 491.8, 95.2, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 45.0],
+"c": "ffffff7b",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Chạm để tiếp tục",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -1679.07),
+"size": Vector2(491.8, 95.2)
+}
+metadata/u_txt = {
+"auto": [18.0, 45.0],
+"c": "ffffff7b",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "Chạm để tiếp tục",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}

@@ -1,0 +1,3038 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="1_t88tr"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="2_8p68d"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="3_28iyn"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="4_fyr1y"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="5_qeuay"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p11ju"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nnrv3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qv301"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8hsmf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_06b53"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6na1d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ak20v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3548a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r2143"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mntq4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wlojn"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ng31"]
+shader = ExtResource("4_fyr1y")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_so6x7"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("5_qeuay")
+spacing_glyph = -1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("4_fyr1y")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nxnp2"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_53msi"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4mavo"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gpcqg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xm768"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_woiih"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hftnn"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3bdno"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4bvs2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4qho7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0m5lr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ajcd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3bm6y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p5g54"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_drmkb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ugm3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p1n2h"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wykbv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ihsk2"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pyy47"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qqaun"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_icjku"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5383v"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ma7sn"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=1783309990]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "SupportPackLayer"
+
+[node name="SupportPackLayer" type="Control" parent="." unique_id=2108325772]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"_fadeDistance": "0.5",
+"_itemWidth": "720",
+"_scrollRect": {
+"node": "5984851508010262287"
+},
+"_snapDuration": "0.3",
+"_spacing": "20",
+"breakEnable": "0",
+"bundlePackBases": [{
+"node": "9019879804181378210"
+}, {
+"node": "4540096597060258940"
+}],
+"debugOnOff": "0",
+"name": "SupportPackUICoreLayer",
+"threshold": "20"
+}],
+"id": "7219197735921211012",
+"n": "SupportPackLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Scroll View" type="Control" parent="SupportPackLayer" unique_id=348120102]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = 456.685
+offset_right = 360.0
+offset_bottom = 827.315
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_t88tr")
+kind = 1
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5984851508010262287",
+"img": {
+"c": "ffffff64",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "Scroll View",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -642.0, 720.0, 370.63, 0.5, 0.5],
+"scroll": {
+"content": "6548710114484379329",
+"decel": 0.135,
+"elastic": 0.1,
+"h": true,
+"inertia": true,
+"move": 1.0,
+"v": false,
+"viewport": "8609979348804856041",
+"wheel": 1.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -642),
+"size": Vector2(720, 370.63)
+}
+
+[node name="Viewport" type="Control" parent="SupportPackLayer/Scroll View" unique_id=220681629]
+clip_children = 1
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+mouse_filter = 1
+script = ExtResource("1_t88tr")
+kind = 1
+pivot = Vector2(0, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8609979348804856041",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"mask": {
+"show": false
+},
+"n": "Viewport",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 40.0, 0.0, 40.0, 0.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 1),
+"pos": Vector2(0, 40),
+"size": Vector2(0, 40)
+}
+
+[node name="Content" type="Control" parent="SupportPackLayer/Scroll View/Viewport" unique_id=1015804903]
+anchors_preset = 0
+anchor_bottom = 1.0
+offset_left = -730.3382
+offset_right = 1449.6619
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"fit": {
+"h": 2.0,
+"v": 0.0
+},
+"id": "6548710114484379329",
+"lay": {
+"al": 3.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [0.0, 720.0, 40.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 20.0,
+"sw": false,
+"t": "h"
+},
+"n": "Content",
+"r": [0.0, 0.0, 0.0, 1.0, -730.3382, 0.0, 0.0, 0.0, 0.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 1),
+"pos": Vector2(-730.3382, 0),
+"size": Vector2(2180, 0)
+}
+
+[node name="Starter_Pack" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content" unique_id=1429363204]
+anchors_preset = 0
+offset_top = -165.365
+offset_right = 720.0
+offset_bottom = 205.365
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("1_t88tr")
+color = Color(1, 1, 1, 0)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"canvasGroup": {
+"node": "9019879804181378210"
+},
+"name": "SupportBase",
+"nameTxt": {
+"node": "7432716924644019160"
+},
+"priceTxt": {
+"node": "3359354171657681025"
+},
+"productID": "wool.scape.starter.pack",
+"productIDRequired": ["wool.scape.starter.pack"],
+"purchaseButton": {
+"node": "88880417115480586"
+},
+"tabElement": {
+"node": "6900009720591659749"
+}
+}],
+"id": "9019879804181378210",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [720.0, 370.73]
+},
+"n": "Starter_Pack",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 370.73, 0.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(0, -20),
+"size": Vector2(720, 370.73)
+}
+
+[node name="Bg" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack" unique_id=1837402687]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_t88tr")
+tex = ExtResource("2_8p68d")
+region = Rect2(1062, 589, 128, 140)
+border = Vector4(61, 69, 67, 58)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5944459356408230520",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_16",
+"t": 1.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Bg" unique_id=1559253419]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 14.0
+offset_top = -170.90005
+offset_right = -14.0
+offset_bottom = 53.433846
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_t88tr")
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "342858612239214149",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.5, 1.0, 0.5, 0.0, 58.7331, -28.0, 224.3339, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 58.7331),
+"size": Vector2(-28, 224.3339)
+}
+
+[node name="Icon" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Bg" unique_id=2029464616]
+anchors_preset = 0
+offset_left = 35.9038
+offset_top = -48.4438
+offset_right = 357.01782
+offset_bottom = 281.1828
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+preserve_aspect = true
+pivot = Vector2(0, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4573424510743171358",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "Icon",
+"r": [0.0, 1.0, 0.0, 1.0, 35.9038, 48.4438, 321.114, 329.6266, 0.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0, 1),
+"pos": Vector2(35.9038, 48.4438),
+"size": Vector2(321.114, 329.6266)
+}
+
+[node name="Bottom_Group" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack" unique_id=760729123]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -116.0
+offset_bottom = -26.0
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3780011502665399604",
+"n": "Bottom_Group",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 26.0, 0.0, 90.0, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 26),
+"size": Vector2(0, 90)
+}
+
+[node name="Button" type="Button" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Bottom_Group" unique_id=1541135775]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -243.8
+offset_top = -90.0
+offset_right = -17.800003
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_p11ju")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_nnrv3")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_qv301")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_8hsmf")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_06b53")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_6na1d")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ak20v")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_3548a")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_r2143")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_mntq4")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wlojn")
+flat = true
+script = ExtResource("3_28iyn")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "88880417115480586",
+"tr": 1.0
+},
+"id": "88880417115480586",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 3.1,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_30",
+"t": 1.0
+},
+"n": "Button",
+"r": [1.0, 0.0, 1.0, 0.0, -130.8, 45.0, 226.0, 90.0, 0.5, 0.5],
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-130.8, 45),
+"size": Vector2(226, 90)
+}
+
+[node name="image" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Bottom_Group/Button" unique_id=1143062548]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+tex = ExtResource("2_8p68d")
+region = Rect2(1792, 809, 256, 270)
+border = Vector4(128, 128, 128, 128)
+border_scale = 0.3225806451612903
+kind = 1
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Bottom_Group/Button" unique_id=485987634]
+material = SubResource("ShaderMaterial_1ng31")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_so6x7")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "127000d"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "3359354171657681025",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -20.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 50.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "127000d",
+"st": 1.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-20, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 50.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": false,
+"s": "127000d",
+"st": 1.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="HELPER PACK" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Bottom_Group" unique_id=1821251243]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = -45.0
+offset_right = 474.4
+offset_bottom = 45.0
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nxnp2")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 59
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "STARTER PACK"
+vertical_alignment = 1
+clip_text = true
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "7432716924644019160",
+"n": "HELPER PACK",
+"r": [0.0, 0.5, 0.0, 0.5, 24.0, 0.0, 450.4, 90.0, 0.0, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 59.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 3.0,
+"rich": false,
+"rt": false,
+"s": "STARTER PACK",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(24, 0),
+"size": Vector2(450.4, 90)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 59.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 3.0,
+"rich": false,
+"rt": false,
+"s": "STARTER PACK",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Right_Panel" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack" unique_id=3903360]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -7.116394
+offset_top = -182.65115
+offset_right = 352.6
+offset_bottom = 42.651154
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"horizontalLayoutGroup": {
+"asset": "ee4bb794e6f85404db083b9581793e8b"
+},
+"name": "ShopProductSetup",
+"plusItemPrefab": {
+"asset": "dc2bb501aba259a429e763c3ac8e1902"
+},
+"productID": "wool.scape.starter.pack",
+"productSO": {
+"asset": "IAPProductSO.asset"
+},
+"rewardItemPrefab": {
+"asset": "999d04b0ad20d7e4c94d9168a7d92caa"
+},
+"rewardPerRow": "2",
+"verticalLayoutGroup": {
+"node": "277981331766773882"
+}
+}],
+"id": "277981331766773882",
+"n": "Right_Panel",
+"r": [0.5, 0.5, 0.5, 0.5, 172.7418, 70.0, 359.7164, 225.3023, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(172.7418, 70),
+"size": Vector2(359.7164, 225.3023)
+}
+
+[node name="Row(Clone)" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Right_Panel" unique_id=604459780]
+anchors_preset = 0
+offset_left = 129.8582
+offset_top = 4.6511993
+offset_right = 229.8582
+offset_bottom = 108.6512
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4654088013680352833",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 179.8582, -56.6512, 100.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(179.8582, -56.6512),
+"size": Vector2(100, 104)
+}
+
+[node name="ShopRewardItem(Clone)" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Right_Panel/Row(Clone)" unique_id=34163934]
+anchors_preset = 0
+offset_top = 2.0
+offset_right = 100.0
+offset_bottom = 102.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "7072466246113720734"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "6488678526277808848"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "1",
+"iconImg": {
+"node": "7072466246113720734"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "6488678526277808848"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "7072466246113720734",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 50.0, -52.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(50, -52),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Right_Panel/Row(Clone)/ShopRewardItem(Clone)" unique_id=34171769]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_53msi")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "1,000"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "6488678526277808848",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "1,000",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.4),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "1,000",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="@Control@72" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Right_Panel" unique_id=790273050]
+anchors_preset = 0
+offset_left = 63.8582
+offset_top = 116.65109
+offset_right = 295.85822
+offset_bottom = 220.6511
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "8857389834335550364",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 179.8582, -168.6511, 232.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(179.8582, -168.6511),
+"size": Vector2(232, 104)
+}
+
+[node name="ShopRewardItem(Clone)" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Right_Panel/@Control@72" unique_id=3916645]
+anchors_preset = 0
+offset_top = 2.0
+offset_right = 100.0
+offset_bottom = 102.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "7482640688077393842"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "1952621575709225839"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "7482640688077393842"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "1952621575709225839"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "7482640688077393842",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 50.0, -52.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(50, -52),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Right_Panel/@Control@72/ShopRewardItem(Clone)" unique_id=61127701]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4mavo")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x3"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "1952621575709225839",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.4),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Plus(Clone)" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Right_Panel/@Control@72" unique_id=199974679]
+anchors_preset = 0
+offset_left = 102.0
+offset_top = 38.0
+offset_right = 130.0
+offset_bottom = 66.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+tex = ExtResource("2_8p68d")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8267723266904231237",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 116.0, -52.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(116, -52),
+"size": Vector2(28, 28)
+}
+
+[node name="@Control@73" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Right_Panel/@Control@72" unique_id=1020038372]
+anchors_preset = 0
+offset_left = 132.0
+offset_top = 2.0
+offset_right = 232.0
+offset_bottom = 102.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "7673484495728532616"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "1071925718571918139"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "4",
+"iconImg": {
+"node": "7673484495728532616"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "1071925718571918139"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "7673484495728532616",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 182.0, -52.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(182, -52),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Right_Panel/@Control@72/@Control@73" unique_id=563747107]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gpcqg")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x3"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "1071925718571918139",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.4),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack" unique_id=473592426]
+anchors_preset = 0
+offset_left = 49.08101
+offset_top = 163.5834
+offset_right = 342.11902
+offset_bottom = 228.0166
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_t88tr")
+tex = ExtResource("2_8p68d")
+region = Rect2(961, 1667, 104, 104)
+border = Vector4(32, 30, 32, 31)
+border_scale = 0.6666666666666666
+kind = 1
+color = Color(0.078431375, 0.12941177, 0.40392157, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"canvasGroup": {
+"node": "7219197735921211012"
+},
+"coolDownText": {
+"node": "6062190690866211942"
+},
+"name": "PackTimeCounter",
+"productId": "wool.scape.starter.pack"
+}],
+"id": "4852141763781103646",
+"img": {
+"c": "142167ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.5,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_10",
+"t": 1.0
+},
+"n": "Image",
+"r": [0.0, 1.0, 0.0, 1.0, 195.6, -195.8, 293.038, 64.4332, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(195.6, -195.8),
+"size": Vector2(293.038, 64.4332)
+}
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Image" unique_id=999527121]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 41.01875
+offset_right = 4.9591064e-05
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xm768")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "1D -12:12:12"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "6062190690866211942",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 20.5094, 0.0, -41.0187, 0.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "1D -12:12:12",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(20.5094, 0),
+"size": Vector2(-41.0187, 0)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "1D -12:12:12",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Image" unique_id=1114206523]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -137.4773
+offset_top = -32.2166
+offset_right = -80.1227
+offset_bottom = 25.138
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_t88tr")
+tex = ExtResource("2_8p68d")
+region = Rect2(1198, 589, 128, 128)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3729828293065988276",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_79",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, -108.8, 3.5393, 57.3546, 57.3546, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-108.8, 3.5393),
+"size": Vector2(57.3546, 57.3546)
+}
+
+[node name="Sale" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack" unique_id=2121776791]
+anchors_preset = 0
+offset_left = 2.5999985
+offset_top = -37.1
+offset_right = 130.6
+offset_bottom = 90.9
+rotation = -0.34906584
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+tex = ExtResource("2_8p68d")
+region = Rect2(1273, 1919, 128, 128)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "532415032844175226",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_56",
+"t": 0.0
+},
+"n": "Sale",
+"r": [0.0, 1.0, 0.0, 1.0, 66.6, -26.9, 128.0, 128.0, 0.5, 0.5],
+"z": 20.0
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(66.6, -26.9),
+"size": Vector2(128, 128)
+}
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Sale" unique_id=986844906]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -54.21325
+offset_top = -45.60965
+offset_right = 54.21325
+offset_bottom = 10.489651
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_woiih")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 0.8862745, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "60%"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "3345960175944787341",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 17.56, 108.4265, 56.0993, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 44.0],
+"c": "ffe200ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "60%",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 17.56),
+"size": Vector2(108.4265, 56.0993)
+}
+metadata/u_txt = {
+"auto": [18.0, 44.0],
+"c": "ffe200ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "60%",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Text (TMP) (1)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Starter_Pack/Sale" unique_id=2070993309]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -54.21325
+offset_top = -10.9796505
+offset_right = 54.21325
+offset_bottom = 45.11965
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hftnn")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 35
+theme_override_colors/font_color = Color(1, 0.8862745, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Sconto"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "8937556456413630833",
+"n": "Text (TMP) (1)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -17.07, 108.4265, 56.0993, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffe200ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 34.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Sconto",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -17.07),
+"size": Vector2(108.4265, 56.0993)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffe200ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 34.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Sconto",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Helper_Pack" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content" unique_id=2044474767]
+anchors_preset = 0
+offset_left = 740.0
+offset_top = -165.365
+offset_right = 1460.0
+offset_bottom = 205.365
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("1_t88tr")
+color = Color(1, 1, 1, 0)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"canvasGroup": {
+"node": "4540096597060258940"
+},
+"name": "PopupHelper",
+"nameTxt": {
+"node": "942160049340487452"
+},
+"priceTxt": {
+"node": "5891246146003107721"
+},
+"productID": "wool.scape.helper",
+"productIDRequired": [],
+"purchaseButton": {
+"node": "4343128802993594005"
+},
+"tabElement": {
+"node": "8845523633835060259"
+}
+}],
+"id": "4540096597060258940",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [720.0, 370.73]
+},
+"n": "Helper_Pack",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 370.73, 0.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(740, -20),
+"size": Vector2(720, 370.73)
+}
+
+[node name="Bg" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack" unique_id=199432320]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_t88tr")
+tex = ExtResource("2_8p68d")
+region = Rect2(1273, 1779, 128, 140)
+border = Vector4(42, 51, 38, 60)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2795552055061112470",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_90",
+"t": 1.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Bg" unique_id=1202735549]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -346.0
+offset_top = 14.0
+offset_right = 346.0
+offset_bottom = 240.2758
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3926781923582622721",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -14.0, 692.0, 226.2758, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -14),
+"size": Vector2(692, 226.2758)
+}
+
+[node name="Icon" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Bg" unique_id=1531097634]
+anchors_preset = 0
+offset_left = 21.0
+offset_top = 14.1904
+offset_right = 362.3149
+offset_bottom = 259.3646
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+pivot = Vector2(0, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3046605439503544629",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "Icon",
+"r": [0.0, 1.0, 0.0, 1.0, 21.0, -14.1904, 341.3149, 245.1742, 0.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0, 1),
+"pos": Vector2(21, -14.1904),
+"size": Vector2(341.3149, 245.1742)
+}
+
+[node name="Bottom_Group" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack" unique_id=551940561]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -116.0
+offset_bottom = -26.0
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6782250733808271508",
+"n": "Bottom_Group",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 26.0, 0.0, 90.0, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 26),
+"size": Vector2(0, 90)
+}
+
+[node name="Button" type="Button" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Bottom_Group" unique_id=594980716]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -243.8
+offset_top = -90.0
+offset_right = -17.800003
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3bdno")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_4bvs2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4qho7")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_0m5lr")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7ajcd")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_3bm6y")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_p5g54")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_drmkb")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_8ugm3")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_p1n2h")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wykbv")
+flat = true
+script = ExtResource("3_28iyn")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4343128802993594005",
+"tr": 1.0
+},
+"id": "4343128802993594005",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 3.1,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_30",
+"t": 1.0
+},
+"n": "Button",
+"r": [1.0, 0.0, 1.0, 0.0, -130.8, 45.0, 226.0, 90.0, 0.5, 0.5],
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-130.8, 45),
+"size": Vector2(226, 90)
+}
+
+[node name="image" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Bottom_Group/Button" unique_id=1039014607]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+tex = ExtResource("2_8p68d")
+region = Rect2(1792, 809, 256, 270)
+border = Vector4(128, 128, 128, 128)
+border_scale = 0.3225806451612903
+kind = 1
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Bottom_Group/Button" unique_id=557692294]
+material = SubResource("ShaderMaterial_1ng31")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ihsk2")
+theme_override_constants/line_spacing = -6
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "127000d"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "5891246146003107721",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -20.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 50.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "127000d",
+"st": 1.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-20, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 50.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "127000d",
+"st": 1.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="HELPER PACK" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Bottom_Group" unique_id=1246814014]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = -45.0
+offset_right = 474.4
+offset_bottom = 45.0
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pyy47")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "HELPER PACK"
+vertical_alignment = 1
+clip_text = true
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "942160049340487452",
+"n": "HELPER PACK",
+"r": [0.0, 0.5, 0.0, 0.5, 24.0, 0.0, 450.4, 90.0, 0.0, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 3.0,
+"rich": false,
+"rt": false,
+"s": "HELPER PACK",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(24, 0),
+"size": Vector2(450.4, 90)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 3.0,
+"rich": false,
+"rt": false,
+"s": "HELPER PACK",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Right_Panel" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack" unique_id=891030895]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.5
+offset_top = -194.05115
+offset_right = 351.5
+offset_bottom = 31.251152
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"horizontalLayoutGroup": {
+"asset": "ee4bb794e6f85404db083b9581793e8b"
+},
+"name": "ShopProductSetup",
+"plusItemPrefab": {
+"asset": "dc2bb501aba259a429e763c3ac8e1902"
+},
+"productID": "wool.scape.helper",
+"productSO": {
+"asset": "IAPProductSO.asset"
+},
+"rewardItemPrefab": {
+"asset": "999d04b0ad20d7e4c94d9168a7d92caa"
+},
+"rewardPerRow": "3",
+"verticalLayoutGroup": {
+"node": "7994377719117594001"
+}
+}],
+"id": "7994377719117594001",
+"n": "Right_Panel",
+"r": [0.5, 0.5, 0.5, 0.5, 153.0, 81.4, 397.0, 225.3023, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(153, 81.4),
+"size": Vector2(397, 225.3023)
+}
+
+[node name="Row(Clone)" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel" unique_id=196719942]
+anchors_preset = 0
+offset_left = 148.5
+offset_right = 248.5
+offset_bottom = 104.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4811157529197381099",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 198.5, -52.0, 100.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(198.5, -52),
+"size": Vector2(100, 104)
+}
+
+[node name="ShopRewardItem(Clone)" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel/Row(Clone)" unique_id=393348406]
+anchors_preset = 0
+offset_top = 2.0
+offset_right = 100.0
+offset_bottom = 102.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "1413646018275489489"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "180412049788151508"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "1",
+"iconImg": {
+"node": "1413646018275489489"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "180412049788151508"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "1413646018275489489",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 50.0, -52.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(50, -52),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel/Row(Clone)/ShopRewardItem(Clone)" unique_id=1792856397]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qqaun")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "1,000"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "180412049788151508",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "1,000",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.4),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "1,000",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="@Control@74" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel" unique_id=949792783]
+anchors_preset = 0
+offset_left = 16.5
+offset_top = 124.0
+offset_right = 380.5
+offset_bottom = 228.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7942787613290563432",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 198.5, -176.0, 364.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(198.5, -176),
+"size": Vector2(364, 104)
+}
+
+[node name="ShopRewardItem(Clone)" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel/@Control@74" unique_id=731047322]
+anchors_preset = 0
+offset_top = 2.0
+offset_right = 100.0
+offset_bottom = 102.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "8324214132574148310"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "7984197581602639638"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "7",
+"iconImg": {
+"node": "8324214132574148310"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "7984197581602639638"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "8324214132574148310",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 50.0, -52.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(50, -52),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel/@Control@74/ShopRewardItem(Clone)" unique_id=459801744]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_icjku")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x1"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "7984197581602639638",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.4),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Plus(Clone)" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel/@Control@74" unique_id=1436238462]
+anchors_preset = 0
+offset_left = 102.0
+offset_top = 38.0
+offset_right = 130.0
+offset_bottom = 66.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+tex = ExtResource("2_8p68d")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "848713009406763569",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 116.0, -52.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(116, -52),
+"size": Vector2(28, 28)
+}
+
+[node name="@Control@75" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel/@Control@74" unique_id=1439661666]
+anchors_preset = 0
+offset_left = 132.0
+offset_top = 2.0
+offset_right = 232.0
+offset_bottom = 102.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "1280436090019134597"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "1361921303980347365"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "4",
+"iconImg": {
+"node": "1280436090019134597"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "1361921303980347365"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "1280436090019134597",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 182.0, -52.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(182, -52),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel/@Control@74/@Control@75" unique_id=864006681]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5383v")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x1"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "1361921303980347365",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.4),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="@Control@76" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel/@Control@74" unique_id=752380737]
+anchors_preset = 0
+offset_left = 234.0
+offset_top = 38.0
+offset_right = 262.0
+offset_bottom = 66.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+tex = ExtResource("2_8p68d")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2353328536894762548",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 248.0, -52.0, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(248, -52),
+"size": Vector2(28, 28)
+}
+
+[node name="@Control@77" type="Control" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel/@Control@74" unique_id=1470351554]
+anchors_preset = 0
+offset_left = 264.0
+offset_top = 2.0
+offset_right = 364.0
+offset_bottom = 102.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "8046798496660439910"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "4376433901869287351"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "8",
+"iconImg": {
+"node": "8046798496660439910"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "4376433901869287351"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "8046798496660439910",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 314.0, -52.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(314, -52),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" type="Label" parent="SupportPackLayer/Scroll View/Viewport/Content/Helper_Pack/Right_Panel/@Control@74/@Control@77" unique_id=1848495495]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ma7sn")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "x1"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "4376433901869287351",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.4),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "x1",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Tab" type="Control" parent="SupportPackLayer" unique_id=2006842634]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = 808.0
+offset_right = 360.0
+offset_bottom = 868.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3655129926629385324",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": false,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 20.0,
+"sw": false,
+"t": "h"
+},
+"n": "Tab",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -838.0, 720.0, 60.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -838),
+"size": Vector2(720, 60)
+}
+
+[node name="TabElement (1)" type="Control" parent="SupportPackLayer/Tab" unique_id=204076588]
+anchors_preset = 0
+offset_left = 310.0
+offset_top = 10.0
+offset_right = 350.0
+offset_bottom = 50.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+color = Color(0.7647059, 0.7647059, 0.7647059, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6900009720591659749",
+"img": {
+"c": "c3c3c3ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "TabElement (1)",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 40.0, 40.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(330, -30),
+"size": Vector2(40, 40)
+}
+
+[node name="TabElement" type="Control" parent="SupportPackLayer/Tab" unique_id=1109074197]
+anchors_preset = 0
+offset_left = 370.0
+offset_top = 10.0
+offset_right = 410.0
+offset_bottom = 50.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_t88tr")
+color = Color(0.27058825, 0.76862746, 1, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8845523633835060259",
+"img": {
+"c": "45c4ffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "TabElement",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 40.0, 40.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(390, -30),
+"size": Vector2(40, 40)
+}

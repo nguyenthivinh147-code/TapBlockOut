@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/ui/popup_language.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/unity/SettingLanguage.tscn" id="u0"]
 
 [node name="PopupLanguage" type="Control"]
 layout_mode = 3
@@ -10,3 +11,5 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="Canvas" parent="." instance=ExtResource("u0")]

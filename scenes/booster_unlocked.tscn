@@ -1,12 +1,1576 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/ui/booster_unlocked.gd" id="1"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="3_doqpe"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="4_vq253"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="5_s4ekx"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup2.png" id="6_iu5it"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="7_7jtb8"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="8_xbu2i"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/light1.png" id="9_5saaj"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/fx_1.png" id="10_svk7j"]
+[ext_resource type="Texture2D" path="res://assets/ui/booster_move.png" id="11_na5hj"]
+[ext_resource type="PackedScene" path="res://scenes/unity/BoosterTutorialLayer.tscn" id="u0"]
 
-[node name="BoosterUnlocked" type="Control"]
-layout_mode = 3
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lenqp"]
+shader = ExtResource("4_vq253")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.7764706, 0.72156864, 0.5647059, 1)
+shader_parameter/underlay_color = Color(0.5921569, 0.5921569, 0.5921569, 1)
+shader_parameter/face_edge = 0.27310924062499997
+shader_parameter/outline_half = 0.201680675
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.27310924062499997
+shader_parameter/underlay_offset = Vector2(0, 0)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_51gwy"]
+base_font = ExtResource("5_s4ekx")
+spacing_glyph = -2
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kvovk"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o1wlb"]
+shader = ExtResource("4_vq253")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(1, 1, 1, 1)
+shader_parameter/underlay_color = Color(0.5921569, 0.5921569, 0.5921569, 1)
+shader_parameter/face_edge = 0.33516482812500004
+shader_parameter/outline_half = 0.263736275
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.33516482812500004
+shader_parameter/underlay_offset = Vector2(0, 0)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iaefw"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b1ri6"]
+shader = ExtResource("4_vq253")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.22352941, 0.06666667, 0.003921569, 1)
+shader_parameter/underlay_color = Color(0.22352941, 0.06666667, 0.003921569, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.05828571516
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.1445)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3wner"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vjtq2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i8v6e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8e6jg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d6ubs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j5vdl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rhk47"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_262p7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kepdr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tpm3m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t4iou"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_doch7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
+shader = ExtResource("4_vq253")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.085714287
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.491428570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_gm7p3"]
+base_font = ExtResource("5_s4ekx")
+spacing_glyph = -2
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aq6hs"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("4_vq253")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_6tqsj"]
+base_font = ExtResource("5_s4ekx")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2rp87"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d0vce"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_83pv0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3h8l8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pcj8t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_046rc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_re0g1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t0x5h"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ej5d0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_caryg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0oawo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aodcd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4f1m6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
+shader = ExtResource("4_vq253")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nr2sf"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o2uxg"]
+shader = ExtResource("4_vq253")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tq3yo"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="BoosterUnlocked" type="Control" unique_id=1467708807]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="Canvas" parent="." unique_id=430419902 instance=ExtResource("u0")]
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "BoosterTutorialLayer"
+
+[node name="BoosterTutorialLayer" parent="Canvas" index="0" unique_id=1413005933]
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 32767.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnCompleteAnim": [],
+"OnStartAnim": [],
+"dimCanvasGroup": {
+"node": "5676859109278462881"
+},
+"duration": "0.4",
+"easeType": "26",
+"name": "DialogueReveal",
+"panelRect": {
+"node": "5362002729743017383"
+}
+}, {
+"BoosterData": null,
+"BoosterType": "0",
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"boosterDatas": [{
+"asset": "AutoFill_BoosterData.asset"
+}, {
+"asset": "Storage_BoosterData.asset"
+}, {
+"asset": "Capacity_BoosterData.asset"
+}],
+"boosterDescription": {
+"node": "4451940994325920667"
+},
+"boosterImage": {
+"node": "6610874016377337130"
+},
+"boosterName": {
+"node": "428646396917736932"
+},
+"boosterQuantity": {
+"node": "1808802607552882805"
+},
+"breakEnable": "0",
+"claimButton": {
+"node": "991164224444345254"
+},
+"debugOnOff": "0",
+"name": "BoosterTutorial",
+"tutorialSteps": [{
+"node": "5362002729743017383"
+}]
+}],
+"id": "5676859109278462881",
+"n": "BoosterTutorialLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="GameObject" parent="Canvas/BoosterTutorialLayer" index="0" unique_id=1315993743]
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6689267149989120801",
+"n": "GameObject",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Dim" parent="Canvas/BoosterTutorialLayer/GameObject" index="0" unique_id=639523819]
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_doqpe")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "234041309248292764",
+"img": {
+"c": "000000fc",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Dim",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="UnlockPanel" parent="Canvas/BoosterTutorialLayer/GameObject" index="1" unique_id=2020149233]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -401.0
+offset_top = -400.0
+offset_right = 401.0
+offset_bottom = 400.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"animator": null,
+"canvasGroup": {
+"node": "5362002729743017383"
+},
+"name": "BoosterTutStep",
+"prefab": {
+"node": "5362002729743017383"
+},
+"stepIndex": "1",
+"targetButton": {
+"node": "991164224444345254"
+}
+}],
+"id": "5362002729743017383",
+"n": "UnlockPanel",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 802.0, 800.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(802, 800)
+}
+
+[node name="Image" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" index="0" unique_id=10946718]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -429.49
+offset_top = -391.6
+offset_right = 445.49
+offset_bottom = 141.6
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6537585083040748393",
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 8.0, 125.0, 874.98, 533.2, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(8, 125),
+"size": Vector2(874.98, 533.2)
+}
+
+[node name="txtHeader BG2" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/Image" index="0" unique_id=486401887]
+material = SubResource("ShaderMaterial_lenqp")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -279.1233
+offset_top = -124.06845
+offset_right = 269.1233
+offset_bottom = 120.06845
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -64
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 120
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
+text = "NEW BOOSTER!"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "8986039228838236593",
+"n": "txtHeader BG2",
+"r": [0.5, 0.5, 0.5, 0.5, -5.0, 2.0, 548.2466, 244.1369, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG2",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "NEW BOOSTER!",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-5, 2),
+"size": Vector2(548.2466, 244.1369)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG2",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "NEW BOOSTER!",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="txtHeader BG1" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/Image" index="1" unique_id=100438058]
+material = SubResource("ShaderMaterial_o1wlb")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -279.1233
+offset_top = -134.06845
+offset_right = 269.1233
+offset_bottom = 123.53406
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -64
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 120
+theme_override_styles/normal = SubResource("StyleBoxEmpty_iaefw")
+text = "NEW BOOSTER!"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "1184766495932743898",
+"n": "txtHeader BG1",
+"r": [0.5, 0.5, 0.5, 0.5, -5.0, 5.2672, 548.2466, 257.6025, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "NEW BOOSTER!",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-5, 5.2671967),
+"size": Vector2(548.2466, 257.6025)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - PackTextBG",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "NEW BOOSTER!",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="txtHeader" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/Image" index="2" unique_id=81025960]
+material = SubResource("ShaderMaterial_b1ri6")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -279.1233
+offset_top = -143.06845
+offset_right = 269.1233
+offset_bottom = 101.06845
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -64
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_51gwy")
+theme_override_font_sizes/font_size = 120
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3wner")
+text = "NEW BOOSTER!"
+horizontal_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "CurvedTextMeshPro"
+}],
+"id": "6444779288227458115",
+"n": "txtHeader",
+"r": [0.5, 0.5, 0.5, 0.5, -5.0, 21.0, 548.2466, 244.1369, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - StarterPack",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "NEW BOOSTER!",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-5, 21),
+"size": Vector2(548.2466, 244.1369)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 120.0,
+"h": 2.0,
+"ls": -41.05,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - StarterPack",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "NEW BOOSTER!",
+"st": 16.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="BG" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" index="1" unique_id=126811084]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_doqpe")
+tex = ExtResource("6_iu5it")
+region = Rect2(0, 0, 800, 800)
+border = Vector4(120, 120, 120, 120)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "7611867694389146904",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Popup2",
+"t": 1.0
+},
+"n": "BG",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="CloseButton" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" index="2" unique_id=1558439662]
+visible = false
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_i8v6e")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_8e6jg")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_d6ubs")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_j5vdl")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_rhk47")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_262p7")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_kepdr")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpm3m")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_t4iou")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_doch7")
+flat = true
+script = ExtResource("7_7jtb8")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "3184884127664237045",
+"tr": 1.0
+},
+"id": "3184884127664237045",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+"t": 0.0
+},
+"n": "CloseButton",
+"r": [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 120.0, 120.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(120, 120)
+}
+
+[node name="image" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/CloseButton" index="0" unique_id=1728767510]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("3_doqpe")
+tex = ExtResource("8_xbu2i")
+region = Rect2(300, 516, 96, 96)
+fill_method = 4
+
+[node name="BoosterImage" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" index="3" unique_id=1807508852]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -83.7
+offset_right = 50.0
+offset_bottom = 16.3
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "526147330059395126",
+"n": "BoosterImage",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 33.7, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 33.7),
+"size": Vector2(100, 100)
+}
+
+[node name="StarVfx" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/BoosterImage" index="0" unique_id=469792112]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+scale = Vector2(0.3, -0.3)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "326679523217473853",
+"n": "StarVfx",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"s": [0.3, -0.3]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Fx_Star" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/BoosterImage/StarVfx" index="0" unique_id=964305323]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+scale = Vector2(5, 5)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3045843863229767927",
+"n": "Fx_Star",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"s": [5.0, 5.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Shinny" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/BoosterImage" index="1" unique_id=1290594577]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -250.0
+offset_right = 250.0
+offset_bottom = 250.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_doqpe")
+tex = ExtResource("9_5saaj")
+region = Rect2(0, 0, 237, 255.73953)
+border_scale = 3.628691983122363
+color = Color(1, 1, 0, 0.8)
+fill_method = 4
+metadata/u = {
+"a": false,
+"cs": [{
+"name": "SimpleUIRotator",
+"rotateOnStart": "1",
+"rotationSpeed": "40",
+"targetUI": {
+"node": "2578066688903729632"
+}
+}],
+"id": "2578066688903729632",
+"img": {
+"c": "ffff00cc",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "light1",
+"t": 0.0
+},
+"n": "Shinny",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 500.0, 500.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(500, 500)
+}
+
+[node name="LightRotate" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/BoosterImage" index="2" unique_id=146245750]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -217.7
+offset_top = -210.615
+offset_right = 217.7
+offset_bottom = 210.615
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_doqpe")
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6190576690146365496",
+"img": {
+"c": "ffffff01",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "LightRotate",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 435.4, 421.23, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(435.4, 421.23)
+}
+
+[node name="Image" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/BoosterImage/LightRotate" index="0" unique_id=1413665197]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -225.0
+offset_top = -225.0
+offset_right = 225.0
+offset_bottom = 225.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_doqpe")
+tex = ExtResource("10_svk7j")
+region = Rect2(0, 0, 256, 256)
+color = Color(0.98039216, 0.8980392, 0.23529412, 0.5019608)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "SimpleUIRotator",
+"rotateOnStart": "1",
+"rotationSpeed": "-30",
+"targetUI": {
+"node": "8567112224680066503"
+}
+}],
+"id": "8567112224680066503",
+"img": {
+"c": "fae53c80",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "fx_1",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 450.0, 450.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(450, 450)
+}
+
+[node name="Image (1)" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/BoosterImage/LightRotate" index="1" unique_id=102935667]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -225.0
+offset_top = -225.0
+offset_right = 225.0
+offset_bottom = 225.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_doqpe")
+tex = ExtResource("10_svk7j")
+region = Rect2(0, 0, 256, 256)
+color = Color(0.98039216, 0.8980392, 0.23529412, 0.5019608)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "SimpleUIRotator",
+"rotateOnStart": "1",
+"rotationSpeed": "-60",
+"targetUI": {
+"node": "91526452977950393"
+}
+}],
+"id": "91526452977950393",
+"img": {
+"c": "fae53c80",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "fx_1",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 450.0, 450.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(450, 450)
+}
+
+[node name="Icon" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/BoosterImage" index="3" unique_id=866786361]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -175.0
+offset_top = -175.0
+offset_right = 175.0
+offset_bottom = 175.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_doqpe")
+tex = ExtResource("11_na5hj")
+region = Rect2(0, 0, 256, 256)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6610874016377337130",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster2",
+"t": 0.0
+},
+"n": "Icon",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 350.0, 350.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(350, 350)
+}
+
+[node name="BoosterName" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" index="4" unique_id=1204350181]
+material = SubResource("ShaderMaterial_jm0a0")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -233.0
+offset_top = -392.25
+offset_right = 233.0
+offset_bottom = -238.54999
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -12
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_gm7p3")
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxEmpty_aq6hs")
+text = "Capacity"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "428646396917736932",
+"n": "BoosterName",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 315.4, 466.0, 153.7, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 100.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 100.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Box Out",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 315.4),
+"size": Vector2(466, 153.70001)
+}
+metadata/u_txt = {
+"auto": [18.0, 100.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 100.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Box Out",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="BoosterDescription" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" index="5" unique_id=1054604578]
+material = SubResource("ShaderMaterial_iqna6")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -263.0
+offset_top = 254.02998
+offset_right = 263.0
+offset_bottom = 363.56998
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_6tqsj")
+theme_override_font_sizes/font_size = 43
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2rp87")
+text = "Add 2 slots to the conveyor!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4451940994325920667",
+"n": "BoosterDescription",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -308.8, 526.0, 109.54, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 44.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 41.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Di chuyển các ô vào hộp tạm để giải phóng băng chuyền!",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -308.8),
+"size": Vector2(526, 109.53999)
+}
+metadata/u_txt = {
+"auto": [18.0, 44.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 41.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Di chuyển các ô vào hộp tạm để giải phóng băng chuyền!",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="BoosterQuantity" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" index="6" unique_id=399862109]
+material = SubResource("ShaderMaterial_jm0a0")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.95
+offset_top = 119.03
+offset_right = 125.95
+offset_bottom = 263.53
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -13
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_gm7p3")
+theme_override_font_sizes/font_size = 105
+theme_override_styles/normal = SubResource("StyleBoxEmpty_d0vce")
+text = "x3"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "1808802607552882805",
+"n": "BoosterQuantity",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -191.28, 251.9, 144.5, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 115.7],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 105.3,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -191.28),
+"size": Vector2(251.9, 144.5)
+}
+metadata/u_txt = {
+"auto": [18.0, 115.7],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 105.3,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ClaimButton" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" index="7" unique_id=1428442354]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = 417.6
+offset_right = 160.0
+offset_bottom = 557.6
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_83pv0")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_3h8l8")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_pcj8t")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_046rc")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_re0g1")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_t0x5h")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ej5d0")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_caryg")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_0oawo")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_aodcd")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4f1m6")
+flat = true
+script = ExtResource("7_7jtb8")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "991164224444345254",
+"tr": 1.0
+},
+"id": "991164224444345254",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "ClaimButton",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -487.6, 320.0, 140.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -487.59998),
+"size": Vector2(320, 139.99997)
+}
+
+[node name="image" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/ClaimButton" index="0" unique_id=2006379589]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("3_doqpe")
+tex = ExtResource("8_xbu2i")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+fill_method = 4
+
+[node name="Text (TMP)" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/ClaimButton" index="1" unique_id=1549556513]
+material = SubResource("ShaderMaterial_ahonq")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -99.5
+offset_top = -44.0
+offset_right = 99.5
+offset_bottom = 44.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_6tqsj")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nr2sf")
+text = "Buy for 100"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "4400229087354746895",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 199.0, 88.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 80.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.1,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Claim",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(199, 88)
+}
+metadata/u_txt = {
+"auto": [18.0, 80.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.1,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Claim",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="TapLabel" type="Label" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" index="8" unique_id=2087895316]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_o2uxg")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -263.0
+offset_top = 582.76
+offset_right = 263.0
+offset_bottom = 642.76
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_6tqsj")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tq3yo")
+text = "Tap to continue"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4451940994325920667",
+"n": "TapLabel",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -612.76, 526.0, 60.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 36.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Tap to continue",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -612.76),
+"size": Vector2(526, 60)
+}
+metadata/u_txt = {
+"auto": [18.0, 36.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Tap to continue",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+metadata/u_sub = true
+
+[editable path="Canvas"]

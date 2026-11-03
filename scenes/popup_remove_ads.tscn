@@ -1,12 +1,3703 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/ui/popup_remove_ads.gd" id="1"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="3_7ypgu"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="4_xtk2d"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="5_wwygf"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="6_0b2o7"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Shop_Atlas.png" id="7_qoo1y"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Shop_Packs_Atlas.png" id="8_w6jmi"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Shop_Packs_Atlas1.png" id="9_0kifb"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/blurred.png" id="10_ex3td"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/light1.png" id="11_y2q7i"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/fx_1.png" id="12_vns7v"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/NoAdsPack.png" id="13_mwap5"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Gold3.png" id="14_maq2i"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="15_h26ws"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="16_m1332"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_booster1.png" id="17_b81w2"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_booster2_1.png" id="18_ov7vg"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_booster3_1.png" id="19_0cuxm"]
+[ext_resource type="PackedScene" path="res://scenes/unity/PopupRemoveAds.tscn" id="u0"]
 
-[node name="PopupRemoveAds" type="Control"]
-layout_mode = 3
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fu4bm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s5ni4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fowu8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eci85"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ja6vx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v1ib2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_exydj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wo0ld"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s32qs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_88hkc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x0tt0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("5_wwygf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_m7eys"]
+base_font = ExtResource("6_0b2o7")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_86r8n"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ccwjr"]
+shader = ExtResource("5_wwygf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.003921569, 0.28235295, 0.44705883, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.27450982, 0.4117647, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6rhqd"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4d6u"]
+shader = ExtResource("5_wwygf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/underlay_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uc2xw"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
+shader = ExtResource("5_wwygf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("6_0b2o7")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sogpr"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eosbx"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nbni3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g2a2p"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ec5r"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oe4gs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ci45i"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bqhwk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hg5qv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sb543"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_afxat"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mos7v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tkoyy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ch8pt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mf533"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v78mk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
+shader = ExtResource("5_wwygf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bjh1s"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hscdh"]
+shader = ExtResource("5_wwygf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/underlay_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_skvhh"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hwtlu"]
+shader = ExtResource("5_wwygf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.5372549, 0.12156863, 0, 1)
+shader_parameter/underlay_color = Color(0.5411765, 0.12156863, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qyoiy"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pphwd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dfhxh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r0lj8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uv2qu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qddi7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gl3k3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wauvn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6d5xj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8su7y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uigon"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_afemw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s6soo"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ng31"]
+shader = ExtResource("5_wwygf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2x2a8"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2tde3"]
+base_font = ExtResource("6_0b2o7")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y0d3f"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rqnsi"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_djxw0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7fxgy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8s4fe"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qf7ju"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xm7iy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_of5vt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iewfn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7f811"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xsvsl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mklnp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_82uag"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x7gn3"]
+shader = ExtResource("5_wwygf")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j64h7"]
+content_margin_left = 20.0
+content_margin_top = 5.0
+content_margin_right = 20.0
+content_margin_bottom = 10.0
+
+[node name="PopupRemoveAds" type="Control" unique_id=450035244]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="Canvas" parent="." unique_id=1139015267 instance=ExtResource("u0")]
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "PopupRemoveAds"
+
+[node name="PopupRemoveAds" parent="Canvas" index="0" unique_id=1607627794]
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"breakEnable": "0",
+"debugOnOff": "0",
+"name": "AdRemovalPopup"
+}, {
+"OnCompleteAnim": [],
+"OnStartAnim": [],
+"dimCanvasGroup": {
+"node": "6874571538623220369"
+},
+"duration": "0.4",
+"easeType": "26",
+"name": "DialogueReveal",
+"panelRect": {
+"node": "4540096597060258940"
+}
+}],
+"id": "7219197735921211012",
+"n": "PopupRemoveAds",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Continue" parent="Canvas/PopupRemoveAds" index="0" unique_id=1948407684]
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fu4bm")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_s5ni4")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_fowu8")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_eci85")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ja6vx")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_v1ib2")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_exydj")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_wo0ld")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_s32qs")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_88hkc")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_x0tt0")
+flat = true
+script = ExtResource("3_7ypgu")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+sound = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "6874571538623220369",
+"tr": 0.0
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"button": {
+"node": "6874571538623220369"
+},
+"name": "NavigationBackButton"
+}],
+"id": "6874571538623220369",
+"img": {
+"c": "000000ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Continue",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" parent="Canvas/PopupRemoveAds/Continue" index="0" unique_id=1350165991]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="Text (TMP)" parent="Canvas/PopupRemoveAds/Continue" index="1" unique_id=2047887710]
+material = SubResource("ShaderMaterial_iqna6")
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -383.45
+offset_top = 1435.0
+offset_right = 383.45
+offset_bottom = 1535.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_m7eys")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_86r8n")
+text = "Maybe later"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "4586353165345643096",
+"n": "Text (TMP)",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -1485.0, 766.9, 100.0, 0.5, 0.5],
+"snd": true,
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Continue with ads",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+},
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -1485),
+"size": Vector2(766.9, 100)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Continue with ads",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Panel_Pack" parent="Canvas/PopupRemoveAds" index="1" unique_id=320122015]
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "4540096597060258940",
+"n": "Panel_Pack",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Title" parent="Canvas/PopupRemoveAds/Panel_Pack" index="0" unique_id=183048460]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -365.0
+offset_top = 288.0
+offset_right = 365.0
+offset_bottom = 458.0
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("7_qoo1y")
+region = Rect2(536, 0, 488, 84)
+border = Vector4(90, 0, 90, 0)
+kind = 1
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3931093521502876134",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_Shop_Atlas:UI_Shop_Atlas_3",
+"t": 1.0
+},
+"n": "Title",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -288.0, 730.0, 170.0, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -288),
+"size": Vector2(730, 170)
+}
+
+[node name="Title_txt" parent="Canvas/PopupRemoveAds/Panel_Pack/Title" index="0" unique_id=1449096643]
+material = SubResource("ShaderMaterial_ccwjr")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -54.5
+offset_right = 240.0
+offset_bottom = 22.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -6
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_m7eys")
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxEmpty_6rhqd")
+text = "Remove Ads"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "3089910432032338943",
+"n": "Title_txt",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 16.0, 480.0, 77.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 50.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 50.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue",
+"on": true,
+"ov": 3.0,
+"rich": false,
+"rt": false,
+"s": "No ads just fun",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 16),
+"size": Vector2(480, 77)
+}
+metadata/u_txt = {
+"auto": [18.0, 50.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 50.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue",
+"on": true,
+"ov": 3.0,
+"rich": false,
+"rt": false,
+"s": "No ads just fun",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Shop_RemoveAdsBundle" parent="Canvas/PopupRemoveAds/Panel_Pack" index="1" unique_id=721392436]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -403.0
+offset_top = 472.7
+offset_right = 403.0
+offset_bottom = 952.7
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"discountLine": {
+"node": "8232924976559649230"
+},
+"name": "RemoveAds",
+"nameTxt": {
+"node": "3584262563337002356"
+},
+"priceTxt": {
+"node": "3563920053165752133"
+},
+"productID": "cube.sort.color.ads.3",
+"productIDRequired": ["cube.sort.color.ads.1", "cube.sort.color.ads.3", "cube.sort.color.ads.3.discount"],
+"productIdDiscounted": "cube.sort.color.ads.3.discount",
+"purchaseButton": {
+"node": "2438452731949622515"
+},
+"sellBadgeObj": {
+"node": "8226509250508619298"
+},
+"sellBadgeTxt": {
+"node": "2487140253595428272"
+}
+}],
+"id": "981164288456164025",
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [-1.0, 422.0]
+},
+"n": "Shop_RemoveAdsBundle",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -712.7, 806.0, 480.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -712.7),
+"size": Vector2(806, 480)
+}
+
+[node name="BG (1)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="0" unique_id=1574244235]
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+tex = ExtResource("8_w6jmi")
+region = Rect2(0, 0, 512, 312)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1296921373571472472",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_0",
+"t": 0.0
+},
+"n": "BG (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="BG2" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/BG (1)" index="0" unique_id=204775490]
+visible = false
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 14.0
+offset_top = -197.0
+offset_right = -14.0
+offset_bottom = 65.0
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "3720104777983161173",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": null,
+"t": 0.0
+},
+"n": "BG2",
+"r": [0.0, 0.5, 1.0, 0.5, 0.0, 197.0, -28.0, 262.0, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 197),
+"size": Vector2(-28, 262)
+}
+
+[node name="Fx" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/BG (1)/BG2" index="0" unique_id=184970256]
+visible = false
+clip_contents = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"id": "5261320118432883338",
+"n": "Fx",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
+"rmask": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="BlurredBorder" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="1" unique_id=769944387]
+clip_children = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 14.0
+offset_right = -18.0
+offset_bottom = -10.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("9_0kifb")
+region = Rect2(512, 0, 512, 312)
+color = Color(1, 1, 1, 0.011764706)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2617816357345451909",
+"img": {
+"c": "ffffff03",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_Shop_Packs_Atlas1:UI_Shop_Packs_Atlas1_1",
+"t": 0.0
+},
+"mask": {
+"show": true
+},
+"n": "BlurredBorder",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, -2.0, -36.0, -24.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -2),
+"size": Vector2(-36, -24)
+}
+
+[node name="Blurred" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/BlurredBorder" index="0" unique_id=2093162122]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1190.0
+offset_top = -125.0
+offset_right = -390.0
+offset_bottom = 125.0
+rotation = -0.7853982
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+tex = ExtResource("10_ex3td")
+region = Rect2(0, 0, 360, 360)
+color = Color(0.9882353, 0.8666667, 1, 0.4)
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "Blurred",
+"on": true
+},
+"id": "7604372205530213477",
+"img": {
+"c": "fcddff66",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "blurred",
+"t": 0.0
+},
+"n": "Blurred",
+"r": [0.5, 0.5, 0.5, 0.5, -790.0, 0.0, 800.0, 250.0, 0.5, 0.5],
+"z": 45.0
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-790, 0),
+"size": Vector2(800, 250)
+}
+
+[node name="Image (1)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="2" unique_id=1412109904]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -435.2224
+offset_top = -307.32242
+offset_right = 61.0224
+offset_bottom = 188.92241
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+color = Color(0.78431374, 0.4117647, 1, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "7571122036644306878",
+"img": {
+"c": "c869ffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, -187.1, 59.2, 496.2448, 496.2448, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-187.1, 59.199997),
+"size": Vector2(496.2448, 496.2448)
+}
+
+[node name="Image (3)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/Image (1)" index="0" unique_id=1639382035]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.07035
+offset_top = -0.07035
+offset_right = 0.07035
+offset_bottom = 0.07035
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+color = Color(0.78431374, 0.4117647, 1, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1382991520734913499",
+"img": {
+"c": "c869ffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image (3)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.1407, 0.1407, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0.1407, 0.1407)
+}
+
+[node name="Image (3)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="3" unique_id=1097395508]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -358.31
+offset_top = -249.7
+offset_right = -8.309998
+offset_bottom = 100.3
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+tex = ExtResource("11_y2q7i")
+region = Rect2(0, 0, 237, 255.73953)
+border_scale = 3.628691983122363
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "194035715502304365",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "light1",
+"t": 0.0
+},
+"n": "Image (3)",
+"r": [0.5, 0.5, 0.5, 0.5, -183.31, 74.7, 350.0, 350.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-183.31, 74.7),
+"size": Vector2(350, 350)
+}
+
+[node name="VortexRotate" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="4" unique_id=1304168162]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -121.0
+offset_right = -140.0
+offset_bottom = -21.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "2258840819090706791",
+"n": "VortexRotate",
+"r": [0.5, 0.5, 0.5, 0.5, -190.0, 71.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-190, 71),
+"size": Vector2(100, 100)
+}
+
+[node name="Vortex_rotate" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/VortexRotate" index="0" unique_id=2111474127]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.5
+offset_top = -157.5
+offset_right = 157.5
+offset_bottom = 157.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("12_vns7v")
+region = Rect2(0, 0, 256, 256)
+color = Color(1, 0.8039216, 0.9490196, 0.41568628)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "SimpleUIRotator",
+"rotateOnStart": "1",
+"rotationSpeed": "-20",
+"targetUI": {
+"node": "822362391996275869"
+}
+}],
+"id": "822362391996275869",
+"img": {
+"c": "ffcdf26a",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "fx_1",
+"t": 0.0
+},
+"n": "Vortex_rotate",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 315.0, 315.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(315, 315)
+}
+
+[node name="Image (2)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="5" unique_id=1170207950]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -333.31
+offset_top = -224.7001
+offset_right = -33.309998
+offset_bottom = 75.2999
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+tex = ExtResource("13_mwap5")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6595925160048801149",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "NoAdsPack",
+"t": 0.0
+},
+"n": "Image (2)",
+"r": [0.5, 0.5, 0.5, 0.5, -183.31, 74.7001, 300.0, 300.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-183.31, 74.7001),
+"size": Vector2(300, 300)
+}
+
+[node name="Effect_star" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="6" unique_id=1646766756]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -335.0
+offset_top = -234.0
+offset_right = -35.0
+offset_bottom = 66.0
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"id": "1793787817304859295",
+"n": "Effect_star",
+"r": [0.5, 0.5, 0.5, 0.5, -185.0, 84.0, 300.0, 300.0, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-185, 84),
+"size": Vector2(300, 300)
+}
+
+[node name="Particle System" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/Effect_star" index="0" unique_id=1290299069]
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "371962519563256851",
+"n": "Particle System",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="PackName" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="7" unique_id=301192722]
+material = SubResource("ShaderMaterial_g4d6u")
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 55.299988
+offset_top = -148.45801
+offset_right = 476.5
+offset_bottom = -49.542
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_m7eys")
+theme_override_font_sizes/font_size = 41
+theme_override_styles/normal = SubResource("StyleBoxEmpty_uc2xw")
+text = "Remove Ads + Bundle"
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "3584262563337002356",
+"n": "PackName",
+"r": [0.0, 0.0, 0.0, 0.0, 265.9, 99.0, 421.2, 98.916, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "No ads bundle pack",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(265.9, 99),
+"size": Vector2(421.2, 98.91601)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "No ads bundle pack",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ItemContainer" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="8" unique_id=72164594]
+anchor_right = 1.0
+offset_left = 347.0384
+offset_top = -1.0
+offset_right = -20.398392
+offset_bottom = 271.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"horizontalLayoutGroup": null,
+"name": "ShopProductSetup",
+"plusItemPrefab": {
+"asset": "dc2bb501aba259a429e763c3ac8e1902"
+},
+"productID": "wool.scape.ads.2",
+"productSO": {
+"asset": "IAPProductSO.asset"
+},
+"rewardItemPrefab": null,
+"rewardPerRow": "3",
+"verticalLayoutGroup": {
+"node": "1986294453940442678"
+}
+}],
+"id": "1986294453940442678",
+"n": "ItemContainer",
+"r": [0.0, 1.0, 1.0, 1.0, 163.32, -135.0, -367.4368, 272.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(163.32, -135),
+"size": Vector2(-367.43677, 272)
+}
+
+[node name="Row(Clone)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer" index="0" unique_id=578443128]
+offset_left = 82.2816
+offset_top = 22.0
+offset_right = 314.28162
+offset_bottom = 126.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "62800711705943660",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 198.2816, -74.0, 232.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(198.28162, -74),
+"size": Vector2(232.00002, 104)
+}
+
+[node name="ShopRewardItem(Clone) (1)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/Row(Clone)" index="0" unique_id=1781851043]
+visible = false
+offset_left = 150.34
+offset_top = 10.400002
+offset_right = 250.34
+offset_bottom = 110.4
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("14_maq2i")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "921976677378189014"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "9103668252648513226"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "1",
+"iconImg": {
+"node": "921976677378189014"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "9103668252648513226"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "921976677378189014",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Gold3",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone) (1)",
+"r": [0.0, 1.0, 0.0, 1.0, 200.34, -60.4, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(200.34, -60.4),
+"size": Vector2(100, 100)
+}
+
+[node name="Text (TMP)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/Row(Clone)/ShopRewardItem(Clone) (1)" index="0" unique_id=1583317963]
+material = SubResource("ShaderMaterial_3wugu")
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -65.2
+offset_top = -12.709999
+offset_right = 65.2
+offset_bottom = 41.91
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_sogpr")
+text = "3,000"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "9103668252648513226",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -14.6, 130.4, 54.62, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 39.8,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "3,000",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -14.6),
+"size": Vector2(130.4, 54.62)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 39.8,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "3,000",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Plus(Clone)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/Row(Clone)" index="1" unique_id=1712769085]
+visible = false
+offset_left = 112.17
+offset_top = 57.300003
+offset_right = 140.17
+offset_bottom = 85.3
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("15_h26ws")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "722182078914787751",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 126.17, -71.3, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(126.17, -71.3),
+"size": Vector2(28, 28)
+}
+
+[node name="ShopRewardItem(Clone)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/Row(Clone)" index="2" unique_id=443857616]
+offset_left = -26.66
+offset_top = 13.900002
+offset_right = 103.34
+offset_bottom = 143.9
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("16_m1332")
+region = Rect2(779, 259, 256, 256)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "no_ads",
+"on": true
+},
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "1543270129557109195"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "3465405853340201596"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "2",
+"iconImg": {
+"node": "1543270129557109195"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "3465405853340201596"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "1543270129557109195",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_13",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 38.34, -78.9, 130.0, 130.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(38.34, -78.899994),
+"size": Vector2(130, 130)
+}
+
+[node name="Image" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/Row(Clone)/ShopRewardItem(Clone)" index="0" unique_id=810114867]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -65.0
+offset_top = -65.0
+offset_right = 65.0
+offset_bottom = 65.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+tex = ExtResource("16_m1332")
+region = Rect2(779, 259, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8375413790380158685",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_13",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 130.0, 130.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(130, 130)
+}
+
+[node name="Text (TMP)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/Row(Clone)/ShopRewardItem(Clone)" index="1" unique_id=1853085522]
+visible = false
+material = SubResource("ShaderMaterial_iqna6")
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -28.4
+offset_right = 60.0
+offset_bottom = 19.6
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_styles/normal = SubResource("StyleBoxEmpty_eosbx")
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": false,
+"id": "3465405853340201596",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 4.4, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.3999996),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@20" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer" index="1" unique_id=354071001]
+visible = false
+offset_left = 16.2816
+offset_top = 173.8
+offset_right = 380.28162
+offset_bottom = 277.8
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6752052240207646250",
+"n": "Row(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 198.2816, -225.8, 364.0, 104.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(198.2816, -225.79999),
+"size": Vector2(364, 103.999985)
+}
+
+[node name="ShopRewardItem(Clone)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20" index="0" unique_id=1612003299]
+offset_left = 152.1
+offset_right = 232.1
+offset_bottom = 80.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("16_m1332")
+region = Rect2(542, 663, 72, 72)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "3",
+"iconImg": {
+"node": "6346317364715442121"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "4473186435089869107"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "3",
+"iconImg": {
+"node": "6346317364715442121"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "4473186435089869107"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "6346317364715442121",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_37",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 192.1, -40.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(192.1, -40),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterMagnet" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20/ShopRewardItem(Clone)" index="0" unique_id=1011071398]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+tex = ExtResource("17_b81w2")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterMagnet",
+"on": true
+},
+"id": "7487899707276048",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster1",
+"t": 0.0
+},
+"n": "ImgBoosterMagnet",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20/ShopRewardItem(Clone)" index="1" unique_id=1400629536]
+material = SubResource("ShaderMaterial_3wugu")
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -0.79999924
+offset_right = 60.0
+offset_bottom = 47.2
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nbni3")
+text = "x3"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4473186435089869107",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -23.2, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -23.2),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Plus(Clone)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20" index="1" unique_id=1213066299]
+offset_left = 240.3
+offset_top = 35.1
+offset_right = 268.3
+offset_bottom = 63.1
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("15_h26ws")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7398895816922090",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 254.3, -49.1, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(254.29999, -49.1),
+"size": Vector2(27.999985, 28)
+}
+
+[node name="@Control@21" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20" index="2" unique_id=1827993724]
+offset_left = 283.2
+offset_top = 2.7000008
+offset_right = 363.2
+offset_bottom = 82.7
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("16_m1332")
+region = Rect2(614, 663, 72, 72)
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "4",
+"iconImg": {
+"node": "3367336301620192843"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "8162435387668909998"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "4",
+"iconImg": {
+"node": "3367336301620192843"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "8162435387668909998"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "3367336301620192843",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_38",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 323.2, -42.7, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(323.2, -42.699997),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterStorage" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20/@Control@21" index="0" unique_id=1364469981]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+tex = ExtResource("18_ov7vg")
+region = Rect2(0, 0, 256, 256)
+border_scale = 4.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterStorage",
+"on": true
+},
+"id": "7088981755726373939",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster2_1",
+"t": 0.0
+},
+"n": "ImgBoosterStorage",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20/@Control@21" index="1" unique_id=1507413993]
+material = SubResource("ShaderMaterial_3wugu")
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -0.5
+offset_right = 60.0
+offset_bottom = 47.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_styles/normal = SubResource("StyleBoxEmpty_g2a2p")
+text = "x3"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "8162435387668909998",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -23.5, 120.0, 48.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -23.5),
+"size": Vector2(120, 48)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@22" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20" index="3" unique_id=140044559]
+offset_left = 112.9
+offset_top = 35.1
+offset_right = 140.9
+offset_bottom = 63.1
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("15_h26ws")
+region = Rect2(192, 256, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5873644227229808019",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+"t": 0.0
+},
+"n": "Plus(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 126.9, -49.1, 28.0, 28.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(126.899994, -49.1),
+"size": Vector2(27.999992, 28)
+}
+
+[node name="@Control@23" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20" index="4" unique_id=35113809]
+offset_left = 23.7
+offset_top = 4.9000015
+offset_right = 103.7
+offset_bottom = 84.9
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("19_0cuxm")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"ThisItemType": "0",
+"iconImg": {
+"node": "1923262278649187338"
+},
+"name": "PopupRewardItem",
+"quantityText": {
+"node": "1173708835291609054"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}, {
+"ThisItemType": "1",
+"iconImg": {
+"node": "1923262278649187338"
+},
+"name": "BonusItem",
+"quantityText": {
+"node": "1173708835291609054"
+},
+"rewardItemSO": {
+"asset": "RewardItemSO.asset"
+}
+}],
+"id": "1923262278649187338",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "ic_booster3_1",
+"t": 0.0
+},
+"n": "ShopRewardItem(Clone)",
+"r": [0.0, 1.0, 0.0, 1.0, 63.7, -44.9, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(63.7, -44.9),
+"size": Vector2(80, 80)
+}
+
+[node name="ImgBoosterCapacity" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20/@Control@23" index="0" unique_id=1386853611]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+tex = ExtResource("19_0cuxm")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "ImgBoosterCapacity",
+"on": true
+},
+"id": "447530779198090605",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "ic_booster3_1",
+"t": 0.0
+},
+"n": "ImgBoosterCapacity",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="Text (TMP)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/ItemContainer/@Control@20/@Control@23" index="1" unique_id=1969797159]
+material = SubResource("ShaderMaterial_3wugu")
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -65.2
+offset_top = -5.8099995
+offset_right = 65.2
+offset_bottom = 48.809998
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5ec5r")
+text = "x3"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "1173708835291609054",
+"n": "Text (TMP)",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, -21.5, 130.4, 54.62, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 39.8,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -21.5),
+"size": Vector2(130.4, 54.619995)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 39.8,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "x3",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Button_Purchase" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="9" unique_id=1107386655]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -278.1
+offset_top = -144.5
+offset_right = -52.100006
+offset_bottom = -40.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_oe4gs")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ci45i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_bqhwk")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_hg5qv")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_sb543")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_afxat")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_mos7v")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_tkoyy")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_ch8pt")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_mf533")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v78mk")
+flat = true
+script = ExtResource("3_7ypgu")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "2438452731949622515",
+"tr": 1.0
+},
+"id": "2438452731949622515",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.25,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "Button_Purchase",
+"r": [1.0, 0.0, 1.0, 0.0, -165.1, 92.5, 226.0, 104.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-165.1, 92.5),
+"size": Vector2(226, 104)
+}
+
+[node name="image" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/Button_Purchase" index="0" unique_id=1279117005]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("16_m1332")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.4444444444444444
+fill_method = 4
+
+[node name="Text (TMP)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/Button_Purchase" index="1" unique_id=765603598]
+material = SubResource("ShaderMaterial_ahonq")
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_right = -16.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -7
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_m7eys")
+theme_override_font_sizes/font_size = 56
+theme_override_styles/normal = SubResource("StyleBoxEmpty_bjh1s")
+text = "$7.99"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "3563920053165752133",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, -32.0, -8.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "149,000d",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(-32, -8)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "149,000d",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="DiscountLine" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/Button_Purchase" index="2" unique_id=1147157683]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -52.2
+offset_top = 20.5
+offset_right = 47.8
+offset_bottom = 25.5
+rotation = -0.17418386
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+kind = 1
+color = Color(1, 0, 0, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8232924976559649230",
+"img": {
+"c": "ff0000ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "DiscountLine",
+"r": [0.5, 1.0, 0.5, 1.0, -2.2, -23.0, 100.0, 5.0, 0.5, 0.5],
+"z": 9.98
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-2.2000008, -23),
+"size": Vector2(100, 5)
+}
+
+[node name="SellBadge" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle" index="10" unique_id=256085307]
+visible = false
+offset_left = -13.0741005
+offset_top = 12.9258995
+offset_right = 113.0741
+offset_bottom = 139.0741
+rotation = -0.20926498
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("16_m1332")
+region = Rect2(1100, 912, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8226509250508619298",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_78",
+"t": 0.0
+},
+"n": "SellBadge",
+"r": [0.0, 1.0, 0.0, 1.0, 50.0, -76.0, 126.1482, 126.1482, 0.5, 0.5],
+"z": 11.99
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(49.999996, -76),
+"size": Vector2(126.14819, 126.14819)
+}
+
+[node name="SellBadgeTxt" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAdsBundle/SellBadge" index="0" unique_id=626910578]
+material = SubResource("ShaderMaterial_hscdh")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -59.957
+offset_top = -36.0215
+offset_right = 69.868805
+offset_bottom = 34.883904
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -6
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 52
+theme_override_styles/normal = SubResource("StyleBoxEmpty_skvhh")
+text = "-60%"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2487140253595428272",
+"n": "SellBadgeTxt",
+"r": [0.5, 0.5, 0.5, 0.5, 4.9559, 0.5688, 129.8258, 70.9054, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 1.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 51.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-60%",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(4.955902, 0.56879807),
+"size": Vector2(129.8258, 70.9054)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 1.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 51.65,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-60%",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Shop_RemoveAds" parent="Canvas/PopupRemoveAds/Panel_Pack" index="2" unique_id=1511128396]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -403.0
+offset_top = 970.80005
+offset_right = 403.0
+offset_bottom = 1393.8
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"discountLine": null,
+"name": "RemoveAds",
+"nameTxt": {
+"node": "1585593209300859729"
+},
+"priceTxt": {
+"node": "5187034307622894665"
+},
+"productID": "cube.sort.color.ads.1",
+"productIDRequired": ["cube.sort.color.ads.1", "cube.sort.color.ads.3", "cube.sort.color.ads.3.discount"],
+"productIdDiscounted": "",
+"purchaseButton": {
+"node": "6295616150655313919"
+},
+"sellBadgeObj": null,
+"sellBadgeTxt": null
+}],
+"id": "8068711228485742078",
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [-1.0, 238.0]
+},
+"n": "Shop_RemoveAds",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -1182.3, 806.0, 423.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -1182.3),
+"size": Vector2(806, 423)
+}
+
+[node name="BG" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds" index="0" unique_id=1748996465]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 4.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+tex = ExtResource("7_qoo1y")
+region = Rect2(136, 150, 344, 180)
+border = Vector4(36, 0, 36, 0)
+color = Color(1, 0.95686275, 0.9843137, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2092814662658833787",
+"img": {
+"c": "fff4fbff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Shop_Atlas:UI_Shop_Atlas_2",
+"t": 0.0
+},
+"n": "BG",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, -2.0, 0.0, 4.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -2),
+"size": Vector2(0, 4)
+}
+
+[node name="BG2" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds/BG" index="0" unique_id=1938264592]
+visible = false
+anchor_right = 1.0
+offset_left = 14.0
+offset_top = 71.8039
+offset_right = -14.0
+offset_bottom = 213.9
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("15_h26ws")
+region = Rect2(1944, 1611, 104, 104)
+border = Vector4(34, 28, 34, 44)
+kind = 1
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "3585186355597312978",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_41",
+"t": 1.0
+},
+"n": "BG2",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -71.8039, -28.0, 142.0961, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -71.803894),
+"size": Vector2(-28, 142.0961)
+}
+
+[node name="BlurredBorder" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds" index="1" unique_id=166949300]
+clip_children = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 14.0
+offset_right = -18.0
+offset_bottom = -10.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("9_0kifb")
+region = Rect2(512, 0, 512, 312)
+color = Color(1, 1, 1, 0.011764706)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6590130224245088396",
+"img": {
+"c": "ffffff03",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "UI_Shop_Packs_Atlas1:UI_Shop_Packs_Atlas1_1",
+"t": 0.0
+},
+"mask": {
+"show": true
+},
+"n": "BlurredBorder",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, -2.0, -36.0, -24.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -2),
+"size": Vector2(-36, -24)
+}
+
+[node name="Blurred" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds/BlurredBorder" index="0" unique_id=1732110427]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1190.0
+offset_top = -125.0
+offset_right = -390.0
+offset_bottom = 125.0
+rotation = -0.7853982
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_xtk2d")
+tex = ExtResource("10_ex3td")
+region = Rect2(0, 0, 360, 360)
+color = Color(1, 0.9764706, 0.8666667, 0.69803923)
+fill_method = 4
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "Blurred",
+"on": true
+},
+"id": "1632742493235876716",
+"img": {
+"c": "fff9ddb2",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "blurred",
+"t": 0.0
+},
+"n": "Blurred",
+"r": [0.5, 0.5, 0.5, 0.5, -790.0, 0.0, 800.0, 250.0, 0.5, 0.5],
+"z": 45.0
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-790, 0),
+"size": Vector2(800, 250)
+}
+
+[node name="Icon" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds" index="2" unique_id=445302488]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -199.0
+offset_top = -97.0
+offset_right = -199.0
+offset_bottom = -97.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "no_ads",
+"on": true
+},
+"id": "66350086470750011",
+"n": "Icon",
+"r": [0.5, 0.5, 0.5, 0.5, -199.0, 97.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-199, 97),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds/Icon" index="0" unique_id=759613485]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.0
+offset_top = -125.0
+offset_right = 125.0
+offset_bottom = 125.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("16_m1332")
+region = Rect2(779, 259, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5658376945069280323",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_13",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 250.0, 250.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(250, 250)
+}
+
+[node name="PackName" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds" index="3" unique_id=242156080]
+material = SubResource("ShaderMaterial_hwtlu")
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -339.3
+offset_top = -128.2
+offset_right = 94.900024
+offset_bottom = -51.199997
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -7
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_m7eys")
+theme_override_font_sizes/font_size = 56
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qyoiy")
+text = "Remove Ads"
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "1585593209300859729",
+"n": "PackName",
+"r": [0.5, 0.0, 0.5, 0.0, -339.3, 89.7, 434.2, 77.0, 0.0, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.1,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Remove ads",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(-339.3, 89.7),
+"size": Vector2(434.2, 77)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.1,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Remove ads",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Button_Purchase" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds" index="4" unique_id=670847241]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -278.3
+offset_top = -138.1
+offset_right = -52.300003
+offset_bottom = -34.1
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pphwd")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_dfhxh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_r0lj8")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_uv2qu")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_qddi7")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_gl3k3")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_wauvn")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_6d5xj")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_8su7y")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_uigon")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_afemw")
+flat = true
+script = ExtResource("3_7ypgu")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "6295616150655313919",
+"tr": 1.0
+},
+"id": "6295616150655313919",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.25,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "Button_Purchase",
+"r": [1.0, 0.0, 1.0, 0.0, -165.3, 86.1, 226.0, 104.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-165.29999, 86.100006),
+"size": Vector2(225.99998, 104.00001)
+}
+
+[node name="image" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds/Button_Purchase" index="0" unique_id=1364216503]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("16_m1332")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.4444444444444444
+fill_method = 4
+
+[node name="Text (TMP)" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds/Button_Purchase" index="1" unique_id=299753120]
+material = SubResource("ShaderMaterial_ahonq")
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_right = -16.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_m7eys")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_s6soo")
+text = "$4.99 · Remove Ads"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "5187034307622894665",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, -32.0, -8.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "149,000d",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(-32, -8)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 47.75,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "149,000d",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Description" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds" index="5" unique_id=718159589]
+material = SubResource("ShaderMaterial_1ng31")
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -37.65001
+offset_top = 63.6
+offset_right = 356.05
+offset_bottom = 113.3
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 1
+theme_override_colors/font_color = Color(0.2784314, 0.41960785, 0.5921569, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_m7eys")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2x2a8")
+text = "No interstitial or banner ads"
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "8016914164439544341",
+"n": "Description",
+"r": [0.5, 1.0, 0.5, 1.0, 159.2, -63.6, 393.7, 49.7, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "476b97ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.2,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Remove all ads",
+"st": 1.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(159.2, -63.6),
+"size": Vector2(393.7, 49.700005)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "476b97ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.2,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Remove all ads",
+"st": 1.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="InterAdsTxt" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds" index="6" unique_id=283350153]
+material = SubResource("ShaderMaterial_iqna6")
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -24.450012
+offset_top = 113.0
+offset_right = 369.25
+offset_bottom = 161.5
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 1
+theme_override_colors/font_color = Color(0.2784314, 0.41960785, 0.5921569, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -2
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2tde3")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxEmpty_y0d3f")
+text = "- Rewarded ads stay optional (x2 rewards)"
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "8385527730567929932",
+"n": "InterAdsTxt",
+"r": [0.5, 1.0, 0.5, 1.0, 172.4, -113.0, 393.7, 48.5, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "476b97ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.35,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "- Inter ads",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(172.4, -113),
+"size": Vector2(393.7, 48.5)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "476b97ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.35,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "- Inter ads",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="BannerAdsTxt" parent="Canvas/PopupRemoveAds/Panel_Pack/Shop_RemoveAds" index="7" unique_id=1653980292]
+material = SubResource("ShaderMaterial_iqna6")
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -24.450012
+offset_top = 167.3
+offset_right = 369.25
+offset_bottom = 215.8
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 1
+theme_override_colors/font_color = Color(0.2784314, 0.41960785, 0.5921569, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_m7eys")
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxEmpty_rqnsi")
+text = "- Bonus gold bundle"
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "3373023256945403381",
+"n": "BannerAdsTxt",
+"r": [0.5, 1.0, 0.5, 1.0, 172.4, -167.3, 393.7, 48.5, 0.5, 1.0],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "476b97ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.35,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "- Banner ads",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(172.4, -167.3),
+"size": Vector2(393.7, 48.5)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "476b97ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.35,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "- Banner ads",
+"st": 0.0,
+"v": 256.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Restore" type="Control" parent="Canvas/PopupRemoveAds/Panel_Pack" index="3" unique_id=1255007952]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -249.0
+offset_top = 1583.0
+offset_right = 249.0
+offset_bottom = 1681.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1417659707672751436",
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [-1.0, -1.0],
+"pref": [-1.0, 98.0]
+},
+"n": "RestorePurchase",
+"r": [0.5, 1, 0.5, 1, 0, -1632.0, 498, 98, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -1632),
+"size": Vector2(498, 98)
+}
+metadata/u_sub = true
+
+[node name="Button" type="Button" parent="Canvas/PopupRemoveAds/Panel_Pack/Restore" unique_id=465540184]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_djxw0")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_7fxgy")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_8s4fe")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_qf7ju")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_xm7iy")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_of5vt")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_iewfn")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_7f811")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_xsvsl")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_mklnp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_82uag")
+flat = true
+script = ExtResource("3_7ypgu")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "281042244035759319",
+"tr": 1.0
+},
+"id": "281042244035759319",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 3.5,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_30",
+"t": 1.0
+},
+"n": "Button",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" type="Control" parent="Canvas/PopupRemoveAds/Panel_Pack/Restore/Button" unique_id=1247645348]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_xtk2d")
+tex = ExtResource("15_h26ws")
+region = Rect2(1792, 809, 256, 270)
+border = Vector4(128, 128, 128, 128)
+border_scale = 0.2857142857142857
+kind = 1
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="Canvas/PopupRemoveAds/Panel_Pack/Restore/Button" unique_id=1170499613]
+material = SubResource("ShaderMaterial_x7gn3")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_m7eys")
+theme_override_font_sizes/font_size = 45
+theme_override_styles/normal = SubResource("StyleBoxEmpty_j64h7")
+text = "Restore purchases"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "3055422834085008956",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [20.0, 5.0, 20.0, 10.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "RESTORE PURCHASE",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 45.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [20.0, 5.0, 20.0, 10.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "RESTORE PURCHASE",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[editable path="Canvas"]

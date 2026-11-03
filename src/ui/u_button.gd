@@ -15,20 +15,20 @@ static var active: Button = null
 var image: Control = null
 var tint_target: CanvasItem = null
 ## ColorTint colors: normal, highlighted, pressed, disabled (already multiplied by colorMultiplier).
-var tint_colors: Array[Color] = [Color.WHITE, Color("f5f5f5"), Color("c8c8c8"), Color(0.784, 0.784, 0.784, 0.5)]
-var tint_dur := 0.1
+@export var tint_colors: Array[Color] = [Color.WHITE, Color("f5f5f5"), Color("c8c8c8"), Color(0.784, 0.784, 0.784, 0.5)]
+@export var tint_dur := 0.1
 ## Selectable.Transition: 0 none, 1 color tint, 2 sprite swap, 3 animation.
-var transition := 1
-var pressed_sprite: Dictionary = {}
+@export var transition := 1
+@export var pressed_sprite: Dictionary = {}
 ## UIHoldAnim_Pulse: scale while held (0 = off).
-var pulse_scale := 0.0
-var pulse_dur := 0.15
-var pulse_trans := Tween.TRANS_QUAD
-var pulse_ease := Tween.EASE_OUT
+@export var pulse_scale := 0.0
+@export var pulse_dur := 0.15
+@export var pulse_trans := Tween.TRANS_QUAD
+@export var pulse_ease := Tween.EASE_OUT
 ## PressEffect: [[CanvasItem, normal Color, pressed Color, duration], ...].
 var press_effects: Array = []
-var sound := false
-var vibrate := false
+@export var sound := false
+@export var vibrate := false
 ## Toggle graphic shown while on.
 var toggle_graphic: CanvasItem = null
 
@@ -41,7 +41,6 @@ var _normal_sprite: Dictionary = {}
 func _init() -> void:
 	flat = true
 	focus_mode = Control.FOCUS_NONE
-	mouse_filter = Control.MOUSE_FILTER_STOP
 	for st in ["normal", "hover", "pressed", "disabled", "focus", "hover_pressed", "normal_mirrored", "hover_mirrored", "pressed_mirrored", "disabled_mirrored", "hover_pressed_mirrored"]:
 		add_theme_stylebox_override(st, StyleBoxEmpty.new())
 

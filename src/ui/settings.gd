@@ -3,7 +3,8 @@ extends Control
 ## icons in the cream well, Support and Language pills, a Privacy Policy link row, the version under the popup's right
 ## edge. The game's extras are copies of prefab nodes: a notifications toggle (copy of Vibrate, the well split in 4),
 ## Restore purchases / UI preview rows and the restore result (copies of PolicyButton, one 78-unit row each; the popup
-## grows like GameplaySettingsUI.OnPurchasedAds). Language opens SettingLanguage (popup_language.gd).
+## grows like GameplaySettingsUI.OnPurchasedAds). Language opens SettingLanguage (popup_language.gd). Static nodes
+## are in scenes/settings.tscn; the link rows depend on the platform, the build and the restore result: built here.
 ## 10 quick taps on the version open the tester menu (tester_menu.gd); after it saves or deletes the account,
 ## Settings closes so Main rebuilds Home. setup(args: Dictionary); signal closed(result).
 
@@ -13,7 +14,6 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UView := preload("res://src/ui/u_view.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Config := preload("res://src/config.gd")
-const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const PopupLanguage := preload("res://src/ui/popup_language.gd")
 
 const LAYER := "SettingMainMenuLayer"
@@ -22,15 +22,13 @@ const CONTENT := "Panel/PauseMenu/Content"
 const WELL := "Panel/PauseMenu/Content/SettingBtn/Content"
 const POLICY := "Panel/PauseMenu/Content/PolicyButton"
 ## Game setting -> prefab icon button and its ImageStateKeeper sprites (UI_Maincenter_<on>, _<off>).
-## notif has no prefab button: a copy of Vibrate with the game's icon, greyed when off.
+## notif has no prefab button: Toggle_notif in the scene is a copy of Vibrate with ic_clock, greyed when off.
 const TOGGLES: Array[Dictionary] = [
 	{"key": "sfx", "node": "Mute", "on": 28, "off": 29},
 	{"key": "haptics", "node": "Vibrate", "on": 40, "off": 41},
 	{"key": "music", "node": "Sound", "on": 42, "off": 43},
-	{"key": "notif", "node": "", "icon": "ic_clock"},
+	{"key": "notif", "node": ""},
 ]
-## Icons in the 620-unit well: the prefab spaces 3 by 188; 4 share the well evenly.
-const WELL_W := 620.0
 const OFF_TINT := Color(0.55, 0.55, 0.55, 0.9)
 ## ImageStateKeeper is not exported, so its off sprites are missing from _sprites.json: rects (top-left origin) from
 ## Resources_moved/Sprites/UI_Maincenter.png.meta.
@@ -111,7 +109,10 @@ func _build() -> void:
 		return
 	_built = true
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# The toggles (Notif is a copy of Vibrate), the hidden Policy and Terms rows and VersionButton are nodes of
+	# scenes/settings.tscn; the link rows under the pills are built by _layout_rows.
 	ui = UnityUI.build(self, LAYER)
+	# Layer nodes keep their prefab names in the scene (a renamed instanced node loses its overrides).
 	close_button = ui.on_click("Panel/PauseMenu/Top/btnTurnOff", close)
 	close_button.name = "CloseX"
 	ui.on_click("Bg", close)
@@ -119,36 +120,28 @@ func _build() -> void:
 	support_button.name = "SupportButton"
 	language_button = ui.on_click(CONTENT + "/btnLanguage", open_language)
 	language_button.name = "LanguageButton"
-	_build_toggles()
-	ui.show(POLICY, false)
-	ui.show("Panel/PauseMenu/Content/TermsButton", false)
-	_build_version()
+	_wire_toggles()
+	version_button = %VersionButton
+	_version_label = version_button.get_node("VersionText") as Label
+	version_button.connect("clicked", _on_version)
 	_apply_texts()
 
 
-## Prefab icons for sfx, vibration, music; a copy of Vibrate for notifications. MainMenuSettingsUI.InitLayer sets
-## each ImageStateKeeper from the saved setting.
-func _build_toggles() -> void:
-	var well := ui.node(WELL)
-	var step := WELL_W / TOGGLES.size()
-	for i in TOGGLES.size():
-		var def := TOGGLES[i]
+## Prefab icons for sfx, vibration, music and the Notif copy of Vibrate. MainMenuSettingsUI.InitLayer sets each
+## ImageStateKeeper from the saved setting.
+func _wire_toggles() -> void:
+	for def in TOGGLES:
 		var key := str(def.key)
 		var b: Button = null
 		if str(def.node) != "":
 			b = ui.button(WELL + "/" + str(def.node))
+			b.name = "Toggle_" + key
 		else:
-			var s := UnityKit.spec(LAYER, WELL + "/Vibrate")
-			s.n = "Notif"
-			var v: RefCounted = UnityKit.add(well, s)
-			v.texture("Image", ThemeKit.icon(str(def.icon)))
-			b = v.root as Button
+			b = %Toggle_notif
 			# Not in the prefab's UIAnimationGroup: play its ScaleAppear with the group (OnShowLayer).
-			_appear_later.call_deferred(b, v.anims.get(str(s.get("id", "")), Callable()))
-		b.name = "Toggle_" + key
-		var r: Dictionary = b.get_meta("u_rect")
-		r.pos = Vector2(step * (i + 0.5) - WELL_W * 0.5, 0)
-		UnityUI.apply_rect(b)
+			var v: RefCounted = ui.sub(b)
+			var id := str((b.get_meta("u") as Dictionary).get("id", ""))
+			_appear_later.call_deferred(b, v.anims.get(id, Callable()) if v != null else Callable())
 		b.connect("clicked", _on_toggle.bind(key))
 		toggle_buttons[key] = b
 		_show_toggle(key)
@@ -181,20 +174,6 @@ static func set_state_sprite(c: Control, n: int) -> void:
 	var k := float(tex.get_width()) / STATE_SRC
 	var r: Rect2 = STATE_RECTS[n]
 	img.call("set_texture", tex, Rect2(r.position * k, r.size * k), Vector4.ZERO, 1.0 / k)
-
-
-## The prefab's VersionText is a plain label; the game taps it for the tester menu, so it sits in a transparent button.
-func _build_version() -> void:
-	var text := UnityKit.spec(LAYER, "VersionText")
-	var s := {"n": "VersionButton", "a": true, "r": (text.r as Array).duplicate(),
-		"img": {"sp": null, "c": "ffffff00", "t": 0, "rt": true, "on": true},
-		"btn": {"tr": 0, "c": ["ffffffff", "ffffffff", "ffffffff", "ffffffff"], "inter": true, "target": null}, "ch": [text]}
-	text.r = [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5]
-	var v: RefCounted = UnityKit.add(ui.node(""), s)
-	version_button = v.root as Button
-	_version_label = v.label("VersionText")
-	version_button.connect("clicked", _on_version)
-	ui.show("VersionText", false)
 
 
 ## Every visible string (also after a language change, like I2 Localize updating in place).
@@ -256,6 +235,7 @@ func _layout_rows() -> void:
 			t.txt.s = str(d[1])
 			row = UnityKit.add(ui.node(CONTENT), t).root
 			status_label = row as Label
+		row.set_meta("u_rt", true)
 		_rows.append(row)
 		match str(d[0]):
 			"PrivacyButton":
@@ -267,12 +247,15 @@ func _layout_rows() -> void:
 
 
 ## TMP Underline (fontStyle 4) is not drawn by unity_ui.gd: a line under the text in its colour, refitted when the
-## label resizes or auto-sizes (TMP underline: about 6% thick, 8% below the baseline).
+## label resizes or auto-sizes (TMP underline: about 6% thick, 8% below the baseline). A line the scene already holds
+## (child "Underline") is reused.
 static func underline(l: Label) -> void:
-	var line := ColorRect.new()
-	line.name = "Underline"
-	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	l.add_child(line)
+	var line := l.get_node_or_null("Underline") as ColorRect
+	if line == null:
+		line = ColorRect.new()
+		line.name = "Underline"
+		line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		l.add_child(line)
 	l.resized.connect(_fit_underline.bind(l, line))
 	_fit_underline.call_deferred(l, line)
 

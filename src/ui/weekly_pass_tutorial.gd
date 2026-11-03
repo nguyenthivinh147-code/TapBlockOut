@@ -4,7 +4,8 @@ extends Control
 ## setup(steps): mỗi bước {target: Control, text: String}. Target mất (layer dựng lại) thì finished(false).
 ## Overlay tự free sau khi phát finished.
 ## Art: MainTutorialLayer Step1 (hand with tap rings, animated by TutController_Step1, and the Popup2 text panel);
-## the hole is outlined with the rounded frame Resources_UI_Maincenter:UI_Maincenter_23.
+## the hole is outlined with the rounded frame Resources_UI_Maincenter:UI_Maincenter_23. Instance
+## scenes/weekly_pass_tutorial.tscn, not this script.
 
 signal finished(completed: bool)
 
@@ -19,7 +20,6 @@ const PAD := 10.0  # lỗ rộng hơn target bấy nhiêu (px)
 const GAP := 28.0  # từ mép bảng thoại tới mép lỗ
 const EDGE := 16.0  # lề tối thiểu so với mép màn
 const UPPER_FRAC := 0.25  # lỗ nằm hết trong phần trên này của màn thì bảng thoại đặt bên dưới
-const OUTLINE := "Resources_UI_Maincenter:UI_Maincenter_23"
 const CORNER := 32.0  # left border of UI_Maincenter_23 = corner radius of the outline
 ## Hand/TapFx (where the tap rings play) relative to Hand, Unity units (y up): the fingertip.
 const FINGER := Vector2(-32.9, 22)
@@ -44,35 +44,22 @@ func _ready() -> void:
 		_build()
 
 
+## MainTutorialLayer (Step2, TargetButton hidden, every node ignoring the mouse so taps reach the overlay) and the
+## hole outline are nodes of scenes/weekly_pass_tutorial.tscn.
 func _build() -> void:
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	mouse_filter = Control.MOUSE_FILTER_STOP
 	ui = UnityUI.build(self, LAYER, {"reveal": false})
-	# Taps anywhere go to the overlay (MainTutStep's own TargetButton is not used).
-	for c in (ui.get("paths") as Dictionary).values():
-		(c as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
-	ui.show("GameObject/Step2", false)
-	ui.show(STEP + "/Hand/TargetButton", false)
 	# MainTutStep enables the Animator of its step when it plays; the prefab keeps it off.
 	var anim: Node = ui.animator(STEP)
 	if anim != null:
 		anim.enabled = true
-
-	var hs := {"n": "Highlight", "a": true, "r": [0, 1, 0, 1, 0, 0, 100, 100, 0.5, 0.5],
-		"img": {"sp": OUTLINE, "c": "ffffffff", "t": 1, "pa": false, "fc": true, "ppu": 1}}
-	highlight = UnityKit.add(ui.node("GameObject"), hs).root
-	ui.node("GameObject").move_child(highlight, 1)  # above Block, below the steps
-	highlight.visible = false
+	highlight = %Highlight
 	var pulse := highlight.create_tween().set_loops()
 	pulse.tween_property(highlight, "modulate:a", 0.55, 0.6)
 	pulse.tween_property(highlight, "modulate:a", 1.0, 0.6)
-
 	arrow = ui.node(STEP + "/Hand")
 	arrow.name = "Arrow"
-	arrow.visible = false
 	bubble = ui.node(STEP + "/Panel")
 	bubble.name = "Bubble"
-	bubble.visible = false
 	label = ui.label(STEP + "/Panel/Canvas/Text (TMP)")
 	label.name = "BubbleLabel"
 

@@ -1,9 +1,11 @@
 extends Control
 ## Layer Weekly Pass. Active: Main Tree (free + VIP), Bonus Bank, mua VIP. Waiting: đếm ngược.
 ## Popup cuối mùa (nếu có) hiện trước. setup(args); signal closed({}).
-## No Unity prefab (docs/UI_UNITY.md): PopupOkLayer frame through UnityKit, with copies of PopupWinStreakMain (time
-## pill, "!" button, scroll frame with the vertical track and milestone diamonds, Claim pill), DailyRewardAdLayer
-## (progress slider, reward items, claimed tick) and PopupRewardLayer's grid numbers for the Bonus Bank.
+## No Unity prefab (docs/UI_UNITY.md): PopupOkLayer frame with copies of PopupWinStreakMain (time pill, "!" button,
+## scroll frame with the vertical track and milestone diamonds, Claim pill), DailyRewardAdLayer (progress slider,
+## reward items, claimed tick) and PopupRewardLayer's grid numbers for the Bonus Bank. The frame and every fixed piece
+## of the pass are nodes of scenes/weekly_pass.tscn; a message (Locked, Waiting, end of season) is the frame resized
+## with the pass hidden. Milestone rows and the bank are built from Game.weekly_view().
 
 signal closed(result: Variant)
 
@@ -15,7 +17,7 @@ const RewardText := preload("res://src/ui/reward_text.gd")
 const UScroll := preload("res://src/ui/u_scroll.gd")
 const WeeklyPass := preload("res://src/meta/weekly_pass.gd")
 const Config := preload("res://src/config.gd")
-const Tutorial := preload("res://src/ui/weekly_pass_tutorial.gd")
+const TutorialScene := preload("res://scenes/weekly_pass_tutorial.tscn")
 const HOWTO_SCENE := "res://scenes/popup_weekly_tutorial.tscn"
 
 const TUTORIAL_DELAY := 0.45  # DialogueReveal (0.4 s) xong thì lỗ spotlight mới khớp vị trí thật
@@ -40,7 +42,6 @@ const WARN := "ec304fff"
 const PANEL := Vector2(800, 1688)
 const MESSAGE := Vector2(724, 660)
 const LIST := Rect2(55, 370, 690, 1010)
-const TAB_H := 70.0
 ## UI_EWStreakProgress.milestoneSpacingY.
 const ROW_STEP := 200.0
 const LIST_PAD := 10.0
@@ -68,17 +69,19 @@ var main_buttons: Dictionary = {}  # "free_3" / "vip_3" -> Button
 var bank_buttons: Array[Button] = []
 var tutorial: Control = null  # overlay đang chạy
 var howto: Control = null  # popup "How to earn rewards" đang mở
-## Unity view of the current frame (UnityKit.popup).
+## Unity view of the frame (UnityKit.frame).
 var ui: RefCounted = null
 
 var _content: Control = null
-var _scroll: UScroll = null  # ScrollRect of the reward list
+var _scroll: UScroll = null  # ScrollRect of the reward list while the pass is shown
+var _list_scroll: UScroll = null
+var _list: Control = null  # content of the reward list
+var _slider: RefCounted = null  # view of the progress slider
 var _time_label: Label = null
 var _timer: Timer = null
 var _busy: bool = false
 var _closed: bool = false
 var _tutorial_waiting: bool = false
-var _built_once: bool = false
 
 
 func setup(_args: Dictionary = {}) -> void:
@@ -88,6 +91,7 @@ func setup(_args: Dictionary = {}) -> void:
 	end_info = Game.weekly_take_end()
 	if Game.weekly_state() == WeeklyPass.ACTIVE:
 		Game.weekly_opened()
+	_bind()
 	_rebuild()
 
 
@@ -125,13 +129,28 @@ func _time_text(sec: int) -> String:
 	return tr("weekly_time_left") % fmt_time(sec)
 
 
+## Wires the frame and the pass's nodes of scenes/weekly_pass.tscn once; _rebuild shows the state in them.
+func _bind() -> void:
+	_content = %Layer
+	ui = UnityKit.frame(_content, tr("weekly_title"), close)
+	close_button = ui.button("Panel/Top/btnTurnOff")
+	close_button.name = "CloseButton"
+	ui.on_click("Panel/Content/Button/Ok", _on_message_ok)
+	%InfoButton.connect("clicked", open_howto)
+	%KeyButton.connect("clicked", open_howto)
+	%BuyVipButton.connect("clicked", _on_buy_vip)
+	%ClaimAllButton.connect("clicked", _on_claim_all)
+	# The slider sits under the ProgressBar (not a Unity node), which the frame's view does not walk into.
+	_slider = UnityUI.adopt(%Slider, ui.get("canvas"))
+	var list: RefCounted = ui.sub(%List)
+	_list_scroll = list.node("Scroll View").get_node("ScrollRect")
+	_list = list.node("Scroll View/Viewport/Content")
+
+
 func _rebuild() -> void:
 	var keep_y := 0.0
 	if _scroll != null and is_instance_valid(_scroll) and _scroll.content != null:
 		keep_y = (_scroll.content as Control).position.y
-	if _content != null:
-		_content.queue_free()
-		_content = null
 	_stop_tutorial()
 	main_buttons = {}
 	bank_buttons = []
@@ -143,62 +162,61 @@ func _rebuild() -> void:
 	_scroll = null
 	_time_label = null
 	view = Game.weekly_view()
+	# Milestone rows and the bank follow the season; out of the tree now so the new ones keep their names.
+	for c in _list.get_children():
+		_list.remove_child(c)
+		c.queue_free()
 
-	var root := Control.new()
-	root.name = "Layer"
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(root)
-	_content = root
-
+	var active := end_info.is_empty() and str(view.state) == WeeklyPass.ACTIVE
+	_show_layout(active)
 	if not end_info.is_empty():
-		_build_end(root)
-	elif str(view.state) == WeeklyPass.ACTIVE:
-		_build_active(root)
+		_show_end()
+	elif active:
+		_show_active()
 		_restore_scroll(keep_y)
 	elif str(view.state) == WeeklyPass.WAITING:
-		_build_message(root, tr("weekly_title"), "%s\n%s" % [tr("weekly_waiting_title"),
+		_show_message(tr("weekly_title"), "%s\n%s" % [tr("weekly_waiting_title"),
 			tr("weekly_waiting_body") % fmt_time(int(view.seconds_left))], "WaitingLabel")
 	else:
-		_build_message(root, tr("weekly_title"), tr("weekly_locked"), "LockedLabel")
-	if _built_once:
-		_no_reveal(ui)
-	_built_once = true
+		_show_message(tr("weekly_title"), tr("weekly_locked"), "LockedLabel")
 	_auto_tutorial.call_deferred()
 
 
-## UnityKit.popup always plays DialogueReveal; a rebuild after a claim keeps the panel where it is.
-func _no_reveal(v: RefCounted) -> void:
-	var cfg: Dictionary = v.get("reveal_cfg")
-	var panel: Variant = cfg.get("panel")
-	var dim: Variant = cfg.get("dim")
-	v.set("reveal_cfg", {})
-	if panel is Control:
-		(panel as Control).scale = Vector2.ONE
-	if dim is Control:
-		(dim as Control).modulate.a = 1.0
+## The frame holds the pass (PANEL, PopupOkLayer's description, well and button row hidden) or a message
+## (PopupOkLayer as it is, MESSAGE).
+func _show_layout(active: bool) -> void:
+	for p in ["Panel/Content/Description", "Panel/Content/Image", "Panel/Content/Button"]:
+		ui.show(p, not active)
+	# The button row is laid out as the prefab's (Cancel and Ok at the message size), then with Ok alone for a
+	# message; the pass hides it.
+	ui.show("Panel/Content/Button/Cancel")
+	_panel_size(MESSAGE)
+	ui.relayout("Panel/Content/Button")
+	if active:
+		_panel_size(PANEL)
+	else:
+		ui.show("Panel/Content/Button/Cancel", false)
+		ui.relayout("Panel/Content/Button")
+	ui.node("Panel/Content/Description").name = "Description"
+	ui.node("Panel/Content/Button/Ok").name = "Ok"
+	for n: Control in [%Time, %ProgressRow, %FreeTab, %VipTab, %List, %VipLabel, %BuyVipButton, %VipHint, %ToastLabel,
+			%ClaimAllButton]:
+		n.visible = active
 
 
-func _frame(root: Control, title: String, size: Vector2) -> Control:
-	ui = UnityKit.popup(root, title, size, close)
-	close_button = ui.button("Panel/Top/btnTurnOff")
-	close_button.name = "CloseButton"
-	return ui.node("Panel/Content")
+func _panel_size(size: Vector2) -> void:
+	UnityKit.set_size(ui.node("Panel"), size)
+	UnityKit.set_size(ui.node("Panel/Bg"), size)
 
 
 ## PopupOkLayer as it is: header, description on the cream well, one Ok button.
-func _build_message(root: Control, title: String, body: String, node_name: String, on_ok: Callable = Callable()) -> void:
-	_frame(root, title, MESSAGE)
-	for p in ["Panel/Content/Description", "Panel/Content/Image", "Panel/Content/Button"]:
-		ui.show(p)
-	ui.show("Panel/Content/Button/Cancel", false)
+func _show_message(title: String, body: String, node_name: String) -> void:
+	ui.text("Panel/Image/txtHeader", title)
 	ui.text("Panel/Content/Description", body).name = node_name
 	ui.text("Panel/Content/Button/Ok/Out", tr("common_ok"))
-	ui.on_click("Panel/Content/Button/Ok", on_ok if on_ok.is_valid() else close)
-	ui.relayout("Panel/Content/Button")
 
 
-func _build_end(root: Control) -> void:
+func _show_end() -> void:
 	var msg: String
 	if bool(end_info.get("vip", false)):
 		var rt := RewardText.text({"coins": int(end_info.get("coins", 0)), "items": end_info.get("items", {}),
@@ -206,120 +224,60 @@ func _build_end(root: Control) -> void:
 		msg = tr("weekly_end_vip") % (rt if rt != "" else "-")
 	else:
 		msg = tr("weekly_end_free") % int(end_info.get("points", 0))
-	_build_message(root, tr("weekly_end_title"), msg, "EndLabel", func() -> void:
-		end_info = {}
-		_rebuild())
+	_show_message(tr("weekly_end_title"), msg, "EndLabel")
 	ui.button("Panel/Content/Button/Ok").name = "EndOkButton"
 
 
-func _build_active(root: Control) -> void:
-	var panel := _frame(root, tr("weekly_title"), PANEL)
-	_build_time(panel)
-	_build_progress(panel)
-	_build_tabs(panel)
-	_build_list(panel)
-	_build_bottom(panel)
+## Ok of the end-of-season popup opens the pass; Ok of the other messages closes the layer.
+func _on_message_ok() -> void:
+	if end_info.is_empty():
+		close()
+		return
+	end_info = {}
+	_rebuild()
 
 
-## PopupWinStreakMain/Panel/Time, widened for "6d 3h left".
-func _build_time(panel: Control) -> void:
-	var s := UnityKit.spec(STREAK, "Panel/Time")
-	s.ch = [s.ch[0], s.ch[1]]  # txtEnd is the "event ended" text, the layer closes instead
-	(s.ch[1] as Dictionary).r[6] = 196.0
-	var v := UnityKit.add(panel, s, Rect2(250, 96, 300, 68))
-	_time_label = v.label("Text (TMP)")
-	_time_label.name = "TimeLabel"
+func _show_active() -> void:
+	ui.text("Panel/Image/txtHeader", tr("weekly_title"))
+	# PopupWinStreakMain/Panel/Time, widened for "6d 3h left".
+	_time_label = %TimeLabel
 	UnityUI.set_text(_time_label, _time_text(int(view.seconds_left)))
+	_show_progress()
+	# Column heads over the list on the same star cards as the cells.
+	UnityUI.set_text(%FreeTab.get_node("Text"), tr("weekly_free"))
+	UnityUI.set_text(%VipTab.get_node("Text"), tr("weekly_vip"))
+	_fill_list()
+	_show_bottom()
 
 
 ## Hàng tiến độ: nút "i", chìa (bấm để xem cách kiếm thưởng), thanh tới mốc kế và số key.
 ## Đây cũng là target của bước 3 trong tutorial.
-func _build_progress(panel: Control) -> Control:
-	var row: Control = UnityKit.add(panel, {"n": "ProgressRow", "a": true, "r": [0, 1, 0, 1, 0, 0, 720, 100, 0.5, 0.5]},
-		Rect2(40, 180, 720, 100)).root
-	progress_row = row
-
-	var info := UnityKit.spec(STREAK, "Panel/Button")
-	info.n = "InfoButton"
-	info_button = UnityKit.add(row, info, Rect2(0, 20, 60, 60)).root as Button
-	info_button.connect("clicked", open_howto)
-
-	var key := UnityKit.spec(STREAK, "Panel/Button")
-	key.n = "KeyButton"
-	key.img.pa = true
-	var kv := UnityKit.add(row, key, Rect2(84, 5, 90, 90))
-	kv.texture("", ThemeKit.icon("mech_key"))
-	key_button = kv.root as Button
-	key_button.connect("clicked", open_howto)
-
+func _show_progress() -> void:
+	progress_row = %ProgressRow
+	info_button = %InfoButton
+	key_button = %KeyButton
 	# Tests read the ratio from a ProgressBar; it draws nothing, the DailyRewardAdLayer slider inside it does.
-	var bar := ProgressBar.new()
-	bar.name = "ProgressBar"
-	bar.min_value = 0.0
-	bar.max_value = 1.0
-	bar.step = 0.001  # mặc định 0.01 làm tròn tỉ lệ
-	bar.show_percentage = false
-	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for st in ["background", "fill"]:
-		bar.add_theme_stylebox_override(st, StyleBoxEmpty.new())
-	bar.position = Vector2(196, 18)
-	bar.size = Vector2(524, 44.68)
-	bar.value = float(view.progress)
-	row.add_child(bar)
-	var s := UnityKit.spec(DAILY_AD, "Panel/Content/Preview/Bottom/Slider")
-	var kids: Array = []
-	for c in s.ch:
-		if str(c.n) in ["Background (2)", "Background (1)", "Fill Area"]:
-			kids.append(c)
-	s.ch = kids
-	UnityKit.add(bar, s, Rect2(0, 0, 524, 44.68)).slider("", float(view.progress))
-
-	var keys := UnityKit.label(row, tr("weekly_keys") % [int(view.points), int(view.last_points)], Rect2(196, 62, 524, 38), 32)
-	keys.name = "KeysLabel"
-	return row
+	(%ProgressBar as ProgressBar).value = float(view.progress)
+	_slider.slider("", float(view.progress))
+	UnityUI.set_text(%KeysLabel, tr("weekly_keys") % [int(view.points), int(view.last_points)])
 
 
-## Column heads over the list on the same star cards as the cells.
-func _build_tabs(panel: Control) -> void:
-	for t in [[tr("weekly_free"), CARD_FREE, "Baloo Outline - Purple", FREE_X, "FreeTab"],
-			[tr("weekly_vip"), CARD_VIP, "Baloo Outline - Orange", VIP_X, "VipTab"]]:
-		var s := {"n": t[4], "a": true, "r": [0, 1, 0, 1, 0, 0, CELL.x, TAB_H, 0.5, 0.5],
-			"img": {"sp": t[1], "c": "ffffffff", "t": 1, "pa": false, "fc": true, "ppu": 1}}
-		var tab: Control = UnityKit.add(panel, s, Rect2(LIST.position.x + float(t[3]), LIST.position.y - TAB_H + 8, CELL.x, TAB_H)).root
-		UnityKit.label(tab, t[0], Rect2(0, 4, CELL.x, TAB_H - 8), 40, "ffffffff", t[2])
-
-
-## PopupWinStreakMain/Panel/Image#3: cream frame, ScrollRect and the sky viewport. The cat tower inside it is
-## replaced by the pass: the vertical track with one diamond per milestone, free and VIP cards beside it.
-func _build_list(panel: Control) -> void:
-	var s := UnityKit.spec(STREAK, "Panel/Image#3")
-	var viewport: Dictionary = s.ch[0].ch[0]
-	var content: Dictionary = {}
-	for c in viewport.ch:
-		if str(c.n) == "Content":
-			content = c
-	content.erase("cs")
-	content.ch = []
-	viewport.ch = [content]
-	s.n = "List"
-	# Workaround: a Mask inside a Mask (clip_children twice) draws nothing below the inner one, so the sky
-	# viewport clips as a RectMask2D and the frame's rounded Mask stays.
-	viewport.erase("mask")
-	viewport.rmask = {}
-	var v := UnityKit.add(panel, s, LIST)
-	_scroll = v.node("Scroll View").get_node("ScrollRect")
-	var list: Control = v.node("Scroll View/Viewport/Content")
-
+## PopupWinStreakMain/Panel/Image#3 (cream frame, ScrollRect, sky viewport) is in the scene. The cat tower inside it
+## is replaced by the pass: the vertical track with one diamond per milestone, free and VIP cards beside it.
+func _fill_list() -> void:
+	_scroll = _list_scroll
+	_scroll.velocity = Vector2.ZERO
 	var rows: Array = view.main
 	var n := rows.size()
-	_build_track(list, rows)
+	_build_track(_list, rows)
 	for r in rows:
-		_build_row(list, r)
+		_build_row(_list, r)
 	var y := LIST_PAD + ROW_STEP * n
-	y = _build_bank(list, y + 10.0)
-	UnityKit.set_size(list, Vector2(0, y + 30.0))
+	y = _build_bank(_list, y + 10.0)
+	# Also puts the content back at the top, as a new list would be.
+	UnityKit.set_size(_list, Vector2(0, y + 30.0))
 	# Cards are added after the ScrollRect was set up: let drags that start on them reach it.
-	for b in list.find_children("*", "Button", true, false):
+	for b in _list.find_children("*", "Button", true, false):
 		(b as Control).mouse_filter = Control.MOUSE_FILTER_PASS
 
 
@@ -500,37 +458,30 @@ func _build_bank(list: Control, y: float) -> float:
 
 
 ## VIP hint (or VIP state), purchase error, then the button row of PopupOkLayer: Buy VIP and Claim all.
-func _build_bottom(panel: Control) -> void:
+func _show_bottom() -> void:
 	var line := Rect2(60, BOTTOM_Y - 108.0, PANEL.x - 120.0, 96)
 	var vip := bool(view.vip)
-	if vip:
-		var l := UnityKit.label(panel, "%s - %s" % [tr("weekly_vip_active"), tr("weekly_vip_hearts") % int(view.bonus_hearts)], line, 36)
-		l.name = "VipLabel"
-	else:
-		var price := UnityKit.button(panel, "yellow", tr("weekly_buy_vip") % str(view.vip_price),
-			Rect2(PANEL.x * 0.5 - 20.0 - BUTTON.x, BOTTOM_Y, BUTTON.x, BUTTON.y), _on_buy_vip)
-		buy_vip_button = price.root as Button
-		buy_vip_button.name = "BuyVipButton"
-		_text_inset(price.label("Out"), 28.0)
-		if toast_text == "":
-			UnityKit.label(panel, tr("weekly_vip_hint") + " " + tr("weekly_vip_hearts") % int(view.bonus_hearts), line, 30).name = "VipHint"
-	if toast_text != "":
-		var t := UnityKit.label(panel, toast_text, line if not vip else Rect2(line.position.x, line.position.y - 60.0, line.size.x, 60), 34, WARN)
-		t.name = "ToastLabel"
+	var vip_label: Label = %VipLabel
+	vip_label.visible = vip
+	UnityUI.set_text(vip_label, "%s - %s" % [tr("weekly_vip_active"), tr("weekly_vip_hearts") % int(view.bonus_hearts)])
+	var buy: Button = %BuyVipButton
+	buy.visible = not vip
+	buy.disabled = false
+	UnityUI.set_text(buy.get_node("Out"), tr("weekly_buy_vip") % str(view.vip_price))
+	if not vip:
+		buy_vip_button = buy
+	var hint: Label = %VipHint
+	hint.visible = not vip and toast_text == ""
+	UnityUI.set_text(hint, tr("weekly_vip_hint") + " " + tr("weekly_vip_hearts") % int(view.bonus_hearts))
+	var toast: Label = %ToastLabel
+	toast.visible = toast_text != ""
+	UnityKit.place(toast, line if not vip else Rect2(line.position.x, line.position.y - 60.0, line.size.x, 60))
+	UnityUI.set_text(toast, toast_text)
 	var x := PANEL.x * 0.5 + 20.0 if not vip else (PANEL.x - BUTTON.x) * 0.5
-	var all := UnityKit.button(panel, "green", tr("weekly_claim_all"), Rect2(x, BOTTOM_Y, BUTTON.x, BUTTON.y), _on_claim_all)
-	claim_all_button = all.root as Button
-	claim_all_button.name = "ClaimAllButton"
-	_text_inset(all.label("Out"), 28.0)
+	claim_all_button = %ClaimAllButton
+	UnityKit.place(claim_all_button, Rect2(x, BOTTOM_Y, BUTTON.x, BUTTON.y))
+	UnityUI.set_text(claim_all_button.get_node("Out"), tr("weekly_claim_all"))
 	claim_all_button.call("set_interactable", int(view.badge) > 0)
-
-
-## Long button text stays off the pill's rounded ends (Ok/Out spans the whole button).
-func _text_inset(l: Label, side: float) -> void:
-	var r: Dictionary = l.get_meta("u_rect")
-	r.size = Vector2(-2.0 * side, (r.size as Vector2).y)
-	UnityUI.apply_rect(l)
-	UnityUI.fit_text(l)
 
 
 func _restore_scroll(y: float) -> void:
@@ -585,7 +536,7 @@ func start_tutorial() -> bool:
 		return false
 	_scroll_to(free_btn)
 	var first_text := tr("weekly_tut_free_claim") if bool(view.main[row].free_claimable) else tr("weekly_tut_free_earn")
-	tutorial = Tutorial.new()
+	tutorial = TutorialScene.instantiate() as Control
 	tutorial.name = "Tutorial"
 	add_child(tutorial)
 	tutorial.finished.connect(_on_tutorial_finished)

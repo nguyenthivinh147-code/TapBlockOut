@@ -1,0 +1,899 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="1_w36t3"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="2_gcui8"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup2.png" id="3_ukn6x"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="4_prdhd"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="5_8msi2"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="6_2rn66"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kn4ep"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l0m5e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x3vrc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u8sof"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b7xun"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u5mq8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j4ux3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4je0p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5cy0p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b0e3p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ggyv7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4d6u"]
+shader = ExtResource("5_8msi2")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/underlay_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ks37s"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("6_2rn66")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wl56o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yniov"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ql57"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f1of8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oo75v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7wswa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cmprm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c10oc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_76yuv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mffvu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_me585"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ng31"]
+shader = ExtResource("5_8msi2")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ql6yh"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iw618"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t2f3y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_inphr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bcwdd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jrm6o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4v0hx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wvedr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cph5v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1kbli"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sppr4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dhp4y"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
+shader = ExtResource("5_8msi2")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8hwt3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=987457639]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "CheckUpdateLayer"
+
+[node name="CheckUpdateLayer" type="Control" parent="." unique_id=604890504]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnCompleteAnim": [],
+"OnStartAnim": [],
+"dimCanvasGroup": {
+"node": "3406546784345224705"
+},
+"duration": "0.4",
+"easeType": "26",
+"name": "DialogueReveal",
+"panelRect": {
+"node": "5505950304007009561"
+}
+}, {
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"breakEnable": "0",
+"contentText": {
+"node": "709436973652917155"
+},
+"debugOnOff": "0",
+"name": "UICheckUpdate",
+"okButton": {
+"node": "2976045016534427140"
+}
+}],
+"id": "7219197735921211012",
+"n": "CheckUpdateLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Bg" type="Button" parent="CheckUpdateLayer" unique_id=965444119]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kn4ep")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_l0m5e")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_x3vrc")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_u8sof")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_b7xun")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_u5mq8")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_j4ux3")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_4je0p")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_5cy0p")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_b0e3p")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ggyv7")
+flat = true
+script = ExtResource("1_w36t3")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "3406546784345224705",
+"tr": 0.0
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"id": "3406546784345224705",
+"img": {
+"c": "000000d2",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" type="Control" parent="CheckUpdateLayer/Bg" unique_id=552520495]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_gcui8")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="Panel" type="Control" parent="CheckUpdateLayer" unique_id=1305460141]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -362.0
+offset_top = -330.0
+offset_right = 362.0
+offset_bottom = 330.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5505950304007009561",
+"n": "Panel",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 724.0, 660.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(724, 660)
+}
+
+[node name="Bg" type="Control" parent="CheckUpdateLayer/Panel" unique_id=1223085064]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -362.0
+offset_top = -330.0
+offset_right = 362.0
+offset_bottom = 330.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_gcui8")
+tex = ExtResource("3_ukn6x")
+region = Rect2(0, 0, 800, 800)
+border = Vector4(120, 120, 120, 120)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "874811807890749285",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Popup2",
+"t": 1.0
+},
+"n": "Bg",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 724.0, 660.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(724, 660)
+}
+
+[node name="Image" type="Control" parent="CheckUpdateLayer/Panel" unique_id=1237966429]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_top = -87.85
+offset_right = 225.0
+offset_bottom = 87.85
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_gcui8")
+tex = ExtResource("4_prdhd")
+region = Rect2(384, 1332, 368, 108)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3150358616842671668",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 0.0, 450.0, 175.7, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(450, 175.7)
+}
+
+[node name="txtHeader" type="Label" parent="CheckUpdateLayer/Panel/Image" unique_id=311956834]
+material = SubResource("ShaderMaterial_g4d6u")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -227.7163
+offset_top = -52.0
+offset_right = 227.7163
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ks37s")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Notify"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "2809704552690345925",
+"n": "txtHeader",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 455.4326, 104.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Notify",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(455.4326, 104)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Notify",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Top" type="Control" parent="CheckUpdateLayer/Panel" unique_id=442374943]
+anchors_preset = 0
+anchor_right = 1.0
+offset_bottom = 130.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "960523223670233931",
+"n": "Top",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -65.0, 0.0, 130.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -65),
+"size": Vector2(0, 130)
+}
+
+[node name="btnTurnOff" type="Button" parent="CheckUpdateLayer/Panel/Top" unique_id=832505025]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_bottom = 64.0
+pivot_offset_ratio = Vector2(1, 0)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wl56o")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_yniov")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_0ql57")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_f1of8")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_oo75v")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_7wswa")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_cmprm")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_c10oc")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_76yuv")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_mffvu")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_me585")
+flat = true
+script = ExtResource("1_w36t3")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4811059741127286920",
+"tr": 1.0
+},
+"id": "4811059741127286920",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+"t": 0.0
+},
+"n": "btnTurnOff",
+"r": [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 64.0, 64.0, 1.0, 1.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(64, 64)
+}
+
+[node name="image" type="Control" parent="CheckUpdateLayer/Panel/Top/btnTurnOff" unique_id=258180490]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_gcui8")
+tex = ExtResource("4_prdhd")
+region = Rect2(300, 516, 96, 96)
+pivot = Vector2(1, 1)
+fill_method = 4
+
+[node name="Content" type="Control" parent="CheckUpdateLayer/Panel" unique_id=1942675739]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5267989572481793134",
+"n": "Content",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="CheckUpdateLayer/Panel/Content" unique_id=1068230179]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 52.0
+offset_top = 133.4
+offset_right = -52.0
+offset_bottom = -220.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_gcui8")
+tex = ExtResource("4_prdhd")
+region = Rect2(1166, 523, 188, 290)
+border = Vector4(50, 50, 50, 50)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1714781818686251041",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+"t": 1.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 43.3, -104.0, -353.4, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 43.3),
+"size": Vector2(-104, -353.4)
+}
+
+[node name="Description" type="Label" parent="CheckUpdateLayer/Panel/Content" unique_id=600973779]
+material = SubResource("ShaderMaterial_1ng31")
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 99.63215
+offset_top = 190.77908
+offset_right = -99.63215
+offset_bottom = 392.5803
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ql6yh")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Add 1 box and continue! "
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "709436973652917155",
+"n": "Description",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -291.6797, -199.2643, 201.8012, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Add 1 box and continue! ",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -291.6797),
+"size": Vector2(-199.2643, 201.8012)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Add 1 box and continue! ",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Button" type="Control" parent="CheckUpdateLayer/Panel/Content" unique_id=1674214196]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 56.0
+offset_top = -188.0
+offset_right = -56.0
+offset_bottom = -68.0
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "8058291767023344588",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": false,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 52.0,
+"sw": false,
+"t": "h"
+},
+"n": "Button",
+"r": [0.0, 0.0, 1.0, 0.0, 0.0, 68.0, -112.0, 120.0, 0.5, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 68),
+"size": Vector2(-112, 120)
+}
+
+[node name="Ok" type="Button" parent="CheckUpdateLayer/Panel/Content/Button" unique_id=499911395]
+layout_mode = 0
+offset_right = 280.0
+offset_bottom = 120.0
+pivot_offset_ratio = Vector2(0.5, 0)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_iw618")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_t2f3y")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_inphr")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_bcwdd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_jrm6o")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_4v0hx")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_wvedr")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_cph5v")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_1kbli")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_sppr4")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_dhp4y")
+flat = true
+script = ExtResource("1_w36t3")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "2976045016534427140",
+"tr": 1.0
+},
+"id": "2976045016534427140",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "Ok",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 280.0, 120.0, 0.5, 1.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(140, 0),
+"size": Vector2(280, 120)
+}
+
+[node name="image" type="Control" parent="CheckUpdateLayer/Panel/Content/Button/Ok" unique_id=587301840]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_gcui8")
+tex = ExtResource("4_prdhd")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+preserve_aspect = true
+pivot = Vector2(0.5, 1)
+fill_method = 4
+
+[node name="Out" type="Label" parent="CheckUpdateLayer/Panel/Content/Button/Ok" unique_id=1471819858]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_8hwt3")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Yes"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "5028444773256912849",
+"n": "Out",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, 0.0, -8.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Yes",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(0, -8)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Yes",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}

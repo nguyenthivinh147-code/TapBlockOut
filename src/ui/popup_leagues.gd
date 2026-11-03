@@ -4,6 +4,7 @@ extends Control
 ## No prefab: UnityKit frame (PopupOkLayer) with one PlayerLeaderboardItem per league (LeaderboardLayer's row,
 ## scaled to the popup): number, trophy in the avatar slot, name / range / reward lines, the Unity gift while the
 ## reward is still ahead, the point pill for Current / Reached; the current league has the player's green row.
+## Frame, sub text and OK pill are nodes of scenes/popup_leagues.tscn; the rows follow Game.lb_leagues_view().
 
 signal closed(result: Variant)
 
@@ -37,15 +38,18 @@ func setup(args: Dictionary = {}) -> void:
 	var rows: Array = view.get("rows", [])
 	var rows_h := ROW.y * ROW_SCALE * rows.size()
 	var h := HEADER + SUB_H + rows_h + BTN_GAP + BTN.y + BOTTOM
+	# Frame, sub text and OK pill are nodes of scenes/popup_leagues.tscn; the height and the OK row follow the rows.
 	ui = UnityKit.popup(self, tr("lb_leagues_title"), Vector2(W, h), _close)
 	var box: Control = ui.node("Panel/Content")
-	UnityKit.label(box, tr("lb_leagues_sub"), Rect2(62, HEADER, W - 124, SUB_H - 10), 36.0)
+	UnityUI.set_text(%SubText, tr("lb_leagues_sub"))
+	var ok: Control = %OkButton
 	var y := HEADER + SUB_H
 	for i in rows.size():
 		_row(box, rows[i], i + 1, y)
 		y += ROW.y * ROW_SCALE
-	var ok: Control = UnityKit.button(box, "green", tr("common_ok"), Rect2((W - BTN.x) * 0.5, y + BTN_GAP, BTN.x, BTN.y), _close).root
-	ok.name = "OkButton"
+	UnityKit.place(ok, Rect2((W - BTN.x) * 0.5, y + BTN_GAP, BTN.x, BTN.y))
+	UnityUI.set_text(ok.get_node("Out"), tr("common_ok"))
+	ok.connect("clicked", _close)
 
 
 func _ready() -> void:
@@ -60,6 +64,8 @@ func _row(box: Control, r: Dictionary, n: int, y: float) -> void:
 	s.n = "League_" + str(r.id)
 	var v: RefCounted = UnityKit.add(box, s, Rect2((W - ROW.x) * 0.5, y, ROW.x, ROW.y))
 	v.root.scale = Vector2.ONE * ROW_SCALE
+	# Rows sit between the sub text and the OK pill, as they were built.
+	box.move_child(v.root, (%OkButton as Control).get_index())
 	LbKit.set_atlas(v.node("BG"), LbKit.ROW_BG[0] if cur else LbKit.ROW_BG[4])
 	v.show("PlayerArrow", cur)
 	v.show("RankNumberTxt/Image", false)

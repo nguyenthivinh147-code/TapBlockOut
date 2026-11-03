@@ -1,12 +1,148 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/ui/ui_gallery.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/atlas_main.png" id="2_0up6o"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/popup_frame1.png" id="3_mrrbi"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_close.png" id="4_rjipn"]
 
-[node name="UiGallery" type="Control"]
-layout_mode = 3
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_x8msq"]
+content_margin_left = 72.0
+content_margin_top = 10.0
+content_margin_right = 72.0
+content_margin_bottom = 22.0
+texture = ExtResource("2_0up6o")
+region_rect = Rect2(384, 1332, 368, 108)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_f7w5t"]
+content_margin_left = 56.0
+content_margin_top = 76.0
+content_margin_right = 56.0
+content_margin_bottom = 56.0
+texture = ExtResource("3_mrrbi")
+texture_margin_left = 78.0
+texture_margin_top = 78.0
+texture_margin_right = 78.0
+texture_margin_bottom = 78.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_30mwo"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7gi01"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_thvup"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m5nq2"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_61v0m"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+
+[node name="UiGallery" type="Control" unique_id=926207933]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=930551582]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0.016, 0.059, 0.85)
+
+[node name="Center" type="CenterContainer" parent="." unique_id=802807833]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Panel" type="VBoxContainer" parent="Center" unique_id=881507467]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = -40
+
+[node name="Ribbon" type="PanelContainer" parent="Center/Panel" unique_id=348558370]
+z_index = 1
+custom_minimum_size = Vector2(360, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxTexture_x8msq")
+
+[node name="TitleLabel" type="Label" parent="Center/Panel/Ribbon" unique_id=78742547]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 44
+text = "UI preview"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Frame" type="PanelContainer" parent="Center/Panel" unique_id=1307841831]
+custom_minimum_size = Vector2(640, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_f7w5t")
+
+[node name="Box" type="VBoxContainer" parent="Center/Panel/Frame" unique_id=1694998247]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Scroll" type="ScrollContainer" parent="Center/Panel/Frame/Box" unique_id=1189346369]
+custom_minimum_size = Vector2(528, 900)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Center/Panel/Frame/Box/Scroll" unique_id=1987534601]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Overlay" type="Control" parent="Center/Panel/Frame" unique_id=2018732630]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CloseX" type="Button" parent="Center/Panel/Frame/Overlay" unique_id=1445167599]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -16.0
+offset_top = -76.0
+offset_right = 80.0
+offset_bottom = 20.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_30mwo")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_7gi01")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_thvup")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_m5nq2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_61v0m")
+icon = ExtResource("4_rjipn")
+flat = true
+icon_alignment = 1
+expand_icon = true

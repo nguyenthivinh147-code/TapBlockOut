@@ -49,6 +49,7 @@ tools/godot.sh --headless --path . --import                                # ch�
 
 - Kế hoạch, interface (`BoardState`, `Platform`, `Game`), cấu trúc thư mục, dữ liệu level: `plans/PLAN_tap-block-out-godot-android.md` mục 1.
 - UI các màn và popup (trừ Home, bàn chơi, HUD): dựng từ prefab Unity color-cube-match-puzzle, `docs/UI_UNITY.md`.
+- UI dạng node (scene `scenes/unity/`, bake màn bằng `tools/bake_screen.gd`, quy tắc script màn): `docs/UI_NODES.md`.
 - UI theo Figma (Home, HUD, thanh trên/dưới), màn chưa nối logic, `Config.ui_preview`: `docs/UI_FIGMA.md`.
 - Bàn giao cho Horus, SKU, cấu hình SDK: `docs/HORUS_HANDOFF.md`.
 - Plugin Billing (phiên bản, sha256, cách cài lại): `docs/BILLING_NOTES.md`.

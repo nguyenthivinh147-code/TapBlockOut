@@ -82,7 +82,7 @@ src/meta/      save_schema.gd  save_store.gd  clock.gd  wallet.gd  lives.gd  unl
 src/platform/  platform.gd (autoload Platform)  mock_*.gd  android_*.gd
 src/game/      game.gd (autoload Game)  sfx.gd (autoload Sfx)
 src/ui/        theme_kit.gd  ...script màn hình...
-scenes/        main.tscn  board_view.tscn  ...
+scenes/        main.tscn  board_view.tscn  ...  unity/<Prefab>.tscn (layout Unity đã bake)
 data/levels/   level_0001.json ...
 i18n/strings.csv
 assets/        hình, âm thanh dùng trong game
@@ -275,7 +275,7 @@ func go(screen: String, args: Dictionary = {}) -> void  # "home", "level", "no_l
 func open_popup(scene_path: String, args: Dictionary = {}) -> Node
 ```
 
-Mọi màn và popup là scene có script `func setup(args: Dictionary) -> void` và signal `closed(result: Variant)`. Nút Back Android đóng popup trên cùng. Đường dẫn scene: `scenes/<tên>.tscn`, script `src/ui/<tên>.gd`. Kích thước gốc 720×1280, stretch `canvas_items`, aspect `expand`, nút tối thiểu 96×96 ở độ phân giải gốc (tương đương khoảng 48dp).
+Mọi màn và popup là scene có script `func setup(args: Dictionary) -> void` và signal `closed(result: Variant)`. UI tĩnh của màn là node trong scene (layout Unity instance từ `scenes/unity/<Prefab>.tscn`); script chỉ tìm node, điền chữ, dữ liệu, signal, còn phần theo dữ liệu thì sinh lúc chạy (`docs/UI_NODES.md`). Nút Back Android đóng popup trên cùng. Đường dẫn scene: `scenes/<tên>.tscn`, script `src/ui/<tên>.gd`. Kích thước gốc 720×1280, stretch `canvas_items`, aspect `expand`, nút tối thiểu 96×96 ở độ phân giải gốc (tương đương khoảng 48dp).
 
 ### 1.12 MCP `godot-ai`
 

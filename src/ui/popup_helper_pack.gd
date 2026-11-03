@@ -8,10 +8,7 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Shop := preload("res://src/ui/shop.gd")
 
-const SIZE := Vector2(724, 560)
 const CARD := "Scroll View/Viewport/Content/Helper_Pack"
-const VIDEO_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_5"
-const GOLD_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_3"
 ## The strip's reward texts are white on its white inner panel (unfinished in the prefab): the shop's item outline.
 const ITEM_MAT := "Baloo Outline - DarkBlue"
 
@@ -23,15 +20,15 @@ func _sample() -> Dictionary:
 
 
 func _build() -> void:
-	ui = UnityKit.popup(self, tr("rescue_title"), SIZE, _send.bind("close"))
-	var content: Control = ui.node("Panel/Content")
-	UnityKit.label(content, tr("rescue_body"), Rect2(62, 150, SIZE.x - 124.0, 200), 44.0)
-	var y := SIZE.y - 128.0
-	var free := UnityKit.button(content, "blue", tr("common_free"), Rect2(56, y, 280, 120), _send.bind("free"))
-	_icon_left(free, VIDEO_ICON)
-	var gold := UnityKit.button(content, "yellow", Shop.fmt_n0(int(view.get("gold", 0))), Rect2(388, y, 280, 120),
-		_send.bind("gold"))
-	_icon_left(gold, GOLD_ICON)
+	# Frame (724 x 560), Body and the Free (video icon) / gold (gold icon) pills, their text moved right of the icon
+	# like PopupRewardLayer's x2 button, are nodes of scenes/popup_helper_pack.tscn. The strip adds no node, so the
+	# scene keeps it closed: its changes stay here.
+	ui = UnityKit.frame(self, tr("rescue_title"), _send.bind("close"))
+	UnityUI.set_text(%Body, tr("rescue_body"))
+	UnityUI.set_text(%FreeButton.get_node("Out"), tr("common_free"))
+	%FreeButton.connect("clicked", _send.bind("free"))
+	UnityUI.set_text(%GoldButton.get_node("Out"), Shop.fmt_n0(int(view.get("gold", 0))))
+	%GoldButton.connect("clicked", _send.bind("gold"))
 
 	strip = UnityUI.build(self, "SupportPackLayer", {"reveal": false})
 	strip.show("Scroll View/Viewport/Content/Starter_Pack", false)
@@ -52,16 +49,6 @@ func _build() -> void:
 	var sc: Node = strip.node("Scroll View").get_node_or_null("ScrollRect")
 	if sc != null:
 		sc.call("set_content_position", Vector2.ZERO)
-
-
-## Icon at the left of a pill, its text moved right (like PopupRewardLayer's x2 button in popup_reward.gd).
-func _icon_left(v: RefCounted, key: String) -> void:
-	var out: Label = v.label("Out")
-	var r: Dictionary = out.get_meta("u_rect")
-	r.pos = Vector2((r.pos as Vector2).x + 36.0, (r.pos as Vector2).y)
-	r.size = Vector2((r.size as Vector2).x - 72.0, (r.size as Vector2).y)
-	UnityUI.apply_rect(out)
-	UnityKit.sprite(v.root, key, Rect2(16, 22, 76, 76))
 
 
 func _item(p: String, tex: Texture2D, text: String) -> void:

@@ -11,8 +11,6 @@ const GROUP := "Panel/Content/Preview/Bottom/Group"
 const HEART_INF := "Resources_moved_UI_Maincenter:UI_Maincenter_16"
 ## Price pills under the reward box (FreeBtn's row), Unity units.
 const PILL := Vector2(190, 100)
-## Timer chip offset from the Platform centre.
-const TIME_Y := -120.0
 
 
 func _sample() -> Dictionary:
@@ -20,36 +18,19 @@ func _sample() -> Dictionary:
 
 
 func _build() -> void:
+	# The timer chip moved below the title ribbon (-120 from the Platform centre), Body (reward text style, under
+	# the timer) and the hidden badge, FreeBtn and prefab slots are saved in scenes/popup_heart_bundle.tscn.
 	ui = UnityUI.build(self, "PopupBundleHeart")
 	for p in ["Panel/Image/txtHeader BG2", "Panel/Image/txtHeader BG1", "Panel/Image/txtHeader"]:
 		ui.text(p, tr("hearts_bundle_title"))
 	ui.on_click("Panel/btnTurnOff", _send.bind("close"))
 	ui.on_click("Bg", _send.bind("close"))
-	# The timer chip (inactive in this prefab) sits at the Platform centre, under the big title ribbon of this
-	# card: it moves down below the ribbon.
-	var time: Control = ui.node("Panel/Content/Preview/Platform/Time")
-	time.visible = true
-	var tr_: Dictionary = time.get_meta("u_rect")
-	tr_.pos = Vector2(0, TIME_Y)
-	UnityUI.apply_rect(time)
+	# Inactive in the prefab; a scene does not keep an instanced node's property set back to its default.
+	ui.show("Panel/Content/Preview/Platform/Time", true)
 	ui.text("Panel/Content/Preview/Platform/Time/Text (TMP)", tr("offer_time_left") % str(view.get("ends_in", "")))
-	ui.show("Panel/Content/Preview/Platform/NumberPurchar", false)
-	ui.show("Panel/SellBadge", false)
-	ui.show("Panel/Content/GameObject/FreeBtn", false)
-	# Body under the timer, in the reward text style (Baloo Outline - DarkBlue).
-	var s := UnityKit.spec("PopupBundleHeart", GROUP + "/Image/Text (TMP)")
-	s.n = "Body"
-	s.txt.fs = 48.0
-	s.txt.auto = [18.0, 48.0]
-	s.txt.w = true
-	s.txt.s = tr("hearts_bundle_body")
-	s.r = [0.5, 1, 0.5, 1, 0, -112.0 + TIME_Y - 34.0 - 45.0, 600, 70, 0.5, 0.5]
-	UnityKit.add(ui.node("Panel/Content/Preview/Platform"), s)
+	UnityUI.set_text(%Body, tr("hearts_bundle_body"))
 
-	for x in ["Image", "Image (1)", "Image (2)", "Image (4)"]:
-		ui.show(GROUP + "/" + x, false)
 	var tpl := GROUP + "/Image (3)"
-	ui.show(tpl, false)
 	var rows: Array = view.get("rows", [])
 	# Slot span of the prefab (Image .. Image (2) centres, -210 .. 217).
 	var lo := -210.0

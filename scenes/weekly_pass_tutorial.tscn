@@ -1,0 +1,1267 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/weekly_pass_tutorial.gd" id="1_hkba6"]
+[ext_resource type="PackedScene" path="res://scenes/unity/MainTutorialLayer.tscn" id="2_cdk4v"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="3_8sv1j"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="4_sn1sj"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="5_2fyfj"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup2.png" id="6_gi7mm"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="7_7e5tx"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="8_t157c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5p824"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mdjpc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fh7vi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o64p3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wt7jl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oipxn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tsk7u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7conj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r6egr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3471t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y2dg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("7_7e5tx")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("8_t157c")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f0wya"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_67wxx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1opek"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g6obx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tw4cg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s8pnw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t7pae"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_21ger"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wj2mh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1ghsf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8rxyi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2bl68"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nt230"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Tutorial" type="Control" unique_id=101384958]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_hkba6")
+
+[node name="Canvas" parent="." unique_id=580031705 instance=ExtResource("2_cdk4v")]
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "MainTutorialLayer"
+
+[node name="MainTutorialLayer" parent="Canvas" index="0" unique_id=700301026]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 32767.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"breakEnable": "0",
+"debugOnOff": "0",
+"name": "MainTutorialOverlay",
+"tutorialSteps": [{
+"node": "4030178389688558196"
+}, {
+"node": "36826580037507695"
+}]
+}],
+"id": "5676859109278462881",
+"n": "MainTutorialLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="GameObject" parent="Canvas/MainTutorialLayer" index="0" unique_id=819529275]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6689267149989120801",
+"n": "GameObject",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Block" parent="Canvas/MainTutorialLayer/GameObject" index="0" unique_id=1965984500]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+color = Color(1, 1, 1, 0)
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9106521653725269209",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Block",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Highlight" type="Control" parent="Canvas/MainTutorialLayer/GameObject" index="1" unique_id=1391623623]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+tex = ExtResource("4_sn1sj")
+region = Rect2(1297, 1667, 104, 104)
+border = Vector4(32, 50, 32, 35)
+kind = 1
+metadata/u = {
+"a": true,
+"img": {
+"c": "ffffffff",
+"fc": true,
+"pa": false,
+"ppu": 1,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_23",
+"t": 1
+},
+"n": "Highlight",
+"r": [0, 1, 0, 1, 0, 0, 100, 100, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(100, 100)
+}
+metadata/u_sub = true
+
+[node name="Step1" parent="Canvas/MainTutorialLayer/GameObject" index="2" unique_id=656675324]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "TutController_Step1",
+"on": false
+},
+"cg": {
+"alpha": 1.0,
+"block": false,
+"ignore_parent": false,
+"inter": false
+},
+"cs": [{
+"animator": {
+"node": "4030178389688558196"
+},
+"canvasGroup": {
+"node": "4030178389688558196"
+},
+"name": "MainTutStep",
+"prefab": {
+"node": "4030178389688558196"
+},
+"stepIndex": "1",
+"targetButton": {
+"node": "6591460346536119132"
+}
+}],
+"id": "4030178389688558196",
+"n": "Step1",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Hand" parent="Canvas/MainTutorialLayer/GameObject/Step1" index="0" unique_id=1160437129]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -131.5
+offset_top = 156.0
+offset_right = -31.5
+offset_bottom = 256.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "2006395342566275393",
+"n": "Hand",
+"r": [0.5, 0.5, 0.5, 0.5, -81.5, -206.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-81.5, -206),
+"size": Vector2(100, 100)
+}
+
+[node name="TargetButton" parent="Canvas/MainTutorialLayer/GameObject/Step1/Hand" index="0" unique_id=844494385]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -114.0
+offset_top = -151.5
+offset_right = 46.0
+offset_bottom = 91.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+mouse_filter = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5p824")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_mdjpc")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_fh7vi")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_o64p3")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_wt7jl")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_oipxn")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_tsk7u")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_7conj")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_r6egr")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_3471t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5y2dg")
+disabled = true
+flat = true
+script = ExtResource("5_2fyfj")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "6591460346536119132",
+"tr": 1.0
+},
+"id": "6591460346536119132",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "TargetButton",
+"r": [0.5, 0.5, 0.5, 0.5, -34.0, 30.0, 160.0, 243.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-34, 30),
+"size": Vector2(160, 243)
+}
+
+[node name="image" parent="Canvas/MainTutorialLayer/GameObject/Step1/Hand/TargetButton" index="0" unique_id=5853105]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+kind = 1
+color = Color(1, 1, 1, 0)
+fill_method = 4
+
+[node name="TapFx" parent="Canvas/MainTutorialLayer/GameObject/Step1/Hand" index="1" unique_id=1649703918]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -108.1741
+offset_top = -97.2741
+offset_right = 42.3741
+offset_bottom = 53.2741
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+tex = ExtResource("4_sn1sj")
+region = Rect2(52, 641, 128, 128)
+color = Color(1, 1, 1, 0.11764706)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8546611001829085719",
+"img": {
+"c": "ffffff1e",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_63",
+"t": 0.0
+},
+"n": "TapFx",
+"r": [0.5, 0.5, 0.5, 0.5, -32.9, 22.0, 150.5482, 150.5482, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-32.9, 22),
+"size": Vector2(150.5482, 150.5482)
+}
+
+[node name="TapFx2" parent="Canvas/MainTutorialLayer/GameObject/Step1/Hand" index="2" unique_id=453898833]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -72.9
+offset_top = -62.0
+offset_right = 7.0999985
+offset_bottom = 18.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+tex = ExtResource("4_sn1sj")
+region = Rect2(52, 773, 56, 56)
+color = Color(1, 1, 1, 0.32156864)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "4858004428760831614",
+"img": {
+"c": "ffffff52",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_64",
+"t": 0.0
+},
+"n": "TapFx2",
+"r": [0.5, 0.5, 0.5, 0.5, -32.9, 22.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-32.9, 22),
+"size": Vector2(80, 80)
+}
+
+[node name="HandSprite" parent="Canvas/MainTutorialLayer/GameObject/Step1/Hand" index="3" unique_id=896703802]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.0
+offset_top = -32.0
+offset_right = 117.0
+offset_bottom = 116.0
+scale = Vector2(1.25, 1.25)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+tex = ExtResource("4_sn1sj")
+region = Rect2(766, 264, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8699202792434890296",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_19",
+"t": 0.0
+},
+"n": "HandSprite",
+"r": [0.5, 0.5, 0.5, 0.5, 43.0, -42.0, 148.0, 148.0, 0.5, 0.5],
+"s": [1.25, 1.25]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(43, -42),
+"size": Vector2(148, 148)
+}
+
+[node name="Panel" parent="Canvas/MainTutorialLayer/GameObject/Step1" index="1" unique_id=47241636]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -386.2
+offset_top = -562.0
+offset_right = 386.2
+offset_bottom = -338.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "2630984447690231473",
+"n": "Panel",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 450.0, 772.4, 224.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 450),
+"size": Vector2(772.4, 224)
+}
+
+[node name="Image" parent="Canvas/MainTutorialLayer/GameObject/Step1/Panel" index="0" unique_id=454683732]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+tex = ExtResource("6_gi7mm")
+region = Rect2(0, 0, 800, 800)
+border = Vector4(120, 120, 120, 120)
+border_scale = 0.4587155963302752
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5926547161430032327",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.18,
+"rt": true,
+"sp": "Popup2",
+"t": 1.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="NPC" parent="Canvas/MainTutorialLayer/GameObject/Step1/Panel" index="1" unique_id=894821181]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -169.43256
+offset_top = -176.23256
+offset_right = 136.83255
+offset_bottom = 130.03255
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3001824057669977569",
+"n": "NPC",
+"r": [0.0, 0.5, 0.0, 0.5, -16.3, 23.1, 306.2651, 306.2651, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-16.300003, 23.100006),
+"size": Vector2(306.2651, 306.2651)
+}
+
+[node name="Canvas" parent="Canvas/MainTutorialLayer/GameObject/Step1/Panel" index="2" unique_id=1842616108]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"id": "361991542656816960",
+"n": "Canvas",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Text (TMP)" parent="Canvas/MainTutorialLayer/GameObject/Step1/Panel/Canvas" index="0" unique_id=811712425]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 0.0
+offset_right = -20.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_styles/normal = SubResource("StyleBoxEmpty_f0wya")
+text = "Tap a group of same-colored cubes to send them to the conveyor"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "1123739710269370327",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -40.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 44.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Tap a group of same-colored cubes to send them to the conveyor",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-40, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 44.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Tap a group of same-colored cubes to send them to the conveyor",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Step2" parent="Canvas/MainTutorialLayer/GameObject" index="3" unique_id=1405398127]
+visible = false
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"anim": {
+"controller": "TutController_Step1",
+"on": false
+},
+"cg": {
+"alpha": 0.0,
+"block": false,
+"ignore_parent": false,
+"inter": false
+},
+"cs": [{
+"animator": {
+"node": "36826580037507695"
+},
+"canvasGroup": {
+"node": "36826580037507695"
+},
+"name": "MainTutStep",
+"prefab": {
+"node": "36826580037507695"
+},
+"stepIndex": "2",
+"targetButton": {
+"node": "5502823104452043598"
+}
+}],
+"id": "36826580037507695",
+"n": "Step2",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Hand" parent="Canvas/MainTutorialLayer/GameObject/Step2" index="0" unique_id=1914275745]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 125.0
+offset_top = 150.0
+offset_right = 225.0
+offset_bottom = 250.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7900347686491922448",
+"n": "Hand",
+"r": [0.5, 0.5, 0.5, 0.5, 175.0, -200.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(175, -200),
+"size": Vector2(100, 100)
+}
+
+[node name="TargetButton" parent="Canvas/MainTutorialLayer/GameObject/Step2/Hand" index="0" unique_id=1067221018]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -122.5
+offset_top = -146.0
+offset_right = 33.5
+offset_bottom = 104.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+mouse_filter = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_67wxx")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_1opek")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_g6obx")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_tw4cg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_s8pnw")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_t7pae")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_21ger")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_wj2mh")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_1ghsf")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_8rxyi")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2bl68")
+disabled = true
+flat = true
+script = ExtResource("5_2fyfj")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5502823104452043598",
+"tr": 1.0
+},
+"id": "5502823104452043598",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "TargetButton",
+"r": [0.5, 0.5, 0.5, 0.5, -44.5, 21.0, 156.0, 250.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-44.5, 21),
+"size": Vector2(156, 250)
+}
+
+[node name="image" parent="Canvas/MainTutorialLayer/GameObject/Step2/Hand/TargetButton" index="0" unique_id=309918735]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+kind = 1
+color = Color(1, 1, 1, 0)
+fill_method = 4
+
+[node name="TapFx" parent="Canvas/MainTutorialLayer/GameObject/Step2/Hand" index="1" unique_id=2106600838]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -108.1741
+offset_top = -97.2741
+offset_right = 42.3741
+offset_bottom = 53.2741
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+tex = ExtResource("4_sn1sj")
+region = Rect2(52, 641, 128, 128)
+color = Color(1, 1, 1, 0.11764706)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4126711537395301528",
+"img": {
+"c": "ffffff1e",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_63",
+"t": 0.0
+},
+"n": "TapFx",
+"r": [0.5, 0.5, 0.5, 0.5, -32.9, 22.0, 150.5482, 150.5482, 0.5, 0.5],
+"s": [0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-32.9, 22),
+"size": Vector2(150.5482, 150.5482)
+}
+
+[node name="TapFx2" parent="Canvas/MainTutorialLayer/GameObject/Step2/Hand" index="2" unique_id=1342257477]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -72.9
+offset_top = -62.0
+offset_right = 7.0999985
+offset_bottom = 18.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+tex = ExtResource("4_sn1sj")
+region = Rect2(52, 773, 56, 56)
+color = Color(1, 1, 1, 0.32156864)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "3054270829327111486",
+"img": {
+"c": "ffffff52",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"mat": "",
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_64",
+"t": 0.0
+},
+"n": "TapFx2",
+"r": [0.5, 0.5, 0.5, 0.5, -32.9, 22.0, 80.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-32.9, 22),
+"size": Vector2(80, 80)
+}
+
+[node name="HandSprite" parent="Canvas/MainTutorialLayer/GameObject/Step2/Hand" index="3" unique_id=1362580686]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.0
+offset_top = -32.0
+offset_right = 117.0
+offset_bottom = 116.0
+scale = Vector2(1.25, 1.25)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+tex = ExtResource("4_sn1sj")
+region = Rect2(766, 264, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6960824148097348690",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_19",
+"t": 0.0
+},
+"n": "HandSprite",
+"r": [0.5, 0.5, 0.5, 0.5, 43.0, -42.0, 148.0, 148.0, 0.5, 0.5],
+"s": [1.25, 1.25]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(43, -42),
+"size": Vector2(148, 148)
+}
+
+[node name="Panel" parent="Canvas/MainTutorialLayer/GameObject/Step2" index="1" unique_id=844408429]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -386.2
+offset_top = -562.0
+offset_right = 386.2
+offset_bottom = -338.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7063728132234014078",
+"n": "Panel",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 450.0, 772.4, 224.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 450),
+"size": Vector2(772.4, 224)
+}
+
+[node name="Image" parent="Canvas/MainTutorialLayer/GameObject/Step2/Panel" index="0" unique_id=250477114]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_8sv1j")
+tex = ExtResource("6_gi7mm")
+region = Rect2(0, 0, 800, 800)
+border = Vector4(120, 120, 120, 120)
+border_scale = 0.4587155963302752
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5770775284551551108",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.18,
+"rt": true,
+"sp": "Popup2",
+"t": 1.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="NPC" parent="Canvas/MainTutorialLayer/GameObject/Step2/Panel" index="1" unique_id=1449876372]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -169.43256
+offset_top = -176.23256
+offset_right = 136.83255
+offset_bottom = 130.03255
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "8666652028403979506",
+"n": "NPC",
+"r": [0.0, 0.5, 0.0, 0.5, -16.3, 23.1, 306.2651, 306.2651, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-16.300003, 23.100006),
+"size": Vector2(306.2651, 306.2651)
+}
+
+[node name="Canvas" parent="Canvas/MainTutorialLayer/GameObject/Step2/Panel" index="2" unique_id=1080644262]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": false
+},
+"id": "721511204777480429",
+"n": "Canvas",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Text (TMP)" parent="Canvas/MainTutorialLayer/GameObject/Step2/Panel/Canvas" index="0" unique_id=1339965241]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 0.0
+offset_right = -20.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(0.2784314, 0.41960785, 0.5921569, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 44
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nt230")
+text = "Clear a box that matches the conveyor cubes. It will fill and disappear"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "5707766250187072739",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -40.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 44.0],
+"c": "476b97ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Clear a box that matches the conveyor cubes. It will fill and disappear",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-40, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 44.0],
+"c": "476b97ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 44.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Clear a box that matches the conveyor cubes. It will fill and disappear",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[editable path="Canvas"]

@@ -6,6 +6,13 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 
 var canvas: Control = null
 var root: Control = null
+## Baked layer this view comes from and root's Unity path in it; clone() copies templates from that scene.
+var layer := ""
+var base := ""
+## Views of pieces added under this one (UnityKit, clone()) that were in the scene when it was wired.
+var subs: Array = []
+## UnityUI.Pristine of layer, made on the first clone and shared with the clones' views.
+var source: RefCounted = null
 ## path -> Control, relative to root ("" is root).
 var paths := {}
 ## Unity GameObject id -> Control.
@@ -112,9 +119,35 @@ func clone(template_path: String, parent_path: String = "") -> RefCounted:
 	if tpl == null:
 		return null
 	var parent: Control = tpl.get_parent() if parent_path == "" else node(parent_path)
-	var v := UnityUI.build_subtree(tpl.get_meta("u"), parent, canvas)
+	var full := template_path if base == "" else (base if template_path == "" else base + "/" + template_path)
+	if layer != "" and source == null:
+		source = UnityUI.pristine_of(layer)
+	var copy: Control = UnityUI.pristine_copy(source, full) if source != null else null
+	# A template the screen's scene added (not in the layer) is copied as it is: templates stay hidden and untouched.
+	var from_layer := copy != null
+	if copy == null:
+		copy = UnityUI.strip_runtime(tpl.duplicate())
+	copy.set_meta("u_sub", true)
+	copy.set_meta("u_clone", true)
+	parent.add_child(copy)
+	var v = UnityUI.adopt(copy, canvas)
+	if from_layer:
+		v.layer = layer
+		v.base = full
+		v.source = source
 	v.root.visible = true
 	return v
+
+
+## View of a piece (UnityKit.add, clone) that was in the scene when this view was wired, by its root node.
+func sub(n: Control) -> RefCounted:
+	for v in subs:
+		if v.root == n:
+			return v
+		var hit: RefCounted = v.sub(n)
+		if hit != null:
+			return hit
+	return null
 
 
 ## Re-run the Unity layout groups and content size fitters below a path.

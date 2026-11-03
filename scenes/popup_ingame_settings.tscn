@@ -1,12 +1,3506 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/ui/popup_ingame_settings.gd" id="1"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="3_dfl65"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="4_anbax"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="5_ykctn"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="6_ygjby"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup2.png" id="7_y6vfj"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="8_mgrb6"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="9_fd3hu"]
+[ext_resource type="PackedScene" path="res://scenes/unity/SettingInGameLayer.tscn" id="u0"]
 
-[node name="PopupIngameSettings" type="Control"]
-layout_mode = 3
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wlwou"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_divlx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o51p6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4xr35"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m1yjx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jkw8u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ey6iq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nkjae"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7imfm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_htjfl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6p5sw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("5_ykctn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_3pd8o"]
+base_font = ExtResource("6_ygjby")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0skne"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4d6u"]
+shader = ExtResource("5_ykctn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/underlay_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rgsa5"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_etemt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ydq2b"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_riqf7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mbmki"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wvs4a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yttxm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_81nn4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hxhwh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j3m8f"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m4bhm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w50s2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tyhpy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_14tnu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k2kom"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u6vqf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gli2u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uhxld"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2sutb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5rwoi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iy1w5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_en4fh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_thhbi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h8r3r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jjavl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3kava"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s1wua"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c7ilm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cjxjg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nc0vd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q60as"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4lbpv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lhtc7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8j45a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nukbj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0tde0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cvpic"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eyhfu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7yfss"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f1tyb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iy3au"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7a6d7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dnr1g"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t0gbm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7yggi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_decyu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ifs22"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4o3mc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hcpfe"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hul26"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_04f7o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vnm2t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mwwp4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1kuf5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hcb6x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6wyrd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
+shader = ExtResource("5_ykctn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("6_ygjby")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y6wk6"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5qpv0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vspc8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6r7wf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4chva"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_32vp6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ixxff"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d2iyl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nc53l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_upvny"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0x7xq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c4ypq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ng31"]
+shader = ExtResource("5_ykctn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_2d730"]
+base_font = ExtResource("6_ygjby")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8vvi0"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_khdto"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6a66i"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0hqqm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jts2j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w5t1x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xlwkq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yhn1s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sb8xe"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5evg6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xhniq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ar6r8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wfk7w"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fj0n8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d2hqi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ton2p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pgrc0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_568je"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jnfw3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nmmdw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rjn7w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q3rq3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e8jnh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iod5m"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hscdh"]
+shader = ExtResource("5_ykctn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/underlay_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gnktr"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
+shader = ExtResource("5_ykctn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.085714287
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.491428570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xn8p4"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lig5a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_odmn8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wkmeb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1kcf0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qfq3j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ju2lq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b40m5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tj016"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_axo1x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fs2kl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r87ay"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hwtlu"]
+shader = ExtResource("5_ykctn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.5372549, 0.12156863, 0, 1)
+shader_parameter/underlay_color = Color(0.5411765, 0.12156863, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tw6j0"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d2rbs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vp1bd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4lxcx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f5g5v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y3dc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_onxnr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lkwp2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7oisp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0kd77"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2og51"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ms88o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ctn3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6okxu"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_30e5p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v11b3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_elw5p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3txh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ri8s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_thjil"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2cdlt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8s5ej"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fsdkt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n108m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rttw7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
+shader = ExtResource("5_ykctn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vybbr"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2wfwn"]
+shader = ExtResource("5_ykctn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/underlay_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m8l48"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cvgac"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qkajo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0hsrj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hoa2g"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tjbp6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gcbnm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4gte5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_omejh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ukqya"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n5okw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p7avq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qgutk"]
+shader = ExtResource("5_ykctn")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xk131"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="PopupIngameSettings" type="Control" unique_id=2027358566]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="Canvas" parent="." unique_id=1678747996 instance=ExtResource("u0")]
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "SettingInGameLayer"
+
+[node name="SettingInGameLayer" parent="Canvas" index="0" unique_id=1190334334]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [{
+"arg": null,
+"method": "OnShowLayer",
+"target": "516431204600285299"
+}, {
+"arg": null,
+"method": "CheckRequired",
+"target": "2336176072922937704"
+}, {
+"arg": null,
+"method": "PlayAllAnimationsSync",
+"target": "2336176072922937704"
+}],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"breakEnable": "0",
+"closeButtons": [{
+"node": "1590072735812032041"
+}, {
+"node": "641052179846054816"
+}],
+"content": {
+"node": "1629233615669166226"
+},
+"contentHeightBuyAds": "680",
+"debugOnOff": "0",
+"name": "GameplaySettingsUI",
+"removeHeartUI": {
+"node": "6673784354674449938"
+},
+"returnMainMenuButton": {
+"node": "516431204600285299"
+},
+"settingMusicButton": {
+"node": "6106011180622730584"
+},
+"settingVibrationButton": {
+"node": "4702382724692304221"
+},
+"versionDataSO": {
+"asset": "VersionDataSO.asset"
+},
+"versionText": {
+"node": "8491410961096260918"
+}
+}, {
+"OnPurchased": [{
+"arg": false,
+"method": "SetActive",
+"target": "8691145006127558743"
+}, {
+"arg": false,
+"method": "SetActive",
+"target": "8475821382408807680"
+}, {
+"arg": null,
+"method": "OnPurchasedAds",
+"target": "2336176072922937704"
+}],
+"name": "CompletePurchaseValidator",
+"productIDRequired": ["candy.cat.ads.2"]
+}, {
+"OnCompleteAnim": [{
+"arg": true,
+"method": "set_enabled",
+"target": "8491410961096260918"
+}],
+"OnStartAnim": [{
+"arg": false,
+"method": "set_enabled",
+"target": "8491410961096260918"
+}],
+"dimCanvasGroup": {
+"node": "1590072735812032041"
+},
+"duration": "0.4",
+"easeType": "26",
+"name": "DialogueReveal",
+"panelRect": {
+"node": "5208920821355030406"
+}
+}, {
+"_animations": [{
+"node": "344949375825919855"
+}, {
+"node": "4702382724692304221"
+}, {
+"node": "6106011180622730584"
+}, {
+"node": "5170270658803132161"
+}, {
+"node": "8691145006127558743"
+}],
+"_delayBetweenAnims": "0",
+"_initialDelay": "0",
+"_playOnEnable": "0",
+"name": "UIAnimationGroup"
+}],
+"id": "2336176072922937704",
+"n": "SettingInGameLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Bg" parent="Canvas/SettingInGameLayer" index="0" unique_id=667911573]
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wlwou")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_divlx")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_o51p6")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_4xr35")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_m1yjx")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_jkw8u")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ey6iq")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_nkjae")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_7imfm")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_htjfl")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_6p5sw")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "1590072735812032041",
+"tr": 0.0
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"id": "1590072735812032041",
+"img": {
+"c": "000000fc",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Bg" index="0" unique_id=956949671]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="VersionText" parent="Canvas/SettingInGameLayer" index="1" unique_id=2022569647]
+material = SubResource("ShaderMaterial_iqna6")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = 298.0
+offset_right = 360.0
+offset_bottom = 348.0
+grow_horizontal = 0
+grow_vertical = 2
+pivot_offset_ratio = Vector2(1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_3pd8o")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0skne")
+text = "v1"
+horizontal_alignment = 2
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "8491410961096260918",
+"n": "VersionText",
+"r": [0.5, 0.5, 0.5, 0.5, 360.0, -348.0, 400.0, 50.0, 1.0, 0.0],
+"txt": {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.4,
+"h": 4.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "0.0.0.0",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(1, 0),
+"pos": Vector2(360, -348),
+"size": Vector2(400, 50)
+}
+metadata/u_txt = {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.4,
+"h": 4.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "0.0.0.0",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Panel" parent="Canvas/SettingInGameLayer" index="2" unique_id=737986062]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5208920821355030406",
+"n": "Panel",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="PauseMenu" parent="Canvas/SettingInGameLayer/Panel" index="0" unique_id=1306234866]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -362.0
+offset_top = -270.2
+offset_right = 362.0
+offset_bottom = 270.2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1629233615669166226",
+"n": "PauseMenu",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 724.0, 540.4, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(724, 540.4)
+}
+
+[node name="Bg" parent="Canvas/SettingInGameLayer/Panel/PauseMenu" index="0" unique_id=1810752841]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_anbax")
+tex = ExtResource("7_y6vfj")
+region = Rect2(0, 0, 800, 800)
+border = Vector4(120, 120, 120, 120)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2005729142746732927",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Popup2",
+"t": 0.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu" index="1" unique_id=496485401]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_top = -63.0
+offset_right = 225.0
+offset_bottom = 87.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_anbax")
+tex = ExtResource("8_mgrb6")
+region = Rect2(384, 1332, 368, 108)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8151875659459712269",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -12.0, 450.0, 150.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -12),
+"size": Vector2(450, 150)
+}
+
+[node name="txtHeader" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Image" index="0" unique_id=1782857003]
+material = SubResource("ShaderMaterial_g4d6u")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -227.7163
+offset_top = -52.0
+offset_right = 227.7163
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -8
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_3pd8o")
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxEmpty_rgsa5")
+text = "Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "1003881244676388150",
+"n": "txtHeader",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 455.4326, 104.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "SETTING",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(455.4326, 104)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "SETTING",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Top" parent="Canvas/SettingInGameLayer/Panel/PauseMenu" index="2" unique_id=1264139331]
+anchors_preset = 0
+anchor_right = 1.0
+offset_bottom = 130.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5299223922982401401",
+"n": "Top",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -65.0, 0.0, 130.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -65),
+"size": Vector2(0, 130)
+}
+
+[node name="btnTurnOff" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Top" index="0" unique_id=626498877]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_bottom = 80.0
+pivot_offset_ratio = Vector2(1, 0)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_etemt")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ydq2b")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_riqf7")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_mbmki")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_wvs4a")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_yttxm")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_81nn4")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_hxhwh")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_j3m8f")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_m4bhm")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_w50s2")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "2798665062556229336",
+"tr": 1.0
+},
+"id": "641052179846054816",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "btnTurnOff",
+"r": [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 80.0, 80.0, 1.0, 1.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Top/btnTurnOff" index="0" unique_id=1068991299]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+color = Color(1, 1, 1, 0)
+pivot = Vector2(1, 1)
+fill_method = 4
+
+[node name="Image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Top/btnTurnOff" index="1" unique_id=1286802480]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_anbax")
+tex = ExtResource("8_mgrb6")
+region = Rect2(300, 516, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2798665062556229336",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 64.0, 64.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(64, 64)
+}
+
+[node name="Content" parent="Canvas/SettingInGameLayer/Panel/PauseMenu" index="3" unique_id=843429879]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 130.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7906482251260163123",
+"n": "Content",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, -65.0, 0.0, -130.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -65),
+"size": Vector2(0, -130)
+}
+
+[node name="Image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content" index="0" unique_id=1721377689]
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_anbax")
+color = Color(0.81960785, 0.99607843, 0.9882353, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8555384372782386506",
+"img": {
+"c": "d1fefcff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="SettingBtn" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content" index="1" unique_id=2004365555]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -310.0
+offset_top = -12.800003
+offset_right = 310.0
+offset_bottom = 157.2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "6260814198165972331",
+"n": "SettingBtn",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -72.2, 620.0, 170.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -72.2),
+"size": Vector2(620, 170)
+}
+
+[node name="Image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn" index="0" unique_id=1841827961]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("4_anbax")
+tex = ExtResource("8_mgrb6")
+region = Rect2(1166, 523, 188, 290)
+border = Vector4(50, 50, 50, 50)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1659599881615418939",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+"t": 1.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Content" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn" index="1" unique_id=1168746014]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "7349753005290235103",
+"n": "Content",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Mute" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn/Content" index="0" unique_id=445158495]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -258.0
+offset_top = -70.0
+offset_right = -118.0
+offset_bottom = 70.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tyhpy")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_14tnu")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k2kom")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_u6vqf")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_gli2u")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_uhxld")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_2sutb")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_5rwoi")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_iy1w5")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_en4fh")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_thhbi")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "344949375825919855",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "344949375825919855"
+},
+"name": "SoundEffectsButton"
+}, {
+"_duration": "0.5",
+"_ease": "26",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_duration": "0.25",
+"_easeIn": "6",
+"_easeOut": "26",
+"_playOnce": "0",
+"_shrinkScale": "0.95",
+"_trigger": "2",
+"name": "UIAnim_Pulse"
+}],
+"id": "344949375825919855",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "Mute",
+"r": [0.5, 0.5, 0.5, 0.5, -188.0, 0.0, 140.0, 140.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-188, 0),
+"size": Vector2(140, 140)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn/Content/Mute" index="0" unique_id=24079998]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+kind = 1
+color = Color(1, 1, 1, 0)
+fill_method = 4
+
+[node name="Image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn/Content/Mute" index="1" unique_id=245287483]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.0
+offset_top = -49.6
+offset_right = 45.0
+offset_bottom = 40.4
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_anbax")
+tex = ExtResource("8_mgrb6")
+region = Rect2(200, 617, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7033638035631750267",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_28",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 4.6, 90.0, 90.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.5999985),
+"size": Vector2(90, 90)
+}
+
+[node name="Vibrate" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn/Content" index="1" unique_id=985182504]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = -70.0
+offset_right = 70.0
+offset_bottom = 70.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h8r3r")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_jjavl")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_3kava")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_s1wua")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_c7ilm")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_cjxjg")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_nc0vd")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_q60as")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_4lbpv")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_lhtc7")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8j45a")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4702382724692304221",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "4702382724692304221"
+},
+"name": "SettingVibrationButton"
+}, {
+"_duration": "0.5",
+"_ease": "26",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_duration": "0.25",
+"_easeIn": "6",
+"_easeOut": "26",
+"_playOnce": "0",
+"_shrinkScale": "0.95",
+"_trigger": "2",
+"name": "UIAnim_Pulse"
+}],
+"id": "4702382724692304221",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "Vibrate",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 140.0, 140.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(140, 140)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn/Content/Vibrate" index="0" unique_id=56484694]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+kind = 1
+color = Color(1, 1, 1, 0)
+fill_method = 4
+
+[node name="Image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn/Content/Vibrate" index="1" unique_id=1857713370]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.0
+offset_top = -49.6
+offset_right = 45.0
+offset_bottom = 40.4
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_anbax")
+tex = ExtResource("8_mgrb6")
+region = Rect2(0, 718, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5825689508464704335",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_40",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 4.6, 90.0, 90.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.5999985),
+"size": Vector2(90, 90)
+}
+
+[node name="Sound" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn/Content" index="2" unique_id=1555805004]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 118.0
+offset_top = -70.0
+offset_right = 258.0
+offset_bottom = 70.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nukbj")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_0tde0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_cvpic")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_eyhfu")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_7yfss")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_f1tyb")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_iy3au")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_7a6d7")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_dnr1g")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_t0gbm")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7yggi")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "6106011180622730584",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "6106011180622730584"
+},
+"name": "SettingMusicButton"
+}, {
+"_duration": "0.5",
+"_ease": "26",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_duration": "0.25",
+"_easeIn": "6",
+"_easeOut": "26",
+"_playOnce": "0",
+"_shrinkScale": "0.95",
+"_trigger": "2",
+"name": "UIAnim_Pulse"
+}],
+"id": "6106011180622730584",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "Sound",
+"r": [0.5, 0.5, 0.5, 0.5, 188.0, 0.0, 140.0, 140.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(188, 0),
+"size": Vector2(140, 140)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn/Content/Sound" index="0" unique_id=687336017]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+kind = 1
+color = Color(1, 1, 1, 0)
+fill_method = 4
+
+[node name="Image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/SettingBtn/Content/Sound" index="1" unique_id=663382842]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -40.6
+offset_right = 36.0
+offset_bottom = 31.4
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_anbax")
+tex = ExtResource("8_mgrb6")
+region = Rect2(199, 719, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2042780883725172048",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_42",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 4.6, 72.0, 72.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4.6000004),
+"size": Vector2(72, 72)
+}
+
+[node name="Language" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content" index="2" unique_id=989574380]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 458.0
+offset_top = -2427.0
+offset_right = 726.0
+offset_bottom = -2307.0
+pivot_offset_ratio = Vector2(0.5, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_decyu")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ifs22")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4o3mc")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_hcpfe")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_hul26")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_04f7o")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_vnm2t")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_mwwp4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_1kuf5")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_hcb6x")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_6wyrd")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "1424752991311274485",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "1424752991311274485"
+},
+"name": "LocalizationButton"
+}],
+"id": "1424752991311274485",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_Button2",
+"t": 1.0
+},
+"n": "Language",
+"r": [0.5, 1.0, 0.5, 1.0, 592.0, 2307.0, 268.0, 120.0, 0.5, 0.0],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(592, 2307),
+"size": Vector2(268, 120)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/Language" index="0" unique_id=854112881]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+tex = ExtResource("9_fd3hu")
+region = Rect2(1792, 536, 256, 270)
+border = Vector4(128, 128, 128, 128)
+border_scale = 0.5
+kind = 1
+color = Color(1, 1, 1, 0)
+pivot = Vector2(0.5, 0)
+fill_method = 4
+
+[node name="Out" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/Language" index="1" unique_id=1415727201]
+material = SubResource("ShaderMaterial_3wugu")
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 0)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -6
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxEmpty_y6wk6")
+text = "LANGUAGE"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "2411366028369970932",
+"n": "Out",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, -32.0, -40.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 48.0],
+"c": "ffffff00",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "LANGUAGE",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(-32, -40)
+}
+metadata/u_txt = {
+"auto": [18.0, 48.0],
+"c": "ffffff00",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "LANGUAGE",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="PolicyButton" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content" index="3" unique_id=707378990]
+visible = false
+offset_left = 70.0
+offset_top = 659.0
+offset_right = 298.0
+offset_bottom = 737.0
+pivot_offset_ratio = Vector2(0, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5qpv0")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_vspc8")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_6r7wf")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_4chva")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_32vp6")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_ixxff")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_d2iyl")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_nc53l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_upvny")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_0x7xq")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_c4ypq")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "742337647580945628",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "2393001623782575761"
+},
+"gameDataSO": {
+"asset": "VersionDataSO.asset"
+},
+"name": "CustomerSupportButton"
+}],
+"id": "2393001623782575761",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "PolicyButton",
+"r": [0.0, 1.0, 0.0, 1.0, 70.0, -698.0, 228.0, 78.0, 0.0, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(70, -698),
+"size": Vector2(228, 78)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/PolicyButton" index="0" unique_id=2100289394]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+kind = 1
+color = Color(1, 1, 1, 0)
+pivot = Vector2(0, 0.5)
+fill_method = 4
+
+[node name="Text (TMP)" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/PolicyButton" index="1" unique_id=1400831936]
+material = SubResource("ShaderMaterial_1ng31")
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 11.34095
+offset_bottom = -11.34095
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(0.08627451, 0.42745098, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -3
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2d730")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxEmpty_8vvi0")
+text = "プライバシーポリシー"
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "742337647580945628",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, -22.6819, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "166dccff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 24.35,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "プライバシーポリシー",
+"st": 5.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, -22.6819)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "166dccff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 24.35,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "プライバシーポリシー",
+"st": 5.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="TermsButton" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content" index="4" unique_id=986255490]
+visible = false
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -298.0
+offset_top = 659.0
+offset_right = -70.0
+offset_bottom = 737.0
+pivot_offset_ratio = Vector2(1, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_khdto")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_6a66i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_0hqqm")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_jts2j")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_w5t1x")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_xlwkq")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_yhn1s")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_sb8xe")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_5evg6")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_xhniq")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ar6r8")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "1848320165676353625",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "2720931388369701475"
+},
+"gameDataSO": {
+"asset": "VersionDataSO.asset"
+},
+"name": "CustomerSupportButton"
+}],
+"id": "2720931388369701475",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "TermsButton",
+"r": [1.0, 1.0, 1.0, 1.0, -70.0, -698.0, 228.0, 78.0, 1.0, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 0.5),
+"pos": Vector2(-70, -698),
+"size": Vector2(228, 78)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/TermsButton" index="0" unique_id=661483020]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+kind = 1
+color = Color(1, 1, 1, 0)
+pivot = Vector2(1, 0.5)
+fill_method = 4
+
+[node name="Text (TMP)" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/TermsButton" index="1" unique_id=829347977]
+material = SubResource("ShaderMaterial_1ng31")
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 11.34095
+offset_bottom = -11.34095
+grow_horizontal = 0
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(0.08627451, 0.42745098, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 29
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wfk7w")
+text = "サービス利用規約"
+horizontal_alignment = 2
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "1848320165676353625",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, -22.6819, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "166dccff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 28.8,
+"h": 4.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "サービス利用規約",
+"st": 5.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, -22.6819)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "166dccff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 28.8,
+"h": 4.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "サービス利用規約",
+"st": 5.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="HomeBtn" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content" index="5" unique_id=212658326]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -292.0
+offset_top = 341.0
+offset_right = -24.0
+offset_bottom = 465.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fj0n8")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_d2hqi")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ton2p")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_pgrc0")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_568je")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_jnfw3")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_nmmdw")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_rjn7w")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_q3rq3")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_e8jnh")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_iod5m")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "516431204600285299",
+"tr": 1.0
+},
+"cs": [{
+"TurnOffHeart": [{
+"arg": false,
+"method": "SetActive",
+"target": "6998903598465972886"
+}],
+"TurnOnHeart": [{
+"arg": true,
+"method": "SetActive",
+"target": "6998903598465972886"
+}],
+"name": "OffHeartListener"
+}],
+"id": "516431204600285299",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_Button3",
+"t": 1.0
+},
+"n": "HomeBtn",
+"r": [0.5, 1.0, 0.5, 1.0, -158.0, -403.0, 268.0, 124.0, 0.5, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-158, -403),
+"size": Vector2(268, 124)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/HomeBtn" index="0" unique_id=1710642116]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+tex = ExtResource("9_fd3hu")
+region = Rect2(1528, 1079, 256, 270)
+border = Vector4(128, 128, 128, 128)
+border_scale = 0.5
+kind = 1
+fill_method = 4
+
+[node name="Out (1)" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/HomeBtn" index="1" unique_id=1217678194]
+material = SubResource("ShaderMaterial_hscdh")
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -6
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gnktr")
+text = "SẢNH"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "5683786571990523278",
+"n": "Out (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, -32.0, -40.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "SẢNH",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(-32, -40)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "SẢNH",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/HomeBtn" index="2" unique_id=788751355]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -54.0
+offset_top = -24.0
+offset_right = 14.0
+offset_bottom = 44.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_anbax")
+tex = ExtResource("9_fd3hu")
+region = Rect2(663, 542, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6998903598465972886",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_77",
+"t": 0.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, -20.0, -10.0, 68.0, 68.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-20, -10),
+"size": Vector2(68, 68)
+}
+
+[node name="Text (TMP)" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/HomeBtn/Image" index="0" unique_id=121102889]
+material = SubResource("ShaderMaterial_jm0a0")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -37.0
+offset_top = -32.0
+offset_right = 31.0
+offset_bottom = 36.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -5
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xn8p4")
+text = "-1"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "4629616994881441997",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, -3.0, -2.0, 68.0, 68.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "-1",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-3, -2),
+"size": Vector2(68, 68)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "-1",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="ReplayBtn" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content" index="6" unique_id=2121541463]
+visible = false
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -188.0
+offset_right = 292.0
+offset_bottom = -68.0
+pivot_offset_ratio = Vector2(0.5, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lig5a")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_odmn8")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_wkmeb")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_1kcf0")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_qfq3j")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_ju2lq")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_b40m5")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_tj016")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_axo1x")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_fs2kl")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_r87ay")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5516255346980072930",
+"tr": 1.0
+},
+"id": "5516255346980072930",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_Button4",
+"t": 1.0
+},
+"n": "ReplayBtn",
+"r": [0.5, 0.0, 0.5, 0.0, 158.0, 68.0, 268.0, 120.0, 0.5, 0.0],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(158, 68),
+"size": Vector2(268, 120)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ReplayBtn" index="0" unique_id=696529333]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+tex = ExtResource("9_fd3hu")
+region = Rect2(1792, 1080, 256, 270)
+border = Vector4(128, 128, 128, 128)
+border_scale = 0.5
+kind = 1
+pivot = Vector2(0.5, 0)
+fill_method = 4
+
+[node name="Out" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ReplayBtn" index="1" unique_id=1571768383]
+material = SubResource("ShaderMaterial_hwtlu")
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -6
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tw6j0")
+text = "REPLAY"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "1814007841698799932",
+"n": "Out",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, -32.0, -40.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "REPLAY",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(-32, -40)
+}
+metadata/u_txt = {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Orange",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "REPLAY",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="ButtonGroup" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content" index="7" unique_id=1196691190]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -308.75
+offset_top = -8.450005
+offset_right = 308.75
+offset_bottom = 129.65
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "8213173804184489052",
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": false,
+"eh": true,
+"ew": true,
+"pad": [0.0, 0.0, 0.0, 0.0],
+"rev": false,
+"sh": false,
+"sp": 0.0,
+"sw": false,
+"t": "h"
+},
+"n": "ButtonGroup",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -60.6, 617.5, 138.1, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -60.59999),
+"size": Vector2(617.5, 138.1)
+}
+
+[node name="HomeButton" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ButtonGroup" index="0" unique_id=1880925674]
+offset_left = 4.375
+offset_top = 7.050003
+offset_right = 304.375
+offset_bottom = 131.05
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_d2rbs")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_vp1bd")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4lxcx")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_f5g5v")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_5y3dc")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_onxnr")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_lkwp2")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_7oisp")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_0kd77")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_2og51")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ms88o")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5170270658803132161",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "5170270658803132161"
+},
+"name": "ReturnToMenuButton"
+}, {
+"_duration": "0.4",
+"_ease": "11",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "5170270658803132161",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_49",
+"t": 0.0
+},
+"n": "HomeButton",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 300.0, 124.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(154.375, -69.05),
+"size": Vector2(300, 124)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ButtonGroup/HomeButton" index="0" unique_id=1381394652]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+tex = ExtResource("8_mgrb6")
+region = Rect2(1, 988, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+preserve_aspect = true
+fill_method = 4
+
+[node name="Image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ButtonGroup/HomeButton" index="1" unique_id=543302016]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -61.0
+offset_top = -16.98
+offset_right = 9.0
+offset_bottom = 53.02
+pivot_offset_ratio = Vector2(1, 0)
+mouse_filter = 1
+script = ExtResource("4_anbax")
+tex = ExtResource("8_mgrb6")
+region = Rect2(259, 259, 256, 256)
+pivot = Vector2(1, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6673784354674449938",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_15",
+"t": 0.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, 9.0, 16.98, 70.0, 70.0, 1.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(9, 16.98),
+"size": Vector2(70, 70)
+}
+
+[node name="Text (TMP)" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ButtonGroup/HomeButton/Image" index="0" unique_id=17278365]
+material = SubResource("ShaderMaterial_hscdh")
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5ctn3")
+text = "-1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2712621231209697856",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 50.0, 50.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(50, 50)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Text (TMP)" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ButtonGroup/HomeButton" index="2" unique_id=500251333]
+material = SubResource("ShaderMaterial_hscdh")
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -6
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_3pd8o")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxEmpty_6okxu")
+text = "Home"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "3432440612801766609",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -32.0, -32.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "HOME",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-32, -32)
+}
+metadata/u_txt = {
+"auto": [18.0, 48.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 48.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "HOME",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="RetryButton" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ButtonGroup" index="1" unique_id=524485095]
+offset_left = 313.125
+offset_top = 7.050003
+offset_right = 613.125
+offset_bottom = 131.05
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_30e5p")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_v11b3")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_elw5p")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_i3txh")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0ri8s")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_thjil")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_2cdlt")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_8s5ej")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_fsdkt")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_n108m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rttw7")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "8691145006127558743",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "8691145006127558743"
+},
+"name": "ReplayGameButton"
+}, {
+"_duration": "0.4",
+"_ease": "11",
+"_playOnce": "0",
+"_startScale": "0.2",
+"_trigger": "3",
+"name": "UIAnim_ScaleAppear"
+}, {
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "8691145006127558743",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "RetryButton",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 300.0, 124.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(463.125, -69.05),
+"size": Vector2(300, 124)
+}
+
+[node name="image" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ButtonGroup/RetryButton" index="0" unique_id=572877790]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+tex = ExtResource("8_mgrb6")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+preserve_aspect = true
+fill_method = 4
+
+[node name="Text (TMP)" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ButtonGroup/RetryButton" index="1" unique_id=246964851]
+material = SubResource("ShaderMaterial_ahonq")
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 16.0
+offset_right = -40.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -6
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_3pd8o")
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vybbr")
+text = "Restart"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "3582087303870257874",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -80.0, -32.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 50.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 50.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 3.0,
+"rich": false,
+"rt": false,
+"s": "REPLAY",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-80, -32)
+}
+metadata/u_txt = {
+"auto": [18.0, 50.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 50.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 3.0,
+"rich": false,
+"rt": false,
+"s": "REPLAY",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="LifeBadge" type="Control" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ButtonGroup/RetryButton" index="2" unique_id=1260909285]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -61.0
+offset_top = -16.98
+offset_right = 9.0
+offset_bottom = 53.02
+pivot_offset_ratio = Vector2(1, 0)
+mouse_filter = 1
+script = ExtResource("4_anbax")
+tex = ExtResource("8_mgrb6")
+region = Rect2(259, 259, 256, 256)
+pivot = Vector2(1, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6673784354674449938",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_15",
+"t": 0.0
+},
+"n": "LifeBadge",
+"r": [1.0, 1.0, 1.0, 1.0, 9.0, 16.98, 70.0, 70.0, 1.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(9, 16.98),
+"size": Vector2(70, 70)
+}
+metadata/u_sub = true
+
+[node name="Text (TMP)" type="Label" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/ButtonGroup/RetryButton/LifeBadge" unique_id=666817737]
+material = SubResource("ShaderMaterial_2wfwn")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_3pd8o")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_m8l48")
+text = "-1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2712621231209697856",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 50.0, 50.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(50, 50)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Red",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "-1",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="HelpButton" type="Button" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content" index="8" unique_id=2131375314]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -277.3
+offset_top = -119.9
+offset_right = 277.3
+offset_bottom = -41.9
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cvgac")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_qkajo")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_0hsrj")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_hoa2g")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_tjbp6")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_gcbnm")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_4gte5")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_omejh")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_ukqya")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_n5okw")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_p7avq")
+flat = true
+script = ExtResource("3_dfl65")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "8718630026291339018",
+"tr": 1.0
+},
+"id": "1923638288587286472",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"n": "HelpButton",
+"r": [0.5, 0.0, 0.5, 0.0, 0.0, 80.9, 554.6, 78.0, 0.5, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 80.9),
+"size": Vector2(554.6, 78)
+}
+metadata/u_sub = true
+
+[node name="image" type="Control" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/HelpButton" unique_id=628691113]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4_anbax")
+kind = 1
+color = Color(1, 1, 1, 0)
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/HelpButton" unique_id=1644393495]
+material = SubResource("ShaderMaterial_qgutk")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 11.34095
+offset_bottom = -11.34095
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(0.08627451, 0.42745098, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_3pd8o")
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xk131")
+text = "Help & Support"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "8718630026291339018",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, -22.6819, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 35.0],
+"c": "166dccff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Privacy Policy",
+"st": 5.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, -22.6819)
+}
+metadata/u_txt = {
+"auto": [18.0, 35.0],
+"c": "166dccff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Privacy Policy",
+"st": 5.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Underline" type="ColorRect" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/HelpButton/Text (TMP)" unique_id=1713697658]
+layout_mode = 0
+offset_left = 163.29999
+offset_top = 41.451237
+offset_right = 391.3
+offset_bottom = 43.551235
+mouse_filter = 2
+color = Color(0.08627451, 0.42745098, 0.8, 1)
+
+[node name="@Control@40" parent="Canvas/SettingInGameLayer/Panel/PauseMenu" index="4" unique_id=259727841]
+visible = false
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -167.9376
+offset_top = 629.4
+offset_right = 167.9376
+offset_bottom = 637.4
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("4_anbax")
+tex = ExtResource("9_fd3hu")
+region = Rect2(509, 1667, 104, 104)
+border = Vector4(52, 52, 52, 52)
+border_scale = 0.1
+kind = 1
+color = Color(0.12941177, 0.45490196, 0.7764706, 1)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "8475821382408807680",
+"img": {
+"c": "2174c6ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 10.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_14",
+"t": 1.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -633.4, 335.8752, 8.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -633.4),
+"size": Vector2(335.8752, 8)
+}
+
+[editable path="Canvas"]

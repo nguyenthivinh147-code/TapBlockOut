@@ -5,6 +5,8 @@ extends Control
 ## Chỉ đọc Game; không tự mở popup. Điều hướng qua closed({"action": ...}):
 ## play, no_lives, lives, profile, gift, shop, ranking, settings, challenge, offer (kèm "id"),
 ## preview (kèm "scene": màn đã dựng UI, chưa nối logic; chỉ hiện khi Config.ui_preview).
+## Mọi node tĩnh nằm trong scenes/home.tscn (toạ độ Figma trong meta fb_rect, fb_font của FigmaBox; thanh trên, thanh dưới
+## là instance scenes/hub_top.tscn, scenes/hub_nav.tscn); script chỉ tìm node, điền chữ, dữ liệu và nối nút.
 
 signal closed(result: Variant)
 
@@ -15,7 +17,6 @@ const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 const HubTop := preload("res://src/ui/hub_top.gd")
 const HubNav := preload("res://src/ui/hub_nav.gd")
 const FigmaBox := preload("res://src/ui/figma_box.gd")
-const HomeSparkles := preload("res://src/ui/home_sparkles.gd")
 
 const DESIGN_W := 886.0
 ## Khung Figma 1920 trừ dải ADS 120.
@@ -33,14 +34,8 @@ const NAV_TOP := 1552.0
 ## Tab bên của thanh dưới (cao 146, đỉnh 1654): đáy của cột icon không chạm xuống đây.
 const NAV_SIDE_TOP := 1654.0
 
-const BG_NORMAL := Color("FFEEF4")
-## Hoạ tiết kẹo chìm xuống: lòng hình đậm hơn nền, viền sáng lộ ra ở mép dưới (lớp sáng lệch xuống, nằm dưới).
-const CANDY_SHADOW := Color("F2C2D2")
-const CANDY_LIGHT := Color("FFFFFF")
-const CANDY_OFFSET := 2.0
-const BG_HARD_TOP := Color("3454AC")
-const BG_HARD_BOTTOM := Color("DEE1F2")
-const RIBBON_STROKE := Color("9E4D0F")
+# Nền (hồng #FFEEF4; Hard/Super Hard dải #3454AC -> #DEE1F2), hoạ tiết kẹo chìm (lớp sáng lệch 2 px xuống, lớp
+# #F2C2D2 trên), ray mờ hai đầu, phủ TopShade, viền chữ ribbon #9E4D0F: lưu trong scenes/home.tscn.
 ## Theo độ khó: kiểu nút, viền chữ nút, sprite mốc hiện tại, viền số, icon đầu lâu.
 const TIERS := {
 	"": {"button": "primary", "stroke": Color("5A9016"), "node": "node_green", "num": Color("4F7F10"), "skull": ""},
@@ -48,6 +43,8 @@ const TIERS := {
 	"very_hard": {"button": "purple", "stroke": Color("4C0B78"), "node": "hex_purple", "num": Color("4B1073"), "skull": "ui_superhard"},
 }
 const LOCKED_STROKE := Color("787878")
+## Mục mở màn chưa nối logic (chỉ khi Config.ui_preview): [chữ, scene]. Node PreviewItem_<scene> trong scene.
+const PREVIEWS := [["shop_remove_ads", "popup_remove_ads"], ["streak_title", "streak_main"]]
 const SOLVED_STROKE := Color("076F87")
 
 var gold_label: Label = null
@@ -149,244 +146,94 @@ func _on_game_changed(_v: Variant = null) -> void:
 	refresh()
 
 
-## Chấm đỏ thông báo ở góc trên phải của nút.
-func _make_dot(btn: Button, node_name: String) -> Control:
-	var dot := Panel.new()
-	dot.name = node_name
-	dot.custom_minimum_size = Vector2(32, 32)
-	dot.size = Vector2(32, 32)
-	dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var bs := StyleBoxFlat.new()
-	bs.bg_color = ThemeKit.DANGER
-	bs.set_corner_radius_all(16)
-	bs.set_border_width_all(3)
-	bs.border_color = ThemeKit.TEXT
-	dot.add_theme_stylebox_override("panel", bs)
-	btn.add_child(dot)
-	dot.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	dot.offset_left = -38
-	dot.offset_right = -6
-	dot.offset_top = 4
-	dot.offset_bottom = 36
-	dot.visible = false
-	return dot
-
-
-func _tex_rect(tex: Texture2D) -> TextureRect:
-	var r := TextureRect.new()
-	r.texture = tex
-	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return r
-
-
-func _flat_button(node_name: String) -> Button:
-	var b := Button.new()
-	b.name = node_name
-	b.custom_minimum_size = ThemeKit.MIN_BUTTON
-	b.focus_mode = Control.FOCUS_NONE
-	for st in ["normal", "hover", "pressed", "disabled", "focus"]:
-		b.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+## Mục cột bên (Figma Frame 194x176, node trong scene): chữ ribbon, bấm, nhún khi nhấn. Trả nút.
+func _side_item(b: Button, caption: String, right: bool, on_press: Callable) -> Button:
+	var col := b.get_parent() as Control
+	(col.get_node("Caption") as Label).text = caption
+	b.pressed.connect(on_press)
 	b.button_down.connect(func() -> void:
 		b.pivot_offset = b.size * 0.5
 		b.scale = Vector2(0.95, 0.95))
 	b.button_up.connect(func() -> void: b.scale = Vector2.ONE)
+	(_right_items if right else _left_items).append(col)
 	return b
 
 
-## Mục cột bên (Figma Frame 194x176): icon 152, ribbon vàng 194x56, chữ trắng viền nâu. Trả [cột, nút, nhãn].
-func _side_item(icon_name: String, caption: String, node_name: String, right: bool) -> Array:
-	var col := Control.new()
-	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_fb.put(col, Rect2(Vector2(RIGHT_X if right else LEFT_X, COL_TOP), ITEM))
-	add_child(col)
-	var b := _flat_button(node_name)
-	_fb.put(b, Rect2(21, 0, 152, 152))
-	col.add_child(b)
-	var ic := _tex_rect(ThemeKit.icon(icon_name))
-	ic.name = "Icon"
-	ic.set_anchors_preset(Control.PRESET_FULL_RECT)
-	b.add_child(ic)
-	var rib := _tex_rect(UiAtlas.file_tex("home_banner.png"))
-	rib.stretch_mode = TextureRect.STRETCH_SCALE
-	_fb.put(rib, Rect2(0, 120, 194, 56))
-	col.add_child(rib)
-	var l := ThemeKit.make_label(caption)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	l.add_theme_color_override("font_outline_color", RIBBON_STROKE)
-	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_fb.put(l, Rect2(0, 118, 194, 50))
-	_fb.font(l, 36, 3, 166)
-	col.add_child(l)
-	(_right_items if right else _left_items).append(col)
-	return [col, b, l]
+## Mốc trên đường level (node trong scene): sprite, số ở giữa, huy hiệu (khoá/tích) góc dưới phải, đầu lâu trên đỉnh.
+func _path_node(root: Control) -> Dictionary:
+	return {"root": root, "sprite": root.get_node("Sprite"), "num": root.get_node("Number"),
+		"badge": root.get_node("Badge"), "skull": root.get_node("Skull")}
 
 
-## Mốc trên đường level: sprite, số ở giữa, huy hiệu (khoá/tích) góc dưới phải, đầu lâu trên đỉnh.
-func _path_node(node_name: String) -> Dictionary:
-	var root := Control.new()
-	root.name = node_name
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(root)
-	var sprite := _tex_rect(null)
-	sprite.stretch_mode = TextureRect.STRETCH_SCALE
-	root.add_child(sprite)
-	var num := ThemeKit.make_label("")
-	num.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	num.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	num.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(num)
-	var badge := _tex_rect(null)
-	root.add_child(badge)
-	var skull := _tex_rect(null)
-	root.add_child(skull)
-	return {"root": root, "sprite": sprite, "num": num, "badge": badge, "skull": skull}
-
-
+## Every static node is in scenes/home.tscn (Figma rects in FigmaBox metas); this finds them, sets the texts and
+## wires the buttons. The preview items are dropped when Config.ui_preview is off.
 func _build() -> void:
 	if _built:
 		return
 	_built = true
-	theme = ThemeKit.make_theme()
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	for p in PREVIEWS:
+		var item := get_node("%PreviewItem_" + str(p[1])) as Control
+		if not Config.ui_preview():
+			remove_child(item)
+			item.free()
+	_fb.adopt(self)
 
-	# nền: thường hồng #FFEEF4; Hard/Super Hard dải #3454AC -> #DEE1F2; hoạ tiết kẹo chìm và sao lấp lánh ở mọi độ khó
-	_bg = ColorRect.new()
-	_bg.name = "Background"
-	_bg.color = BG_NORMAL
-	_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_bg)
-	_bg_grad = _gradient_rect([[0.0, BG_HARD_TOP], [0.844, BG_HARD_BOTTOM]])
-	_bg_grad.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_bg.add_child(_bg_grad)
-	_pattern = Control.new()
-	_pattern.name = "CandyPattern"
-	_pattern.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_pattern.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_bg.add_child(_pattern)
-	for layer in [[CANDY_LIGHT, CANDY_OFFSET], [CANDY_SHADOW, 0.0]]:
-		var tile := _tex_rect(UiAtlas.file_tex("home_candy_pattern.png"))
-		tile.stretch_mode = TextureRect.STRETCH_TILE
-		tile.set_anchors_preset(Control.PRESET_FULL_RECT)
-		tile.offset_top = layer[1]
-		tile.offset_bottom = layer[1]
-		tile.self_modulate = layer[0]
-		_pattern.add_child(tile)
-	_sparkles = HomeSparkles.new()
-	_sparkles.name = "Sparkles"
-	_sparkles.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_bg.add_child(_sparkles)
-
-	# đường ray dọc, mờ dần ở hai đầu
-	_rail = _tex_rect(UiAtlas.file_tex("home_rail.png"))
-	_rail.name = "Rail"
-	_rail.stretch_mode = TextureRect.STRETCH_SCALE
-	_rail.material = _fade_material()
-	_fb.put(_rail, Rect2(414, -22, 63, 1769))
-	add_child(_rail)
-	_glow = _tex_rect(UiAtlas.file_tex("home_glow.png"))
-	_glow.name = "Glow"
-	_glow.stretch_mode = TextureRect.STRETCH_SCALE
-	add_child(_glow)
-	for n in ["NextNode", "CurrentNode", "PrevNode"]:
-		var pn := _path_node(n)
-		_fb.put(pn.root, Rect2(0, 0, 220, 220))
-		path_nodes.append(pn)
-	# Hard: phủ #3454AC mờ dần trên 566 px đầu
-	_top_shade = _gradient_rect([[0.0, BG_HARD_TOP], [0.494, Color(BG_HARD_TOP, 0.77)], [1.0, Color(BG_HARD_TOP, 0.0)]])
-	_top_shade.name = "TopShade"
-	_fb.put(_top_shade, Rect2(0, 0, DESIGN_W, 566))
-	add_child(_top_shade)
+	_bg = %Background
+	_bg_grad = %HardGradient
+	_pattern = %CandyPattern
+	_sparkles = _bg.get_node("Sparkles")
+	_rail = %Rail
+	_glow = %Glow
+	for n: Control in [%NextNode, %CurrentNode, %PrevNode]:
+		path_nodes.append(_path_node(n))
+	_top_shade = %TopShade
 
 	# cột trái: quà ngày, Daily Challenge
-	var gf := _side_item("ui_gift", tr("home_gift"), "GiftButton", false)
-	_gift_col = gf[0]
-	gift_btn = gf[1]
-	gift_btn.pressed.connect(_emit.bind("gift"))
-	gift_badge = _make_dot(gift_btn, "GiftBadge")
-	var ch := _side_item("ui_clock", tr("home_challenge"), "ChallengeButton", false)
-	_challenge_col = ch[0]
-	challenge_btn = ch[1]
-	challenge_caption = ch[2]
-	challenge_btn.pressed.connect(_on_challenge)
-	_challenge_lock = _tex_rect(ThemeKit.icon("ui_lock"))
-	_challenge_lock.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	_challenge_lock.offset_left = -56
-	_challenge_lock.offset_top = -64
-	_challenge_lock.offset_right = 0
-	_challenge_lock.offset_bottom = 0
-	challenge_btn.add_child(_challenge_lock)
+	gift_btn = _side_item(%GiftButton, tr("home_gift"), false, _emit.bind("gift"))
+	_gift_col = %GiftItem
+	gift_badge = %GiftBadge
+	challenge_btn = _side_item(%ChallengeButton, tr("home_challenge"), false, _on_challenge)
+	_challenge_col = %ChallengeItem
+	challenge_caption = _challenge_col.get_node("Caption")
+	_challenge_lock = %ChallengeLock
 
 	# cột phải: ưu đãi có hạn, Special Pack, Weekend Sale, Weekly Pass, Chain Offer (ẩn khi chưa đủ điều kiện)
-	var of := _side_item("ui_gift", "", "OfferChip", true)
-	_offer_col = of[0]
-	offer_chip = of[1]
-	offer_caption = of[2]
+	offer_chip = _side_item(%OfferChip, "", true, _on_offer)
+	_offer_col = %OfferItem
+	offer_caption = _offer_col.get_node("Caption")
 	_offer_icon = offer_chip.get_node("Icon")
-	offer_chip.pressed.connect(_on_offer)
-	var sp := _side_item("shop_special_pack", tr("home_special_pack"), "SpecialPackButton", true)
-	_special_col = sp[0]
-	special_btn = sp[1]
-	special_btn.pressed.connect(_on_special)
-	var sl := _side_item("ui_shop", tr("home_weekend_sale"), "WeekendSaleButton", true)
-	_sale_col = sl[0]
-	sale_btn = sl[1]
-	sale_btn.pressed.connect(_emit.bind("shop"))
-	var wk := _side_item("ui_gold", tr("home_weekly"), "WeeklyPassButton", true)
-	_weekly_col = wk[0]
-	weekly_btn = wk[1]
-	weekly_caption = wk[2]
-	weekly_btn.pressed.connect(_emit.bind("weekly"))
-	weekly_dot = _make_dot(weekly_btn, "WeeklyDot")
-	var cn := _side_item("ui_gift", tr("home_chain"), "ChainOfferButton", true)
-	_chain_col = cn[0]
-	chain_btn = cn[1]
-	chain_btn.pressed.connect(_emit.bind("chain"))
-	chain_dot = _make_dot(chain_btn, "ChainDot")
+	special_btn = _side_item(%SpecialPackButton, tr("home_special_pack"), true, _on_special)
+	_special_col = %SpecialPackItem
+	sale_btn = _side_item(%WeekendSaleButton, tr("home_weekend_sale"), true, _emit.bind("shop"))
+	_sale_col = %WeekendSaleItem
+	weekly_btn = _side_item(%WeeklyPassButton, tr("home_weekly"), true, _emit.bind("weekly"))
+	_weekly_col = %WeeklyPassItem
+	weekly_caption = _weekly_col.get_node("Caption")
+	weekly_dot = %WeeklyDot
+	# _refresh_events() sets it only while Weekly Pass is open.
+	weekly_dot.visible = false
+	chain_btn = _side_item(%ChainOfferButton, tr("home_chain"), true, _emit.bind("chain"))
+	_chain_col = %ChainOfferItem
+	chain_dot = %ChainDot
 	if Config.ui_preview():
-		_preview_item("ui_noads", tr("shop_remove_ads"), "popup_remove_ads")
-		_preview_item("ui_star", tr("streak_title"), "streak_main")
+		for p in PREVIEWS:
+			var scene := str(p[1])
+			_side_item(get_node("%PreviewItem_" + scene).get_node("Preview_" + scene), tr(str(p[0])), true,
+				func() -> void:
+					Sfx.play("button")
+					closed.emit({"action": "preview", "scene": scene}))
 
 	# nút Chơi: chữ PLAY, trên đó là độ khó (Hard/Super Hard)
-	play_btn = Button.new()
-	play_btn.name = "PlayButton"
-	play_btn.custom_minimum_size = ThemeKit.MIN_BUTTON
-	play_btn.focus_mode = Control.FOCUS_NONE
+	play_btn = %PlayButton
 	play_btn.pressed.connect(_on_play)
-	_fb.put(play_btn, PLAY_RECT, true)
-	add_child(play_btn)
-	hard_tag = ThemeKit.make_label("")
-	hard_tag.name = "HardTag"
-	hard_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hard_tag.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	hard_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_fb.put(hard_tag, Rect2(0, 20, PLAY_RECT.size.x, 46))
-	_fb.font(hard_tag, 36, 3, 330)
-	play_btn.add_child(hard_tag)
-	play_label = ThemeKit.make_label("")
-	play_label.name = "PlayLabel"
-	play_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	play_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	play_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_fb.put(play_label, Rect2(0, 26, PLAY_RECT.size.x, 116))
-	_fb.font(play_label, 102, 4, 340)
-	play_btn.add_child(play_label)
-	coming_soon_label = ThemeKit.make_label(tr("home_coming_soon"))
-	coming_soon_label.name = "ComingSoonLabel"
-	coming_soon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	coming_soon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_fb.put(coming_soon_label, Rect2(0, 1196, DESIGN_W, 60), true)
-	_fb.font(coming_soon_label, 40, 3, 700)
-	add_child(coming_soon_label)
+	hard_tag = %HardTag
+	play_label = %PlayLabel
+	coming_soon_label = %ComingSoonLabel
+	coming_soon_label.text = tr("home_coming_soon")
 
 	# hàng trên: avatar, mạng, vàng, settings
-	_top = HubTop.new()
+	_top = %HubTop as HubTop
 	_top.action.connect(_emit)
-	_fb.put(_top, Rect2(0, 35, DESIGN_W, 124))
-	add_child(_top)
 	profile_btn = _top.profile_btn
 	lives_panel = _top.lives_panel
 	lives_label = _top.lives_label
@@ -395,56 +242,14 @@ func _build() -> void:
 	settings_btn = _top.settings_btn
 
 	# thanh dưới: Shop · Home · Ranking
-	_nav = HubNav.new("home")
+	_nav = %NavBar as HubNav
 	_nav.tab.connect(_on_tab)
-	_fb.put(_nav, Rect2(0, NAV_TOP, DESIGN_W, DESIGN_H - NAV_TOP), true)
-	add_child(_nav)
 	shop_btn = _nav.shop_btn
 	shop_caption = _nav.shop_caption
 
-	_tick = Timer.new()
-	_tick.wait_time = 1.0
-	_tick.one_shot = false
+	_tick = %Tick
 	_tick.timeout.connect(_refresh_timers)
-	add_child(_tick)
 	_tick.start()
-
-
-## Dải màu dọc. stops: [[vị trí 0..1, màu], ...].
-func _gradient_rect(stops: Array) -> TextureRect:
-	var g := Gradient.new()
-	g.offsets = PackedFloat32Array(stops.map(func(st: Array) -> float: return float(st[0])))
-	g.colors = PackedColorArray(stops.map(func(st: Array) -> Color: return st[1] as Color))
-	var gt := GradientTexture2D.new()
-	gt.gradient = g
-	gt.width = 4
-	gt.height = 256
-	gt.fill_from = Vector2(0.5, 0.0)
-	gt.fill_to = Vector2(0.5, 1.0)
-	var r := _tex_rect(gt)
-	r.stretch_mode = TextureRect.STRETCH_SCALE
-	return r
-
-
-## Ray mờ dần ở đầu trên và đầu dưới (mask gradient trong Figma).
-func _fade_material() -> ShaderMaterial:
-	var sh := Shader.new()
-	sh.code = """shader_type canvas_item;
-void fragment() {
-	COLOR.a *= smoothstep(0.0, 0.14, UV.y) * (1.0 - smoothstep(0.86, 0.93, UV.y));
-}
-"""
-	var m := ShaderMaterial.new()
-	m.shader = sh
-	return m
-
-
-## Nút mở một màn chưa nối logic (chỉ dựng khi Config.ui_preview).
-func _preview_item(icon_name: String, caption: String, scene: String) -> void:
-	var res := _side_item(icon_name, caption, "Preview_" + scene, true)
-	(res[1] as Button).pressed.connect(func() -> void:
-		Sfx.play("button")
-		closed.emit({"action": "preview", "scene": scene}))
 
 
 func _layout() -> void:

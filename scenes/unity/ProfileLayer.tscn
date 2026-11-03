@@ -1,0 +1,4870 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="1_d7d40"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="2_7cy3v"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup2.png" id="3_wo0r4"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="4_ww2yc"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="5_4e5qc"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="6_5qcrk"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="7_2aar1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r4ka7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h5vuk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xlet3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ijwne"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0q4x0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x48cv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_emscf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i6rjb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4q3y2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qke2p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bnh4h"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4d6u"]
+shader = ExtResource("5_4e5qc")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/underlay_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nm2if"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("6_5qcrk")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yx8vb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vgd8e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dcdks"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k1a47"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_neil5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ooqo6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wywxu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wvdw1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fumao"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_at6cb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_minwx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("5_4e5qc")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n4ku3"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xp7kh"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5oj47"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k3cx5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n2flf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l6rgy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m6hy8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0m2yn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_64flk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ybqk3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_afmn5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dt0wx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ghct"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ik5lp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7gp6v"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_anyv5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ya7gr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mq5rs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_irsp5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tvlhy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k8kd3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3oe3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g3vsm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bq2sx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mgvmw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rxbl1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sndye"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kcoco"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rsyfr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4reuy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cn1kj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l20b3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ky0vk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5daxd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rujbk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wu3gk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_778hp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
+shader = ExtResource("5_4e5qc")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vhqr5"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sxsto"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ruep2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6t7em"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gb2qv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ifnff"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cu4cf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jq2r5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q1eyk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_33qb1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eb41f"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o1uwi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vvxyb"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dj76o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ic0yw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8og76"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kekys"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pq22e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pgsk5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f8mcx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_067wp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_88efe"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sh0xg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qc2rb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bw5mu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0j5ru"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n3eyj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r0vbm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ks4eg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cni0p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ah2jo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_viix3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b5d8b"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j8vis"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_duebl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1qgqd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n5kop"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_20fp1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gxs65"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ofjh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mnvm7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kahlo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b4vft"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w05ef"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hej4t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y6ety"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
+shader = ExtResource("5_4e5qc")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y1fv8"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qh06q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u7gjy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_400px"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xbade"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_te2da"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gumpw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lrsk5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xhnby"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_axqxv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bdm2k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kbh8r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pgrrh"]
+shader = ExtResource("5_4e5qc")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.047058824, 0.0627451, 0.06666667, 1)
+shader_parameter/underlay_color = Color(0.047058824, 0.0627451, 0.06666667, 1)
+shader_parameter/face_edge = 0.45
+shader_parameter/outline_half = 0.12
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.2925
+shader_parameter/underlay_offset = Vector2(0, -1.176)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ypkv6"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u4xo1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aiu3w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h4ti7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ikgel"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gsaiy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_16g5k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_540ri"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_insjw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gp2r4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ac8p6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0vgyc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oskr3"]
+shader = ExtResource("5_4e5qc")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.40392157, 0.14901961, 0.011764706, 1)
+shader_parameter/underlay_color = Color(0.24313726, 0.03137255, 0.03137255, 1)
+shader_parameter/face_edge = 0.45
+shader_parameter/outline_half = 0.12
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.2925
+shader_parameter/underlay_offset = Vector2(0, -0.84)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f7j2h"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_65di7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xcc2d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j7w4q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkmt8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ucap"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x4lip"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qbido"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_25ssj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iagsj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8y53d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tbfac"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7anxd"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fi6vx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_owni2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_byqn1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rnd34"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wf52w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lufxn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uppp5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yk6fl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5qfe6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3cckn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_46sug"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ju1c0"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vlv5o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_807sa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_riskd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sugpa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ghhda"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5dere"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ix6ui"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gimla"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_humkv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1xl61"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8gaws"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkhht"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=1146163368]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "ProfileLayer"
+
+[node name="ProfileLayer" type="Control" parent="." unique_id=919509438]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_right = -5.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"avatarConfigSO": {
+"asset": "AvatarConfigSO.asset"
+},
+"avatarImage": {
+"node": "6029444536109482490"
+},
+"avatarItem": {
+"node": "8506088050766857787"
+},
+"avatarParent": {
+"node": "8033939900811924994"
+},
+"avatarPriceText": {
+"node": "1704515612240698062"
+},
+"avatarToggleGroup": {
+"node": "8033939900811924994"
+},
+"breakEnable": "0",
+"buyAvatarButton": {
+"node": "15967486945566625"
+},
+"buyFrameButton": {
+"node": "5501657858466624800"
+},
+"changeNameButton": {
+"node": "407839884934592151"
+},
+"closeButtons": [{
+"node": "1590072735812032041"
+}, {
+"node": "8617705343134657326"
+}],
+"debugOnOff": "0",
+"deviceIdText": {
+"node": "104312053270679336"
+},
+"frameConfigSO": {
+"asset": "FrameIconSO.asset"
+},
+"frameImage": {
+"node": "5355846393112478398"
+},
+"frameItem": {
+"node": "4298942325199609488"
+},
+"frameParent": {
+"node": "3827548651905631973"
+},
+"framePriceText": {
+"node": "3595866881577762918"
+},
+"frameToggleGroup": {
+"node": "3827548651905631973"
+},
+"name": "ProfileUICoreLayer",
+"nameText": {
+"node": "8291804052657006129"
+},
+"saveAvatarButton": {
+"node": "3236765693244559791"
+},
+"saveFrameButton": {
+"node": "4706510787956959928"
+},
+"usedAvatarButton": {
+"node": "6832685125054554741"
+},
+"usedFrameButton": {
+"node": "4158196770644701372"
+}
+}, {
+"OnCompleteAnim": [],
+"OnStartAnim": [],
+"dimCanvasGroup": {
+"node": "5208920821355030406"
+},
+"duration": "0.4",
+"easeType": "26",
+"name": "DialogueReveal",
+"panelRect": {
+"node": "5208920821355030406"
+}
+}],
+"id": "2336176072922937704",
+"n": "ProfileLayer",
+"r": [0.0, 0.0, 1.0, 1.0, -5.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-5, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Bg" type="Button" parent="ProfileLayer" unique_id=277507453]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_r4ka7")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_h5vuk")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_xlet3")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_ijwne")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0q4x0")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_x48cv")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_emscf")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_i6rjb")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_4q3y2")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_qke2p")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bnh4h")
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "1590072735812032041",
+"tr": 0.0
+},
+"id": "1590072735812032041",
+"img": {
+"c": "000000cc",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Bg" unique_id=1299285715]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="Panel" type="Control" parent="ProfileLayer" unique_id=1296898588]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"id": "5208920821355030406",
+"n": "Panel",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="ProfileMenu" type="Control" parent="ProfileLayer/Panel" unique_id=769181568]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -362.0
+offset_top = -600.4753
+offset_right = 362.0
+offset_bottom = 648.01447
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1629233615669166226",
+"n": "ProfileMenu",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -23.7696, 724.0, 1248.4897, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -23.7696),
+"size": Vector2(724, 1248.4897)
+}
+
+[node name="Bg" type="Control" parent="ProfileLayer/Panel/ProfileMenu" unique_id=1243641380]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("3_wo0r4")
+region = Rect2(0, 0, 800, 800)
+border = Vector4(120, 120, 120, 120)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2005729142746732927",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Popup2",
+"t": 1.0
+},
+"n": "Bg",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="ProfileLayer/Panel/ProfileMenu" unique_id=1347804086]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_top = -60.0
+offset_right = 225.0
+offset_bottom = 60.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(384, 1332, 368, 108)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7059936750074152768",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, 0.0, 450.0, 120.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(450, 120)
+}
+
+[node name="txtHeader" type="Label" parent="ProfileLayer/Panel/ProfileMenu/Image" unique_id=1248230598]
+material = SubResource("ShaderMaterial_g4d6u")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -52.3665
+offset_right = 220.0
+offset_bottom = 52.3665
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nm2if")
+theme_override_constants/line_spacing = -8
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Profile"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "1003881244676388150",
+"n": "txtHeader",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 440.0, 104.733, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Profile",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(440, 104.733)
+}
+metadata/u_txt = {
+"auto": [18.0, 64.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Purple",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Profile",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Top" type="Control" parent="ProfileLayer/Panel/ProfileMenu" unique_id=1662770863]
+anchors_preset = 0
+anchor_right = 1.0
+offset_bottom = 130.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5299223922982401401",
+"n": "Top",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -65.0, 0.0, 130.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -65),
+"size": Vector2(0, 130)
+}
+
+[node name="btnTurnOff" type="Button" parent="ProfileLayer/Panel/ProfileMenu/Top" unique_id=122907422]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_bottom = 80.0
+pivot_offset_ratio = Vector2(1, 0)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_yx8vb")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_vgd8e")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_dcdks")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_k1a47")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_neil5")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_ooqo6")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_wywxu")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_wvdw1")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_fumao")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_at6cb")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_minwx")
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "8617705343134657326",
+"tr": 1.0
+},
+"id": "8617705343134657326",
+"img": {
+"c": "3f7cda00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "btnTurnOff",
+"r": [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 80.0, 80.0, 1.0, 1.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(1, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(80, 80)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/Top/btnTurnOff" unique_id=1785239982]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+color = Color(0.24705882, 0.4862745, 0.85490197, 0)
+pivot = Vector2(1, 1)
+fill_method = 4
+
+[node name="Image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/Top/btnTurnOff" unique_id=1880843082]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(300, 516, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5261117278016466846",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 64.0, 64.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(64, 64)
+}
+
+[node name="PlayerInfo" type="Control" parent="ProfileLayer/Panel/ProfileMenu" unique_id=1607195118]
+anchors_preset = 0
+anchor_right = 1.0
+offset_left = 48.0
+offset_top = 89.600006
+offset_right = -48.0
+offset_bottom = 313.6
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(1166, 523, 188, 290)
+border = Vector4(50, 50, 50, 50)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6721925782904410120",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+"t": 1.0
+},
+"n": "PlayerInfo",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -201.6, -96.0, 224.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -201.6),
+"size": Vector2(-96, 224)
+}
+
+[node name="CurrentAvt" type="Control" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo" unique_id=1685679112]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 28.77
+offset_top = -81.3
+offset_right = 188.77
+offset_bottom = 78.7
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6029444536109482490",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "CurrentAvt",
+"r": [0.0, 0.5, 0.0, 0.5, 28.77, 1.3, 160.0, 160.0, 0.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(28.77, 1.3),
+"size": Vector2(160, 160)
+}
+
+[node name="CurrentFrame" type="Control" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo" unique_id=1388899051]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = -86.0
+offset_right = 196.0
+offset_bottom = 86.0
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5355846393112478398",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "CurrentFrame",
+"r": [0.0, 0.5, 0.0, 0.5, 24.0, 0.0, 172.0, 172.0, 0.0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(24, 0),
+"size": Vector2(172, 172)
+}
+
+[node name="Label" type="Label" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo" unique_id=2062601865]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.0
+offset_top = -96.8535
+offset_right = 120.9274
+offset_bottom = -41.000504
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_n4ku3")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Nickname:"
+metadata/u = {
+"a": true,
+"id": "2759291709141135714",
+"n": "Label",
+"r": [0.5, 0.5, 0.5, 0.5, 13.4637, 68.927, 214.9274, 55.853, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Nickname:",
+"st": 0.0,
+"v": 256.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(13.4637, 68.927),
+"size": Vector2(214.9274, 55.853)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 40.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Nickname:",
+"st": 0.0,
+"v": 256.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="UID but very DeviceID" type="Label" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo" unique_id=1000725260]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.000046
+offset_top = 46.79395
+offset_right = -21.857952
+offset_bottom = 95.206055
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xp7kh")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 35
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "UID:"
+metadata/u = {
+"a": true,
+"id": "630134779410022761",
+"n": "UID but very DeviceID",
+"r": [0.5, 0.5, 0.5, 0.5, -57.929, -71.0, 72.1421, 48.4121, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 36.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.25,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "UID:",
+"st": 0.0,
+"v": 256.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-57.929, -71),
+"size": Vector2(72.1421, 48.4121)
+}
+metadata/u_txt = {
+"auto": [18.0, 36.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 35.25,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "UID:",
+"st": 0.0,
+"v": 256.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="DeviceID" type="Label" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo/UID but very DeviceID" unique_id=1358992443]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 35.321945
+offset_top = -24.2061
+offset_right = 296.56067
+offset_bottom = 37.4063
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5oj47")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "asfiuh9pq8we...sdsddssd"
+clip_text = true
+metadata/u = {
+"a": true,
+"id": "104312053270679336",
+"n": "DeviceID",
+"r": [0.5, 0.5, 0.5, 0.5, 165.9413, -6.6001, 261.2387, 61.6124, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 3.0,
+"rich": false,
+"rt": false,
+"s": "asfiuh9pq8we...sdsddssd",
+"st": 0.0,
+"v": 256.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(165.9413, -6.6001),
+"size": Vector2(261.2387, 61.6124)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 3.0,
+"rich": false,
+"rt": false,
+"s": "asfiuh9pq8we...sdsddssd",
+"st": 0.0,
+"v": 256.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="CopyBtn" type="Button" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo/UID but very DeviceID" unique_id=466244509]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.070007
+offset_top = -30.1
+offset_right = 345.43
+offset_bottom = 17.9
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_k3cx5")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_n2flf")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_l6rgy")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_m6hy8")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0m2yn")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_64flk")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ybqk3")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_afmn5")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_dt0wx")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_7ghct")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ik5lp")
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "7205483292805025866",
+"tr": 1.0
+},
+"cs": [{
+"button": {
+"node": "5222517850867150921"
+},
+"name": "ClipboardCopyButton",
+"textTarget": {
+"node": "104312053270679336"
+}
+}],
+"id": "5222517850867150921",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "CopyBtn",
+"r": [0.5, 0.5, 0.5, 0.5, 154.68, 6.1, 381.5, 48.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(154.68, 6.1),
+"size": Vector2(381.5, 48)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo/UID but very DeviceID/CopyBtn" unique_id=2077824827]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+color = Color(1, 1, 1, 0)
+fill_method = 4
+
+[node name="CopyIcon" type="Control" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo/UID but very DeviceID/CopyBtn" unique_id=380060253]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 142.75
+offset_top = -24.0
+offset_right = 190.75
+offset_bottom = 24.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(468, 595, 64, 64)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7205483292805025866",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_31",
+"t": 0.0
+},
+"n": "CopyIcon",
+"r": [0.5, 0.5, 0.5, 0.5, 166.75, 0.0, 48.0, 48.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(166.75, 0),
+"size": Vector2(48, 48)
+}
+
+[node name="PlayerName" type="Control" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo" unique_id=1595987805]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.0
+offset_top = -46.6
+offset_right = 290.0
+offset_bottom = 35.4
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(525, 515, 116, 72)
+border = Vector4(31, 27, 23, 23)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4909157816569730740",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_22",
+"t": 1.0
+},
+"n": "PlayerName",
+"r": [0.5, 0.5, 0.5, 0.5, 98.0, 5.6, 384.0, 82.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(98, 5.6),
+"size": Vector2(384, 82)
+}
+
+[node name="Placeholder" type="Label" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo/PlayerName" unique_id=795188541]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.9999485
+offset_top = 6.5
+offset_right = -73.04315
+offset_bottom = -6.5
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7gp6v")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "PlayersName"
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "8291804052657006129",
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "Placeholder",
+"r": [0.0, 0.0, 1.0, 1.0, -31.5216, 0.0, -83.0431, -13.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 36.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "PlayersName",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-31.5216, 0),
+"size": Vector2(-83.0431, -13)
+}
+metadata/u_txt = {
+"auto": [18.0, 36.0],
+"c": "1c4a83ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 1.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "PlayersName",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Editname" type="Button" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo" unique_id=1480274925]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -96.0
+offset_top = -35.6
+offset_right = -36.0
+offset_bottom = 24.4
+pivot_offset_ratio = Vector2(1, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_anyv5")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ya7gr")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_mq5rs")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_irsp5")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_tvlhy")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_k8kd3")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_i3oe3")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_g3vsm")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_bq2sx")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_mgvmw")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rxbl1")
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "407839884934592151",
+"tr": 1.0
+},
+"id": "407839884934592151",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 4.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_36",
+"t": 0.0
+},
+"n": "Editname",
+"r": [1.0, 0.5, 1.0, 0.5, -36.0, 5.6, 60.0, 60.0, 1.0, 0.5],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(1, 0.5),
+"pivot": Vector2(1, 0.5),
+"pos": Vector2(-36, 5.6),
+"size": Vector2(60, 60)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/PlayerInfo/Editname" unique_id=1949907452]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(468, 668, 64, 64)
+border_scale = 0.25
+pivot = Vector2(1, 0.5)
+fill_method = 4
+
+[node name="BG" type="Control" parent="ProfileLayer/Panel/ProfileMenu" unique_id=1462407977]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -314.0
+offset_top = 365.9
+offset_right = 314.0
+offset_bottom = -210.0004
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(1166, 523, 188, 290)
+border = Vector4(50, 50, 50, 50)
+kind = 1
+pivot = Vector2(0.5, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8801335193403570060",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+"t": 1.0
+},
+"n": "BG",
+"r": [0.5, 0.0, 0.5, 1.0, 0.0, -365.9, 628.0, -575.9004, 0.5, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -365.9),
+"size": Vector2(628, -575.9004)
+}
+
+[node name="ToggleGroup" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG" unique_id=726990779]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_top = 33.5
+offset_right = 50.0
+offset_bottom = 133.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "ToggleGroup"
+}],
+"id": "3619087417946478445",
+"n": "ToggleGroup",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -83.5, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -83.5),
+"size": Vector2(100, 100)
+}
+
+[node name="Avatar" type="Button" parent="ProfileLayer/Panel/ProfileMenu/BG/ToggleGroup" unique_id=1329991695]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -308.0
+offset_top = -45.0
+offset_right = 2.0
+offset_bottom = 45.0
+pivot_offset_ratio = Vector2(1, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_sndye")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_kcoco")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rsyfr")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_4reuy")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_cn1kj")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_l20b3")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ky0vk")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_5daxd")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_rujbk")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_wu3gk")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_778hp")
+toggle_mode = true
+button_pressed = true
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)])
+transition = 0
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"cs": [{
+"OnValueChange": [],
+"changeColor": "0",
+"changeSprite": "1",
+"flexibleOff": {
+"x": "1",
+"y": "1"
+},
+"flexibleOn": {
+"x": "1.2",
+"y": "1"
+},
+"gameObjects": [],
+"hasIcon": "0",
+"hasTitle": "0",
+"icon": null,
+"iconAnchorOff": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconAnchorOn": {
+"x": "0",
+"y": "75",
+"z": "0"
+},
+"iconScaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"iconScaleOn": {
+"x": "1.5",
+"y": "1.5",
+"z": "1.5"
+},
+"isSmoothIcon": "0",
+"isSmoothScaleChange": "0",
+"isSmoothSpriteChange": "0",
+"isSmoothTitle": "1",
+"layoutElement": null,
+"name": "ToggleAnimator",
+"offColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"offObjects": [{
+"node": "1284899498790611342"
+}, {
+"node": "3762612234244714779"
+}],
+"offSprite": {
+"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_53"
+},
+"onColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"onObjects": [{
+"node": "3431935037465841705"
+}, {
+"node": "2701796773220572950"
+}],
+"onSprite": {
+"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_54"
+},
+"scaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"scaleOn": {
+"x": "1.2",
+"y": "1.2",
+"z": "1.2"
+},
+"scaleType": "0",
+"sizeDeltaOff": {
+"x": "1",
+"y": "1"
+},
+"sizeDeltaOn": {
+"x": "1.2",
+"y": "1.2"
+},
+"targetImage": {
+"node": "8377037224526684010"
+},
+"timeSmoothIcon": "0.2",
+"timeSmoothScale": "0.2",
+"timeSmoothSprite": "0.2",
+"timeSmoothTitle": "0.2",
+"title": null,
+"toggle": {
+"node": "1002479093924923843"
+}
+}],
+"id": "1002479093924923843",
+"n": "Avatar",
+"r": [0.5, 1.0, 0.5, 1.0, 2.0, 0.0, 310.0, 90.0, 1.0, 0.5],
+"snd": true,
+"tog": {
+"c": ["ffffffff", "ffffffff", "ffffffff", "ffffffff"],
+"dur": 0.1,
+"graphic": null,
+"group": "3619087417946478445",
+"inter": true,
+"mult": 1.0,
+"on": true,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "8377037224526684010",
+"tr": 0.0
+},
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(1, 0.5),
+"pos": Vector2(2, 0),
+"size": Vector2(310, 90)
+}
+
+[node name="Background" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/ToggleGroup/Avatar" unique_id=1432650336]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(0, 1734, 360, 102)
+border = Vector4(50, 51, 0, 51)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8377037224526684010",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_54",
+"t": 1.0
+},
+"n": "Background",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/ToggleGroup/Avatar" unique_id=1412105093]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -52.2
+offset_top = 5.6000023
+offset_right = 11.799999
+offset_bottom = 69.6
+pivot_offset_ratio = Vector2(0.1, 0.9)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("7_2aar1")
+region = Rect2(448, 1363, 128, 128)
+color = Color(1, 1, 1, 0)
+pivot = Vector2(0.1, 0.1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"OnNotifyStateActive": [{
+"arg": null,
+"method": "StartScaleAnim",
+"target": "2583282113479230452"
+}],
+"OnNotifyStateInActive": [{
+"arg": null,
+"method": "StopScaleAnim",
+"target": "2583282113479230452"
+}],
+"keyName": "0",
+"name": "NotifyElement",
+"notifyImge": {
+"node": "2583282113479230452"
+}
+}, {
+"ActiveOnStart": "0",
+"duration": "0.5",
+"loopCount": "-1",
+"name": "UIAnimScale",
+"rectTransforms": [{
+"node": "2583282113479230452"
+}],
+"scaleValue": "1.2"
+}],
+"id": "2583282113479230452",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_85",
+"t": 0.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, -45.8, -63.2, 64.0, 64.0, 0.1, 0.1]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0.1, 0.1),
+"pos": Vector2(-45.8, -63.2),
+"size": Vector2(64, 64)
+}
+
+[node name="Text (TMP)" type="Label" parent="ProfileLayer/Panel/ProfileMenu/BG/ToggleGroup/Avatar" unique_id=144776360]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -25.0
+offset_right = 100.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vhqr5")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "AVATAR"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4650185245286207798",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 200.0, 50.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "AVATAR",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(200, 50)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "AVATAR",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Frame" type="Button" parent="ProfileLayer/Panel/ProfileMenu/BG/ToggleGroup" unique_id=1532781211]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -2.0
+offset_top = -45.0
+offset_right = 308.0
+offset_bottom = 45.0
+pivot_offset_ratio = Vector2(0, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_sxsto")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ruep2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_6t7em")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_gb2qv")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ifnff")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_cu4cf")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_jq2r5")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_q1eyk")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_33qb1")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_eb41f")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_o1uwi")
+toggle_mode = true
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)])
+transition = 0
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"cs": [{
+"OnValueChange": [],
+"changeColor": "0",
+"changeSprite": "1",
+"flexibleOff": {
+"x": "1",
+"y": "1"
+},
+"flexibleOn": {
+"x": "1.2",
+"y": "1"
+},
+"gameObjects": [],
+"hasIcon": "0",
+"hasTitle": "0",
+"icon": null,
+"iconAnchorOff": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconAnchorOn": {
+"x": "0",
+"y": "75",
+"z": "0"
+},
+"iconScaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"iconScaleOn": {
+"x": "1.5",
+"y": "1.5",
+"z": "1.5"
+},
+"isSmoothIcon": "1",
+"isSmoothScaleChange": "0",
+"isSmoothSpriteChange": "0",
+"isSmoothTitle": "0",
+"layoutElement": null,
+"name": "ToggleAnimator",
+"offColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"offObjects": [{
+"node": "3431935037465841705"
+}, {
+"node": "2701796773220572950"
+}],
+"offSprite": {
+"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_55"
+},
+"onColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"onObjects": [{
+"node": "1284899498790611342"
+}, {
+"node": "3762612234244714779"
+}],
+"onSprite": {
+"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_56"
+},
+"scaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"scaleOn": {
+"x": "1.2",
+"y": "1.2",
+"z": "1.2"
+},
+"scaleType": "0",
+"sizeDeltaOff": {
+"x": "1",
+"y": "1"
+},
+"sizeDeltaOn": {
+"x": "1.2",
+"y": "1.2"
+},
+"targetImage": {
+"node": "8005065318772333442"
+},
+"timeSmoothIcon": "0.2",
+"timeSmoothScale": "0.2",
+"timeSmoothSprite": "0.2",
+"timeSmoothTitle": "0.2",
+"title": null,
+"toggle": {
+"node": "2861516268528026586"
+}
+}],
+"id": "2861516268528026586",
+"n": "Frame",
+"r": [0.5, 1.0, 0.5, 1.0, -2.0, 0.0, 310.0, 90.0, 0.0, 0.5],
+"snd": true,
+"tog": {
+"c": ["ffffffff", "ffffffff", "ffffffff", "ffffffff"],
+"dur": 0.1,
+"graphic": null,
+"group": "3619087417946478445",
+"inter": true,
+"mult": 1.0,
+"on": false,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "8005065318772333442",
+"tr": 0.0
+},
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(-2, 0),
+"size": Vector2(310, 90)
+}
+
+[node name="Background" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/ToggleGroup/Frame" unique_id=1858178038]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(0, 1840, 360, 102)
+border = Vector4(0, 51, 50, 51)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8005065318772333442",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_55",
+"t": 1.0
+},
+"n": "Background",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/ToggleGroup/Frame" unique_id=1640735528]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -57.300003
+offset_top = 5.599903
+offset_right = 6.699997
+offset_bottom = 69.5999
+pivot_offset_ratio = Vector2(0.1, 0.9)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("7_2aar1")
+region = Rect2(448, 1363, 128, 128)
+color = Color(1, 1, 1, 0)
+pivot = Vector2(0.1, 0.1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"cs": [{
+"OnNotifyStateActive": [{
+"arg": null,
+"method": "StartScaleAnim",
+"target": "7584310950892145501"
+}],
+"OnNotifyStateInActive": [{
+"arg": null,
+"method": "StopScaleAnim",
+"target": "7584310950892145501"
+}],
+"keyName": "0",
+"name": "NotifyElement",
+"notifyImge": {
+"node": "7584310950892145501"
+}
+}, {
+"ActiveOnStart": "0",
+"duration": "0.5",
+"loopCount": "-1",
+"name": "UIAnimScale",
+"rectTransforms": [{
+"node": "7584310950892145501"
+}],
+"scaleValue": "1.2"
+}],
+"id": "7584310950892145501",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_85",
+"t": 0.0
+},
+"n": "Image",
+"r": [1.0, 1.0, 1.0, 1.0, -50.9, -63.1999, 64.0, 64.0, 0.1, 0.1]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(1, 1),
+"pivot": Vector2(0.1, 0.1),
+"pos": Vector2(-50.9, -63.1999),
+"size": Vector2(64, 64)
+}
+
+[node name="Text (TMP)" type="Label" parent="ProfileLayer/Panel/ProfileMenu/BG/ToggleGroup/Frame" unique_id=5723827]
+material = SubResource("ShaderMaterial_3wugu")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -25.0
+offset_right = 100.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vvxyb")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "FRAME"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "684084461023178472",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 200.0, 50.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "FRAME",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(200, 50)
+}
+metadata/u_txt = {
+"auto": [18.0, 40.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.4,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - DarkBlue",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "FRAME",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Avatar" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG" unique_id=2011029301]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3431935037465841705",
+"n": "Avatar",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"scroll": {
+"content": "8033939900811924994",
+"decel": 0.135,
+"elastic": 0.1,
+"h": false,
+"inertia": true,
+"move": 1.0,
+"v": true,
+"viewport": "4095036235015081569",
+"wheel": 1.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Viewport" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar" unique_id=836866223]
+clip_children = 1
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 90.0
+offset_bottom = -16.9999
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+kind = 1
+pivot = Vector2(0, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4095036235015081569",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"mask": {
+"show": false
+},
+"n": "Viewport",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, -90.0, 0.0, -106.9999, 0.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 1),
+"pos": Vector2(0, -90),
+"size": Vector2(0, -106.9999)
+}
+
+[node name="Content" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar/Viewport" unique_id=1026258203]
+anchors_preset = 0
+anchor_right = 1.0
+offset_bottom = 60.0
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "ToggleGroup"
+}],
+"fit": {
+"h": 0.0,
+"v": 2.0
+},
+"id": "8033939900811924994",
+"lay": {
+"al": 1.0,
+"axis": 0.0,
+"cell": [152.0, 152.0],
+"cons": 0.0,
+"corner": 0.0,
+"count": 2.0,
+"pad": [0.0, 0.0, 40.0, 20.0],
+"sp": [48.0, 48.0],
+"t": "g"
+},
+"n": "Content",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 60)
+}
+
+[node name="Profile_AvtCells" type="Button" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar/Viewport/Content" unique_id=145921091]
+visible = false
+layout_mode = 0
+offset_left = 238.0
+offset_top = 40.0
+offset_right = 390.0
+offset_bottom = 192.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dj76o")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ic0yw")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_8og76")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_kekys")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pq22e")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_pgsk5")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_f8mcx")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_067wp")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_88efe")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_sh0xg")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qc2rb")
+toggle_mode = true
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": false,
+"cs": [{
+"avatarImage": {
+"node": "8506088050766857787"
+},
+"equipSign": {
+"node": "2226265346679326434"
+},
+"lockGO": {
+"node": "6289632821412622086"
+},
+"name": "AvatarItem",
+"selectClip": {
+"asset": "sfx_chooseava.mp3"
+},
+"toggle": {
+"node": "8506088050766857787"
+}
+}, {
+"OnValueChange": [],
+"changeColor": "0",
+"changeSprite": "0",
+"flexibleOff": {
+"x": "1",
+"y": "1"
+},
+"flexibleOn": {
+"x": "1.2",
+"y": "1"
+},
+"gameObjects": [{
+"node": "738537718693415986"
+}],
+"hasIcon": "0",
+"hasTitle": "0",
+"icon": null,
+"iconAnchorOff": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconAnchorOn": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconScaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"iconScaleOn": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"isSmoothIcon": "0",
+"isSmoothScaleChange": "0",
+"isSmoothSpriteChange": "0",
+"isSmoothTitle": "0",
+"layoutElement": null,
+"name": "ToggleAnimator",
+"offColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"offObjects": [],
+"offSprite": null,
+"onColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"onObjects": [],
+"onSprite": null,
+"scaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"scaleOn": {
+"x": "1.2",
+"y": "1.2",
+"z": "1.2"
+},
+"scaleType": "0",
+"sizeDeltaOff": {
+"x": "1",
+"y": "1"
+},
+"sizeDeltaOn": {
+"x": "1.2",
+"y": "1.2"
+},
+"targetImage": {
+"node": "8506088050766857787"
+},
+"timeSmoothIcon": "0.2",
+"timeSmoothScale": "0.2",
+"timeSmoothSprite": "0.2",
+"timeSmoothTitle": "0.2",
+"title": null,
+"toggle": {
+"node": "8506088050766857787"
+}
+}, {
+"effectImages": [{
+"Image": {
+"node": "8506088050766857787"
+},
+"NormalColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"PressColor": {
+"a": "1",
+"b": "0.78431374",
+"g": "0.78431374",
+"r": "0.78431374"
+},
+"colorTransitionDuration": "0.1"
+}, {
+"Image": {
+"node": "738537718693415986"
+},
+"NormalColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"PressColor": {
+"a": "1",
+"b": "0.78431374",
+"g": "0.78431374",
+"r": "0.78431374"
+},
+"colorTransitionDuration": "0.1"
+}],
+"name": "PressEffect",
+"selectable": {
+"node": "8506088050766857787"
+}
+}],
+"id": "8506088050766857787",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_75",
+"t": 0.0
+},
+"n": "Profile_AvtCells",
+"r": [0.0, 1.0, 0.0, 1.0, 314.0, -116.0, 152.0, 152.0, 0.5, 0.5],
+"tog": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"graphic": null,
+"group": null,
+"inter": true,
+"mult": 1.0,
+"on": false,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "8506088050766857787",
+"tr": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(314, -116),
+"size": Vector2(152, 152)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar/Viewport/Content/Profile_AvtCells" unique_id=1370997269]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(756, 1160, 168, 168)
+fill_method = 4
+
+[node name="Select" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar/Viewport/Content/Profile_AvtCells" unique_id=1559759495]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -15.85255
+offset_top = -15.85255
+offset_right = 15.85255
+offset_bottom = 15.85255
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(928, 988, 168, 168)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "738537718693415986",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_66",
+"t": 0.0
+},
+"n": "Select",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 31.7051, 31.7051, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(31.7051, 31.7051)
+}
+
+[node name="Image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar/Viewport/Content/Profile_AvtCells" unique_id=531863852]
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(756, 816, 168, 168)
+fill_method = 4
+metadata/u = {
+"a": false,
+"id": "1855657215589187041",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Lock" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar/Viewport/Content/Profile_AvtCells" unique_id=658919533]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("7_2aar1")
+region = Rect2(1297, 1667, 104, 104)
+border = Vector4(32, 50, 32, 35)
+border_scale = 1.1764705882352942
+kind = 1
+color = Color(0.76862746, 0.76862746, 0.76862746, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6289632821412622086",
+"img": {
+"c": "c4c4c4ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 0.85,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_23",
+"t": 1.0
+},
+"n": "Lock",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar/Viewport/Content/Profile_AvtCells/Lock" unique_id=2099056164]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(756, 1160, 168, 168)
+color = Color(0, 0, 0, 0.4)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1415308997725216600",
+"img": {
+"c": "00000066",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_75",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image (1)" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar/Viewport/Content/Profile_AvtCells/Lock" unique_id=263189942]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 12.604252
+offset_top = 8.604252
+offset_right = 69.48215
+offset_bottom = 65.48215
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(98, 515, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4790698368749095258",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_18",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, 41.0432, -37.0432, 56.8779, 56.8779, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(41.0432, -37.0432),
+"size": Vector2(56.8779, 56.8779)
+}
+
+[node name="Equipped" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar/Viewport/Content/Profile_AvtCells" unique_id=289299555]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -3.1956
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "2226265346679326434",
+"n": "Equipped",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 1.0978, -2.0, -4.1956, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 1.0978),
+"size": Vector2(-2, -4.1956)
+}
+
+[node name="Equipped (1)" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Avatar/Viewport/Content/Profile_AvtCells/Equipped" unique_id=1882991759]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -74.0539
+offset_top = -78.9583
+offset_right = 2.6539001
+offset_bottom = -2.2504997
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(0, 516, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3370955356469992838",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_17",
+"t": 0.0
+},
+"n": "Equipped (1)",
+"r": [1.0, 0.0, 1.0, 0.0, -35.7, 40.6044, 76.7078, 76.7078, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-35.7, 40.6044),
+"size": Vector2(76.7078, 76.7078)
+}
+
+[node name="Frame" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG" unique_id=1114409958]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1284899498790611342",
+"n": "Frame",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"scroll": {
+"content": "3827548651905631973",
+"decel": 0.135,
+"elastic": 0.1,
+"h": false,
+"inertia": true,
+"move": 1.0,
+"v": true,
+"viewport": "5250946335295790056",
+"wheel": 1.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Viewport" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame" unique_id=348544204]
+clip_children = 1
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 90.0
+offset_bottom = -17.0
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+kind = 1
+pivot = Vector2(0, 1)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5250946335295790056",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 1.0
+},
+"mask": {
+"show": false
+},
+"n": "Viewport",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, -90.0, 0.0, -107.0, 0.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 1),
+"pos": Vector2(0, -90),
+"size": Vector2(0, -107)
+}
+
+[node name="Content" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame/Viewport" unique_id=834432259]
+anchors_preset = 0
+anchor_right = 1.0
+offset_bottom = 60.0
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cs": [{
+"name": "ToggleGroup"
+}],
+"fit": {
+"h": 0.0,
+"v": 2.0
+},
+"id": "3827548651905631973",
+"lay": {
+"al": 1.0,
+"axis": 0.0,
+"cell": [152.0, 152.0],
+"cons": 0.0,
+"corner": 0.0,
+"count": 2.0,
+"pad": [0.0, 0.0, 40.0, 20.0],
+"sp": [48.0, 48.0],
+"t": "g"
+},
+"n": "Content",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0, 1),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 60)
+}
+
+[node name="Profile_FrameCells" type="Button" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame/Viewport/Content" unique_id=1161644007]
+visible = false
+layout_mode = 0
+offset_left = 238.0
+offset_top = 40.0
+offset_right = 390.0
+offset_bottom = 192.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_bw5mu")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_0j5ru")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_n3eyj")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_r0vbm")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ks4eg")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_cni0p")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ah2jo")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_viix3")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_b5d8b")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_j8vis")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_duebl")
+toggle_mode = true
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": false,
+"cs": [{
+"OnValueChange": [],
+"changeColor": "0",
+"changeSprite": "0",
+"flexibleOff": {
+"x": "1",
+"y": "1"
+},
+"flexibleOn": {
+"x": "1.2",
+"y": "1"
+},
+"gameObjects": [{
+"node": "5160152531094967449"
+}],
+"hasIcon": "0",
+"hasTitle": "0",
+"icon": null,
+"iconAnchorOff": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconAnchorOn": {
+"x": "0",
+"y": "0",
+"z": "0"
+},
+"iconScaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"iconScaleOn": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"isSmoothIcon": "0",
+"isSmoothScaleChange": "0",
+"isSmoothSpriteChange": "0",
+"isSmoothTitle": "0",
+"layoutElement": null,
+"name": "ToggleAnimator",
+"offColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"offObjects": [],
+"offSprite": null,
+"onColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"onObjects": [],
+"onSprite": null,
+"scaleOff": {
+"x": "1",
+"y": "1",
+"z": "1"
+},
+"scaleOn": {
+"x": "1.2",
+"y": "1.2",
+"z": "1.2"
+},
+"scaleType": "0",
+"sizeDeltaOff": {
+"x": "1",
+"y": "1"
+},
+"sizeDeltaOn": {
+"x": "1.2",
+"y": "1.2"
+},
+"targetImage": {
+"node": "1755479300335390987"
+},
+"timeSmoothIcon": "0.2",
+"timeSmoothScale": "0.2",
+"timeSmoothSprite": "0.2",
+"timeSmoothTitle": "0.2",
+"title": null,
+"toggle": {
+"node": "4298942325199609488"
+}
+}, {
+"effectImages": [{
+"Image": null,
+"NormalColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"PressColor": {
+"a": "1",
+"b": "0.78431374",
+"g": "0.78431374",
+"r": "0.78431374"
+},
+"colorTransitionDuration": "0.1"
+}, {
+"Image": {
+"node": "5160152531094967449"
+},
+"NormalColor": {
+"a": "1",
+"b": "1",
+"g": "1",
+"r": "1"
+},
+"PressColor": {
+"a": "1",
+"b": "0.78431374",
+"g": "0.78431374",
+"r": "0.78431374"
+},
+"colorTransitionDuration": "0.1"
+}],
+"name": "PressEffect",
+"selectable": {
+"node": "4298942325199609488"
+}
+}, {
+"equipSign": {
+"node": "6000505332522557001"
+},
+"frameImage": {
+"node": "1755479300335390987"
+},
+"lockGO": {
+"node": "1939390066231261101"
+},
+"name": "FrameItem",
+"selectClip": {
+"asset": "sfx_chooseava.mp3"
+},
+"toggle": {
+"node": "4298942325199609488"
+}
+}],
+"id": "4298942325199609488",
+"n": "Profile_FrameCells",
+"r": [0.0, 1.0, 0.0, 1.0, 314.0, -116.0, 152.0, 152.0, 0.5, 0.5],
+"tog": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"graphic": null,
+"group": null,
+"inter": true,
+"mult": 1.0,
+"on": false,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": null,
+"tr": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(314, -116),
+"size": Vector2(152, 152)
+}
+
+[node name="Select" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells" unique_id=88017417]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -15.85255
+offset_top = -15.85255
+offset_right = 15.85255
+offset_bottom = 15.85255
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(928, 988, 168, 168)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5160152531094967449",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_66",
+"t": 0.0
+},
+"n": "Select",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 31.7051, 31.7051, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(31.7051, 31.7051)
+}
+
+[node name="Image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells" unique_id=2053596981]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(928, 1160, 168, 168)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3125740278487122259",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_76",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -10.0, -10.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-10, -10)
+}
+
+[node name="FrameImage" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells" unique_id=95518957]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(756, 816, 168, 168)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1755479300335390987",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
+"t": 0.0
+},
+"n": "FrameImage",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Lock" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells" unique_id=1154288697]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("7_2aar1")
+region = Rect2(1297, 1667, 104, 104)
+border = Vector4(32, 50, 32, 35)
+border_scale = 1.1764705882352942
+kind = 1
+color = Color(0.76862746, 0.76862746, 0.76862746, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1939390066231261101",
+"img": {
+"c": "c4c4c4ff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": false,
+"pa": false,
+"ppu": 0.85,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_23",
+"t": 1.0
+},
+"n": "Lock",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells/Lock" unique_id=1502968863]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(756, 1160, 168, 168)
+color = Color(0, 0, 0, 0.4)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6775502154227386355",
+"img": {
+"c": "00000066",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_75",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Image (1)" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells/Lock" unique_id=59035285]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 12.604252
+offset_top = 8.604252
+offset_right = 69.48215
+offset_bottom = 65.48215
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(98, 515, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1141840145152479729",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_18",
+"t": 0.0
+},
+"n": "Image (1)",
+"r": [0.5, 0.5, 0.5, 0.5, 41.0432, -37.0432, 56.8779, 56.8779, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(41.0432, -37.0432),
+"size": Vector2(56.8779, 56.8779)
+}
+
+[node name="Equipped" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells" unique_id=1998352167]
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -3.1956
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": false,
+"id": "6000505332522557001",
+"n": "Equipped",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 1.0978, -2.0, -4.1956, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 1.0978),
+"size": Vector2(-2, -4.1956)
+}
+
+[node name="Equipped (1)" type="Control" parent="ProfileLayer/Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells/Equipped" unique_id=50153472]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -74.0539
+offset_top = -78.9583
+offset_right = 2.6539001
+offset_bottom = -2.2504997
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(0, 516, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7163909028472767789",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_17",
+"t": 0.0
+},
+"n": "Equipped (1)",
+"r": [1.0, 0.0, 1.0, 0.0, -35.7, 40.6044, 76.7078, 76.7078, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-35.7, 40.6044),
+"size": Vector2(76.7078, 76.7078)
+}
+
+[node name="AvatarButtonGroup" type="Control" parent="ProfileLayer/Panel/ProfileMenu" unique_id=387212379]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = 84.2997
+offset_right = 50.0
+offset_bottom = 184.2997
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "2701796773220572950",
+"n": "AvatarButtonGroup",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -134.2997, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -134.2997),
+"size": Vector2(100, 100)
+}
+
+[node name="SaveButton" type="Button" parent="ProfileLayer/Panel/ProfileMenu/AvatarButtonGroup" unique_id=326496924]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -143.0
+offset_top = 302.0
+offset_right = 143.0
+offset_bottom = 426.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1qgqd")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_n5kop")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_20fp1")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_gxs65")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_5ofjh")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_mnvm7")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_kahlo")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_b4vft")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_w05ef")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_hej4t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_y6ety")
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "3236765693244559791",
+"tr": 1.0
+},
+"cs": [{
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "3236765693244559791",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "SaveButton",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -364.0, 286.0, 124.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -364),
+"size": Vector2(286, 124)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/AvatarButtonGroup/SaveButton" unique_id=904055754]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+preserve_aspect = true
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="ProfileLayer/Panel/ProfileMenu/AvatarButtonGroup/SaveButton" unique_id=55183978]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_y1fv8")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "OK"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "4693800469078173876",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "OK",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "OK",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="UsedButton" type="Button" parent="ProfileLayer/Panel/ProfileMenu/AvatarButtonGroup" unique_id=870965787]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -143.0
+offset_top = 302.0
+offset_right = 143.0
+offset_bottom = 426.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qh06q")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_u7gjy")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_400px")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_xbade")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_te2da")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_gumpw")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_lrsk5")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_xhnby")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_axqxv")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_bdm2k")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kbh8r")
+disabled = true
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": false,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "6832685125054554741",
+"tr": 0.0
+},
+"id": "6832685125054554741",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_74",
+"t": 0.0
+},
+"n": "UsedButton",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -364.0, 286.0, 124.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -364),
+"size": Vector2(286, 124)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/AvatarButtonGroup/UsedButton" unique_id=1671860648]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(383, 1555, 380, 168)
+border = Vector4(192, 88, 188, 80)
+border_scale = 0.5
+preserve_aspect = true
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="ProfileLayer/Panel/ProfileMenu/AvatarButtonGroup/UsedButton" unique_id=1832826622]
+material = SubResource("ShaderMaterial_pgrrh")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_right = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ypkv6")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Used"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "9213307240254280672",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -40.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Gray",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Used",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(-40, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Gray",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Used",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="BuyButton" type="Button" parent="ProfileLayer/Panel/ProfileMenu/AvatarButtonGroup" unique_id=2146882774]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -143.0
+offset_top = 302.0
+offset_right = 143.0
+offset_bottom = 426.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_u4xo1")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_aiu3w")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_h4ti7")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_ikgel")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_gsaiy")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_16g5k")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_540ri")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_insjw")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_gp2r4")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ac8p6")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0vgyc")
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "15967486945566625",
+"tr": 1.0
+},
+"cs": [{
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "15967486945566625",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_50",
+"t": 0.0
+},
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 4.0],
+"rev": false,
+"sh": false,
+"sp": 4.0,
+"sw": false,
+"t": "h"
+},
+"n": "BuyButton",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -364.0, 286.0, 124.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -364),
+"size": Vector2(286, 124)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/AvatarButtonGroup/BuyButton" unique_id=959605152]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(0, 1160, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+preserve_aspect = true
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="ProfileLayer/Panel/ProfileMenu/AvatarButtonGroup/BuyButton" unique_id=1310811654]
+material = SubResource("ShaderMaterial_oskr3")
+layout_mode = 0
+offset_left = 65.0
+offset_right = 153.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_f7j2h")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "1704515612240698062",
+"n": "Text (TMP)",
+"r": [0.0, 1.0, 0.0, 1.0, 109.0, -60.0, 87.64, 120.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "100",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(109, -60),
+"size": Vector2(88, 120)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "100",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/AvatarButtonGroup/BuyButton" unique_id=1987683554]
+anchors_preset = 0
+offset_left = 157.0
+offset_top = 28.0
+offset_right = 221.0
+offset_bottom = 92.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(780, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3715072233608568599",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [64.0, 64.0],
+"pref": [64.0, 64.0]
+},
+"n": "Image",
+"r": [0.0, 1.0, 0.0, 1.0, 188.82, -60.0, 64.0, 64.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(189, -60),
+"size": Vector2(64, 64)
+}
+
+[node name="FrameButtonGroup" type="Control" parent="ProfileLayer/Panel/ProfileMenu" unique_id=2038676475]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = 84.2997
+offset_right = 50.0
+offset_bottom = 184.2997
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "3762612234244714779",
+"n": "FrameButtonGroup",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -134.2997, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -134.2997),
+"size": Vector2(100, 100)
+}
+
+[node name="SaveButton" type="Button" parent="ProfileLayer/Panel/ProfileMenu/FrameButtonGroup" unique_id=258679155]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -143.0
+offset_top = 302.0
+offset_right = 143.0
+offset_bottom = 426.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_65di7")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_xcc2d")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_j7w4q")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_hkmt8")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_5ucap")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_x4lip")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_qbido")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_25ssj")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_iagsj")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_8y53d")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tbfac")
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4706510787956959928",
+"tr": 1.0
+},
+"cs": [{
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "4706510787956959928",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "SaveButton",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -364.0, 286.0, 124.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -364),
+"size": Vector2(286, 124)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/FrameButtonGroup/SaveButton" unique_id=1278578901]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="ProfileLayer/Panel/ProfileMenu/FrameButtonGroup/SaveButton" unique_id=1280452718]
+material = SubResource("ShaderMaterial_ahonq")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7anxd")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "OK"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "1637239976243982983",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "OK",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Green",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "OK",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="UsedButton" type="Button" parent="ProfileLayer/Panel/ProfileMenu/FrameButtonGroup" unique_id=1102847488]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -143.0
+offset_top = 302.0
+offset_right = 143.0
+offset_bottom = 426.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fi6vx")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_owni2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_byqn1")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_rnd34")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_wf52w")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_lufxn")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_uppp5")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_yk6fl")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_5qfe6")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_3cckn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_46sug")
+disabled = true
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": false,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "4158196770644701372",
+"tr": 0.0
+},
+"id": "4158196770644701372",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_74",
+"t": 0.0
+},
+"n": "UsedButton",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -364.0, 286.0, 124.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -364),
+"size": Vector2(286, 124)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/FrameButtonGroup/UsedButton" unique_id=838423058]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(383, 1555, 380, 168)
+border = Vector4(192, 88, 188, 80)
+border_scale = 0.5
+preserve_aspect = true
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="ProfileLayer/Panel/ProfileMenu/FrameButtonGroup/UsedButton" unique_id=1766829773]
+material = SubResource("ShaderMaterial_pgrrh")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ju1c0")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Used"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "985547884173105448",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Gray",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Used",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Gray",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Used",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="BuyButton" type="Button" parent="ProfileLayer/Panel/ProfileMenu/FrameButtonGroup" unique_id=219430086]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -143.0
+offset_top = 302.0
+offset_right = 143.0
+offset_bottom = 426.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vlv5o")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_807sa")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_riskd")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_sugpa")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ghhda")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_5dere")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ix6ui")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_gimla")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_humkv")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_1xl61")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8gaws")
+flat = true
+script = ExtResource("1_d7d40")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": false,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "5501657858466624800",
+"tr": 1.0
+},
+"cs": [{
+"_ease": "5",
+"_easeDuration": "0.15",
+"_holdDuration": "0.5",
+"_objectsToDisableOnHold": [],
+"_objectsToEnableOnHold": [],
+"_pressScale": "0.95",
+"name": "UIHoldAnim_Pulse"
+}],
+"id": "5501657858466624800",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_50",
+"t": 0.0
+},
+"lay": {
+"al": 4.0,
+"ch": false,
+"cw": true,
+"eh": false,
+"ew": false,
+"pad": [0.0, 0.0, 0.0, 4.0],
+"rev": false,
+"sh": false,
+"sp": 4.0,
+"sw": false,
+"t": "h"
+},
+"n": "BuyButton",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -364.0, 286.0, 124.0, 0.5, 0.5],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -364),
+"size": Vector2(286, 124)
+}
+
+[node name="image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/FrameButtonGroup/BuyButton" unique_id=145563953]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(0, 1160, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="ProfileLayer/Panel/ProfileMenu/FrameButtonGroup/BuyButton" unique_id=311890485]
+material = SubResource("ShaderMaterial_oskr3")
+layout_mode = 0
+offset_left = 65.0
+offset_right = 153.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hkhht")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 56
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/u = {
+"a": true,
+"id": "3595866881577762918",
+"n": "Text (TMP)",
+"r": [0.0, 1.0, 0.0, 1.0, 109.0, -60.0, 87.64, 120.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "100",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(109, -60),
+"size": Vector2(88, 120)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Yellow",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "100",
+"st": 0.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="Image" type="Control" parent="ProfileLayer/Panel/ProfileMenu/FrameButtonGroup/BuyButton" unique_id=1825948079]
+anchors_preset = 0
+offset_left = 157.0
+offset_top = 28.0
+offset_right = 221.0
+offset_bottom = 92.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_7cy3v")
+tex = ExtResource("4_ww2yc")
+region = Rect2(780, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "1630861223215339843",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+"t": 0.0
+},
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": false,
+"min": [64.0, 64.0],
+"pref": [64.0, 64.0]
+},
+"n": "Image",
+"r": [0.0, 1.0, 0.0, 1.0, 188.82, -60.0, 64.0, 64.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(189, -60),
+"size": Vector2(64, 64)
+}

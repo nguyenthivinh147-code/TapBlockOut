@@ -5,6 +5,8 @@ extends Control
 ## HUD theo wireframe 3.4: lượt, tên level, restart, bánh răng (Home và Retry nằm trong popup cài đặt); chip mảnh dưới chip lượt.
 ## Hàng booster luôn đủ 3 ô; ô chưa mở tối đi, có ổ khoá và ghi level mở.
 ## UI chỉ gọi Game và Sfx; hoạt ảnh bàn do BoardView lo.
+## HUD, bàn (BoardView) và hàng booster là node trong scenes/level.tscn; script điền chữ, dữ liệu và nối signal.
+## Dialog, dải cảnh báo độ khó và hiệu ứng bay vẫn sinh lúc chạy.
 
 signal closed(result: Variant)
 
@@ -14,7 +16,6 @@ const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 const Config := preload("res://src/config.gd")
 const Unlocks := preload("res://src/meta/unlocks.gd")
 const BoardState := preload("res://src/core/board_state.gd")
-const BoardViewScene := preload("res://scenes/board_view.tscn")
 const HintFx := preload("res://src/ui/hint_fx.gd")
 const MoveFx := preload("res://src/ui/move_fx.gd")
 const SmashFx := preload("res://src/ui/smash_fx.gd")
@@ -200,222 +201,59 @@ func _exit_tree() -> void:
 		Game.offer_ready.disconnect(_on_offer_ready)
 
 
-func _icon_button(icon_name: String, node_name: String) -> Button:
-	var b := ThemeKit.make_sprite_button(icon_name, Vector2(88, 88))
-	b.name = node_name
-	return b
-
-
-## Chữ trắng viền tím trên sprite HUD.
-func _hud_label(text: String, font_size: int) -> Label:
-	var l := ThemeKit.make_label(text, font_size)
-	l.add_theme_color_override("font_outline_color", ThemeKit.HUD_OUTLINE)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return l
-
-
 func _build() -> void:
 	if _built:
 		return
 	_built = true
-	theme = ThemeKit.make_theme()
-	set_anchors_preset(Control.PRESET_FULL_RECT)
-	var bg := ThemeKit.make_image_background(ThemeKit.LEVEL_BG_IMAGE, ThemeKit.LEVEL_BG_DIM, ThemeKit.LEVEL_BG, ThemeKit.LEVEL_BG_IMAGE_ALPHA)
-	bg.name = "Background"
-	add_child(bg)
-
-	var margin := MarginContainer.new()
-	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 28)
-	margin.add_theme_constant_override("margin_right", 28)
-	margin.add_theme_constant_override("margin_top", 36)
-	margin.add_theme_constant_override("margin_bottom", 36)
-	add_child(margin)
-	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 14)
-	margin.add_child(col)
-
-	# thanh trên: lượt, tên level + độ khó, restart, cài đặt; hàng dưới là chip đếm mảnh.
-	# Chỉ thanh này và hàng booster chiếm chiều cao, để cỡ ô không đổi giữa các level.
-	var head := VBoxContainer.new()
-	head.name = "TopBar"
-	head.add_theme_constant_override("separation", 6)
-	col.add_child(head)
-	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 12)
-	head.add_child(top)
-	# khung MOVES (sprite hud_moves_panel): chữ MOVES nhỏ ở trên, số lượt to ở dưới.
-	# Dòng chữ Baloo cao hơn mặt chữ nhiều nên hai nhãn xếp chồng với giãn âm, giữ khung thấp như nút tròn.
-	moves_chip = PanelContainer.new()
-	moves_chip.name = "MovesChip"
-	moves_chip.add_theme_stylebox_override("panel", ThemeKit.sprite_box("hud_moves_panel",
-		Vector4(44, 44, 44, 48), Vector4(10, 2, 10, 10)))
-	moves_chip.custom_minimum_size = Vector2(150, 104)
-	moves_chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	top.add_child(moves_chip)
-	var moves_col := VBoxContainer.new()
-	moves_col.alignment = BoxContainer.ALIGNMENT_CENTER
-	moves_col.add_theme_constant_override("separation", -22)
-	moves_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	moves_chip.add_child(moves_col)
-	var moves_cap := _hud_label(tr("level_moves").to_upper(), ThemeKit.FS_SMALL - 2)
-	moves_cap.name = "MovesCaption"
-	moves_col.add_child(moves_cap)
-	moves_label = _hud_label("", ThemeKit.FS_TITLE)
-	moves_label.name = "MovesLabel"
-	moves_col.add_child(moves_label)
-	var mid := VBoxContainer.new()
-	mid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	mid.alignment = BoxContainer.ALIGNMENT_CENTER
-	top.add_child(mid)
-	title_label = ThemeKit.make_label("", ThemeKit.FS_BUTTON + 4)
-	title_label.name = "TitleLabel"
-	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	mid.add_child(title_label)
-	var hard := _hud_label(tr("level_hard"), ThemeKit.FS_SMALL)
-	hard.name = "HardBadge"
-	hard.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	# pill hud_pill cao 44: lề cắt dọc 20 + 22 nên nhãn không được thấp hơn 44
-	hard.add_theme_stylebox_override("normal", ThemeKit.sprite_box("hud_pill", Vector4(22, 20, 22, 22), Vector4(22, 0, 22, 4)))
-	hard.custom_minimum_size = Vector2(96, 44)
-	hard.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	hard.visible = false
-	hard_badge = hard
-	mid.add_child(hard)
-	restart_button = _icon_button("hud_btn_restart", "RestartButton")
-	restart_button.pressed.connect(_on_restart_pressed)
-	top.add_child(restart_button)
-	settings_button = _icon_button("hud_btn_settings", "SettingsButton")
-	settings_button.pressed.connect(_on_settings_pressed)
-	top.add_child(settings_button)
-	# chip đếm mảnh leaderboard: hàng riêng dưới chip lượt (hàng trên không còn chỗ ngang khi tên level dài)
-	var piece_row := HBoxContainer.new()
-	piece_row.name = "PieceRow"
-	piece_row.custom_minimum_size.y = 48  # giữ chỗ cả khi level không có khối đặc biệt
-	head.add_child(piece_row)
-	piece_chip = ThemeKit.make_panel()
-	piece_chip.name = "PieceChip"
-	piece_chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var ps := piece_chip.get_theme_stylebox("panel").duplicate() as StyleBox
-	ps.content_margin_left = 16
-	ps.content_margin_right = 22
-	ps.content_margin_top = 4
-	ps.content_margin_bottom = 4
-	piece_chip.add_theme_stylebox_override("panel", ps)
+	# Background, top bar (moves, title, difficulty, restart, settings, piece chip), board holder with BoardView and
+	# the overlay labels, booster row and LocalPopups are nodes of scenes/level.tscn.
+	# The top bar and booster row alone take height, so the cell size stays the same across levels.
+	moves_chip = %MovesChip
+	moves_label = %MovesLabel
+	title_label = %TitleLabel
+	hard_badge = %HardBadge
+	restart_button = %RestartButton
+	settings_button = %SettingsButton
+	piece_chip = %PieceChip
+	piece_icon = %PieceIcon
+	piece_label = %PieceLabel
+	board_view = %BoardView
+	clap_label = %ClapLabel
+	toast_label = %ToastLabel
+	tut_label = %TutLabel
+	smash_label = %SmashLabel
+	_overlay = %LocalPopups
+	(%MovesCaption as Label).text = tr("level_moves").to_upper()
+	title_label.text = ""
+	moves_label.text = ""
+	(hard_badge as Label).text = tr("level_hard")
+	hard_badge.visible = false
+	piece_label.text = ""
 	piece_chip.visible = false
-	piece_row.add_child(piece_chip)
-	var piece_box := HBoxContainer.new()
-	piece_box.add_theme_constant_override("separation", 6)
-	piece_chip.add_child(piece_box)
-	piece_icon = ThemeKit.make_icon("lb_piece", 40)
-	piece_box.add_child(piece_icon)
-	piece_label = ThemeKit.make_label("", ThemeKit.FS_SMALL + 4, ThemeKit.GOLD)
-	piece_label.name = "PieceLabel"
-	piece_box.add_child(piece_label)
-
-	# bàn cờ
-	var holder := Control.new()
-	holder.name = "BoardHolder"
-	holder.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.add_child(holder)
-	board_view = BoardViewScene.instantiate() as Control
-	board_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	board_view.block_tapped.connect(_on_block_tapped)
-	holder.add_child(board_view)
-	clap_label = ThemeKit.make_label(tr("level_clap"), ThemeKit.FS_HUGE, ThemeKit.GOLD)
-	clap_label.name = "ClapLabel"
-	clap_label.set_anchors_preset(Control.PRESET_CENTER)
-	clap_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	clap_label.grow_vertical = Control.GROW_DIRECTION_BOTH
-	clap_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	clap_label.text = tr("level_clap")
 	clap_label.visible = false
-	holder.add_child(clap_label)
-	toast_label = ThemeKit.make_label("", ThemeKit.FS_BODY, ThemeKit.TEXT)
-	toast_label.name = "ToastLabel"
-	toast_label.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	toast_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	toast_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	toast_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast_label.text = ""
 	toast_label.visible = false
-	holder.add_child(toast_label)
-	tut_label = _board_overlay_label("TutLabel", ThemeKit.TEXT_DIM)
-	holder.add_child(tut_label)
-	smash_label = _board_overlay_label("SmashLabel", ThemeKit.GOLD)
+	tut_label.text = ""
 	smash_label.text = tr("booster_smash_pick")
 	smash_label.visible = false
-	holder.add_child(smash_label)
-
-	# booster: luôn đủ 3 ô, ô chưa mở hiện khoá
-	var row := HBoxContainer.new()
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 40)
-	row.custom_minimum_size.y = 168  # giữ chỗ, để khung không xê dịch giữa các level
-	col.add_child(row)
+	restart_button.pressed.connect(_on_restart_pressed)
+	settings_button.pressed.connect(_on_settings_pressed)
+	board_view.block_tapped.connect(_on_block_tapped)
+	# Booster row: always 3 slots, a locked slot shows its lock (see _refresh_hud).
 	for kind in BOOSTERS:
-		var c := VBoxContainer.new()
-		c.name = "Booster_" + kind
-		c.add_theme_constant_override("separation", 4)
-		var b := ThemeKit.make_sprite_button("hud_booster_" + kind, Vector2(144, 129))
-		b.name = "BoosterButton_" + kind
+		var b: Button = get_node("%BoosterButton_" + kind)
 		b.pressed.connect(_on_booster_pressed.bind(kind))
-		c.add_child(b)
-		# huy hiệu góc dưới phải: tròn xanh ghi số còn lại, hết kho thì đổi sang sprite dấu + (xem _refresh_hud)
-		var badge := _hud_label("", ThemeKit.FS_SMALL)
-		badge.name = "BoosterBadge_" + kind
-		badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		badge.add_theme_stylebox_override("normal", ThemeKit.sprite_box("hud_badge_count"))
-		badge.custom_minimum_size = Vector2(52, 52)
-		b.add_child(badge)
-		badge.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-		badge.grow_vertical = Control.GROW_DIRECTION_BEGIN
-		badge.offset_left = -42
-		badge.offset_top = -44
-		badge.offset_right = 10
-		badge.offset_bottom = 8
-		var lock := ThemeKit.make_icon("ui_lock", 64)
-		lock.name = "BoosterLock_" + kind
-		b.add_child(lock)
-		lock.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		lock.offset_left = -58
-		lock.offset_top = -58
-		lock.offset_right = 6
-		lock.offset_bottom = 6
-		var cap := ThemeKit.make_label(tr("booster_" + kind), ThemeKit.FS_SMALL, ThemeKit.TEXT)
-		cap.name = "BoosterCaption_" + kind
-		cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		c.add_child(cap)
-		row.add_child(c)
 		booster_buttons[kind] = b
-		booster_badges[kind] = badge
-		booster_locks[kind] = lock
+		booster_badges[kind] = get_node("%BoosterBadge_" + kind)
+		booster_locks[kind] = get_node("%BoosterLock_" + kind)
+		var cap: Label = get_node("%BoosterCaption_" + kind)
+		cap.text = tr("booster_" + kind)
 		booster_caps[kind] = cap
-
-	_overlay = Control.new()
-	_overlay.name = "LocalPopups"
-	_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_overlay)
 
 	Game.inv_changed.connect(_on_game_changed)
 	Game.coins_changed.connect(_on_game_changed)
 	Game.offer_ready.connect(_on_offer_ready)
-
-
-## Chữ phủ lên phần trên của bàn: không chiếm chiều cao nên không làm đổi cỡ ô khi hiện hay ẩn.
-func _board_overlay_label(label_name: String, color: Color) -> Label:
-	var l := ThemeKit.make_label("", ThemeKit.FS_BODY, color)
-	l.name = label_name
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	l.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	l.offset_left = 48
-	l.offset_right = -48
-	l.offset_top = 52
-	return l
 
 
 func _on_game_changed(_v: Variant = null) -> void:

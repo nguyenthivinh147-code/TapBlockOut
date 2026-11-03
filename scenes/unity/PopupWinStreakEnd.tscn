@@ -1,0 +1,1028 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="1_c4gdi"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="2_clnt4"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/popup7.png" id="3_bo4mv"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup_Winstreak_Title.png" id="4_lve4o"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="5_xn1aa"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="6_fgw5r"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/BG_Winstreak_intro.png" id="7_8xy0n"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="8_883bj"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="9_2f2fu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b5wjt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bx25e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2syvh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_waqo7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tuye8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3lfco"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vwfkj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gnglb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1fo6r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ihrax"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_csvpt"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_138nv"]
+shader = ExtResource("5_xn1aa")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.35686275, 0.11764706, 0.003921569, 1)
+shader_parameter/underlay_color = Color(0.35686275, 0.11764706, 0.003921569, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_me63l"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("6_fgw5r")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oukp7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qljvl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uv0mn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v35jd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qn15v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qaqs6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yjdjl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4qq2l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6rbr0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wtlyu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y33sp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("5_xn1aa")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4d777"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gnoqe"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_24uc0"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wcb6f"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[node name="Canvas" type="Control" unique_id=383692084]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "PopupWinStreakEnd"
+
+[node name="PopupWinStreakEnd" type="Control" parent="." unique_id=449818251]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0, 1)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"breakEnable": "0",
+"closeButton": {
+"node": "8212019710555167539"
+},
+"debugOnOff": "0",
+"name": "UIPopupWinStreakEnd",
+"nextEventText": {
+"node": "2003580577652247090"
+},
+"streakResultText": {
+"node": "3041794538424741371"
+}
+}],
+"id": "9067958016228944272",
+"n": "PopupWinStreakEnd",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 0),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Dim" type="Button" parent="PopupWinStreakEnd" unique_id=627465151]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_b5wjt")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_bx25e")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_2syvh")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_waqo7")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_tuye8")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_3lfco")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_vwfkj")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_gnglb")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_1fo6r")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ihrax")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_csvpt")
+flat = true
+script = ExtResource("1_c4gdi")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+transition = 0
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "297599859262534063",
+"tr": 0.0
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"name": "HideLastLayerButton"
+}],
+"id": "297599859262534063",
+"img": {
+"c": "000000f5",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Dim",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="image" type="Control" parent="PopupWinStreakEnd/Dim" unique_id=485078566]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_clnt4")
+color = Color(0, 0, 0, 0.85)
+fill_method = 4
+
+[node name="Panel" type="Control" parent="PopupWinStreakEnd" unique_id=516478861]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -416.0156
+offset_top = -499.99994
+offset_right = 416.0156
+offset_bottom = 499.99994
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_clnt4")
+tex = ExtResource("3_bo4mv")
+region = Rect2(0, 0, 425, 510.81732)
+border_scale = 1.9576470588235293
+fill_method = 4
+metadata/u = {
+"a": true,
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"id": "8529842003749268378",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "popup7",
+"t": 0.0
+},
+"n": "Panel",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 832.0312, 999.9999, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(832.0312, 999.9999)
+}
+
+[node name="Image" type="Control" parent="PopupWinStreakEnd/Panel" unique_id=629518151]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -436.0
+offset_top = -798.1406
+offset_right = 436.0
+offset_bottom = -317.85934
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_clnt4")
+tex = ExtResource("4_lve4o")
+region = Rect2(0, 0, 512, 281.83487)
+border_scale = 1.703125
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7049749776199527371",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Popup_Winstreak_Title",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, 558.0, 872.0, 480.2813, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 558),
+"size": Vector2(872, 480.2813)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupWinStreakEnd/Panel" unique_id=1138779064]
+material = SubResource("ShaderMaterial_138nv")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = -26.0
+offset_right = 300.0
+offset_bottom = 74.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_me63l")
+theme_override_constants/line_spacing = -7
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 60
+theme_override_colors/font_color = Color(1, 0.96862745, 0.59607846, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Win Streak End"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4702999881980301320",
+"n": "Text (TMP)",
+"r": [0.5, 1.0, 0.5, 1.0, 0.0, -24.0, 600.0, 100.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "fff798ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 60.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Brown",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Win Streak End",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -24),
+"size": Vector2(600, 100)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "fff798ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 60.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Brown",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Win Streak End",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@32" type="Control" parent="PopupWinStreakEnd/Panel" unique_id=1050852214]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -345.32358
+offset_top = 112.0
+offset_right = 345.262
+offset_bottom = 820.5582
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_clnt4")
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7588186165404880482",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 1.0, 0.5, 1.0, -0.0308, -466.2791, 690.5856, 708.5582, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-0.0308, -466.2791),
+"size": Vector2(690.5856, 708.5582)
+}
+
+[node name="Image" type="Control" parent="PopupWinStreakEnd/Panel/@Control@32" unique_id=890924874]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_clnt4")
+tex = ExtResource("7_8xy0n")
+region = Rect2(0, 0, 505, 511.75134)
+border_scale = 1.4811881188118812
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8671946337631325205",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": true,
+"sp": "BG_Winstreak_intro",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Button" type="Button" parent="PopupWinStreakEnd/Panel" unique_id=1225139566]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.0
+offset_top = 501.0
+offset_right = 125.0
+offset_bottom = 601.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_oukp7")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_qljvl")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_uv0mn")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_v35jd")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_qn15v")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_qaqs6")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_yjdjl")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_4qq2l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_6rbr0")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_wtlyu")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_y33sp")
+flat = true
+script = ExtResource("1_c4gdi")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "8212019710555167539",
+"tr": 1.0
+},
+"cs": [{
+"name": "HideLastLayerButton"
+}],
+"id": "8212019710555167539",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 2.9,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+"t": 0.0
+},
+"n": "Button",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -551.0, 250.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -551),
+"size": Vector2(250, 100)
+}
+
+[node name="image" type="Control" parent="PopupWinStreakEnd/Panel/Button" unique_id=654076680]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_clnt4")
+tex = ExtResource("8_883bj")
+region = Rect2(0, 816, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.3448275862068966
+fill_method = 4
+
+[node name="Text (TMP)" type="Label" parent="PopupWinStreakEnd/Panel/Button" unique_id=2001218337]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4d777")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 45
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Quit"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "6751540995429652801",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Quit",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 45.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Quit",
+"st": 16.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@33" type="Control" parent="PopupWinStreakEnd/Panel" unique_id=1933764132]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = 312.0
+offset_right = 250.0
+offset_bottom = 462.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_clnt4")
+color = Color(1, 1, 1, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4694162613527847905",
+"img": {
+"c": "ffffff00",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 12.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -387.0, 500.0, 150.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -387),
+"size": Vector2(500, 150)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupWinStreakEnd/Panel/@Control@33" unique_id=260122112]
+visible = false
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gnoqe")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Sự kiện sẽ bắt đầu lại sau một khoảng thời gian."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": false,
+"id": "3041794538424741371",
+"n": "Text (TMP)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 30.2,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Sự kiện sẽ bắt đầu lại sau một khoảng thời gian.",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 30.2,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "Sự kiện sẽ bắt đầu lại sau một khoảng thời gian.",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="Text (TMP) (1)" type="Label" parent="PopupWinStreakEnd/Panel/@Control@33" unique_id=274511349]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_24uc0")
+theme_override_constants/line_spacing = -5
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 42
+theme_override_colors/font_color = Color(0.6156863, 0.4117647, 0.09411765, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "This event has ended. Come back later!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "4086043311122758545",
+"n": "Text (TMP) (1)",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "9d6918ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 42.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "This event has ended. Come back later!",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "9d6918ff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 42.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "This event has ended. Come back later!",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="@Control@34" type="Control" parent="PopupWinStreakEnd/Panel" unique_id=1178636962]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.0
+offset_top = 206.0
+offset_right = 125.0
+offset_bottom = 286.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_clnt4")
+tex = ExtResource("9_2f2fu")
+region = Rect2(623, 1679, 103, 92)
+border = Vector4(32, 32, 38, 43)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "4864387337740788034",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_40",
+"t": 1.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -246.0, 250.0, 80.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -246),
+"size": Vector2(250, 80)
+}
+
+[node name="Image" type="Control" parent="PopupWinStreakEnd/Panel/@Control@34" unique_id=1717419354]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -113.0
+offset_top = -37.0
+offset_right = -53.0
+offset_bottom = 23.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("2_clnt4")
+tex = ExtResource("9_2f2fu")
+region = Rect2(1198, 589, 128, 128)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "246407034402493142",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_79",
+"t": 0.0
+},
+"n": "Image",
+"r": [0.5, 0.5, 0.5, 0.5, -83.0, 7.0, 60.0, 60.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-83, 7),
+"size": Vector2(60, 60)
+}
+
+[node name="Text (TMP)" type="Label" parent="PopupWinStreakEnd/Panel/@Control@34" unique_id=868758718]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -52.999947
+offset_top = -30.2
+offset_right = 113.45515
+offset_bottom = 19.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wcb6f")
+theme_override_constants/line_spacing = -4
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.4627451, 0.37254903, 0.29411766, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "New Text"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "2003580577652247090",
+"n": "Text (TMP)",
+"r": [0.5, 0.5, 0.5, 0.5, 30.2276, 5.2, 166.4551, 50.0, 0.5, 0.5],
+"txt": {
+"auto": null,
+"c": "765f4bff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "New Text",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(30.2276, 5.2),
+"size": Vector2(166.4551, 50)
+}
+metadata/u_txt = {
+"auto": null,
+"c": "765f4bff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "New Text",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}

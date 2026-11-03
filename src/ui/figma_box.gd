@@ -2,8 +2,14 @@ extends RefCounted
 ## Đặt node theo toạ độ Figma (px thiết kế) rồi co theo s = rộng thật / rộng khung Figma.
 ## Toạ độ tính theo node cha. bottom = true: neo theo đáy khung, dời theo chênh lệch chiều cao (shift_y).
 ## Dùng: var fb := FigmaBox.new(); fb.put(node, Rect2(x, y, w, h)); fb.font(label, 36); fb.apply(s, shift_y).
+## put() và font() ghi cả meta lên node (fb_rect, fb_bottom, fb_font) nên node lưu trong scene giữ toạ độ thiết kế;
+## script của scene gọi fb.adopt(root) để nhận lại các node đó.
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+
+const META_RECT := "fb_rect"
+const META_BOTTOM := "fb_bottom"
+const META_FONT := "fb_font"
 
 ## node -> [Rect2, bottom]
 var _rects: Dictionary = {}
@@ -13,6 +19,11 @@ var _fonts: Dictionary = {}
 
 func put(node: Control, rect: Rect2, bottom: bool = false) -> Control:
 	_rects[node] = [rect, bottom]
+	node.set_meta(META_RECT, rect)
+	if bottom:
+		node.set_meta(META_BOTTOM, true)
+	elif node.has_meta(META_BOTTOM):
+		node.remove_meta(META_BOTTOM)
 	return node
 
 
@@ -23,15 +34,35 @@ func rect_of(node: Control) -> Rect2:
 func move(node: Control, pos: Vector2) -> void:
 	var r: Array = _rects[node]
 	r[0] = Rect2(pos, (r[0] as Rect2).size)
+	node.set_meta(META_RECT, r[0])
 
 
 func resize(node: Control, rect: Rect2) -> void:
 	(_rects[node] as Array)[0] = rect
+	node.set_meta(META_RECT, rect)
 
 
 ## Cỡ chữ và viền theo px thiết kế. fit_w > 0: chữ dài thì thu nhỏ cho vừa rộng đó (px thiết kế).
 func font(node: Control, px: float, outline: float = 0.0, fit_w: float = 0.0) -> void:
 	_fonts[node] = [px, outline, fit_w]
+	node.set_meta(META_FONT, [px, outline, fit_w])
+
+
+## Registers every node of root's scene (owner == root, root itself excluded) that carries the metas put() and
+## font() leave. Nodes of an instanced scene inside (another owner) are left to that scene's own FigmaBox.
+func adopt(root: Node) -> void:
+	_adopt(root, root)
+
+
+func _adopt(n: Node, root: Node) -> void:
+	for c in n.get_children():
+		if c is Control and c.owner == root:
+			if c.has_meta(META_RECT):
+				_rects[c] = [c.get_meta(META_RECT) as Rect2, bool(c.get_meta(META_BOTTOM, false))]
+			if c.has_meta(META_FONT):
+				var f: Array = c.get_meta(META_FONT)
+				_fonts[c] = [float(f[0]), float(f[1]), float(f[2])]
+		_adopt(c, root)
 
 
 func apply(s: float, shift_y: float = 0.0) -> void:

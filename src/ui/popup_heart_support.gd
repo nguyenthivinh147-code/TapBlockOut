@@ -7,9 +7,7 @@ extends "res://src/ui/stub_ui.gd"
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 
-const SIZE := Vector2(724, 560)
 const CARD := "Scroll View/Viewport/Content/Starter_Pack"
-const HEART := "Resources_moved_UI_Maincenter:UI_Maincenter_15"
 
 var strip: RefCounted = null
 
@@ -19,12 +17,11 @@ func _sample() -> Dictionary:
 
 
 func _build() -> void:
-	ui = UnityKit.popup(self, tr("hearts_support_title"), SIZE, _send.bind("close"))
-	var content: Control = ui.node("Panel/Content")
-	# Heart of PopupMoreHeartLayer's HeartIcon size (200) in the frame's well area.
-	UnityKit.sprite(content, HEART, Rect2((SIZE.x - 200.0) * 0.5, 140, 200, 200))
-	UnityKit.button(content, "green", tr("hearts_support_refill"), Rect2((SIZE.x - 280.0) * 0.5, SIZE.y - 128.0, 280, 120),
-		_send.bind("refill"))
+	# Frame (724 x 560), Heart (PopupMoreHeartLayer's HeartIcon size, 200) and RefillButton are nodes of
+	# scenes/popup_heart_support.tscn. The strip adds no node, so the scene keeps it closed: its changes stay here.
+	ui = UnityKit.frame(self, tr("hearts_support_title"), _send.bind("close"))
+	UnityUI.set_text(%RefillButton.get_node("Out"), tr("hearts_support_refill"))
+	%RefillButton.connect("clicked", _send.bind("refill"))
 
 	strip = UnityUI.build(self, "SupportPackLayer", {"reveal": false})
 	strip.show("Scroll View/Viewport/Content/Helper_Pack", false)

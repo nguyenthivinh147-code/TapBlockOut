@@ -1,12 +1,779 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/ui/level.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/pill/pill_green_96.png" id="1_gunhw"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="2_8gofh"]
+[ext_resource type="Texture2D" path="res://assets/bg/bg_level.png" id="4_h6wmr"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud/hud_moves_panel.png" id="5_pqd0y"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud/hud_pill.png" id="6_5k0ak"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud/hud_btn_restart.png" id="7_wu01b"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud/hud_btn_settings.png" id="8_3ies3"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_star1.png" id="9_xy2fk"]
+[ext_resource type="PackedScene" path="res://scenes/board_view.tscn" id="10_cmcjb"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud/hud_booster_hint.png" id="15_2e2fo"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud/hud_badge_count.png" id="16_gur6y"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_lock.png" id="17_v3why"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud/hud_booster_move.png" id="18_asl66"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud/hud_booster_smash.png" id="19_2jdvr"]
 
-[node name="Level" type="Control"]
-layout_mode = 3
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_q4oe8"]
+content_margin_left = 30.0
+content_margin_top = 8.0
+content_margin_right = 30.0
+content_margin_bottom = 16.0
+texture = ExtResource("1_gunhw")
+texture_margin_left = 50.0
+texture_margin_top = 30.0
+texture_margin_right = 50.0
+texture_margin_bottom = 36.0
+modulate_color = Color(0.55, 0.55, 0.6, 0.9)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_svjb4"]
+content_margin_left = 30.0
+content_margin_top = 8.0
+content_margin_right = 30.0
+content_margin_bottom = 16.0
+texture = ExtResource("1_gunhw")
+texture_margin_left = 50.0
+texture_margin_top = 30.0
+texture_margin_right = 50.0
+texture_margin_bottom = 36.0
+modulate_color = Color(1.08, 1.08, 1.08, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c1pbi"]
+content_margin_left = 30.0
+content_margin_top = 8.0
+content_margin_right = 30.0
+content_margin_bottom = 16.0
+texture = ExtResource("1_gunhw")
+texture_margin_left = 50.0
+texture_margin_top = 30.0
+texture_margin_right = 50.0
+texture_margin_bottom = 36.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_535f6"]
+content_margin_left = 30.0
+content_margin_top = 14.0
+content_margin_right = 30.0
+content_margin_bottom = 10.0
+texture = ExtResource("1_gunhw")
+texture_margin_left = 50.0
+texture_margin_top = 30.0
+texture_margin_right = 50.0
+texture_margin_bottom = 36.0
+modulate_color = Color(0.82, 0.82, 0.82, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_50fbu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0fmhk"]
+content_margin_left = 28.0
+content_margin_top = 16.0
+content_margin_right = 28.0
+content_margin_bottom = 16.0
+bg_color = Color(0.18039216, 0.19607843, 0.4392157, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.49411765, 0.5254902, 0.78431374, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 12
+shadow_offset = Vector2(0, 6)
+
+[sub_resource type="Theme" id="Theme_iafhg"]
+default_font = ExtResource("2_8gofh")
+default_font_size = 32
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0.043137256, 0.30980393, 0.05882353, 1)
+Button/constants/outline_size = 8
+Button/font_sizes/font_size = 36
+Button/styles/disabled = SubResource("StyleBoxTexture_q4oe8")
+Button/styles/hover = SubResource("StyleBoxTexture_svjb4")
+Button/styles/normal = SubResource("StyleBoxTexture_c1pbi")
+Button/styles/pressed = SubResource("StyleBoxTexture_535f6")
+Label/colors/font_color = Color(1, 1, 1, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 6
+Label/constants/shadow_offset_x = 0
+Label/constants/shadow_offset_y = 4
+Label/constants/shadow_outline_size = 6
+Label/font_sizes/font_size = 32
+Label/styles/normal = SubResource("StyleBoxEmpty_50fbu")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_0fmhk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cr74b"]
+content_margin_left = 10.0
+content_margin_top = 2.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+texture = ExtResource("5_pqd0y")
+texture_margin_left = 44.0
+texture_margin_top = 44.0
+texture_margin_right = 44.0
+texture_margin_bottom = 48.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uhfbm"]
+content_margin_left = 22.0
+content_margin_top = 0.0
+content_margin_right = 22.0
+content_margin_bottom = 4.0
+texture = ExtResource("6_5k0ak")
+texture_margin_left = 22.0
+texture_margin_top = 20.0
+texture_margin_right = 22.0
+texture_margin_bottom = 22.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lqb7q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ok3ci"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hv3ux"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j4eoh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bhb1k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tcyu4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vmndo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bo6tc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7iqcu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v4d4p"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_30hdq"]
+content_margin_left = 16.0
+content_margin_top = 4.0
+content_margin_right = 22.0
+content_margin_bottom = 4.0
+bg_color = Color(0.18039216, 0.19607843, 0.4392157, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.49411765, 0.5254902, 0.78431374, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 12
+shadow_offset = Vector2(0, 6)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nj2gj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_msn66"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xmwm8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jydfl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u0n8q"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d5irf"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+texture = ExtResource("16_gur6y")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ltwek"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vry8j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_idnaj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vwqyp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_smfc2"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s1acf"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+texture = ExtResource("16_gur6y")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u5upv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_om2me"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iij8i"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4qdnu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7kuto"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k1glb"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+texture = ExtResource("16_gur6y")
+
+[node name="Level" type="Control" unique_id=1028707476]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_iafhg")
 script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1143523763]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(1, 0.93333334, 0.95686275, 1)
+
+[node name="Image" type="TextureRect" parent="Background" unique_id=1606359358]
+modulate = Color(1, 1, 1, 0.35)
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("4_h6wmr")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Dim" type="ColorRect" parent="Background" unique_id=1403860003]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1267816970]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 36
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 36
+
+[node name="Column" type="VBoxContainer" parent="Margin" unique_id=377993896]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TopBar" type="VBoxContainer" parent="Margin/Column" unique_id=1402421418]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TopRow" type="HBoxContainer" parent="Margin/Column/TopBar" unique_id=1622152014]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MovesChip" type="PanelContainer" parent="Margin/Column/TopBar/TopRow" unique_id=888100895]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 104)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxTexture_cr74b")
+
+[node name="MovesColumn" type="VBoxContainer" parent="Margin/Column/TopBar/TopRow/MovesChip" unique_id=1032963675]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = -22
+alignment = 1
+
+[node name="MovesCaption" type="Label" parent="Margin/Column/TopBar/TopRow/MovesChip/MovesColumn" unique_id=1698368037]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "MOVES"
+horizontal_alignment = 1
+
+[node name="MovesLabel" type="Label" parent="Margin/Column/TopBar/TopRow/MovesChip/MovesColumn" unique_id=1655778444]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 52
+horizontal_alignment = 1
+
+[node name="Middle" type="VBoxContainer" parent="Margin/Column/TopBar/TopRow" unique_id=1591153146]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Margin/Column/TopBar/TopRow/Middle" unique_id=1222240603]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+
+[node name="HardBadge" type="Label" parent="Margin/Column/TopBar/TopRow/Middle" unique_id=1851906103]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(96, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_uhfbm")
+text = "HARD"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RestartButton" type="Button" parent="Margin/Column/TopBar/TopRow" unique_id=991167125]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0.82, 0.82, 0.82, 1)
+theme_override_colors/icon_hover_color = Color(1.08, 1.08, 1.08, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.82, 0.82, 0.82, 1)
+theme_override_colors/icon_disabled_color = Color(0.55, 0.55, 0.6, 0.9)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lqb7q")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ok3ci")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_hv3ux")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_j4eoh")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bhb1k")
+icon = ExtResource("7_wu01b")
+icon_alignment = 1
+expand_icon = true
+
+[node name="SettingsButton" type="Button" parent="Margin/Column/TopBar/TopRow" unique_id=625592668]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0.82, 0.82, 0.82, 1)
+theme_override_colors/icon_hover_color = Color(1.08, 1.08, 1.08, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.82, 0.82, 0.82, 1)
+theme_override_colors/icon_disabled_color = Color(0.55, 0.55, 0.6, 0.9)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tcyu4")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_vmndo")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_bo6tc")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_7iqcu")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v4d4p")
+icon = ExtResource("8_3ies3")
+icon_alignment = 1
+expand_icon = true
+
+[node name="PieceRow" type="HBoxContainer" parent="Margin/Column/TopBar" unique_id=837775227]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="PieceChip" type="PanelContainer" parent="Margin/Column/TopBar/PieceRow" unique_id=2009584215]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_30hdq")
+
+[node name="PieceBox" type="HBoxContainer" parent="Margin/Column/TopBar/PieceRow/PieceChip" unique_id=914979163]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PieceIcon" type="TextureRect" parent="Margin/Column/TopBar/PieceRow/PieceChip/PieceBox" unique_id=1986939837]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("9_xy2fk")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PieceLabel" type="Label" parent="Margin/Column/TopBar/PieceRow/PieceChip/PieceBox" unique_id=1588092482]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.7882353, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 28
+
+[node name="BoardHolder" type="Control" parent="Margin/Column" unique_id=146205403]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BoardView" parent="Margin/Column/BoardHolder" unique_id=2071560130 instance=ExtResource("10_cmcjb")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ClapLabel" type="Label" parent="Margin/Column/BoardHolder" unique_id=811484309]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.7882353, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 80
+text = "Nice one!"
+
+[node name="ToastLabel" type="Label" parent="Margin/Column/BoardHolder" unique_id=2125975756]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 32
+
+[node name="TutLabel" type="Label" parent="Margin/Column/BoardHolder" unique_id=1805660026]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 48.0
+offset_top = 52.0
+offset_right = -48.0
+offset_bottom = 22.0
+theme_override_colors/font_color = Color(0.74509805, 0.7764706, 0.9372549, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="SmashLabel" type="Label" parent="Margin/Column/BoardHolder" unique_id=2010670540]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 48.0
+offset_top = 52.0
+offset_right = -48.0
+offset_bottom = 22.0
+theme_override_colors/font_color = Color(1, 0.7882353, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 32
+text = "Tap a block to smash it"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="BoosterRow" type="HBoxContainer" parent="Margin/Column" unique_id=1332211153]
+custom_minimum_size = Vector2(0, 168)
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="Booster_hint" type="VBoxContainer" parent="Margin/Column/BoosterRow" unique_id=816264700]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="BoosterButton_hint" type="Button" parent="Margin/Column/BoosterRow/Booster_hint" unique_id=1974557531]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(144, 129)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0.82, 0.82, 0.82, 1)
+theme_override_colors/icon_hover_color = Color(1.08, 1.08, 1.08, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.82, 0.82, 0.82, 1)
+theme_override_colors/icon_disabled_color = Color(0.55, 0.55, 0.6, 0.9)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nj2gj")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_msn66")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_xmwm8")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_jydfl")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_u0n8q")
+icon = ExtResource("15_2e2fo")
+icon_alignment = 1
+expand_icon = true
+
+[node name="BoosterBadge_hint" type="Label" parent="Margin/Column/BoosterRow/Booster_hint/BoosterButton_hint" unique_id=309728837]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -44.0
+offset_right = 10.0
+offset_bottom = 8.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_d5irf")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoosterLock_hint" type="TextureRect" parent="Margin/Column/BoosterRow/Booster_hint/BoosterButton_hint" unique_id=719899266]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -58.0
+offset_top = -58.0
+offset_right = 6.0
+offset_bottom = 6.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("17_v3why")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BoosterCaption_hint" type="Label" parent="Margin/Column/BoosterRow/Booster_hint" unique_id=1860448540]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "Hint"
+horizontal_alignment = 1
+
+[node name="Booster_move" type="VBoxContainer" parent="Margin/Column/BoosterRow" unique_id=815968105]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="BoosterButton_move" type="Button" parent="Margin/Column/BoosterRow/Booster_move" unique_id=702078093]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(144, 129)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0.82, 0.82, 0.82, 1)
+theme_override_colors/icon_hover_color = Color(1.08, 1.08, 1.08, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.82, 0.82, 0.82, 1)
+theme_override_colors/icon_disabled_color = Color(0.55, 0.55, 0.6, 0.9)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ltwek")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_vry8j")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_idnaj")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_vwqyp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_smfc2")
+icon = ExtResource("18_asl66")
+icon_alignment = 1
+expand_icon = true
+
+[node name="BoosterBadge_move" type="Label" parent="Margin/Column/BoosterRow/Booster_move/BoosterButton_move" unique_id=639750389]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -44.0
+offset_right = 10.0
+offset_bottom = 8.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_s1acf")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoosterLock_move" type="TextureRect" parent="Margin/Column/BoosterRow/Booster_move/BoosterButton_move" unique_id=1454528768]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -58.0
+offset_top = -58.0
+offset_right = 6.0
+offset_bottom = 6.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("17_v3why")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BoosterCaption_move" type="Label" parent="Margin/Column/BoosterRow/Booster_move" unique_id=2063793345]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "+3 Move"
+horizontal_alignment = 1
+
+[node name="Booster_smash" type="VBoxContainer" parent="Margin/Column/BoosterRow" unique_id=531924338]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="BoosterButton_smash" type="Button" parent="Margin/Column/BoosterRow/Booster_smash" unique_id=356959277]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(144, 129)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0.82, 0.82, 0.82, 1)
+theme_override_colors/icon_hover_color = Color(1.08, 1.08, 1.08, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.82, 0.82, 0.82, 1)
+theme_override_colors/icon_disabled_color = Color(0.55, 0.55, 0.6, 0.9)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_u5upv")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_om2me")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_iij8i")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_4qdnu")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7kuto")
+icon = ExtResource("19_2jdvr")
+icon_alignment = 1
+expand_icon = true
+
+[node name="BoosterBadge_smash" type="Label" parent="Margin/Column/BoosterRow/Booster_smash/BoosterButton_smash" unique_id=616304557]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -44.0
+offset_right = 10.0
+offset_bottom = 8.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_k1glb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoosterLock_smash" type="TextureRect" parent="Margin/Column/BoosterRow/Booster_smash/BoosterButton_smash" unique_id=2078884647]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -58.0
+offset_top = -58.0
+offset_right = 6.0
+offset_bottom = 6.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("17_v3why")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BoosterCaption_smash" type="Label" parent="Margin/Column/BoosterRow/Booster_smash" unique_id=337083155]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_constants/shadow_outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "Smash"
+horizontal_alignment = 1
+
+[node name="LocalPopups" type="Control" parent="." unique_id=1259204810]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2

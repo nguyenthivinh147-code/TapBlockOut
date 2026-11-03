@@ -1,0 +1,668 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="1_qidg0"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Warning.png" id="2_o00o3"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="3_cllai"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="4_k6wem"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="5_dtkiw"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="6_advnm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("4_k6wem")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aomog"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("5_dtkiw")
+spacing_glyph = -1
+
+[node name="Canvas" type="Control" unique_id=610439264]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1080.0
+offset_bottom = 1920.0
+scale = Vector2(0.6666667, 0.6666667)
+mouse_filter = 2
+metadata/u_canvas = true
+metadata/u_layer = "WarningHardLevelLayer"
+
+[node name="WarningHardLevelLayer" type="Control" parent="." unique_id=902403954]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"canvas": {
+"order": 0.0,
+"override_sort": true
+},
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"OnDisplayLayout": [],
+"OnHideLayer": [],
+"OnHideLayout": [],
+"OnShowLayer": [],
+"SkullTarget": {
+"node": "5504083993919180832"
+},
+"TimeDelayShow": "0",
+"TimeShowDuration": "1.5",
+"WarningAudioClip": {
+"asset": "alarme.mp3"
+},
+"_canvas": {
+"node": "7219197735921211012"
+},
+"breakEnable": "0",
+"debugOnOff": "0",
+"extremeAnimation": {
+"node": "2336646114839352420"
+},
+"flyDuration": "0.6",
+"name": "WarningHardLevelLayer",
+"skullTrans": {
+"node": "3860037523806032999"
+}
+}, {
+"debugLog": "0",
+"name": "SafeAreaUIAdjuster",
+"rectPanelSafes": [{
+"node": "7219197735921211012"
+}]
+}],
+"id": "7219197735921211012",
+"n": "WarningHardLevelLayer",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Panel" type="Control" parent="WarningHardLevelLayer" unique_id=1277771329]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"id": "5505950304007009561",
+"n": "Panel",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="WarningExtreme" type="Control" parent="WarningHardLevelLayer/Panel" unique_id=905287157]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"cg": {
+"alpha": 1.0,
+"block": true,
+"ignore_parent": false,
+"inter": true
+},
+"cs": [{
+"_barrierDuration": "30",
+"_hardTextDuration": "0.4",
+"_hardTextScale": "1.12",
+"_notifyDuration": "0.3",
+"_notifyScale": "1.15",
+"_skullDuration": "0.4",
+"_skullScale": "1.12",
+"barrierTrans1": {
+"node": "9054610775919799394"
+},
+"barrierTrans2": {
+"node": "8468435356179296250"
+},
+"canvasGroup": {
+"node": "2336646114839352420"
+},
+"hardTextTrans": {
+"node": "8361545988854800984"
+},
+"name": "WarningHardAnimation",
+"notifyTrans": [{
+"node": "969697619787557230"
+}, {
+"node": "421575344465636992"
+}],
+"skullTrans": {
+"node": "3860037523806032999"
+}
+}],
+"id": "2336646114839352420",
+"le": {
+"flex": [-1.0, -1.0],
+"ignore": true,
+"min": [-1.0, -1.0],
+"pref": [-1.0, -1.0]
+},
+"n": "WarningExtreme",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Dim" type="Control" parent="WarningHardLevelLayer/Panel/WarningExtreme" unique_id=2048040223]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -846.0
+offset_bottom = 846.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_qidg0")
+color = Color(0, 0, 0, 0.6509804)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "6963946675536590191",
+"img": {
+"c": "000000a6",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": null,
+"t": 0.0
+},
+"n": "Dim",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1692.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 1692)
+}
+
+[node name="Image" type="Control" parent="WarningHardLevelLayer/Panel/WarningExtreme" unique_id=848564232]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = -114.0
+offset_right = 70.0
+offset_bottom = -94.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_qidg0")
+tex = ExtResource("2_o00o3")
+region = Rect2(5, 640, 261, 19)
+kind = 2
+color = Color(1, 1, 1, 0.29803923)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "9054610775919799394",
+"img": {
+"c": "ffffff4c",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Warning:Warning_5",
+"t": 2.0
+},
+"n": "Image",
+"r": [0.0, 0.5, 1.0, 0.5, 0.0, 104.0, 140.0, 20.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 104),
+"size": Vector2(140, 20)
+}
+
+[node name="Image (1)" type="Control" parent="WarningHardLevelLayer/Panel/WarningExtreme" unique_id=1401328932]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = 76.2899
+offset_right = 70.0
+offset_bottom = 96.2899
+rotation = -0.055850536
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_qidg0")
+tex = ExtResource("2_o00o3")
+region = Rect2(5, 640, 261, 19)
+kind = 2
+color = Color(1, 1, 1, 0.29803923)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "8468435356179296250",
+"img": {
+"c": "ffffff4c",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Warning:Warning_5",
+"t": 2.0
+},
+"n": "Image (1)",
+"r": [0.0, 0.5, 1.0, 0.5, 0.0, -86.2899, 140.0, 20.0, 0.5, 0.5],
+"z": 3.2
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -86.2899),
+"size": Vector2(140, 20)
+}
+
+[node name="Bar" type="Control" parent="WarningHardLevelLayer/Panel/WarningExtreme" unique_id=874943082]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 70.0
+offset_bottom = 150.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_qidg0")
+tex = ExtResource("2_o00o3")
+region = Rect2(25, 232, 983, 201)
+border_scale = 1.1764705882352942
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3960544168285293660",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 0.85,
+"rt": false,
+"sp": "Warning:Warning_1",
+"t": 0.0
+},
+"n": "Bar",
+"r": [0.0, 0.5, 1.0, 0.5, -5.0, 0.0, 150.0, 300.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-5, 0),
+"size": Vector2(150, 300)
+}
+
+[node name="Noti1" type="Control" parent="WarningHardLevelLayer/Panel/WarningExtreme" unique_id=1854352825]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -420.0
+offset_top = -50.0
+offset_right = -320.0
+offset_bottom = 50.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_qidg0")
+tex = ExtResource("3_cllai")
+region = Rect2(1326, 589, 138, 128)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "969697619787557230",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_81",
+"t": 0.0
+},
+"n": "Noti1",
+"r": [0.5, 0.5, 0.5, 0.5, -370.0, 0.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-370, 0),
+"size": Vector2(100, 100)
+}
+
+[node name="Center" type="Control" parent="WarningHardLevelLayer/Panel/WarningExtreme" unique_id=161316840]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -318.0
+offset_top = -118.0
+offset_right = -82.0
+offset_bottom = 118.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_qidg0")
+tex = ExtResource("3_cllai")
+region = Rect2(950, 1015, 300, 300)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "5768420538119220045",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_76",
+"t": 0.0
+},
+"n": "Center",
+"r": [0.5, 0.5, 0.5, 0.5, -200.0, 0.0, 236.0, 236.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-200, 0),
+"size": Vector2(236, 236)
+}
+
+[node name="Noti2" type="Control" parent="WarningHardLevelLayer/Panel/WarningExtreme" unique_id=2113392241]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 320.0
+offset_top = -50.0
+offset_right = 420.0
+offset_bottom = 50.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_qidg0")
+tex = ExtResource("3_cllai")
+region = Rect2(1326, 589, 138, 128)
+preserve_aspect = true
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "421575344465636992",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_UI_Maincenter:UI_Maincenter_81",
+"t": 0.0
+},
+"n": "Noti2",
+"r": [0.5, 0.5, 0.5, 0.5, 370.0, 0.0, 100.0, 100.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(370, 0),
+"size": Vector2(100, 100)
+}
+
+[node name="HardLevelTxt" type="Label" parent="WarningHardLevelLayer/Panel/WarningExtreme" unique_id=547624808]
+material = SubResource("ShaderMaterial_iqna6")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -52.5
+offset_top = -94.284996
+offset_right = 292.5
+offset_bottom = 92.6164
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_aomog")
+theme_override_constants/line_spacing = -10
+theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+text = "Hard Level"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "8361545988854800984",
+"n": "HardLevelTxt",
+"r": [0.5, 0.5, 0.5, 0.5, 120.0, 0.8343, 345.0, 186.9014, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.45,
+"h": 2.0,
+"ls": -3.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Hard Level",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(120, 0.8343),
+"size": Vector2(345, 186.9014)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 64.45,
+"h": 2.0,
+"ls": -3.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Hard Level",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
+[node name="GameObject" type="Control" parent="WarningHardLevelLayer" unique_id=2132956012]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "1409682851543960209",
+"n": "GameObject",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+
+[node name="Skull" type="Control" parent="WarningHardLevelLayer/GameObject" unique_id=623081440]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -273.0
+offset_top = -78.0
+offset_right = -127.0
+offset_bottom = 68.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("1_qidg0")
+tex = ExtResource("6_advnm")
+region = Rect2(0, 617, 96, 96)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "3860037523806032999",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": false,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_26",
+"t": 0.0
+},
+"n": "Skull",
+"r": [0.5, 0.5, 0.5, 0.5, -200.0, 5.0, 146.0, 146.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-200, 5),
+"size": Vector2(146, 146)
+}
+
+[node name="SkullTarget" type="Control" parent="WarningHardLevelLayer/GameObject" unique_id=1040894352]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -174.6
+offset_top = 127.100006
+offset_right = -28.599998
+offset_bottom = 273.1
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"id": "5504083993919180832",
+"n": "SkullTarget",
+"r": [0.5, 1.0, 0.5, 1.0, -101.6, -200.1, 146.0, 146.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(-101.6, -200.1),
+"size": Vector2(146, 146)
+}

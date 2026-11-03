@@ -1,10 +1,11 @@
 extends Control
 ## Popup quà 28 ngày: chỉ mở khi người chơi bấm. Hiện 7 ô của tuần đang đi.
 ## setup(args: Dictionary); signal closed(result) với result = {claimed: bool, ahead: bool}.
-## No Unity prefab (docs/UI_UNITY.md): PopupOkLayer frame through UnityKit. Each day is a copy of ProfileLayer's
-## frame cell (Profile_FrameCells: swirl, orange frame, green Select glow for today, Lock veil and Equipped tick for a
-## claimed day) holding PopupRewardLayer's ItemReward per reward on that layer's grid spacing (32). The buttons are
-## DailyRewardAdLayer's ClaimFreeBtn and WatchAdsBtn.
+## No Unity prefab (docs/UI_UNITY.md): PopupOkLayer frame. Each day is a copy of ProfileLayer's frame cell
+## (Profile_FrameCells: swirl, orange frame, green Select glow for today, Lock veil and Equipped tick for a claimed
+## day) holding PopupRewardLayer's ItemReward per reward on that layer's grid spacing (32). The buttons are
+## DailyRewardAdLayer's ClaimFreeBtn and WatchAdsBtn. Frame, texts and buttons are nodes of scenes/popup_daily.tscn;
+## the day cells are built from Game.daily_view().
 
 signal closed(result: Variant)
 
@@ -14,7 +15,6 @@ const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const LbKit := preload("res://src/ui/lb_kit.gd")
 const Config := preload("res://src/config.gd")
 
-const DAILY_AD := "DailyRewardAdLayer"
 const CELLS := "Profile_FrameCells"
 ## Wide cell (the week's big gift): PopupOkLayer's well and the sliced outline of the Profile cell's Lock, tinted
 ## with the colours sampled from the cell frame (UI_Maincenter_64) and the Select glow (UI_Maincenter_66).
@@ -29,7 +29,6 @@ const VIDEO_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_5"
 const WARN := "ec304fff"
 
 ## Layout in Unity canvas units from the panel's top-left corner (PopupOkLayer frame, 724 wide).
-const PANEL := Vector2(724, 1170)
 const COLS := 3
 ## Profile_FrameCells is 172 square; 180 fills three columns of the frame.
 const CELL := Vector2(180, 180)
@@ -39,7 +38,6 @@ const ITEM := 148.0
 const ITEM_SCALE := 0.75
 const GRID := Vector2(60, 186)
 const DAY_H := 56.0
-const BUTTON := Vector2(451.3766, 140)
 
 var claim_button: Button = null
 var video_button: Button = null
@@ -48,13 +46,12 @@ var status_label: Label = null
 var cell_nodes: Array[Control] = []
 var claimed_any: bool = false
 var ahead_any: bool = false
-## Unity view of the frame (UnityKit.popup).
+## Unity view of the frame (UnityKit.frame).
 var ui: RefCounted = null
 
 var _busy: bool = false
 var _content: Control = null
 var _info: Label = null
-var _built_once: bool = false
 
 
 func setup(_args: Dictionary = {}) -> void:
@@ -67,31 +64,35 @@ func _ready() -> void:
 		_build()
 
 
+## Frame, week line, status, buttons and info line are nodes of scenes/popup_daily.tscn; the day cells follow the
+## week and are built in _refresh.
 func _build() -> void:
-	if _content != null:
-		_content.queue_free()
-		_content = null
-	for c in get_children():
-		c.queue_free()
-	cell_nodes.clear()
-	set_anchors_preset(Control.PRESET_FULL_RECT)
-	var view: Dictionary = Game.daily_view()
-
-	var root := Control.new()
-	root.name = "Layer"
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(root)
-	_content = root
-	ui = UnityKit.popup(root, tr("daily_title"), PANEL, close)
+	_content = %Layer
+	ui = UnityKit.frame(_content, tr("daily_title"), close)
 	close_button = ui.button("Panel/Top/btnTurnOff")
 	close_button.name = "CloseButton"
-	if _built_once:
-		_no_reveal()
-	_built_once = true
-	var panel: Control = ui.node("Panel/Content")
+	status_label = %StatusLabel
+	UnityUI.set_text(status_label, "")
+	claim_button = %ClaimButton
+	UnityUI.set_text(claim_button.get_node("Out"), tr("daily_claim"))
+	claim_button.connect("clicked", _on_claim)
+	video_button = %VideoButton
+	UnityUI.set_text(video_button.get_node("Out"), tr("daily_video"))
+	video_button.connect("clicked", _on_video)
+	_info = %InfoLabel
+	_refresh()
 
-	UnityKit.label(panel, tr("daily_week") % (int(view.week) + 1), Rect2(GRID.x, 118, 604, 56), 40).name = "WeekLabel"
+
+## Week line, the 7 day cells (rebuilt in place, between the week line and the status) and the buttons.
+func _refresh() -> void:
+	var view: Dictionary = Game.daily_view()
+	var week: Label = %WeekLabel
+	UnityUI.set_text(week, tr("daily_week") % (int(view.week) + 1))
+	for c in cell_nodes:
+		c.get_parent().remove_child(c)
+		c.queue_free()
+	cell_nodes.clear()
+	var panel: Control = ui.node("Panel/Content")
 	var cells: Array = view.cells
 	for i in cells.size():
 		var col := i % COLS
@@ -101,32 +102,10 @@ func _build() -> void:
 		# The last day is the week's big gift: a whole row of its own.
 		if i == cells.size() - 1:
 			rect = Rect2(GRID.x, GRID.y + (CELL.y + GAP) * ceili(float(i) / COLS), CELL.x * COLS + GAP * (COLS - 1), CELL.y)
-		cell_nodes.append(_make_cell(panel, cells[i], rect, _can_ahead(view, cells[i])))
-
-	var y := GRID.y + (CELL.y + GAP) * 3.0 - GAP
-	status_label = UnityKit.label(panel, "", Rect2(GRID.x, y + 14, 604, 56), 40)
-	status_label.name = "StatusLabel"
-	var by := y + 80.0
-	claim_button = _action_button(panel, "Panel/Content/GameObject/ClaimFreeBtn", tr("daily_claim"), by)
-	claim_button.name = "ClaimButton"
-	claim_button.connect("clicked", _on_claim)
-	video_button = _action_button(panel, "Panel/Content/GameObject/WatchAdsBtn", tr("daily_video"), by)
-	video_button.name = "VideoButton"
-	video_button.connect("clicked", _on_video)
-	_info = UnityKit.label(panel, "", Rect2(GRID.x, by + BUTTON.y + 14, 604, 96), 36)
-	_info.name = "InfoLabel"
+		var card := _make_cell(panel, cells[i], rect, _can_ahead(view, cells[i]))
+		panel.move_child(card, week.get_index() + 1 + i)
+		cell_nodes.append(card)
 	_refresh_buttons(view)
-
-
-## UnityKit.popup plays DialogueReveal; a rebuild after a claim keeps the panel where it is.
-func _no_reveal() -> void:
-	var cfg: Dictionary = ui.get("reveal_cfg")
-	ui.set("reveal_cfg", {})
-	for k in ["panel", "dim"]:
-		var c: Variant = cfg.get(k)
-		if c is Control:
-			(c as Control).scale = Vector2.ONE
-			(c as Control).modulate.a = 1.0
 
 
 ## Ô có thể nhận trước bằng video: ô "next" khi hôm nay đã nhận và video còn lượt.
@@ -205,17 +184,6 @@ func _rewards(card: Control, reward: Dictionary, size: Vector2) -> void:
 		v.text("Quantity", list[i][2])
 
 
-## DailyRewardAdLayer's ClaimFreeBtn / WatchAdsBtn (451x140, text auto 18..56), centred.
-func _action_button(panel: Control, p: String, label: String, y: float) -> Button:
-	var s := UnityKit.spec(DAILY_AD, p)
-	s.a = true
-	var out: Dictionary = s.ch[0]
-	out.txt.w = true
-	var v := UnityKit.add(panel, s, Rect2((PANEL.x - BUTTON.x) * 0.5, y, BUTTON.x, BUTTON.y))
-	v.text("Out", label)
-	return v.root as Button
-
-
 func _refresh_buttons(view: Dictionary) -> void:
 	var is_open := bool(view.open)
 	var can_claim := bool(view.can_claim)
@@ -286,10 +254,7 @@ func _on_video() -> void:
 
 
 func _rebuild_keep_status() -> void:
-	var text := status_label.text
-	var warn := status_label.get_theme_color("font_color") == Color(WARN)
-	_build()
-	_status(text, warn)
+	_refresh()
 
 
 ## The frame's X and dim (prefab buttons play their own click sound).

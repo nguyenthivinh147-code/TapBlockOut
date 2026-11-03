@@ -1,6 +1,7 @@
 extends Control
 ## Danh sách các màn đã dựng UI nhưng chưa nối logic. Chỉ mở từ Settings khi Config.ui_preview.
-## Chạm một dòng để xem màn đó với dữ liệu mẫu. setup(args); signal closed(null).
+## Chạm một dòng để xem màn đó với dữ liệu mẫu. Khung và danh sách cuộn nằm trong scenes/ui_gallery.tscn, mỗi dòng
+## SCREENS sinh lúc chạy. setup(args); signal closed(null).
 
 signal closed(result: Variant)
 
@@ -24,22 +25,17 @@ const SCREENS := [
 
 func setup(_args: Dictionary = {}) -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	var k := PopupKit.make(self, tr("settings_gallery"), func() -> void: closed.emit(null))
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(PopupKit.CONTENT_W, 900)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	(k.box as VBoxContainer).add_child(scroll)
-	var list := VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 8)
-	scroll.add_child(list)
+	# The PopupKit frame (dim, ribbon, X) and the scrolling list are nodes of scenes/ui_gallery.tscn; one row per
+	# SCREENS entry is added here.
+	(%TitleLabel as Label).text = tr("settings_gallery")
+	(%CloseX as Button).pressed.connect(func() -> void: closed.emit(null))
 	for s in SCREENS:
 		var b := ThemeKit.make_button("%s  %s" % [s[0], s[1]], "ghost")
 		b.name = "Open_" + str(s[1])
 		b.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL)
 		b.pressed.connect(_open.bind(str(s[1])))
-		list.add_child(b)
-	PopupKit.show_in(k)
+		%List.add_child(b)
+	PopupKit.show_in({"card": %Panel})
 
 
 func _open(scene: String) -> void:

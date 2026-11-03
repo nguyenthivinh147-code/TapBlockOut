@@ -1,7 +1,8 @@
 extends Control
 ## Shop mini: chỉ gói gold, mở ở mọi level khi người chơi thiếu gold và bấm mua.
-## Không có prefab: khung PopupOkLayer (UnityKit) + số gold (GoldQuantityTxt của Shop_GoldBigPack) + lưới gold
-## của ShopCashLayer (SmallPack#2, ô Shop_GoldPack) cho 6 gói.
+## Không có prefab: khung PopupOkLayer cỡ 866x1110 + số gold (GoldQuantityTxt của Shop_GoldBigPack) + lưới gold
+## của ShopCashLayer (SmallPack#2, ô Shop_GoldPack) cho 6 gói. Khung, số gold, lưới, toast là node trong
+## scenes/shop_mini.tscn; các ô gold theo catalog dựng lúc chạy.
 ## setup({source}); signal closed({bought: bool}). Đóng thì popup gọi quay lại.
 
 signal closed(result: Variant)
@@ -12,12 +13,6 @@ const Shop := preload("res://src/ui/shop.gd")
 
 const LAYER := "ShopCashLayer"
 const C := "GameObject/GameObject/Scroll View/Viewport/Content"
-## Panel: the 806-wide gold grid of ShopCashLayer plus the frame's side borders.
-const SIZE := Vector2(866, 1110)
-## Under the 130-unit header strip of PopupOkLayer.
-const COINS_Y := 120.0
-const GRID_Y := 236.0
-const TOAST_Y := 972.0
 
 var close_button: Button = null
 var toast_label: Label = null
@@ -40,31 +35,23 @@ func setup(args: Dictionary) -> void:
 
 
 func _build() -> void:
-	for c in get_children():
-		c.queue_free()
 	buy_buttons.clear()
-	ui = UnityKit.popup(self, tr("shop_mini_title"), SIZE, close)
+	# Frame (size, hidden parts), Coins, GoldGrid and Toast are nodes of scenes/shop_mini.tscn.
+	ui = UnityKit.frame(self, tr("shop_mini_title"), close)
 	for b in ui.field("closeButtons", "PopupOkUICoreLayer"):
 		if (b as Control).name != "Bg":
 			close_button = b
-	var content: Control = ui.node("Panel/Content")
 
 	# Gold balance: the big pack's amount text with its coin icon.
-	var coins := UnityKit.spec(LAYER, C + "/Shop_GoldBigPack/GoldQuantityTxt")
-	coins.n = "Coins"
-	var cv: RefCounted = UnityKit.add(content, coins, Rect2((SIZE.x - 200.0) * 0.5 - 36.0, COINS_Y, 200, 99))
-	coins_label = cv.root as Label
-	coins_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	coins_label = %Coins
 	UnityUI.set_text(coins_label, Shop.fmt_n0(int(Game.s.coins)))
 
-	var grid_spec := UnityKit.spec(LAYER, C + "/SmallPack#2")
-	grid_spec.n = "GoldGrid"
-	grid_spec.ch = []
-	var gv: RefCounted = UnityKit.add(content, grid_spec, Rect2((SIZE.x - 806.0) * 0.5, GRID_Y, 806, 724))
+	var grid: Control = %GoldGrid
 	var i := 0
 	for e in Game.shop_catalog():
-		var tv: RefCounted = UnityKit.add(gv.root, UnityKit.spec(LAYER, C + "/SmallPack#2/Shop_GoldPack"))
+		var tv: RefCounted = UnityKit.add(grid, UnityKit.spec(LAYER, C + "/SmallPack#2/Shop_GoldPack"))
 		tv.root.name = "Gold_%s" % str(e.id)
+		tv.root.set_meta("u_rt", true)
 		# RewardItemSO gold icons Gold1..Gold6, smallest pack first.
 		tv.sprite("BG/Icon", "Gold%d" % mini(i + 1, 6))
 		tv.text("GoldAmount/GoldQuantity", Shop.fmt_n0(int(e.gold)))
@@ -78,10 +65,9 @@ func _build() -> void:
 			var bv: RefCounted = UnityKit.add(tv.root, s, Rect2(-22, -26, 100, 100))
 			bv.text("SellBadgeTxt", "-%d%%" % int(e.sale_percent))
 		i += 1
-	UnityUI.relayout(gv.root)
+	UnityUI.relayout(grid)
 
-	toast_label = UnityKit.label(content, "", Rect2(60, TOAST_Y, SIZE.x - 120.0, 80), 40.0)
-	toast_label.name = "Toast"
+	toast_label = %Toast
 	toast_label.modulate.a = 0.0
 
 
