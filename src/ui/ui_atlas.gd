@@ -33,6 +33,7 @@ const REGIONS := {
 	"tile_white": ["main", Rect2(756, 1160, 168, 168)],
 	"tile_lavender": ["main", Rect2(928, 1160, 168, 168)],
 	"tile_gray": ["main", Rect2(1100, 1174, 168, 140)],
+	"tile_green": ["main", Rect2(1100, 1579, 168, 140)],
 	"tile_purple": ["main", Rect2(756, 1332, 168, 152)],
 	"tile_brown": ["main", Rect2(928, 1332, 168, 152)],
 	"tile_blue": ["main", Rect2(1100, 1332, 168, 152)],
@@ -44,6 +45,7 @@ const REGIONS := {
 	"bar_green": ["main", Rect2(768, 1488, 500, 60)],
 	"ribbon_pink_horns": ["main", Rect2(1358, 652, 690, 260)],
 	"bubble_cream": ["main", Rect2(938, 1765, 168, 116)],
+	"hand_tap": ["main", Rect2(768, 1565, 168, 168)],
 	# mốc level (kim cương)
 	"node_gray": ["main", Rect2(1511, 1831, 216, 216)],
 	"node_green": ["main", Rect2(1749, 1751, 282, 282)],

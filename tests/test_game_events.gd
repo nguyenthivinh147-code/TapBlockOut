@@ -46,8 +46,26 @@ func test_unlock_level(t: T) -> void:
 	t.eq(g.weekly_state(), "waiting", "thứ Hai 03:00")
 
 
+func test_win_gives_key_only_after_tutorial(t: T) -> void:
+	var g := _g()
+	g.s.level = 30
+	t.eq(g.weekly_tutorial_seen(), false, "chưa xem tutorial")
+	var a0: Dictionary = g.start_attempt()
+	_win(g, a0)
+	t.eq(g.on_level_won(a0).weekly_points, 0, "chưa xem tutorial thì không cộng key")
+	t.eq(int(g.s.weekly.points), 0, "điểm vẫn 0")
+	g.weekly_mark_tutorial_seen()
+	t.eq(g.weekly_tutorial_seen(), true, "đã đánh dấu")
+	t.eq(g.weekly_view().tut_seen, true, "view báo đã xem")
+	g.s.level = 30
+	var a1: Dictionary = g.start_attempt()
+	_win(g, a1)
+	t.eq(g.on_level_won(a1).weekly_points, 1, "xem rồi thì cộng key")
+
+
 func test_win_gives_key_only_when_active(t: T) -> void:
 	var g := _g()
+	g.s.weekly.tut_seen = true
 	g.s.level = 30
 	var a: Dictionary = g.start_attempt()
 	_win(g, a)
@@ -92,15 +110,18 @@ func test_claim_and_season_end(t: T) -> void:
 	g.weekly_refresh()
 	g.s.weekly.points = 8
 	var before := int(g.s.coins)
-	t.eq(g.weekly_claim_free(0).coins, 100, "nhận free")
-	t.eq(int(g.s.coins), before + 100, "cộng gold")
+	var r0: Dictionary = g.weekly_claim_free(0)
+	t.eq(r0.inf_min, 15, "nhận free (mốc khởi đầu): mạng vô hạn 15 phút")
+	t.eq(int(g.s.coins), before, "mốc khởi đầu không cộng gold")
+	t.eq(g.lives_view().infinite, true, "đang vô hạn mạng")
+	t.eq(g.lives_view().infinite_left, 900, "còn 15 phút")
 	t.eq(g.weekly_claim_vip(0), {}, "chưa VIP không nhận được")
 	await g.weekly_buy_vip()
 	var v: Dictionary = g.weekly_view()
-	t.eq(v.badge, 3, "free mốc 1, VIP mốc 0 và 1")
+	t.eq(v.badge, 5, "free mốc 1 và 2, VIP mốc 0, 1 và 2")
 	var c := int(g.s.coins)
-	t.eq(g.weekly_claim_all().coins, 500, "nhận hết")
-	t.eq(int(g.s.coins), c + 500, "ví")
+	t.eq(g.weekly_claim_all().coins, 750, "nhận hết")
+	t.eq(int(g.s.coins), c + 750, "ví")
 	t.eq(g.weekly_view().badge, 0, "hết badge")
 	# sang mùa: VIP chưa nhận gì thêm; mùa mới phát popup cuối mùa
 	g.s.weekly.points = 20

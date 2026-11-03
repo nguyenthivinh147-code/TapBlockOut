@@ -8,6 +8,7 @@ extends Control
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 const X2_PLACEMENT := "x2_coins"
 
 var _args: Dictionary = {}
@@ -35,12 +36,7 @@ func setup(args: Dictionary) -> void:
 
 
 func _label(text: String, size: int, color: Color, node_name: String) -> Label:
-	var l := ThemeKit.make_label(text, size, color)
-	l.name = node_name
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size.x = 560
-	return l
+	return PopupKit.text(text, size, color, node_name)
 
 
 func _coins() -> int:
@@ -48,64 +44,47 @@ func _coins() -> int:
 
 
 func _build() -> void:
-	mouse_filter = Control.MOUSE_FILTER_STOP
-	var dim := ColorRect.new()
-	dim.name = "Dim"
-	dim.color = Color(0, 0, 0, 0.6)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(dim)
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(center)
-	_panel = ThemeKit.make_panel()
-	_panel.name = "Panel"
-	center.add_child(_panel)
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 20)
-	_panel.add_child(box)
+	var k := PopupKit.make(self, tr("win_title"), Callable(), {"banner": "win"})
+	_panel = k.card
+	var box: VBoxContainer = k.box
 
-	box.add_child(_label(tr("win_title"), ThemeKit.FS_TITLE, ThemeKit.TEXT, "TitleLabel"))
-	box.add_child(_label(tr("win_subtitle"), ThemeKit.FS_BODY, ThemeKit.TEXT_DIM, "SubtitleLabel"))
+	box.add_child(_label(tr("win_subtitle"), ThemeKit.FS_BODY, ThemeKit.INK_DIM, "SubtitleLabel"))
+	_build_progress(box)
 
+	var well := ThemeKit.make_well()
+	box.add_child(well)
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 16)
-	var coin := TextureRect.new()
+	well.add_child(row)
+	var coin := ThemeKit.make_icon("coin", 96)
 	coin.name = "CoinIcon"
-	coin.texture = ThemeKit.icon("coin")
-	coin.custom_minimum_size = Vector2(80, 80)
-	coin.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	coin.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	row.add_child(coin)
-	_reward = ThemeKit.make_label(tr("win_reward") % _coins(), ThemeKit.FS_HUGE, ThemeKit.GOLD)
+	_reward = ThemeKit.gold_label(tr("win_reward") % _coins(), ThemeKit.FS_TITLE + 12)
 	_reward.name = "RewardLabel"
 	row.add_child(_reward)
-	box.add_child(row)
 
-	if bool(_args.get("x2_available", false)):
-		var free := bool(_args.get("x2_free", false))
-		_x2_btn = ThemeKit.make_button(tr("win_x2_free") if free else tr("win_x2"),
-			"primary" if free else "video")
-		_x2_btn.name = "X2Button"
-		_x2_btn.pressed.connect(_on_x2_pressed)
-		box.add_child(_x2_btn)
-		if free:
-			box.add_child(_label(tr("tut_x2"), ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM, "X2HintLabel"))
-		else:
-			Game.offer_video(X2_PLACEMENT)
-
-	_build_progress(box)
-
-	_msg = _label("", ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM, "MessageLabel")
+	_msg = _label("", ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "MessageLabel")
 	_msg.visible = false
 	box.add_child(_msg)
 
-	var cont := ThemeKit.make_button(tr("win_continue"), "secondary" if _x2_btn != null else "primary")
+	var cont := ThemeKit.make_button(tr("win_continue"), "primary")
 	cont.name = "ContinueButton"
 	cont.pressed.connect(_on_continue_pressed)
 	box.add_child(cont)
+
+	if bool(_args.get("x2_available", false)):
+		var free := bool(_args.get("x2_free", false))
+		_x2_btn = ThemeKit.make_button(tr("win_x2_free") if free else tr("win_x2"), "gold" if free else "video")
+		_x2_btn.name = "X2Button"
+		if not free:
+			ThemeKit.set_button_icon(_x2_btn, "ui_video")
+		_x2_btn.pressed.connect(_on_x2_pressed)
+		box.add_child(_x2_btn)
+		if free:
+			box.add_child(_label(tr("tut_x2"), ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "X2HintLabel"))
+		else:
+			Game.offer_video(X2_PLACEMENT)
 
 	Sfx.play("sfx_win")
 	_animate_in.call_deferred()
@@ -122,7 +101,7 @@ func _build_progress(box: VBoxContainer) -> void:
 	for f in p.features:
 		names.append(tr("feature_" + str(f)))
 	_feature_names = ", ".join(names)
-	box.add_child(_label(tr("feature_next") % _feature_names, ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM, "FeatureLabel"))
+	box.add_child(_label(tr("feature_next") % _feature_names, ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "FeatureLabel"))
 	var row := HBoxContainer.new()
 	row.name = "FeatureProgress"
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -130,13 +109,13 @@ func _build_progress(box: VBoxContainer) -> void:
 	_bar = ProgressBar.new()
 	_bar.name = "FeatureBar"
 	_bar.custom_minimum_size = Vector2(400, 28)
+	ThemeKit.style_bar(_bar)
 	_bar.min_value = 0.0
 	_bar.max_value = 1.0
 	_bar.step = 0.001
-	_bar.show_percentage = false
 	_bar.value = float(p.before)
 	row.add_child(_bar)
-	_pct = ThemeKit.make_label("%d%%" % roundi(float(p.before) * 100.0), ThemeKit.FS_SMALL, ThemeKit.TEXT)
+	_pct = ThemeKit.ink_label("%d%%" % roundi(float(p.before) * 100.0), ThemeKit.FS_SMALL)
 	_pct.name = "FeaturePercent"
 	_pct.custom_minimum_size.x = 80
 	row.add_child(_pct)
@@ -165,7 +144,7 @@ func _show_unlocked() -> void:
 	if l == null:
 		return
 	l.text = tr("feature_unlocked") % _feature_names
-	l.add_theme_color_override("font_color", ThemeKit.GOLD)
+	l.add_theme_color_override("font_color", ThemeKit.BROWN)
 	l.pivot_offset = l.size * 0.5
 	l.scale = Vector2.ZERO
 	create_tween().tween_property(l, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)

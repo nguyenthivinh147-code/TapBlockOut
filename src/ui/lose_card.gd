@@ -8,6 +8,7 @@ extends Control
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 const Config := preload("res://src/config.gd")
 
 var _args: Dictionary = {}
@@ -27,12 +28,7 @@ func setup(args: Dictionary) -> void:
 
 
 func _label(text: String, size: int, color: Color, node_name: String) -> Label:
-	var l := ThemeKit.make_label(text, size, color)
-	l.name = node_name
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size.x = 560
-	return l
+	return PopupKit.text(text, size, color, node_name)
 
 
 func _price_text(offer_id: String) -> String:
@@ -43,54 +39,41 @@ func _price_text(offer_id: String) -> String:
 
 
 func _build() -> void:
-	mouse_filter = Control.MOUSE_FILTER_STOP
-	var dim := ColorRect.new()
-	dim.name = "Dim"
-	dim.color = Color(0, 0, 0, 0.6)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(dim)
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(center)
-	_panel = ThemeKit.make_panel()
-	_panel.name = "Panel"
-	center.add_child(_panel)
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 20)
-	_panel.add_child(box)
+	var k := PopupKit.make(self, tr("lose_title"), Callable(), {"banner": "lose"})
+	_panel = k.card
+	var box: VBoxContainer = k.box
 
-	box.add_child(_label(tr("lose_title"), ThemeKit.FS_TITLE, ThemeKit.TEXT, "TitleLabel"))
-	box.add_child(_label(tr("lose_body"), ThemeKit.FS_BODY, ThemeKit.TEXT_DIM, "BodyLabel"))
+	box.add_child(ThemeKit.make_icon("art_lose", 220))
+	box.add_child(_label(tr("lose_body"), ThemeKit.FS_BODY, ThemeKit.INK, "BodyLabel"))
 	if bool(_args.get("life_charged", false)):
-		box.add_child(_label(tr("lose_life_lost"), ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM, "LifeLabel"))
+		box.add_child(_label(tr("lose_life_lost"), ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "LifeLabel"))
 
 	if str(_args.get("offer", "")) == "rescue_pack":
+		var well := ThemeKit.make_well()
+		well.name = "PackBox"
+		box.add_child(well)
 		var pack := VBoxContainer.new()
-		pack.name = "PackBox"
-		pack.add_theme_constant_override("separation", 12)
-		pack.add_child(_label(tr("lose_pack_title"), ThemeKit.FS_BODY, ThemeKit.GOLD, "PackTitleLabel"))
-		pack.add_child(_label(tr("lose_pack_body"), ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM, "PackBodyLabel"))
-		var buy := ThemeKit.make_button(tr("lose_pack_buy") % _price_text("rescue_pack"), "video")
+		pack.add_theme_constant_override("separation", 10)
+		well.add_child(pack)
+		pack.add_child(_label(tr("lose_pack_title"), ThemeKit.FS_BODY, ThemeKit.BROWN, "PackTitleLabel"))
+		pack.add_child(_label(tr("lose_pack_body"), ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "PackBodyLabel"))
+		var buy := ThemeKit.make_button(tr("lose_pack_buy") % _price_text("rescue_pack"), "gold")
 		buy.name = "PackBuyButton"
 		buy.pressed.connect(_on_pack_pressed)
 		pack.add_child(buy)
-		box.add_child(pack)
-		_pack_box = pack
+		_pack_box = well
 
-	_msg = _label("", ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM, "MessageLabel")
+	_msg = _label("", ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "MessageLabel")
 	_msg.visible = false
 	box.add_child(_msg)
 
+	var home := ThemeKit.make_button(tr("lose_home"), "secondary")
+	home.name = "HomeButton"
+	home.pressed.connect(_on_home_pressed)
 	var retry := ThemeKit.make_button(tr("lose_retry"), "primary")
 	retry.name = "RetryButton"
 	retry.pressed.connect(_on_retry_pressed)
-	box.add_child(retry)
-	var home := ThemeKit.make_button(tr("lose_home"), "ghost")
-	home.name = "HomeButton"
-	home.pressed.connect(_on_home_pressed)
-	box.add_child(home)
+	box.add_child(PopupKit.row([home, retry]))
 
 	Sfx.play("sfx_lose")
 	_animate_in.call_deferred()

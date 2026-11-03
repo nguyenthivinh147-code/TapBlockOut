@@ -1,14 +1,16 @@
 extends Control
 ## Màn Home. Chỉ đọc Game; không tự mở popup. Điều hướng qua closed({"action": ...}):
-## play, no_lives, profile, gift, shop, settings, challenge, offer (kèm "id").
+## play, no_lives, profile, gift, shop, ranking, settings, challenge, offer (kèm "id"),
+## preview (kèm "scene": màn đã dựng UI, chưa nối logic; chỉ hiện khi Config.ui_preview).
 
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const Unlocks := preload("res://src/meta/unlocks.gd")
 const Config := preload("res://src/config.gd")
-const Profile := preload("res://src/ui/profile.gd")
 const UiAtlas := preload("res://src/ui/ui_atlas.gd")
+const HubTop := preload("res://src/ui/hub_top.gd")
+const HubNav := preload("res://src/ui/hub_nav.gd")
 
 var gold_label: Label = null
 var lives_panel: Control = null
@@ -47,7 +49,8 @@ var _args: Dictionary = {}
 var _built: bool = false
 var _tick: Timer = null
 var _offer_id: String = ""
-var _avatar_holder: Control = null
+var _top: HubTop = null
+var _nav: HubNav = null
 var _gift_col: Control = null
 var _sale_col: Control = null
 var _weekly_col: Control = null
@@ -58,15 +61,7 @@ var _special_id: String = ""
 
 ## 75 -> "1:15", 3725 -> "1:02:05", từ 1 ngày: "1d 3h".
 static func fmt_time(sec: int) -> String:
-	sec = maxi(sec, 0)
-	if sec >= 86400:
-		@warning_ignore("integer_division")
-		return "%dd %dh" % [sec / 86400, (sec % 86400) / 3600]
-	if sec >= 3600:
-		@warning_ignore("integer_division")
-		return "%d:%02d:%02d" % [sec / 3600, (sec % 3600) / 60, sec % 60]
-	@warning_ignore("integer_division")
-	return "%d:%02d" % [sec / 60, sec % 60]
+	return HubTop.fmt_time(sec)
 
 
 func _ready() -> void:
@@ -128,47 +123,15 @@ func _icon_button(icon_name: String, caption: String) -> Array:
 	b.icon = ThemeKit.icon(icon_name)
 	b.expand_icon = true
 	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	b.custom_minimum_size = Vector2(112, 112)
+	b.custom_minimum_size = Vector2(104, 104)
 	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	col.add_child(b)
-	var l := ThemeKit.make_label(caption, ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
+	var l := ThemeKit.make_label(caption, ThemeKit.FS_SMALL - 4, ThemeKit.TEXT)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.custom_minimum_size.x = 130
 	col.add_child(l)
 	return [col, b, l]
-
-
-## Chip tiền tệ: panel + icon + chữ. Trả [panel, hộp ngang để thêm chữ/nút].
-func _chip(icon_name: String, icon_px: int) -> Array:
-	var chip := ThemeKit.make_panel()
-	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	chip.add_child(row)
-	var ic := TextureRect.new()
-	ic.texture = ThemeKit.icon(icon_name)
-	ic.custom_minimum_size = Vector2(icon_px, icon_px)
-	ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	ic.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	row.add_child(ic)
-	return [chip, row]
-
-
-## Nút "+" nhỏ cuối chip.
-func _plus_button(node_name: String, action: Callable) -> Button:
-	var b := Button.new()
-	b.name = node_name
-	b.flat = true
-	b.focus_mode = Control.FOCUS_NONE
-	for st in ["normal", "hover", "pressed", "disabled", "focus"]:
-		b.add_theme_stylebox_override(st, StyleBoxEmpty.new())
-	b.icon = ThemeKit.icon("ui_plus")
-	b.expand_icon = true
-	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	b.custom_minimum_size = Vector2(52, 52)
-	b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	b.pressed.connect(action)
-	return b
 
 
 ## Mốc trên đường level: sprite + số ở giữa, chữ chú thích bên dưới. Trả [mốc, nhãn số, nhãn chú thích].
@@ -198,24 +161,6 @@ func _path_node(parent: Control, node_name: String, top: float, px: float) -> Ar
 	return [n, num, cap]
 
 
-## Tab thanh dưới: nút (icon) + chú thích. Trả [cột, nút, nhãn].
-func _nav_tab(icon_name: String, caption: String, kind: String) -> Array:
-	var col := VBoxContainer.new()
-	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	col.add_theme_constant_override("separation", 2)
-	var b := ThemeKit.make_button("", kind)
-	b.icon = ThemeKit.icon(icon_name)
-	b.expand_icon = true
-	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	b.custom_minimum_size = Vector2(0, 104)
-	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	col.add_child(b)
-	var l := ThemeKit.make_label(caption, ThemeKit.FS_SMALL - 2, ThemeKit.TEXT)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(l)
-	return [col, b, l]
-
-
 func _build() -> void:
 	if _built:
 		return
@@ -240,47 +185,15 @@ func _build() -> void:
 	margin.add_child(col)
 
 	# hàng trên: avatar, mạng, vàng, settings
-	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 10)
-	col.add_child(top)
-	profile_btn = Button.new()
-	profile_btn.name = "ProfileButton"
-	profile_btn.flat = true
-	profile_btn.focus_mode = Control.FOCUS_NONE
-	profile_btn.custom_minimum_size = Vector2(112, 112)
-	profile_btn.pressed.connect(_emit.bind("profile"))
-	top.add_child(profile_btn)
-	var lives_chip := _chip("ui_heart", 48)
-	lives_panel = lives_chip[0]
-	lives_panel.name = "LivesPanel"
-	top.add_child(lives_panel)
-	var lv := VBoxContainer.new()
-	lv.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	lv.add_theme_constant_override("separation", -4)
-	(lives_chip[1] as HBoxContainer).add_child(lv)
-	lives_label = ThemeKit.make_label("", ThemeKit.FS_SMALL + 2)
-	lives_label.name = "LivesLabel"
-	lv.add_child(lives_label)
-	lives_timer_label = ThemeKit.make_label("", ThemeKit.FS_SMALL - 6, ThemeKit.TEXT_DIM)
-	lives_timer_label.name = "LivesTimerLabel"
-	lv.add_child(lives_timer_label)
-	(lives_chip[1] as HBoxContainer).add_child(_plus_button("LivesPlus", _on_lives_plus))
-	var gold_chip := _chip("ui_gold", 48)
-	top.add_child(gold_chip[0])
-	gold_label = ThemeKit.make_label("0", ThemeKit.FS_SMALL + 4, ThemeKit.GOLD)
-	gold_label.name = "GoldLabel"
-	gold_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	(gold_chip[1] as HBoxContainer).add_child(gold_label)
-	(gold_chip[1] as HBoxContainer).add_child(_plus_button("GoldPlus", _emit.bind("shop")))
-	settings_btn = ThemeKit.make_button("", "icon")
-	settings_btn.name = "SettingsButton"
-	settings_btn.icon = ThemeKit.icon("ui_settings")
-	settings_btn.expand_icon = true
-	settings_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	settings_btn.custom_minimum_size = Vector2(88, 88)
-	settings_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	settings_btn.pressed.connect(_emit.bind("settings"))
-	top.add_child(settings_btn)
+	_top = HubTop.new()
+	_top.action.connect(_emit)
+	col.add_child(_top)
+	profile_btn = _top.profile_btn
+	lives_panel = _top.lives_panel
+	lives_label = _top.lives_label
+	lives_timer_label = _top.lives_timer_label
+	gold_label = _top.gold_label
+	settings_btn = _top.settings_btn
 
 	# giữa: quà bên trái, đường level ở giữa, ưu đãi bên phải
 	var mid := HBoxContainer.new()
@@ -314,6 +227,8 @@ func _build() -> void:
 	gift_badge.offset_right = 6
 	gift_badge.offset_top = -6
 	gift_badge.offset_bottom = 26
+	if Config.ui_preview():
+		left.add_child(_preview_button("ui_video", tr("home_ads_daily"), "popup_ads_daily"))
 
 	_path_box = Control.new()
 	_path_box.name = "LevelPath"
@@ -322,7 +237,7 @@ func _build() -> void:
 	_path_box.custom_minimum_size = Vector2(0, 560)
 	mid.add_child(_path_box)
 	var line := ColorRect.new()
-	line.color = Color("20417B")
+	line.color = ThemeKit.PATH_LINE
 	line.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	line.offset_left = -9
 	line.offset_right = 9
@@ -396,9 +311,12 @@ func _build() -> void:
 	special_btn.pressed.connect(_on_special)
 	sp[2].add_theme_color_override("font_color", ThemeKit.GOLD)
 	right.add_child(sp[0])
+	if Config.ui_preview():
+		right.add_child(_preview_button("ui_noads", tr("shop_remove_ads"), "popup_remove_ads"))
+		right.add_child(_preview_button("ui_star", tr("streak_title"), "streak_main"))
 
 	# nút Chơi
-	play_btn = ThemeKit.make_button("", "primary")
+	play_btn = ThemeKit.make_button("", "primary", "lg")
 	play_btn.name = "PlayButton"
 	play_btn.custom_minimum_size = Vector2(520, 150)
 	play_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -422,36 +340,11 @@ func _build() -> void:
 	col.add_child(offer_chip)
 
 	# thanh điều hướng: Shop · Home · Ranking
-	var nav := PanelContainer.new()
-	nav.name = "NavBar"
-	var nav_box := StyleBoxFlat.new()
-	nav_box.bg_color = ThemeKit.NAV_TOP
-	nav_box.corner_radius_top_left = 36
-	nav_box.corner_radius_top_right = 36
-	nav_box.border_width_top = 4
-	nav_box.border_color = ThemeKit.NAV_BOTTOM
-	nav_box.content_margin_left = 24
-	nav_box.content_margin_right = 24
-	nav_box.content_margin_top = 14
-	nav_box.content_margin_bottom = 18
-	nav.add_theme_stylebox_override("panel", nav_box)
-	root.add_child(nav)
-	var tabs := HBoxContainer.new()
-	tabs.add_theme_constant_override("separation", 16)
-	nav.add_child(tabs)
-	var sh := _nav_tab("ui_shop", tr("home_shop"), "video")
-	shop_btn = sh[1]
-	shop_caption = sh[2]
-	shop_btn.name = "ShopButton"
-	shop_btn.pressed.connect(_emit.bind("shop"))
-	tabs.add_child(sh[0])
-	var hm := _nav_tab("ui_home", tr("home_home"), "gold")
-	hm[1].name = "HomeTab"
-	tabs.add_child(hm[0])
-	var rk := _nav_tab("ui_leaderboard", tr("home_ranking_soon"), "video")
-	rk[1].name = "RankingTab"
-	rk[1].disabled = true
-	tabs.add_child(rk[0])
+	_nav = HubNav.new("home")
+	_nav.tab.connect(_on_tab)
+	root.add_child(_nav)
+	shop_btn = _nav.shop_btn
+	shop_caption = _nav.shop_caption
 
 	_tick = Timer.new()
 	_tick.wait_time = 1.0
@@ -481,15 +374,8 @@ func refresh() -> void:
 	if not _built:
 		return
 	var level := int(Game.s.level)
-	gold_label.text = str(int(Game.s.coins))
-
-	# avatar và frame đang đeo
-	if _avatar_holder != null:
-		_avatar_holder.queue_free()
-	var cosm: Dictionary = Game.s.cos
-	_avatar_holder = Profile.make_avatar(str(cosm.get("avatar", "avatar_00")), str(cosm.get("frame", "frame_00")), 112)
-	_avatar_holder.name = "AvatarView"
-	profile_btn.add_child(_avatar_holder)
+	_top.refresh()
+	_nav.refresh()
 
 	_refresh_path(level)
 
@@ -515,14 +401,8 @@ func refresh() -> void:
 	_gift_col.visible = bool(daily.get("open", false))
 	gift_badge.visible = bool(daily.get("badge", false))
 
-	# shop
-	var shop_open := Unlocks.is_open("shop", level)
-	shop_btn.disabled = not shop_open
-	shop_btn.icon = ThemeKit.icon("ui_shop" if shop_open else "ui_lock")
-	shop_caption.text = tr("home_shop") if shop_open else tr("home_shop_locked") % int(Config.UNLOCK.shop)
-
 	# weekend sale: chỉ hiện khi sale bật và Shop đã mở
-	_sale_col.visible = shop_open and Game.is_sale_active()
+	_sale_col.visible = Unlocks.is_open("shop", level) and Game.is_sale_active()
 
 	# challenge
 	var ch: Dictionary = Game.challenge_view()
@@ -557,13 +437,6 @@ func _refresh_timers() -> void:
 	if not _built:
 		return
 	_refresh_events()
-	var lv: Dictionary = Game.lives_view()
-	var show_lives := bool(lv.get("open", false))
-	lives_panel.visible = show_lives
-	if show_lives:
-		lives_label.text = tr("no_lives_lives") % [int(lv.count), int(lv.max)]
-		var wait := int(lv.get("seconds_to_next", 0))
-		lives_timer_label.text = tr("home_lives_full") if wait <= 0 else tr("home_lives_next") % fmt_time(wait)
 	var offers: Array = Game.offers_open()
 	if offers.is_empty():
 		offer_chip.visible = false
@@ -588,13 +461,22 @@ func _on_challenge() -> void:
 	_emit("challenge")
 
 
-## Dấu + cạnh mạng: sang màn hết mạng khi chưa đầy.
-func _on_lives_plus() -> void:
-	var lv: Dictionary = Game.lives_view()
-	if bool(lv.get("infinite", false)) or int(lv.get("count", 0)) >= int(lv.get("max", 0)):
-		return
-	Sfx.play("button")
-	closed.emit({"action": "no_lives"})
+## Tab dưới: Home đang ở đây nên không làm gì.
+func _on_tab(tab_name: String) -> void:
+	match tab_name:
+		"shop":
+			_emit("shop")
+		"ranking":
+			_emit("ranking")
+
+
+## Nút mở một màn chưa nối logic (chỉ dựng khi Config.ui_preview).
+func _preview_button(icon_name: String, caption: String, scene: String) -> Control:
+	var res := _icon_button(icon_name, caption)
+	(res[1] as Button).pressed.connect(func() -> void:
+		Sfx.play("button")
+		closed.emit({"action": "preview", "scene": scene}))
+	return res[0]
 
 
 func _on_play() -> void:

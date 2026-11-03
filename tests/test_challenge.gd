@@ -405,7 +405,7 @@ func test_challenge_screen_lose_path(t: T) -> void:
 	# Home giữa chừng sau khi đã chạm: mất mạng, về Home
 	lv.board_view.block_tapped.emit(blocked)
 	await _tree().process_frame
-	lv.home_button.pressed.emit()
+	lv.on_back()
 	t.ok(await _wait_until(func() -> bool: return _pop(lv, "ConfirmButton") != null), "hỏi xác nhận")
 	(_pop(lv, "ConfirmButton") as Button).pressed.emit()
 	t.ok(await _wait_until(func() -> bool: return st.has("r")), "đóng")

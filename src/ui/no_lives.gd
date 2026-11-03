@@ -7,6 +7,7 @@ extends Control
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 const Config := preload("res://src/config.gd")
 const VIDEO_PLACEMENT := "refill_life"
 
@@ -40,12 +41,7 @@ static func format_time(sec: int) -> String:
 
 
 func _label(text: String, size: int, color: Color, node_name: String) -> Label:
-	var l := ThemeKit.make_label(text, size, color)
-	l.name = node_name
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size.x = 600
-	return l
+	return PopupKit.text(text, size, color, node_name)
 
 
 func _build() -> void:
@@ -55,32 +51,37 @@ func _build() -> void:
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(center)
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 20)
-	center.add_child(box)
+	var k := PopupKit.make_card(tr("no_lives_title"), _on_home_pressed)
+	center.add_child(k.card)
+	_title = k.title
+	var box: VBoxContainer = k.box
 
-	_title = _label(tr("no_lives_title"), ThemeKit.FS_TITLE, ThemeKit.TEXT, "TitleLabel")
-	box.add_child(_title)
-	box.add_child(_label(tr("no_lives_body"), ThemeKit.FS_BODY, ThemeKit.TEXT_DIM, "BodyLabel"))
-	_lives_lbl = _label("", ThemeKit.FS_BODY, ThemeKit.GOLD, "LivesLabel")
+	var heart := ThemeKit.make_sprite("big_heart", 170)
+	box.add_child(heart)
+	_lives_lbl = _label("", ThemeKit.FS_BODY, ThemeKit.BROWN, "LivesLabel")
 	box.add_child(_lives_lbl)
-	_next_lbl = _label("", ThemeKit.FS_TITLE, ThemeKit.TEXT, "NextLabel")
+	box.add_child(_label(tr("no_lives_body"), ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "BodyLabel"))
+	_next_lbl = _label("", ThemeKit.FS_BODY + 4, ThemeKit.INK, "NextLabel")
 	box.add_child(_next_lbl)
-	_full_lbl = _label("", ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM, "FullLabel")
+	_full_lbl = _label("", ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "FullLabel")
 	box.add_child(_full_lbl)
 
-	_gold_btn = ThemeKit.make_button("", "primary")
-	_gold_btn.name = "GoldButton"
-	_gold_btn.pressed.connect(_on_gold_pressed)
-	box.add_child(_gold_btn)
 	_video_btn = ThemeKit.make_button(tr("no_lives_video"), "video")
 	_video_btn.name = "VideoButton"
+	ThemeKit.set_button_icon(_video_btn, "ui_video")
+	_video_btn.add_theme_font_size_override("font_size", ThemeKit.FS_BODY - 2)
 	_video_btn.pressed.connect(_on_video_pressed)
 	box.add_child(_video_btn)
-	_no_ads_lbl = _label(tr("no_lives_no_ads"), ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM, "NoAdsLabel")
+	_gold_btn = ThemeKit.make_button("", "gold")
+	_gold_btn.name = "GoldButton"
+	ThemeKit.set_button_icon(_gold_btn, "ui_gold")
+	_gold_btn.add_theme_font_size_override("font_size", ThemeKit.FS_BODY - 2)
+	_gold_btn.pressed.connect(_on_gold_pressed)
+	box.add_child(_gold_btn)
+	_no_ads_lbl = _label(tr("no_lives_no_ads"), ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "NoAdsLabel")
 	box.add_child(_no_ads_lbl)
 
-	_msg = _label("", ThemeKit.FS_SMALL, ThemeKit.DANGER, "MessageLabel")
+	_msg = _label("", ThemeKit.FS_SMALL, ThemeKit.INK_DANGER, "MessageLabel")
 	_msg.visible = false
 	box.add_child(_msg)
 
@@ -95,6 +96,7 @@ func _build() -> void:
 	_timer.timeout.connect(refresh)
 	add_child(_timer)
 	_timer.start()
+	PopupKit.show_in(k)
 
 
 ## Làm mới số liệu từ Game.lives_view(); đóng "refilled" khi đã có mạng.
