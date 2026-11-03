@@ -22,9 +22,36 @@ func test_sale(t: T) -> void:
 	t.eq(Offers.is_sale(T0 + 4 * D, 0), true, "thứ Bảy")
 	t.eq(Offers.is_sale(T0 + 5 * D, 0), true, "Chủ nhật")
 	t.eq(Offers.is_sale(T0 + 6 * D, 0), false, "thứ Hai")
-	# múi giờ đẩy qua ngày: thứ Sáu 22:13 UTC, +7h thành thứ Bảy
-	t.eq(Offers.is_sale(T0 + 3 * D, 0), false, "thứ Sáu UTC")
-	t.eq(Offers.is_sale(T0 + 3 * D, 7 * H), true, "thứ Bảy theo giờ máy")
+	# múi giờ đẩy qua ngày: thứ Năm 22:13 UTC, +7h thành thứ Sáu
+	t.eq(Offers.is_sale(T0 + 2 * D, 0), false, "thứ Năm UTC")
+	t.eq(Offers.is_sale(T0 + 2 * D, 7 * H), true, "thứ Sáu theo giờ máy")
+
+
+func test_sale_friday(t: T) -> void:
+	Config.reset()
+	t.eq(Offers.is_sale(T0 + 3 * D, 0), true, "thứ Sáu")
+	t.eq(Offers.is_sale(T0 + 2 * D, 0), false, "thứ Năm")
+
+
+func test_sale_mode(t: T) -> void:
+	var sat := T0 + 4 * D
+	Config.reset()
+	t.eq(Offers.is_sale(sat, 0, true), true, "mode 1: đã mua vẫn sale")
+	Config.SALE_MODE = 2
+	t.eq(Offers.is_sale(sat, 0, false), true, "mode 2: chưa mua")
+	t.eq(Offers.is_sale(sat, 0, true), false, "mode 2: đã mua")
+	t.eq(Offers.is_sale(T0, 0, false), false, "mode 2: ngoài ngày sale")
+	Config.SALE_MODE = 3
+	t.eq(Offers.is_sale(sat, 0, false), false, "mode 3: tắt")
+	t.eq(Offers.catalog(sat, 0, false)[0].sku, "gold_pack_1", "mode 3: gói thường")
+	Config.reset()
+
+
+func test_catalog_base(t: T) -> void:
+	Config.reset()
+	var sale := Offers.catalog(T0 + 4 * D, 0)
+	t.eq(sale[0].base_sku, "gold_pack_1", "base_sku")
+	t.near(sale[0].base_usd, 1.99, 0.001, "base_usd")
 
 
 func test_catalog(t: T) -> void:

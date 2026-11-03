@@ -79,8 +79,10 @@ var input_enabled: bool = true
 var _board: BoardState = null
 var _cell: float = 64.0
 var _origin: Vector2 = Vector2.ZERO
+var _inner: Rect2 = Rect2()  # vùng trong khung cổng (cố định), lưới level nằm giữa vùng này
 var _nodes: Dictionary = {}  # id -> BlockNode
 var _owner: Dictionary = {}  # Vector2i -> id
+var _vacated: Dictionary = {}  # Vector2i -> true: ô của khối đã đi, không vẽ nền nữa
 var _gate_state: Dictionary = {}  # cạnh -> đang mở?
 var _gate_prog: Dictionary = {}  # cạnh -> 0 (đóng) .. 1 (mở), đang chạy hoạt ảnh
 var _gate_tws: Dictionary = {}  # cạnh -> Tween
@@ -244,6 +246,7 @@ func _clear() -> void:
 		_nodes[id].queue_free()
 	_nodes.clear()
 	_owner.clear()
+	_vacated.clear()
 	_pending = 0
 	for side in _gate_tws:
 		var gtw: Tween = _gate_tws[side]
@@ -282,6 +285,8 @@ func _unmap(id: String) -> void:
 	for c in n.cells:
 		if _owner.get(c, "") == id:
 			_owner.erase(c)
+			_vacated[c] = true
+	queue_redraw()
 
 
 func _layout() -> void:
@@ -321,7 +326,8 @@ func _layout() -> void:
 func _draw() -> void:
 	if _board == null:
 		return
-	var br := board_rect()
+	var cells_rect := board_rect()
+	var br := _inner
 	var g := _cell * GATE_RATIO
 	var outer := br.grow(g)
 	# nền bàn
@@ -488,7 +494,7 @@ func _finish_exit(node: BlockNode) -> void:
 
 
 func _burst_at_edge(center: Vector2, dir: Vector2, col: Color) -> void:
-	var r := board_rect()
+	var r := _inner
 	var p := center
 	if dir.x > 0:
 		p.x = r.end.x

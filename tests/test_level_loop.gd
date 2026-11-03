@@ -61,36 +61,37 @@ func test_content_level_mapping(t: T) -> void:
 
 
 func test_game_loops_content_keeps_display(t: T) -> void:
-	var g := _g(300)
-	t.eq(int(g.current_level_data().get("id", 0)), 300, "L300 đọc file 300")
-	for pair in [[301, 101], [302, 102], [500, 300], [501, 101], [1234, 101 + (1234 - 101) % 200]]:
+	var g := _g(100)
+	t.eq(int(g.current_level_data().get("id", 0)), 100, "L100 đọc file 100")
+	for pair in [[101, 51], [102, 52], [150, 100], [151, 51], [1234, 51 + (1234 - 51) % 50]]:
 		g.s.level = pair[0]
 		t.eq(g.level_exists(pair[0]), true, "L%d tồn tại" % pair[0])
 		t.eq(int(g.current_level_data().get("id", 0)), pair[1], "L%d chơi nội dung L%d" % [pair[0], pair[1]])
-	g.s.level = 301
+	g.s.level = 101
 	var a: Dictionary = g.start_attempt()
-	t.eq(int(a.level), 301, "attempt giữ số hiển thị")
+	t.eq(int(a.level), 101, "attempt giữ số hiển thị")
 	t.eq(g._gen_cache.size(), 0, "không sinh gì")
 
 
 func test_loop_start_configurable(t: T) -> void:
-	var g := _g(301)
+	var g := _g(101)
 	var old: int = int(Config.CONTENT.loop_start_level)
-	Config.CONTENT["loop_start_level"] = 51
-	t.eq(int(g.current_level_data().get("id", 0)), 51, "loop_start 51")
-	g.s.level = 303
-	t.eq(int(g.current_level_data().get("id", 0)), 53, "L303 -> 53")
+	t.eq(int(old), 51, "mặc định lặp từ L51")
+	Config.CONTENT["loop_start_level"] = 71
+	t.eq(int(g.current_level_data().get("id", 0)), 71, "loop_start 71")
+	g.s.level = 103
+	t.eq(int(g.current_level_data().get("id", 0)), 73, "L103 -> 73")
 	Config.CONTENT["loop_start_level"] = old
 	Config.demo_override = -1
 
 
 func test_win_advances_display_level_past_last(t: T) -> void:
-	var g := _g(300)
+	var g := _g(100)
 	var a: Dictionary = g.start_attempt()
 	var res: Dictionary = g.on_level_won(a)
-	t.eq(int(g.s.level), 301, "thắng L300 lên L301")
+	t.eq(int(g.s.level), 101, "thắng L100 lên L101")
 	var a2: Dictionary = g.start_attempt()
-	t.eq(int(a2.level), 301, "attempt kế là L301")
+	t.eq(int(a2.level), 101, "attempt kế là L101")
 	t.eq(int(a2.board.moves_left()), int(g.current_level_data().moves), "bàn là nội dung vòng lặp")
 	Config.demo_override = -1
 
@@ -106,7 +107,7 @@ func test_old_save_upgrade_gets_loop_content(t: T) -> void:
 	Config.demo_override = 0
 	g.s = g.store.load_state("")
 	t.eq(int(g.s.level), 457, "giữ số level hiển thị")
-	t.eq(int(g.current_level_data().get("id", 0)), 101 + (457 - 101) % 200, "nội dung theo vòng lặp")
+	t.eq(int(g.current_level_data().get("id", 0)), 51 + (457 - 51) % 50, "nội dung theo vòng lặp")
 	Config.demo_override = -1
 
 

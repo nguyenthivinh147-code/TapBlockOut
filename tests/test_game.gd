@@ -416,7 +416,7 @@ func test_cosmetics(t: T) -> void:
 
 func test_gift_booster(t: T) -> void:
 	var g := _g()
-	g.s.level = 6
+	g.s.level = 12
 	t.eq(g.claim_gift(), "hint", "hint")
 	t.eq(g.claim_gift(), "move", "move")
 	t.eq(g.claim_gift(), "", "hết")

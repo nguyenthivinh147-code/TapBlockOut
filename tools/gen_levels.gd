@@ -1,12 +1,12 @@
 extends SceneTree
 ## Sinh hàng loạt level bằng LevelGenerator và ghi level_NNNN.json.
-## Chạy: tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- [--from=21] [--to=300] [--out=user://gen_out] [--seed=0] [--teach=0]
+## Chạy: tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- [--from=1] [--to=100] [--out=user://gen_out] [--seed=0] [--teach=0]
 ## Mặc định ghi vào user://gen_out. Muốn ghi vào data/levels thì truyền --out=res://data/levels một cách chủ ý.
 ## Thoát 1 nếu có level không sinh được hoặc không qua kiểm tra.
 ##
-## Bản phát hành L21-300 (Task 9.3) sinh bằng đúng lệnh này, seed gốc BASE_SEED = 20261101:
-##   tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- --from=21 --to=300 --seed=20261101 --teach=1 --out=res://data/levels
-## `--teach=1`: các level dạy cơ chế (id lấy từ Config.UNLOCK: 21, 31, 46, 61, 81, 101) dựng tay bằng TEACH ở dưới
+## Bản phát hành L1-100 (đường cong độ khó difficulty_curve.gd) sinh bằng đúng lệnh này, seed gốc BASE_SEED = 20261101:
+##   tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- --from=1 --to=100 --seed=20261101 --teach=1 --out=res://data/levels
+## `--teach=1`: các level dạy cơ chế (id lấy từ Config.UNLOCK: 14, 30, 40, 55, 70, 90) và 4 level đầu (EARLY, chắc chắn thắng) dựng tay bằng TEACH ở dưới
 ## thay cho bộ sinh; min_taps và moves vẫn do Solver tính. Không có cờ này thì mọi level đều do bộ sinh.
 
 const Gen := preload("res://src/core/level_generator.gd")
@@ -14,8 +14,8 @@ const LevelData := preload("res://src/core/level_data.gd")
 const Solver := preload("res://src/core/solver.gd")
 const Config := preload("res://src/config.gd")
 
-const DEFAULT_FROM := 21
-const DEFAULT_TO := 300
+const DEFAULT_FROM := 1
+const DEFAULT_TO := 100
 const DEFAULT_OUT := "user://gen_out"
 ## Seed gốc của bản phát hành L21-300 (ngày chốt thiết kế). Mặc định của --seed vẫn là 0.
 const BASE_SEED := 20261101
@@ -24,6 +24,20 @@ const BASE_SEED := 20261101
 ## `rows`: mỗi chuỗi một hàng (y tăng xuống dưới), '.' ô trống, '#' đá, chữ cái là khối (cùng chữ = cùng khối).
 ## `blk[chữ]`: color (yellow lên, green trái, blue phải, purple xuống) và tuỳ chọn ice, chain (chữ khối chìa),
 ## inner (màu lớp trong), fog. `pulse`: cạnh có cổng nhịp và trạng thái mở ban đầu.
+## Bốn level đầu làm tay (cùng định dạng TEACH, khoá là id): 2, 3, 3, 4 màu. L1-3 không khối nào bị chặn
+## quá một lần và dư 5 MOVES nên chắc chắn thắng; L4 có một khối phải chờ.
+const EARLY := {
+	1: {"rows": ["A.B", "A.B", "..."],
+		"blk": {"A": {"color": "yellow"}, "B": {"color": "blue"}}},
+	2: {"rows": [".A.C", ".A.C", ".BB."],
+		"blk": {"A": {"color": "yellow"}, "B": {"color": "green"}, "C": {"color": "blue"}}},
+	3: {"rows": ["A.B", "A.B", "CC.", ".D."],
+		"blk": {"A": {"color": "yellow"}, "B": {"color": "blue"}, "C": {"color": "purple"}, "D": {"color": "blue"}}},
+	4: {"rows": [".A..", ".ABB", "GE..", "G.PP"],
+		"blk": {"A": {"color": "yellow"}, "B": {"color": "blue"}, "E": {"color": "yellow"},
+			"G": {"color": "green"}, "P": {"color": "purple"}}},
+}
+
 const TEACH := {
 	"stone": {  # đá cố định: B không bay lên được vì đá phía trên, phải chờ A rời khỏi trước
 		"rows": ["A.#..", "ABBC.", "...CD", "E.#.D", "EFF.."],
@@ -104,7 +118,11 @@ static func teach_mech(id: int) -> String:
 
 ## Dựng level dạy từ bảng TEACH; min_taps và moves do Solver tính. {} nếu bảng sai.
 static func build_teach(mech: String) -> Dictionary:
-	var spec: Dictionary = TEACH[mech]
+	return build_spec(teach_id(mech), TEACH[mech])
+
+
+## Dựng level `id` từ một bảng rows/blk (EARLY hoặc TEACH); min_taps và moves do Solver tính.
+static func build_spec(id: int, spec: Dictionary) -> Dictionary:
 	var rows: Array = spec["rows"]
 	var h := rows.size()
 	var w := str(rows[0]).length()
@@ -149,7 +167,7 @@ static func build_teach(mech: String) -> Dictionary:
 			"chained_by": name_of[a["chain"]] if a.has("chain") else "",
 			"inner_color": str(a.get("inner", "")), "fog": bool(a.get("fog", false))})
 	var d := {
-		"id": teach_id(mech), "w": Config.BOARD_W, "h": Config.BOARD_H, "hard": false, "min_taps": 0, "moves": 0, "seed": 0,
+		"id": id, "w": Config.BOARD_W, "h": Config.BOARD_H, "hard": false, "min_taps": 0, "moves": 0, "seed": 0,
 		"stones": stones, "pulse_sides": spec.get("pulse", []).duplicate(true), "blocks": blocks,
 	}
 	if not LevelData.validate(d).is_empty():
@@ -174,7 +192,13 @@ static func generate_range(from_id: int, to_id: int, seed: int, out: String, tea
 	for id in range(from_id, to_id + 1):
 		var t0 := Time.get_ticks_usec()
 		var tm := teach_mech(id) if teach else ""
-		var d := build_teach(tm) if tm != "" else Gen.generate(id, seed)
+		var d: Dictionary
+		if teach and EARLY.has(id):
+			d = build_spec(id, EARLY[id])
+		elif tm != "":
+			d = build_teach(tm)
+		else:
+			d = Gen.generate(id, seed)
 		var ms := float(Time.get_ticks_usec() - t0) / 1000.0
 		count += 1
 		total += ms

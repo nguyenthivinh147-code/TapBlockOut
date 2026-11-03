@@ -11,6 +11,7 @@ const Solver := preload("res://src/core/solver.gd")
 const Config := preload("res://src/config.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const Silhouette := preload("res://src/core/silhouette.gd")
+const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 const MAX_BLOCKS := 30
 ## Khung lớn nhất của hình: chừa một ô mỗi phía trên bàn cố định.
@@ -20,8 +21,6 @@ const MAX_TRIES := 60
 ## Bàn có cổng nhịp: solver phải tìm chính xác nên giữ ít khối.
 const GATE_MAX_BLOCKS := 20
 const BLOCK_CAP := 5
-## Số khối L1-20 (bảng design.md mục 4).
-const EARLY_COUNTS := [2, 3, 4, 5, 7, 8, 10, 10, 12, 13, 15, 16, 17, 18, 20, 22, 23, 25, 26, 28]
 const NEIGHBORS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 
 
@@ -44,7 +43,7 @@ static func mechanics_for(id: int) -> Array[String]:
 
 
 static func is_hard(id: int) -> bool:
-	return id % 4 == 0
+	return DifficultyCurve.is_hard(id)
 
 
 static func _mix(v: int) -> int:
@@ -59,18 +58,10 @@ static func _rng(id: int, s: int) -> RandomNumberGenerator:
 	return r
 
 
-## Số khối mục tiêu; `attempt` lớn thì giảm dần để lần sinh lại dễ đạt hơn.
-static func _target_count(id: int, rng: RandomNumberGenerator, attempt: int) -> int:
-	var n: int
-	if id <= EARLY_COUNTS.size():
-		n = EARLY_COUNTS[maxi(id, 1) - 1]
-	else:
-		@warning_ignore("integer_division")
-		n = mini(MAX_BLOCKS, 26 + (id - 21) / 12)
-		if not is_hard(id):
-			n -= rng.randi_range(0, 2)
+## Số khối mục tiêu theo đường cong độ khó (difficulty_curve.gd); `attempt` lớn thì giảm dần để lần sinh lại dễ đạt hơn.
+static func _target_count(id: int, _rng: RandomNumberGenerator, attempt: int) -> int:
 	@warning_ignore("integer_division")
-	return maxi(2, n - attempt / 20)
+	return maxi(2, DifficultyCurve.block_count(id) - attempt / 20)
 
 
 static func _enabled(id: int, mech: String, rng: RandomNumberGenerator, attempt: int) -> bool:
@@ -187,13 +178,7 @@ static func _no_wait(level: Dictionary) -> bool:
 
 
 static func _allowed_colors(id: int) -> Array[int]:
-	var k := 4
-	if id <= 3:
-		k = 1
-	elif id <= 5:
-		k = 2
-	elif id <= 8:
-		k = 3
+	var k := DifficultyCurve.color_count(id)
 	var out: Array[int] = []
 	for i in k:
 		out.append(i)
@@ -488,7 +473,7 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 			pool.append(i)
 	_shuffle(pool, rng)
 	if feats["ice"]:
-		var cnt := maxi(1, roundi(n * _ramp(id, int(Config.UNLOCK["ice"]), 0.10, 0.28, 150)))
+		var cnt := maxi(1, roundi(n * _ramp(id, int(Config.UNLOCK["ice"]), 0.10, 0.28, 60)))
 		for i in pool:
 			if ice.size() >= cnt:
 				break
@@ -496,7 +481,7 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 			taken[i] = true
 	if feats["chain"]:
 		@warning_ignore("integer_division")
-		var pairs := mini(4, 1 + (id - int(Config.UNLOCK["chain"])) / 40)
+		var pairs := mini(4, 1 + (id - int(Config.UNLOCK["chain"])) / 20)
 		var keys := {}
 		for a in pool:
 			if chain.size() >= pairs:
@@ -515,7 +500,7 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 			taken[a] = true
 	if feats["layer"]:
 		@warning_ignore("integer_division")
-		var cnt := mini(5, 1 + (id - int(Config.UNLOCK["layer"])) / 30)
+		var cnt := mini(5, 1 + (id - int(Config.UNLOCK["layer"])) / 15)
 		for i in pool:
 			if layer.size() >= cnt:
 				break
@@ -530,7 +515,7 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 			layer[i] = opts[rng.randi_range(0, opts.size() - 1)]
 			taken[i] = true
 	if feats["fog"]:
-		var frac := _ramp(id, int(Config.UNLOCK["fog"]), 0.2, 0.5, 100)
+		var frac := _ramp(id, int(Config.UNLOCK["fog"]), 0.2, 0.5, 30)
 		var cnt := maxi(1, roundi(n * frac))
 		var all: Array = range(n)
 		_shuffle(all, rng)

@@ -17,6 +17,11 @@ var _panel: Control = null
 var _reward: Label = null
 var _msg: Label = null
 var _x2_btn: Button = null
+var _bar: ProgressBar = null
+var _pct: Label = null
+var _prog_after: float = 0.0
+var _prog_unlocked: bool = false
+var _feature_names: String = ""
 
 
 func setup(args: Dictionary) -> void:
@@ -91,6 +96,8 @@ func _build() -> void:
 		else:
 			Game.offer_video(X2_PLACEMENT)
 
+	_build_progress(box)
+
 	_msg = _label("", ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM, "MessageLabel")
 	_msg.visible = false
 	box.add_child(_msg)
@@ -104,9 +111,71 @@ func _build() -> void:
 	_animate_in.call_deferred()
 
 
+## Thanh tiến trình tới tính năng kế tiếp (Unlocks.feature_progress). Ẩn khi hết tính năng để mở.
+func _build_progress(box: VBoxContainer) -> void:
+	var p: Dictionary = _args.get("progress", {})
+	if not bool(p.get("has_next", false)):
+		return
+	_prog_after = float(p.after)
+	_prog_unlocked = _prog_after >= 1.0
+	var names: PackedStringArray = []
+	for f in p.features:
+		names.append(tr("feature_" + str(f)))
+	_feature_names = ", ".join(names)
+	box.add_child(_label(tr("feature_next") % _feature_names, ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM, "FeatureLabel"))
+	var row := HBoxContainer.new()
+	row.name = "FeatureProgress"
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 12)
+	_bar = ProgressBar.new()
+	_bar.name = "FeatureBar"
+	_bar.custom_minimum_size = Vector2(400, 28)
+	_bar.min_value = 0.0
+	_bar.max_value = 1.0
+	_bar.step = 0.001
+	_bar.show_percentage = false
+	_bar.value = float(p.before)
+	row.add_child(_bar)
+	_pct = ThemeKit.make_label("%d%%" % roundi(float(p.before) * 100.0), ThemeKit.FS_SMALL, ThemeKit.TEXT)
+	_pct.name = "FeaturePercent"
+	_pct.custom_minimum_size.x = 80
+	row.add_child(_pct)
+	box.add_child(row)
+
+
+func _animate_progress() -> void:
+	if _bar == null:
+		return
+	var tw := create_tween()
+	tw.tween_method(_set_progress, _bar.value, _prog_after, 0.8).set_trans(Tween.TRANS_SINE)
+	if _prog_unlocked:
+		tw.tween_callback(_show_unlocked)
+
+
+func _set_progress(v: float) -> void:
+	if _bar == null or not is_instance_valid(_bar):
+		return
+	_bar.value = v
+	_pct.text = "%d%%" % roundi(v * 100.0)
+
+
+## Đạt 100%: thay dòng "Mở khoá tiếp" bằng thông báo đã mở.
+func _show_unlocked() -> void:
+	var l := find_child("FeatureLabel", true, false) as Label
+	if l == null:
+		return
+	l.text = tr("feature_unlocked") % _feature_names
+	l.add_theme_color_override("font_color", ThemeKit.GOLD)
+	l.pivot_offset = l.size * 0.5
+	l.scale = Vector2.ZERO
+	create_tween().tween_property(l, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	Sfx.play("sfx_coin")
+
+
 func _animate_in() -> void:
 	if _panel != null and is_instance_valid(_panel):
 		ThemeKit.popup_in(_panel)
+	_animate_progress()
 
 
 func _set_busy(v: bool) -> void:
@@ -128,6 +197,10 @@ func _on_x2_pressed() -> void:
 	if ok:
 		_x2_taken = true
 		_reward.text = tr("win_reward") % (_coins() * 2)
+		_reward.pivot_offset = _reward.size * 0.5
+		var pulse := create_tween()
+		pulse.tween_property(_reward, "scale", Vector2(1.25, 1.25), 0.12)
+		pulse.tween_property(_reward, "scale", Vector2.ONE, 0.18)
 		_x2_btn.text = tr("win_x2_done")
 		_msg.visible = false
 		Sfx.play("sfx_coin")

@@ -188,7 +188,12 @@ func win_level() -> bool:
 func continue_to(next: int) -> bool:
 	if not press("ContinueButton"):
 		return false
-	return await wait_playing(next)
+	if await wait_playing(next, 600 + int(Config.CONTENT.hard_banner_sec * 1000.0)):
+		return true
+	# Vừa mở tính năng ở Home thì level đưa người chơi về Home (Game.next_after_win).
+	if not await wait_until(func() -> bool: return main.current_name == "home" and main.popup_count() == 0, 2000):
+		return false
+	return await play_from_home(next)
 
 
 ## Level trong [from, to] có khối bị chặn ngay từ đầu: [level, id]; [0, ""] nếu không.

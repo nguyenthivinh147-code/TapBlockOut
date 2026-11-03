@@ -8,6 +8,8 @@ const Unlocks := preload("res://src/meta/unlocks.gd")
 const POPUP_DAILY := "res://scenes/popup_daily.tscn"
 const POPUP_OFFER := "res://scenes/popup_offer.tscn"
 const SETTINGS := "res://scenes/settings.tscn"
+const WEEKLY_PASS := "res://scenes/weekly_pass.tscn"
+const CHAIN_OFFER := "res://scenes/chain_offer.tscn"
 
 var current_screen: Node = null
 var current_name: String = ""
@@ -31,6 +33,13 @@ func _boot() -> void:
 	go("home")
 	is_booted = true
 	booted.emit()
+	_chain_autoshow()
+
+
+## Chain Offer tự mở đúng một lần mỗi chuỗi, khi người chơi đang ở Home.
+func _chain_autoshow() -> void:
+	if current_name == "home" and Game.chain_take_autoshow():
+		_popup_then(CHAIN_OFFER, {}, false)
 
 
 ## screen: "home", "level", "no_lives", "profile", "shop", "challenge".
@@ -52,6 +61,8 @@ func go(screen: String, args: Dictionary = {}) -> void:
 		node.connect("closed", _on_screen_closed.bind(screen, node))
 	if node.has_method("setup"):
 		node.call("setup", args)
+	if screen == "home" and is_booted:
+		_chain_autoshow.call_deferred()
 
 
 ## Đưa một node popup đã dựng sẵn vào lớp popup; nó phải có signal closed (Back đóng được).
@@ -135,6 +146,10 @@ func _home_action(action: String, res: Dictionary) -> void:
 			_popup_then(SETTINGS, {}, true)
 		"offer":
 			_popup_then(POPUP_OFFER, {"id": str(res.get("id", ""))}, false)
+		"weekly":
+			_popup_then(WEEKLY_PASS, {}, false)
+		"chain":
+			_popup_then(CHAIN_OFFER, {}, false)
 		_:
 			pass
 
