@@ -9,6 +9,8 @@ const SHEETS := {
 	"popup": "atlas_popup.png",
 	"winlose": "atlas_winlose.png",
 	"shop": "atlas_shop.png",
+	"lb": "atlas_lb.png",
+	"packs": "atlas_packs.png",
 }
 
 ## tên -> [sheet, Rect2(x, y, w, h)]
@@ -82,6 +84,20 @@ const REGIONS := {
 	"strip_yellow": ["shop", Rect2(514, 90, 510, 90)],
 	"banner_coins": ["shop", Rect2(424, 448, 600, 336)],
 	"awning": ["shop", Rect2(0, 806, 1024, 218)],
+	# leaderboard: thanh hàng theo hạng, mũi tên lên xuống hạng
+	"row_green": ["lb", Rect2(524, 538, 500, 94)],
+	"row_cream": ["lb", Rect2(524, 636, 500, 94)],
+	"row_orange": ["lb", Rect2(524, 734, 500, 94)],
+	"row_blue": ["lb", Rect2(524, 832, 500, 94)],
+	"row_gold": ["lb", Rect2(524, 930, 500, 94)],
+	"chevron_up": ["lb", Rect2(152, 164, 52, 52)],
+	"chevron_down": ["lb", Rect2(96, 164, 52, 52)],
+	# khung gói: thân kem, đáy màu
+	"pack_pink": ["packs", Rect2(0, 0, 512, 312)],
+	"pack_green": ["packs", Rect2(512, 0, 512, 312)],
+	"pack_blue": ["packs", Rect2(0, 316, 512, 312)],
+	"pack_orange": ["packs", Rect2(512, 316, 512, 312)],
+	"pack_purple": ["packs", Rect2(0, 632, 512, 312)],
 	# popup atlas
 	"paper_rings": ["popup", Rect2(424, 722, 232, 300)],
 }

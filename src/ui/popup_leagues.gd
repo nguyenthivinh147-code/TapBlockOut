@@ -17,7 +17,7 @@ func _fill(box: VBoxContainer) -> void:
 		var h := HBoxContainer.new()
 		h.add_theme_constant_override("separation", 12)
 		well.add_child(h)
-		h.add_child(ThemeKit.make_sprite(str(r.badge), 84))
+		h.add_child(ThemeKit.make_icon("cup_" + str(r.id), 96))
 		var v := VBoxContainer.new()
 		v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		v.alignment = BoxContainer.ALIGNMENT_CENTER

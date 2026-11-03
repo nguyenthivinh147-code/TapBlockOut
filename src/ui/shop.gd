@@ -176,21 +176,35 @@ func _add_preview_sections() -> void:
 	packs.add_theme_constant_override("separation", 8)
 	_list.add_child(packs)
 	for p in SampleData.SHOP_HELPERS:
-		packs.add_child(_preview_tile("banner_coins", tr(str(p.title)), str(p.price)))
+		var card := _pack_card(str(p.art))
+		packs.add_child(card.panel)
+		(card.box as VBoxContainer).add_child(ThemeKit.make_icon(str(p.icon), 120))
+		var name_l := ThemeKit.ink_label(tr(str(p.title)), ThemeKit.FS_SMALL + 2, ThemeKit.BROWN)
+		name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		(card.box as VBoxContainer).add_child(name_l)
+		(card.box as VBoxContainer).add_child(_soon_button(str(p.price)))
 	_list.add_child(_section(tr("shop_section_bundles")))
 	for b in SampleData.SHOP_BUNDLES:
-		var well := ThemeKit.make_well()
-		var h := HBoxContainer.new()
-		h.add_theme_constant_override("separation", 12)
-		well.add_child(h)
-		var v := VBoxContainer.new()
-		v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		v.alignment = BoxContainer.ALIGNMENT_CENTER
-		h.add_child(v)
-		v.add_child(ThemeKit.ink_label(tr(str(b.title)), ThemeKit.FS_SMALL + 4, ThemeKit.BROWN))
-		v.add_child(ThemeKit.ink_label(tr("shop_bundle_desc"), ThemeKit.FS_SMALL - 2, ThemeKit.INK_DIM))
-		h.add_child(_soon_button(str(b.price)))
-		_list.add_child(well)
+		var card := _pack_card(str(b.art))
+		_list.add_child(card.panel)
+		var title := ThemeKit.ink_label(tr(str(b.title)), ThemeKit.FS_BODY, ThemeKit.BROWN)
+		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		(card.box as VBoxContainer).add_child(title)
+		var desc := ThemeKit.ink_label(tr("shop_bundle_desc"), ThemeKit.FS_SMALL - 2, ThemeKit.INK_DIM)
+		desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		(card.box as VBoxContainer).add_child(desc)
+		(card.box as VBoxContainer).add_child(_soon_button(str(b.price)))
+
+
+## Khung gói: thân kem ở trên, đáy màu đặt nút giá. Trả {panel, box}.
+func _pack_card(art: String) -> Dictionary:
+	var panel := PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", UiAtlas.box(art, Vector4(60, 60, 60, 120), Vector4(30, 26, 30, 12)))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 6)
+	panel.add_child(box)
+	return {"panel": panel, "box": box}
 
 
 func _preview_tile(region: String, caption: String, price: String) -> Control:

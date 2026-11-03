@@ -9,13 +9,13 @@ const SHOP_HEARTS := [
 	{"infinite": true, "hours": 1, "price": "$3.99"},
 ]
 const SHOP_HELPERS := [
-	{"title": "shop_helper_great", "price": "$3.99"},
-	{"title": "shop_helper_epic", "price": "$4.99"},
+	{"title": "shop_helper_great", "price": "$3.99", "art": "pack_pink", "icon": "shop_gold_pack_4"},
+	{"title": "shop_helper_epic", "price": "$4.99", "art": "pack_purple", "icon": "shop_gold_pack_6"},
 ]
 const SHOP_BUNDLES := [
-	{"title": "shop_bundle_sweet", "price": "$4.99"},
-	{"title": "shop_bundle_tasty", "price": "$9.99"},
-	{"title": "shop_bundle_yummy", "price": "$14.99"},
+	{"title": "shop_bundle_sweet", "price": "$4.99", "art": "pack_green"},
+	{"title": "shop_bundle_tasty", "price": "$9.99", "art": "pack_orange"},
+	{"title": "shop_bundle_yummy", "price": "$14.99", "art": "pack_blue"},
 ]
 
 const SPLASH := {"percent": 60, "version": "v1.0.0"}
@@ -50,11 +50,11 @@ const LEADERBOARD := {
 	],
 }
 const LEAGUES := {"current": "bronze", "rows": [
-	{"id": "bronze", "gold": 100, "badge": "hex_red"},
-	{"id": "silver", "gold": 200, "badge": "hex_gray"},
-	{"id": "gold", "gold": 300, "badge": "hex_green"},
-	{"id": "platinum", "gold": 400, "badge": "hex_blue"},
-	{"id": "diamond", "gold": 500, "badge": "hex_purple"},
+	{"id": "bronze", "gold": 100},
+	{"id": "silver", "gold": 200},
+	{"id": "gold", "gold": 300},
+	{"id": "platinum", "gold": 400},
+	{"id": "diamond", "gold": 500},
 ]}
 const LB_RESULT := {"rank": 4, "promoted_to": "silver", "gold": 300, "hint": 2}
 const STREAK_MAIN := {"ends_in": "2d 11h", "streak": 3, "milestones": [6, 4, 2, 0]}

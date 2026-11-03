@@ -10,7 +10,7 @@ func _title() -> String:
 
 
 func _fill(box: VBoxContainer) -> void:
-	box.add_child(ThemeKit.make_sprite("big_trophy", 180))
+	box.add_child(ThemeKit.make_icon("cup_" + str(view.promoted_to), 260))
 	box.add_child(_say(tr("lb_result_rank") % int(view.rank), ThemeKit.FS_BODY, ThemeKit.BROWN))
 	box.add_child(_say(tr("lb_result_promoted") % tr("lb_league_" + str(view.promoted_to)), ThemeKit.FS_SMALL + 2, ThemeKit.INK_GOOD))
 	box.add_child(PopupKit.row([_gold_tile(int(view.gold)), _hint_tile(int(view.hint))]))

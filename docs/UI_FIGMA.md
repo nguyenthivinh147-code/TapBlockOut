@@ -51,4 +51,6 @@ Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, tru
 | 10.2, 10.4, 10.5 | `popup_change_name`, `popup_language`, `popup_help` | Chỉ UI |
 | 11.1 đến 11.3, 6.3 | `ad_loading`, `popup_notice`, `popup_reward` | Chỉ UI |
 
+Page **03 · Screens** (hi-fi) chưa đối chiếu: plugin Figma chỉ đọc được page đang mở, page này chưa mở được lúc làm. Ảnh mẫu còn thay thế: mascot mèo Win Streak dùng `avatar_01`, rương dùng ảnh `gold5`.
+
 Một số wireframe 3.8, 3.9, 3.11, 4.4 mô tả băng chuyền và ô chứa của game gốc; game này không có cơ chế đó nên các màn trên giữ chữ theo wireframe để duyệt bố cục, cần sửa nội dung khi nối logic.

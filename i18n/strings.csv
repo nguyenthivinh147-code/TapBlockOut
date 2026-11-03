@@ -408,8 +408,8 @@ shop_bundle_desc,Gold + Hearts + Boosters,Gold + Mạng + Booster
 weekly_upsell_one,Chests full of gold and rewards,Rương đầy gold và phần thưởng
 weekly_upsell_two,Golden avatar frame and name,Khung avatar và tên vàng
 weekly_upsell_three,Max heart boost for more tries,Tăng mạng tối đa để chơi nhiều hơn
-lb_promoted,▲ TOP 10 PROMOTED,▲ TOP 10 ĐƯỢC THĂNG HẠNG
-lb_demoted,▼ BOTTOM 5 DEMOTED,▼ 5 NGƯỜI CUỐI BỊ XUỐNG HẠNG
+lb_promoted,TOP 10 PROMOTED,TOP 10 ĐƯỢC THĂNG HẠNG
+lb_demoted,BOTTOM 5 DEMOTED,5 NGƯỜI CUỐI BỊ XUỐNG HẠNG
 lb_you,You,Bạn
 lb_rank,Rank #%d %s,Hạng %d %s
 lb_league,%s League,Giải %s

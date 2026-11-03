@@ -2,7 +2,7 @@ extends "res://src/ui/stub_ui.gd"
 ## Wireframe 9.3 Rewards Info: thưởng từng mốc. Chưa nối logic.
 
 
-const ICONS := {"gold": "ui_gold", "hint": "booster_hint", "heart": "ui_heart", "chest": "ic_giftbox3"}
+const ICONS := {"gold": "ui_gold", "hint": "booster_hint", "heart": "ui_heart", "chest": "shop_gold_pack_5"}
 
 func _sample() -> Dictionary:
 	return SampleData.STREAK_REWARDS

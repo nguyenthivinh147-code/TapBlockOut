@@ -23,7 +23,7 @@ func _fill(box: VBoxContainer) -> void:
 	well.add_child(v)
 	v.add_child(_say(tr("lose_helper_title"), ThemeKit.FS_BODY, ThemeKit.BROWN))
 	v.add_child(PopupKit.row([
-		PopupKit.reward_tile(UiAtlas.tex("banner_coins"), tr("lose_helper_chest"), 64),
+		PopupKit.reward_tile(ThemeKit.icon("shop_gold_pack_5"), tr("lose_helper_chest"), 64),
 		_hint_tile(1, 64),
 		PopupKit.reward_tile(ThemeKit.icon("booster_move"), tr("booster_move"), 64),
 	], 6))
