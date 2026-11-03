@@ -120,7 +120,8 @@ const _PACKS := {
 
 ## Weekly Pass. Chu kỳ: thứ Hai 06:00 -> thứ Hai 00:00 tuần sau (giờ máy); thứ Hai 00:00-06:00 là Waiting.
 ## points: điểm key theo độ khó; unlock_hard_index: mở sau level HARD thứ N.
-## main: mỗi mốc {points, free, vip} với thưởng {coins, items}. bank: sau mốc cuối,
+## main: mỗi mốc {points, free, vip} với thưởng {coins, items, inf_min}; inf_min là số phút mạng vô hạn. Mốc đầu có points = 0 (mốc khởi đầu,
+## nhận được ngay, là phần thưởng "đầu tiên" mà tutorial chỉ vào). bank: sau mốc cuối,
 ## mỗi `bank_step` key thừa được 1 mốc, tối đa `bank_max` mốc, mỗi mốc là `bank_reward`.
 const _WEEKLY := {
 	"enabled": true,
@@ -135,7 +136,8 @@ const _WEEKLY := {
 	"bank_max": 10,
 	"bank_reward_coins": 400,
 	"main": [
-		{"points": 3, "free": {"coins": 100, "items": {}}, "vip": {"coins": 200, "items": {}}},
+		{"points": 0, "free": {"coins": 0, "items": {}, "inf_min": 15}, "vip": {"coins": 150, "items": {}}},
+		{"points": 3, "free": {"coins": 100, "items": {}}, "vip": {"coins": 200, "items": {}, "inf_min": 30}},
 		{"points": 8, "free": {"coins": 0, "items": {"hint": 1}}, "vip": {"coins": 300, "items": {"hint": 1}}},
 		{"points": 15, "free": {"coins": 150, "items": {}}, "vip": {"coins": 400, "items": {}}},
 		{"points": 25, "free": {"coins": 0, "items": {"move": 1}}, "vip": {"coins": 0, "items": {"move": 2}}},

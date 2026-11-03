@@ -1,5 +1,5 @@
 extends RefCounted
-## Thân khối pudding: dựng texture khoảng cách-tới-mép (SDF) cho từng hình khối rồi tô bằng `pudding.gdshader`.
+## Thân khối kẹo cứng (tên file giữ là pudding): dựng texture khoảng cách-tới-mép (SDF) cho từng hình khối rồi tô bằng `pudding.gdshader`.
 ## SDF không phụ thuộc màu hay cỡ ô nên cache theo hình. Hàm tĩnh, cache tĩnh.
 
 const SHADER := preload("res://src/ui/pudding.gdshader")

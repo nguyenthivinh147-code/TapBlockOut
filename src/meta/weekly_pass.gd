@@ -1,7 +1,7 @@
 extends RefCounted
 ## Weekly Pass. Logic thuần: giờ truyền vào (now: unix giây, tz: độ lệch múi giờ giây).
-## Ghi vào s.weekly {cycle, points, vip, opened, end_seen, claimed_free, claimed_vip, claimed_bank,
-## pending_end}. Module không cộng hàng: các hàm claim/refresh trả thưởng {coins, items} để Game cộng.
+## Ghi vào s.weekly {cycle, points, vip, opened, end_seen, tut_seen, claimed_free, claimed_vip,
+## claimed_bank, pending_end}. Module không cộng hàng: các hàm claim/refresh trả thưởng {coins, items} để Game cộng.
 ##
 ## Chu kỳ: thứ Hai 06:00 -> thứ Hai 00:00 tuần sau (giờ máy). Thứ Hai 00:00-06:00 là Waiting.
 
@@ -69,17 +69,20 @@ static func merge(a: Dictionary, b: Dictionary) -> Dictionary:
 	var bi: Dictionary = b.get("items", {})
 	for k in bi:
 		items[k] = int(items.get(k, 0)) + int(bi[k])
-	return {"coins": int(a.get("coins", 0)) + int(b.get("coins", 0)), "items": items}
+	return {"coins": int(a.get("coins", 0)) + int(b.get("coins", 0)), "items": items,
+		"inf_min": int(a.get("inf_min", 0)) + int(b.get("inf_min", 0))}
 
 
+## Thưởng: {coins, items, inf_min}. `inf_min` = số phút mạng vô hạn.
 static func _empty() -> Dictionary:
-	return {"coins": 0, "items": {}}
+	return {"coins": 0, "items": {}, "inf_min": 0}
 
 
 static func _reward(raw: Variant) -> Dictionary:
 	if not (raw is Dictionary):
 		return _empty()
-	return {"coins": int(raw.get("coins", 0)), "items": (raw.get("items", {}) as Dictionary).duplicate()}
+	return {"coins": int(raw.get("coins", 0)), "items": (raw.get("items", {}) as Dictionary).duplicate(),
+		"inf_min": int(raw.get("inf_min", 0))}
 
 
 static func _w(s: Dictionary) -> Dictionary:
@@ -231,9 +234,9 @@ static func points_for(kind: String) -> int:
 	return int(Config.WEEKLY.get("points_normal", 1))
 
 
-## Cộng key khi thắng. Chỉ khi Active. Trả số điểm đã cộng.
+## Cộng key khi thắng. Chỉ khi Active và người chơi đã xem tutorial. Trả số điểm đã cộng.
 static func add_points(s: Dictionary, st: String, kind: String) -> int:
-	if st != ACTIVE:
+	if st != ACTIVE or not tutorial_seen(s):
 		return 0
 	var n := points_for(kind)
 	var w := _w(s)
@@ -255,6 +258,39 @@ static func heart_bonus(s: Dictionary, st: String) -> int:
 	if st == ACTIVE and is_vip(s):
 		return int(Config.WEEKLY.get("vip_bonus_hearts", 3))
 	return 0
+
+
+# --- tutorial ---
+
+## Cờ đã xem tutorial. Nằm trong s.weekly nhưng `refresh` không reset nó: xem một lần là đủ mọi mùa.
+static func tutorial_seen(s: Dictionary) -> bool:
+	return bool(_w(s).get("tut_seen", false))
+
+
+static func mark_tutorial_seen(s: Dictionary) -> void:
+	_w(s)["tut_seen"] = true
+
+
+## Hàng mốc mà tutorial chỉ vào: mốc đầu tiên chưa nhận thưởng free; nhận hết rồi thì mốc cuối.
+static func tutorial_row(s: Dictionary) -> int:
+	var w := _w(s)
+	var n := main_milestones().size()
+	for i in n:
+		if not _has(w.claimed_free, i):
+			return i
+	return maxi(n - 1, 0)
+
+
+## Tiến độ trong đoạn từ mốc đã đạt tới mốc kế (0..1). Qua mốc cuối thì 1.
+static func progress_ratio(s: Dictionary) -> float:
+	var cur := int(_w(s).points)
+	var prev := 0
+	for m in main_milestones():
+		var p := int(m.points)
+		if cur < p:
+			return clampf(float(cur - prev) / float(maxi(p - prev, 1)), 0.0, 1.0)
+		prev = p
+	return 1.0
 
 
 # --- sang mùa ---
@@ -280,7 +316,7 @@ static func refresh(s: Dictionary, now: int, tz: int) -> Dictionary:
 			total = merge(total, claim_all_bank(s).reward)
 		result = {"settled": true, "reward": total}
 		w["pending_end"] = {"vip": was_vip, "points": pts,
-			"coins": int(total.coins), "items": (total.items as Dictionary).duplicate()}
+			"coins": int(total.coins), "items": (total.items as Dictionary).duplicate(), "inf_min": int(total.inf_min)}
 	w["cycle"] = cycle
 	w["points"] = 0
 	w["vip"] = false

@@ -8,8 +8,12 @@ const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const RewardText := preload("res://src/ui/reward_text.gd")
 const WeeklyPass := preload("res://src/meta/weekly_pass.gd")
 const Config := preload("res://src/config.gd")
+const Tutorial := preload("res://src/ui/weekly_pass_tutorial.gd")
+const HOWTO_SCENE := "res://scenes/popup_weekly_tutorial.tscn"
 
 const BANK_COLS := 5
+const SCROLL_H := 500  # panel cao ~1210 để vừa màn 720x1280 cùng tiêu đề, đồng hồ và nút
+const TUTORIAL_DELAY := 0.35  # chờ popup_in xong để lỗ spotlight khớp vị trí thật
 
 var view: Dictionary = {}
 var end_info: Dictionary = {}
@@ -17,14 +21,21 @@ var toast_text: String = ""
 var buy_vip_button: Button = null
 var claim_all_button: Button = null
 var close_button: Button = null
+var info_button: Button = null
+var key_button: Button = null
+var progress_row: Control = null
 var main_buttons: Dictionary = {}  # "free_3" / "vip_3" -> Button
 var bank_buttons: Array[Button] = []
+var tutorial: Control = null  # overlay đang chạy
+var howto: Control = null  # popup "How to earn rewards" đang mở
 
 var _content: Control = null
+var _scroll: ScrollContainer = null
 var _time_label: Label = null
 var _timer: Timer = null
 var _busy: bool = false
 var _closed: bool = false
+var _tutorial_waiting: bool = false
 
 
 func setup(_args: Dictionary = {}) -> void:
@@ -75,10 +86,15 @@ func _rebuild() -> void:
 	if _content != null:
 		_content.queue_free()
 		_content = null
+	_stop_tutorial()
 	main_buttons = {}
 	bank_buttons = []
 	buy_vip_button = null
 	claim_all_button = null
+	info_button = null
+	key_button = null
+	progress_row = null
+	_scroll = null
 	view = Game.weekly_view()
 
 	var root := Control.new()
@@ -118,6 +134,7 @@ func _rebuild() -> void:
 	close_button.pressed.connect(close)
 	v.add_child(close_button)
 	ThemeKit.popup_in.call_deferred(panel)
+	_auto_tutorial.call_deferred()
 
 
 func _title(text: String) -> Label:
@@ -131,7 +148,8 @@ func _build_end(v: VBoxContainer) -> void:
 	v.add_child(_title(tr("weekly_end_title")))
 	var msg: String
 	if bool(end_info.get("vip", false)):
-		var rt := RewardText.text({"coins": int(end_info.get("coins", 0)), "items": end_info.get("items", {})})
+		var rt := RewardText.text({"coins": int(end_info.get("coins", 0)), "items": end_info.get("items", {}),
+			"inf_min": int(end_info.get("inf_min", 0))})
 		msg = tr("weekly_end_vip") % (rt if rt != "" else "-")
 	else:
 		msg = tr("weekly_end_free") % int(end_info.get("points", 0))
@@ -166,19 +184,16 @@ func _build_active(v: VBoxContainer) -> void:
 	_time_label.name = "TimeLabel"
 	_time_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(_time_label)
-	var keys := ThemeKit.make_label(tr("weekly_keys") % [int(view.points), int(view.last_points)], ThemeKit.FS_BUTTON)
-	keys.name = "KeysLabel"
-	keys.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	v.add_child(keys)
+	v.add_child(_build_progress())
 
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 640)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
+	_scroll = ScrollContainer.new()
+	_scroll.custom_minimum_size = Vector2(0, SCROLL_H)
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	v.add_child(_scroll)
 	var list := VBoxContainer.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.add_theme_constant_override("separation", 10)
-	scroll.add_child(list)
+	_scroll.add_child(list)
 	var head := HBoxContainer.new()
 	list.add_child(head)
 	for h in [["", 150], [tr("weekly_free"), 230], [tr("weekly_vip"), 230]]:
@@ -237,6 +252,134 @@ func _build_active(v: VBoxContainer) -> void:
 
 
 
+## Hàng tiến độ: nút "i", chìa (bấm để xem cách kiếm thưởng), thanh tới mốc kế và số key.
+## Đây cũng là target của bước 3 trong tutorial.
+func _build_progress() -> Control:
+	progress_row = HBoxContainer.new()
+	progress_row.name = "ProgressRow"
+	(progress_row as HBoxContainer).add_theme_constant_override("separation", 12)
+
+	info_button = ThemeKit.make_button("i", "ghost")
+	info_button.name = "InfoButton"
+	info_button.custom_minimum_size = Vector2(72, 72)
+	info_button.pressed.connect(open_howto)
+	progress_row.add_child(info_button)
+
+	key_button = ThemeKit.make_button("", "secondary")
+	key_button.name = "KeyButton"
+	key_button.custom_minimum_size = Vector2(72, 72)
+	key_button.icon = ThemeKit.icon("mech_key")
+	key_button.expand_icon = true
+	key_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	key_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
+	key_button.add_theme_constant_override("icon_max_width", 44)
+	key_button.add_theme_stylebox_override("normal", _flat(ThemeKit.PANEL_BORDER, 36, 8))
+	key_button.add_theme_stylebox_override("hover", _flat(ThemeKit.PANEL_BORDER.lightened(0.08), 36, 8))
+	key_button.add_theme_stylebox_override("pressed", _flat(ThemeKit.PANEL_BORDER.darkened(0.2), 36, 8))
+	key_button.pressed.connect(open_howto)
+	progress_row.add_child(key_button)
+
+	var col := VBoxContainer.new()
+	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	col.add_theme_constant_override("separation", 4)
+	progress_row.add_child(col)
+	var bar := ProgressBar.new()
+	bar.name = "ProgressBar"
+	bar.min_value = 0.0
+	bar.max_value = 1.0
+	bar.step = 0.001  # mặc định 0.01 làm tròn tỉ lệ
+	bar.value = float(view.progress)
+	bar.show_percentage = false
+	bar.custom_minimum_size = Vector2(0, 28)
+	bar.add_theme_stylebox_override("background", _flat(Color(0, 0, 0, 0.35), 14, 0))
+	bar.add_theme_stylebox_override("fill", _flat(ThemeKit.GOLD, 14, 0))
+	col.add_child(bar)
+	var keys := ThemeKit.make_label(tr("weekly_keys") % [int(view.points), int(view.last_points)], ThemeKit.FS_SMALL)
+	keys.name = "KeysLabel"
+	col.add_child(keys)
+	return progress_row
+
+
+func _flat(fill: Color, radius: int, margin: int) -> StyleBoxFlat:
+	var b := StyleBoxFlat.new()
+	b.bg_color = fill
+	b.set_corner_radius_all(radius)
+	b.set_content_margin_all(margin)
+	return b
+
+
+# --- tutorial ---
+
+## Mở layer lần đầu (Active, chưa xem tutorial): chờ popup_in xong rồi chạy tutorial.
+func _auto_tutorial() -> void:
+	if _closed or _tutorial_waiting or not end_info.is_empty() or progress_row == null:
+		return
+	if str(view.state) != WeeklyPass.ACTIVE or Game.weekly_tutorial_seen():
+		return
+	_tutorial_waiting = true
+	await get_tree().create_timer(TUTORIAL_DELAY).timeout
+	_tutorial_waiting = false
+	if _closed or not is_inside_tree() or Game.weekly_tutorial_seen():
+		return
+	start_tutorial()
+
+
+## Chạy tutorial 3 bước trên hàng mốc hiện tại: thưởng free, thưởng VIP, thanh tiến độ.
+## Trả false nếu layer không ở trạng thái có đủ target.
+func start_tutorial() -> bool:
+	if tutorial != null or _closed or _scroll == null or str(view.state) != WeeklyPass.ACTIVE:
+		return false
+	var row := int(view.tut_row)
+	var free_btn: Control = main_buttons.get("free_%d" % row)
+	var vip_btn: Control = main_buttons.get("vip_%d" % row)
+	if free_btn == null or vip_btn == null or progress_row == null:
+		return false
+	_scroll.ensure_control_visible(free_btn)
+	var first_text := tr("weekly_tut_free_claim") if bool(view.main[row].free_claimable) else tr("weekly_tut_free_earn")
+	tutorial = Tutorial.new()
+	tutorial.name = "Tutorial"
+	add_child(tutorial)
+	tutorial.finished.connect(_on_tutorial_finished)
+	tutorial.setup([
+		{"target": free_btn, "text": first_text},
+		{"target": vip_btn, "text": tr("weekly_tut_vip")},
+		{"target": progress_row, "text": tr("weekly_tut_progress")},
+	])
+	return true
+
+
+## Dừng overlay mà không tính là đã xem (layer dựng lại hoặc đóng giữa chừng).
+func _stop_tutorial() -> void:
+	if tutorial != null and is_instance_valid(tutorial):
+		tutorial.finished.disconnect(_on_tutorial_finished)
+		tutorial.queue_free()
+	tutorial = null
+
+
+## Xong bước cuối: lưu cờ (key bắt đầu được cộng) rồi mở popup cách kiếm thưởng.
+func _on_tutorial_finished(completed: bool) -> void:
+	tutorial = null
+	if not completed or _closed:
+		return
+	Game.weekly_mark_tutorial_seen()
+	open_howto()
+
+
+## Popup "How to earn rewards" (nút "i", chìa, hoặc sau tutorial). Mở rồi thì trả lại cái đang mở.
+func open_howto() -> Control:
+	if howto != null and is_instance_valid(howto):
+		return howto
+	var node := (load(HOWTO_SCENE) as PackedScene).instantiate() as Control
+	add_child(node)
+	node.setup({})
+	node.closed.connect(func(_r: Variant) -> void:
+		node.queue_free()
+		howto = null)
+	howto = node
+	return node
+
+
 func _bank_text(b: Dictionary) -> String:
 	if bool(b.claimed):
 		return "OK"
@@ -247,7 +390,7 @@ func _build_row(list: VBoxContainer, row: Dictionary) -> void:
 	var h := HBoxContainer.new()
 	h.add_theme_constant_override("separation", 8)
 	list.add_child(h)
-	var pts := ThemeKit.make_label(tr("weekly_milestone") % int(row.points), ThemeKit.FS_SMALL)
+	var pts := ThemeKit.make_label(tr("weekly_start") if int(row.points) <= 0 else tr("weekly_milestone") % int(row.points), ThemeKit.FS_SMALL)
 	pts.custom_minimum_size = Vector2(150, 0)
 	h.add_child(pts)
 	var i := int(row.index)

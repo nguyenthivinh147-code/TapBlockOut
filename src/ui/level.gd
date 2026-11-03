@@ -648,7 +648,7 @@ func _rescue_flow() -> void:
 			if _left:
 				return
 			continue
-		if bool(o.get("warn_life", false)):
+		if bool(o.get("warn_life", false)) and not bool(Game.lives_view().get("infinite", false)):
 			var dlg := Dialog.new(tr("rescue_confirm_title"), tr("rescue_warn_life"), [
 				{"id": "yes", "text": tr("rescue_confirm_yes"), "kind": "danger", "name": "ConfirmButton"},
 				{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}])
@@ -723,7 +723,7 @@ func _win_flow() -> void:
 # --- Home và restart ---
 
 func _confirm_life_loss() -> bool:
-	return _level >= int(Config.LIVES.from_level) and _touched()
+	return _level >= int(Config.LIVES.from_level) and _touched() and not bool(Game.lives_view().get("infinite", false))
 
 
 func _on_home_pressed() -> void:

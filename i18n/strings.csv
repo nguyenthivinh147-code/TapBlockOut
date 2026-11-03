@@ -16,6 +16,8 @@ home_play,Play,Chơi
 home_play_level,Level %d,Level %d
 home_lives_full,Full,Đầy
 home_lives_next,Next life in %s,Mạng kế tiếp sau %s
+home_lives_unlimited,Lives: unlimited,Mạng: vô hạn
+home_lives_unlimited_left,Unlimited for %s,Vô hạn trong %s
 home_gift,Daily gift,Quà mỗi ngày
 home_shop,Shop,Cửa hàng
 home_weekend_sale,Weekend sale,Sale cuối tuần
@@ -269,6 +271,20 @@ weekly_end_title,Season ended,Mùa đã kết thúc
 weekly_end_vip,Your unclaimed rewards were collected for you: %s,Thưởng chưa nhận đã được trao cho bạn: %s
 weekly_end_free,You earned %d keys this season. A new season is coming!,Bạn đã kiếm được %d chìa trong mùa này. Mùa mới sắp đến!
 weekly_reward_gold,%d gold,%d gold
+weekly_start,Start,Khởi đầu
+weekly_reward_inf,Unlimited lives %d min,Mạng vô hạn %d phút
+weekly_tut_free_claim,Welcome to Weekly Pass! Claim your first reward!,Chào mừng đến Weekly Pass! Hãy nhận phần thưởng đầu tiên nào!
+weekly_tut_free_earn,Welcome to Weekly Pass! Earn keys to unlock rewards like this one!,Chào mừng đến Weekly Pass! Kiếm chìa để mở những phần thưởng như thế này!
+weekly_tut_vip,Activating VIP gives you access to unique rewards!,Mở VIP để nhận thêm những phần thưởng độc quyền!
+weekly_tut_progress,This is your progress. Tap this icon to learn how to earn rewards!,Đây là tiến độ của bạn. Chạm biểu tượng này để biết cách kiếm thưởng!
+weekly_howto_title,How to earn rewards,Cách kiếm thưởng
+weekly_howto_normal,Win a level,Thắng một level
+weekly_howto_hard,Win a HARD level,Thắng một level HARD
+weekly_howto_very_hard,Win a VERY HARD level,Thắng một level VERY HARD
+weekly_howto_points,+%d,+%d
+weekly_howto_claim,Collect keys to reach milestones. Then tap Claim to take the free reward.,Kiếm chìa để đạt các mốc. Sau đó chạm Nhận để lấy thưởng miễn phí.
+weekly_howto_vip,VIP unlocks the VIP reward of every milestone and +%d max hearts this week. It also opens the Bonus Bank.,VIP mở thưởng VIP ở mọi mốc và +%d mạng tối đa trong tuần này. VIP còn mở Kho thưởng thêm.
+weekly_howto_season,A new season starts every week. Free rewards you forgot are lost. VIP rewards are collected for you.,Mỗi tuần có một mùa mới. Thưởng miễn phí chưa nhận sẽ mất. Thưởng VIP sẽ tự được trao cho bạn.
 chain_title,Chain Offer,Chuỗi quà
 chain_time_left,Ends in %s,Kết thúc sau %s
 chain_step,Step %d,Bước %d

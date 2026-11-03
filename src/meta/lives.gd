@@ -40,9 +40,27 @@ static func count(s: Dictionary, now: int) -> int:
 	return int(s.lives.count)
 
 
-## Mất 1 mạng. Không làm gì khi `level < from_level` hoặc đã hết mạng. Trả true nếu đã trừ.
+## Đang trong thời gian mạng vô hạn (s.lives.inf_until, unix giây; 0 = không có).
+static func infinite(s: Dictionary, now: int) -> bool:
+	return int((s.get("lives", {}) as Dictionary).get("inf_until", 0)) > now
+
+
+## Số giây mạng vô hạn còn lại; 0 khi hết hoặc không có.
+static func infinite_left(s: Dictionary, now: int) -> int:
+	return maxi(0, int((s.get("lives", {}) as Dictionary).get("inf_until", 0)) - now)
+
+
+## Cộng `sec` giây mạng vô hạn. Đang có thì cộng dồn vào hạn hiện tại.
+static func grant_infinite(s: Dictionary, sec: int, now: int) -> void:
+	if sec <= 0:
+		return
+	var l: Dictionary = s.lives
+	l["inf_until"] = maxi(int(l.get("inf_until", 0)), now) + sec
+
+
+## Mất 1 mạng. Không làm gì khi `level < from_level`, đang vô hạn hoặc đã hết mạng. Trả true nếu đã trừ.
 static func lose(s: Dictionary, now: int, level: int) -> bool:
-	if level < int(Config.LIVES.from_level):
+	if level < int(Config.LIVES.from_level) or infinite(s, now):
 		return false
 	tick(s, now)
 	var l: Dictionary = s.lives

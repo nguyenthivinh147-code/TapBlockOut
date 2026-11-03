@@ -1,27 +1,22 @@
 shader_type canvas_item;
-// Khối pudding: tô theo khoảng cách tới mép (texture R = signed distance, đơn vị ô, dương là bên trong).
-// Cấu trúc theo concept art/concepts/concept_candy_board_v1.png: viền gel sáng mỏng ở trên và hai bên,
-// dải đáy dày nhạt dần về mép kèm vạch sáng sát mép, lòng khối đậm màu có bóng tối ở đáy lòng.
+// Khối kẹo cứng: tô theo khoảng cách tới mép (texture R = signed distance, đơn vị ô, dương là bên trong).
+// Cấu trúc theo ảnh tham chiếu kẹo cứng: viền đậm màu mỏng, bevel bóng (sáng ở trên trái, tối ở dưới phải),
+// vạch phản chiếu sáng nằm lùi vào trong mép, các vệt chéo sáng song song chạy khắp mặt kẹo.
+// (Tên file giữ là pudding để không đổi đường dẫn; chất liệu hiện là kẹo cứng.)
 
 uniform sampler2D sdf : filter_linear, repeat_disable;
 uniform vec4 base_color : source_color = vec4(1.0);
 uniform vec2 dims = vec2(1.0);  // cỡ vùng texture, đơn vị ô
 uniform float cell_px = 64.0;
 
-const float RIM = 0.042;     // bề dày viền sáng ở trên và hai bên
-const float BAND = 0.17;     // phần dày thêm của dải đáy
+const float OUTLINE = 0.05;    // bề dày viền đậm màu sát mép
+const float BEVEL = 0.20;      // bề rộng vùng bevel tính từ mép vào
 const float SHADOW_DY = 0.04;
+const float STRIPE_FREQ = 1.55;   // số vệt trên mỗi ô, đo theo đường chéo (x + y)
+const vec2 LIGHT_DIR = vec2(-0.70710678, -0.70710678);  // hướng tới nguồn sáng: trên trái
 
 float dist(vec2 c) {
 	return texture(sdf, c / dims).r;
-}
-
-float well_raw(vec2 c) {
-	return min(dist(c), dist(c + vec2(0.0, BAND))) - RIM;
-}
-
-float well(vec2 c) {
-	return smoothstep(0.0, 0.09, well_raw(c));
 }
 
 void fragment() {
@@ -31,34 +26,45 @@ void fragment() {
 
 	// bóng đổ mềm lệch xuống dưới
 	float ds = dist(c - vec2(0.0, SHADOW_DY));
-	float shadow = smoothstep(-0.035, 0.03, ds) * 0.30;
+	float shadow = smoothstep(-0.035, 0.03, ds) * 0.32;
 
-	vec3 col = base_color.rgb;
-	float w = well(c);
+	// pháp tuyến 2D hướng ra ngoài, suy từ gradient của SDF (SDF dương ở trong nên đảo dấu)
+	const float EPS = 0.02;
+	vec2 g = vec2(dist(c + vec2(EPS, 0.0)) - dist(c - vec2(EPS, 0.0)),
+			dist(c + vec2(0.0, EPS)) - dist(c - vec2(0.0, EPS)));
+	vec2 n = -g / max(length(g), 0.0001);
+	float lit = dot(n, LIGHT_DIR);  // 1 = mép quay về nguồn sáng, -1 = quay ngược
 
-	// lòng khối: đậm màu, tối dần ở mép dưới của lòng, sáng hơn ở mép trên và hai bên
-	float w_bottom = w * (1.0 - well(c + vec2(0.0, 0.07)));
-	float w_top = w * (1.0 - well(c - vec2(0.0, 0.10)));
-	float w_side = w * (1.0 - max(well(c - vec2(0.09, 0.0)), well(c + vec2(0.09, 0.0))));
-	vec3 well_col = col;
-	well_col = mix(well_col, mix(col, vec3(1.0), 0.28), w_top * 0.65);
-	well_col = mix(well_col, mix(col, vec3(1.0), 0.20), w_side * 0.45);
-	float w_bottom_wide = w * (1.0 - well(c + vec2(0.0, 0.16)));
-	well_col *= 1.0 - 0.07 * w_bottom - 0.08 * w_bottom_wide;
+	// kẹo trong hơn một chút: tâm khối sáng và ngả vàng-trắng, mép đậm hơn
+	vec3 col = mix(base_color.rgb, vec3(1.0), 0.07);  // kẹo sáng hơn màu gốc một chút
+	vec3 deep = col * vec3(0.86, 0.82, 0.92);
+	vec3 glow = mix(col, vec3(1.0), 0.10);
+	float core = smoothstep(0.02, 0.14, d);
+	vec3 body = mix(deep, glow, core);
 
-	// viền gel và dải đáy: càng gần mép càng sáng, có vạch sáng sát mép
-	float depth = 1.0 - smoothstep(0.0, RIM + BAND, d);
-	vec3 gel = mix(col, vec3(1.0), 0.12 + 0.30 * depth * depth);
-	float facing_bottom = smoothstep(0.0, 0.02, d - dist(c + vec2(0.0, 0.02)));
-	float facing_top = smoothstep(0.0, 0.02, d - dist(c - vec2(0.0, 0.02)));
-	// vạch sáng nằm sát mép (trên và hai bên) hoặc lùi vào một chút (đáy, nơi có thành nâu bên ngoài)
-	float lip_in = mix(0.0, 0.016, facing_bottom);
-	float edge = smoothstep(lip_in, lip_in + 0.012, d) * (1.0 - smoothstep(lip_in + 0.014, lip_in + 0.05, d));
-	gel = mix(gel, vec3(1.0), edge * (0.32 + 0.30 * facing_bottom + 0.30 * facing_top));
-	// thành đáy: vạch nâu ấm sát mép dưới
-	float wall = facing_bottom * (1.0 - smoothstep(0.010, 0.020, d));
-	gel = mix(gel, col * vec3(0.62, 0.58, 0.62), wall * 0.85);
-	vec3 body = mix(gel, well_col, w);
+	// vệt chéo song song (kẹo sọc): chạy theo hướng "/" , mờ dần khi tới mép
+	float s = fract((c.x + c.y) * STRIPE_FREQ + 0.18);
+	float stripe = smoothstep(0.0, 0.10, s) * (1.0 - smoothstep(0.34, 0.46, s));
+	float stripe_dark = smoothstep(0.52, 0.62, s) * (1.0 - smoothstep(0.80, 0.92, s));
+	float inner = smoothstep(0.05, 0.20, d);
+	body = mix(body, mix(col, vec3(1.0), 0.55), stripe * 0.62 * inner);
+	body = mix(body, deep, stripe_dark * 0.10 * inner);
+
+	// bevel: vùng sát mép sáng lên phía nguồn sáng, tối đi phía ngược lại
+	float bevel = 1.0 - smoothstep(OUTLINE, BEVEL, d);
+	body = mix(body, mix(col, vec3(1.0), 0.62), bevel * max(lit, 0.0) * 0.85);
+	body = mix(body, col * vec3(0.66, 0.60, 0.74), bevel * max(-lit, 0.0) * 0.45);
+
+	// vạch phản chiếu sáng, lùi vào khỏi mép, chỉ ở phía quay về nguồn sáng
+	float ridge_c = OUTLINE + 0.055;
+	float ridge = smoothstep(ridge_c - 0.028, ridge_c, d) * (1.0 - smoothstep(ridge_c, ridge_c + 0.032, d));
+	body = mix(body, vec3(1.0), ridge * clamp(lit * 1.3 - 0.1, 0.0, 1.0) * 0.80);
+	// phản xạ nhẹ ở đáy phải (ánh sáng xuyên qua kẹo)
+	body = mix(body, mix(col, vec3(1.0), 0.45), ridge * clamp(-lit - 0.3, 0.0, 1.0) * 0.30);
+
+	// viền đậm màu sát mép, giữ nét khối khi nằm cạnh khối khác
+	vec3 edge_col = col * vec3(0.68, 0.58, 0.74);
+	body = mix(edge_col, body, smoothstep(OUTLINE * 0.55, OUTLINE * 1.35, d));
 
 	float alpha = a + shadow * (1.0 - a);
 	vec3 rgb = (body * a + vec3(0.05, 0.04, 0.10) * shadow * (1.0 - a)) / max(alpha, 0.0001);

@@ -561,9 +561,13 @@ func _refresh_timers() -> void:
 	var show_lives := bool(lv.get("open", false))
 	lives_panel.visible = show_lives
 	if show_lives:
-		lives_label.text = tr("no_lives_lives") % [int(lv.count), int(lv.max)]
-		var wait := int(lv.get("seconds_to_next", 0))
-		lives_timer_label.text = tr("home_lives_full") if wait <= 0 else tr("home_lives_next") % fmt_time(wait)
+		if bool(lv.get("infinite", false)):
+			lives_label.text = tr("home_lives_unlimited")
+			lives_timer_label.text = tr("home_lives_unlimited_left") % fmt_time(int(lv.get("infinite_left", 0)))
+		else:
+			lives_label.text = tr("no_lives_lives") % [int(lv.count), int(lv.max)]
+			var wait := int(lv.get("seconds_to_next", 0))
+			lives_timer_label.text = tr("home_lives_full") if wait <= 0 else tr("home_lives_next") % fmt_time(wait)
 	var offers: Array = Game.offers_open()
 	if offers.is_empty():
 		offer_chip.visible = false

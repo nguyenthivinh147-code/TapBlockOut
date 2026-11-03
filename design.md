@@ -317,10 +317,11 @@ Port từ các gói của dự án pixelflow. Mọi số nằm trong `Config.WEE
 
 - Mở khoá sau khi qua level HARD thứ 2 (`weekly_unlock_hard_index`). Bản demo dừng ở L20 nên không bao giờ mở; chỉ có ở bản phát hành.
 - Chu kỳ theo giờ máy: thứ Hai 06:00 đến thứ Hai 00:00 tuần sau. Thứ Hai 00:00-06:00 là Waiting (nút còn, layer chỉ có đếm ngược). Config tắt hoặc SKU sai là Locked.
-- Thắng level (không tính Daily Challenge) khi Active: Normal +1 key, Hard +3, VeryHard +5.
-- Main Tree 10 mốc, mỗi mốc có thưởng free và thưởng VIP. Bonus Bank mở khi đủ mốc cuối + có VIP + đã xem End popup; cứ 15 key thừa được 1 mốc, tối đa 10 mốc, mỗi mốc 400 gold.
+- Thắng level (không tính Daily Challenge) khi Active: Normal +1 key, Hard +3, VeryHard +5. Chỉ cộng key sau khi người chơi xem xong tutorial (cờ `s.weekly.tut_seen`, nằm trong bản lưu và không reset theo mùa); xem lần đầu mở layer, nên key thắng trước lúc đó không tính.
+- Main Tree: mốc khởi đầu 0 key (free 15 phút mạng vô hạn, VIP 150 gold, nhận được ngay) rồi 10 mốc (VIP mốc 3 key có thêm 30 phút mạng vô hạn), mỗi mốc có thưởng free và thưởng VIP. Bonus Bank mở khi đủ mốc cuối + có VIP + đã xem End popup; cứ 15 key thừa được 1 mốc, tối đa 10 mốc, mỗi mốc 400 gold.
 - VIP: +3 mạng tối đa trong tuần (cộng luôn vào số mạng hiện có; hết tuần hoặc sang Waiting thì bỏ, số mạng kẹp lại).
 - Sang mùa: chỉ VIP tự nhận mọi thưởng chưa claim; người không VIP không nhận lại phần free chưa claim. Sau đó reset điểm, VIP, danh sách đã nhận. Mùa không chơi thì không có popup cuối mùa.
+- Tutorial (`src/ui/weekly_pass_tutorial.gd`, theo video `pixelflow/Recordings/WeeklyPassTutorial.mp4`): lần đầu mở layer khi Active, sau khi popup hiện xong, overlay dim nền và khoét lỗ quanh target, 3 bước trên hàng mốc đầu tiên chưa nhận free (mốc khởi đầu): thưởng free ("Claim your first reward!"), thưởng VIP, thanh tiến độ. Chạm bất kỳ đâu để sang bước kế; bước cuối lưu cờ `tut_seen` rồi mở popup "How to earn rewards" (key theo độ khó, cách nhận thưởng, quyền lợi VIP). Đóng layer giữa chừng thì không lưu cờ, lần sau chạy lại. Nút "i" và biểu tượng chìa ở hàng tiến độ mở lại popup đó bất cứ lúc nào.
 
 **Chain Offer** (`src/meta/chain_offer.gd`)
 
@@ -376,22 +377,23 @@ Horus SDK là JavaScript và `JavaScriptBridge` của Godot chỉ có ở bản 
 
 Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên có sẵn của người khác, rồi lưu thành file trong project. Game chạy offline nên bản build không gọi MCP và không cần máy chủ ComfyUI.
 
-**Concept theme: pudding (2026-11-01).** Khối trên bàn là viên pudding/gel bóng dạng khối đùn, theo ảnh duyệt `art/concepts/concept_candy_board_v1.png` (chất liệu tham khảo dòng game kẹo xếp hình, không dùng hình hay tên game đó). Mã màu bốn khối giữ nguyên trong `ThemeKit.BLOCK_COLORS` (vàng, xanh lá, xanh dương, tím), vì màu quyết định hướng; concept dùng màu sáng và ngả cyan hơn, nên bản vẽ tối hơn ảnh một chút ở cùng một mã màu. Thân khối vẽ bằng shader từ khoảng cách tới mép của hình khối (`src/ui/pudding.gd`, `src/ui/pudding.gdshader`), phần phủ bằng code (`BoardFx.draw_block`):
+**Concept theme: kẹo cứng (2026-11-02, thay concept pudding 2026-11-01).** Khối trên bàn là viên kẹo cứng bóng, mặt có các vệt chéo sáng song song, theo ảnh tham chiếu kẹo cứng của người dùng (`486736ba-9389-4e87-89fe-35876e5f9206.png`; chất liệu tham khảo dòng game kẹo xếp hình, không dùng hình hay tên game đó). Mã màu bốn khối giữ nguyên trong `ThemeKit.BLOCK_COLORS` (vàng, xanh lá, xanh dương, tím), vì màu quyết định hướng; shader chỉ nâng sáng màu gốc khoảng 7%. Thân khối vẽ bằng shader từ khoảng cách tới mép của hình khối (`src/ui/pudding.gd`, `src/ui/pudding.gdshader`; tên file giữ nguyên để không đổi đường dẫn), phần phủ bằng code (`BoardFx.draw_block`):
 
 | Lớp | Hình |
 | --- | --- |
 | Bóng đổ | Cùng hình khối, đen mờ, lệch xuống dưới, hẹp |
-| Thành đáy | Vạch nâu ấm đậm màu sát mép dưới, rồi một vạch sáng ngay phía trên |
-| Viền gel | Màu gốc pha trắng, mỏng ở trên và hai bên (khoảng 6% ô), sáng dần về mép, vạch sáng mảnh sát mép |
-| Dải đáy | Phần viền gel ở dưới dày hơn nhiều (khoảng 20% ô), nhạt và trong, sáng dần về mép |
-| Lòng khối | Màu gốc nằm lõm trong viền, mép chuyển mềm; mép trên và hai bên sáng nhẹ, tối dần về đáy lòng |
-| Vệt sáng | Cung trắng ôm góc trên trái của cả khối (đậm ở mép ngoài, mờ vào trong), một vạch ngắn bên dưới và một vệt mờ ngang ở mép trên |
+| Viền | Vạch đậm màu, hơi ngả tím, dày khoảng 5% ô, sát mép; giữ nét khối khi nằm cạnh khối khác |
+| Bevel | Vùng 20% ô tính từ mép: phía quay về nguồn sáng (trên trái) pha trắng mạnh, phía ngược lại (dưới phải) tối và đậm màu, tính từ pháp tuyến suy ra từ SDF |
+| Vạch phản chiếu | Vạch trắng mảnh lùi vào khỏi mép, chỉ ở phía trên trái; ở đáy phải có một vạch mờ hơn (ánh sáng xuyên kẹo) |
+| Vệt chéo | Các dải sáng song song hướng "/" (theo `x + y`, 1,55 dải mỗi ô), cạnh mềm, mờ dần khi tới mép, xen một dải tối rất nhẹ; liền mạch xuyên suốt cả khối |
+| Lòng khối | Màu gốc, tâm sáng hơn mép một chút |
+| Vệt sáng | Thấu kính trắng ôm góc trên trái của cả khối (đậm ở mép ngoài, mờ vào trong) và một vạch ngắn bên dưới |
 
-- Texture khoảng cách tới mép (SDF) dựng một lần cho mỗi hình khối rồi cache (không phụ thuộc màu hay cỡ ô, khoảng 2–17 ms mỗi hình trên máy dev); shader dùng SDF để tính viền, dải đáy, lòng và bóng, nên khối chữ L, T, ... đều ra đúng cấu trúc với ô lõm liền mạch.
+- Texture khoảng cách tới mép (SDF) dựng một lần cho mỗi hình khối rồi cache (không phụ thuộc màu hay cỡ ô, khoảng 2–17 ms mỗi hình trên máy dev); shader dùng SDF để tính viền, bevel, vệt chéo và bóng, nên khối chữ L, T, ... đều ra đúng cấu trúc với ô lõm liền mạch.
 - Khối nhiều ô liền một viên: không viền, không khe giữa các ô trong khối; góc lồi bo, góc lõm mềm; chỉ một vệt sáng cho cả khối. Khe giữa các khối là 1/16 ô.
 - Cỡ ô là số nguyên (làm tròn xuống) để các ô của một khối khớp pixel, không lộ đường nối.
-- Mũi tên mù màu hạ nhẹ xuống dưới tâm ô để không chạm vệt sáng. Băng, xích, sương mù vẽ đè lên lớp pudding, giữ nguyên cách đọc. Khối hai lớp: lớp trong là viên pudding nhỏ có thành, viền và vệt sáng riêng.
-- Chưa áp dụng cho nền, khung cổng, đá, icon (giữ nét hiện tại). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá pudding/gel bóng (xem quy tắc prompt bên dưới) để cùng phong cách.
+- Mũi tên mù màu hạ nhẹ xuống dưới tâm ô để không chạm vệt sáng. Băng, xích, sương mù vẽ đè lên lớp kẹo, giữ nguyên cách đọc. Khối hai lớp: lớp trong là viên kẹo nhỏ có thành, viền và vệt sáng riêng.
+- Chưa áp dụng cho nền, khung cổng, đá, icon (giữ nét hiện tại). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá kẹo cứng bóng, vệt chéo (xem quy tắc prompt bên dưới) để cùng phong cách.
 
 **Vẫn vẽ bằng code (và shader):** hình khối, lưới, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
 
@@ -409,7 +411,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 | --- | --- | --- | --- |
 | `icon_app` | `icon`, nền đặc | 1024 → các cỡ bản build cần | Một khối màu trượt ra cổng |
 | `bg_home`, `bg_level` | `background` | 768×1664 → rộng 720 | Nền ít chi tiết, phần giữa yên để bàn cờ nổi; cắt được cho 360×640 |
-| `block_surface` | Bỏ | | Không còn dùng: chất liệu pudding vẽ hoàn toàn bằng code (xem Concept theme) |
+| `block_surface` | Bỏ | | Không còn dùng: chất liệu kẹo cứng vẽ hoàn toàn bằng code (xem Concept theme) |
 | `ui_gold`, `ui_heart`, `ui_hint`, `ui_moves`, `ui_smash` | `icon`, nền trong | 1024 → 128 | Gold, mạng, 3 booster |
 | `ui_shop`, `ui_settings`, `ui_lock`, `ui_restart`, `ui_video`, `ui_gift`, `ui_profile`, `ui_sound`, `ui_music` | `icon`, nền trong | 1024 → 128 | Nút và trạng thái; tắt âm thì code vẽ gạch chéo |
 | `art_win`, `art_lose`, `art_no_lives` | `ui`, nền trong | 1024 → 512 | Thẻ thắng, popup thua, màn hết mạng |
@@ -431,7 +433,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 
 **Cách làm**
 
-1. Prompt nào cũng theo một bộ quy tắc: nét bo tròn, màu tươi, chất liệu pudding/gel bóng (viền gel sáng mỏng, dải đáy dày nhạt, lòng lõm đậm màu, vệt sáng trắng ôm góc trên trái), đổ bóng nhẹ, nền sạch, không chữ, không logo, không watermark. Màu khối ghi đúng mã màu đang dùng trong game. Không đưa tên hay ảnh của game gốc vào prompt hoặc ảnh tham chiếu.
+1. Prompt nào cũng theo một bộ quy tắc: nét bo tròn, màu tươi, chất liệu kẹo cứng bóng (viền đậm màu mảnh, bevel sáng trên trái tối dưới phải, vệt chéo sáng song song, vệt sáng trắng ôm góc trên trái), đổ bóng nhẹ, nền sạch, không chữ, không logo, không watermark. Màu khối ghi đúng mã màu đang dùng trong game. Không đưa tên hay ảnh của game gốc vào prompt hoặc ảnh tham chiếu.
 2. Dùng seed cố định và `use_reprompt=false`, để prompt lưu lại đúng là prompt đã chạy. Ghi công cụ, prompt, seed, steps và SHA256 của từng file vào `art/manifest.json`.
 3. Tạo thư mục cha trước khi gửi job. MCP không ghi đè file, nên làm lại thì lưu tên mới (`_v2`). Job chưa xong thì gọi lại `collect_*` với cùng `prompt_id`, không gửi job mới.
 4. Bản gốc nằm trong `art/`, không vào bản build (loại khỏi export bằng filter hoặc `.gdignore`). File dùng trong game nằm trong `assets/`: PNG cho hình, Godot tự import; **WAV cho hiệu ứng** để giảm độ trễ, **Ogg cho nhạc nền** để lặp liền mạch. Thu nhỏ, cắt khoảng lặng và cân âm lượng bằng `ffmpeg`, chỉ là công cụ dev.
@@ -450,9 +452,12 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 - Quà 28 ngày thay quà 7 ngày, có video nhận trước ô kế tiếp, popup chỉ mở khi bấm và hiện 7 ô.
 - Bỏ nhiệm vụ ngày, quà quay lại và `comeback_x2`.
 - Đổi concept hình khối sang pudding/gel bóng (ảnh duyệt `concept_candy_board_v1`), vẽ bằng code; bỏ tài nguyên `block_surface`.
+- Đổi concept hình khối từ pudding sang kẹo cứng bóng có vệt chéo (ảnh tham chiếu của người dùng), vẫn vẽ bằng shader `src/ui/pudding.gdshader`.
 - Thêm avatar và frame, 6 cơ chế từ L21, bảng mở khoá, thưởng Daily Challenge, tiêu chí thư giãn.
 - Dùng AppLovin MAX, không có banner.
 
 **2026-11-02**
 
 - Thêm Weekly Pass, Chain Offer, Special Pack (mục 7). Weekly Pass chỉ có ở bản phát hành vì demo không có level HARD thứ 2 trong phạm vi L1-20.
+- Weekly Pass: thêm mốc khởi đầu 0 key, hàng tiến độ (nút "i", chìa, thanh tới mốc kế), tutorial 3 bước và popup "How to earn rewards"; key chỉ được cộng sau khi xem tutorial. Giảm chiều cao vùng cuộn của layer (640 xuống 500) vì panel vượt màn 720x1280.
+- Thêm loại thưởng "mạng vô hạn" (`inf_min`, phút; `s.lives.inf_until`): đang còn hạn thì thua không mất mạng, Home hiện "Mạng: vô hạn" cùng đếm ngược, cảnh báo mất mạng khi bỏ ván bị ẩn; cấp thêm khi còn hạn thì cộng dồn. Dùng cho mốc khởi đầu Weekly Pass (15 phút, theo video) và VIP mốc 3 key (30 phút).

@@ -39,6 +39,8 @@ func test_locked(t: T) -> void:
 func test_points(t: T) -> void:
 	Config.reset()
 	var s := SaveSchema.defaults()
+	t.eq(WeeklyPass.add_points(s, WeeklyPass.ACTIVE, "hard"), 0, "chưa xem tutorial thì không cộng")
+	WeeklyPass.mark_tutorial_seen(s)
 	t.eq(WeeklyPass.add_points(s, WeeklyPass.ACTIVE, ""), 1, "normal +1")
 	t.eq(WeeklyPass.add_points(s, WeeklyPass.ACTIVE, "hard"), 3, "hard +3")
 	t.eq(WeeklyPass.add_points(s, WeeklyPass.ACTIVE, "very_hard"), 5, "very hard +5")
@@ -50,21 +52,25 @@ func test_points(t: T) -> void:
 func test_main_claims(t: T) -> void:
 	Config.reset()
 	var s := SaveSchema.defaults()
-	s.weekly.points = 8
-	t.eq(WeeklyPass.free_claimable(s, 0), true, "free mốc 0 đủ điểm")
-	t.eq(WeeklyPass.free_claimable(s, 2), false, "mốc 2 chưa đủ")
+	t.eq(WeeklyPass.free_claimable(s, 0), true, "mốc khởi đầu (0 điểm) nhận được ngay")
+	t.eq(WeeklyPass.claimable_count(s), 1, "mới vào chỉ có thưởng khởi đầu")
+	s.weekly.points = 8  # đạt mốc 0, 3 và 8 key
+	t.eq(WeeklyPass.free_claimable(s, 2), true, "free mốc 8 đủ điểm")
+	t.eq(WeeklyPass.free_claimable(s, 3), false, "mốc 15 chưa đủ")
 	t.eq(WeeklyPass.vip_claimable(s, 0), false, "chưa VIP")
-	t.eq(WeeklyPass.claimable_count(s), 2, "2 free (mốc 0, 1)")
+	t.eq(WeeklyPass.claimable_count(s), 3, "3 free (mốc 0, 3, 8)")
 	var r := WeeklyPass.claim_free(s, 0)
-	t.eq(r.coins, 100, "thưởng free mốc 0")
+	t.eq(r.coins, 0, "mốc khởi đầu không có gold")
+	t.eq(r.inf_min, 15, "thưởng free mốc khởi đầu: 15 phút mạng vô hạn")
 	t.eq(WeeklyPass.claim_free(s, 0), {}, "không nhận hai lần")
 	t.eq(WeeklyPass.claim_vip(s, 0), {}, "VIP khoá khi chưa mua")
 	WeeklyPass.on_vip_purchased(s)
-	t.eq(WeeklyPass.claim_vip(s, 0).coins, 200, "thưởng VIP mốc 0")
+	t.eq(WeeklyPass.claim_vip(s, 0).coins, 150, "thưởng VIP mốc khởi đầu")
 	var all := WeeklyPass.claim_all_main(s)
-	t.eq(all.count, 2, "còn free mốc 1 và VIP mốc 1")
-	t.eq(all.reward.coins, 300, "VIP mốc 1")
+	t.eq(all.count, 4, "còn free mốc 3 và 8, VIP mốc 3 và 8")
+	t.eq(all.reward.coins, 600, "free 100 + VIP 200 + VIP 300")
 	t.eq(all.reward.items.hint, 2, "hint free + VIP")
+	t.eq(all.reward.inf_min, 30, "VIP mốc 3 key: 30 phút mạng vô hạn")
 	t.eq(WeeklyPass.claimable_count(s), 0, "hết")
 
 
@@ -109,8 +115,10 @@ func test_refresh_vip_settles(t: T) -> void:
 	t.eq(WeeklyPass.refresh(s, MON + 2 * D, 0).settled, false, "cùng chu kỳ")
 	var r := WeeklyPass.refresh(s, MON + 8 * D, 0)
 	t.eq(r.settled, true, "sang mùa")
-	# còn lại: VIP mốc 0 (200), VIP mốc 1 (300 + hint); free mốc 1 (hint)
-	t.eq(r.reward.coins, 500, "VIP nhận thưởng tồn")
+	# đạt mốc 0, 3, 8 key; free mốc 0 đã nhận. Còn: free mốc 3 (100) và 8 (hint),
+	# VIP mốc 0 (150), 3 (200), 8 (300 + hint)
+	t.eq(r.reward.coins, 750, "VIP nhận thưởng tồn")
+	t.eq(r.reward.inf_min, 30, "mạng vô hạn tồn")
 	t.eq(r.reward.items.hint, 2, "hint tồn")
 	t.eq(s.weekly.points, 0, "reset điểm")
 	t.eq(s.weekly.vip, false, "reset VIP")
@@ -144,3 +152,44 @@ func test_heart_bonus(t: T) -> void:
 	t.eq(WeeklyPass.heart_bonus(s, WeeklyPass.ACTIVE), 3, "VIP Active +3")
 	t.eq(WeeklyPass.heart_bonus(s, WeeklyPass.WAITING), 0, "Waiting hết thưởng")
 	t.eq(WeeklyPass.heart_bonus(s, WeeklyPass.LOCKED), 0, "Locked")
+
+
+func test_tutorial_flag_survives_season(t: T) -> void:
+	Config.reset()
+	var s := SaveSchema.defaults()
+	t.eq(WeeklyPass.tutorial_seen(s), false, "mặc định chưa xem")
+	WeeklyPass.refresh(s, MON + D, 0)
+	WeeklyPass.mark_tutorial_seen(s)
+	t.eq(WeeklyPass.tutorial_seen(s), true, "đã đánh dấu")
+	s.weekly.points = 20
+	WeeklyPass.refresh(s, MON + 8 * D, 0)  # sang mùa mới
+	t.eq(s.weekly.points, 0, "reset điểm")
+	t.eq(WeeklyPass.tutorial_seen(s), true, "cờ tutorial không reset theo mùa")
+
+
+func test_tutorial_row(t: T) -> void:
+	Config.reset()
+	var s := SaveSchema.defaults()
+	t.eq(WeeklyPass.tutorial_row(s), 0, "mới vào: mốc khởi đầu")
+	WeeklyPass.claim_free(s, 0)
+	t.eq(WeeklyPass.tutorial_row(s), 1, "mốc đầu tiên chưa nhận free")
+	s.weekly.points = 8
+	WeeklyPass.claim_all_main(s)
+	for i in WeeklyPass.main_milestones().size():
+		if not WeeklyPass._has(s.weekly.claimed_free, i):
+			s.weekly.claimed_free.append(i)
+	t.eq(WeeklyPass.tutorial_row(s), WeeklyPass.main_milestones().size() - 1, "nhận hết thì mốc cuối")
+
+
+func test_progress_ratio(t: T) -> void:
+	Config.reset()
+	var s := SaveSchema.defaults()
+	t.near(WeeklyPass.progress_ratio(s), 0.0, 0.0001, "0 key")
+	s.weekly.points = 1  # mốc kế là 3
+	t.near(WeeklyPass.progress_ratio(s), 1.0 / 3.0, 0.0001, "1/3 tới mốc 3")
+	s.weekly.points = 3  # vừa chạm mốc 3, mốc kế là 8
+	t.near(WeeklyPass.progress_ratio(s), 0.0, 0.0001, "vừa chạm mốc, bắt đầu đoạn mới")
+	s.weekly.points = 5
+	t.near(WeeklyPass.progress_ratio(s), 2.0 / 5.0, 0.0001, "2/5 tới mốc 8")
+	s.weekly.points = WeeklyPass.last_points() + 7
+	t.near(WeeklyPass.progress_ratio(s), 1.0, 0.0001, "qua mốc cuối")

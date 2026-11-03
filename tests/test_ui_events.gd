@@ -46,15 +46,17 @@ func test_weekly_active_claim_and_buy(t: T) -> void:
 	var g := _game(30)
 	g.weekly_refresh()
 	g.s.weekly.points = 8
+	g.s.weekly.tut_seen = true
 	var node := _open("res://scenes/weekly_pass.tscn")
-	t.eq(node.main_buttons.size(), 20, "10 mốc x (free + VIP)")
-	t.eq(node.main_buttons["free_0"].disabled, false, "free mốc 0 nhận được")
-	t.eq(node.main_buttons["free_2"].disabled, true, "mốc 2 chưa đủ điểm")
+	t.eq(node.main_buttons.size(), 22, "mốc khởi đầu + 10 mốc, mỗi mốc free + VIP")
+	t.eq(node.main_buttons["free_0"].disabled, false, "free mốc khởi đầu nhận được")
+	t.eq(node.main_buttons["free_3"].disabled, true, "mốc 15 key chưa đủ điểm")
 	t.eq(node.main_buttons["vip_0"].disabled, true, "VIP khoá")
 	t.ok(node.main_buttons["free_0"].custom_minimum_size.y >= 96, "nút đủ lớn")
 	var c0 := int(g.s.coins)
 	node.main_buttons["free_0"].pressed.emit()
-	t.eq(int(g.s.coins), c0 + 100, "nhận thưởng free")
+	t.eq(int(g.s.coins), c0, "mốc khởi đầu không cộng gold")
+	t.eq(g.lives_view().infinite, true, "nhận mốc khởi đầu: mạng vô hạn")
 	t.eq(node.main_buttons["free_0"].disabled, true, "đã nhận thì khoá")
 	t.ok(node.buy_vip_button != null, "có nút mua VIP")
 	node.buy_vip_button.pressed.emit()
@@ -66,6 +68,117 @@ func test_weekly_active_claim_and_buy(t: T) -> void:
 	t.eq(node.claim_all_button.disabled, false, "còn thưởng để nhận hết")
 	node.claim_all_button.pressed.emit()
 	t.eq(node.claim_all_button.disabled, true, "nhận hết")
+	node.queue_free()
+
+
+func _frame() -> void:
+	await (Engine.get_main_loop() as SceneTree).process_frame
+
+
+## Chờ overlay tutorial xong chuyển bước (tween thu/phóng bong bóng + một frame bố cục).
+func _settle(ov: Control) -> void:
+	var guard := 0
+	while is_instance_valid(ov) and ov.busy and guard < 300:
+		await _frame()
+		guard += 1
+
+
+func _wait(sec: float) -> void:
+	await (Engine.get_main_loop() as SceneTree).create_timer(sec).timeout
+
+
+func test_weekly_progress_row_and_howto(t: T) -> void:
+	var g := _game(30)
+	g.weekly_refresh()
+	g.s.weekly.points = 1
+	g.s.weekly.tut_seen = true
+	var node := _open("res://scenes/weekly_pass.tscn")
+	t.ok(node.progress_row != null, "có hàng tiến độ")
+	t.ok(node.info_button != null and node.key_button != null, "có nút i và chìa")
+	var bar := node.progress_row.find_child("ProgressBar", true, false) as ProgressBar
+	t.near(bar.value, 1.0 / 3.0, 0.001, "thanh tới mốc 3 key")
+	t.eq(node.howto, null, "chưa mở popup")
+	node.info_button.pressed.emit()
+	t.ok(node.howto != null, "nút i mở popup cách kiếm thưởng")
+	t.eq(node.howto.rows.size(), 3, "3 hàng key theo độ khó")
+	var first: Control = node.howto
+	node.key_button.pressed.emit()
+	t.ok(node.howto == first, "mở lần nữa vẫn là popup đó")
+	node.howto.ok_button.pressed.emit()
+	t.eq(node.howto, null, "OK đóng popup")
+	node.queue_free()
+
+
+func test_weekly_tutorial_flow(t: T) -> void:
+	var g := _game(30)
+	g.weekly_refresh()
+	var node := _open("res://scenes/weekly_pass.tscn")
+	t.eq(g.weekly_tutorial_seen(), false, "chưa xem tutorial")
+	t.ok(node.start_tutorial(), "bắt đầu tutorial")
+	t.eq(node.start_tutorial(), false, "đang chạy thì không bắt đầu lại")
+	var ov: Control = node.tutorial
+	await _settle(ov)
+	t.eq(ov.index, 0, "bước 1")
+	t.eq(ov.label.text, node.tr("weekly_tut_free_claim"), "bước 1: nhận thưởng đầu tiên")
+	var hole1: Rect2 = ov.hole_rect()
+	var free_rect: Rect2 = node.main_buttons["free_0"].get_global_rect()
+	t.ok(hole1.size.x >= free_rect.size.x and hole1.size.y >= free_rect.size.y, "lỗ bao quanh thưởng free")
+	t.ok(ov.bubble.visible and ov.bubble.scale.x > 0.99, "bong bóng đã hiện")
+	ov.advance()
+	await _settle(ov)
+	t.eq(ov.index, 1, "bước 2")
+	t.eq(ov.label.text, node.tr("weekly_tut_vip"), "bước 2: thưởng VIP")
+	t.ok(ov.hole_rect().position.x > hole1.position.x, "lỗ chuyển sang cột VIP")
+	ov.advance()
+	await _settle(ov)
+	t.eq(ov.index, 2, "bước 3")
+	t.eq(ov.label.text, node.tr("weekly_tut_progress"), "bước 3: thanh tiến độ")
+	t.eq(g.weekly_tutorial_seen(), false, "chưa xong thì chưa lưu cờ")
+	ov.advance()
+	await _frame()
+	t.eq(g.weekly_tutorial_seen(), true, "xong bước cuối: lưu cờ")
+	t.eq(node.tutorial, null, "overlay đã gỡ")
+	t.ok(node.howto != null, "mở popup cách kiếm thưởng")
+	node.queue_free()
+
+
+func test_weekly_tutorial_ignores_tap_while_busy_and_aborts_on_rebuild(t: T) -> void:
+	var g := _game(30)
+	g.weekly_refresh()
+	var node := _open("res://scenes/weekly_pass.tscn")
+	node.start_tutorial()
+	var ov: Control = node.tutorial
+	ov.advance()  # bước 1 chưa hiện xong: bỏ qua
+	await _settle(ov)
+	t.eq(ov.index, 0, "chạm khi đang chuyển bước bị bỏ qua")
+	node._rebuild()  # layer dựng lại: target cũ mất
+	await _frame()
+	t.eq(node.tutorial, null, "overlay bị gỡ")
+	t.eq(g.weekly_tutorial_seen(), false, "bỏ giữa chừng không tính là đã xem")
+	node.queue_free()
+
+
+func test_weekly_tutorial_auto_start_once(t: T) -> void:
+	var g := _game(30)
+	g.weekly_refresh()
+	var node := _open("res://scenes/weekly_pass.tscn")
+	t.eq(node.tutorial, null, "chưa chạy ngay khi mở (chờ popup_in)")
+	await _wait(0.6)
+	t.ok(node.tutorial != null, "lần đầu mở: tự chạy tutorial")
+	node.queue_free()
+	g.s.weekly.tut_seen = true
+	var seen := _open("res://scenes/weekly_pass.tscn")
+	await _wait(0.6)
+	t.eq(seen.tutorial, null, "đã xem rồi thì không chạy")
+	t.eq(seen.start_tutorial(), true, "vẫn gọi tay được")
+	seen.queue_free()
+
+
+func test_weekly_tutorial_not_in_waiting(t: T) -> void:
+	var g := _game(30)
+	g.test_now = MON + 3 * 3600
+	var node := _open("res://scenes/weekly_pass.tscn")
+	t.eq(node.start_tutorial(), false, "Waiting không có tutorial")
 	node.queue_free()
 
 

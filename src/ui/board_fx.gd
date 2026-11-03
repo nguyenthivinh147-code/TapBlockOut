@@ -61,9 +61,9 @@ static func _bez(p0: Vector2, p1: Vector2, p2: Vector2, n: int) -> PackedVector2
 	return out
 
 
-## Vệt sáng của pudding trong khung `size` (px) có góc trên trái ở `origin`: một thấu kính cong ôm góc
+## Vệt sáng của kẹo cứng trong khung `size` (px) có góc trên trái ở `origin`: một thấu kính cong ôm góc
 ## (đậm ở mép ngoài, mờ dần vào trong, đầu trên phải tròn, đuôi thon xuống trái), một vạch ngắn bên dưới
-## và một vệt mờ ngang ở mép trên. Toạ độ chuẩn hoá theo khung, đo từ viên pudding đơn trong concept.
+## và một vệt mờ ngang ở mép trên. Toạ độ chuẩn hoá theo khung, đo từ viên kẹo đơn trong concept.
 static func draw_glare(ci: CanvasItem, origin: Vector2, size: float) -> void:
 	var a := Vector2(0.09, 0.33)
 	var e := Vector2(0.35, 0.125)
@@ -113,9 +113,9 @@ static func block_base_color(view: Dictionary) -> Color:
 	return base
 
 
-## Vẽ phần nằm trên thân pudding của một khối đa ô: vệt sáng, viên trong của khối hai lớp, rồi băng, xích,
-## sương, mũi tên. Thân (viền gel, lòng, bóng đổ) do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
-## theo concept `art/concepts/concept_candy_board_v1.png`.
+## Vẽ phần nằm trên thân kẹo của một khối đa ô: vệt sáng, viên trong của khối hai lớp, rồi băng, xích,
+## sương, mũi tên. Thân (viền, bevel, vệt chéo, bóng đổ) do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
+## theo ảnh tham chiếu kẹo cứng (design.md, mục Concept theme).
 ## `cells` tính theo toạ độ ô gốc của chính CanvasItem này.
 static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictionary, show_arrow: bool) -> void:
 	var fog_hidden: bool = view.get("is_fog_hidden", false)

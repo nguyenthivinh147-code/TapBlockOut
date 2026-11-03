@@ -13,7 +13,7 @@ static func defaults() -> Dictionary:
 		"inv": {"hint": 0, "move": 0, "smash": 0},
 		"gifted": {"hint": false, "move": false, "smash": false},
 		"level": 1, "runs": 0, "play_ms": 0, "fail_streak": {"level": 0, "count": 0},
-		"lives": {"count": 10, "next_at": 0, "bonus": 0},
+		"lives": {"count": 10, "next_at": 0, "bonus": 0, "inf_until": 0},
 		"daily": {"idx": 0, "claim_day": -1, "ad_day": -1},
 		"shop": {"day": -1, "videos": 0},
 		"cos": {"owned": ["avatar_00", "frame_00"], "avatar": "avatar_00", "frame": "frame_00"},
@@ -22,7 +22,7 @@ static func defaults() -> Dictionary:
 		"offers": {"last_run": -999, "items": {}},
 		"buys": [], "no_ads": false,
 		"weekly": {
-			"cycle": "", "points": 0, "vip": false, "opened": false, "end_seen": false,
+			"cycle": "", "points": 0, "vip": false, "opened": false, "end_seen": false, "tut_seen": false,
 			"claimed_free": [], "claimed_vip": [], "claimed_bank": [], "pending_end": {},
 		},
 		"chain": {

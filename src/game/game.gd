@@ -833,6 +833,10 @@ func _give(reward: Dictionary, source: String) -> void:
 		Wallet.inv_add(s, str(k), int(items[k]))
 	if not items.is_empty():
 		inv_changed.emit()
+	var inf_min := int(reward.get("inf_min", 0))
+	if inf_min > 0:
+		Lives.grant_infinite(s, inf_min * 60, now())
+		lives_changed.emit()
 
 
 func daily_claim() -> Dictionary:
@@ -1145,7 +1149,23 @@ func weekly_view() -> Dictionary:
 		"pending_end": pending, "main": main_rows, "bank": bank_rows,
 		"bank_unlocked": WeeklyPass.bank_unlocked(s), "bank_slots": WeeklyPass.bank_slots(s),
 		"bonus_hearts": int(Config.WEEKLY.get("vip_bonus_hearts", 3)),
+		"tut_seen": WeeklyPass.tutorial_seen(s), "tut_row": WeeklyPass.tutorial_row(s),
+		"progress": WeeklyPass.progress_ratio(s),
 	}
+
+
+## Đã xem tutorial Weekly Pass chưa. Chưa xem thì thắng level không cộng key.
+func weekly_tutorial_seen() -> bool:
+	return WeeklyPass.tutorial_seen(s)
+
+
+## Xong tutorial (bước cuối): lưu cờ để key bắt đầu được cộng.
+func weekly_mark_tutorial_seen() -> void:
+	if WeeklyPass.tutorial_seen(s):
+		return
+	WeeklyPass.mark_tutorial_seen(s)
+	log_event("weekly_tutorial", {"points": WeeklyPass.points(s)})
+	save_now()
 
 
 ## Người chơi mở layer. Ghi đã mở chu kỳ này, End popup nếu đã đủ điểm.
@@ -1277,10 +1297,12 @@ func lives_view() -> Dictionary:
 	var t := now()
 	var c := Lives.count(s, t)
 	var level := int(s.level)
+	var inf := Lives.infinite(s, t)
 	return {
 		"count": c, "max": Lives.max_for(s), "seconds_to_next": Lives.seconds_to_next(s, t),
 		"open": Unlocks.is_open("lives", level),
-		"can_play": c > 0 or level < int(Config.LIVES.from_level),
+		"infinite": inf, "infinite_left": Lives.infinite_left(s, t),
+		"can_play": c > 0 or inf or level < int(Config.LIVES.from_level),
 		"refill_price": int(Config.ECON.refill_coins), "refill_lives": int(Config.ECON.refill_lives),
 		"can_refill_gold": c < Lives.max_for(s) and int(s.coins) >= int(Config.ECON.refill_coins),
 		"video_ready": Platform.ready_rewarded(),

@@ -139,3 +139,20 @@ func test_remote_config_values(t: T) -> void:
 	t.eq(Lives.count(s, NOW), 4, "mất mạng từ L3")
 	t.eq(Lives.count(s, NOW + 60), 5, "hồi sau 60 giây, max 5")
 	Config.reset()
+
+
+func test_infinite(t: T) -> void:
+	var s := SaveSchema.defaults()
+	t.eq(Lives.infinite(s, NOW), false, "mặc định không vô hạn")
+	Lives.grant_infinite(s, 900, NOW)
+	t.eq(Lives.infinite(s, NOW + 899), true, "còn trong hạn")
+	t.eq(Lives.infinite_left(s, NOW + 100), 800, "đếm ngược")
+	t.eq(Lives.infinite(s, NOW + 900), false, "hết hạn")
+	t.eq(Lives.infinite_left(s, NOW + 5000), 0, "hết hạn thì 0")
+	t.eq(Lives.lose(s, NOW, FROM), false, "đang vô hạn thì không mất mạng")
+	t.eq(Lives.count(s, NOW), 10, "mạng giữ nguyên")
+	Lives.grant_infinite(s, 600, NOW + 300)  # cộng dồn vào hạn hiện tại
+	t.eq(Lives.infinite_left(s, NOW + 300), 600 + 600, "cộng dồn")
+	t.eq(Lives.lose(s, NOW + 3000, FROM), true, "hết hạn thì mất mạng lại")
+	Lives.grant_infinite(s, 0, NOW)
+	t.eq(Lives.infinite_left(s, NOW + 3000), 0, "cấp 0 giây không đổi gì")
