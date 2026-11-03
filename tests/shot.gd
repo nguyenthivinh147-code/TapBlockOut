@@ -6,6 +6,7 @@ extends SceneTree
 const MAIN := "res://scenes/main.tscn"
 const OUT := "res://tests/shots/"
 const NOW := 1800000000
+const Gallery := preload("res://src/ui/ui_gallery.gd")
 const ALL := ["home", "level", "popup_rescue", "popup_rescue_late", "win", "lose", "shop", "daily", "profile", "settings",
 	"no_lives", "offer", "offer_level", "shop_mini", "level_booster"]
 
@@ -30,7 +31,11 @@ func _initialize() -> void:
 
 func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
-	for name in ALL:
+	var names: Array = ALL.duplicate()
+	names.append_array(["weekly_pass", "chain_offer", "challenge", "ingame_settings"])
+	for s in Gallery.SCREENS:
+		names.append(s[1])
+	for name in names:
 		if not only.is_empty() and not only.has(name):
 			continue
 		await _shot(name)
@@ -186,6 +191,29 @@ func _shot(name: String) -> void:
 		"shop_mini":
 			await _fresh(8, 100)
 			_main.open_popup("res://scenes/shop_mini.tscn", {"source": "rescue"})
+			await _settle()
+		"weekly_pass":
+			await _fresh(30)
+			g.s.weekly.tut_seen = true
+			g.s.weekly.points = 8
+			_main.open_popup("res://scenes/weekly_pass.tscn", {})
+			await _settle()
+		"chain_offer":
+			await _fresh(30)
+			g.s.chain = {"active": true, "id": "chain_a", "step": 1, "expires": NOW + 86400, "cooldown_until": 0, "shown": true, "rotation": 1}
+			_main.open_popup("res://scenes/chain_offer.tscn", {})
+			await _settle()
+		"challenge":
+			await _fresh(60)
+			_main.go("challenge")
+			await _settle()
+		"ingame_settings":
+			await _fresh(10)
+			_main.open_popup("res://scenes/popup_ingame_settings.tscn", {})
+			await _settle()
+		_:
+			await _fresh(10)
+			_main.open_popup("res://scenes/%s.tscn" % name, {})
 			await _settle()
 	_save(name)
 	print("shot ", name, " ", tag, " ", lang)

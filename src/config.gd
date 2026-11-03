@@ -262,9 +262,21 @@ static func is_demo() -> bool:
 	return OS.has_feature("demo")
 
 
+## Màn đã dựng UI nhưng chưa nối logic chỉ mở ở bản debug. Bản phát hành ẩn hết.
+## Test ép bằng ui_preview_override: -1 theo bản build, 0 tắt, 1 bật. reset() trả về -1.
+static var ui_preview_override: int = -1
+
+
+static func ui_preview() -> bool:
+	if ui_preview_override >= 0:
+		return ui_preview_override > 0
+	return OS.is_debug_build()
+
+
 ## Trả mọi nhóm về mặc định (test dùng sau khi apply_remote).
 static func reset() -> void:
 	demo_override = -1
+	ui_preview_override = -1
 	ECON = _ECON.duplicate(true)
 	LIVES = _LIVES.duplicate(true)
 	ADS = _ADS.duplicate(true)

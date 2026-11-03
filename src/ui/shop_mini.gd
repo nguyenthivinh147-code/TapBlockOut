@@ -5,6 +5,7 @@ extends Control
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 const Shop := preload("res://src/ui/shop.gd")
 
 var close_button: Button = null
@@ -31,29 +32,16 @@ func _build() -> void:
 	for c in get_children():
 		c.queue_free()
 	buy_buttons.clear()
-	var dim := ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.6)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(dim)
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(center)
-	var panel := ThemeKit.make_panel()
-	panel.custom_minimum_size = Vector2(640, 0)
-	center.add_child(panel)
-	_card = panel
-	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 14)
-	panel.add_child(v)
+	var k := PopupKit.make(self, tr("shop_mini_title"), close)
+	_card = k.card
+	close_button = k.close
+	var v: VBoxContainer = k.box
 
 	var head := HBoxContainer.new()
-	var title := ThemeKit.make_label(tr("shop_mini_title"), ThemeKit.FS_TITLE - 8)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	head.add_child(title)
-	coins_label = ThemeKit.make_label(str(int(Game.s.coins)), ThemeKit.FS_BUTTON, ThemeKit.GOLD)
+	head.alignment = BoxContainer.ALIGNMENT_CENTER
+	head.add_theme_constant_override("separation", 8)
+	head.add_child(ThemeKit.make_icon("ui_gold", 48))
+	coins_label = ThemeKit.gold_label(str(int(Game.s.coins)), ThemeKit.FS_BUTTON)
 	head.add_child(coins_label)
 	v.add_child(head)
 
@@ -63,16 +51,10 @@ func _build() -> void:
 		(row.button as Button).pressed.connect(buy.bind(str(e.sku)))
 		v.add_child(row.panel)
 
-	toast_label = ThemeKit.make_label("", ThemeKit.FS_BODY)
-	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	toast_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	toast_label = PopupKit.text("", ThemeKit.FS_SMALL + 2, ThemeKit.BROWN)
 	toast_label.modulate.a = 0.0
 	v.add_child(toast_label)
-
-	close_button = ThemeKit.make_button(tr("shop_mini_close"), "secondary")
-	close_button.pressed.connect(close)
-	v.add_child(close_button)
-	_animate_in.call_deferred(panel)
+	_animate_in.call_deferred(k.card)
 
 
 func buy(sku: String) -> void:

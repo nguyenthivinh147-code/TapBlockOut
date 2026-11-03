@@ -5,6 +5,7 @@ extends Control
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 const Config := preload("res://src/config.gd")
 
 var ok_button: Button = null
@@ -26,28 +27,9 @@ func _ready() -> void:
 
 
 func _build() -> void:
-	var dim := ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.7)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(dim)
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(center)
-	var panel := ThemeKit.make_panel()
-	panel.custom_minimum_size = Vector2(620, 0)
-	center.add_child(panel)
-	_content = panel
-
-	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 16)
-	panel.add_child(v)
-	var title := ThemeKit.make_label(tr("weekly_howto_title"), ThemeKit.FS_TITLE, ThemeKit.GOLD)
-	title.name = "TitleLabel"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	v.add_child(title)
+	var k := PopupKit.make(self, tr("weekly_howto_title"), Callable(), {"separation": 14})
+	_content = k.card
+	var v: VBoxContainer = k.box
 
 	var cfg: Dictionary = Config.WEEKLY
 	for r in [
@@ -70,27 +52,24 @@ func _build() -> void:
 
 
 func _key_row(text: String, points: int) -> Control:
+	var well := ThemeKit.make_well()
 	var h := HBoxContainer.new()
 	h.add_theme_constant_override("separation", 12)
-	var l := ThemeKit.make_label(text, ThemeKit.FS_BODY)
+	well.add_child(h)
+	var l := ThemeKit.ink_label(text, ThemeKit.FS_SMALL + 4)
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	h.add_child(l)
-	var n := ThemeKit.make_label(tr("weekly_howto_points") % points, ThemeKit.FS_BUTTON, ThemeKit.GOLD)
+	var n := ThemeKit.gold_label(tr("weekly_howto_points") % points, ThemeKit.FS_BUTTON)
 	n.name = "Points"
 	h.add_child(n)
-	var icon := TextureRect.new()
-	icon.texture = ThemeKit.icon("mech_key")
-	icon.custom_minimum_size = Vector2(56, 56)
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	h.add_child(icon)
-	return h
+	h.add_child(ThemeKit.make_icon("mech_key", 56))
+	return well
 
 
 func _note(text: String) -> Label:
-	var l := ThemeKit.make_label(text, ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var l := PopupKit.text(text, ThemeKit.FS_SMALL, ThemeKit.INK_DIM)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	return l
 
 

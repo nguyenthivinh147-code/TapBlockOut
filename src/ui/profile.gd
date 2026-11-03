@@ -5,11 +5,15 @@ extends Control
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 const Config := preload("res://src/config.gd")
 
-const COLUMNS := 2
-const AVATAR_PX := 150
-const CELL_FONT := 26
+const COLUMNS := 3
+const AVATAR_PX := 130
+const CELL_FONT := 22
+const CARD_W := 680.0
+const SCROLL_H := 760.0
+const CHANGE_NAME := "res://scenes/popup_change_name.tscn"
 
 var gold_label: Label = null
 var level_label: Label = null
@@ -116,80 +120,70 @@ func _build() -> void:
 	theme = ThemeKit.make_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(ThemeKit.make_background())
-
-	var margin := MarginContainer.new()
-	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 24)
-	margin.add_theme_constant_override("margin_right", 24)
-	margin.add_theme_constant_override("margin_top", 40)
-	margin.add_theme_constant_override("margin_bottom", 24)
-	add_child(margin)
-	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 16)
-	margin.add_child(col)
-
-	var head := HBoxContainer.new()
-	head.add_theme_constant_override("separation", 12)
-	col.add_child(head)
-	back_btn = ThemeKit.make_button(tr("common_back"), "secondary")
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(center)
+	var k := PopupKit.make_card(tr("profile_title"), _close, {"width": CARD_W, "separation": 12})
+	center.add_child(k.card)
+	back_btn = k.close
 	back_btn.name = "BackButton"
-	back_btn.add_theme_font_size_override("font_size", CELL_FONT)
-	back_btn.pressed.connect(_close)
-	head.add_child(back_btn)
-	var title := ThemeKit.make_label(tr("profile_title"), ThemeKit.FS_TITLE)
-	title.name = "Title"
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	head.add_child(title)
-	var gold_chip := ThemeKit.make_panel()
-	head.add_child(gold_chip)
+	var col: VBoxContainer = k.box
+
+	# đầu card: avatar đang đeo, level, gold
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 14)
+	col.add_child(head)
+	_preview_holder = CenterContainer.new()
+	head.add_child(_preview_holder)
+	var info := VBoxContainer.new()
+	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info.alignment = BoxContainer.ALIGNMENT_CENTER
+	info.add_theme_constant_override("separation", 6)
+	head.add_child(info)
+	level_label = ThemeKit.ink_label("", ThemeKit.FS_BODY)
+	level_label.name = "LevelLabel"
+	info.add_child(level_label)
 	var gold_row := HBoxContainer.new()
 	gold_row.add_theme_constant_override("separation", 8)
-	gold_chip.add_child(gold_row)
-	var gi := TextureRect.new()
-	gi.texture = ThemeKit.icon("ui_gold")
-	gi.custom_minimum_size = Vector2(40, 40)
-	gi.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	gi.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	gold_row.add_child(gi)
-	gold_label = ThemeKit.make_label("0", ThemeKit.FS_BODY, ThemeKit.GOLD)
+	info.add_child(gold_row)
+	gold_row.add_child(ThemeKit.make_icon("ui_gold", 48))
+	gold_label = ThemeKit.gold_label("0", ThemeKit.FS_BODY)
 	gold_label.name = "GoldLabel"
 	gold_row.add_child(gold_label)
+	if Config.ui_preview():
+		var edit := ThemeKit.make_icon_button("ic_edit")
+		edit.name = "EditNameButton"
+		edit.pressed.connect(_on_edit_name)
+		head.add_child(edit)
 
-	_preview_holder = CenterContainer.new()
-	col.add_child(_preview_holder)
-	level_label = ThemeKit.make_label("", ThemeKit.FS_BODY, ThemeKit.TEXT_DIM)
-	level_label.name = "LevelLabel"
-	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(level_label)
-	status_label = ThemeKit.make_label("", CELL_FONT, ThemeKit.DANGER)
-	status_label.name = "StatusLabel"
-	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	status_label = PopupKit.text("", CELL_FONT, ThemeKit.INK_DANGER, "StatusLabel")
 	status_label.custom_minimum_size.y = 32
 	col.add_child(status_label)
 
 	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.custom_minimum_size = Vector2(0, SCROLL_H)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	col.add_child(scroll)
 	var body := VBoxContainer.new()
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 16)
+	body.add_theme_constant_override("separation", 12)
 	scroll.add_child(body)
-	body.add_child(ThemeKit.make_label(tr("profile_avatars"), ThemeKit.FS_BODY, ThemeKit.GOLD))
+	body.add_child(ThemeKit.ink_label(tr("profile_avatars"), ThemeKit.FS_BODY, ThemeKit.BROWN))
 	_avatar_grid = _make_grid()
 	body.add_child(_avatar_grid)
-	body.add_child(ThemeKit.make_label(tr("profile_frames"), ThemeKit.FS_BODY, ThemeKit.GOLD))
+	body.add_child(ThemeKit.ink_label(tr("profile_frames"), ThemeKit.FS_BODY, ThemeKit.BROWN))
 	_frame_grid = _make_grid()
 	body.add_child(_frame_grid)
+	PopupKit.show_in(k)
 
 
 func _make_grid() -> GridContainer:
 	var g := GridContainer.new()
 	g.columns = COLUMNS
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	g.add_theme_constant_override("h_separation", 12)
-	g.add_theme_constant_override("v_separation", 12)
+	g.add_theme_constant_override("h_separation", 8)
+	g.add_theme_constant_override("v_separation", 8)
 	return g
 
 
@@ -203,7 +197,7 @@ func refresh() -> void:
 	level_label.text = tr("profile_level") % int(Game.s.level)
 	for c in _preview_holder.get_children():
 		c.queue_free()
-	preview = make_avatar(av_id, fr_id, 200)
+	preview = make_avatar(av_id, fr_id, 150)
 	preview.name = "Preview"
 	_preview_holder.add_child(preview)
 	cells.clear()
@@ -222,7 +216,7 @@ func _fill(grid: GridContainer, kind: String, av_id: String, fr_id: String) -> v
 func _make_cell(id: String, kind: String, av_id: String, fr_id: String) -> Control:
 	var owned: bool = (Game.s.cos.owned as Array).has(id)
 	var equipped := (id == av_id) if kind == "avatar" else (id == fr_id)
-	var panel := ThemeKit.make_panel()
+	var panel := ThemeKit.make_well(ThemeKit.WELL_HOT if equipped else ThemeKit.WELL, ThemeKit.WELL_HEADER if equipped else Color(0, 0, 0, 0))
 	panel.name = "Cell_" + id
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var v := VBoxContainer.new()
@@ -233,14 +227,15 @@ func _make_cell(id: String, kind: String, av_id: String, fr_id: String) -> Contr
 	var holder := CenterContainer.new()
 	v.add_child(holder)
 	holder.add_child(make_avatar(shown_av, shown_fr, AVATAR_PX))
-	var cap := ThemeKit.make_label(tr("profile_default") if id.ends_with("_00") else "", ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
-	cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	cap.custom_minimum_size.y = 28
-	v.add_child(cap)
+	if id.ends_with("_00"):
+		var cap := ThemeKit.ink_label(tr("profile_default"), ThemeKit.FS_SMALL - 4, ThemeKit.INK_DIM)
+		cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		v.add_child(cap)
 	var entry := {"panel": panel, "equip": null, "buy": null, "video": null}
 	if owned:
 		var b := ThemeKit.make_button(tr("profile_equipped") if equipped else tr("profile_equip"), "secondary" if equipped else "primary")
 		b.add_theme_font_size_override("font_size", CELL_FONT)
+		ThemeKit.tighten(b)
 		b.disabled = equipped
 		b.pressed.connect(_on_equip.bind(id))
 		v.add_child(b)
@@ -248,18 +243,26 @@ func _make_cell(id: String, kind: String, av_id: String, fr_id: String) -> Contr
 	else:
 		var buy := ThemeKit.make_button(tr("profile_buy") % Config.cosmetic_price(id), "primary")
 		buy.add_theme_font_size_override("font_size", CELL_FONT)
+		ThemeKit.tighten(buy)
 		buy.pressed.connect(_on_buy.bind(id))
 		v.add_child(buy)
 		var vid := ThemeKit.make_button(tr("ads_watch"), "video")
 		vid.add_theme_font_size_override("font_size", CELL_FONT)
-		vid.icon = ThemeKit.icon("ui_video")
-		vid.expand_icon = true
+		ThemeKit.tighten(vid)
 		vid.pressed.connect(_on_video.bind(id))
 		v.add_child(vid)
 		entry["buy"] = buy
 		entry["video"] = vid
 	cells[id] = entry
 	return panel
+
+
+func _on_edit_name() -> void:
+	Sfx.play("button")
+	var node := (load(CHANGE_NAME) as PackedScene).instantiate()
+	add_child(node)
+	node.call("setup", {})
+	node.connect("closed", func(_r: Variant) -> void: node.queue_free())
 
 
 func _say(text: String) -> void:

@@ -5,10 +5,12 @@ extends Control
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 const Config := preload("res://src/config.gd")
 
-const COLS := 4
-const CELL_SIZE := Vector2(140, 200)
+const COLS := 3
+const CELL_SIZE := Vector2(168, 176)
+const CELL_ICON := 56.0
 
 var claim_button: Button = null
 var video_button: Button = null
@@ -43,57 +45,41 @@ func _build() -> void:
 	cell_nodes.clear()
 	var view: Dictionary = Game.daily_view()
 
-	var dim := ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.6)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(dim)
+	var k := PopupKit.make(self, tr("daily_title"), close)
+	_content = k.card
+	close_button = k.close
+	var box: VBoxContainer = k.box
 
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(center)
-	_content = ThemeKit.make_panel()
-	center.add_child(_content)
-
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 20)
-	_content.add_child(box)
-
-	box.add_child(_centered(ThemeKit.make_label(tr("daily_title"), ThemeKit.FS_TITLE)))
-	var week := ThemeKit.make_label(tr("daily_week") % (int(view.week) + 1), ThemeKit.FS_BODY, ThemeKit.TEXT_DIM)
-	box.add_child(_centered(week))
+	box.add_child(PopupKit.text(tr("daily_week") % (int(view.week) + 1), ThemeKit.FS_SMALL, ThemeKit.INK_DIM))
 
 	var grid := GridContainer.new()
 	grid.columns = COLS
 	grid.add_theme_constant_override("h_separation", 12)
 	grid.add_theme_constant_override("v_separation", 12)
 	box.add_child(grid)
-	for cell in view.cells:
-		var node := _make_cell(cell)
-		grid.add_child(node)
+	var cells: Array = view.cells
+	for i in cells.size():
+		var node := _make_cell(cells[i])
+		# Ô cuối là thưởng lớn của tuần: chiếm cả hàng riêng.
+		if i == cells.size() - 1:
+			box.add_child(node)
+		else:
+			grid.add_child(node)
 		cell_nodes.append(node)
 
-	status_label = ThemeKit.make_label("", ThemeKit.FS_BODY, ThemeKit.GOLD)
-	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status_label.custom_minimum_size = Vector2(580, 0)
+	status_label = PopupKit.text("", ThemeKit.FS_SMALL, ThemeKit.BROWN)
 	box.add_child(status_label)
 
 	claim_button = ThemeKit.make_button(tr("daily_claim"), "primary")
 	claim_button.pressed.connect(_on_claim)
 	video_button = ThemeKit.make_button(tr("daily_video"), "video")
+	video_button.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL + 2)
+	video_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	video_button.pressed.connect(_on_video)
-	close_button = ThemeKit.make_button(tr("common_close"), "secondary")
-	close_button.pressed.connect(close)
 	box.add_child(claim_button)
 	box.add_child(video_button)
-	var info := ThemeKit.make_label("", ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
-	_info = info
-	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	box.add_child(info)
-	box.add_child(close_button)
+	_info = PopupKit.text("", ThemeKit.FS_SMALL, ThemeKit.INK_DIM)
+	box.add_child(_info)
 	_refresh_buttons(view)
 
 
@@ -104,39 +90,32 @@ func _centered(l: Label) -> Label:
 
 func _make_cell(cell: Dictionary) -> Control:
 	var state := str(cell.state)
-	var p := PanelContainer.new()
+	var fill := ThemeKit.WELL
+	var border := Color(0, 0, 0, 0)
+	match state:
+		"current":
+			fill = ThemeKit.WELL_HOT
+			border = ThemeKit.WELL_HEADER
+		"claimed":
+			fill = ThemeKit.WELL.darkened(0.08)
+			border = ThemeKit.WELL_TODAY
+		"next":
+			border = ThemeKit.VIDEO
+	var p := ThemeKit.make_well(fill, border)
 	p.custom_minimum_size = CELL_SIZE
 	p.name = "Cell%d" % int(cell.day)
 	p.set_meta("state", state)
-	var sb := StyleBoxFlat.new()
-	sb.set_corner_radius_all(18)
-	sb.set_border_width_all(4 if state == "current" else 2)
-	sb.bg_color = ThemeKit.BG_TOP
-	sb.border_color = ThemeKit.PANEL_BORDER
-	match state:
-		"current":
-			sb.border_color = ThemeKit.GOLD
-			sb.bg_color = ThemeKit.PANEL_BORDER
-		"claimed":
-			sb.bg_color = ThemeKit.GOOD.darkened(0.55)
-			sb.border_color = ThemeKit.GOOD
-		"next":
-			sb.border_color = ThemeKit.VIDEO
-	sb.content_margin_left = 8
-	sb.content_margin_right = 8
-	sb.content_margin_top = 12
-	sb.content_margin_bottom = 12
-	p.add_theme_stylebox_override("panel", sb)
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 6)
+	v.add_theme_constant_override("separation", 2)
 	p.add_child(v)
-	v.add_child(_centered(ThemeKit.make_label(tr("daily_day") % int(cell.day), ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)))
-	var rw := ThemeKit.make_label(reward_text(cell.reward), ThemeKit.FS_SMALL)
+	v.add_child(_centered(ThemeKit.ink_label(tr("daily_day") % int(cell.day), ThemeKit.FS_SMALL, ThemeKit.BROWN)))
+	v.add_child(ThemeKit.make_icon(_reward_icon(cell.reward), CELL_ICON))
+	var rw := ThemeKit.ink_label(reward_text(cell.reward), ThemeKit.FS_SMALL - 2)
 	rw.name = "Reward"
 	rw.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	rw.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rw.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	rw.custom_minimum_size = Vector2(120, 0)
+	rw.custom_minimum_size = Vector2(130, 0)
 	v.add_child(rw)
 	var st := ""
 	match state:
@@ -144,10 +123,21 @@ func _make_cell(cell: Dictionary) -> Control:
 			st = tr("daily_claimed")
 		"current":
 			st = tr("daily_today")
-	var sl := ThemeKit.make_label(st, ThemeKit.FS_SMALL, ThemeKit.GOLD if state == "current" else ThemeKit.GOOD)
+	var sl := ThemeKit.ink_label(st, ThemeKit.FS_SMALL - 2, ThemeKit.BROWN if state == "current" else ThemeKit.INK_GOOD)
 	sl.name = "State"
 	v.add_child(_centered(sl))
 	return p
+
+
+## Icon đại diện của ô quà: món đầu tiên trong thưởng.
+func _reward_icon(reward: Dictionary) -> String:
+	if int(reward.get("coins", 0)) > 0:
+		return "ui_gold"
+	var items: Dictionary = reward.get("items", {})
+	for k in ["hint", "move", "smash"]:
+		if items.has(k):
+			return "booster_" + k
+	return "ui_gift"
 
 
 ## "300 gold" hoặc "Hint x1"; ô nhiều món thì mỗi món một dòng.

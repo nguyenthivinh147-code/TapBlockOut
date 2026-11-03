@@ -2,11 +2,13 @@ extends Control
 ## Màn level: HUD, bàn cờ, booster, luồng hết MOVES, thắng, thua, restart.
 ## setup({challenge: true}) chạy Daily Challenge (Game.start_challenge) thay vì level kế tiếp; thắng thì về Home.
 ## closed({"action": "home" | "no_lives"}). Popup mở qua Main.open_popup (hoặc lớp riêng khi chạy lẻ).
+## HUD theo wireframe 3.4: lượt, tên level, restart, bánh răng (Home và Retry nằm trong popup cài đặt).
 ## UI chỉ gọi Game và Sfx; hoạt ảnh bàn do BoardView lo.
 
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 const Config := preload("res://src/config.gd")
 const Unlocks := preload("res://src/meta/unlocks.gd")
 const BoardState := preload("res://src/core/board_state.gd")
@@ -17,49 +19,42 @@ const POPUP_OFFER := "res://scenes/popup_offer.tscn"
 const WIN_CARD := "res://scenes/win_card.tscn"
 const LOSE_CARD := "res://scenes/lose_card.tscn"
 const SHOP_MINI := "res://scenes/shop_mini.tscn"
+const INGAME_SETTINGS := "res://scenes/popup_ingame_settings.tscn"
 const BOOSTERS := ["hint", "move", "smash"]
 const FREE_PLACEMENT := "booster_free"
 const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
 
 
 ## Hộp thoại nhỏ dựng bằng code. items: [{id, text, kind, name, close}]. Bấm nút phát chosen(id),
-## rồi closed(id) nếu close (mặc định true). Back của Android phát closed(null).
+## rồi closed(id) nếu close (mặc định true). Back của Android phát closed(null). art: sprite atlas phía trên chữ.
 class Dialog extends Control:
 	const ThemeKit := preload("res://src/ui/theme_kit.gd")
+	const PopupKit := preload("res://src/ui/popup_kit.gd")
 	signal closed(result: Variant)
 	signal chosen(id: String)
 	var buttons: Dictionary = {}
 	var title_label: Label = null
 	var body_label: Label = null
 	var message_label: Label = null
-	var _panel: Control = null
+	var _kit: Dictionary = {}
 
-	func _init(title: String = "", body: String = "", items: Array = [], message: String = "") -> void:
+	func _init(title: String = "", body: String = "", items: Array = [], message: String = "", art: Texture2D = null) -> void:
 		name = "Dialog"
 		set_anchors_preset(Control.PRESET_FULL_RECT)
-		mouse_filter = Control.MOUSE_FILTER_STOP
-		var dim := ColorRect.new()
-		dim.name = "Dim"
-		dim.color = Color(0, 0, 0, 0.6)
-		dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-		dim.mouse_filter = Control.MOUSE_FILTER_STOP
-		add_child(dim)
-		var center := CenterContainer.new()
-		center.set_anchors_preset(Control.PRESET_FULL_RECT)
-		center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		add_child(center)
-		_panel = ThemeKit.make_panel()
-		_panel.name = "Panel"
-		center.add_child(_panel)
-		var box := VBoxContainer.new()
-		box.add_theme_constant_override("separation", 20)
-		_panel.add_child(box)
-		title_label = _label(title, ThemeKit.FS_TITLE, ThemeKit.TEXT, "TitleLabel")
-		box.add_child(title_label)
+		_kit = PopupKit.make(self, title)
+		var box: VBoxContainer = _kit.box
+		title_label = _kit.title
+		if art != null:
+			var r := TextureRect.new()
+			r.texture = art
+			r.custom_minimum_size = Vector2(160, 160)
+			r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			box.add_child(r)
 		if body != "":
-			body_label = _label(body, ThemeKit.FS_BODY, ThemeKit.TEXT_DIM, "BodyLabel")
+			body_label = PopupKit.text(body, ThemeKit.FS_BODY, ThemeKit.INK, "BodyLabel")
 			box.add_child(body_label)
-		message_label = _label(message, ThemeKit.FS_SMALL, ThemeKit.DANGER, "MessageLabel")
+		message_label = PopupKit.text(message, ThemeKit.FS_SMALL, ThemeKit.INK_DANGER, "MessageLabel")
 		message_label.visible = message != ""
 		box.add_child(message_label)
 		for it in items:
@@ -71,19 +66,7 @@ class Dialog extends Control:
 			buttons[id] = b
 
 	func _ready() -> void:
-		_animate_in.call_deferred()
-
-	func _animate_in() -> void:
-		if _panel != null and is_instance_valid(_panel):
-			ThemeKit.popup_in(_panel)
-
-	func _label(text: String, px_size: int, color: Color, node_name: String) -> Label:
-		var l := ThemeKit.make_label(text, px_size, color)
-		l.name = node_name
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.custom_minimum_size.x = 560
-		return l
+		PopupKit.show_in(_kit)
 
 	func _on_pressed(id: String, close: bool) -> void:
 		Sfx.play("button")
@@ -108,7 +91,7 @@ var tut_label: Label = null
 var clap_label: Label = null
 var toast_label: Label = null
 var smash_label: Label = null
-var home_button: Button = null
+var settings_button: Button = null
 var restart_button: Button = null
 ## id booster -> nút và nhãn góc (số còn lại hoặc "+")
 var booster_buttons: Dictionary = {}
@@ -147,29 +130,9 @@ func _exit_tree() -> void:
 
 
 func _icon_button(icon_name: String, node_name: String) -> Button:
-	var b := ThemeKit.make_button("", "icon")
+	var b := ThemeKit.make_icon_button(icon_name)
 	b.name = node_name
-	b.icon = ThemeKit.icon(icon_name)
-	b.expand_icon = true
-	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	b.custom_minimum_size = Vector2(96, 96)
-	if node_name == "HomeButton" or node_name == "RestartButton":
-		_shrink_margins(b)
 	return b
-
-
-## Nút icon vuông 96px: bớt lề trong để icon không bé như chấm.
-func _shrink_margins(b: Button) -> void:
-	for sb_name in ["normal", "hover", "pressed", "disabled"]:
-		var sb := b.get_theme_stylebox(sb_name) as StyleBoxFlat
-		if sb == null:
-			continue
-		sb = sb.duplicate()
-		sb.content_margin_left = 16
-		sb.content_margin_right = 16
-		sb.content_margin_top = 16
-		sb.content_margin_bottom = 16
-		b.add_theme_stylebox_override(sb_name, sb)
 
 
 func _build() -> void:
@@ -178,7 +141,7 @@ func _build() -> void:
 	_built = true
 	theme = ThemeKit.make_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(ThemeKit.make_background())
+	add_child(ThemeKit.make_background(ThemeKit.SLATE_BG, ThemeKit.SLATE_SURFACE))
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -191,18 +154,22 @@ func _build() -> void:
 	col.add_theme_constant_override("separation", 14)
 	margin.add_child(col)
 
-	# thanh trên: Home, tên level, restart
+	# thanh trên: lượt, tên level + độ khó, restart, cài đặt
 	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 16)
+	top.add_theme_constant_override("separation", 12)
 	col.add_child(top)
-	home_button = _icon_button("ui_home", "HomeButton")
-	home_button.pressed.connect(_on_home_pressed)
-	top.add_child(home_button)
+	var moves_chip := ThemeKit.make_panel()
+	moves_chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	top.add_child(moves_chip)
+	moves_label = ThemeKit.make_label("", ThemeKit.FS_SMALL + 4, ThemeKit.GOLD)
+	moves_label.name = "MovesLabel"
+	moves_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	moves_chip.add_child(moves_label)
 	var mid := VBoxContainer.new()
 	mid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	mid.alignment = BoxContainer.ALIGNMENT_CENTER
 	top.add_child(mid)
-	title_label = ThemeKit.make_label("", ThemeKit.FS_TITLE)
+	title_label = ThemeKit.make_label("", ThemeKit.FS_BUTTON + 4)
 	title_label.name = "TitleLabel"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	mid.add_child(title_label)
@@ -213,7 +180,7 @@ func _build() -> void:
 	hard.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL)
 	hard.add_theme_color_override("font_color", ThemeKit.TEXT)
 	var hs := StyleBoxFlat.new()
-	hs.bg_color = ThemeKit.DANGER
+	hs.bg_color = ThemeKit.HARD_BANNER_VERY
 	hs.set_corner_radius_all(14)
 	hs.content_margin_left = 16
 	hs.content_margin_right = 16
@@ -227,11 +194,9 @@ func _build() -> void:
 	restart_button = _icon_button("ui_restart", "RestartButton")
 	restart_button.pressed.connect(_on_restart_pressed)
 	top.add_child(restart_button)
-
-	moves_label = ThemeKit.make_label("", ThemeKit.FS_TITLE, ThemeKit.GOLD)
-	moves_label.name = "MovesLabel"
-	moves_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(moves_label)
+	settings_button = _icon_button("ui_settings", "SettingsButton")
+	settings_button.pressed.connect(_on_settings_pressed)
+	top.add_child(settings_button)
 
 	tut_label = ThemeKit.make_label("", ThemeKit.FS_BODY, ThemeKit.TEXT_DIM)
 	tut_label.name = "TutLabel"
@@ -282,8 +247,8 @@ func _build() -> void:
 		var c := VBoxContainer.new()
 		c.name = "Booster_" + kind
 		c.add_theme_constant_override("separation", 4)
-		var b := _icon_button("booster_" + kind, "BoosterButton_" + kind)
-		b.custom_minimum_size = Vector2(128, 128)
+		var b := ThemeKit.make_icon_button("booster_" + kind, 128, "booster")
+		b.name = "BoosterButton_" + kind
 		b.pressed.connect(_on_booster_pressed.bind(kind))
 		c.add_child(b)
 		var badge := Label.new()
@@ -306,7 +271,7 @@ func _build() -> void:
 		badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 		badge.offset_top = -8
 		badge.offset_right = 8
-		var cap := ThemeKit.make_label(tr("booster_" + kind), ThemeKit.FS_SMALL, ThemeKit.TEXT_DIM)
+		var cap := ThemeKit.make_label(tr("booster_" + kind), ThemeKit.FS_SMALL, ThemeKit.TEXT)
 		cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		c.add_child(cap)
 		row.add_child(c)
@@ -491,6 +456,13 @@ func _show_difficulty_banner(very_hard: bool) -> void:
 	text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	band.add_child(text)
+	var skull := ThemeKit.make_icon("ui_superhard" if very_hard else "ui_hard", 130)
+	skull.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	skull.offset_left = -65
+	skull.offset_right = 65
+	skull.offset_top = -120
+	skull.offset_bottom = 10
+	band.add_child(skull)
 	add_child(root)
 	var skip := [false]
 	root.gui_input.connect(func(ev: InputEvent) -> void:
@@ -651,7 +623,7 @@ func _rescue_flow() -> void:
 		if bool(o.get("warn_life", false)) and not bool(Game.lives_view().get("infinite", false)):
 			var dlg := Dialog.new(tr("rescue_confirm_title"), tr("rescue_warn_life"), [
 				{"id": "yes", "text": tr("rescue_confirm_yes"), "kind": "danger", "name": "ConfirmButton"},
-				{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}])
+				{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}], "", UiAtlas.tex("big_heart_broken"))
 			var ans: Variant = await _ask(dlg)
 			if _left:
 				return
@@ -734,7 +706,7 @@ func _on_home_pressed() -> void:
 	if _confirm_life_loss():
 		var dlg := Dialog.new(tr("level_home"), tr("rescue_warn_life"), [
 			{"id": "yes", "text": tr("common_confirm"), "kind": "danger", "name": "ConfirmButton"},
-			{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}])
+			{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}], "", UiAtlas.tex("big_heart_broken"))
 		var r: Variant = await _ask(dlg)
 		if _left:
 			return
@@ -746,6 +718,24 @@ func _on_home_pressed() -> void:
 	_leave("home")
 
 
+## Bánh răng: popup cài đặt trong màn (wireframe 3.5). Home và Retry đi tiếp qua luồng xác nhận mất mạng.
+func _on_settings_pressed() -> void:
+	if state != "playing":
+		return
+	Sfx.play("button")
+	_set_state("dialog")
+	var r: Variant = await _popup_scene(INGAME_SETTINGS, {})
+	if _left:
+		return
+	_set_state("playing")
+	_reset_think()
+	match str(r):
+		"home":
+			_on_home_pressed()
+		"retry":
+			_on_restart_pressed()
+
+
 func _on_restart_pressed() -> void:
 	if state != "playing":
 		return
@@ -755,7 +745,8 @@ func _on_restart_pressed() -> void:
 		var body := tr("level_restart_confirm_life") if _touched() else tr("level_restart_confirm_free")
 		var dlg := Dialog.new(tr("level_restart_confirm_title"), body, [
 			{"id": "yes", "text": tr("level_restart_yes"), "kind": "danger", "name": "ConfirmButton"},
-			{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}])
+			{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}], "",
+			UiAtlas.tex("big_heart_broken") if _touched() else null)
 		var r: Variant = await _ask(dlg)
 		if _left:
 			return
@@ -840,7 +831,7 @@ func _booster_dialog(kind: String) -> void:
 			items.append({"id": "video", "text": tr("booster_free_video"), "kind": "video", "name": "VideoButton"})
 			Game.offer_video(FREE_PLACEMENT)
 		items.append({"id": "close", "text": tr("common_close"), "kind": "ghost", "name": "CloseButton"})
-		var dlg := Dialog.new(tr("booster_" + kind), tr("booster_%s_desc" % kind), items, message)
+		var dlg := Dialog.new(tr("booster_" + kind), tr("booster_%s_desc" % kind), items, message, ThemeKit.icon("booster_" + kind))
 		message = ""
 		var r: Variant = await _ask(dlg)
 		if _left:

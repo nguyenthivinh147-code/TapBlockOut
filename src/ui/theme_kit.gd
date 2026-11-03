@@ -34,6 +34,23 @@ const HARD_BANNER := Color("B757FA")
 const HARD_BANNER_VERY := Color("C31F1F")
 const VIDEO := Color("2F92E0")
 const SCRIM := Color(0.0, 0.016, 0.059, 0.8)
+# Theme Slate (Gameplay)
+const SLATE_BG := Color("504D73")
+const SLATE_SURFACE := Color("3D3A63")
+# Chữ và khối trên thân popup kem (Theme Warm + Popup Lavender)
+const INK_DIM := Color("6C74AE")
+const INK_GOOD := Color("3E7F1E")
+const INK_DANGER := Color("C31F1F")
+const BROWN := Color("A95D3A")
+const WELL := Color("F2E3C3")
+const WELL_HOT := Color("FAE2BA")
+const WELL_HEADER := Color("F59A1F")
+const WELL_TODAY := Color("71CB1B")
+const PATH_LINE := Color("20417B")
+const TOGGLE_ON := Color("52DA41")
+const TOGGLE_OFF := Color("859DC6")
+const GOLD_STROKE := Color("6B2C07")
+const RIBBON_STROKE := Color("3A1C6E")
 
 ## Màu viền chữ trên nút (cột "label stroke" của Button ramp).
 const BUTTON_STROKE := {
@@ -44,6 +61,7 @@ const BUTTON_STROKE := {
 	"gold": Color("6B2C07"),
 	"purple": Color("3A1C6E"),
 	"icon": Color("123F86"),
+	"booster": Color("0B4F0F"),
 	"ghost": Color("1A1C3A"),
 }
 ## kind -> sprite nút trong ui_atlas.gd (ghost vẽ phẳng, không có sprite).
@@ -55,6 +73,7 @@ const BUTTON_ART := {
 	"gold": "pill_yellow",
 	"purple": "pill_purple",
 	"icon": "tile_lavender",
+	"booster": "tile_green",
 }
 
 const FS_SMALL := 24
@@ -66,8 +85,9 @@ const FS_HUGE := 80
 const MIN_BUTTON := Vector2(96, 96)
 const RADIUS := 24
 const ICON_SIZE := 96
-const ICON_DIRS := ["res://assets/ui/", "res://assets/avatars/", "res://assets/frames/"]
+const ICON_DIRS := ["res://assets/ui/", "res://assets/ui/figma/", "res://assets/avatars/", "res://assets/frames/"]
 const FIGMA_DIR := "res://assets/ui/figma/"
+const PILL_DIR := "res://assets/ui/figma/pill/"
 ## Tên UI hay gọi mà file mang tên khác.
 const ICON_ALIAS := {
 	"coin": "ui_gold",
@@ -100,6 +120,17 @@ const FIGMA_ICON := {
 	"ui_hard": "ic_hard",
 	"ui_superhard": "ic_superhard",
 	"ui_star": "ic_star1",
+	"shop_gold_pack_1": "gold1",
+	"shop_gold_pack_2": "gold2",
+	"shop_gold_pack_3": "gold3",
+	"shop_gold_pack_4": "gold4",
+	"shop_gold_pack_5": "gold5",
+	"shop_gold_pack_6": "gold6",
+	"shop_starter_pack": "gold5",
+	"shop_level_pack": "gold3",
+	"shop_rescue_pack": "ic_giftbox1",
+	"shop_remove_ads": "ic_noads",
+	"shop_special_pack": "gold6",
 }
 
 static var _icon_cache: Dictionary = {}
@@ -110,14 +141,14 @@ static func block_color(color_name: String) -> Color:
 
 
 ## Nền toàn màn hình, thêm vào đầu danh sách con của màn.
-static func make_background() -> ColorRect:
+static func make_background(top: Color = BG_TOP, bottom: Color = BG_BOTTOM) -> ColorRect:
 	var r := ColorRect.new()
 	r.color = BG
 	r.set_anchors_preset(Control.PRESET_FULL_RECT)
 	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var g := Gradient.new()
-	g.set_color(0, BG_TOP)
-	g.set_color(1, BG_BOTTOM)
+	g.set_color(0, top)
+	g.set_color(1, bottom)
 	var gt := GradientTexture2D.new()
 	gt.gradient = g
 	gt.fill_from = Vector2(0.5, 0.0)
@@ -150,7 +181,7 @@ static func _box(fill: Color, border: Color = Color(0, 0, 0, 0), border_w: int =
 	return s
 
 
-## kind: primary, secondary, video, danger, gold, purple, icon (nút vuông chỉ có icon), ghost.
+## kind: primary, secondary, video, danger, gold, purple, icon (nút vuông chỉ có icon), booster, ghost.
 static func button_color(kind: String) -> Color:
 	match kind:
 		"secondary":
@@ -164,86 +195,110 @@ static func button_color(kind: String) -> Color:
 		"purple":
 			return Color("9B51E0")
 		"ghost":
-			return Color(1, 1, 1, 0.08)
+			return Color(INK, 0.06)
 	return GOOD
 
 
-## Hộp nút: sprite viên thuốc 9-slice (hover sáng hơn, pressed tối hơn, disabled xám). ghost thì phẳng.
-static func _button_box(kind: String, state: String) -> StyleBox:
-	var art: String = BUTTON_ART.get(kind, "")
-	if art == "":
-		var c := button_color(kind)
+## Sprite 9-slice của nút theo kind và cỡ. md dùng pill thu về cao 96px để đầu tròn đúng tỉ lệ; lg dùng nguyên sprite atlas.
+static func _button_art(kind: String, size_name: String) -> StyleBoxTexture:
+	var art: String = BUTTON_ART[kind]
+	if kind == "icon" or kind == "booster":
+		return UiAtlas.box(art, Vector4(44, 44, 44, 56), Vector4(10, 10, 10, 18))
+	if size_name == "lg":
+		return UiAtlas.box(art, Vector4(84, 50, 84, 60), Vector4(48, 14, 48, 26))
+	var s := StyleBoxTexture.new()
+	s.texture = load("%s%s_96.png" % [PILL_DIR, art]) as Texture2D
+	s.texture_margin_left = 50
+	s.texture_margin_right = 50
+	s.texture_margin_top = 30
+	s.texture_margin_bottom = 36
+	s.content_margin_left = 30
+	s.content_margin_right = 30
+	s.content_margin_top = 8
+	s.content_margin_bottom = 16
+	return s
+
+
+## Hộp nút theo trạng thái: hover sáng hơn, pressed tối hơn, disabled xám. ghost vẽ phẳng có viền.
+static func _button_box(kind: String, state: String, size_name: String = "md") -> StyleBox:
+	if not BUTTON_ART.has(kind):
+		var f := _box(button_color(kind), Color(INK_DIM, 0.5), 2)
+		f.set_corner_radius_all(48)
 		match state:
 			"hover":
-				c = c.lightened(0.08)
+				f.bg_color = Color(INK, 0.12)
 			"pressed":
-				c = c.darkened(0.2)
+				f.bg_color = Color(INK, 0.2)
 			"disabled":
-				c = c.darkened(0.45)
-		return _box(c)
-	var s := UiAtlas.box(art, Vector4(44, 44, 44, 56), Vector4(10, 10, 10, 18)) if kind == "icon" 			else UiAtlas.box(art, Vector4(70, 44, 70, 52), Vector4(40, 10, 40, 22))
+				f.bg_color = Color(INK, 0.03)
+		return f
+	var s := _button_art(kind, size_name)
 	match state:
 		"hover":
 			s.modulate_color = Color(1.08, 1.08, 1.08)
 		"pressed":
 			s.modulate_color = Color(0.82, 0.82, 0.82)
 			s.content_margin_top += 6.0
-			s.content_margin_bottom -= 6.0
+			s.content_margin_bottom = maxf(s.content_margin_bottom - 6.0, 0.0)
 		"disabled":
 			s.modulate_color = Color(0.55, 0.55, 0.6, 0.9)
 	return s
 
 
-static func make_button(text: String, kind: String = "primary") -> Button:
+## size_name: "md" (mặc định) hoặc "lg" (nút chính cỡ lớn như PLAY).
+static func make_button(text: String, kind: String = "primary", size_name: String = "md") -> Button:
 	var b := Button.new()
 	b.text = text
 	b.custom_minimum_size = MIN_BUTTON
 	b.focus_mode = Control.FOCUS_NONE
 	b.add_theme_font_size_override("font_size", FS_BUTTON)
-	b.add_theme_color_override("font_color", TEXT)
-	b.add_theme_color_override("font_hover_color", TEXT)
-	b.add_theme_color_override("font_pressed_color", TEXT)
-	b.add_theme_color_override("font_disabled_color", TEXT_DIM)
-	b.add_theme_color_override("font_outline_color", BUTTON_STROKE.get(kind, TEXT_OUTLINE))
-	b.add_theme_constant_override("outline_size", 8)
+	if kind == "ghost":
+		b.add_theme_color_override("font_color", INK)
+		b.add_theme_color_override("font_hover_color", INK)
+		b.add_theme_color_override("font_pressed_color", INK)
+		b.add_theme_color_override("font_disabled_color", INK_DIM)
+		b.add_theme_constant_override("outline_size", 0)
+	else:
+		b.add_theme_color_override("font_color", TEXT)
+		b.add_theme_color_override("font_hover_color", TEXT)
+		b.add_theme_color_override("font_pressed_color", TEXT)
+		b.add_theme_color_override("font_disabled_color", TEXT_DIM)
+		b.add_theme_color_override("font_outline_color", BUTTON_STROKE.get(kind, TEXT_OUTLINE))
+		b.add_theme_constant_override("outline_size", 8)
 	for st in ["normal", "hover", "pressed", "disabled"]:
-		b.add_theme_stylebox_override(st, _button_box(kind, st))
+		b.add_theme_stylebox_override(st, _button_box(kind, st, size_name))
+	return b
+
+
+## Nút trong ô hẹp (lưới 3 cột): bớt lề trái phải để chữ không đẩy rộng ô.
+static func tighten(b: Button, margin: float = 8.0) -> void:
+	for st in ["normal", "hover", "pressed", "disabled"]:
+		var s := b.get_theme_stylebox(st).duplicate() as StyleBox
+		s.content_margin_left = margin
+		s.content_margin_right = margin
+		b.add_theme_stylebox_override(st, s)
+
+
+## Gắn icon trước chữ của nút, cao px.
+static func set_button_icon(b: Button, icon_name: String, px: int = 48) -> void:
+	b.icon = icon(icon_name)
+	b.add_theme_constant_override("icon_max_width", px)
+	b.add_theme_constant_override("h_separation", 10)
+
+
+## Nút chỉ có icon (vuông, nền tile), cỡ tối thiểu 96.
+static func make_icon_button(icon_name: String, px: int = 96, kind: String = "icon") -> Button:
+	var b := make_button("", kind)
+	b.icon = icon(icon_name)
+	b.expand_icon = true
+	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	b.custom_minimum_size = Vector2(px, px)
 	return b
 
 
 static func make_panel() -> PanelContainer:
 	var p := PanelContainer.new()
 	p.add_theme_stylebox_override("panel", _box(PANEL, PANEL_BORDER, 3, 12))
-	return p
-
-
-## Khung popup sáng (viền lavender, thân kem). Chữ trong khung dùng ink_label.
-## kind: "wide" (804x566), "square" (808x800), "tall" (804x1212).
-static func make_popup_frame(kind: String = "wide") -> PanelContainer:
-	var p := PanelContainer.new()
-	var file: String = {"wide": "popup_frame1", "square": "popup_frame2", "tall": "popup_frame3"}.get(kind, "popup_frame1")
-	var s := StyleBoxTexture.new()
-	s.texture = load("%s%s.png" % [FIGMA_DIR, file]) as Texture2D
-	s.texture_margin_left = 78
-	s.texture_margin_right = 78
-	s.texture_margin_top = 78
-	s.texture_margin_bottom = 78
-	s.content_margin_left = 56
-	s.content_margin_right = 56
-	s.content_margin_top = 56
-	s.content_margin_bottom = 56
-	p.add_theme_stylebox_override("panel", s)
-	return p
-
-
-## Tiêu đề ribbon (sprite label_purple) kèm chữ trắng viền tối. Dùng ở đầu popup.
-static func make_title_ribbon(text: String, size: int = FS_BUTTON) -> PanelContainer:
-	var p := PanelContainer.new()
-	p.add_theme_stylebox_override("panel", UiAtlas.box("label_purple", Vector4(90, 40, 90, 40), Vector4(80, 12, 80, 22)))
-	var l := make_label(text, size, TEXT)
-	l.add_theme_color_override("font_outline_color", Color("3A1C6E"))
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	p.add_child(l)
 	return p
 
 
@@ -264,6 +319,66 @@ static func ink_label(text: String, size: int = FS_BODY, color: Color = INK) -> 
 	return l
 
 
+## Số vàng lớn trên nền sáng: chữ vàng viền nâu như Button/Yellow.
+static func gold_label(text: String, size: int = FS_TITLE) -> Label:
+	var l := make_label(text, size, GOLD)
+	l.add_theme_color_override("font_outline_color", GOLD_STROKE)
+	l.add_theme_constant_override("outline_size", 10)
+	return l
+
+
+## Ô nền trên thân popup (warm/tan). border để trống thì không viền.
+static func make_well(fill: Color = WELL, border: Color = Color(0, 0, 0, 0), radius: int = 18) -> PanelContainer:
+	var p := PanelContainer.new()
+	var s := StyleBoxFlat.new()
+	s.bg_color = fill
+	s.set_corner_radius_all(radius)
+	if border.a > 0.0:
+		s.set_border_width_all(4)
+		s.border_color = border
+	s.content_margin_left = 14
+	s.content_margin_right = 14
+	s.content_margin_top = 10
+	s.content_margin_bottom = 10
+	p.add_theme_stylebox_override("panel", s)
+	return p
+
+
+## Icon theo tên, co vừa ô px.
+static func make_icon(icon_name: String, px: float = 72.0) -> TextureRect:
+	return _rect(icon(icon_name), px)
+
+
+## Sprite atlas theo tên (ui_atlas.gd), co vừa ô px.
+static func make_sprite(region: String, px: float = 96.0) -> TextureRect:
+	return _rect(UiAtlas.tex(region), px)
+
+
+static func _rect(tex: Texture2D, px: float) -> TextureRect:
+	var r := TextureRect.new()
+	r.texture = tex
+	r.custom_minimum_size = Vector2(px, px)
+	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	r.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	r.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	return r
+
+
+## Thanh tiến trình bo tròn. fill mặc định xanh (Button/Green).
+static func style_bar(bar: ProgressBar, fill: Color = Color("3CD020")) -> void:
+	bar.show_percentage = false
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(INK, 0.25)
+	bg.set_corner_radius_all(14)
+	var fg := StyleBoxFlat.new()
+	fg.bg_color = fill
+	fg.set_corner_radius_all(14)
+	bar.add_theme_stylebox_override("background", bg)
+	bar.add_theme_stylebox_override("fill", fg)
+
+
 ## Theme chung (đặt vào gốc UI): chữ và nút mặc định cùng bảng màu.
 static func make_theme() -> Theme:
 	var t := Theme.new()
@@ -279,6 +394,7 @@ static func make_theme() -> Theme:
 	for st in ["normal", "hover", "pressed", "disabled"]:
 		t.set_stylebox(st, "Button", _button_box("primary", st))
 	t.set_stylebox("panel", "PanelContainer", _box(PANEL, PANEL_BORDER, 3, 12))
+	t.set_stylebox("normal", "Label", StyleBoxEmpty.new())
 	return t
 
 

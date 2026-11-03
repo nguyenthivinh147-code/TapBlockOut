@@ -5,6 +5,7 @@ signal booted
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const Unlocks := preload("res://src/meta/unlocks.gd")
+const Config := preload("res://src/config.gd")
 const POPUP_DAILY := "res://scenes/popup_daily.tscn"
 const POPUP_OFFER := "res://scenes/popup_offer.tscn"
 const SETTINGS := "res://scenes/settings.tscn"
@@ -42,7 +43,7 @@ func _chain_autoshow() -> void:
 		_popup_then(CHAIN_OFFER, {}, false)
 
 
-## screen: "home", "level", "no_lives", "profile", "shop", "challenge".
+## screen: "home", "level", "no_lives", "profile", "shop", "challenge", "leaderboard".
 func go(screen: String, args: Dictionary = {}) -> void:
 	var path := "res://scenes/%s.tscn" % screen
 	if not ResourceLoader.exists(path):
@@ -122,6 +123,11 @@ func _on_screen_closed(result: Variant, screen: String, node: Node) -> void:
 				go("level")
 			else:
 				go("home")
+		"shop", "leaderboard":
+			if action == "" or action == "home":
+				go("home")
+			else:
+				_home_action(action, result as Dictionary if result is Dictionary else {})
 		_:
 			go("home")
 
@@ -142,8 +148,13 @@ func _home_action(action: String, res: Dictionary) -> void:
 		"shop":
 			if Unlocks.is_open("shop", int(Game.s.level)):
 				go("shop", {"source": "home"})
+		"ranking":
+			if Config.ui_preview():
+				go("leaderboard")
 		"settings":
 			_popup_then(SETTINGS, {}, true)
+		"preview":
+			_popup_then("res://scenes/%s.tscn" % str(res.get("scene", "")), {}, false)
 		"offer":
 			_popup_then(POPUP_OFFER, {"id": str(res.get("id", ""))}, false)
 		"weekly":
