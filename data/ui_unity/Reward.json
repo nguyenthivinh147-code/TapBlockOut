@@ -1,0 +1,87 @@
+{
+	"name": "Reward",
+	"source": "Assets/_Game/Prefabs/UI/Reward.prefab",
+	"root": {
+		"n": "Reward",
+		"id": "4512535724702028030",
+		"a": false,
+		"r": [0, 0, 0, 0, 0, 0, 150, 200, 0.5, 0.5],
+		"cs": [
+			{
+				"name": "PopupRewardItem",
+				"ThisItemType": "0",
+				"rewardItemSO": {"asset": "RewardItemSO.asset"},
+				"iconImg": {"node": "4039771552444027267"},
+				"quantityText": {"node": "3462445052729394669"}
+			}
+		],
+		"ch": [
+			{
+				"n": "Light",
+				"id": "8829504371774186574",
+				"a": false,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 500, 500, 0.5, 0.5],
+				"img": {
+					"sp": "light1",
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				}
+			},
+			{
+				"n": "RewardIcon",
+				"id": "4039771552444027267",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 150, 150, 0.5, 0.5],
+				"img": {
+					"sp": "Gold3",
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				}
+			},
+			{
+				"n": "RewardText",
+				"id": "3462445052729394669",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, -146.5, 212.6, 128, 0.5, 0.5],
+				"txt": {
+					"s": "1000",
+					"fs": 60,
+					"auto": [18, 60],
+					"c": "ffffffff",
+					"h": 2,
+					"v": 512,
+					"w": false,
+					"ov": 0,
+					"st": 0,
+					"mat": "Baloo Outline - Blue 1",
+					"font": "Baloo Bhaijaan Regular 400 SDF",
+					"cs": 0,
+					"ws": 0,
+					"ls": 0,
+					"m": [0, 0, 0, 0],
+					"rt": false,
+					"rich": true,
+					"on": true
+				}
+			}
+		]
+	}
+}

@@ -1,0 +1,5322 @@
+{
+	"Av_02": {
+		"tex": "res://assets/ui/cc/Av_02.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Av_03": {
+		"tex": "res://assets/ui/cc/Av_03.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Av_04": {
+		"tex": "res://assets/ui/cc/Av_04.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Av_05": {
+		"tex": "res://assets/ui/cc/Av_05.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Av_06": {
+		"tex": "res://assets/ui/cc/Av_06.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"BG1": {
+		"tex": "res://assets/ui/cc/BG1.png",
+		"src": [
+			2000,
+			2000
+		],
+		"r": [
+			0,
+			0,
+			2000,
+			2000
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"BG_Winstreak": {
+		"tex": "res://assets/ui/cc/BG_Winstreak.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"BG_Winstreak_intro": {
+		"tex": "res://assets/ui/cc/BG_Winstreak_intro.png",
+		"src": [
+			748,
+			758
+		],
+		"r": [
+			0,
+			0,
+			748,
+			758
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"BundleBig": {
+		"tex": "res://assets/ui/cc/BundleBig.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"BundleMid": {
+		"tex": "res://assets/ui/cc/BundleMid.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"BundleSmall": {
+		"tex": "res://assets/ui/cc/BundleSmall.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"BundleTim": {
+		"tex": "res://assets/ui/cc/BundleTim.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"CandySort_logo": {
+		"tex": "res://assets/ui/cc/CandySort_logo.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			0,
+			2048,
+			2048
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"DailyRewardIcon": {
+		"tex": "res://assets/ui/cc/DailyRewardIcon.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			0,
+			2048,
+			2048
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Gold1": {
+		"tex": "res://assets/ui/cc/Gold1.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Gold2": {
+		"tex": "res://assets/ui/cc/Gold2.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Gold3": {
+		"tex": "res://assets/ui/cc/Gold3.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Gold4": {
+		"tex": "res://assets/ui/cc/Gold4.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Gold5": {
+		"tex": "res://assets/ui/cc/Gold5.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Gold6": {
+		"tex": "res://assets/ui/cc/Gold6.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"HelperOffer": {
+		"tex": "res://assets/ui/cc/HelperOffer.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Icon_Legacy_193": {
+		"tex": "res://assets/ui/cc/Icon_Legacy_193.png",
+		"src": [
+			192,
+			192
+		],
+		"r": [
+			0,
+			0,
+			192,
+			192
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"LimitedPack": {
+		"tex": "res://assets/ui/cc/LimitedPack.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Loadingscreen": {
+		"tex": "res://assets/ui/cc/Loadingscreen.png",
+		"src": [
+			1920,
+			1920
+		],
+		"r": [
+			0,
+			0,
+			1920,
+			1920
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"NoAdsPack": {
+		"tex": "res://assets/ui/cc/NoAdsPack.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup2": {
+		"tex": "res://assets/ui/cc/Popup2.png",
+		"src": [
+			800,
+			800
+		],
+		"r": [
+			0,
+			0,
+			800,
+			800
+		],
+		"b": [
+			120,
+			120,
+			120,
+			120
+		],
+		"ppu": 100
+	},
+	"Popup4": {
+		"tex": "res://assets/ui/cc/Popup4.png",
+		"src": [
+			808,
+			800
+		],
+		"r": [
+			0,
+			0,
+			808,
+			800
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup5": {
+		"tex": "res://assets/ui/cc/Popup5.png",
+		"src": [
+			800,
+			660
+		],
+		"r": [
+			0,
+			0,
+			800,
+			660
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"PopupDailyRewardAd": {
+		"tex": "res://assets/ui/cc/PopupDailyRewardAd.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			0,
+			1024,
+			1024
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup_BundleHeart": {
+		"tex": "res://assets/ui/cc/Popup_BundleHeart.png",
+		"src": [
+			828,
+			1012
+		],
+		"r": [
+			0,
+			0,
+			828,
+			1012
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup_BundleHeart_Title": {
+		"tex": "res://assets/ui/cc/Popup_BundleHeart_Title.png",
+		"src": [
+			2048,
+			890
+		],
+		"r": [
+			0,
+			0,
+			2048,
+			890
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup_FlashPack": {
+		"tex": "res://assets/ui/cc/Popup_FlashPack.png",
+		"src": [
+			840,
+			836
+		],
+		"r": [
+			0,
+			0,
+			840,
+			836
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup_FlashPack_Title": {
+		"tex": "res://assets/ui/cc/Popup_FlashPack_Title.png",
+		"src": [
+			2048,
+			890
+		],
+		"r": [
+			0,
+			0,
+			2048,
+			890
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup_Lose": {
+		"tex": "res://assets/ui/cc/Popup_Lose.png",
+		"src": [
+			740,
+			603
+		],
+		"r": [
+			0,
+			0,
+			740,
+			603
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup_SpecialPack": {
+		"tex": "res://assets/ui/cc/Popup_SpecialPack.png",
+		"src": [
+			512,
+			760
+		],
+		"r": [
+			0,
+			0,
+			512,
+			760
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup_SpecialPack_Title": {
+		"tex": "res://assets/ui/cc/Popup_SpecialPack_Title.png",
+		"src": [
+			524,
+			172
+		],
+		"r": [
+			0,
+			0,
+			524,
+			172
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup_StarterPack": {
+		"tex": "res://assets/ui/cc/Popup_StarterPack.png",
+		"src": [
+			512,
+			760
+		],
+		"r": [
+			0,
+			0,
+			512,
+			760
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup_StarterPack_Title": {
+		"tex": "res://assets/ui/cc/Popup_StarterPack_Title.png",
+		"src": [
+			524,
+			172
+		],
+		"r": [
+			0,
+			0,
+			524,
+			172
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Popup_Winstreak_Title": {
+		"tex": "res://assets/ui/cc/Popup_Winstreak_Title.png",
+		"src": [
+			872,
+			480
+		],
+		"r": [
+			0,
+			0,
+			872,
+			480
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_10": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			961,
+			1667,
+			104,
+			104
+		],
+		"b": [
+			32,
+			30,
+			32,
+			31
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_11": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			849,
+			1667,
+			104,
+			104
+		],
+		"b": [
+			32,
+			30,
+			32,
+			31
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_14": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			509,
+			1667,
+			104,
+			104
+		],
+		"b": [
+			52,
+			52,
+			52,
+			52
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_15": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			1892,
+			380,
+			156
+		],
+		"b": [
+			74,
+			0,
+			178,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_16": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1062,
+			589,
+			128,
+			140
+		],
+		"b": [
+			61,
+			69,
+			67,
+			58
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_17": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			927,
+			589,
+			128,
+			140
+		],
+		"b": [
+			42,
+			51,
+			38,
+			60
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_19": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			766,
+			264,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_2": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			512,
+			0,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_20": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			510,
+			264,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_23": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1297,
+			1667,
+			104,
+			104
+		],
+		"b": [
+			32,
+			50,
+			32,
+			35
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_24": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			192,
+			256,
+			64,
+			64
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_30": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1792,
+			809,
+			256,
+			270
+		],
+		"b": [
+			128,
+			128,
+			128,
+			128
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_40": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			623,
+			1679,
+			103,
+			92
+		],
+		"b": [
+			32,
+			32,
+			38,
+			43
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_41": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1944,
+			1611,
+			104,
+			104
+		],
+		"b": [
+			34,
+			28,
+			34,
+			44
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_45": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1792,
+			264,
+			256,
+			270
+		],
+		"b": [
+			128,
+			128,
+			128,
+			128
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_46": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			929,
+			733,
+			575,
+			344
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_47": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1257,
+			1358,
+			791,
+			104
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_56": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1273,
+			1919,
+			128,
+			128
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_57": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			1582,
+			488,
+			91
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_60": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1453,
+			1666,
+			128,
+			92
+		],
+		"b": [
+			43,
+			0,
+			41,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_61": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1486,
+			1783,
+			92,
+			68
+		],
+		"b": [
+			41,
+			0,
+			41,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_62": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			82,
+			1445,
+			128,
+			128
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_63": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			52,
+			641,
+			128,
+			128
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_64": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			52,
+			773,
+			56,
+			56
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_7": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1792,
+			0,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_73": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			1198,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_74": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			199,
+			678,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_75": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			210,
+			1445,
+			128,
+			128
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_76": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			950,
+			1015,
+			300,
+			300
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_77": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			663,
+			542,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_78": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1264,
+			1040,
+			148,
+			148
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_79": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1198,
+			589,
+			128,
+			128
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_81": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1326,
+			589,
+			138,
+			128
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_85": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			448,
+			1363,
+			128,
+			128
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_90": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1273,
+			1779,
+			128,
+			140
+		],
+		"b": [
+			42,
+			51,
+			38,
+			60
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_91": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1138,
+			1920,
+			128,
+			128
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_Button2": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1792,
+			536,
+			256,
+			270
+		],
+		"b": [
+			128,
+			128,
+			128,
+			128
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_Button3": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1528,
+			1079,
+			256,
+			270
+		],
+		"b": [
+			128,
+			128,
+			128,
+			128
+		],
+		"ppu": 100
+	},
+	"Resources_UI_Maincenter:UI_Maincenter_Button4": {
+		"tex": "res://assets/ui/cc/Resources_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1792,
+			1080,
+			256,
+			270
+		],
+		"b": [
+			128,
+			128,
+			128,
+			128
+		],
+		"ppu": 100
+	},
+	"Resources_moved_SpecialPack": {
+		"tex": "res://assets/ui/cc/Resources_moved_SpecialPack.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_0": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			0,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_1": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			258,
+			1,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_12": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1736,
+			1736,
+			312,
+			312
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_13": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			779,
+			259,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_14": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			518,
+			259,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_15": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			259,
+			259,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_16": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			259,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_17": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			516,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_18": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			98,
+			515,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_19": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			200,
+			516,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_2": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			517,
+			0,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_20": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			300,
+			516,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_21": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			400,
+			515,
+			116,
+			72
+		],
+		"b": [
+			58,
+			35,
+			58,
+			37
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_22": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			525,
+			515,
+			116,
+			72
+		],
+		"b": [
+			31,
+			27,
+			23,
+			23
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_26": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			617,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_28": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			200,
+			617,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_3": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			780,
+			0,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_30": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			400,
+			595,
+			64,
+			64
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_31": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			468,
+			595,
+			64,
+			64
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_32": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			534,
+			595,
+			112,
+			64
+		],
+		"b": [
+			36,
+			20,
+			36,
+			20
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_33": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			649,
+			595,
+			112,
+			64
+		],
+		"b": [
+			36,
+			20,
+			36,
+			20
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_34": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			765,
+			595,
+			168,
+			140
+		],
+		"b": [
+			32,
+			32,
+			111,
+			60
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_36": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			468,
+			668,
+			64,
+			64
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_37": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			542,
+			663,
+			72,
+			72
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_38": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			614,
+			663,
+			72,
+			72
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_40": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			718,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_42": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			199,
+			719,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_48": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			816,
+			380,
+			168
+		],
+		"b": [
+			80,
+			84,
+			80,
+			84
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_49": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1,
+			988,
+			380,
+			168
+		],
+		"b": [
+			80,
+			84,
+			80,
+			84
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_5": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1299,
+			0,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_50": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			1160,
+			380,
+			168
+		],
+		"b": [
+			80,
+			84,
+			80,
+			84
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_51": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			1332,
+			380,
+			168
+		],
+		"b": [
+			80,
+			84,
+			80,
+			84
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_52": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			1504,
+			380,
+			120
+		],
+		"b": [
+			80,
+			60,
+			80,
+			60
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_53": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			1628,
+			360,
+			102
+		],
+		"b": [
+			50,
+			51,
+			0,
+			51
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_54": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			1734,
+			360,
+			102
+		],
+		"b": [
+			50,
+			51,
+			0,
+			51
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_55": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			1840,
+			360,
+			102
+		],
+		"b": [
+			0,
+			51,
+			50,
+			51
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_56": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			0,
+			1946,
+			360,
+			102
+		],
+		"b": [
+			0,
+			51,
+			50,
+			51
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_57": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			384,
+			817,
+			368,
+			168
+		],
+		"b": [
+			80,
+			84,
+			80,
+			84
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_60": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			384,
+			1332,
+			368,
+			108
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_62": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			936,
+			523,
+			228,
+			132
+		],
+		"b": [
+			40,
+			40,
+			40,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_63": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			936,
+			672,
+			228,
+			132
+		],
+		"b": [
+			40,
+			40,
+			40,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_64": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			756,
+			816,
+			168,
+			168
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_65": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			756,
+			988,
+			168,
+			168
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_66": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			928,
+			988,
+			168,
+			168
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_67": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			928,
+			816,
+			168,
+			168
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_68": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1166,
+			523,
+			188,
+			290
+		],
+		"b": [
+			50,
+			50,
+			50,
+			50
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_7": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1828,
+			16,
+			220,
+			220
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_70": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1425,
+			524,
+			64,
+			64
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_73": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1100,
+			816,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_74": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			383,
+			1555,
+			380,
+			168
+		],
+		"b": [
+			192,
+			88,
+			188,
+			80
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_75": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			756,
+			1160,
+			168,
+			168
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_76": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			928,
+			1160,
+			168,
+			168
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_78": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1100,
+			912,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_79": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			384,
+			1731,
+			380,
+			144
+		],
+		"b": [
+			191,
+			72,
+			189,
+			72
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_83": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1200,
+			912,
+			96,
+			96
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_84": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1099,
+			1012,
+			198,
+			144
+		],
+		"b": [
+			80,
+			0,
+			80,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_85": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			768,
+			1488,
+			500,
+			60
+		],
+		"b": [
+			60,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_89": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			384,
+			1877,
+			380,
+			171
+		],
+		"b": [
+			191,
+			72,
+			189,
+			72
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_90": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1357,
+			619,
+			124,
+			16
+		],
+		"b": [
+			15,
+			0,
+			15,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_91": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			768,
+			1736,
+			168,
+			168
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_95": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			939,
+			1888,
+			160,
+			160
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_UI_Maincenter:UI_Maincenter_98": {
+		"tex": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
+		"src": [
+			2048,
+			2048
+		],
+		"r": [
+			1279,
+			1868,
+			180,
+			180
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Resources_moved_slot_triangle": {
+		"tex": "res://assets/ui/cc/Resources_moved_slot_triangle.png",
+		"src": [
+			128,
+			128
+		],
+		"r": [
+			0,
+			0,
+			128,
+			128
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"StarterPack": {
+		"tex": "res://assets/ui/cc/StarterPack.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"TV": {
+		"tex": "res://assets/ui/cc/TV.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			0,
+			1024,
+			1024
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_0": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			0,
+			200,
+			60
+		],
+		"b": [
+			20,
+			20,
+			20,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_1": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			64,
+			200,
+			60
+		],
+		"b": [
+			20,
+			20,
+			20,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_10": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			204,
+			0,
+			72,
+			60
+		],
+		"b": [
+			20,
+			20,
+			20,
+			20
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_11": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			204,
+			64,
+			72,
+			60
+		],
+		"b": [
+			36,
+			0,
+			36,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			279,
+			0,
+			168,
+			124
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_14": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			620,
+			0,
+			60,
+			60
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_15": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			684,
+			0,
+			60,
+			60
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_16": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			620,
+			64,
+			76,
+			60
+		],
+		"b": [
+			30,
+			0,
+			30,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_17": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			700,
+			64,
+			76,
+			60
+		],
+		"b": [
+			30,
+			0,
+			30,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_18": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			780,
+			64,
+			76,
+			60
+		],
+		"b": [
+			30,
+			0,
+			30,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_19": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			860,
+			64,
+			76,
+			60
+		],
+		"b": [
+			30,
+			0,
+			30,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_2": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			128,
+			32,
+			32
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_24": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			748,
+			0,
+			60,
+			60
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_28": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			524,
+			636,
+			500,
+			94
+		],
+		"b": [
+			30,
+			30,
+			30,
+			30
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_30": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			219,
+			52,
+			52
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_6": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			164,
+			52,
+			52
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_7": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			54,
+			164,
+			40,
+			52
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_8": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			96,
+			164,
+			52,
+			52
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_9": {
+		"tex": "res://assets/ui/cc/UI_Leaderboard_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			152,
+			164,
+			52,
+			52
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Atlas:UI_Shop_Atlas_0": {
+		"tex": "res://assets/ui/cc/UI_Shop_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			808,
+			1024,
+			216
+		],
+		"b": [
+			0,
+			0,
+			0,
+			96
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Atlas:UI_Shop_Atlas_1": {
+		"tex": "res://assets/ui/cc/UI_Shop_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			150,
+			132,
+			180
+		],
+		"b": [
+			36,
+			0,
+			32,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Atlas:UI_Shop_Atlas_2": {
+		"tex": "res://assets/ui/cc/UI_Shop_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			136,
+			150,
+			344,
+			180
+		],
+		"b": [
+			36,
+			0,
+			36,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Atlas:UI_Shop_Atlas_3": {
+		"tex": "res://assets/ui/cc/UI_Shop_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			536,
+			0,
+			488,
+			84
+		],
+		"b": [
+			90,
+			0,
+			90,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Atlas:UI_Shop_Atlas_4": {
+		"tex": "res://assets/ui/cc/UI_Shop_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			535,
+			89,
+			488,
+			84
+		],
+		"b": [
+			90,
+			0,
+			90,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Atlas:UI_Shop_Atlas_5": {
+		"tex": "res://assets/ui/cc/UI_Shop_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			340,
+			466,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Atlas:UI_Shop_Atlas_6": {
+		"tex": "res://assets/ui/cc/UI_Shop_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			488,
+			187,
+			536,
+			116
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas1:UI_Shop_Packs_Atlas1_0": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas1.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			0,
+			512,
+			312
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas1:UI_Shop_Packs_Atlas1_1": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas1.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			512,
+			0,
+			512,
+			312
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas1:UI_Shop_Packs_Atlas1_3": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas1.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			319,
+			512,
+			312
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_0": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			0,
+			512,
+			312
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_1": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			512,
+			0,
+			512,
+			312
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_2": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			314,
+			512,
+			312
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_3": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			512,
+			315,
+			512,
+			90
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_4": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			633,
+			512,
+			312
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_5": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			948,
+			108,
+			76
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_7": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			358,
+			948,
+			72,
+			76
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_8": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			517,
+			719,
+			340,
+			304
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_9": {
+		"tex": "res://assets/ui/cc/UI_Shop_Packs_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			517,
+			407,
+			340,
+			304
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_3": {
+		"tex": "res://assets/ui/cc/UI_Shop_Popup_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			659,
+			872,
+			152,
+			152
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_4": {
+		"tex": "res://assets/ui/cc/UI_Shop_Popup_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			822,
+			872,
+			152,
+			152
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_5": {
+		"tex": "res://assets/ui/cc/UI_Shop_Popup_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			976,
+			969,
+			48,
+			4
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_7": {
+		"tex": "res://assets/ui/cc/UI_Shop_Popup_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			660,
+			724,
+			152,
+			144
+		],
+		"b": [
+			40,
+			40,
+			40,
+			40
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_8": {
+		"tex": "res://assets/ui/cc/UI_Shop_Popup_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			816,
+			767,
+			204,
+			100
+		],
+		"b": [
+			40,
+			0,
+			40,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_9": {
+		"tex": "res://assets/ui/cc/UI_Shop_Popup_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			976,
+			917,
+			48,
+			48
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_WinLose_Atlas:UI_WinLose_Atlas_1": {
+		"tex": "res://assets/ui/cc/UI_WinLose_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			1,
+			144,
+			560,
+			140
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_WinLose_Atlas:UI_WinLose_Atlas_2": {
+		"tex": "res://assets/ui/cc/UI_WinLose_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			589,
+			0,
+			140,
+			140
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_WinLose_Atlas:UI_WinLose_Atlas_3": {
+		"tex": "res://assets/ui/cc/UI_WinLose_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			589,
+			143,
+			140,
+			140
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_WinLose_Atlas:UI_WinLose_Atlas_4": {
+		"tex": "res://assets/ui/cc/UI_WinLose_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			292,
+			200,
+			200
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_WinLose_Atlas:UI_WinLose_Atlas_5": {
+		"tex": "res://assets/ui/cc/UI_WinLose_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			205,
+			292,
+			200,
+			200
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_WinLose_Atlas:UI_WinLose_Atlas_6": {
+		"tex": "res://assets/ui/cc/UI_WinLose_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			411,
+			292,
+			200,
+			200
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_WinLose_Atlas:UI_WinLose_Atlas_7": {
+		"tex": "res://assets/ui/cc/UI_WinLose_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			617,
+			292,
+			200,
+			200
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_WinLose_Atlas:UI_WinLose_Atlas_8": {
+		"tex": "res://assets/ui/cc/UI_WinLose_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			493,
+			648,
+			140
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Winstreak_Atlas:UI_Winstreak_Atlas_1": {
+		"tex": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			208,
+			300,
+			204
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Winstreak_Atlas:UI_Winstreak_Atlas_11": {
+		"tex": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			305,
+			85,
+			40,
+			36
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Winstreak_Atlas:UI_Winstreak_Atlas_12": {
+		"tex": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			349,
+			84,
+			36,
+			36
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Winstreak_Atlas:UI_Winstreak_Atlas_14": {
+		"tex": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			353,
+			0,
+			76,
+			80
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Winstreak_Atlas:UI_Winstreak_Atlas_20": {
+		"tex": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			613,
+			448,
+			411,
+			412
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Winstreak_Atlas:UI_Winstreak_Atlas_3": {
+		"tex": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			1,
+			712,
+			424,
+			108
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Winstreak_Atlas:UI_Winstreak_Atlas_6": {
+		"tex": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			410,
+			824,
+			200,
+			200
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Winstreak_Atlas:UI_Winstreak_Atlas_7": {
+		"tex": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			612,
+			864,
+			412,
+			160
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Winstreak_Atlas:UI_Winstreak_Atlas_8": {
+		"tex": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			305,
+			0,
+			44,
+			44
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"UI_Winstreak_Atlas:UI_Winstreak_Atlas_9": {
+		"tex": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			305,
+			48,
+			32,
+			32
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Warning:Warning_1": {
+		"tex": "res://assets/ui/cc/Warning.png",
+		"src": [
+			1024,
+			1025
+		],
+		"r": [
+			25,
+			232,
+			983,
+			201
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Warning:Warning_5": {
+		"tex": "res://assets/ui/cc/Warning.png",
+		"src": [
+			1024,
+			1025
+		],
+		"r": [
+			5,
+			640,
+			261,
+			19
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Winstreak_Cat1": {
+		"tex": "res://assets/ui/cc/Winstreak_Cat1.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"Winstreak_Cat2": {
+		"tex": "res://assets/ui/cc/Winstreak_Cat2.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"arrow_notify": {
+		"tex": "res://assets/ui/cc/arrow_notify.png",
+		"src": [
+			302,
+			220
+		],
+		"r": [
+			0,
+			0,
+			302,
+			220
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"blocked": {
+		"tex": "res://assets/ui/cc/blocked.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"blurred": {
+		"tex": "res://assets/ui/cc/blurred.png",
+		"src": [
+			360,
+			360
+		],
+		"r": [
+			0,
+			0,
+			360,
+			360
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"bomb_(2)": {
+		"tex": "res://assets/ui/cc/bomb_(2).png",
+		"src": [
+			839,
+			839
+		],
+		"r": [
+			0,
+			0,
+			839,
+			839
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"fx_1": {
+		"tex": "res://assets/ui/cc/fx_1.png",
+		"src": [
+			256,
+			256
+		],
+		"r": [
+			0,
+			0,
+			256,
+			256
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_BlockedCube": {
+		"tex": "res://assets/ui/cc/ic_BlockedCube.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_BombCube": {
+		"tex": "res://assets/ui/cc/ic_BombCube.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Bronze": {
+		"tex": "res://assets/ui/cc/ic_Bronze.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Cobweb": {
+		"tex": "res://assets/ui/cc/ic_Cobweb.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Diamond": {
+		"tex": "res://assets/ui/cc/ic_Diamond.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_EndlessTreasure": {
+		"tex": "res://assets/ui/cc/ic_EndlessTreasure.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Fence": {
+		"tex": "res://assets/ui/cc/ic_Fence.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Gold": {
+		"tex": "res://assets/ui/cc/ic_Gold.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_JumpingCube": {
+		"tex": "res://assets/ui/cc/ic_JumpingCube.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Layer": {
+		"tex": "res://assets/ui/cc/ic_Layer.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_LinkedContainer": {
+		"tex": "res://assets/ui/cc/ic_LinkedContainer.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_LockedContainerIceMode_": {
+		"tex": "res://assets/ui/cc/ic_LockedContainerIceMode_.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_LockedContainerRibbonMode": {
+		"tex": "res://assets/ui/cc/ic_LockedContainerRibbonMode.png",
+		"src": [
+			1512,
+			1512
+		],
+		"r": [
+			0,
+			0,
+			1512,
+			1512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_MulticolorContainer": {
+		"tex": "res://assets/ui/cc/ic_MulticolorContainer.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_MultishapedCube": {
+		"tex": "res://assets/ui/cc/ic_MultishapedCube.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_MysteryContainer": {
+		"tex": "res://assets/ui/cc/ic_MysteryContainer.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_MysteryCube": {
+		"tex": "res://assets/ui/cc/ic_MysteryCube.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_PaintConvey": {
+		"tex": "res://assets/ui/cc/ic_PaintConvey.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Platinum": {
+		"tex": "res://assets/ui/cc/ic_Platinum.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Portal": {
+		"tex": "res://assets/ui/cc/ic_Portal.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Printer": {
+		"tex": "res://assets/ui/cc/ic_Printer.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Scissors": {
+		"tex": "res://assets/ui/cc/ic_Scissors.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Silver": {
+		"tex": "res://assets/ui/cc/ic_Silver.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_SpecialSlot": {
+		"tex": "res://assets/ui/cc/ic_SpecialSlot.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_StorageMachine": {
+		"tex": "res://assets/ui/cc/ic_StorageMachine.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_SwitchBox": {
+		"tex": "res://assets/ui/cc/ic_SwitchBox.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_Task": {
+		"tex": "res://assets/ui/cc/ic_Task.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			0,
+			1024,
+			1024
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_TowerCube": {
+		"tex": "res://assets/ui/cc/ic_TowerCube.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_TransitTray": {
+		"tex": "res://assets/ui/cc/ic_TransitTray.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_badge1": {
+		"tex": "res://assets/ui/cc/ic_badge1.png",
+		"src": [
+			332,
+			328
+		],
+		"r": [
+			0,
+			0,
+			332,
+			328
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_badge2": {
+		"tex": "res://assets/ui/cc/ic_badge2.png",
+		"src": [
+			288,
+			328
+		],
+		"r": [
+			0,
+			0,
+			288,
+			328
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_badge3": {
+		"tex": "res://assets/ui/cc/ic_badge3.png",
+		"src": [
+			298,
+			328
+		],
+		"r": [
+			0,
+			0,
+			298,
+			328
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_booster1": {
+		"tex": "res://assets/ui/cc/ic_booster1.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_booster1_1": {
+		"tex": "res://assets/ui/cc/ic_booster1_1.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			0,
+			1024,
+			1024
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_booster2": {
+		"tex": "res://assets/ui/cc/ic_booster2.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_booster2_1": {
+		"tex": "res://assets/ui/cc/ic_booster2_1.png",
+		"src": [
+			1024,
+			1024
+		],
+		"r": [
+			0,
+			0,
+			1024,
+			1024
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_booster3_1": {
+		"tex": "res://assets/ui/cc/ic_booster3_1.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_league1": {
+		"tex": "res://assets/ui/cc/ic_league1.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_league2": {
+		"tex": "res://assets/ui/cc/ic_league2.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_league3": {
+		"tex": "res://assets/ui/cc/ic_league3.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_ranking1": {
+		"tex": "res://assets/ui/cc/ic_ranking1.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_ranking2": {
+		"tex": "res://assets/ui/cc/ic_ranking2.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"ic_winstreak2": {
+		"tex": "res://assets/ui/cc/ic_winstreak2.png",
+		"src": [
+			512,
+			512
+		],
+		"r": [
+			0,
+			0,
+			512,
+			512
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"illustration01_1": {
+		"tex": "res://assets/ui/cc/illustration01_1.png",
+		"src": [
+			724,
+			689
+		],
+		"r": [
+			0,
+			0,
+			724,
+			689
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"light1": {
+		"tex": "res://assets/ui/cc/light1.png",
+		"src": [
+			860,
+			928
+		],
+		"r": [
+			0,
+			0,
+			860,
+			928
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"npc_1": {
+		"tex": "res://assets/ui/cc/npc_1.png",
+		"src": [
+			527,
+			527
+		],
+		"r": [
+			0,
+			0,
+			527,
+			527
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"popup7": {
+		"tex": "res://assets/ui/cc/popup7.png",
+		"src": [
+			832,
+			1000
+		],
+		"r": [
+			0,
+			0,
+			832,
+			1000
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"popup8": {
+		"tex": "res://assets/ui/cc/popup8.png",
+		"src": [
+			832,
+			1244
+		],
+		"r": [
+			0,
+			0,
+			832,
+			1244
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"shadowBlock": {
+		"tex": "res://assets/ui/cc/shadowBlock.png",
+		"src": [
+			128,
+			128
+		],
+		"r": [
+			0,
+			0,
+			128,
+			128
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"trip": {
+		"tex": "res://assets/ui/cc/trip.png",
+		"src": [
+			95,
+			95
+		],
+		"r": [
+			0,
+			0,
+			95,
+			95
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	},
+	"winbg": {
+		"tex": "res://assets/ui/cc/winbg.png",
+		"src": [
+			1280,
+			524
+		],
+		"r": [
+			0,
+			0,
+			1280,
+			524
+		],
+		"b": [
+			0,
+			0,
+			0,
+			0
+		],
+		"ppu": 100
+	}
+}

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Booster Smash: candy mallet (striped pink head, candy-cane handle) with impact lines on the striking face. -->
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFA3CF"/>
+      <stop offset="0.5" stop-color="#F2559C"/>
+      <stop offset="1" stop-color="#C9216F"/>
+    </linearGradient>
+    <linearGradient id="cap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF7DB8"/>
+      <stop offset="0.5" stop-color="#E0337F"/>
+      <stop offset="1" stop-color="#A3175A"/>
+    </linearGradient>
+    <linearGradient id="stick" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F3DCCB"/>
+    </linearGradient>
+    <clipPath id="bodyClip">
+      <rect x="140" y="92" width="232" height="156" rx="20"/>
+    </clipPath>
+    <clipPath id="stickClip">
+      <rect x="226" y="236" width="60" height="214" rx="30"/>
+    </clipPath>
+  </defs>
+  <g transform="translate(256 256) scale(0.86) translate(45 30) rotate(-40) translate(-256 -256)">
+    <!-- impact lines -->
+    <g fill="none" stroke-linecap="round">
+      <path stroke="#C46A00" stroke-width="44" d="M48 170 L10 170 M52 144.7 L21 123 M52 195.3 L21 217"/>
+      <path stroke="#FFE04A" stroke-width="20" d="M48 170 L10 170 M52 144.7 L21 123 M52 195.3 L21 217"/>
+    </g>
+    <!-- outlines -->
+    <g fill="none" stroke="#7E1446" stroke-width="28" stroke-linejoin="round">
+      <rect x="226" y="236" width="60" height="214" rx="30"/>
+      <circle cx="256" cy="456" r="34"/>
+      <rect x="140" y="92" width="232" height="156" rx="20"/>
+      <rect x="88" y="74" width="70" height="192" rx="30"/>
+      <rect x="354" y="74" width="70" height="192" rx="30"/>
+    </g>
+    <!-- candy-cane handle -->
+    <rect x="226" y="236" width="60" height="214" rx="30" fill="url(#stick)"/>
+    <g clip-path="url(#stickClip)" fill="#F23B4F">
+      <path d="M200 290 L320 230 L320 256 L200 316 Z"/>
+      <path d="M200 340 L320 280 L320 306 L200 366 Z"/>
+      <path d="M200 390 L320 330 L320 356 L200 416 Z"/>
+      <path d="M200 440 L320 380 L320 406 L200 466 Z"/>
+    </g>
+    <rect x="238" y="262" width="12" height="160" rx="6" fill="#FFFFFF" fill-opacity="0.6"/>
+    <circle cx="256" cy="456" r="34" fill="url(#cap)"/>
+    <circle cx="244" cy="444" r="9" fill="#FFFFFF" fill-opacity="0.85"/>
+    <!-- head body with white candy stripes -->
+    <rect x="140" y="92" width="232" height="156" rx="20" fill="url(#body)"/>
+    <g clip-path="url(#bodyClip)" fill="#FFF3F8" fill-opacity="0.9">
+      <path d="M150 92 L190 92 L34 248 L-6 248 Z"/>
+      <path d="M234 92 L274 92 L118 248 L78 248 Z"/>
+      <path d="M318 92 L358 92 L202 248 L162 248 Z"/>
+      <path d="M402 92 L442 92 L286 248 L246 248 Z"/>
+      <path d="M486 92 L526 92 L370 248 L330 248 Z"/>
+    </g>
+    <rect x="166" y="104" width="180" height="15" rx="7.5" fill="#FFFFFF" fill-opacity="0.65"/>
+    <!-- end caps -->
+    <rect x="88" y="74" width="70" height="192" rx="30" fill="url(#cap)"/>
+    <rect x="354" y="74" width="70" height="192" rx="30" fill="url(#cap)"/>
+    <rect x="104" y="94" width="14" height="118" rx="7" fill="#FFFFFF" fill-opacity="0.7"/>
+    <rect x="370" y="94" width="14" height="118" rx="7" fill="#FFFFFF" fill-opacity="0.7"/>
+    <circle cx="111" cy="232" r="6" fill="#FFFFFF" fill-opacity="0.6"/>
+  </g>
+</svg>

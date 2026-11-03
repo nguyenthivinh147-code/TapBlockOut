@@ -62,7 +62,10 @@ func _check_ui(t: T, node: Node, what: String) -> void:
 			raw.append(x)
 	t.eq(raw, [], what + " không lộ khoá dịch")
 	for b in node.find_children("*", "Button", true, false):
-		t.ok((b as Button).custom_minimum_size.y >= 96, "%s/%s cao >= 96" % [what, b.name])
+		var btn := b as Button
+		# Prefab buttons (unity_ui.gd) keep the Unity art size and grow only their hit area.
+		var h: float = (btn.call("hit_size") as Vector2).y if btn.has_method("hit_size") else btn.custom_minimum_size.y
+		t.ok(h >= 96 - 0.01, "%s/%s cao >= 96" % [what, b.name])
 
 
 func test_ranking_tab_unlock(t: T) -> void:
@@ -138,8 +141,11 @@ func test_result_close_still_claims(t: T) -> void:
 	var node := _mount("popup_lb_result")
 	var got: Array = []
 	node.closed.connect(func(r: Variant) -> void: got.append(r))
-	(node.find_child("CloseX", true, false) as Button).pressed.emit()
-	t.eq(int(g.s.coins), coins + 400, "đóng bằng X vẫn nhận thưởng Silver + Gold")
+	# LeaderboardWeeklyResultLayer has no X: tapping anywhere (the dim, ClaimButton) is the only way to close.
+	var dim := node.find_child("ClaimButton", true, false) as Button
+	dim.pressed.emit()
+	dim.pressed.emit()
+	t.eq(int(g.s.coins), coins + 400, "chạm để đóng vẫn nhận thưởng Silver + Gold")
 	t.eq(int(g.s.inv.hint), 1, "+1 hint của Gold")
 	t.eq(got.size(), 1, "phát closed một lần")
 	node.free()
@@ -174,9 +180,12 @@ func test_win_card_lb_row(t: T) -> void:
 	var pts := card.find_child("LbPointsLabel", true, false) as Label
 	var want := card.tr("lb_win_points") % int(res.lb.added)
 	t.ok(await _wait_until(func() -> bool: return pts.text == want), "điểm đếm tới +%d" % int(res.lb.added))
+	# EndGameUILayer: hạng là số trên huy chương của thẻ người chơi (UILeaderboardUserCard), tổng điểm ở ô điểm.
 	var rank := card.find_child("LbRankLabel", true, false) as Label
-	var want_rank := card.tr("lb_win_rank") % int(res.lb.rank_after)
+	var want_rank := str(int(res.lb.rank_after))
 	t.ok(await _wait_until(func() -> bool: return rank.text == want_rank), "hạng đếm tới hạng mới")
+	var total := card.find_child("LbTotalLabel", true, false) as Label
+	t.ok(await _wait_until(func() -> bool: return total.text == str(int(res.lb.after))), "tổng điểm đếm tới điểm mới")
 	card.free()
 	g.s.level = 3
 	var a3: Dictionary = g.start_attempt()
@@ -195,6 +204,9 @@ func test_level_hud_and_piece(t: T) -> void:
 	var sp: Array = lv.attempt.specials
 	t.ok(not sp.is_empty(), "level có khối đặc biệt")
 	t.ok(lv.piece_chip.visible, "HUD có chip mảnh")
+	t.ok(lv.find_child("TopBar", true, false).is_ancestor_of(lv.piece_chip), "chip mảnh nằm ở thanh trên")
+	await _tree().process_frame  # container xếp chỗ ở cuối khung
+	t.ok(lv.piece_chip.get_global_rect().end.y <= lv.board_view.get_global_rect().position.y, "chip mảnh ở trên bàn")
 	t.eq(lv.piece_label.text, "0/%d" % sp.size(), "chưa nhặt")
 	for id in sp:
 		t.ok(lv.board_view.is_special(str(id)), "khối %s có huy hiệu" % id)

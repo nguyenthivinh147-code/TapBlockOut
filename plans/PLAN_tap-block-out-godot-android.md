@@ -75,7 +75,7 @@ func test_ten_ca(t: T) -> void:
 project.godot  export_presets.cfg  CLAUDE.md  design.md  icon.svg
 .gitignore  .gitattributes  .editorconfig
 src/config.gd
-src/core/      level_data.gd  board_state.gd  solver.gd  level_generator.gd  silhouette.gd
+src/core/      level_data.gd  board_state.gd  solver.gd  level_generator.gd  silhouette.gd  motifs.gd  difficulty_curve.gd
 src/meta/      save_schema.gd  save_store.gd  clock.gd  wallet.gd  lives.gd  unlocks.gd
                rescue_flow.gd  daily_calendar.gd  cosmetics.gd  shop_videos.gd
                ad_pacing.gd  offers.gd  notif_plan.gd  leaderboard.gd
@@ -208,6 +208,7 @@ func mirror(json: String) -> void
 func backup() -> String
 func flush() -> void
 func sync_cloud() -> void
+func wipe() -> void                    # menu tester xoá tài khoản: save.wipe() bỏ backup và cache cloud, iap.wipe() (mock quên món đã mua)
 # notif
 func ask() -> bool
 func enabled() -> bool
@@ -260,6 +261,9 @@ func refill_video() -> bool
 func challenge_view() -> Dictionary
 func start_challenge() -> Dictionary
 func set_setting(key: String, value: Variant) -> void
+# menu tester, chỉ khi Config.account_tool() (bản debug); không log earn/spend
+func tester_edit(edits: Dictionary) -> bool  # {coins?, level?, inv?: {hint, move, smash}}
+func tester_wipe() -> bool          # coroutine: xoá file lưu, Platform.wipe(), boot lại như lần cài đầu
 ```
 
 ### 1.11 Màn hình
@@ -446,12 +450,12 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 5.1: BoardView**
   - **Allowed Files:** `scenes/board_view.tscn`, `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `src/ui/pudding.gd`, `src/ui/pudding.gdshader`, `tests/test_ui_board.gd`.
-  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 ô mỗi bên và 0,61 ô trên dưới, `frame_rect()` trả về trọn khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; cỡ ô là số nguyên, cố định `Config.BOARD_CELL`, chỉ co khi vùng chứa nhỏ hơn bàn chuẩn). Khối thoát lao nhanh dần tới thanh cùng màu (tối đa 0,30 giây) rồi vỡ thành mảnh kẹo (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)`. Cơ chế mới để Task 9.2.
+  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 ô mỗi bên và 0,61 ô trên dưới, `frame_rect()` trả về trọn khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; cỡ ô là số nguyên, cố định `Config.BOARD_CELL`, chỉ co khi vùng chứa nhỏ hơn bàn chuẩn). Khối thoát lao nhanh dần tới thanh cùng màu (tối đa 0,30 giây) rồi trôi qua thanh và bị nghiền thành khối vuông kẹo nhỏ phun ra ngoài thanh (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)`. Cơ chế mới để Task 9.2.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_board`
 
 - [x] **Task 5.2: Home và Profile**
   - **Allowed Files:** `scenes/home.tscn`, `src/ui/home.gd`, `scenes/profile.tscn`, `src/ui/profile.gd`, `tests/test_ui_home.gd`, `tests/test_ui_profile.gd`.
-  - **Specs:** Home: nút Chơi với số level, gold, mạng và đếm hồi, avatar và frame đang đeo (bấm mở Profile), icon quà có chấm đỏ, icon shop khoá tới L5, Settings, nút Daily Challenge khoá ghi "Unlocked at Level 50", chip offer đang mở. Demo xong L20 hiện "Sắp có level mới". Không tự mở popup quà. Profile: lưới 12 avatar, 12 frame và mặc định; chọn món đã có để đeo; món chưa có hiện giá và nút video.
+  - **Specs:** Home (bố cục theo Figma "main menu", xem `docs/UI_FIGMA.md`): đường level ba mốc có số level, nút PLAY đổi màu theo độ khó, gold, mạng và đếm hồi, avatar và frame đang đeo (bấm mở Profile), icon quà có chấm đỏ, icon shop khoá tới L5, Settings, icon Daily Challenge khoá ghi "Level 50", icon offer đang mở kèm thời gian còn. Demo xong L20 hiện "Sắp có level mới". Không tự mở popup quà. Profile: lưới 12 avatar, 12 frame và mặc định; chọn món đã có để đeo; món chưa có hiện giá và nút video.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_home && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_profile`
 
 - [x] **Task 5.3: Popup hết MOVES, thắng, thua, hết mạng**
@@ -466,14 +470,14 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 5.5: Popup quà và Settings**
   - **Allowed Files:** `scenes/popup_daily.tscn`, `src/ui/popup_daily.gd`, `scenes/settings.tscn`, `src/ui/settings.gd`, `tests/test_ui_daily.gd`, `tests/test_ui_settings.gd`.
-  - **Specs:** Popup quà chỉ mở khi bấm, hiện đúng 7 ô của tuần đang đi, nút nhận, nút video nhận ô kế tiếp (không tự chạy). Settings: âm thanh, nhạc, rung, thông báo, ngôn ngữ, Privacy khi `has_privacy`, Restore, Contact support (mở `mailto:` tới `Config.CONTENT.support_email`), phiên bản. Chạm nhiều lần vào dòng phiên bản mở menu tester có nút mediation debugger (`Platform.open_debugger()`).
+  - **Specs:** Popup quà chỉ mở khi bấm, hiện đúng 7 ô của tuần đang đi, nút nhận, nút video nhận ô kế tiếp (không tự chạy). Settings: âm thanh, nhạc, rung, thông báo, ngôn ngữ, Privacy khi `has_privacy`, Restore, Contact support (mở `mailto:` tới `Config.CONTENT.support_email`), phiên bản. Chạm 10 lần vào dòng phiên bản (hoặc phím F1 ở `main.gd`) mở menu tester (`scenes/tester_menu.tscn`) có nút mediation debugger (`Platform.open_debugger()`); bản debug thêm ô sửa gold, level, booster và nút xoá tài khoản (`Game.tester_edit`, `Game.tester_wipe`).
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_daily && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_settings`
 
 ### Phase 6: Ráp màn level
 
 - [x] **Task 6.1: Màn level và điều hướng**
   - **Allowed Files:** `scenes/level.tscn`, `src/ui/level.gd`, `src/ui/main.gd`, `scenes/main.tscn`, `tests/test_ui_level.gd`.
-  - **Specs:** HUD: level, MOVES, HARD, nút restart có xác nhận từ L10, 3 nút booster theo mở khoá và tồn kho, hướng dẫn L1, tặng booster L4/6/9 kèm giới thiệu. Booster thiếu gold mời `booster_free` một lần mỗi lượt. Hết MOVES: chạy `RescueFlow`, hiện `popup_rescue`, `need_coins` mở `shop_mini` rồi quay lại popup. Bỏ cuộc: từ `from_level` hiện hộp xác nhận mất 1 mạng (huỷ thì quay lại popup, xác nhận thì `rescue_skip` rồi thẻ thua), dưới đó thua ngay. Thắng mở win card; rời win card gọi `Game.leave_win_card`. Thua mở lose card. Vỗ tay khi nghĩ từ `think_clap_sec`. Hết mạng chuyển `no_lives`. Hỏi đánh giá sau L18. `main.gd` gọi `Game.boot()`, nối đủ màn và nút Back.
+  - **Specs:** HUD: level, MOVES, HARD, nút restart có xác nhận từ L10, luôn 3 ô booster (chưa mở thì hiện khoá kèm level mở, chạm báo level mở; đã mở thì hiện tồn kho), chip đếm mảnh leaderboard ở thanh trên dưới chip lượt, hướng dẫn L1, tặng booster L4/6/9 kèm giới thiệu. Booster thiếu gold mời `booster_free` một lần mỗi lượt. Hết MOVES: chạy `RescueFlow`, hiện `popup_rescue`, `need_coins` mở `shop_mini` rồi quay lại popup. Bỏ cuộc: từ `from_level` hiện hộp xác nhận mất 1 mạng (huỷ thì quay lại popup, xác nhận thì `rescue_skip` rồi thẻ thua), dưới đó thua ngay. Thắng mở win card; rời win card gọi `Game.leave_win_card`. Thua mở lose card. Vỗ tay khi nghĩ từ `think_clap_sec`. Hết mạng chuyển `no_lives`. Hỏi đánh giá sau L18. `main.gd` gọi `Game.boot()`, nối đủ màn và nút Back.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_level`
 
 - [x] **Task 6.2: E2E headless toàn demo**
@@ -520,7 +524,7 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
 
 - [x] **Task 9.1: Bộ sinh level**
   - **Allowed Files:** `src/core/level_generator.gd`, `src/core/silhouette.gd`, `tests/test_generator.gd`, `tests/test_silhouette.gd`, `tools/gen_levels.gd`.
-  - **Specs:** `generate(id: int, seed: int) -> Dictionary` thuần, theo `RandomNumberGenerator` có seed: chọn hình trong `src/core/silhouette.gd`, lát hình thành khối (tự do hoặc đối xứng), dịch vào giữa bàn cố định 14×19, bật cơ chế theo `Config.UNLOCK`, HARD mỗi 4 level, số khối tăng tới trần 30, qua `validate` và `solver`, sinh lại với seed kế tiếp nếu không đạt. Dùng cho Daily Challenge; level sau L300 không sinh mà lặp lại nội dung từ `CONTENT.loop_start_level` (`src/core/level_loop.gd`, `Game.content_level`). Cùng `id` và `seed` phải ra cùng level.
+  - **Specs:** `generate(id: int, seed: int) -> Dictionary` thuần, theo `RandomNumberGenerator` có seed: chọn hình trong `src/core/silhouette.gd`, lát hình thành khối (tự do hoặc đối xứng), dịch vào giữa bàn cố định 14×19, bật cơ chế theo `Config.UNLOCK`, HARD mỗi 4 level, số khối tăng tới trần 30 (từ L14 xem Task 9.6), qua `validate` và `solver`, sinh lại với seed kế tiếp nếu không đạt. Dùng cho Daily Challenge; level sau L100 (`CONTENT.release_pregen_level`) không sinh mà lặp lại nội dung từ `CONTENT.loop_start_level` (`src/core/level_loop.gd`, `Game.content_level`). Cùng `id` và `seed` phải ra cùng level.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_generator` (500 level hợp lệ, xác định, mỗi level dưới 200 ms trên máy dev).
 
 - [x] **Task 9.2: Hiển thị cơ chế**
@@ -530,8 +534,8 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
 
 - [x] **Task 9.3: Sinh L21–300 và level dạy**
   - **Allowed Files:** `data/levels/level_0021.json` … `level_0300.json`, `data/levels/index.json`, `tests/test_levels_all.gd`, `tools/gen_levels.gd`.
-  - **Specs:** Chạy `tools/gen_levels.gd`. Các level 21, 31, 46, 61, 81, 101 làm tay, chỉ một cơ chế mới, dễ. L1–20 giữ layout tay, trừ các level kín khung (`design.md` mục 4). Ghi `index.json` nếu cần tăng tốc tải.
-  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_levels_all` (300 level qua validator và solver).
+  - **Specs:** Chạy `tools/gen_levels.gd`. Các level 21, 31, 46, 61, 81, 101 làm tay, chỉ một cơ chế mới, dễ. L1–20 giữ layout tay, trừ các level kín khung (`design.md` mục 4). Ghi `index.json` nếu cần tăng tốc tải. (Đã thay bởi Task 9.6: level dạy nay ở 14, 30, 40, 55, 70, 90 và do bộ sinh tạo.)
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_levels_all` (100 level qua validator và solver).
 
 - [x] **Task 9.4: Daily Challenge, tuỳ chọn sau L300, cơ chế trong game**
   - **Allowed Files:** `scenes/challenge.tscn`, `src/ui/challenge.gd`, `src/game/game.gd`, `src/ui/home.gd`, `src/ui/level.gd`, `tests/test_challenge.gd`, `tests/test_level_after_300.gd`.
@@ -543,7 +547,12 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
   - **Specs:** Phần Task 7.1 và 7.2 đã bỏ: `mech_stone`, `mech_ice`, `mech_chain`, `mech_key`, `mech_fog` và 6 `sfx` cơ chế theo `design.md` mục "Tài nguyên". Cùng quy tắc prompt, seed, xử lý và phương án dự phòng như Phase 7, dùng lại `tools/resize_images.py`, `tools/process_audio.sh`. Không sửa `art/manifest.json`; Orchestrator gộp `art/manifest.mech.json` vào đó ở cổng Phase. Tổng `assets/` vẫn tối đa 10 MB.
   - **Verification:** `python3 -c "import json;m=json.load(open('art/manifest.mech.json'));print(len(m))" && du -sm assets | awk '{exit !($1<=10)}'` (hoặc `art/MISSING.mech.md` liệt kê phần thiếu).
 
-**Cổng Phase 9:** cổng mặc định, gộp manifest của Task 9.5, thêm xem cơ chế qua MCP (mục 1.12): chạy level dạy 21, 31, 46, 61, 81, 101 và chụp từng màn. Không có session MCP thì ghi vào báo cáo, không chặn.
+- [x] **Task 9.6: Khó hơn từ L14, hình có chủ đích (2026-11-03)**
+  - **Allowed Files:** `src/core/motifs.gd`, `src/core/level_generator.gd`, `src/core/difficulty_curve.gd`, `src/config.gd`, `tools/gen_levels.gd`, `data/levels/level_0014.json` … `level_0100.json`, `tests/test_motifs.gd`, `tests/test_generator.gd`, `tests/test_levels_all.gd`, `design.md`.
+  - **Specs:** Từ `DifficultyCurve.SHAPED_FROM` (L14): số khối nhân `BOOST` 1,3 (trần 40), trọng số khối bị chặn lúc đầu mũ 2 (Hard 3). Hình lấy từ 21 bản vẽ tay trong `motifs.gd` (rộng chẵn, đối xứng), đá và cách cắt khối đối xứng theo trục, màu tự do. Level dạy cơ chế sinh to bằng bộ sinh, chỉ cơ chế mới, phải chạm thử được ngay (`_teach_ok`). L1–13 không đổi. Sinh lại bằng `tools/gen_levels.gd -- --from=1 --to=100 --seed=20261101 --early=1 --out=res://data/levels`.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_motifs test_generator test_levels_all`
+
+**Cổng Phase 9:** cổng mặc định, gộp manifest của Task 9.5, thêm xem cơ chế qua MCP (mục 1.12): chạy level dạy 14, 30, 40, 55, 70, 90 và chụp từng màn. Không có session MCP thì ghi vào báo cáo, không chặn.
 
 ### Phase 10: Android thật
 

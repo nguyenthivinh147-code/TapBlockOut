@@ -55,6 +55,16 @@ func _lbl(node: Node, node_name: String) -> Label:
 	return node.find_child(node_name, true, false) as Label
 
 
+## Chữ hiển thị của nút: nút prefab (unity_ui.gd) vẽ chữ bằng Label con, nút thường dùng Button.text.
+func _btn_text(b: Button) -> String:
+	if b.text != "":
+		return b.text
+	for l in b.find_children("*", "Label", true, false):
+		if (l as Label).visible:
+			return (l as Label).text
+	return ""
+
+
 func _won(g: Node, level: int) -> Dictionary:
 	g.s.level = level
 	var attempt: Dictionary = g.start_attempt()
@@ -71,10 +81,10 @@ func test_win_l1_free_x2(t: T) -> void:
 	var p := _mount("win_card", res)
 	var st := _watch(p)
 	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % 40, "hiện +40")
-	t.eq(_btn(p, "X2Button").text, p.tr("win_x2_free"), "nút x2 miễn phí")
+	t.eq(_btn_text(_btn(p, "X2Button")), p.tr("win_x2_free"), "nút x2 miễn phí")
 	t.ok(_lbl(p, "X2HintLabel") != null, "gợi ý L1")
 	_btn(p, "X2Button").pressed.emit()
-	await _wait_until(func() -> bool: return _btn(p, "X2Button").text == p.tr("win_x2_done"))
+	await _wait_until(func() -> bool: return _btn_text(_btn(p, "X2Button")) == p.tr("win_x2_done"))
 	t.eq(int(g.s.coins), 1080, "x2 cộng thêm 40")
 	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % 80, "hiện +80")
 	t.ok(_btn(p, "X2Button").disabled, "x2 một lần")
@@ -90,7 +100,7 @@ func test_win_x2_video_closed_then_ok(t: T) -> void:
 	t.ok(res.x2_available and not res.x2_free, "L2 x2 qua video")
 	var p := _mount("win_card", res)
 	var st := _watch(p)
-	t.eq(_btn(p, "X2Button").text, p.tr("win_x2"), "nút x2")
+	t.eq(_btn_text(_btn(p, "X2Button")), p.tr("win_x2"), "nút x2")
 	_plat().ads.simulate("closed")
 	_btn(p, "X2Button").pressed.emit()
 	await _wait_until(func() -> bool: return _lbl(p, "MessageLabel").visible)
@@ -152,7 +162,7 @@ func test_lose_rescue_pack_buy(t: T) -> void:
 	var g := _g()
 	var p := _mount("lose_card", {"offer": "rescue_pack", "life_charged": false})
 	t.ok(_btn(p, "PackBuyButton") != null, "có gói cứu nguy")
-	t.eq(_btn(p, "PackBuyButton").text, p.tr("lose_pack_buy") % _plat().price("rescue_pack"), "giá lấy từ store")
+	t.eq(_btn_text(_btn(p, "PackBuyButton")), p.tr("lose_pack_buy") % _plat().price("rescue_pack"), "giá lấy từ store")
 	_btn(p, "PackBuyButton").pressed.emit()
 	await _wait_until(func() -> bool: return int(g.s.inv.move) > 0)
 	t.eq(int(g.s.inv.move), 1, "giao +3 Move")
@@ -191,9 +201,12 @@ func test_no_lives_countdown(t: T) -> void:
 	t.eq(NoLives.format_time(65), "1:05", "format mm:ss")
 	t.eq(NoLives.format_time(3725), "1:02:05", "format h:mm:ss")
 	t.eq(_lbl(p, "NextLabel").text, p.tr("no_lives_next") % "15:00", "đếm ngược 15:00")
-	t.eq(_lbl(p, "LivesLabel").text, p.tr("no_lives_lives") % [0, 10], "số mạng")
+	# PopupMoreHeartLayer: the count is written on the heart icon.
+	t.eq(_lbl(p, "LivesLabel").text, "0", "số mạng")
 	t.eq(_lbl(p, "FullLabel").text, p.tr("no_lives_full_in") % "2:30:00", "đầy mạng sau 2:30:00")
-	t.eq(_btn(p, "GoldButton").text, p.tr("no_lives_refill_gold") % 900, "nút 900 gold")
+	# GoldBtn of PopupMoreHeartLayer: gold icon + price, heart badge +refill_lives.
+	t.eq(_lbl(p, "GoldPrice").text, "900", "nút 900 gold")
+	t.ok(_btn(p, "GoldButton").is_ancestor_of(_lbl(p, "GoldPrice")), "giá nằm trên nút gold")
 	g.test_now = NOW + 301
 	p.refresh()
 	t.eq(_lbl(p, "NextLabel").text, p.tr("no_lives_next") % "9:59", "đếm ngược sau 301 giây")
@@ -265,7 +278,9 @@ func test_result_layout_rules(t: T) -> void:
 	for n in nodes:
 		for b in n.find_children("*", "Button", true, false):
 			var btn := b as Button
-			t.ok(btn.custom_minimum_size.x >= 96 and btn.custom_minimum_size.y >= 96, "nút >= 96x96: %s/%s" % [n.name, btn.name])
+			# Prefab buttons (unity_ui.gd) keep the Unity art size and grow only their hit area.
+			var hit: Vector2 = btn.call("hit_size") if btn.has_method("hit_size") else btn.custom_minimum_size
+			t.ok(hit.x >= 96 - 0.01 and hit.y >= 96 - 0.01, "nút >= 96x96: %s/%s" % [n.name, btn.name])
 	t.eq(nodes[0].find_children("*", "Timer", true, false).size(), 0, "thẻ thắng không đếm ngược")
 	t.eq(nodes[1].find_children("*", "Timer", true, false).size(), 0, "thẻ thua không đếm ngược")
 	for n in nodes:

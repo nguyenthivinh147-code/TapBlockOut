@@ -1,0 +1,416 @@
+{
+	"Baloo Bhaijaan Regular 400 SDF (atlas)": {
+		"underlay": false,
+		"face_color": "ffffffff",
+		"face_dilate": -0.15,
+		"outline_width": 0,
+		"outline_softness": 0,
+		"outline_color": "2b0600ff",
+		"underlay_color": "000000ff",
+		"underlay_offset": [
+			-0.1,
+			-1
+		],
+		"underlay_dilate": 1,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.87857145,
+			0.43928573
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - Black": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "000000ff",
+		"underlay_color": "000000ff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - Blue": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "014872ff",
+		"underlay_color": "034669ff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - Blue 1": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.2,
+		"outline_softness": 0,
+		"outline_color": "0a1834ff",
+		"underlay_color": "0a1834ff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": -0.12,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - BlueLose": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "071019ff",
+		"underlay_color": "071019ff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - Brown": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "5b1e01ff",
+		"underlay_color": "5b1e01ff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - DarkBlue": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "00032bff",
+		"underlay_color": "00032bff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - Gray": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "0c1011ff",
+		"underlay_color": "0c1011ff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.8,
+			0.7,
+			0.7
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - Green": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "032b00ff",
+		"underlay_color": "032b00ff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - Orange": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "891f00ff",
+		"underlay_color": "8a1f00ff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - PackTextBG": {
+		"underlay": false,
+		"face_color": "ffffffff",
+		"face_dilate": 3,
+		"outline_width": 5,
+		"outline_softness": 0,
+		"outline_color": "ffffffff",
+		"underlay_color": "979797ff",
+		"underlay_offset": [
+			0.907,
+			0
+		],
+		"underlay_dilate": -0.139,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.10549451,
+			0,
+			0
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - PackTextBG2": {
+		"underlay": false,
+		"face_color": "ffffffff",
+		"face_dilate": 1,
+		"outline_width": 1,
+		"outline_softness": 0,
+		"outline_color": "c6b890ff",
+		"underlay_color": "979797ff",
+		"underlay_offset": [
+			0.907,
+			0
+		],
+		"underlay_dilate": -0.139,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.40336135,
+			0,
+			0
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - Purple": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "340135ff",
+		"underlay_color": "340135ff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - Red": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "82000bff",
+		"underlay_color": "82000bff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - SpecialPack": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.136,
+		"outline_softness": 0,
+		"outline_color": "391101ff",
+		"underlay_color": "391101ff",
+		"underlay_offset": [
+			0,
+			-0.218
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - StarterPack": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.136,
+		"outline_softness": 0,
+		"outline_color": "391101ff",
+		"underlay_color": "391101ff",
+		"underlay_offset": [
+			0,
+			-0.218
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.85714287,
+			0.75,
+			0.75
+		],
+		"gradient_scale": 7
+	},
+	"Baloo Outline - Yellow": {
+		"underlay": true,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0.3,
+		"outline_softness": 0,
+		"outline_color": "672603ff",
+		"underlay_color": "3e0808ff",
+		"underlay_offset": [
+			0,
+			-0.24
+		],
+		"underlay_dilate": 0.45,
+		"underlay_softness": 0,
+		"weight_normal": 0.5,
+		"weight_bold": 0.5,
+		"scale_ratio": [
+			0.8,
+			0.7,
+			0.7
+		],
+		"gradient_scale": 5
+	},
+	"LiberationSans SDF (atlas)": {
+		"underlay": false,
+		"face_color": "ffffffff",
+		"face_dilate": 0,
+		"outline_width": 0,
+		"outline_softness": 0,
+		"outline_color": "000000ff",
+		"underlay_color": "00000080",
+		"underlay_offset": [
+			0,
+			0
+		],
+		"underlay_dilate": 0,
+		"underlay_softness": 0,
+		"weight_normal": 0,
+		"weight_bold": 0.75,
+		"scale_ratio": [
+			0.9,
+			1,
+			0.73125
+		],
+		"gradient_scale": 10
+	}
+}

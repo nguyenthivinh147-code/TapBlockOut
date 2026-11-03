@@ -1,0 +1,68 @@
+{
+	"name": "LoadLevelProcessVer2",
+	"source": "Assets/_Game/Prefabs/Layers/LoadLevelProcessVer2.prefab",
+	"root": {
+		"n": "LoadLevelProcessVer2",
+		"id": "8179333351673012283",
+		"a": true,
+		"r": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		"s": [0, 0],
+		"canvas": {"override_sort": true, "order": 3000},
+		"cs": [
+			{
+				"name": "LoadLevelProcessVer2",
+				"iconRectTransform": {"node": "1392707336156258934"},
+				"background": {"node": "1903484387320806187"},
+				"animateIconSeconds": "1.1",
+				"inverseAnimateIconSeconds": "0.8",
+				"animateBackgroundSeconds": "1"
+			}
+		],
+		"ch": [
+			{
+				"n": "icon",
+				"id": "1392707336156258934",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 10000, 10000, 0.5, 0.5],
+				"img": {
+					"sp": "bomb_(2)",
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				},
+				"mask": {"show": false},
+				"ch": [
+					{
+						"n": "Background",
+						"id": "1903484387320806187",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 10000, 10000, 0.5, 0.5],
+						"img": {
+							"sp": null,
+							"c": "000000ff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true,
+							"cut": true
+						}
+					}
+				]
+			}
+		]
+	}
+}

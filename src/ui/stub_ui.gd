@@ -12,6 +12,8 @@ const SampleData := preload("res://src/ui/sample_data.gd")
 
 var view: Dictionary = {}
 var kit: Dictionary = {}
+## Screens built from a color-cube-match-puzzle prefab (unity_ui.gd) keep their view here.
+var ui: RefCounted = null
 
 var _built: bool = false
 
@@ -94,13 +96,18 @@ func _center_column() -> VBoxContainer:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if kit.is_empty() and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	if kit.is_empty() and ui == null and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		accept_event()
 		_act("tap")
 
 
 func _act(action: String) -> void:
 	Sfx.play("button")
+	closed.emit({"action": action})
+
+
+## Like _act for prefab buttons, which play their own click sound.
+func _send(action: String) -> void:
 	closed.emit({"action": action})
 
 

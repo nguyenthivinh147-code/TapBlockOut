@@ -1,33 +1,68 @@
 extends Control
-## Hồ sơ: lưới avatar và frame. Chọn món đã có để đeo; món chưa có hiện giá gold và nút video.
-## Chỉ gọi Game và Sfx. closed({"action": "back"}) khi quay lại.
+## Profile (wireframe 10.1) on ProfileLayer of color-cube-match-puzzle: worn avatar and frame, nickname, Avatar | Frame
+## tabs (ToggleAnimator swaps the grid and its button group), 3-column grids of Profile_AvtCells / Profile_FrameCells
+## clones with the game's avatar and frame pictures. The button under the grid follows ProfileUICoreLayer: Used (worn),
+## OK = equip (owned), Buy with the gold price (not owned); the game's video unlock is a copy of SaveButton on the blue
+## pill beside Buy. The UID row shows the game's gold (no accounts). Only Game and Sfx are called.
+## closed({"action": "back"}) on X, the dim or Back.
 
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
-const PopupKit := preload("res://src/ui/popup_kit.gd")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UnityKit := preload("res://src/ui/unity_kit.gd")
+const UView := preload("res://src/ui/u_view.gd")
 const Config := preload("res://src/config.gd")
 
-const COLUMNS := 3
-const AVATAR_PX := 130
-const CELL_FONT := 22
-const CARD_W := 680.0
-const SCROLL_H := 760.0
 const CHANGE_NAME := "res://scenes/popup_change_name.tscn"
+const KINDS: Array[String] = ["avatar", "frame"]
+const LAYER := "ProfileLayer"
+const MENU := "Panel/ProfileMenu"
+const INFO := "Panel/ProfileMenu/PlayerInfo"
+const UID := "Panel/ProfileMenu/PlayerInfo/UID but very DeviceID"
+## Per kind: tab toggle, scroll host, grid content, pooled cell, button group (ProfileUICoreLayer fields).
+const PARTS := {
+	"avatar": {"tab": "Panel/ProfileMenu/BG/ToggleGroup/Avatar", "scroll": "Panel/ProfileMenu/BG/Avatar",
+		"content": "Panel/ProfileMenu/BG/Avatar/Viewport/Content",
+		"cell": "Panel/ProfileMenu/BG/Avatar/Viewport/Content/Profile_AvtCells",
+		"image": "", "group": "Panel/ProfileMenu/AvatarButtonGroup", "label": "profile_avatars"},
+	"frame": {"tab": "Panel/ProfileMenu/BG/ToggleGroup/Frame", "scroll": "Panel/ProfileMenu/BG/Frame",
+		"content": "Panel/ProfileMenu/BG/Frame/Viewport/Content",
+		"cell": "Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells",
+		"image": "FrameImage", "group": "Panel/ProfileMenu/FrameButtonGroup", "label": "profile_frames"},
+}
+## RewardItemSO gold and the TV of video buttons (PopupRewardLayer x2).
+const GOLD_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_3"
+const VIDEO_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_5"
+const BLUE_PILL := "Resources_moved_UI_Maincenter:UI_Maincenter_51"
+## Buy and video side by side: 286-wide pills 20 apart (SettingMainMenuLayer's two pills sit 20 apart).
+const PAIR_X := 153.0
+const BTN_Y := -364.0
+## Gold in the UID row: icon over the "UID:" label, amount in the DeviceID text.
+const GOLD_RECT := Rect2(4, -6, 60, 60)
+## Status line under the popup (not enough gold, video errors): VersionText style, 30 below the panel.
+const STATUS_GAP := 30.0
+const STATUS_H := 60.0
 
 var gold_label: Label = null
-var level_label: Label = null
+var name_label: Label = null
 var status_label: Label = null
 var preview: Control = null
 var back_btn: Button = null
-## id -> {"panel": Control, "equip": Button | null, "buy": Button | null, "video": Button | null}
+var ui: UView = null
+var tab_buttons: Dictionary = {}
+var use_button: Button = null
+var buy_button: Button = null
+var video_button: Button = null
+## id -> {"panel": Button, "ring": Control, "check": Control, "lock": Control}
 var cells: Dictionary = {}
 
 var _args: Dictionary = {}
 var _built: bool = false
-var _avatar_grid: GridContainer = null
-var _frame_grid: GridContainer = null
-var _preview_holder: CenterContainer = null
+var _tab: String = "avatar"
+var _sel: Dictionary = {}
+## kind -> {"save", "used", "buy", "video": Button}
+var _actions: Dictionary = {}
 var _busy: bool = false
 
 
@@ -117,74 +152,114 @@ func _build() -> void:
 	if _built:
 		return
 	_built = true
-	theme = ThemeKit.make_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# Profile is a screen here (a popup over the main menu in Unity): the game background sits under the dim.
 	add_child(ThemeKit.make_background())
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(center)
-	var k := PopupKit.make_card(tr("profile_title"), _close, {"width": CARD_W, "separation": 12})
-	center.add_child(k.card)
-	back_btn = k.close
+	ui = UnityUI.build(self, LAYER)
+	# The prefab root sits at x -5; UICoreLayer.SetShowOrHide puts the layer at anchoredPosition 0 when shown.
+	var rr: Dictionary = ui.root.get_meta("u_rect")
+	rr.pos = Vector2.ZERO
+	UnityUI.apply_rect(ui.root)
+	var cosm: Dictionary = Game.s.cos
+	_sel = {"avatar": str(cosm.get("avatar", "avatar_00")), "frame": str(cosm.get("frame", "frame_00"))}
+	_tab = "avatar"
+	ui.text("Panel/ProfileMenu/Image/txtHeader", tr("profile_title"))
+	back_btn = ui.on_click("Panel/ProfileMenu/Top/btnTurnOff", _close)
 	back_btn.name = "BackButton"
-	var col: VBoxContainer = k.box
+	ui.on_click("Bg", _close)
+	_build_info()
+	for kind in KINDS:
+		_build_kind(kind)
+	_build_status()
 
-	# đầu card: avatar đang đeo, level, gold
-	var head := HBoxContainer.new()
-	head.add_theme_constant_override("separation", 14)
-	col.add_child(head)
-	_preview_holder = CenterContainer.new()
-	head.add_child(_preview_holder)
-	var info := VBoxContainer.new()
-	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	info.alignment = BoxContainer.ALIGNMENT_CENTER
-	info.add_theme_constant_override("separation", 6)
-	head.add_child(info)
-	level_label = ThemeKit.ink_label("", ThemeKit.FS_BODY)
-	level_label.name = "LevelLabel"
-	info.add_child(level_label)
-	var gold_row := HBoxContainer.new()
-	gold_row.add_theme_constant_override("separation", 8)
-	info.add_child(gold_row)
-	gold_row.add_child(ThemeKit.make_icon("ui_gold", 48))
-	gold_label = ThemeKit.gold_label("0", ThemeKit.FS_BODY)
+
+## PlayerInfo: worn avatar and frame, nickname box, gold where Unity shows the device id.
+func _build_info() -> void:
+	preview = ui.node(INFO + "/CurrentAvt")
+	preview.name = "Preview"
+	ui.text(INFO + "/Label", tr("profile_nickname"))
+	name_label = ui.text(INFO + "/PlayerName/Placeholder", tr("profile_name_default"))
+	name_label.name = "NameLabel"
+	var edit := ui.on_click(INFO + "/Editname", _on_edit_name)
+	edit.name = "EditNameButton"
+	# Changing the name is not wired yet (popup_change_name is a stub): only in UI preview builds.
+	if not Config.ui_preview():
+		edit.get_parent().remove_child(edit)
+		edit.queue_free()
+	ui.text(UID, "")
+	ui.show(UID + "/CopyBtn", false)
+	UnityKit.sprite(ui.node(UID), GOLD_ICON, GOLD_RECT)
+	gold_label = ui.label(UID + "/DeviceID")
 	gold_label.name = "GoldLabel"
-	gold_row.add_child(gold_label)
-	if Config.ui_preview():
-		var edit := ThemeKit.make_icon_button("ic_edit")
-		edit.name = "EditNameButton"
-		edit.pressed.connect(_on_edit_name)
-		head.add_child(edit)
-
-	status_label = PopupKit.text("", CELL_FONT, ThemeKit.INK_DANGER, "StatusLabel")
-	status_label.custom_minimum_size.y = 32
-	col.add_child(status_label)
-
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, SCROLL_H)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	col.add_child(scroll)
-	var body := VBoxContainer.new()
-	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 12)
-	scroll.add_child(body)
-	body.add_child(ThemeKit.ink_label(tr("profile_avatars"), ThemeKit.FS_BODY, ThemeKit.BROWN))
-	_avatar_grid = _make_grid()
-	body.add_child(_avatar_grid)
-	body.add_child(ThemeKit.ink_label(tr("profile_frames"), ThemeKit.FS_BODY, ThemeKit.BROWN))
-	_frame_grid = _make_grid()
-	body.add_child(_frame_grid)
-	PopupKit.show_in(k)
 
 
-func _make_grid() -> GridContainer:
-	var g := GridContainer.new()
-	g.columns = COLUMNS
-	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	g.add_theme_constant_override("h_separation", 8)
-	g.add_theme_constant_override("v_separation", 8)
-	return g
+## One kind: tab toggle, pooled cells (ProfileUICoreLayer.SetupAvatarList / SetupFrameList), button group.
+func _build_kind(kind: String) -> void:
+	var p: Dictionary = PARTS[kind]
+	var tab := ui.button(str(p.tab))
+	tab.name = "Tab_" + kind
+	ui.text(str(p.tab) + "/Text (TMP)", tr(str(p.label)))
+	# NotifyElement red dot: the game has no "new item" notices.
+	ui.show(str(p.tab) + "/Image", false)
+	tab.connect("clicked", _on_tab.bind(kind))
+	tab_buttons[kind] = tab
+	ui.node(str(p.scroll)).name = "Grid_" + kind
+	ui.show(str(p.cell), false)
+	var group := ButtonGroup.new()
+	for id in Config.cosmetic_ids(kind):
+		var v: RefCounted = ui.clone(str(p.cell))
+		var b := v.root as Button
+		b.name = "Cell_" + str(id)
+		b.button_group = group
+		# Clones join the ScrollRect content after build: let drags through like _pass_buttons does.
+		b.mouse_filter = Control.MOUSE_FILTER_PASS
+		var pic: Control = b if str(p.image) == "" else v.node(str(p.image))
+		UnityUI.image_of(pic).call("set_texture", ThemeKit.icon(str(id)))
+		b.connect("clicked", _on_cell.bind(str(id)))
+		cells[str(id)] = {"panel": b, "ring": v.node("Select"), "check": v.node("Equipped"), "lock": v.node("Lock")}
+	ui.relayout(str(p.content))
+	var g := str(p.group)
+	var save := ui.on_click(g + "/SaveButton", _on_equip_selected)
+	ui.text(g + "/SaveButton/Text (TMP)", tr("profile_equip"))
+	var used := ui.button(g + "/UsedButton")
+	ui.text(g + "/UsedButton/Text (TMP)", tr("profile_equipped"))
+	var buy := ui.on_click(g + "/BuyButton", _on_buy_selected)
+	_actions[kind] = {"save": save, "used": used, "buy": buy, "video": _video_button(g)}
+
+
+## The game's video unlock: SaveButton copy on the blue pill, TV left of the text like PopupRewardLayer's x2.
+func _video_button(group: String) -> Button:
+	var s := UnityKit.spec(LAYER, group + "/SaveButton")
+	s.n = "VideoButton"
+	s.img.sp = BLUE_PILL
+	var t: Dictionary = (s.ch as Array)[0]
+	t.txt.mat = UnityKit.BUTTONS.blue[1]
+	t.txt.s = tr("ads_watch")
+	# Text right of the 76-unit TV at x 16 (left inset 96).
+	t.r[4] = float(t.r[4]) + 48.0
+	t.r[6] = float(t.r[6]) - 96.0
+	var v: RefCounted = UnityKit.add(ui.node(group), s)
+	UnityKit.sprite(v.root, VIDEO_ICON, Rect2(16, 24, 76, 76))
+	(v.root as Button).connect("clicked", _on_video_selected)
+	(v.root as Control).visible = false
+	return v.root as Button
+
+
+## Status line under the popup: VersionText of SettingMainMenuLayer (white atlas text), centred.
+func _build_status() -> void:
+	var s := UnityKit.spec("SettingMainMenuLayer", "VersionText")
+	s.n = "StatusLabel"
+	s.txt.s = ""
+	s.txt.h = 2
+	var menu := ui.node(MENU)
+	var mr: Dictionary = menu.get_meta("u_rect")
+	var bottom := (mr.pos as Vector2).y - (mr.size as Vector2).y * 0.5
+	s.r = [0.5, 0.5, 0.5, 0.5, 0, bottom - STATUS_GAP - STATUS_H * 0.5, (mr.size as Vector2).x, STATUS_H, 0.5, 0.5]
+	status_label = UnityKit.add(ui.node("Panel"), s).root as Label
+
+
+func _kind_of(id: String) -> String:
+	return "frame" if id.begins_with("frame_") else "avatar"
 
 
 func refresh() -> void:
@@ -193,72 +268,76 @@ func refresh() -> void:
 	var cosm: Dictionary = Game.s.cos
 	var av_id := str(cosm.get("avatar", "avatar_00"))
 	var fr_id := str(cosm.get("frame", "frame_00"))
+	var owned: Array = cosm.owned
 	gold_label.text = str(int(Game.s.coins))
-	level_label.text = tr("profile_level") % int(Game.s.level)
-	for c in _preview_holder.get_children():
-		c.queue_free()
-	preview = make_avatar(av_id, fr_id, 150)
-	preview.name = "Preview"
-	_preview_holder.add_child(preview)
-	cells.clear()
-	_fill(_avatar_grid, "avatar", av_id, fr_id)
-	_fill(_frame_grid, "frame", av_id, fr_id)
+	ui.texture(INFO + "/CurrentAvt", ThemeKit.icon(av_id))
+	ui.texture(INFO + "/CurrentFrame", ThemeKit.icon(fr_id))
+	for id in cells:
+		var e: Dictionary = cells[id]
+		var kind := _kind_of(str(id))
+		var picked := str(id) == str(_sel.get(kind, ""))
+		(e.panel as Button).button_pressed = picked
+		# ToggleAnimator.gameObjects (the Select ring) is not applied by unity_ui.gd.
+		(e.ring as Control).visible = picked
+		(e.check as Control).visible = str(id) == (av_id if kind == "avatar" else fr_id)
+		(e.lock as Control).visible = not owned.has(id)
+	for kind in KINDS:
+		(tab_buttons[kind] as Button).button_pressed = kind == _tab
+		_refresh_actions(kind, owned, av_id if kind == "avatar" else fr_id)
 
 
-func _fill(grid: GridContainer, kind: String, av_id: String, fr_id: String) -> void:
-	for c in grid.get_children():
-		grid.remove_child(c)
-		c.queue_free()
-	for id in Config.cosmetic_ids(kind):
-		grid.add_child(_make_cell(str(id), kind, av_id, fr_id))
+## ProfileUICoreLayer.OnAvatarSelected: Used when worn, OK when owned, Buy (+ the game's video) otherwise.
+func _refresh_actions(kind: String, owned: Array, worn: String) -> void:
+	var a: Dictionary = _actions[kind]
+	var id := str(_sel.get(kind, ""))
+	var have := owned.has(id)
+	var on := id == worn
+	(a.used as Control).visible = on
+	(a.save as Control).visible = have and not on
+	(a.buy as Control).visible = not have
+	(a.video as Control).visible = not have
+	var group := str(PARTS[kind].group)
+	if not have:
+		ui.text(group + "/BuyButton/Text (TMP)", str(Config.cosmetic_price(id)))
+		_place(a.buy, -PAIR_X)
+		_place(a.video, PAIR_X)
+		ui.relayout(group + "/BuyButton")
+	if kind == _tab:
+		use_button = (a.used if on else a.save) if have else null
+		buy_button = null if have else a.buy
+		video_button = null if have else a.video
 
 
-func _make_cell(id: String, kind: String, av_id: String, fr_id: String) -> Control:
-	var owned: bool = (Game.s.cos.owned as Array).has(id)
-	var equipped := (id == av_id) if kind == "avatar" else (id == fr_id)
-	var panel := ThemeKit.make_well(ThemeKit.WELL_HOT if equipped else ThemeKit.WELL, ThemeKit.WELL_HEADER if equipped else Color(0, 0, 0, 0))
-	panel.name = "Cell_" + id
-	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 8)
-	panel.add_child(v)
-	var shown_av := id if kind == "avatar" else av_id
-	var shown_fr := id if kind == "frame" else fr_id
-	var holder := CenterContainer.new()
-	v.add_child(holder)
-	holder.add_child(make_avatar(shown_av, shown_fr, AVATAR_PX))
-	if id.ends_with("_00"):
-		var cap := ThemeKit.ink_label(tr("profile_default"), ThemeKit.FS_SMALL - 4, ThemeKit.INK_DIM)
-		cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		v.add_child(cap)
-	var entry := {"panel": panel, "equip": null, "buy": null, "video": null}
-	if owned:
-		var b := ThemeKit.make_button(tr("profile_equipped") if equipped else tr("profile_equip"), "secondary" if equipped else "primary")
-		b.add_theme_font_size_override("font_size", CELL_FONT)
-		ThemeKit.tighten(b)
-		b.disabled = equipped
-		b.pressed.connect(_on_equip.bind(id))
-		v.add_child(b)
-		entry["equip"] = b
-	else:
-		var buy := ThemeKit.make_button(tr("profile_buy") % Config.cosmetic_price(id), "primary")
-		buy.add_theme_font_size_override("font_size", CELL_FONT)
-		ThemeKit.tighten(buy)
-		buy.pressed.connect(_on_buy.bind(id))
-		v.add_child(buy)
-		var vid := ThemeKit.make_button(tr("ads_watch"), "video")
-		vid.add_theme_font_size_override("font_size", CELL_FONT)
-		ThemeKit.tighten(vid)
-		vid.pressed.connect(_on_video.bind(id))
-		v.add_child(vid)
-		entry["buy"] = buy
-		entry["video"] = vid
-	cells[id] = entry
-	return panel
+func _place(b: Control, x: float) -> void:
+	var r: Dictionary = b.get_meta("u_rect")
+	r.pos = Vector2(x, BTN_Y)
+	UnityUI.apply_rect(b)
+
+
+## Chọn một món: chuyển sang tab của nó và hiện nút tương ứng.
+func select(id: String) -> void:
+	if not cells.has(id):
+		return
+	_tab = _kind_of(id)
+	_sel[_tab] = id
+	_say("")
+	refresh()
+
+
+func _on_cell(id: String) -> void:
+	Sfx.play("button")
+	select(id)
+
+
+func _on_tab(kind: String) -> void:
+	if kind == _tab:
+		return
+	_tab = kind
+	_say("")
+	refresh()
 
 
 func _on_edit_name() -> void:
-	Sfx.play("button")
 	var node := (load(CHANGE_NAME) as PackedScene).instantiate()
 	add_child(node)
 	node.call("setup", {})
@@ -270,14 +349,24 @@ func _say(text: String) -> void:
 		status_label.text = text
 
 
+func _on_equip_selected() -> void:
+	_on_equip(str(_sel.get(_tab, "")))
+
+
+func _on_buy_selected() -> void:
+	_on_buy(str(_sel.get(_tab, "")))
+
+
+func _on_video_selected() -> void:
+	_on_video(str(_sel.get(_tab, "")))
+
+
 func _on_equip(id: String) -> void:
-	Sfx.play("button")
 	_say("")
 	Game.cos_equip(id)
 
 
 func _on_buy(id: String) -> void:
-	Sfx.play("button")
 	if Game.cos_buy(id):
 		_say("")
 		Sfx.play("coin")
@@ -289,7 +378,6 @@ func _on_buy(id: String) -> void:
 func _on_video(id: String) -> void:
 	if _busy:
 		return
-	Sfx.play("button")
 	_busy = true
 	var ok: bool = await Game.cos_unlock_video(id)
 	_busy = false
@@ -305,5 +393,4 @@ func _on_video(id: String) -> void:
 
 
 func _close() -> void:
-	Sfx.play("button")
 	closed.emit({"action": "back"})

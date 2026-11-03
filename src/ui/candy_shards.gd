@@ -1,25 +1,29 @@
 extends Control
-## Mảnh kẹo: cắt khối thành mảnh lồi Voronoi, tô đúng chất liệu của khối bằng `candy_shard.gdshader`,
+## Mảnh kẹo: miếng nhỏ có bề dày, tô đúng chất liệu của khối bằng `candy_shard.gdshader`,
 ## mô phỏng trên CPU và vẽ chung một lệnh. Nằm trên mọi thứ (`top_level`) nên mảnh bay được ra ngoài bàn cờ.
-## Dùng shatter() khi khối vỡ, chips() cho vụn văng ra lúc va chạm. Toạ độ vẽ là toạ độ canvas.
+## Dùng grinder() + bit() cho khối bị nghiền khi trôi qua thanh, chips() cho vụn văng ra lúc va chạm. Toạ độ vẽ là toạ độ canvas.
 
 const SHADER := preload("res://src/ui/candy_shard.gdshader")
 const Pudding := preload("res://src/ui/pudding.gd")
 
-signal settled
-
-const SHARD_BUDGET := 20  # mảnh lớn cho cả khối, để mỗi mảnh đủ to mà thấy sọc và mép kẹo
-const CRUMBS_BASE := 8  # vụn nhỏ thêm vào cho dày
-const CRUMBS_PER_CELL := 2
-const HOLD := 0.05  # giây, mảnh còn nguyên chỗ để vết nứt loé trắng trước khi nổ
-const SETTLE := 0.55  # giây sau khi vỡ thì báo xong; mảnh còn lại vẫn rơi tiếp
-const GRAVITY := 26.0  # ô/giây²
-const DRAG := 2.4  # mỗi giây
-const SHATTER_SPEED := Vector2(7.0, 19.0)  # ô/giây
-const SHATTER_LIFE := Vector2(0.6, 1.05)
-const CHIP_SPEED := Vector2(2.5, 7.0)
-const CHIP_LIFE := Vector2(0.35, 0.65)
+const GRAVITY := 26.0  # ô/giây², vụn va chạm
+const DRAG := 3.0  # mỗi giây
+const CHIP_SPEED := Vector2(2.0, 5.0)  # ô/giây
+const CHIP_LIFE := Vector2(0.3, 0.5)
 const CHIP_SIZE := Vector2(0.06, 0.13)  # bán kính vụn, theo ô
+const BIT_SIZE := Vector2(0.11, 0.17)  # nửa đường chéo khối vuông nhỏ bị nghiền, theo ô
+const BIT_SPEED := Vector2(3.5, 9.0)  # ô/giây, phun ra khỏi thanh
+const BIT_SPREAD := 1.0  # tốc độ ngang tối đa, theo tốc độ phun
+const BIT_LIFE := Vector2(0.75, 1.15)
+const BIT_DRAG := 1.8  # mỗi giây, hãm nhẹ hơn vụn va chạm để bay xa khoảng 1,5–4,5 ô
+const BIT_GRAVITY := 3.0  # ô/giây², trôi nhẹ chứ không rơi
+const BIT_DEPTH := 0.8  # bề dày theo bán kính, gần như khối lập phương
+const BIT_SPIN := Vector2(3.0, 9.0)  # rad/giây
+const DEPTH := 0.16  # bề dày mảnh tối đa, theo ô
+const DEPTH_RATIO := 0.55  # mảnh nhỏ thì mỏng theo: bề dày tối đa bằng chừng này lần bán kính mảnh
+const DEPTH_GROW := 0.08  # giây, bề dày hiện dần khi mảnh vừa ra
+const SIDE_UV := 4.0  # mặt bên có UV.x lệch chừng này, khớp SIDE_FLAG trong candy_shard.gdshader
+const SHADE_DIR := Vector2(0.6, 0.8)  # mặt bên quay về phía này tối nhất, ánh sáng từ trên trái
 
 
 class Shard extends RefCounted:
@@ -30,8 +34,10 @@ class Shard extends RefCounted:
 	var spin: float = 0.0
 	var phase: float = 0.0
 	var life: float = 1.0
-	var delay: float = 0.0
+	var born: float = 0.0  # giây, tính từ lúc tạo node
+	var depth: float = 0.0  # px
 	var first: int = 0  # chỉ số đỉnh tâm trong mảng đỉnh
+	var side_first: int = 0  # đỉnh đầu của các mặt bên, 4 đỉnh mỗi cạnh
 
 
 var _shards: Array[Shard] = []
@@ -41,9 +47,10 @@ var _uvs := PackedVector2Array()
 var _indices := PackedInt32Array()
 var _cell: float = 64.0
 var _age: float = 0.0
-var _hold: float = 0.0
-var _settle_at: float = -1.0
 var _longest: float = 0.0
+var _gravity: float = GRAVITY
+var _drag: float = DRAG
+var _open: bool = false  # còn nhận mảnh mới thì chưa tự xoá
 var _invisible: bool = false
 var _dims := Vector2.ONE
 
@@ -54,55 +61,6 @@ func _init() -> void:
 	name = "Shards"
 
 
-## Cắt các ô thành mảnh lồi (toạ độ ô). Ô ở phía `toward` có thêm mảnh để chỗ va chạm vỡ vụn hơn.
-static func fracture(cells: Array, toward: Vector2, rng: RandomNumberGenerator) -> Array[PackedVector2Array]:
-	var out: Array[PackedVector2Array] = []
-	var per_cell := clampi(roundi(float(SHARD_BUDGET) / float(cells.size())), 2, 6)
-	var center := Vector2.ZERO
-	for c: Vector2i in cells:
-		center += Vector2(c) + Vector2(0.5, 0.5)
-	center /= float(cells.size())
-	for c: Vector2i in cells:
-		var o := Vector2(c)
-		var front := (o + Vector2(0.5, 0.5) - center).dot(toward) > 0.01
-		var seeds := PackedVector2Array()
-		for i in per_cell + (1 if front or cells.size() == 1 else 0):
-			seeds.append(o + Vector2(rng.randf(), rng.randf()))
-		for i in seeds.size():
-			var poly := PackedVector2Array([o, o + Vector2(1, 0), o + Vector2(1, 1), o + Vector2(0, 1)])
-			for j in seeds.size():
-				if i != j and poly.size() >= 3:
-					poly = _clip_half(poly, (seeds[i] + seeds[j]) * 0.5, seeds[i] - seeds[j])
-			if poly.size() >= 3 and absf(_area(poly)) > 0.001:
-				out.append(poly)
-	return out
-
-
-## Giữ phần đa giác nằm cùng phía `normal` so với đường qua `mid` (Sutherland-Hodgman).
-static func _clip_half(poly: PackedVector2Array, mid: Vector2, normal: Vector2) -> PackedVector2Array:
-	var out := PackedVector2Array()
-	var n := poly.size()
-	for i in n:
-		var a := poly[i]
-		var b := poly[(i + 1) % n]
-		var da := (a - mid).dot(normal)
-		var db := (b - mid).dot(normal)
-		if da >= 0.0:
-			out.append(a)
-		if (da >= 0.0) != (db >= 0.0):
-			out.append(a.lerp(b, da / (da - db)))
-	return out
-
-
-static func _area(poly: PackedVector2Array) -> float:
-	var s := 0.0
-	for i in poly.size():
-		var a := poly[i]
-		var b := poly[(i + 1) % poly.size()]
-		s += a.x * b.y - b.x * a.y
-	return s * 0.5
-
-
 static func _centroid(poly: PackedVector2Array) -> Vector2:
 	var s := Vector2.ZERO
 	for p in poly:
@@ -110,34 +68,39 @@ static func _centroid(poly: PackedVector2Array) -> Vector2:
 	return s / float(poly.size())
 
 
-## Khối vỡ. `xf` là biến đổi toàn cục của khối, `impact` là điểm va (toạ độ canvas), `dir` là hướng lao tới.
-## Trả về node đã thêm vào `parent`; `settled` báo khi phần chính đã xong.
-static func shatter(parent: Node, polys: Array[PackedVector2Array], cells: Array, cell: float, ramp: Dictionary, xf: Transform2D, dir: Vector2, impact: Vector2, rng: RandomNumberGenerator) -> Control:
+## Nơi chứa khối vuông nhỏ của một khối đang bị nghiền: thêm dần bằng bit(), gọi close() khi khối đã qua hết thanh.
+static func grinder(parent: Node, cells: Array, cell: float, ramp: Dictionary) -> Control:
 	var node: Control = new()
 	node._setup_material(cells, cell, ramp)
-	node._hold = HOLD
-	node._settle_at = HOLD + SETTLE
-	var perp := Vector2(-dir.y, dir.x)
-	var center := xf * (_cells_center(cells) * cell)
-	var reach := maxf(cell, (impact - center).length() * 2.0)
-	for poly in polys:
-		var world := xf * (_centroid(poly) * cell)
-		# mảnh gần điểm va bay trước và nhanh hơn, tạo cảm giác vết vỡ lan ra từ chỗ đập
-		var near := 1.0 - clampf((world - impact).length() / reach, 0.0, 1.0)
-		var speed := rng.randf_range(SHATTER_SPEED.x, SHATTER_SPEED.y) * lerpf(0.75, 1.2, near) * cell
-		var outward := (world - center).normalized() if world != center else dir
-		var vel := dir * speed + outward * speed * 0.35 + perp * rng.randf_range(-0.42, 0.42) * speed
-		var life := rng.randf_range(SHATTER_LIFE.x, SHATTER_LIFE.y)
-		node._add_shard(poly, cell, xf, vel, life, (1.0 - near) * 0.05, rng)
-	var at := xf.affine_inverse() * impact / cell
-	for i in CRUMBS_BASE + CRUMBS_PER_CELL * cells.size():
-		var poly := _chip_poly(at - dir * rng.randf_range(0.04, 0.5) + perp * rng.randf_range(-0.7, 0.7), rng.randf_range(CHIP_SIZE.x, CHIP_SIZE.y), rng)
-		var speed := rng.randf_range(SHATTER_SPEED.x, SHATTER_SPEED.y) * 1.25 * cell
-		var vel := dir * speed + perp * rng.randf_range(-0.6, 0.6) * speed
-		node._add_shard(poly, cell, xf, vel, rng.randf_range(CHIP_LIFE.x, SHATTER_LIFE.x + 0.1), 0.0, rng)
-	node._commit()
+	node._gravity = BIT_GRAVITY
+	node._drag = BIT_DRAG
+	node._open = true
 	parent.add_child(node)
 	return node
+
+
+## Một khối vuông nhỏ phun ra ở `pos` (toạ độ canvas) theo hướng `dir`; màu lấy ở điểm `at` (toạ độ ô của khối).
+func bit(at: Vector2, pos: Vector2, dir: Vector2, rng: RandomNumberGenerator) -> void:
+	var r := rng.randf_range(BIT_SIZE.x, BIT_SIZE.y)
+	var poly := PackedVector2Array()
+	var start := rng.randf() * TAU
+	for k in 4:
+		var ang := start + TAU * float(k) / 4.0 + rng.randf_range(-0.12, 0.12)
+		poly.append(at + Vector2(cos(ang), sin(ang)) * r)
+	var perp := Vector2(-dir.y, dir.x)
+	var speed := rng.randf_range(BIT_SPEED.x, BIT_SPEED.y) * _cell
+	var vel := dir * speed + perp * speed * rng.randf_range(-BIT_SPREAD, BIT_SPREAD)
+	var xf := Transform2D(0.0, pos - _centroid(poly) * _cell)
+	_add_shard(poly, _cell, xf, vel, rng.randf_range(BIT_LIFE.x, BIT_LIFE.y), rng)
+	var s := _shards[-1]
+	s.depth = r * _cell * BIT_DEPTH
+	s.spin = rng.randf_range(BIT_SPIN.x, BIT_SPIN.y) * signf(s.spin)
+	_step(0.0)
+	queue_redraw()
+
+
+func close() -> void:
+	_open = false
 
 
 ## Vụn văng ra từ khối đang còn nguyên, gần điểm `at` (toạ độ ô của khối), bắn ngược lại hướng `dir` và toả sang hai bên.
@@ -146,22 +109,22 @@ static func chips(parent: Node, cells: Array, cell: float, ramp: Dictionary, xf:
 	node._setup_material(cells, cell, ramp)
 	var perp := Vector2(-dir.y, dir.x)
 	for i in amount:
-		var pos := at - dir * rng.randf_range(0.04, 0.22) + perp * rng.randf_range(-0.3, 0.3)
+		var pos := at - dir * rng.randf_range(0.04, 0.18) + perp * rng.randf_range(-0.22, 0.22)
 		var poly := _chip_poly(pos, rng.randf_range(CHIP_SIZE.x, CHIP_SIZE.y), rng)
 		var speed := rng.randf_range(CHIP_SPEED.x, CHIP_SPEED.y) * cell
-		var vel := -dir * speed * rng.randf_range(0.25, 0.8) + perp * speed * rng.randf_range(-1.0, 1.0) + Vector2.UP * cell * rng.randf_range(0.5, 2.5)
-		node._add_shard(poly, cell, xf, vel, rng.randf_range(CHIP_LIFE.x, CHIP_LIFE.y), 0.0, rng)
+		var vel := -dir * speed * rng.randf_range(0.25, 0.7) + perp * speed * rng.randf_range(-0.7, 0.7) + Vector2.UP * cell * rng.randf_range(0.4, 1.6)
+		node._add_shard(poly, cell, xf, vel, rng.randf_range(CHIP_LIFE.x, CHIP_LIFE.y), rng)
 	node._commit()
 	parent.add_child(node)
 	return node
 
 
-## Vẽ một lần vô hình để shader được biên dịch sẵn, tránh khung hình trống và giật ở lần vỡ đầu tiên.
+## Vẽ một lần vô hình để shader được biên dịch sẵn, tránh khung hình trống và giật ở lần đầu tiên.
 static func prewarm(parent: Node, cell: float, ramp: Dictionary) -> void:
 	var node: Control = new()
 	var cells := [Vector2i.ZERO]
 	node._setup_material(cells, cell, ramp)
-	node._add_shard(PackedVector2Array([Vector2.ZERO, Vector2(1, 0), Vector2(0, 1)]), cell, Transform2D.IDENTITY, Vector2.ZERO, 0.05, 0.0, RandomNumberGenerator.new())
+	node._add_shard(PackedVector2Array([Vector2.ZERO, Vector2(1, 0), Vector2(0, 1)]), cell, Transform2D.IDENTITY, Vector2.ZERO, 0.05, RandomNumberGenerator.new())
 	node._invisible = true
 	node._commit()
 	parent.add_child(node)
@@ -178,13 +141,6 @@ static func _chip_poly(pos: Vector2, r: float, rng: RandomNumberGenerator) -> Pa
 	return poly
 
 
-static func _cells_center(cells: Array) -> Vector2:
-	var s := Vector2.ZERO
-	for c: Vector2i in cells:
-		s += Vector2(c) + Vector2(0.5, 0.5)
-	return s / float(cells.size())
-
-
 func _setup_material(cells: Array, cell: float, ramp: Dictionary) -> void:
 	_cell = cell
 	var m := ShaderMaterial.new()
@@ -196,28 +152,45 @@ func _setup_material(cells: Array, cell: float, ramp: Dictionary) -> void:
 
 
 ## Thêm một mảnh: quạt tam giác quanh tâm, UV lấy đúng chỗ của mảnh trên khối nên giữ nguyên sọc và mép.
-func _add_shard(poly: PackedVector2Array, cell: float, xf: Transform2D, vel: Vector2, life: float, delay: float, rng: RandomNumberGenerator) -> void:
+## Mỗi cạnh có thêm một mặt bên (tứ giác đùn xuống) vẽ trước mặt trên, để mảnh có bề dày.
+func _add_shard(poly: PackedVector2Array, cell: float, xf: Transform2D, vel: Vector2, life: float, rng: RandomNumberGenerator) -> void:
 	var center := _centroid(poly)
 	var s := Shard.new()
 	s.pos = xf * (center * cell)
 	s.vel = vel
 	s.spin = rng.randf_range(5.0, 17.0) * (1.0 if rng.randf() < 0.5 else -1.0)
+	s.rot = rng.randf() * TAU
 	s.phase = rng.randf() * TAU
 	s.life = life
-	s.delay = delay
+	s.born = _age
 	s.first = _points.size()
 	_points.append(s.pos)
 	_colors.append(Color(1, 0, 0, 1))
 	_uvs.append((center + Vector2.ONE * Pudding.PAD) / _dims)
 	var n := poly.size()
+	var uv := PackedVector2Array()
+	var radius := 0.0
 	for i in n:
 		s.ring.append(xf.basis_xform((poly[i] - center) * cell))
+		uv.append((poly[i] + Vector2.ONE * Pudding.PAD) / _dims)
+		radius = maxf(radius, s.ring[i].length())
 		_points.append(s.pos + s.ring[i])
 		_colors.append(Color(0, 0, 0, 1))
-		_uvs.append((poly[i] + Vector2.ONE * Pudding.PAD) / _dims)
+		_uvs.append(uv[i])
+	s.depth = minf(DEPTH * cell, radius * DEPTH_RATIO)
+	s.side_first = _points.size()
+	for i in n:
+		var j := (i + 1) % n
+		for v: Vector2 in [uv[i], uv[j], uv[j], uv[i]]:
+			_points.append(s.pos)
+			_colors.append(Color(0, 0, 0, 0))
+			_uvs.append(v + Vector2(SIDE_UV, 0.0))
+		var b := s.side_first + i * 4
+		_indices.append_array(PackedInt32Array([b, b + 1, b + 2, b, b + 2, b + 3]))
+	for i in n:
 		_indices.append_array(PackedInt32Array([s.first, s.first + 1 + i, s.first + 1 + (i + 1) % n]))
 	_shards.append(s)
-	_longest = maxf(_longest, delay + life)
+	_longest = maxf(_longest, s.born + life)
 
 
 func _commit() -> void:
@@ -232,40 +205,55 @@ func shard_count() -> int:
 func _process(delta: float) -> void:
 	_step(delta)
 	queue_redraw()
-	if _settle_at >= 0.0 and _age >= _settle_at:
-		_settle_at = -1.0
-		settled.emit()
-	if _age >= _hold + _longest:
+	if not _open and _age >= _longest:
 		queue_free()
 
 
 func _step(delta: float) -> void:
 	_age += delta
-	var flash := 1.0 - clampf(_age / maxf(_hold, 0.001), 0.0, 1.0) if _hold > 0.0 else 0.0
-	var live := _age - _hold
-	var gravity := Vector2(0.0, GRAVITY * _cell)
-	var drag := exp(-DRAG * delta)
+	var gravity := Vector2(0.0, _gravity * _cell)
+	var drag := exp(-_drag * delta)
 	for s: Shard in _shards:
-		var t := (live - s.delay) / s.life
-		var moving := t > 0.0
-		if moving and delta > 0.0:
+		var live := _age - s.born
+		if delta > 0.0:
 			s.vel = s.vel * drag + gravity * delta
 			s.pos += s.vel * delta
 			s.rot += s.spin * delta
-		var k := clampf(t, 0.0, 1.0)
+		var k := clampf(live / s.life, 0.0, 1.0)
 		var alpha := 0.0 if _invisible else 1.0 - smoothstep(0.62, 1.0, k)
+		var grow := clampf(live / DEPTH_GROW, 0.0, 1.0)
 		var size := 1.0 - 0.45 * smoothstep(0.55, 1.0, k)
-		var glint := pow(maxf(0.0, sin(s.rot * 1.3 + s.phase)), 16.0) if moving else 0.0
+		var glint := pow(maxf(0.0, sin(s.rot * 1.3 + s.phase)), 16.0)
 		var cs := cos(s.rot) * size
 		var sn := sin(s.rot) * size
-		# mảnh chưa bay thì vết nứt vẫn sáng, không hở nền ra giữa các mảnh còn khít nhau
-		var crack := flash if moving else maxf(flash, 0.3)
 		_points[s.first] = s.pos
-		_colors[s.first] = Color(1.0, glint, crack, alpha)
-		for i in s.ring.size():
+		_colors[s.first] = Color(1.0, glint, 0.0, alpha)
+		var n := s.ring.size()
+		for i in n:
 			var r := s.ring[i]
 			_points[s.first + 1 + i] = s.pos + Vector2(r.x * cs - r.y * sn, r.x * sn + r.y * cs)
-			_colors[s.first + 1 + i] = Color(0.0, glint, crack, alpha)
+			_colors[s.first + 1 + i] = Color(0.0, glint, 0.0, alpha)
+		# bề dày đùn xuống dưới, nghiêng và co giãn theo vòng xoay cho cảm giác mảnh lật trong không gian
+		var tip := 0.6 * sin(s.rot * 0.5 + s.phase)
+		var off := Vector2(sin(tip), cos(tip)) * s.depth * size * grow * (0.7 + 0.3 * cos(s.rot * 0.9 + s.phase))
+		for i in n:
+			var a := _points[s.first + 1 + i]
+			var b := _points[s.first + 1 + (i + 1) % n]
+			var nor := Vector2(b.y - a.y, a.x - b.x).normalized()
+			if nor.dot((a + b) * 0.5 - s.pos) < 0.0:
+				nor = -nor
+			# chỉ mặt bên quay về phía đùn mới thấy; mặt quay vào trong nằm khuất sau mặt trên
+			var side_a := alpha if nor.dot(off) > 0.0 else 0.0
+			var shade := clampf(0.5 + 0.5 * nor.dot(SHADE_DIR), 0.0, 1.0)
+			var q := s.side_first + i * 4
+			_points[q] = a
+			_points[q + 1] = b
+			_points[q + 2] = b + off
+			_points[q + 3] = a + off
+			_colors[q] = Color(0.0, shade, 0.0, side_a)
+			_colors[q + 1] = _colors[q]
+			_colors[q + 2] = Color(1.0, shade, 0.0, side_a)
+			_colors[q + 3] = _colors[q + 2]
 
 
 func _draw() -> void:

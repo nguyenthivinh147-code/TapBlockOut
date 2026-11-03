@@ -527,7 +527,7 @@
   },
   {
     "name": "bg_level",
-    "status": "used",
+    "status": "superseded",
     "tool": "mcp comfyui start_game_image (asset_type=background)",
     "workflow": "image_qwen_image_2_1_t2i",
     "model": "qwen_image_2.1_int8_convrot",
@@ -545,12 +545,25 @@
     "prompt_id": "e7c04ace-b788-4571-8212-a4d3e9ed2c83",
     "source": "art/images/bg_level.png",
     "source_sha256": "53cce6145d711b84aa846d5ca0c1958ebc10d28e59df03b6171f761f7880547d",
+    "note": "Nen bac ha - xanh nhat cu, chua tung goi trong code; thay bang bg_level_candy"
+  },
+  {
+    "name": "bg_level",
+    "status": "used",
+    "tool": "nguoi dung cung cap (anh co san)",
+    "generated_size": [
+      880,
+      1787
+    ],
+    "source": "art/images/bg_level_candy.png",
+    "source_sha256": "2071eb655440e815d2f6eee78bcbf5e318c9fda9a1345b767033539bf1a66117",
     "file": "assets/bg/bg_level.png",
-    "file_sha256": "a8b7d4542345504f4d3017452d193a94d7385c2e33924c191ce1824a45922365",
+    "file_sha256": "7acc8103b79318c24f67b0fccf84a74405cc0c505bfaddf83ddc00fdf0be4bbb",
     "file_size": [
       720,
-      1560
-    ]
+      1462
+    ],
+    "note": "Nen man level o ca 3 do kho (src/ui/level.gd); code phu lop dim ThemeKit.LEVEL_BG_DIM, cat kieu cover theo man"
   },
   {
     "name": "art_win",
@@ -1357,5 +1370,98 @@
       256,
       256
     ]
+  },
+  {
+    "manifest": "images",
+    "name": "booster_hint",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (image1 = bo cuc SVG, image2 = icon Figma)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Redraw the icon in <image1> as a polished mobile game icon in the exact rendering style of <image2>. Keep the same subject, composition, silhouette and colors as <image1>: a glowing yellow light bulb with short yellow light rays around the top, and a candy screw base made of stacked pink and cream rounded bands. Render it like <image2>: soft 3D cartoon shading, smooth rich gradients, glossy hard-candy surface, thick darker outline in the same hue as each part (dark orange around the yellow bulb and rays, dark magenta around the pink base), bright white specular highlights on the upper left, subtle inner rim light. Single icon, centered, generous padding, plain background. No text, no numbers, no letters, no coin, no extra objects, no drop shadow on the ground.",
+    "style_prompt": "",
+    "seed": 4101,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "d0b5cc91-0b6b-4536-b883-7ea9e6ef48e4",
+    "source": "art/images/booster_hint_ai.png",
+    "source_sha256": "1a989fd2e0f99fa64e6a85ac6dd809aff5aa24a85943b2e9ec01e209fb487a8e",
+    "reference": "art/images/booster_hint.svg (render 1024 px bang tools/render_svg_icons.gd), assets/ui/figma/ic_gold.png",
+    "file": "assets/ui/booster_hint.png",
+    "file_sha256": "bb5abd52f23ec3fc5137e51ea806320fbd6d375e8f71d5b0955d163962260988",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Bong den vang, de keo soc hong/kem, tia sang; MCP tu noi them cau 'Keep all desired foreground elements separate...' vao prompt; tools/fit_icon.gd (alpha 1-4 -> 0, 251-254 -> 255, cat vien, le 6%) -> 256 px; xem trong game L17"
+  },
+  {
+    "manifest": "images",
+    "name": "booster_move",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (image1 = bo cuc SVG, image2 = icon Figma)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Redraw the icon in <image1> as a polished mobile game icon in the exact rendering style of <image2>. Keep the same subject, composition, silhouette and colors as <image1>: a thick blue jelly-candy arrow that arcs from the lower left over the top and points down to the right, with light diagonal candy stripes running across it, and a chunky rounded yellow plus sign under the arc. Render it like <image2>: soft 3D cartoon shading, smooth rich gradients, glossy translucent jelly-candy surface, thick darker outline in the same hue as each part (dark navy around the blue arrow, dark orange around the yellow plus), bright white specular highlights on the upper edge, subtle inner rim light. Single icon, centered, generous padding, plain background. No text, no numbers, no letters, no coin, no extra objects, no closed circle, no drop shadow on the ground.",
+    "style_prompt": "",
+    "seed": 4201,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "09a33ca8-8fb1-4674-a6a0-a583e04b6730",
+    "source": "art/images/booster_move_ai.png",
+    "source_sha256": "7438ccd0c5dc7b7cfce4f305a323f5c0b7625f196e86f97cf5364a2bfe2c245c",
+    "reference": "art/images/booster_move.svg (render 1024 px bang tools/render_svg_icons.gd), assets/ui/figma/ic_gold.png",
+    "file": "assets/ui/booster_move.png",
+    "file_sha256": "f9d7673efb27ebe3b0d39422a3a22de50fd045913be5ee3587611f11c6bae014",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Mui ten vong cung xanh soc cheo nhu khoi, dau cong vang; vong ho de khong lan voi nut restart; MCP tu noi them cau 'Keep all desired foreground elements separate...' vao prompt; tools/fit_icon.gd (alpha 1-4 -> 0, 251-254 -> 255, cat vien, le 6%) -> 256 px; xem trong game L17"
+  },
+  {
+    "manifest": "images",
+    "name": "booster_smash",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (image1 = bo cuc SVG, image2 = icon Figma)",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Redraw the icon in <image1> as a polished mobile game icon in the exact rendering style of <image2>. Keep the same subject, composition, angle, silhouette and colors as <image1>: a candy mallet tilted with its head at the upper left, the barrel-shaped head is glossy pink with diagonal white candy stripes and darker pink rounded end caps, the handle is a red and white striped candy cane stick ending in a small pink ball, and three short yellow impact lines burst from the lower-left striking face. Render it like <image2>: soft 3D cartoon shading, smooth rich gradients, glossy hard-candy surface, thick darker outline in the same hue as each part (dark maroon around the hammer, dark orange around the yellow impact lines), bright white specular highlights, subtle inner rim light. Single icon, centered, generous padding, plain background. No text, no numbers, no letters, no bomb, no fuse, no extra objects, no drop shadow on the ground.",
+    "style_prompt": "",
+    "seed": 4301,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "c7093bea-df5b-42be-abae-5576b452562d",
+    "source": "art/images/booster_smash_ai.png",
+    "source_sha256": "b2a4ee35b2976650ba8774e4ce8e1ad789e71e38557752038748697647891ea0",
+    "reference": "art/images/booster_smash.svg (render 1024 px bang tools/render_svg_icons.gd), assets/ui/figma/ic_bomb.png",
+    "file": "assets/ui/booster_smash.png",
+    "file_sha256": "f222cc093de898448d7ad9eb4c1144fab4d6c5aaef0bac1069e73507c8b64321",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Bua keo hong soc trang, can gay keo soc do, vach va cham vang; thay ic_bomb cho booster; MCP tu noi them cau 'Keep all desired foreground elements separate...' vao prompt; tools/fit_icon.gd (alpha 1-4 -> 0, 251-254 -> 255, cat vien, le 6%) -> 256 px; xem trong game L17"
   }
 ]

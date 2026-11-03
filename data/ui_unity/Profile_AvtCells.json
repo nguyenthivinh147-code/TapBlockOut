@@ -1,0 +1,237 @@
+{
+	"name": "Profile_AvtCells",
+	"source": "Assets/_Game/Prefabs/Components/Profile_AvtCells.prefab",
+	"root": {
+		"n": "Profile_AvtCells",
+		"id": "1732982201131741401",
+		"a": true,
+		"r": [0, 1, 0, 1, 110, -118, 160, 160, 0.5, 0.5],
+		"img": {
+			"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_75",
+			"c": "ffffffff",
+			"t": 0,
+			"pa": false,
+			"fc": true,
+			"fm": 4,
+			"fa": 1,
+			"fo": 0,
+			"cw": true,
+			"ppu": 1,
+			"rt": true,
+			"on": true
+		},
+		"tog": {
+			"tr": 0,
+			"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+			"mult": 1,
+			"dur": 0.1,
+			"inter": true,
+			"target": "1732982201131741401",
+			"sprites": {"pressed": null, "disabled": null},
+			"on": false,
+			"graphic": null,
+			"group": null
+		},
+		"cs": [
+			{
+				"name": "AvatarItem",
+				"avatarImage": {"node": "1732982201131741401"},
+				"equipSign": {"node": "8134117388489207808"},
+				"toggle": null,
+				"lockGO": {"node": "4129303435138865636"},
+				"selectClip": {"asset": "sfx_chooseava.mp3"}
+			},
+			{
+				"name": "ToggleAnimator",
+				"toggle": {"node": "1732982201131741401"},
+				"targetImage": {"node": "1732982201131741401"},
+				"changeSprite": "0",
+				"onSprite": null,
+				"offSprite": null,
+				"isSmoothSpriteChange": "0",
+				"timeSmoothSprite": "0.2",
+				"changeColor": "0",
+				"onColor": {"r": "1", "g": "1", "b": "1", "a": "1"},
+				"offColor": {"r": "1", "g": "1", "b": "1", "a": "1"},
+				"scaleType": "0",
+				"scaleOn": {"x": "1.2", "y": "1.2", "z": "1.2"},
+				"scaleOff": {"x": "1", "y": "1", "z": "1"},
+				"sizeDeltaOn": {"x": "1.2", "y": "1.2"},
+				"sizeDeltaOff": {"x": "1", "y": "1"},
+				"layoutElement": null,
+				"flexibleOn": {"x": "1.2", "y": "1"},
+				"flexibleOff": {"x": "1", "y": "1"},
+				"isSmoothScaleChange": "0",
+				"timeSmoothScale": "0.2",
+				"hasTitle": "0",
+				"title": null,
+				"isSmoothTitle": "0",
+				"timeSmoothTitle": "0.2",
+				"hasIcon": "0",
+				"icon": null,
+				"isSmoothIcon": "0",
+				"timeSmoothIcon": "0.2",
+				"iconAnchorOn": {"x": "0", "y": "0", "z": "0"},
+				"iconAnchorOff": {"x": "0", "y": "0", "z": "0"},
+				"iconScaleOn": {"x": "1", "y": "1", "z": "1"},
+				"iconScaleOff": {"x": "1", "y": "1", "z": "1"},
+				"gameObjects": [
+					{"node": "7221706750059985616"}
+				],
+				"onObjects": [],
+				"offObjects": [],
+				"OnValueChange": []
+			},
+			{
+				"name": "PressEffect",
+				"selectable": {"node": "1732982201131741401"},
+				"effectImages": [
+					{
+						"Image": {"node": "1732982201131741401"},
+						"NormalColor": {"r": "1", "g": "1", "b": "1", "a": "1"},
+						"PressColor": {"r": "0.78431374", "g": "0.78431374", "b": "0.78431374", "a": "1"},
+						"colorTransitionDuration": "0.1"
+					},
+					{
+						"Image": {"node": "7221706750059985616"},
+						"NormalColor": {"r": "1", "g": "1", "b": "1", "a": "1"},
+						"PressColor": {"r": "0.78431374", "g": "0.78431374", "b": "0.78431374", "a": "1"},
+						"colorTransitionDuration": "0.1"
+					}
+				]
+			}
+		],
+		"ch": [
+			{
+				"n": "Select",
+				"id": "7221706750059985616",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 31.7051, 31.7051, 0.5, 0.5],
+				"img": {
+					"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_66",
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				}
+			},
+			{
+				"n": "Image",
+				"id": "8631120396696554243",
+				"a": false,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				}
+			},
+			{
+				"n": "Lock",
+				"id": "4129303435138865636",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": "Resources_UI_Maincenter:UI_Maincenter_23",
+					"c": "c4c4c4ff",
+					"t": 1,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 0.85,
+					"rt": true,
+					"on": false
+				},
+				"ch": [
+					{
+						"n": "Image",
+						"id": "9053159022957177274",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_75",
+							"c": "00000066",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					},
+					{
+						"n": "Image (1)",
+						"id": "3205580977354719160",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 41.0432, -37.0432, 56.8779, 56.8779, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_18",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					}
+				]
+			},
+			{
+				"n": "Equipped",
+				"id": "8134117388489207808",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 1.0978, -2, -4.1956, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "Equipped (1)",
+						"id": "4670076871419325284",
+						"a": true,
+						"r": [1, 0, 1, 0, -35.7, 40.6044, 76.7078, 76.7078, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_17",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					}
+				]
+			}
+		]
+	}
+}

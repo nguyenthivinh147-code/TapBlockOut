@@ -103,6 +103,7 @@ func _bbox(occ: Dictionary) -> Rect2i:
 ## Khối xếp thành hình ở giữa bàn cố định: có khoảng trống, không kín khung, nhiều dạng khác nhau.
 func test_blocks_form_varied_silhouettes_in_the_fixed_board(t: T) -> void:
 	var shapes := {}
+	var layouts := {}
 	var gappy := 0
 	var total := 300
 	for id in range(FIRST_ID, FIRST_ID + total):
@@ -121,8 +122,15 @@ func test_blocks_form_varied_silhouettes_in_the_fixed_board(t: T) -> void:
 		var keys: Array = occ.keys()
 		keys.sort()
 		shapes[str(keys)] = true
+		# Từ L14 hình lặp lại theo thư viện vẽ tay, nhưng cách cắt khối mỗi level một khác.
+		var cuts: Array = []
+		for b in d["blocks"]:
+			cuts.append(str(b["cells"]))
+		cuts.sort()
+		layouts[str(cuts)] = true
 	t.ok(gappy >= total * 0.95, "hầu hết level không kín khung hình (%d/%d)" % [gappy, total])
-	t.ok(shapes.size() >= total * 0.8, "nhiều hình dạng khác nhau (%d/%d)" % [shapes.size(), total])
+	t.ok(shapes.size() >= 40, "nhiều hình dạng khác nhau (%d/%d)" % [shapes.size(), total])
+	t.ok(layouts.size() >= total * 0.95, "cách cắt khối khác nhau (%d/%d)" % [layouts.size(), total])
 
 
 ## Mọi khối sương mù đều ẩn lúc đầu, dù ở rìa hình có ô trống kề.
@@ -138,7 +146,7 @@ func test_fog_blocks_start_hidden(t: T) -> void:
 	t.ok(fogged > 0, "có khối sương mù")
 
 
-## Bộ sinh dùng đủ mọi dạng hình, không chỉ vài dạng quen.
+## Bộ sinh dùng đủ mọi dạng hình, không chỉ vài dạng quen (hình cũ, cho level trước DifficultyCurve.SHAPED_FROM).
 func test_every_shape_kind_is_used(t: T) -> void:
 	var seen := {}
 	for sd in 400:

@@ -1,0 +1,438 @@
+{
+	"name": "MechanicTutorialLayer",
+	"source": "Assets/_Game/Prefabs/Layers/MechanicTutorialLayer.prefab",
+	"root": {
+		"n": "MechanicTutorialLayer",
+		"id": "5676859109278462881",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"canvas": {"override_sort": true, "order": 32767},
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"cs": [
+			{
+				"name": "DialogueReveal",
+				"panelRect": {"node": "5362002729743017383"},
+				"dimCanvasGroup": {"node": "5676859109278462881"},
+				"duration": "0.4",
+				"easeType": "26",
+				"OnStartAnim": [],
+				"OnCompleteAnim": []
+			},
+			{
+				"name": "UIMechanicTutorialLayer",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"mechanicIcon": {"node": "6610874016377337130"},
+				"mechanicNameText": {"node": "428646396917736932"},
+				"mechanicDescriptionText": {"node": "4451940994325920667"},
+				"rewardText": {"node": "4400229087354746895"},
+				"claimButton": {"node": "991164224444345254"}
+			}
+		],
+		"ch": [
+			{
+				"n": "GameObject",
+				"id": "6689267149989120801",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "Dim",
+						"id": "234041309248292764",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"img": {
+							"sp": null,
+							"c": "000000fc",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					},
+					{
+						"n": "UnlockPanel",
+						"id": "5362002729743017383",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 802, 800, 0.5, 0.5],
+						"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+						"cs": [
+							{
+								"name": "BoosterTutStep",
+								"stepIndex": "1",
+								"prefab": {"node": "5362002729743017383"},
+								"animator": null,
+								"canvasGroup": {"node": "5362002729743017383"},
+								"targetButton": {"node": "991164224444345254"}
+							}
+						],
+						"ch": [
+							{
+								"n": "Image",
+								"id": "674988022125636370",
+								"a": true,
+								"r": [0.5, 1, 0.5, 1, 0, 117.5, 844.32, 376.2, 0.5, 0.5],
+								"img": {
+									"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_8",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": true,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "Text (TMP)",
+										"id": "25676899098798070",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 19.54, 497, 152.5, 0.5, 0.5],
+										"txt": {
+											"s": "New Feature!",
+											"fs": 72,
+											"auto": [18, 72],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": true,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Outline - StarterPack",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": true,
+											"rich": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "BG",
+								"id": "7611867694389146904",
+								"a": false,
+								"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+								"img": {
+									"sp": "Popup2",
+									"c": "ffffffff",
+									"t": 1,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								}
+							},
+							{
+								"n": "CloseButton",
+								"id": "3184884127664237045",
+								"a": false,
+								"r": [1, 1, 1, 1, 0, 0, 120, 120, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"btn": {
+									"tr": 1,
+									"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "3184884127664237045",
+									"sprites": {"pressed": null, "disabled": null}
+								}
+							},
+							{
+								"n": "BoosterImage",
+								"id": "526147330059395126",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 0, 33.7, 100, 100, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "StarVfx",
+										"id": "326679523217473853",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 0, 0, 0.5, 0.5],
+										"s": [0.3, -0.3],
+										"ch": [
+											{"n": "Fx_Star", "id": "3045843863229767927", "a": true, "r": [0.5,0.5,0.5,0.5,0,0,0,0,0.5,0.5], "s": [5,5]}
+										]
+									},
+									{
+										"n": "Shinny",
+										"id": "2578066688903729632",
+										"a": false,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 500, 500, 0.5, 0.5],
+										"img": {
+											"sp": "light1",
+											"c": "ffff00cc",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"cs": [
+											{
+												"name": "SimpleUIRotator",
+												"targetUI": {"node": "2578066688903729632"},
+												"rotationSpeed": "40",
+												"rotateOnStart": "1"
+											}
+										]
+									},
+									{
+										"n": "LightRotate",
+										"id": "6190576690146365496",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 435.4, 421.23, 0.5, 0.5],
+										"img": {
+											"sp": null,
+											"c": "ffffff01",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": false
+										},
+										"ch": [
+											{
+												"n": "Image",
+												"id": "8567112224680066503",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 450, 450, 0.5, 0.5],
+												"img": {
+													"sp": "fx_1",
+													"c": "fae53c80",
+													"t": 0,
+													"pa": true,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": false,
+													"on": true
+												},
+												"cs": [
+													{
+														"name": "SimpleUIRotator",
+														"targetUI": {"node": "8567112224680066503"},
+														"rotationSpeed": "-30",
+														"rotateOnStart": "1"
+													}
+												]
+											},
+											{
+												"n": "Image (1)",
+												"id": "91526452977950393",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 450, 450, 0.5, 0.5],
+												"img": {
+													"sp": "fx_1",
+													"c": "fae53c80",
+													"t": 0,
+													"pa": true,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": false,
+													"on": true
+												},
+												"cs": [
+													{
+														"name": "SimpleUIRotator",
+														"targetUI": {"node": "91526452977950393"},
+														"rotationSpeed": "-60",
+														"rotateOnStart": "1"
+													}
+												]
+											}
+										]
+									},
+									{
+										"n": "Icon",
+										"id": "6610874016377337130",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 350, 350, 0.5, 0.5],
+										"img": {
+											"sp": "ic_MulticolorContainer",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "BoosterName",
+								"id": "428646396917736932",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 0, 315.4, 723.6, 153.7, 0.5, 0.5],
+								"txt": {
+									"s": "Multicolor Container",
+									"fs": 75,
+									"auto": [18, 75],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": true,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Outline - StarterPack",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": true,
+									"rich": true,
+									"on": true
+								}
+							},
+							{
+								"n": "BoosterDescription",
+								"id": "4451940994325920667",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 0, -316.3, 742.6, 227.6, 0.5, 0.5],
+								"txt": {
+									"s": "Di chuyển các ô vào hộp tạm để giải phóng băng chuyền!",
+									"fs": 50,
+									"auto": [18, 50],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": true,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": true,
+									"rich": true,
+									"on": true
+								}
+							},
+							{
+								"n": "ClaimButton",
+								"id": "991164224444345254",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 0, -567.8, 320, 140, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"btn": {
+									"tr": 1,
+									"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "991164224444345254",
+									"sprites": {"pressed": null, "disabled": null}
+								},
+								"vib": true,
+								"snd": true,
+								"ch": [
+									{
+										"n": "Text (TMP)",
+										"id": "4400229087354746895",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 244.82, 88, 0.5, 0.5],
+										"txt": {
+											"s": "Continue",
+											"fs": 61.3,
+											"auto": [18, 80],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": true,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Outline - Green",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": true,
+											"rich": true,
+											"on": true
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

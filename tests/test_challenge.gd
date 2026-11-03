@@ -245,12 +245,12 @@ func test_home_button_states(t: T) -> void:
 	var g := _g(49)
 	var h := _home()
 	t.ok(h.challenge_btn.disabled, "L49 khoá")
-	t.eq(h.challenge_btn.text, "Unlocked at Level 50", "ghi Unlocked at Level 50")
+	t.eq(h.challenge_caption.text, "Level 50", "ghi Level 50")
 	h.queue_free()
 	g.s.level = 50
 	var h2 := _home()
 	t.ok(not h2.challenge_btn.disabled, "L50 mở")
-	t.eq(h2.challenge_btn.text, "Daily Challenge", "chữ")
+	t.eq(h2.challenge_caption.text, "Daily Challenge", "chữ")
 	var got := {"r": {}}
 	h2.closed.connect(func(r: Variant) -> void: got["r"] = r)
 	h2.challenge_btn.pressed.emit()
@@ -260,7 +260,7 @@ func test_home_button_states(t: T) -> void:
 	Config.demo_override = 1
 	var h3 := _home()
 	t.ok(h3.challenge_btn.disabled, "demo: khoá")
-	t.eq(h3.challenge_btn.text, "Unlocked at Level 50", "demo ghi Unlocked at Level 50")
+	t.eq(h3.challenge_caption.text, "Level 50", "demo ghi Level 50")
 	h3.queue_free()
 	Config.demo_override = -1
 
@@ -463,7 +463,8 @@ func test_booster_buttons_follow_unlocks(t: T) -> void:
 		t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "L%d chơi" % lvn)
 		var kinds := ["hint", "move", "smash"]
 		for i in 3:
-			t.eq((lv.booster_buttons[kinds[i]] as Control).get_parent().visible, cases[lvn][i],
+			t.ok((lv.booster_buttons[kinds[i]] as Control).get_parent().visible, "L%d luôn có ô %s" % [lvn, kinds[i]])
+			t.eq(not (lv.booster_locks[kinds[i]] as Control).visible, cases[lvn][i],
 				"L%d nút %s" % [lvn, kinds[i]])
 		lv.free()
 	# quà 28 ngày, shop, mạng

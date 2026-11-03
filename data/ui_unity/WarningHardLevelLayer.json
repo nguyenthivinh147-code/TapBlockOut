@@ -1,0 +1,281 @@
+{
+	"name": "WarningHardLevelLayer",
+	"source": "Assets/_Game/Prefabs/Layers/WarningHardLevelLayer.prefab",
+	"root": {
+		"n": "WarningHardLevelLayer",
+		"id": "7219197735921211012",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"canvas": {"override_sort": true, "order": 0},
+		"cs": [
+			{
+				"name": "WarningHardLevelLayer",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"_canvas": {"node": "7219197735921211012"},
+				"TimeDelayShow": "0",
+				"TimeShowDuration": "1.5",
+				"WarningAudioClip": {"asset": "alarme.mp3"},
+				"extremeAnimation": {"node": "2336646114839352420"},
+				"skullTrans": {"node": "3860037523806032999"},
+				"SkullTarget": {"node": "5504083993919180832"},
+				"flyDuration": "0.6"
+			},
+			{
+				"name": "SafeAreaUIAdjuster",
+				"rectPanelSafes": [
+					{"node": "7219197735921211012"}
+				],
+				"debugLog": "0"
+			}
+		],
+		"ch": [
+			{
+				"n": "Panel",
+				"id": "5505950304007009561",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+				"ch": [
+					{
+						"n": "WarningExtreme",
+						"id": "2336646114839352420",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"le": {"ignore": true, "min": [-1,-1], "pref": [-1,-1], "flex": [-1,-1]},
+						"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+						"cs": [
+							{
+								"name": "WarningHardAnimation",
+								"canvasGroup": {"node": "2336646114839352420"},
+								"notifyTrans": [
+									{"node": "969697619787557230"},
+									{"node": "421575344465636992"}
+								],
+								"skullTrans": {"node": "3860037523806032999"},
+								"hardTextTrans": {"node": "8361545988854800984"},
+								"barrierTrans1": {"node": "9054610775919799394"},
+								"barrierTrans2": {"node": "8468435356179296250"},
+								"_notifyScale": "1.15",
+								"_notifyDuration": "0.3",
+								"_skullScale": "1.12",
+								"_skullDuration": "0.4",
+								"_hardTextScale": "1.12",
+								"_hardTextDuration": "0.4",
+								"_barrierDuration": "30"
+							}
+						],
+						"ch": [
+							{
+								"n": "Dim",
+								"id": "6963946675536590191",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 0, 0, 1692, 0.5, 0.5],
+								"img": {
+									"sp": null,
+									"c": "000000a6",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								}
+							},
+							{
+								"n": "Image",
+								"id": "9054610775919799394",
+								"a": true,
+								"r": [0, 0.5, 1, 0.5, 0, 104, 140, 20, 0.5, 0.5],
+								"img": {
+									"sp": "Warning:Warning_5",
+									"c": "ffffff4c",
+									"t": 2,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Image (1)",
+								"id": "8468435356179296250",
+								"a": true,
+								"r": [0, 0.5, 1, 0.5, 0, -86.2899, 140, 20, 0.5, 0.5],
+								"z": 3.2,
+								"img": {
+									"sp": "Warning:Warning_5",
+									"c": "ffffff4c",
+									"t": 2,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Bar",
+								"id": "3960544168285293660",
+								"a": true,
+								"r": [0, 0.5, 1, 0.5, -5, 0, 150, 300, 0.5, 0.5],
+								"img": {
+									"sp": "Warning:Warning_1",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 0.85,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Noti1",
+								"id": "969697619787557230",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -370, 0, 100, 100, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_UI_Maincenter:UI_Maincenter_81",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": true,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Center",
+								"id": "5768420538119220045",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -200, 0, 236, 236, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_UI_Maincenter:UI_Maincenter_76",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Noti2",
+								"id": "421575344465636992",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 370, 0, 100, 100, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_UI_Maincenter:UI_Maincenter_81",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": true,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "HardLevelTxt",
+								"id": "8361545988854800984",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 120, 0.8343, 345, 186.9014, 0.5, 0.5],
+								"txt": {
+									"s": "Hard Level",
+									"fs": 64.45,
+									"auto": [18, 72],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 16,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": -3,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"n": "GameObject",
+				"id": "1409682851543960209",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "Skull",
+						"id": "3860037523806032999",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, -200, 5, 146, 146, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_26",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": false,
+							"on": true
+						}
+					},
+					{
+						"n": "SkullTarget",
+						"id": "5504083993919180832",
+						"a": true,
+						"r": [0.5, 1, 0.5, 1, -101.6, -200.1, 146, 146, 0.5, 0.5]
+					}
+				]
+			}
+		]
+	}
+}

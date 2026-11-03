@@ -16,6 +16,10 @@ uniform float flash = 0.0;
 uniform float hit_at = 0.0;  // điểm bị va, tính từ tâm thanh dọc theo thanh
 uniform float hit_t = 1.0;   // 0: vừa va, 1: sóng đã tan
 uniform float pop = 0.0;     // mũi tên phồng lên khi bị va
+uniform float seg = 0.0;       // đoạn bị va: 0 nằm trong thanh, 1 nổi hẳn lên thành lăng trụ
+uniform float seg_at = 0.0;    // tâm đoạn, tính từ tâm thanh dọc theo thanh
+uniform float seg_half = 0.0;  // nửa chiều dài đoạn
+uniform float spin = 0.0;      // góc quay của đoạn quanh trục thanh, radian; mỗi mặt lục giác 60°
 
 const float END_RIM = 0.3;          // vành ở hai đầu, theo bán kính đầu thanh
 const float CAP_GLOSS_AT = 0.32;    // vòng sáng ở đầu trên thanh dọc, theo bán kính
@@ -27,6 +31,12 @@ const float ARROW_ROUND = 0.055;    // bo góc mũi tên, theo ô
 const float HIT_REACH = 7.0;        // sóng sáng chạy được chừng này ô mỗi phía
 const float HIT_W = 0.55;           // bề rộng sóng, theo ô
 const float HIT_A = 0.9;
+const float SEG_GROW = 1.12;        // bề ngang đỉnh-tới-đỉnh của lăng trụ so với bề dày thanh
+const float SEG_SHADE = 0.72;       // mặt nghiêng hẳn tối còn chừng này
+const float SEG_EDGE_A = 0.4;       // vệt sáng ở cạnh giữa hai mặt
+const float SEG_SEAM = 0.08;        // khe tối ở hai đầu đoạn, theo ô
+const float PIN_LEN = 0.09;         // chốt trục ló ra hai đầu đoạn, theo ô
+const float PIN_W = 0.32;           // nửa bề rộng chốt, theo bán kính thanh
 const float CLOSED_DIM = 0.55;
 const float SHADOW_DY = 0.11;       // bóng đổ, theo ô
 const float SHADOW_BLUR = 0.14;
@@ -60,6 +70,48 @@ float arrow(vec2 p) {
 	return triangle(lp + vec2(0.0, q.y * 0.5), q) - rr;
 }
 
+// Đoạn bị va: lăng trụ lục giác quay quanh trục thanh, nhìn thẳng từ trên xuống; spin = 0 thì một mặt hướng lên
+// người nhìn. Mỗi mặt tô một màu của mặt cắt tại hướng pháp tuyến của nó nên vẫn khớp ánh sáng với thân thanh.
+// Trả về màu và độ phủ.
+vec4 segment(float along, float across, float r, float half_len) {
+	float lo = max(seg_at - seg_half, -half_len + r);
+	float hi = min(seg_at + seg_half, half_len - r);
+	float to_end = min(along - lo, hi - along);
+	if (hi <= lo || to_end < -0.5) {
+		return vec4(0.0);
+	}
+	float k = r * mix(1.0, SEG_GROW, seg);  // tâm tới đỉnh
+	// đỉnh nằm ở spin + i * 60°; đỉnh gần phương ngang thanh nhất quyết định bề ngang bóng
+	float off = mod(spin + PI / 6.0, PI / 3.0) - PI / 6.0;
+	float w = k * cos(off);  // nửa bề ngang bóng lăng trụ
+	float cover = clamp(to_end + 0.5, 0.0, 1.0) * clamp(w - abs(across) + 0.5, 0.0, 1.0);
+	if (cover <= 0.0) {
+		return vec4(0.0);
+	}
+	float x = clamp(across, -w, w);
+	vec3 col = vec3(0.0);
+	for (int i = 0; i < 6; i++) {
+		float phi = spin + PI * 0.5 + PI / 3.0 * float(i);  // pháp tuyến: cos là phương ngang thanh, sin hướng về người nhìn
+		float facing = sin(phi);
+		if (facing <= 0.0) {
+			continue;
+		}
+		float x0 = k * cos(phi - PI / 6.0);
+		float x1 = k * cos(phi + PI / 6.0);
+		if (x < min(x0, x1) - 0.01 || x > max(x0, x1) + 0.01) {
+			continue;
+		}
+		float u = mix((cos(phi) + 1.0) * 0.5, clamp((across + r) / (2.0 * r), 0.0, 1.0), 0.3);
+		col = texture(ramp, vec2(u, 0.5)).rgb * mix(SEG_SHADE, 1.0, facing);
+		// cạnh giữa hai mặt cùng thấy được thì sáng lên, mép bóng thì không
+		float inner = min(abs(x0) < w - 0.5 ? abs(x - x0) : 1e4, abs(x1) < w - 0.5 ? abs(x - x1) : 1e4);
+		col = mix(col, vec3(1.0), SEG_EDGE_A * (1.0 - smoothstep(0.5, 2.0, inner)));
+		break;
+	}
+	col *= mix(0.78, 1.0, smoothstep(0.0, SEG_SEAM * cell_px, to_end));
+	return vec4(col, cover);
+}
+
 void fragment() {
 	vec2 p = UV * quad_px - quad_px * 0.5;
 	float d = capsule(p);
@@ -70,11 +122,14 @@ void fragment() {
 	float shadow = smoothstep(-SHADOW_BLUR * cell_px, 0.02 * cell_px, ds) * SHADOW_A;
 	vec3 col = SHADOW_COL;
 
+	float r = min(bar_px.x, bar_px.y) * 0.5;
+	float across = vertical ? p.x : p.y;
+	float along = vertical ? p.y : p.x;
+	float half_len = (vertical ? bar_px.y : bar_px.x) * 0.5;
+	vec4 sg = seg > 0.001 ? segment(along, across, r, half_len) : vec4(0.0);
+	float sa = sg.a * smoothstep(0.0, 0.3, seg);
+
 	if (a > 0.0) {
-		float r = min(bar_px.x, bar_px.y) * 0.5;
-		float across = vertical ? p.x : p.y;
-		float along = vertical ? p.y : p.x;
-		float half_len = (vertical ? bar_px.y : bar_px.x) * 0.5;
 		float thick = r * 2.0;
 		vec3 body = texture(ramp, vec2((across + r) / thick, 0.5)).rgb;
 
@@ -115,7 +170,25 @@ void fragment() {
 		vec3 ac = mix(ARROW_COL, ARROW_EDGE, edge * 0.45);
 		body = mix(body, ac, clamp(0.5 - ad, 0.0, 1.0) * mix(0.25, 1.0, open));
 
+		// chốt trục ló ra hai đầu đoạn đang quay
+		if (seg > 0.001) {
+			float lo = max(seg_at - seg_half, -half_len + r);
+			float hi = min(seg_at + seg_half, half_len - r);
+			float out_end = max(lo - along, along - hi);
+			float pin = clamp(PIN_LEN * cell_px - out_end + 0.5, 0.0, 1.0) * step(0.0, out_end);
+			pin *= clamp(r * PIN_W - abs(across) + 0.5, 0.0, 1.0) * smoothstep(0.0, 0.3, seg);
+			body = mix(body, end_col.rgb * 0.8, pin);
+		}
+
 		col = mix(body, vec3(1.0), flash * 0.55);
+	}
+
+	// đoạn bị va đè lên thân thanh, phần lăng trụ to hơn thanh vẽ ra ngoài
+	if (sa > 0.0) {
+		vec3 sc = mix(sg.rgb, sg.rgb * (1.0 - CLOSED_DIM), closed);
+		sc = mix(sc, vec3(1.0), flash * 0.55);
+		col = a > 0.0 ? mix(col, sc, sa) : sc;
+		a = max(a, sa);
 	}
 
 	float alpha = a + shadow * (1.0 - a);

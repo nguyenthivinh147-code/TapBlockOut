@@ -1,0 +1,125 @@
+{
+	"name": "PopupFeedBack",
+	"source": "Assets/_Game/Prefabs/Layers/PopupFeedBack.prefab",
+	"root": {
+		"n": "PopupFeedBack",
+		"id": "7219197735921211012",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"canvas": {"override_sort": true, "order": 0},
+		"cs": [
+			{
+				"name": "PopupFeedbackUICoreLayer",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"titleText": {"node": "4123042294102317438"},
+				"contentText": {"node": "2046242537223341959"},
+				"panelRect": {"node": "5505950304007009561"},
+				"fadeDuration": "0.5",
+				"showDuration": "2",
+				"notiSound": {"asset": "22b1fe230ddd00b4bb74f0983acdc4e0"}
+			}
+		],
+		"ch": [
+			{
+				"n": "Panel",
+				"id": "5505950304007009561",
+				"a": true,
+				"r": [0, 0.5, 1, 0.5, 0, 0, 0, 221.64, 0.5, 0.5],
+				"lay": {
+					"t": "v",
+					"pad": [48, 48, 48, 48],
+					"al": 4,
+					"sp": 30,
+					"cw": true,
+					"ch": true,
+					"ew": true,
+					"eh": false,
+					"sw": false,
+					"sh": false,
+					"rev": false
+				},
+				"ch": [
+					{
+						"n": "Image",
+						"id": "5975255424296639876",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 140, 0, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_89",
+							"c": "ffffffff",
+							"t": 1,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1.25,
+							"rt": true,
+							"on": true
+						},
+						"le": {"ignore": true, "min": [-1,-1], "pref": [-1,-1], "flex": [-1,-1]}
+					},
+					{
+						"n": "Text (TMP)",
+						"id": "4123042294102317438",
+						"a": true,
+						"r": [0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5],
+						"txt": {
+							"s": "dsdsdssddsdssdasdasdasdsdaasdasdadsasdasdasdasddas",
+							"fs": 65,
+							"auto": null,
+							"c": "ffffffff",
+							"h": 2,
+							"v": 512,
+							"w": true,
+							"ov": 0,
+							"st": 0,
+							"mat": "Baloo Outline - Black",
+							"font": "Baloo Bhaijaan Regular 400 SDF",
+							"cs": 0,
+							"ws": 0,
+							"ls": 0,
+							"m": [0, 0, 0, 0],
+							"rt": false,
+							"rich": false,
+							"on": true
+						}
+					},
+					{
+						"n": "Text (TMP) (1)",
+						"id": "2046242537223341959",
+						"a": false,
+						"r": [0, 1, 0, 1, 380, -207.575, 664, 49.39, 0.5, 0.5],
+						"txt": {
+							"s": "New Text",
+							"fs": 36,
+							"auto": null,
+							"c": "ffffffff",
+							"h": 2,
+							"v": 512,
+							"w": false,
+							"ov": 0,
+							"st": 0,
+							"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+							"font": "Baloo Bhaijaan Regular 400 SDF",
+							"cs": 0,
+							"ws": 0,
+							"ls": 0,
+							"m": [0, 0, 0, 0],
+							"rt": false,
+							"rich": false,
+							"on": true
+						}
+					}
+				]
+			}
+		]
+	}
+}

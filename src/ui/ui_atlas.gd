@@ -24,6 +24,18 @@ const REGIONS := {
 	"pill_cyan": ["main", Rect2(0, 1504, 380, 120)],
 	"pill_gray": ["main", Rect2(384, 1554, 380, 168)],
 	"pill_violet": ["main", Rect2(384, 1731, 380, 144)],
+	# tab hai nửa (Profile: Avatar | Frame); _l bo góc trái, _r bo góc phải
+	"tab_l_off": ["main", Rect2(0, 1628, 358, 102)],
+	"tab_l_on": ["main", Rect2(0, 1734, 358, 102)],
+	"tab_r_off": ["main", Rect2(0, 1840, 358, 102)],
+	"tab_r_on": ["main", Rect2(0, 1946, 358, 102)],
+	# icon bật tắt trong Settings: bật màu xanh lá, tắt xám gạch chéo
+	"tog_sound_on": ["main", Rect2(200, 628, 96, 80)],
+	"tog_sound_off": ["main", Rect2(300, 624, 96, 84)],
+	"tog_vibrance_on": ["main", Rect2(0, 721, 96, 88)],
+	"tog_vibrance_off": ["main", Rect2(100, 721, 96, 88)],
+	"tog_music_on": ["main", Rect2(200, 720, 96, 88)],
+	"tog_music_off": ["main", Rect2(300, 720, 96, 88)],
 	# tiêu đề, panel nhỏ
 	"label_purple": ["main", Rect2(384, 1332, 368, 108)],
 	"label_yellow": ["main", Rect2(384, 1444, 368, 106)],
@@ -117,6 +129,23 @@ static func tex(region: String) -> Texture2D:
 	return t
 
 
+## Ảnh rời trong assets/ui/figma/ (không qua atlas). File mới chưa được editor import thì đọc thẳng png.
+static func file_tex(file_name: String) -> Texture2D:
+	var key := "file:" + file_name
+	if _tex_cache.has(key):
+		return _tex_cache[key]
+	var path := DIR + file_name
+	var t: Texture2D = null
+	if ResourceLoader.exists(path):
+		t = load(path) as Texture2D
+	elif FileAccess.file_exists(path):
+		var img := Image.load_from_file(ProjectSettings.globalize_path(path))
+		if img != null:
+			t = ImageTexture.create_from_image(img)
+	_tex_cache[key] = t
+	return t
+
+
 static func size_of(region: String) -> Vector2:
 	if not REGIONS.has(region):
 		return Vector2.ZERO
@@ -140,6 +169,31 @@ static func box(region: String, margin: Vector4, content: Vector4 = Vector4(-1, 
 		s.content_margin_top = content.y
 		s.content_margin_right = content.z
 		s.content_margin_bottom = content.w
+	return s
+
+
+## Sprite co đều về cao h (giữ tỉ lệ), 9-slice chỉ theo chiều ngang với hai đầu bằng nửa chiều cao.
+## Dùng cho nút viên thuốc và tab đặt đúng cỡ Figma: đổi rộng không làm méo đầu tròn.
+static func fit_box(region: String, h: float) -> StyleBoxTexture:
+	var key := "%s@%d" % [region, roundi(h)]
+	var t: Texture2D = _tex_cache.get(key)
+	if t == null:
+		var r: Array = REGIONS.get(region, [])
+		var sheet := _sheet(str(r[0])) if not r.is_empty() else null
+		if sheet == null:
+			return StyleBoxTexture.new()
+		var src: Rect2 = r[1]
+		var full := sheet.get_image()
+		if full.is_compressed():
+			full.decompress()
+		var img := full.get_region(Rect2i(src))
+		img.resize(maxi(roundi(src.size.x * h / src.size.y), 1), maxi(roundi(h), 1), Image.INTERPOLATE_LANCZOS)
+		t = ImageTexture.create_from_image(img)
+		_tex_cache[key] = t
+	var s := StyleBoxTexture.new()
+	s.texture = t
+	s.texture_margin_left = h * 0.5
+	s.texture_margin_right = h * 0.5
 	return s
 
 

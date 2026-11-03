@@ -1,0 +1,25 @@
+{
+	"name": "ImgBoosterCapacity",
+	"source": "Assets/_Game/Prefabs/UI/UIStore/ImgBoosterCapacity.prefab",
+	"root": {
+		"n": "ImgBoosterCapacity",
+		"id": "7614422387302634422",
+		"a": true,
+		"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 80, 80, 0.5, 0.5],
+		"img": {
+			"sp": "ic_booster3_1",
+			"c": "ffffffff",
+			"t": 0,
+			"pa": false,
+			"fc": true,
+			"fm": 4,
+			"fa": 1,
+			"fo": 0,
+			"cw": true,
+			"ppu": 1,
+			"rt": true,
+			"on": true
+		},
+		"anim": {"controller": "ImgBoosterCapacity", "on": true}
+	}
+}

@@ -34,6 +34,10 @@ window/handheld/orientation=1
 
 enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg", "res://addons/tbo_platform/plugin.cfg", "res://addons/GodotGooglePlayBilling/plugin.cfg")
 
+[gui]
+
+theme/custom_font="res://assets/fonts/baloo.res"
+
 [internationalization]
 
 locale/translations=PackedStringArray("res://i18n/strings.en.translation", "res://i18n/strings.vi.translation")

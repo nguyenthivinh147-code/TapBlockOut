@@ -26,6 +26,7 @@ ASSETS = os.path.join(ROOT, "assets")
 SOURCE_OVERRIDE = {
     "block_surface": "block_surface_v2.png",
     "art_no_lives": "art_no_lives_v2.png",
+    "bg_level": "bg_level_candy.png",
 }
 
 ICON_NAMES = [

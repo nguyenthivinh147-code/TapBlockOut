@@ -32,7 +32,9 @@ const POPUP_CREAM := Color("F8F3DE")
 const INK := Color("3A3F6E")
 const TEXT := Color("FFFFFF")
 const TEXT_DIM := Color("BEC6EF")
-const TEXT_OUTLINE := Color("1A1C3A")
+## Default text stroke and underlay: TMP material "Baloo Outline - Black" (white face, black outline and shadow).
+const TEXT_OUTLINE := Color("000000")
+const UNDERLAY := Color("000000")
 const GOLD := Color("FFC933")
 const GOLD_DEEP := Color("FFA508")
 const GOOD := Color("73DF31")
@@ -44,6 +46,12 @@ const SCRIM := Color(0.0, 0.016, 0.059, 0.8)
 # Theme Slate (Gameplay)
 const SLATE_BG := Color("504D73")
 const SLATE_SURFACE := Color("3D3A63")
+# Gameplay background: one picture for every difficulty under a translucent dim so the board stands out
+# (LEVEL_BG shows if the picture is missing), and the board panel behind the blocks.
+const LEVEL_BG := Color("B3CBFF")
+const LEVEL_BG_IMAGE := "res://assets/bg/bg_level.png"
+const LEVEL_BG_DIM := Color(0, 0, 0, 0.3)
+const BOARD_BG := Color("504B98")
 # Chữ và khối trên thân popup kem (Theme Warm + Popup Lavender)
 const INK_DIM := Color("6C74AE")
 const INK_GOOD := Color("3E7F1E")
@@ -89,6 +97,9 @@ const FS_BUTTON := 36
 const FS_TITLE := 52
 const FS_HUGE := 80
 
+## Baloo (MSDF, built by tools/gen_baloo_font.gd); also the project default via `gui/theme/custom_font`.
+const FONT: FontFile = preload("res://assets/fonts/baloo.res")
+
 const MIN_BUTTON := Vector2(96, 96)
 const RADIUS := 24
 const ICON_SIZE := 96
@@ -98,9 +109,6 @@ const PILL_DIR := "res://assets/ui/figma/pill/"
 ## Tên UI hay gọi mà file mang tên khác.
 const ICON_ALIAS := {
 	"coin": "ui_gold",
-	"booster_hint": "ui_hint",
-	"booster_move": "ui_moves",
-	"booster_smash": "ui_smash",
 	# mảnh leaderboard: dùng tạm ngôi sao cho tới khi có assets/ui/figma/lb_piece.png
 	"lb_piece": "ic_star1",
 }
@@ -118,7 +126,6 @@ const FIGMA_ICON := {
 	"ui_sound": "ic_sound_on",
 	"ui_music": "ic_music_on",
 	"ui_smash": "ic_bomb",
-	"booster_smash": "ic_bomb",
 	"ui_leaderboard": "ic_leaderboard",
 	"ui_noads": "ic_noads",
 	"ui_plus": "ic_plus",
@@ -177,6 +184,32 @@ static func make_background(top: Color = BG_TOP, bottom: Color = BG_BOTTOM) -> C
 	grad.set_anchors_preset(Control.PRESET_FULL_RECT)
 	grad.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	r.add_child(grad)
+	return r
+
+
+## Full-screen picture background (scaled to cover, centered) under a translucent `dim` layer.
+## Missing picture leaves the flat `fallback` color.
+static func make_image_background(path: String, dim: Color, fallback: Color = BG) -> ColorRect:
+	var r := ColorRect.new()
+	r.color = fallback
+	r.set_anchors_preset(Control.PRESET_FULL_RECT)
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tex: Texture2D = load(path) as Texture2D if ResourceLoader.exists(path) else null
+	if tex != null:
+		var pic := TextureRect.new()
+		pic.name = "Image"
+		pic.texture = tex
+		pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		pic.set_anchors_preset(Control.PRESET_FULL_RECT)
+		pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		r.add_child(pic)
+	var shade := ColorRect.new()
+	shade.name = "Dim"
+	shade.color = dim
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	r.add_child(shade)
 	return r
 
 
@@ -325,13 +358,23 @@ static func make_label(text: String, size: int = FS_BODY, color: Color = TEXT) -
 	l.add_theme_color_override("font_color", color)
 	l.add_theme_color_override("font_outline_color", TEXT_OUTLINE)
 	l.add_theme_constant_override("outline_size", 6)
+	underlay(l, 6)
 	return l
+
+
+## Black drop shadow under the outline, like TMP material "Baloo Outline - Black". outline 0 removes it.
+static func underlay(l: Label, outline: int) -> void:
+	l.add_theme_color_override("font_shadow_color", UNDERLAY if outline > 0 else Color(0, 0, 0, 0))
+	l.add_theme_constant_override("shadow_offset_x", 0)
+	l.add_theme_constant_override("shadow_offset_y", roundi(outline * 0.5) + 1)
+	l.add_theme_constant_override("shadow_outline_size", outline)
 
 
 ## Chữ đậm trên nền sáng (thân popup kem): màu ink, không viền.
 static func ink_label(text: String, size: int = FS_BODY, color: Color = INK) -> Label:
 	var l := make_label(text, size, color)
 	l.add_theme_constant_override("outline_size", 0)
+	underlay(l, 0)
 	return l
 
 
@@ -340,6 +383,7 @@ static func gold_label(text: String, size: int = FS_TITLE) -> Label:
 	var l := make_label(text, size, GOLD)
 	l.add_theme_color_override("font_outline_color", GOLD_STROKE)
 	l.add_theme_constant_override("outline_size", 10)
+	underlay(l, 10)
 	return l
 
 
@@ -398,11 +442,16 @@ static func style_bar(bar: ProgressBar, fill: Color = Color("3CD020")) -> void:
 ## Theme chung (đặt vào gốc UI): chữ và nút mặc định cùng bảng màu.
 static func make_theme() -> Theme:
 	var t := Theme.new()
+	t.default_font = FONT
 	t.default_font_size = FS_BODY
 	t.set_color("font_color", "Label", TEXT)
 	t.set_font_size("font_size", "Label", FS_BODY)
 	t.set_color("font_outline_color", "Label", TEXT_OUTLINE)
 	t.set_constant("outline_size", "Label", 6)
+	t.set_color("font_shadow_color", "Label", UNDERLAY)
+	t.set_constant("shadow_offset_x", "Label", 0)
+	t.set_constant("shadow_offset_y", "Label", 4)
+	t.set_constant("shadow_outline_size", "Label", 6)
 	t.set_color("font_color", "Button", TEXT)
 	t.set_color("font_outline_color", "Button", BUTTON_STROKE["primary"])
 	t.set_constant("outline_size", "Button", 8)

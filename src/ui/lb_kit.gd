@@ -1,9 +1,37 @@
 extends RefCounted
 ## Mảnh UI dùng chung của các màn Leaderboard: huy hiệu league, hàng người chơi, podium, định dạng số.
 ## Hàng người chơi là dict của Game.lb_view / lb_world_view: {rank, name, avatar, frame, flag, points, me}.
+## Prefab pieces (color-cube-match-puzzle): card() / fill_card() build PlayerLeaderboardItem rows, set_league_icon()
+## puts a LeaderboardRankBadgesSO trophy on an Image. The older ThemeKit pieces below stay for other screens.
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const Profile := preload("res://src/ui/profile.gd")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UnityKit := preload("res://src/ui/unity_kit.gd")
+const UImage := preload("res://src/ui/u_image.gd")
+
+const ITEM := "PlayerLeaderboardItem"
+## LeaderboardRankBadgesSO has Bronze, Silver, Gold, Platinum, Diamond. The game's 7 leagues reuse them; the three
+## leagues Unity does not have get a tint so every league reads differently.
+const LEAGUE_SPRITES := {
+	"silver": ["ic_Silver", "ffffffff"], "gold": ["ic_Gold", "ffffffff"], "platinum": ["ic_Platinum", "ffffffff"],
+	"emerald": ["ic_Platinum", "7ff0aaff"], "diamond": ["ic_Diamond", "ffffffff"],
+	"immortal": ["ic_Platinum", "c9a6ffff"], "one_above_all": ["ic_Diamond", "ff9eb1ff"],
+}
+## UILeaderboardUserCard._imageStates (ImageStateKeeper): state 0 = my row, 1..3 = rank 1..3, 4 = others.
+const ROW_BG := [29, 25, 26, 27, 28]
+const ROW_POINTS := [19, 17, 16, 18, 19]
+const ROW_MEDAL := [0, 14, 15, 24, 0]
+const ATLAS := "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_%d"
+const ATLAS_TEX := "res://assets/ui/cc/UI_Leaderboard_Atlas.png"
+## Unity rects (x, y from top, w, h) and borders (l, t, r, b) of UI_Leaderboard_Atlas sprites that only
+## ImageStateKeeper references; tools/unity_ui_export.mjs does not export them to _sprites.json.
+const ATLAS_EXTRA := {
+	25: [524, 930, 500, 94, 30, 30, 30, 30], 26: [523, 833, 500, 94, 30, 30, 30, 30],
+	27: [524, 734, 500, 94, 30, 30, 30, 30], 29: [524, 539, 500, 94, 30, 30, 30, 30],
+}
+## Rank point icon: the game's piece (lb_piece) in place of Unity's UI_Maincenter_2.
+const PIECE_ICON := "lb_piece"
 
 ## Màu nền huy hiệu theo league (chưa có ảnh cúp riêng cho từng league).
 const LEAGUE_COLORS := {
@@ -23,24 +51,23 @@ static func league_color(id: String) -> Color:
 	return LEAGUE_COLORS.get(id, ThemeKit.TEXT_DIM)
 
 
-## Huy hiệu league: vòng tròn màu league có cúp ở giữa.
+## Huy hiệu league: cúp của league (LeaderboardRankBadgesSO, xem LEAGUE_SPRITES), khung vuông px.
 static func league_badge(id: String, px: float) -> Control:
-	var p := PanelContainer.new()
+	var p := Control.new()
 	p.name = "LeagueBadge"
 	p.custom_minimum_size = Vector2(px, px)
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	p.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var s := StyleBoxFlat.new()
-	s.bg_color = league_color(id)
-	s.set_corner_radius_all(int(px * 0.5))
-	s.set_border_width_all(maxi(3, int(px * 0.05)))
-	s.border_color = league_color(id).lightened(0.45)
-	s.shadow_color = Color(0, 0, 0, 0.25)
-	s.shadow_size = 4
-	s.shadow_offset = Vector2(0, 3)
-	p.add_theme_stylebox_override("panel", s)
-	p.add_child(ThemeKit.make_icon("ui_leaderboard", px * 0.72))
+	var img := UImage.new()
+	img.name = "Trophy"
+	img.set_anchors_preset(Control.PRESET_FULL_RECT)
+	img.preserve_aspect = true
+	var sp := UnityUI.sprite_info(league_sprite(id))
+	if not sp.is_empty():
+		img.set_texture(sp.tex, sp.region)
+	img.color = league_tint(id)
+	p.add_child(img)
 	return p
 
 
@@ -258,3 +285,177 @@ static func fmt_clock(sec: int) -> String:
 	sec = maxi(sec, 0)
 	@warning_ignore("integer_division")
 	return "%02d:%02d:%02d" % [sec / 3600, (sec % 3600) / 60, sec % 60]
+
+
+# --- prefab pieces (unity_ui.gd) ---
+
+static func league_sprite(id: String) -> String:
+	return str((LEAGUE_SPRITES.get(id, LEAGUE_SPRITES.silver) as Array)[0])
+
+
+static func league_tint(id: String) -> Color:
+	return Color(str((LEAGUE_SPRITES.get(id, LEAGUE_SPRITES.silver) as Array)[1]))
+
+
+## Trophy of a league on a built Image node; alpha (current league or not) is kept.
+static func set_league_icon(node: Control, id: String) -> void:
+	UnityUI.set_sprite(node, league_sprite(id))
+	var img := UnityUI.image_of(node)
+	if img != null:
+		var c := league_tint(id)
+		c.a = (img.color as Color).a
+		img.call("set_color", c)
+
+
+## UI_Leaderboard_Atlas sprite n on a built node, including the ones _sprites.json lacks (ATLAS_EXTRA).
+static func set_atlas(node: Control, n: int) -> void:
+	var key := ATLAS % n
+	if not UnityUI.sprite_info(key).is_empty() or not ATLAS_EXTRA.has(n):
+		UnityUI.set_sprite(node, key)
+		return
+	var img := UnityUI.image_of(node)
+	var tex := load(ATLAS_TEX) as Texture2D
+	if img == null or tex == null:
+		return
+	var a: Array = ATLAS_EXTRA[n]
+	var k := float(tex.get_width()) / 1024.0
+	var ppu := float((node.get_meta("u", {}) as Dictionary).get("img", {}).get("ppu", 1.0))
+	img.call("set_texture", tex, Rect2(float(a[0]) * k, float(a[1]) * k, float(a[2]) * k, float(a[3]) * k),
+		Vector4(float(a[4]), float(a[5]), float(a[6]), float(a[7])) * k, 1.0 / k / maxf(ppu, 0.0001))
+
+
+## Game avatar and frame textures on an Avatar node of a prefab (frame without a real icon keeps the prefab ring).
+static func set_avatar(avatar: Control, avatar_id: String, frame_id: String) -> void:
+	if avatar == null:
+		return
+	if avatar_id != "":
+		(UnityUI.image_of(avatar)).call("set_texture", ThemeKit.icon(avatar_id))
+	var fr := avatar.get_node_or_null("Frame") as Control
+	if fr != null and frame_id != "" and ThemeKit.has_real_icon(frame_id):
+		(UnityUI.image_of(fr)).call("set_texture", ThemeKit.icon(frame_id))
+
+
+## TMP auto size on a label that has none in the prefab (rank numbers like 12,345). The meta is copied first:
+## it is the cached layout dict.
+static func auto_size(l: Label, lo: float = 18.0) -> void:
+	var t: Dictionary = (l.get_meta("u_txt", {}) as Dictionary).duplicate()
+	if t.get("auto") == null:
+		t["auto"] = [lo, float(t.get("fs", 36.0))]
+		l.set_meta("u_txt", t)
+		l.resized.connect(UnityUI.fit_text.bind(l))
+	UnityUI.fit_text(l)
+
+
+## A PlayerLeaderboardItem (800x150) under parent at rect (canvas units from the parent's top-left).
+## button: the row is a Button tinting its BG (World rows open the player card). Returns the row's view.
+static func card(parent: Control, row: Dictionary, rect: Rect2, sub: String = "", button: bool = false) -> RefCounted:
+	var s := UnityKit.spec(ITEM, "")
+	s.a = true
+	if button:
+		s["btn"] = {"tr": 1, "c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"], "mult": 1, "dur": 0.1,
+			"inter": true, "target": str((s.ch[0] as Dictionary).id)}
+		s["snd"] = true
+	var v: RefCounted = UnityKit.add(parent, s, rect)
+	fill_card(v.root, row, sub)
+	return v
+
+
+## UILeaderboardUserCard.SetupCard on a built PlayerLeaderboardItem: rank (medal for 1-3), avatar and frame,
+## name (+ an optional second line), flag code, points; BG and point pill by rank, arrow and green BG on my row.
+## The Gift (weekly top-5 reward) is hidden: the game has no position rewards.
+static func fill_card(root: Control, row: Dictionary, sub: String = "") -> void:
+	var rank := int(row.get("rank", 0))
+	var me := bool(row.get("me", false))
+	var idx := rank if rank >= 1 and rank <= 3 else 4
+	var st := 0 if me else idx
+	set_atlas(root.get_node("BG"), ROW_BG[st])
+	set_atlas(root.get_node("PointPanel"), ROW_POINTS[st])
+	var medal := root.get_node("RankNumberTxt/Image") as Control
+	medal.visible = idx <= 3
+	if idx <= 3:
+		set_atlas(medal, ROW_MEDAL[idx])
+	(root.get_node("PlayerArrow") as Control).visible = me
+	(root.get_node("Gift") as Control).visible = false
+	var num := root.get_node("RankNumberTxt") as Label
+	num.text = fmt_int(rank)
+	auto_size(num)
+	set_avatar(root.get_node("Avatar"), str(row.get("avatar", "")), str(row.get("frame", "")))
+	var name_l := root.get_node("PlayerName") as Label
+	UnityUI.set_text(name_l, display_name(row))
+	(UnityUI.image_of(root.get_node("PointPanel/RankPointIcon"))).call("set_texture", ThemeKit.icon(PIECE_ICON))
+	UnityUI.set_text(root.get_node("PointPanel/PointText") as Label, fmt_int(int(row.get("points", 0))))
+	_sub_line(root, name_l, sub)
+	_flag(root, str(row.get("flag", "")))
+
+
+## Second line under the name (rank change, league): a copy of PlayerName at 30 units, the name moves up.
+static func _sub_line(root: Control, name_l: Label, sub: String) -> void:
+	var old := root.get_node_or_null("SubText")
+	if old != null:
+		root.remove_child(old)
+		old.queue_free()
+	var r: Dictionary = name_l.get_meta("u_rect")
+	r.pos = Vector2((r.pos as Vector2).x, 18.0 if sub != "" else 0.0)
+	r.size = Vector2((r.size as Vector2).x, 60.0 if sub != "" else 91.2)
+	UnityUI.apply_rect(name_l)
+	UnityUI.fit_text(name_l)
+	if sub == "":
+		return
+	var s := UnityKit.spec(ITEM, "PlayerName")
+	s.n = "SubText"
+	s.txt.s = sub
+	s.txt.fs = 30.0
+	s.txt.auto = [18.0, 30.0]
+	s.r = [0.5, 0.5, 0.5, 0.5, -181.4, -30.0, 295.4, 44.0, 0.0, 0.5]
+	UnityKit.add(root, s)
+
+
+## Country code next to the name, in the slot of the hidden Gift.
+static func _flag(root: Control, code: String) -> void:
+	var old := root.get_node_or_null("FlagText")
+	if old != null:
+		root.remove_child(old)
+		old.queue_free()
+	if code == "":
+		return
+	var s := UnityKit.spec(ITEM, "PlayerName")
+	s.n = "FlagText"
+	s.txt.s = code
+	s.txt.fs = 32.0
+	s.txt.auto = [18.0, 32.0]
+	s.txt.h = 2
+	s.r = [0.5, 0.5, 0.5, 0.5, 150.0, 0.0, 110.0, 50.0, 0.5, 0.5]
+	UnityKit.add(root, s)
+
+
+## Reward prefab items (icon + amount) for a game reward {coins, items, inf_min} into a layout parent:
+## gold uses RewardItemSO's gold sprite, boosters the game's booster icons, unlimited lives the infinite heart.
+static func reward_items(parent: Control, reward: Dictionary) -> Array:
+	var out: Array = []
+	var coins := int(reward.get("coins", 0))
+	if coins > 0:
+		out.append(_reward_item(parent, "Resources_moved_UI_Maincenter:UI_Maincenter_3", null, fmt_int(coins)))
+	var items: Dictionary = reward.get("items", {})
+	for kind in ["hint", "move", "smash"]:
+		var n := int(items.get(kind, 0))
+		if n > 0:
+			out.append(_reward_item(parent, "", ThemeKit.icon("booster_" + kind),
+				TranslationServer.translate("booster_count") % n))
+	var inf := int(reward.get("inf_min", 0))
+	if inf > 0:
+		out.append(_reward_item(parent, "Resources_moved_UI_Maincenter:UI_Maincenter_16", null,
+			TranslationServer.translate("weekly_reward_inf") % inf))
+	return out
+
+
+static func _reward_item(parent: Control, key: String, tex: Texture2D, amount: String) -> RefCounted:
+	var s := UnityKit.spec("Reward", "")
+	s.a = true
+	var v: RefCounted = UnityKit.add(parent, s)
+	if key != "":
+		v.sprite("RewardIcon", key)
+	else:
+		v.texture("RewardIcon", tex)
+	(v.image("RewardIcon")).set("preserve_aspect", true)
+	v.text("RewardText", amount)
+	return v

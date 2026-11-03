@@ -200,6 +200,13 @@ func sync_cloud() -> void:
 	save.sync_cloud()
 
 
+## Tester menu "delete account": drops the cloud backup (the next push overwrites the cloud copy) and the mock
+## purchases. Google Play keeps real purchases.
+func wipe() -> void:
+	save.wipe()
+	iap.wipe()
+
+
 # --- notif ---
 
 func ask() -> bool:

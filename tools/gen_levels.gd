@@ -1,13 +1,13 @@
 extends SceneTree
 ## Sinh hàng loạt level bằng LevelGenerator và ghi level_NNNN.json.
-## Chạy: tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- [--from=1] [--to=100] [--out=user://gen_out] [--seed=0] [--teach=0]
+## Chạy: tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- [--from=1] [--to=100] [--out=user://gen_out] [--seed=0] [--early=0]
 ## Mặc định ghi vào user://gen_out. Muốn ghi vào data/levels thì truyền --out=res://data/levels một cách chủ ý.
 ## Thoát 1 nếu có level không sinh được hoặc không qua kiểm tra.
 ##
 ## Bản phát hành L1-100 (đường cong độ khó difficulty_curve.gd) sinh bằng đúng lệnh này, seed gốc BASE_SEED = 20261101:
-##   tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- --from=1 --to=100 --seed=20261101 --teach=1 --out=res://data/levels
-## `--teach=1`: các level dạy cơ chế (id lấy từ Config.UNLOCK: 14, 30, 40, 55, 70, 90) và 4 level đầu (EARLY, chắc chắn thắng) dựng tay bằng TEACH ở dưới
-## thay cho bộ sinh; min_taps và moves vẫn do Solver tính. Không có cờ này thì mọi level đều do bộ sinh.
+##   tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- --from=1 --to=100 --seed=20261101 --early=1 --out=res://data/levels
+## `--early=1`: 4 level đầu (EARLY, chắc chắn thắng) dựng tay thay cho bộ sinh; min_taps và moves vẫn do Solver tính.
+## Level dạy cơ chế (id = Config.UNLOCK: 14, 30, 40, 55, 70, 90) do bộ sinh tạo như level thường, chỉ bật cơ chế mới.
 
 const Gen := preload("res://src/core/level_generator.gd")
 const LevelData := preload("res://src/core/level_data.gd")
@@ -20,12 +20,11 @@ const DEFAULT_OUT := "user://gen_out"
 ## Seed gốc của bản phát hành L21-300 (ngày chốt thiết kế). Mặc định của --seed vẫn là 0.
 const BASE_SEED := 20261101
 
-## Level dạy làm tay, mỗi cơ chế một level, id = Config.UNLOCK[cơ chế]. Chỉ MỘT cơ chế mới, hình nhỏ, có khối thoát ngay.
+## Bốn level đầu làm tay, khoá là id: 2, 3, 3, 4 màu. L1-3 không khối nào bị chặn quá một lần và dư 5 MOVES nên chắc
+## chắn thắng; L4 có một khối phải chờ.
 ## `rows`: mỗi chuỗi một hàng (y tăng xuống dưới), '.' ô trống, '#' đá, chữ cái là khối (cùng chữ = cùng khối).
 ## `blk[chữ]`: color (yellow lên, green trái, blue phải, purple xuống) và tuỳ chọn ice, chain (chữ khối chìa),
 ## inner (màu lớp trong), fog. `pulse`: cạnh có cổng nhịp và trạng thái mở ban đầu.
-## Bốn level đầu làm tay (cùng định dạng TEACH, khoá là id): 2, 3, 3, 4 màu. L1-3 không khối nào bị chặn
-## quá một lần và dư 5 MOVES nên chắc chắn thắng; L4 có một khối phải chờ.
 const EARLY := {
 	1: {"rows": ["A.B", "A.B", "..."],
 		"blk": {"A": {"color": "yellow"}, "B": {"color": "blue"}}},
@@ -38,40 +37,6 @@ const EARLY := {
 			"G": {"color": "green"}, "P": {"color": "purple"}}},
 }
 
-const TEACH := {
-	"stone": {  # đá cố định: B không bay lên được vì đá phía trên, phải chờ A rời khỏi trước
-		"rows": ["A.#..", "ABBC.", "...CD", "E.#.D", "EFF.."],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "green"}, "C": {"color": "blue"},
-			"D": {"color": "blue"}, "E": {"color": "green"}, "F": {"color": "purple"}},
-	},
-	"ice": {  # D phải chạm hai lần (nứt rồi thoát), B chờ D
-		"rows": ["AA..", "..B.", "C.BD", "C..D", ".EE."],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "blue"}, "C": {"color": "green"},
-			"D": {"color": "blue", "ice": 1}, "E": {"color": "purple"}},
-	},
-	"chain": {  # C có đường thông nhưng bị xích vào D: phải cho D thoát trước
-		"rows": ["AA...", ".....", "B.CC.", "B...D", "...EE"],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "green"}, "C": {"color": "yellow", "chain": "D"},
-			"D": {"color": "blue"}, "E": {"color": "purple"}},
-	},
-	"layer": {  # L bóc lớp tím, lộ lớp xanh lá đi trái nhưng bị M chặn: cần thêm một lần chạm
-		"rows": ["AA..", "....", "MLL.", "...B", "C..B"],
-		"blk": {"A": {"color": "yellow"}, "M": {"color": "green"}, "L": {"color": "purple", "inner": "green"},
-			"B": {"color": "blue"}, "C": {"color": "purple"}},
-	},
-	"fog": {  # D và E kẹt giữa các khối nên ẩn màu, lộ khi ô bên cạnh trống
-		"rows": ["AABB", "CDDH", "CEFF", "GG.."],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "green"},
-			"D": {"color": "yellow", "fog": true}, "E": {"color": "green", "fog": true},
-			"F": {"color": "purple"}, "G": {"color": "purple"}, "H": {"color": "blue"}},
-	},
-	"pulse": {  # cổng phải đóng lúc đầu: B và D (xanh dương) chờ, A và C đi trước làm cổng mở
-		"rows": ["AA..", "...B", "C..B", "C.DD"],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "blue"}, "C": {"color": "green"}, "D": {"color": "blue"}},
-		"pulse": [{"side": "right", "open": false}],
-	},
-}
-
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -79,7 +44,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var opt := parse_args(OS.get_cmdline_user_args())
-	var res := generate_range(int(opt["from"]), int(opt["to"]), int(opt["seed"]), str(opt["out"]), int(opt["teach"]) != 0)
+	var res := generate_range(int(opt["from"]), int(opt["to"]), int(opt["seed"]), str(opt["out"]), int(opt["early"]) != 0)
 	print("---- %d level, %d lỗi, tb %.1f ms, max %.1f ms (id %d) -> %s ----" % [
 		res["count"], res["bad"], res["avg_ms"], res["max_ms"], res["max_id"],
 		ProjectSettings.globalize_path(str(opt["out"]))])
@@ -88,13 +53,13 @@ func _run() -> void:
 
 ## `--khoá=giá trị`; khoá lạ bị bỏ qua.
 static func parse_args(args: PackedStringArray) -> Dictionary:
-	var opt := {"from": DEFAULT_FROM, "to": DEFAULT_TO, "out": DEFAULT_OUT, "seed": 0, "teach": 0}
+	var opt := {"from": DEFAULT_FROM, "to": DEFAULT_TO, "out": DEFAULT_OUT, "seed": 0, "early": 0}
 	for a in args:
 		if not a.begins_with("--") or not a.contains("="):
 			continue
 		var kv := a.substr(2).split("=", true, 1)
 		match kv[0]:
-			"from", "to", "seed", "teach":
+			"from", "to", "seed", "early":
 				if kv[1].is_valid_int():
 					opt[kv[0]] = int(kv[1])
 			"out":
@@ -103,30 +68,12 @@ static func parse_args(args: PackedStringArray) -> Dictionary:
 	return opt
 
 
-## Id của level dạy cơ chế `mech` (theo Config.UNLOCK).
-static func teach_id(mech: String) -> int:
-	return int(Config.UNLOCK[mech])
-
-
-## Cơ chế mà level `id` dạy, hoặc "" nếu không phải level dạy.
-static func teach_mech(id: int) -> String:
-	for m in TEACH:
-		if teach_id(m) == id:
-			return m
-	return ""
-
-
-## Dựng level dạy từ bảng TEACH; min_taps và moves do Solver tính. {} nếu bảng sai.
-static func build_teach(mech: String) -> Dictionary:
-	return build_spec(teach_id(mech), TEACH[mech])
-
-
-## Dựng level `id` từ một bảng rows/blk (EARLY hoặc TEACH); min_taps và moves do Solver tính.
+## Dựng level `id` từ một bảng rows/blk (EARLY); min_taps và moves do Solver tính.
 static func build_spec(id: int, spec: Dictionary) -> Dictionary:
 	var rows: Array = spec["rows"]
 	var h := rows.size()
 	var w := str(rows[0]).length()
-	# Dựng ở giữa bàn cố định: ngoài bảng TEACH là ô trống nên đường thoát không đổi.
+	# Dựng ở giữa bàn cố định: ngoài bảng là ô trống nên đường thoát không đổi.
 	@warning_ignore("integer_division")
 	var ox := (Config.BOARD_W - w) / 2
 	@warning_ignore("integer_division")
@@ -181,8 +128,8 @@ static func build_spec(id: int, spec: Dictionary) -> Dictionary:
 
 
 ## Sinh id từ..đến, ghi từng file vào `out`. Trả {count, bad, avg_ms, max_ms, max_id}.
-## `teach`: level dạy cơ chế lấy từ TEACH thay cho bộ sinh.
-static func generate_range(from_id: int, to_id: int, seed: int, out: String, teach: bool = false) -> Dictionary:
+## `early`: 4 level đầu lấy từ EARLY thay cho bộ sinh.
+static func generate_range(from_id: int, to_id: int, seed: int, out: String, early: bool = false) -> Dictionary:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out))
 	var bad := 0
 	var total := 0.0
@@ -191,12 +138,9 @@ static func generate_range(from_id: int, to_id: int, seed: int, out: String, tea
 	var count := 0
 	for id in range(from_id, to_id + 1):
 		var t0 := Time.get_ticks_usec()
-		var tm := teach_mech(id) if teach else ""
 		var d: Dictionary
-		if teach and EARLY.has(id):
+		if early and EARLY.has(id):
 			d = build_spec(id, EARLY[id])
-		elif tm != "":
-			d = build_teach(tm)
 		else:
 			d = Gen.generate(id, seed)
 		var ms := float(Time.get_ticks_usec() - t0) / 1000.0

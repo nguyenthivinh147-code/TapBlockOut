@@ -1,0 +1,883 @@
+{
+	"name": "BottomBarLayer",
+	"source": "Assets/_Game/Prefabs/Layers/BottomBarLayer.prefab",
+	"root": {
+		"n": "BottomBarLayer",
+		"id": "541797465010940438",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"canvas": {"override_sort": true, "order": 0},
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"cs": [
+			{
+				"name": "BottomBarUICoreLayer",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"bottomBarToggles": [
+					{"node": "1525116957172944686"},
+					{"node": "4165908520715539598"},
+					{"node": "8688772847455922467"}
+				],
+				"comingSoonButton": null,
+				"mainMenuNotify": {"node": "541797465010940438"},
+				"animShowUIElement": null
+			},
+			{
+				"name": "MainMenuNotify",
+				"configSO": {"asset": "FreeGoldConfigSO.asset"},
+				"numberRankUpTxt": {"node": "4278580858579348551"}
+			},
+			{
+				"name": "BottomBarBlockButton",
+				"_blockToggles": [
+					{
+						"Toggle": {"node": "4165908520715539598"},
+						"Button": {"node": "5371431660526846541"}
+					}
+				]
+			}
+		],
+		"ch": [
+			{
+				"n": "Panel",
+				"id": "4074601363243872955",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"cs": [
+					{
+						"name": "UIAdsBannerResize",
+						"targetToAdjust": {"node": "3668434486979587279"},
+						"moveMode": "0",
+						"moveUpPercent": "100",
+						"animShowUI": null,
+						"ForcePush": "0"
+					}
+				],
+				"ch": [
+					{
+						"n": "BottomBar",
+						"id": "3668434486979587279",
+						"a": true,
+						"r": [0, 0, 1, 0, 0, 0, 0, 160, 0.5, 0],
+						"lay": {
+							"t": "h",
+							"pad": [0, 0, 0, 0],
+							"al": 0,
+							"sp": 0,
+							"cw": true,
+							"ch": true,
+							"ew": true,
+							"eh": true,
+							"sw": false,
+							"sh": false,
+							"rev": false
+						},
+						"cs": [
+							{"name": "ToggleGroup"},
+							{
+								"name": "AnimShowUIElement",
+								"rectTransform": {"node": "3668434486979587279"},
+								"startPosition": {"x": "0", "y": "-240"},
+								"endPosition": {"x": "0", "y": "0"},
+								"duration": "0.5",
+								"ease": "5",
+								"overrideIngame": "0",
+								"overrideStartPosition": {"x": "0", "y": "0"},
+								"overrideEndPosition": {"x": "0", "y": "0"},
+								"AdsHeight": "0"
+							}
+						],
+						"ch": [
+							{
+								"n": "BG",
+								"id": "9126913047188180747",
+								"a": false,
+								"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+								"img": {
+									"sp": null,
+									"c": "256cb3ff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"le": {"ignore": true, "min": [-1,-1], "pref": [-1,-1], "flex": [-1,-1]},
+								"ch": [
+									{
+										"n": "BG (1)",
+										"id": "4236424084402358321",
+										"a": true,
+										"r": [0, 1, 1, 1, 0, 20.9, 0, 61.0198, 0.5, 0.5],
+										"img": {
+											"sp": null,
+											"c": "001326ff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"le": {"ignore": true, "min": [-1,-1], "pref": [-1,-1], "flex": [-1,-1]}
+									}
+								]
+							},
+							{
+								"n": "Shop",
+								"id": "1525116957172944686",
+								"a": true,
+								"r": [0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5],
+								"tog": {
+									"tr": 1,
+									"c": ["ffffffff", "ffffffff", "ffffffff", "ffffffff"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "2790576288332518492",
+									"sprites": {"pressed": null, "disabled": null},
+									"on": false,
+									"graphic": "3673968078928573181",
+									"group": "3668434486979587279"
+								},
+								"snd": true,
+								"vib": true,
+								"cs": [
+									{
+										"name": "ShopUIToggle",
+										"tabType": "2",
+										"switchAnimator": {"node": "1525116957172944686"}
+									},
+									{
+										"name": "ToggleAnimator",
+										"toggle": {"node": "1525116957172944686"},
+										"targetImage": {"node": "2790576288332518492"},
+										"changeSprite": "0",
+										"onSprite": null,
+										"offSprite": null,
+										"isSmoothSpriteChange": "0",
+										"timeSmoothSprite": "0.2",
+										"changeColor": "0",
+										"onColor": {"r": "1", "g": "1", "b": "1", "a": "1"},
+										"offColor": {"r": "1", "g": "1", "b": "1", "a": "1"},
+										"scaleType": "0",
+										"scaleOn": {"x": "1.2", "y": "1.2", "z": "1.2"},
+										"scaleOff": {"x": "1", "y": "1", "z": "1"},
+										"sizeDeltaOn": {"x": "1.2", "y": "1.2"},
+										"sizeDeltaOff": {"x": "1", "y": "1"},
+										"layoutElement": null,
+										"flexibleOn": {"x": "1.2", "y": "1"},
+										"flexibleOff": {"x": "1", "y": "1"},
+										"isSmoothScaleChange": "0",
+										"timeSmoothScale": "0.2",
+										"hasTitle": "1",
+										"title": {"node": "759091681175929297"},
+										"isSmoothTitle": "1",
+										"timeSmoothTitle": "0.2",
+										"hasIcon": "1",
+										"icon": {"node": "6064247110983249770"},
+										"isSmoothIcon": "1",
+										"timeSmoothIcon": "0.2",
+										"iconAnchorOn": {"x": "0", "y": "75", "z": "0"},
+										"iconAnchorOff": {"x": "0", "y": "0", "z": "0"},
+										"iconScaleOn": {"x": "1.5", "y": "1.5", "z": "1.5"},
+										"iconScaleOff": {"x": "1", "y": "1", "z": "1"},
+										"gameObjects": [],
+										"onObjects": [],
+										"offObjects": [],
+										"OnValueChange": []
+									}
+								],
+								"ch": [
+									{
+										"n": "Background",
+										"id": "2790576288332518492",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_62",
+											"c": "ffffffff",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1.5,
+											"rt": true,
+											"on": true
+										},
+										"ch": [
+											{
+												"n": "Checkmark",
+												"id": "3673968078928573181",
+												"a": true,
+												"r": [0, 0, 1, 0, 0, 90, 0, 180, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_63",
+													"c": "ffffffff",
+													"t": 1,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1.5,
+													"rt": true,
+													"on": true
+												}
+											}
+										]
+									},
+									{
+										"n": "Image",
+										"id": "6064247110983249770",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 128, 128, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_1",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										}
+									},
+									{
+										"n": "Text (TMP)",
+										"id": "759091681175929297",
+										"a": true,
+										"r": [0, 0, 1, 0, 0, 0, -48, 81.4724, 0.5, 0],
+										"txt": {
+											"s": "SHOP",
+											"fs": 59.35,
+											"auto": [18, 64],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Outline - Orange",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										}
+									},
+									{
+										"n": "Image",
+										"id": "6698791566017602888",
+										"a": true,
+										"r": [1, 1, 1, 1, -77.267, -63.2, 64, 64, 0.1, 0.1],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_73",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": false
+										},
+										"cs": [
+											{
+												"name": "NotifyElement",
+												"keyName": "1",
+												"notifyImge": {"node": "6698791566017602888"},
+												"notifyGO": null,
+												"OnNotifyStateActive": [
+													{"target": "6698791566017602888", "method": "StartScaleAnim", "arg": null}
+												],
+												"OnNotifyStateInActive": [
+													{"target": "6698791566017602888", "method": "StopScaleAnim", "arg": null}
+												]
+											},
+											{
+												"name": "UIAnimScale",
+												"rectTransforms": [
+													{"node": "6698791566017602888"}
+												],
+												"scaleValue": "1.2",
+												"duration": "0.5",
+												"loopCount": "-1",
+												"ActiveOnStart": "0"
+											}
+										]
+									}
+								]
+							},
+							{
+								"n": "Home",
+								"id": "4165908520715539598",
+								"a": true,
+								"r": [0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5],
+								"tog": {
+									"tr": 1,
+									"c": ["ffffffff", "ffffffff", "ffffffff", "ffffffff"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "5371431660526846541",
+									"sprites": {"pressed": null, "disabled": null},
+									"on": true,
+									"graphic": "8480378384939570699",
+									"group": "3668434486979587279"
+								},
+								"snd": true,
+								"vib": true,
+								"cs": [
+									{
+										"name": "HomeUIToggle",
+										"tabType": "1",
+										"switchAnimator": {"node": "4165908520715539598"}
+									},
+									{
+										"name": "ToggleAnimator",
+										"toggle": {"node": "4165908520715539598"},
+										"targetImage": {"node": "5371431660526846541"},
+										"changeSprite": "0",
+										"onSprite": null,
+										"offSprite": null,
+										"isSmoothSpriteChange": "0",
+										"timeSmoothSprite": "0.2",
+										"changeColor": "0",
+										"onColor": {"r": "1", "g": "1", "b": "1", "a": "1"},
+										"offColor": {"r": "1", "g": "1", "b": "1", "a": "1"},
+										"scaleType": "0",
+										"scaleOn": {"x": "1.2", "y": "1.2", "z": "1.2"},
+										"scaleOff": {"x": "1", "y": "1", "z": "1"},
+										"sizeDeltaOn": {"x": "1.2", "y": "1.2"},
+										"sizeDeltaOff": {"x": "1", "y": "1"},
+										"layoutElement": null,
+										"flexibleOn": {"x": "1.2", "y": "1"},
+										"flexibleOff": {"x": "1", "y": "1"},
+										"isSmoothScaleChange": "0",
+										"timeSmoothScale": "0.2",
+										"hasTitle": "1",
+										"title": {"node": "9091951256603889885"},
+										"isSmoothTitle": "0",
+										"timeSmoothTitle": "0.2",
+										"hasIcon": "1",
+										"icon": {"node": "3519057903359736688"},
+										"isSmoothIcon": "1",
+										"timeSmoothIcon": "0.2",
+										"iconAnchorOn": {"x": "0", "y": "75", "z": "0"},
+										"iconAnchorOff": {"x": "0", "y": "0", "z": "0"},
+										"iconScaleOn": {"x": "1.5", "y": "1.5", "z": "1.5"},
+										"iconScaleOff": {"x": "1", "y": "1", "z": "1"},
+										"gameObjects": [],
+										"onObjects": [],
+										"offObjects": [],
+										"OnValueChange": []
+									}
+								],
+								"ch": [
+									{
+										"n": "Background",
+										"id": "5371431660526846541",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_62",
+											"c": "ffffffff",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1.5,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 0,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "5371431660526846541",
+											"sprites": {"pressed": null, "disabled": null}
+										},
+										"ch": [
+											{
+												"n": "Checkmark",
+												"id": "8480378384939570699",
+												"a": true,
+												"r": [0, 0, 1, 0, 0, 90, 0, 180, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_63",
+													"c": "ffffffff",
+													"t": 1,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1.5,
+													"rt": true,
+													"on": true
+												}
+											}
+										]
+									},
+									{
+										"n": "Image",
+										"id": "3519057903359736688",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 128, 128, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_0",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										}
+									},
+									{
+										"n": "Text (TMP)",
+										"id": "9091951256603889885",
+										"a": true,
+										"r": [0, 0, 1, 0, 0, 0, -48, 81.4724, 0.5, 0],
+										"txt": {
+											"s": "HOME",
+											"fs": 59.35,
+											"auto": [18, 64],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Outline - Orange",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Leaderboard",
+								"id": "8688772847455922467",
+								"a": true,
+								"r": [0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5],
+								"snd": true,
+								"vib": true,
+								"cs": [
+									{
+										"name": "ToggleAnimator",
+										"toggle": {"node": "401802645665651629"},
+										"targetImage": {"node": "6001221642335399878"},
+										"changeSprite": "0",
+										"onSprite": null,
+										"offSprite": null,
+										"isSmoothSpriteChange": "0",
+										"timeSmoothSprite": "0.2",
+										"changeColor": "0",
+										"onColor": {"r": "1", "g": "1", "b": "1", "a": "1"},
+										"offColor": {"r": "1", "g": "1", "b": "1", "a": "1"},
+										"scaleType": "0",
+										"scaleOn": {"x": "1.2", "y": "1.2", "z": "1.2"},
+										"scaleOff": {"x": "1", "y": "1", "z": "1"},
+										"sizeDeltaOn": {"x": "1.2", "y": "1.2"},
+										"sizeDeltaOff": {"x": "1", "y": "1"},
+										"layoutElement": null,
+										"flexibleOn": {"x": "1.2", "y": "1"},
+										"flexibleOff": {"x": "1", "y": "1"},
+										"isSmoothScaleChange": "0",
+										"timeSmoothScale": "0.2",
+										"hasTitle": "1",
+										"title": {"node": "3860889560034116447"},
+										"isSmoothTitle": "1",
+										"timeSmoothTitle": "0.2",
+										"hasIcon": "1",
+										"icon": {"node": "1299165269604100357"},
+										"isSmoothIcon": "1",
+										"timeSmoothIcon": "0.2",
+										"iconAnchorOn": {"x": "0", "y": "75", "z": "0"},
+										"iconAnchorOff": {"x": "0", "y": "0", "z": "0"},
+										"iconScaleOn": {"x": "1.5", "y": "1.5", "z": "1.5"},
+										"iconScaleOff": {"x": "1", "y": "1", "z": "1"},
+										"gameObjects": [],
+										"onObjects": [],
+										"offObjects": [],
+										"OnValueChange": []
+									},
+									{
+										"name": "LeaderboardUIToggle",
+										"tabType": "3",
+										"switchAnimator": {"node": "8688772847455922467"},
+										"activeGO": {"node": "401802645665651629"},
+										"inactiveGO": {"node": "1007082979669727697"}
+									}
+								],
+								"ch": [
+									{
+										"n": "ActiveGroup",
+										"id": "401802645665651629",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"tog": {
+											"tr": 1,
+											"c": ["ffffffff", "ffffffff", "ffffffff", "ffffffff"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "6001221642335399878",
+											"sprites": {"pressed": null, "disabled": null},
+											"on": false,
+											"graphic": "7480922655154072052",
+											"group": "3668434486979587279"
+										},
+										"snd": true,
+										"ch": [
+											{
+												"n": "Background",
+												"id": "6001221642335399878",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_62",
+													"c": "ffffffff",
+													"t": 1,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1.5,
+													"rt": true,
+													"on": true
+												},
+												"ch": [
+													{
+														"n": "Checkmark",
+														"id": "7480922655154072052",
+														"a": true,
+														"r": [0, 0, 1, 0, 0, 90, 0, 180, 0.5, 0.5],
+														"img": {
+															"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_63",
+															"c": "ffffffff",
+															"t": 1,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 1.5,
+															"rt": true,
+															"on": true
+														}
+													}
+												]
+											},
+											{
+												"n": "Image",
+												"id": "1299165269604100357",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 128, 128, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_2",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": false,
+													"on": true
+												}
+											},
+											{
+												"n": "Text (TMP)",
+												"id": "3860889560034116447",
+												"a": true,
+												"r": [0, 0, 1, 0, 0, 0, -48, 81.4724, 0.5, 0],
+												"txt": {
+													"s": "LEADERBOARD",
+													"fs": 47.7,
+													"auto": [18, 64],
+													"c": "ffffffff",
+													"h": 2,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 0,
+													"mat": "Baloo Outline - Orange",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											},
+											{
+												"n": "Image",
+												"id": "5313515785542322939",
+												"a": true,
+												"r": [1, 1, 1, 1, -77.267, -63.2, 64, 64, 0.1, 0.1],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_73",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": false
+												},
+												"cs": [
+													{
+														"name": "NotifyElement",
+														"keyName": "3",
+														"notifyImge": {"node": "5313515785542322939"},
+														"notifyGO": null,
+														"OnNotifyStateActive": [
+															{"target": "5313515785542322939", "method": "StartScaleAnim", "arg": null}
+														],
+														"OnNotifyStateInActive": [
+															{"target": "5313515785542322939", "method": "StopScaleAnim", "arg": null}
+														]
+													},
+													{
+														"name": "UIAnimScale",
+														"rectTransforms": [
+															{"node": "5313515785542322939"}
+														],
+														"scaleValue": "1.2",
+														"duration": "0.5",
+														"loopCount": "-1",
+														"ActiveOnStart": "0"
+													}
+												]
+											},
+											{
+												"n": "Image (1)",
+												"id": "6128841508034280015",
+												"a": true,
+												"r": [0.5, 1, 0.5, 1, -24.8, 0, 296.67, 181.5, 0.5, 0],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_34",
+													"c": "ffffffff",
+													"t": 1,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												},
+												"cs": [
+													{
+														"name": "NotifyElement",
+														"keyName": "4",
+														"notifyImge": {"node": "4233948847484343322"},
+														"notifyGO": {"node": "6128841508034280015"},
+														"OnNotifyStateActive": [],
+														"OnNotifyStateInActive": []
+													}
+												],
+												"ch": [
+													{
+														"n": "Text (TMP) (1)",
+														"id": "1682983818338815150",
+														"a": true,
+														"r": [0, 1, 1, 1, 0, -13.2, -30, 69.8, 0.5, 1],
+														"txt": {
+															"s": "Your rank:",
+															"fs": 45,
+															"auto": [18, 45],
+															"c": "ffffffff",
+															"h": 2,
+															"v": 256,
+															"w": false,
+															"ov": 0,
+															"st": 0,
+															"mat": "Baloo Outline - Black",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": false,
+															"on": true
+														}
+													},
+													{
+														"n": "Text (TMP) (2)",
+														"id": "4278580858579348551",
+														"a": true,
+														"r": [0, 1, 1, 1, -59.445, -64.49, -175.41, 69.8, 0.5, 1],
+														"txt": {
+															"s": "4",
+															"fs": 45,
+															"auto": [18, 45],
+															"c": "ffffffff",
+															"h": 4,
+															"v": 512,
+															"w": false,
+															"ov": 0,
+															"st": 0,
+															"mat": "Baloo Outline - Black",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": false,
+															"on": true
+														}
+													},
+													{
+														"n": "Image",
+														"id": "4233948847484343322",
+														"a": true,
+														"r": [0.5, 0.5, 0.5, 0.5, 14.5, -29.22, 50, 50, 0.1, 0.1],
+														"img": {
+															"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_9",
+															"c": "ffffffff",
+															"t": 0,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 1,
+															"rt": true,
+															"on": true
+														}
+													}
+												]
+											}
+										]
+									},
+									{
+										"n": "DeactiveGroup",
+										"id": "1007082979669727697",
+										"a": false,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "3638168977867219094",
+											"sprites": {"pressed": null, "disabled": null}
+										},
+										"snd": true,
+										"ch": [
+											{
+												"n": "Background",
+												"id": "3638168977867219094",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_62",
+													"c": "ffffffff",
+													"t": 1,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1.5,
+													"rt": true,
+													"on": true
+												}
+											},
+											{
+												"n": "Image",
+												"id": "5903952428824068157",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 128, 128, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_18",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": false,
+													"on": true
+												}
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

@@ -692,6 +692,36 @@ func test_save_does_not_overwrite_newer_cloud(t: T) -> void:
 	t.eq(s2.backup(), "{\"runs\":10}", "backup còn sau khi khởi động lại")
 
 
+## Menu tester xoá tài khoản: bản cloud cũ (chơi xa hơn) không được khôi phục mà bị bản mới ghi đè.
+func test_save_wipe_overwrites_cloud(t: T) -> void:
+	var f := FakePlugin.new()
+	var s := _save(f, "wipe")
+	f.cloud_reply = ["{\"runs\":9}", true]
+	await s.sync_cloud()
+	await Engine.get_main_loop().process_frame
+	t.ok(FileAccess.file_exists(s.cache_path), "có bản lưu tạm cloud")
+	s.wipe()
+	t.eq(s.backup(), "", "backup rỗng sau khi xoá")
+	t.eq(s.cloud_json, "", "cloud_json rỗng")
+	t.ok(not FileAccess.file_exists(s.cache_path), "xoá bản lưu tạm")
+	s.mirror("{\"runs\":0}")
+	s.flush()
+	await Engine.get_main_loop().process_frame
+	t.eq(f.saved, ["{\"runs\":0}"], "đẩy tài khoản mới đè bản cloud")
+	# Xoá trước khi đồng bộ: bản cloud tải về sau bị bỏ qua.
+	var f2 := FakePlugin.new()
+	var s2 := _save(f2, "wipe_early")
+	f2.cloud_reply = ["{\"runs\":9}", true]
+	s2.wipe()
+	s2.mirror("{\"runs\":0}")
+	var got: Array = []
+	s2.cloud_synced.connect(func(j: String) -> void: got.append(j))
+	await s2.sync_cloud()
+	await Engine.get_main_loop().process_frame
+	t.eq(got, [""], "không đưa bản cloud cũ cho Game")
+	t.eq(f2.saved, ["{\"runs\":0}"], "đẩy tài khoản mới")
+
+
 func test_save_conflict_merges_buys(t: T) -> void:
 	var f := FakePlugin.new()
 	var s := _save(f, "conflict")

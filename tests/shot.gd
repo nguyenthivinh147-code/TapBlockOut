@@ -33,8 +33,9 @@ func _initialize() -> void:
 func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	var names: Array = ALL.duplicate()
-	names.append_array(["weekly_pass", "chain_offer", "challenge", "ingame_settings",
-		"leaderboard", "leaderboard_world", "lb_result", "lb_leagues", "level_lb", "win_lb"])
+	names.append_array(["home_l1", "home_hard", "home_very_hard", "weekly_pass", "chain_offer", "challenge", "ingame_settings", "ingame_settings_life",
+		"settings_language", "profile_frames",
+		"leaderboard", "leaderboard_world", "lb_result", "lb_leagues", "level_lb", "win_lb", "level_booster_all"])
 	for s in Gallery.SCREENS:
 		names.append(s[1])
 	for name in names:
@@ -121,12 +122,26 @@ func _shot(name: String) -> void:
 	match name:
 		"home":
 			await _fresh(8)
+		"home_l1":
+			await _fresh(1)
+		"home_hard", "home_very_hard":
+			# level đầu tiên có độ khó tương ứng (khung Hard / Super Hard trong Figma)
+			var want := name.trim_prefix("home_")
+			var lv := 2
+			while lv < 400 and g.difficulty_of(lv) != want:
+				lv += 1
+			await _fresh(lv)
 		"level":
 			await _fresh(8)
 			_main.go("level")
 			await _settle()
 		"level_booster":
 			await _fresh(12, 500)
+			_main.go("level")
+			await _settle()
+		"level_booster_all":
+			# từ L17 hàng booster có đủ Gợi ý, +3 Move, Phá khối
+			await _fresh(17, 500)
 			_main.go("level")
 			await _settle()
 		"popup_rescue":
@@ -212,6 +227,22 @@ func _shot(name: String) -> void:
 		"ingame_settings":
 			await _fresh(10)
 			_main.open_popup("res://scenes/popup_ingame_settings.tscn", {})
+			await _settle()
+		"ingame_settings_life":
+			await _fresh(10)
+			_main.open_popup("res://scenes/popup_ingame_settings.tscn", {"life_cost": true})
+			await _settle()
+		"settings_language":
+			await _fresh(8)
+			var st: Node = _main.open_popup("res://scenes/settings.tscn", {})
+			st.call("open_language")
+			await _settle()
+		"profile_frames":
+			await _fresh(8)
+			g.s.cos.owned.append("frame_02")
+			_main.go("profile")
+			await _settle(0.2)
+			_main.current_screen.call("select", "frame_01")
 			await _settle()
 		"leaderboard", "leaderboard_world":
 			await _fresh(30)

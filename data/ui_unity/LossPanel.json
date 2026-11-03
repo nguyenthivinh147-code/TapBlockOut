@@ -1,0 +1,642 @@
+{
+	"name": "LossPanel",
+	"source": "Assets/_Game/Layer/Prefab/LossPanel.prefab",
+	"root": {
+		"n": "LossPanel",
+		"id": "157811765267037115",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"cg": {"alpha": 1, "inter": false, "block": false, "ignore_parent": false},
+		"cs": [
+			{
+				"name": "GameOverPanel",
+				"canvasGroup": {"node": "157811765267037115"},
+				"mainMenuButton": {"node": "4837919944942120364"},
+				"replayButton": {"node": "4631267411637755650"},
+				"progressTxt": {"node": "7693069580861584099"},
+				"bottomButton": {"node": "6682942727577909443"},
+				"progressSlider": {"node": "5848286607932260553"},
+				"levelTxt": {"node": "6319970644758867423"},
+				"panelRect": {"node": "157811765267037115"},
+				"hideAnimDuration": "0.4",
+				"adsCallbackTimeout": "7",
+				"progressSpeed": "1.5"
+			}
+		],
+		"ch": [
+			{
+				"n": "BG",
+				"id": "7490416650020908060",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, 110.2, 700, 684.6, 0.5, 0.5],
+				"img": {
+					"sp": "Popup5",
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				},
+				"ch": [
+					{
+						"n": "Panel",
+						"id": "1402384196267961747",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, -9.6, 748, 768, 0.5, 0.5],
+						"ch": [
+							{
+								"n": "Left",
+								"id": "8570824045152882478",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -124.1, 460.55, 159.0891, 159.0891, 0.5, 0.5],
+								"s": [-1, 1],
+								"ch": [
+									{
+										"n": "Image (1)",
+										"id": "1934960939688126362",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -57.1, 5.41, 280, 280, 0, 0.5],
+										"s": [0.7, 0.7],
+										"z": 2.45,
+										"img": {
+											"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_7",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Right",
+								"id": "990471643413458700",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 129.62, 460.55, 159.0891, 159.0891, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "Image (1)",
+										"id": "8068376942270213197",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -67, 5.41, 280, 280, 0, 0.5],
+										"s": [0.7, 0.7],
+										"z": 2.45,
+										"img": {
+											"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_7",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "AnimGroup",
+								"id": "2413133142797545727",
+								"a": true,
+								"r": [0.5, 1, 0.5, 1, 0, 0, 692, 337, 0.5, 1],
+								"canvas": {"override_sort": false, "order": 20},
+								"ch": [
+									{
+										"n": "LightRotate",
+										"id": "224082599215703776",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 332.5, 692, 364, 0.5, 0.5],
+										"img": {
+											"sp": null,
+											"c": "ffffff01",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": false
+										},
+										"ch": [
+											{
+												"n": "Image",
+												"id": "8606309668852178378",
+												"a": true,
+												"r": [0.5, 0, 0.5, 0, 179, 65.34, 150, 150, 1, 0],
+												"img": {
+													"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_3",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												}
+											},
+											{
+												"n": "Image (2)",
+												"id": "13561951247793733",
+												"a": true,
+												"r": [0.5, 0, 0.5, 0, -182.2, 65.34, 150, 150, 1, 0],
+												"s": [-1, 1],
+												"img": {
+													"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_3",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												}
+											},
+											{
+												"n": "Cup",
+												"id": "614734520754802873",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 250, 250, 0.5, 0.5],
+												"img": {
+													"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_5",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												}
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"n": "Image",
+						"id": "6758768961434562345",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, -60, -60, 0.5, 0.5],
+						"img": {
+							"sp": "Popup_Lose",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					},
+					{
+						"n": "Image",
+						"id": "5477745115283030064",
+						"a": false,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 112.1, 700, 269.9, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+							"c": "ffffffff",
+							"t": 1,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						},
+						"ch": [
+							{
+								"n": "Heart",
+								"id": "5875337978640762848",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -174.28, 0, 200, 200, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_14",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								}
+							},
+							{
+								"n": "Text (TMP)",
+								"id": "2108081807172868116",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 143.45, 0, 383, 200.77, 0.5, 0.5],
+								"txt": {
+									"s": "YOU LOSE",
+									"fs": 54.5,
+									"auto": [18, 54.5],
+									"c": "1c4a83ff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					},
+					{
+						"n": "Lose_Panel",
+						"id": "8975540374088317776",
+						"a": true,
+						"r": [0.5, 1, 0.5, 1, 0, 14.95, 628.9, 200, 0.5, 0.5],
+						"img": {
+							"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_1",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": true,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": false,
+							"on": true
+						},
+						"ch": [
+							{
+								"n": "Text (TMP)",
+								"id": "6319970644758867423",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 0, 22.06, 290.69, 128, 0.5, 0.5],
+								"txt": {
+									"s": "YOU LOSE",
+									"fs": 67.3,
+									"auto": [18, 80],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 16,
+									"mat": "Baloo Outline - Blue 1",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"n": "Image",
+				"id": "3971397893706809862",
+				"a": false,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, 95, 456, 456, 0.5, 0.5],
+				"img": {
+					"sp": null,
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": false,
+					"on": false
+				},
+				"ch": [
+					{
+						"n": "Still Wanna Play?",
+						"id": "2808647389596407002",
+						"a": false,
+						"r": [0.5, 0, 0.5, 0, 0, -30, 687.5, 125, 0.5, 1],
+						"txt": {
+							"s": "Don't give up, let's try again!",
+							"fs": 54,
+							"auto": [18, 54],
+							"c": "ffffffff",
+							"h": 2,
+							"v": 512,
+							"w": false,
+							"ov": 0,
+							"st": 0,
+							"mat": "Baloo Outline - Blue",
+							"font": "Baloo Bhaijaan Regular 400 SDF",
+							"cs": 0,
+							"ws": 0,
+							"ls": 0,
+							"m": [0, 0, 0, 0],
+							"rt": false,
+							"rich": false,
+							"on": true
+						}
+					},
+					{
+						"n": "Slider",
+						"id": "5848286607932260553",
+						"a": true,
+						"r": [0.5, 0, 0.5, 0, 0, 36.4, 600, 80, 0.5, 0.5],
+						"slider": {
+							"fill": "812172695449485341",
+							"handle": "3205199621058910097",
+							"dir": 0,
+							"min": 0,
+							"max": 1,
+							"whole": false,
+							"value": 1,
+							"inter": false
+						},
+						"ch": [
+							{
+								"n": "Background",
+								"id": "5808138559027277411",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 0.52, 0, 16.14, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_84",
+									"c": "ffffffff",
+									"t": 1,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1.1,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Fill Area",
+								"id": "9211378041243508067",
+								"a": true,
+								"r": [0, 0, 1, 1, 3.46, 0.98, -39.7799, -10.76, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "Fill",
+										"id": "812172695449485341",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_85",
+											"c": "ffffffff",
+											"t": 3,
+											"pa": false,
+											"fc": true,
+											"fm": 0,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1.1,
+											"rt": false,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Handle Slide Area",
+								"id": "214581509387148745",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "Handle",
+										"id": "3205199621058910097",
+										"a": true,
+										"r": [1, 0, 1, 1, 36.27, 2, 80, 0, 1, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_83",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"n": "LevelProgress",
+						"id": "7693069580861584099",
+						"a": true,
+						"r": [0.5, 0, 0.5, 0, 0, 137.7, 537, 66, 0.5, 0.5],
+						"txt": {
+							"s": "Level Progress: 100%",
+							"fs": 54,
+							"auto": null,
+							"c": "1c4a83ff",
+							"h": 2,
+							"v": 512,
+							"w": true,
+							"ov": 0,
+							"st": 0,
+							"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+							"font": "Baloo Bhaijaan Regular 400 SDF",
+							"cs": 0,
+							"ws": 0,
+							"ls": 0,
+							"m": [0, 0, 0, 0],
+							"rt": true,
+							"rich": true,
+							"on": true
+						}
+					}
+				]
+			},
+			{
+				"n": "GameObject",
+				"id": "6682942727577909443",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, -455.3, 723.2, 137.2, 0.5, 0],
+				"ch": [
+					{
+						"n": "MainMenuBtn",
+						"id": "4837919944942120364",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, -194.75, 0, 332, 132, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_51",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 2,
+							"rt": true,
+							"on": true
+						},
+						"btn": {
+							"tr": 0,
+							"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c88d"],
+							"mult": 1,
+							"dur": 0.1,
+							"inter": true,
+							"target": "4837919944942120364",
+							"sprites": {"pressed": null, "disabled": null}
+						},
+						"snd": true,
+						"vib": true,
+						"ch": [
+							{
+								"n": "Text (TMP) (1)",
+								"id": "553142223075900330",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 4, 0, -8, 0.5, 0.5],
+								"txt": {
+									"s": "HOME",
+									"fs": 56,
+									"auto": [18, 56],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 17,
+									"mat": "Baloo Outline - Blue",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": -2,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					},
+					{
+						"n": "ReplayBtn",
+						"id": "4631267411637755650",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 194.75, 0, 332, 132, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 2,
+							"rt": true,
+							"on": true
+						},
+						"btn": {
+							"tr": 0,
+							"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+							"mult": 1,
+							"dur": 0.1,
+							"inter": true,
+							"target": "4631267411637755650",
+							"sprites": {"pressed": null, "disabled": null}
+						},
+						"snd": true,
+						"vib": true,
+						"ch": [
+							{
+								"n": "Text (TMP) (1)",
+								"id": "8454466182432972070",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 4, 0, -8, 0.5, 0.5],
+								"txt": {
+									"s": "REPLAY",
+									"fs": 56,
+									"auto": [18, 56],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 17,
+									"mat": "Baloo Outline - Green",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": -2,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

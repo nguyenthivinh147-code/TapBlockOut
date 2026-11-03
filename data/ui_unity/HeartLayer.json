@@ -1,0 +1,303 @@
+{
+	"name": "HeartLayer",
+	"source": "Assets/_Game/Prefabs/Layers/HeartLayer.prefab",
+	"root": {
+		"n": "HeartLayer",
+		"id": "2892910836850213101",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"canvas": {"override_sort": true, "order": 0},
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"cs": [
+			{
+				"name": "HeartUICoreLayer",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"currentHeartText": {"node": "106476750010732091"},
+				"cooldownText": {"node": "2085430553843904058"},
+				"addHeartButton": {"node": "2330152954957547845"},
+				"plusHeartImage": {"node": "8830235904917505059"},
+				"heartAmountGO": {"node": "903352485866598758"},
+				"infiniteHeartGO": {"node": "8561214946925522398"},
+				"canvasPanel": {"node": "8718739380559382350"},
+				"consumeHeartAnim": {"node": "5149383585891596452"},
+				"animShowUIElement": {"node": "2330152954957547845"}
+			},
+			{
+				"name": "SafeAreaUIAdjuster",
+				"rectPanelSafes": [
+					{"node": "2892910836850213101"}
+				],
+				"debugLog": "0"
+			}
+		],
+		"ch": [
+			{
+				"n": "Panel",
+				"id": "8718739380559382350",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+				"ch": [
+					{
+						"n": "Heart",
+						"id": "2330152954957547845",
+						"a": true,
+						"r": [0.5, 1, 0.5, 1, -223, -47.07, 240, 70, 0, 1],
+						"s": [0.85, 0.85],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_21",
+							"c": "ffffffff",
+							"t": 1,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						},
+						"btn": {
+							"tr": 1,
+							"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+							"mult": 1,
+							"dur": 0.1,
+							"inter": true,
+							"target": "2330152954957547845",
+							"sprites": {"pressed": null, "disabled": null}
+						},
+						"snd": true,
+						"vib": true,
+						"cs": [
+							{
+								"name": "AnimShowUIElement",
+								"rectTransform": {"node": "2330152954957547845"},
+								"startPosition": {"x": "-214.9", "y": "261"},
+								"endPosition": {"x": "-214.9", "y": "-44"},
+								"duration": "0.7",
+								"ease": "27",
+								"overrideIngame": "0",
+								"overrideStartPosition": {"x": "-322.9", "y": "261"},
+								"overrideEndPosition": {"x": "-322.9", "y": "-30"},
+								"AdsHeight": "0"
+							}
+						],
+						"ch": [
+							{
+								"n": "Amount",
+								"id": "903352485866598758",
+								"a": true,
+								"r": [0, 1, 0, 1, 25, -31.3, 108, 108, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_15",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"le": {"ignore": false, "min": [0,0], "pref": [112,112], "flex": [-1,-1]},
+								"ch": [
+									{
+										"n": "Text (TMP)",
+										"id": "106476750010732091",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, -5.0079, 112, 101.9841, 0.5, 0.5],
+										"txt": {
+											"s": "5",
+											"fs": 63.4,
+											"auto": null,
+											"c": "fef8e2ff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 1,
+											"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										},
+										"le": {"ignore": false, "min": [108,-1], "pref": [-1,-1], "flex": [-1,-1]}
+									},
+									{
+										"n": "Icon (1)",
+										"id": "8830235904917505059",
+										"a": true,
+										"r": [1, 0, 1, 0, -13, 25.5, 52, 52, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_19",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 5,
+											"rt": false,
+											"on": true
+										},
+										"le": {"ignore": true, "min": [0,0], "pref": [52,52], "flex": [-1,-1]}
+									}
+								]
+							},
+							{
+								"n": "Infiniite",
+								"id": "8561214946925522398",
+								"a": true,
+								"r": [0, 1, 0, 1, 25, -31.3, 108, 108, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"le": {"ignore": false, "min": [0,0], "pref": [112,112], "flex": [-1,-1]},
+								"ch": [
+									{
+										"n": "Text (TMP)",
+										"id": "1590626943573026019",
+										"a": false,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 112, 112, 0.5, 0.5],
+										"txt": {
+											"s": "5",
+											"fs": 74.4,
+											"auto": null,
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 1,
+											"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										},
+										"le": {"ignore": false, "min": [108,-1], "pref": [-1,-1], "flex": [-1,-1]}
+									}
+								]
+							},
+							{
+								"n": "Cooldown",
+								"id": "2085430553843904058",
+								"a": true,
+								"r": [0, 1, 0, 1, 151.5, -35, 114.77, 55, 0.5, 0.5],
+								"txt": {
+									"s": "Full",
+									"fs": 40.05,
+									"auto": [18, 45],
+									"c": "1c4a83ff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Image",
+								"id": "5149383585891596452",
+								"a": true,
+								"r": [1, 1, 1, 1, -152, -120, 60, 60, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_15",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+								"cs": [
+									{
+										"name": "ConsumeHeartAnim",
+										"startY": "-120",
+										"endY": "-35",
+										"duration": "1",
+										"canvasGroup": {"node": "5149383585891596452"}
+									}
+								],
+								"ch": [
+									{
+										"n": "Text (TMP)",
+										"id": "1556777891834688873",
+										"a": true,
+										"r": [0, 0.5, 0, 0.5, -24.1, 0, 60, 60, 0.5, 0.5],
+										"txt": {
+											"s": "-1",
+											"fs": 68.6,
+											"auto": null,
+											"c": "fef8e2ff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

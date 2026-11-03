@@ -1,22 +1,26 @@
 extends Control
-## Popup hết MOVES: +3 Move bằng gold, kho hoặc video.
+## Popup hết MOVES: +3 Move bằng gold, kho hoặc video. Bố cục PopupReviveLayer (color-cube-match-puzzle): khung tím,
+## ô kem có icon +3 Move, hàng nút [video][gold], dòng "Bỏ cuộc" dưới khung như nút Retry của prefab.
 ## setup(args): kết quả RescueFlow.offer (hoặc Game.rescue_offer), thêm tuỳ chọn:
 ##   attempt: Dictionary  có thì popup tự gọi Game.rescue_accept và chỉ đóng khi thành công.
 ## closed(result): "inventory" | "gold" | "video" (đã +3 MOVES nếu có attempt),
-##   "skip" (bấm Bỏ cuộc: bên gọi hỏi xác nhận mất mạng rồi tự gọi Game.rescue_skip),
+##   "skip" (bấm Bỏ cuộc hoặc X: bên gọi hỏi xác nhận mất mạng rồi tự gọi Game.rescue_skip),
 ##   "need_coins" (thiếu gold, bên gọi mở shop mini rồi dựng lại popup).
 ## Bấm Back của Android: main phát closed(null), bên gọi coi như "skip".
 
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
-const PopupKit := preload("res://src/ui/popup_kit.gd")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UnityKit := preload("res://src/ui/unity_kit.gd")
+const UButton := preload("res://src/ui/u_button.gd")
 const VIDEO_PLACEMENT := "continue_moves"
+const ROW := "Bg/Panel/Content/GameObject"
 
 var _args: Dictionary = {}
 var _busy: bool = false
-var _panel: Control = null
 var _msg: Label = null
+var ui: RefCounted = null
 
 
 func setup(args: Dictionary) -> void:
@@ -27,76 +31,104 @@ func setup(args: Dictionary) -> void:
 	_build()
 
 
-func _label(text: String, size: int, color: Color, node_name: String) -> Label:
-	return PopupKit.text(text, size, color, node_name)
-
-
 func _remaining_text(n: int) -> String:
 	return tr("rescue_remaining_one") if n == 1 else tr("rescue_remaining") % n
 
 
 func _build() -> void:
-	var k := PopupKit.make(self, tr("rescue_title"), _on_skip_pressed, {"banner": "red"})
-	_panel = k.card
-	var box: VBoxContainer = k.box
-
-	box.add_child(ThemeKit.make_icon("booster_move", 150))
-	box.add_child(_label(tr("rescue_body"), ThemeKit.FS_BODY, ThemeKit.INK, "BodyLabel"))
-	box.add_child(_label(_remaining_text(int(_args.get("remaining", 0))), ThemeKit.FS_BODY, ThemeKit.BROWN, "RemainingLabel"))
+	set_anchors_preset(Control.PRESET_FULL_RECT)
+	ui = UnityUI.build(self, "PopupReviveLayer")
+	ui.node("Bg").name = "Dim"
+	ui.text("Bg/Panel/Image/txtHeader", tr("rescue_title")).name = "TitleLabel"
+	ui.text("Bg/Panel/Content/Description (1)", _remaining_text(int(_args.get("remaining", 0)))).name = "RemainingLabel"
+	ui.text("Bg/Panel/Content/Description", tr("rescue_body")).name = "BodyLabel"
+	ui.texture("Bg/Panel/Content/Preview/Content/Icon", ThemeKit.icon("booster_move"))
+	# The game has no first-time free revive, helper pack or hold-to-see-board: hide those parts of the prefab.
+	for p in ["Bg/Panel/Content/FreeObject", "Bg/Panel/HelperPack", "Bg/Panel/Text (TMP)"]:
+		ui.show(p, false)
+	ui.show(ROW, true)
+	for b in ui.field("closeButtons", "PopupReviveLayer"):
+		(b as Button).connect("clicked", _on_skip_pressed)
 
 	var use_inv := bool(_args.get("use_inventory", false))
 	var affordable := bool(_args.get("affordable", false))
-	var price := int(_args.get("price", 0))
-	if use_inv:
-		if _args.has("inv_move"):
-			box.add_child(_label(tr("rescue_in_stock") % int(_args.inv_move), ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "StockLabel"))
-		var use_btn := ThemeKit.make_button(tr("rescue_use"), "primary")
-		use_btn.name = "UseButton"
-		use_btn.pressed.connect(_on_main_pressed)
-		box.add_child(use_btn)
-	else:
-		var buy_btn := ThemeKit.make_button(tr("rescue_buy") % price, "gold" if affordable else "secondary")
-		buy_btn.name = "BuyButton"
-		buy_btn.pressed.connect(_on_main_pressed)
-		box.add_child(buy_btn)
-		if not affordable:
-			box.add_child(_label(tr("rescue_need_gold"), ThemeKit.FS_SMALL, ThemeKit.INK_DANGER, "NeedGoldLabel"))
+	var main_btn := _pill(ROW + "/GoldBtn", "UseButton" if use_inv else "BuyButton",
+		tr("rescue_use") if use_inv else tr("rescue_buy") % int(_args.get("price", 0)), "Baloo Outline - Yellow")
+	main_btn.connect("clicked", _on_main_pressed)
+	if use_inv and _args.has("inv_move"):
+		_status("StockLabel", tr("rescue_in_stock") % int(_args.inv_move))
+	elif not use_inv and not affordable:
+		_status("NeedGoldLabel", tr("rescue_need_gold"))
 
 	if bool(_args.get("video", false)):
-		var vid := ThemeKit.make_button(tr("rescue_video"), "video")
-		vid.name = "VideoButton"
-		ThemeKit.set_button_icon(vid, "ui_video")
-		vid.add_theme_font_size_override("font_size", ThemeKit.FS_BODY - 2)
-		vid.pressed.connect(_on_video_pressed)
-		box.add_child(vid)
+		var vid := _pill(ROW + "/AdsBtn", "VideoButton", tr("rescue_video"), "Baloo Outline - Blue 1")
+		vid.connect("clicked", _on_video_pressed)
 		Game.offer_video(VIDEO_PLACEMENT)
+	else:
+		ui.show(ROW + "/AdsBtn", false)
+	ui.relayout(ROW)
 
-	_msg = _label("", ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "MessageLabel")
-	_msg.visible = false
-	box.add_child(_msg)
-
-	var skip := ThemeKit.make_button(tr("rescue_give_up"), "ghost")
+	var skip: Button = ui.button(ROW + "/Retry")
 	skip.name = "SkipButton"
-	skip.pressed.connect(_on_skip_pressed)
-	box.add_child(skip)
+	ui.text(ROW + "/Retry/Out", tr("rescue_give_up"))
+	skip.connect("clicked", _on_skip_pressed)
 
-	_animate_in.call_deferred()
+	# White line under the popup (the prefab's lower hint text) for ad errors.
+	_msg = ui.text("Bg/Panel/Text (TMP) (1)", "")
+	_msg.name = "MessageLabel"
+	_msg.visible = false
 
 
-func _animate_in() -> void:
-	if _panel != null and is_instance_valid(_panel):
-		ThemeKit.popup_in(_panel)
+## A row button of the prefab with the game's label: the inactive "Out" text fills the pill (two lines, auto size)
+## in the outline material of the prefab's price text; the price row is hidden.
+func _pill(path: String, node_name: String, label: String, mat: String) -> Button:
+	var b: Button = ui.button(path)
+	b.name = node_name
+	ui.show(path + "/Price", false)
+	var out: Label = ui.label(path + "/Out")
+	# u_txt is the cached prefab dict: change a copy.
+	var t: Dictionary = (out.get_meta("u_txt") as Dictionary).duplicate()
+	t.auto = [18.0, 40.0]
+	t.w = true
+	out.set_meta("u_txt", t)
+	out.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	out.material = UnityUI.text_material(mat, false)
+	# Keep clear of the TV icon on the video pill's top-right corner.
+	var right := 56.0 if ui.has(path + "/Image") else 24.0
+	var r: Dictionary = out.get_meta("u_rect")
+	r.amin = Vector2(0, 0)
+	r.amax = Vector2(1, 1)
+	r.pos = Vector2((24.0 - right) * 0.5, 4.0)
+	r.size = Vector2(-24.0 - right, -24.0)
+	UnityUI.apply_rect(out)
+	out.visible = true
+	ui.text(path + "/Out", label)
+	return b
+
+
+## Status line at the bottom of the cream well, under the icon (Description style).
+func _status(node_name: String, text: String) -> Label:
+	var s := UnityKit.spec("PopupReviveLayer", "Bg/Panel/Content/Description")
+	s.n = node_name
+	s.txt.s = text
+	s.txt.fs = 32.0
+	s.txt.auto = [18.0, 32.0]
+	# Well spans y 83..576 of the 838 panel; the icon ends at 531 (the line overlaps its bottom edge a little).
+	return UnityKit.add(ui.node("Bg/Panel/Content"), s, Rect2(72, 520, 580, 44)).root as Label
 
 
 func _set_busy(v: bool) -> void:
 	_busy = v
 	for b in find_children("*", "Button", true, false):
-		(b as Button).disabled = v
+		if b is UButton:
+			(b as UButton).set_interactable(not v)
+		else:
+			(b as Button).disabled = v
 
 
 func _show_msg(text: String) -> void:
-	_msg.text = text
 	_msg.visible = true
+	ui.text("Bg/Panel/Text (TMP) (1)", text)
 
 
 func _finish(result: Variant) -> void:
@@ -106,7 +138,6 @@ func _finish(result: Variant) -> void:
 func _on_main_pressed() -> void:
 	if _busy:
 		return
-	Sfx.play("sfx_button")
 	if bool(_args.get("use_inventory", false)):
 		await _accept("inventory")
 	elif not bool(_args.get("affordable", false)):
@@ -118,14 +149,12 @@ func _on_main_pressed() -> void:
 func _on_video_pressed() -> void:
 	if _busy:
 		return
-	Sfx.play("sfx_button")
 	await _accept("video")
 
 
 func _on_skip_pressed() -> void:
 	if _busy:
 		return
-	Sfx.play("sfx_button")
 	_finish("skip")
 
 

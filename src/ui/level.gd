@@ -2,12 +2,14 @@ extends Control
 ## Màn level: HUD, bàn cờ, booster, luồng hết MOVES, thắng, thua, restart.
 ## setup({challenge: true}) chạy Daily Challenge (Game.start_challenge) thay vì level kế tiếp; thắng thì về Home.
 ## closed({"action": "home" | "no_lives"}). Popup mở qua Main.open_popup (hoặc lớp riêng khi chạy lẻ).
-## HUD theo wireframe 3.4: lượt, tên level, restart, bánh răng (Home và Retry nằm trong popup cài đặt).
+## HUD theo wireframe 3.4: lượt, tên level, restart, bánh răng (Home và Retry nằm trong popup cài đặt); chip mảnh dưới chip lượt.
+## Hàng booster luôn đủ 3 ô; ô chưa mở tối đi, có ổ khoá và ghi level mở.
 ## UI chỉ gọi Game và Sfx; hoạt ảnh bàn do BoardView lo.
 
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 const Config := preload("res://src/config.gd")
 const Unlocks := preload("res://src/meta/unlocks.gd")
@@ -24,53 +26,108 @@ const POPUP_LB_RESULT := "res://scenes/popup_lb_result.tscn"
 const BOOSTERS := ["hint", "move", "smash"]
 const FREE_PLACEMENT := "booster_free"
 const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
+## Ô booster chưa mở: tô tối nền và icon (ổ khoá, nhãn là node con nên giữ màu).
+const LOCKED_TINT := Color(0.55, 0.55, 0.62)
 
 
-## Hộp thoại nhỏ dựng bằng code. items: [{id, text, kind, name, close}]. Bấm nút phát chosen(id),
-## rồi closed(id) nếu close (mặc định true). Back của Android phát closed(null). art: sprite atlas phía trên chữ.
+## Hộp thoại nhỏ dựng bằng code theo PopupOkLayer (color-cube-match-puzzle). items: [{id, text, kind, name, close}].
+## Bấm nút phát chosen(id), rồi closed(id) nếu close (mặc định true). Back của Android phát closed(null).
+## Mục id "close" là nút X (và chạm nền mờ) như PopupOkUICoreLayer.closeButtons; các mục khác nằm ở hàng nút,
+## mục "ghost" bên trái như Cancel của prefab. art: ảnh bên trái chữ, đặt như HeartIcon của PopupKeepPlaying.
 class Dialog extends Control:
-	const ThemeKit := preload("res://src/ui/theme_kit.gd")
-	const PopupKit := preload("res://src/ui/popup_kit.gd")
+	const UnityUI := preload("res://src/ui/unity_ui.gd")
+	const UnityKit := preload("res://src/ui/unity_kit.gd")
+	## kind -> màu nút UnityKit.BUTTONS (Ok xanh lá, Cancel xanh dương như PopupOkLayer).
+	const KIND_COLOR := {"primary": "green", "secondary": "gray", "danger": "red", "ghost": "blue", "video": "blue", "gold": "yellow"}
+	## Hàng nút của PopupOkLayer: rộng 612, nút 280x120, cách 52.
+	const ROW_W := 612.0
+	const ROW_SP := 52.0
+	const BTN := Vector2(280, 120)
 	signal closed(result: Variant)
 	signal chosen(id: String)
 	var buttons: Dictionary = {}
 	var title_label: Label = null
 	var body_label: Label = null
 	var message_label: Label = null
-	var _kit: Dictionary = {}
+	var ui: RefCounted = null
 
 	func _init(title: String = "", body: String = "", items: Array = [], message: String = "", art: Texture2D = null) -> void:
 		name = "Dialog"
 		set_anchors_preset(Control.PRESET_FULL_RECT)
-		_kit = PopupKit.make(self, title)
-		var box: VBoxContainer = _kit.box
-		title_label = _kit.title
-		if art != null:
-			var r := TextureRect.new()
-			r.texture = art
-			r.custom_minimum_size = Vector2(160, 160)
-			r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-			r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			box.add_child(r)
+		ui = UnityUI.build(self, "PopupOkLayer")
+		title_label = ui.text("Panel/Image/txtHeader", title)
+		title_label.name = "TitleLabel"
+		var content: Control = ui.node("Panel/Content")
 		if body != "":
-			body_label = PopupKit.text(body, ThemeKit.FS_BODY, ThemeKit.INK, "BodyLabel")
-			box.add_child(body_label)
-		message_label = PopupKit.text(message, ThemeKit.FS_SMALL, ThemeKit.INK_DANGER, "MessageLabel")
+			body_label = ui.text("Panel/Content/Description", body)
+			body_label.name = "BodyLabel"
+		else:
+			ui.show("Panel/Content/Description", false)
+		if art != null:
+			# PopupKeepPlaying: icon left in the well, description to its right.
+			var icon: RefCounted = UnityKit.add(content, UnityKit.spec("PopupKeepPlaying", "Panel/Content/HeartIcon"))
+			icon.root.name = "Art"
+			icon.texture("", art)
+			UnityUI.image_of(icon.root).preserve_aspect = true
+			if body_label != null:
+				_set_rect(body_label, UnityKit.spec("PopupKeepPlaying", "Panel/Content/Description").r)
+		var ms := UnityKit.spec("PopupOkLayer", "Panel/Content/Description")
+		ms.n = "MessageLabel"
+		ms.txt.s = message
+		ms.txt.fs = 30.0
+		ms.txt.auto = [18.0, 30.0]
+		ms.txt.c = "ffffffff"
+		ms.txt.mat = "Baloo Outline - Red"
+		# Bottom strip of the cream well (well spans y 133..440 of the 660 panel).
+		message_label = UnityKit.add(content, ms, Rect2(72, 392, 580, 46)).root as Label
 		message_label.visible = message != ""
-		box.add_child(message_label)
+		ui.show("Panel/Content/Button/Cancel", false)
+		ui.show("Panel/Content/Button/Ok", false)
+		var x: Button = ui.button("Panel/Top/btnTurnOff")
+		x.visible = false
+		var row_items: Array = []
 		for it in items:
-			var b := ThemeKit.make_button(str(it.get("text", "")), str(it.get("kind", "primary")))
+			if str(it.get("id", "")) == "close":
+				var id := str(it.id)
+				x.name = str(it.get("name", "Btn_close"))
+				x.visible = true
+				x.connect("clicked", _on_pressed.bind(id, bool(it.get("close", true))))
+				ui.on_click("Bg", _on_pressed.bind(id, bool(it.get("close", true))))
+				buttons[id] = x
+			elif str(it.get("kind", "")) == "ghost":
+				row_items.push_front(it)
+			else:
+				row_items.append(it)
+		var n := row_items.size()
+		var w := minf(BTN.x, (ROW_W - ROW_SP * (n - 1)) / maxf(1.0, n))
+		for it in row_items:
 			var id := str(it.get("id", ""))
-			b.name = str(it.get("name", "Btn_" + id))
-			b.pressed.connect(_on_pressed.bind(id, bool(it.get("close", true))))
-			box.add_child(b)
-			buttons[id] = b
+			var kind := str(it.get("kind", "primary"))
+			var v: RefCounted = UnityKit.button(ui.node("Panel/Content/Button"), str(KIND_COLOR.get(kind, "green")),
+				str(it.get("text", "")), Rect2(Vector2.ZERO, Vector2(w, BTN.y)), _on_pressed.bind(id, bool(it.get("close", true))))
+			v.root.name = str(it.get("name", "Btn_" + id))
+			if kind == "video":
+				# PopupReviveLayer AdsBtn: TV icon on the top-right corner, text kept clear of it.
+				UnityKit.add(v.root, UnityKit.spec("PopupReviveLayer", "Bg/Panel/Content/GameObject/AdsBtn/Image"))
+				var out: Control = v.node("Out")
+				var r: Dictionary = out.get_meta("u_rect")
+				r.pos = Vector2(-20, (r.pos as Vector2).y)
+				r.size = Vector2(-40, (r.size as Vector2).y)
+				UnityUI.apply_rect(out)
+			buttons[id] = v.root
+		ui.relayout("Panel/Content/Button")
 
 	func _ready() -> void:
-		PopupKit.show_in(_kit)
+		# Built in _init, before the dialog is in the tree: anchored sizes were still 0, so lay the row out again.
+		ui.relayout("Panel/Content/Button")
+
+	## Replaces a node's RectTransform with an exported rect array [amin.x, amin.y, amax.x, amax.y, pos, size, pivot].
+	static func _set_rect(c: Control, r: Array) -> void:
+		c.set_meta("u_rect", {"amin": Vector2(r[0], r[1]), "amax": Vector2(r[2], r[3]), "pos": Vector2(r[4], r[5]),
+			"size": Vector2(r[6], r[7]), "pivot": Vector2(r[8], r[9])})
+		UnityUI.apply_rect(c)
 
 	func _on_pressed(id: String, close: bool) -> void:
-		Sfx.play("button")
 		chosen.emit(id)
 		if close:
 			closed.emit(id)
@@ -88,8 +145,8 @@ var board_view: Control = null
 var title_label: Label = null
 var hard_badge: Control = null
 var moves_label: Label = null
-## Chip đếm mảnh leaderboard đã nhặt / tổng khối đặc biệt (hàng booster); ẩn khi level không có khối đặc biệt.
-var piece_chip: VBoxContainer = null
+## Chip đếm mảnh leaderboard đã nhặt / tổng khối đặc biệt (thanh trên, dưới chip lượt); ẩn khi level không có khối đặc biệt.
+var piece_chip: PanelContainer = null
 var piece_icon: TextureRect = null
 var piece_label: Label = null
 var tut_label: Label = null
@@ -98,9 +155,11 @@ var toast_label: Label = null
 var smash_label: Label = null
 var settings_button: Button = null
 var restart_button: Button = null
-## id booster -> nút và nhãn góc (số còn lại hoặc "+")
+## id booster -> nút, nhãn góc (số còn lại hoặc "+"), ổ khoá (hiện khi chưa mở), chữ dưới nút (tên hoặc level mở)
 var booster_buttons: Dictionary = {}
 var booster_badges: Dictionary = {}
+var booster_locks: Dictionary = {}
+var booster_caps: Dictionary = {}
 ## Mốc bắt đầu "đang nghĩ" (ms); test lùi mốc này để thử tiếng vỗ tay.
 var think_start_ms: int = 0
 
@@ -146,7 +205,9 @@ func _build() -> void:
 	_built = true
 	theme = ThemeKit.make_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(ThemeKit.make_background(ThemeKit.SLATE_BG, ThemeKit.SLATE_SURFACE))
+	var bg := ThemeKit.make_image_background(ThemeKit.LEVEL_BG_IMAGE, ThemeKit.LEVEL_BG_DIM, ThemeKit.LEVEL_BG)
+	bg.name = "Background"
+	add_child(bg)
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -159,10 +220,15 @@ func _build() -> void:
 	col.add_theme_constant_override("separation", 14)
 	margin.add_child(col)
 
-	# thanh trên: lượt, tên level + độ khó, restart, cài đặt. Chỉ thanh này và hàng booster chiếm chiều cao, để cỡ ô không đổi giữa các level.
+	# thanh trên: lượt, tên level + độ khó, restart, cài đặt; hàng dưới là chip đếm mảnh.
+	# Chỉ thanh này và hàng booster chiếm chiều cao, để cỡ ô không đổi giữa các level.
+	var head := VBoxContainer.new()
+	head.name = "TopBar"
+	head.add_theme_constant_override("separation", 6)
+	col.add_child(head)
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", 12)
-	col.add_child(top)
+	head.add_child(top)
 	var moves_chip := ThemeKit.make_panel()
 	moves_chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	top.add_child(moves_chip)
@@ -202,6 +268,30 @@ func _build() -> void:
 	settings_button = _icon_button("ui_settings", "SettingsButton")
 	settings_button.pressed.connect(_on_settings_pressed)
 	top.add_child(settings_button)
+	# chip đếm mảnh leaderboard: hàng riêng dưới chip lượt (hàng trên không còn chỗ ngang khi tên level dài)
+	var piece_row := HBoxContainer.new()
+	piece_row.name = "PieceRow"
+	piece_row.custom_minimum_size.y = 48  # giữ chỗ cả khi level không có khối đặc biệt
+	head.add_child(piece_row)
+	piece_chip = ThemeKit.make_panel()
+	piece_chip.name = "PieceChip"
+	piece_chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var ps := piece_chip.get_theme_stylebox("panel").duplicate() as StyleBox
+	ps.content_margin_left = 16
+	ps.content_margin_right = 22
+	ps.content_margin_top = 4
+	ps.content_margin_bottom = 4
+	piece_chip.add_theme_stylebox_override("panel", ps)
+	piece_chip.visible = false
+	piece_row.add_child(piece_chip)
+	var piece_box := HBoxContainer.new()
+	piece_box.add_theme_constant_override("separation", 6)
+	piece_chip.add_child(piece_box)
+	piece_icon = ThemeKit.make_icon("lb_piece", 40)
+	piece_box.add_child(piece_icon)
+	piece_label = ThemeKit.make_label("", ThemeKit.FS_SMALL + 4, ThemeKit.GOLD)
+	piece_label.name = "PieceLabel"
+	piece_box.add_child(piece_label)
 
 	# bàn cờ
 	var holder := Control.new()
@@ -236,34 +326,12 @@ func _build() -> void:
 	smash_label.visible = false
 	holder.add_child(smash_label)
 
-	# booster
+	# booster: luôn đủ 3 ô, ô chưa mở hiện khoá
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 40)
-	row.custom_minimum_size.y = 168  # giữ chỗ cả khi booster chưa mở, để khung không xê dịch giữa các level
+	row.custom_minimum_size.y = 168  # giữ chỗ, để khung không xê dịch giữa các level
 	col.add_child(row)
-	# chip đếm mảnh leaderboard: nằm ở hàng này (cao cố định) để thanh trên không rộng thêm
-	piece_chip = VBoxContainer.new()
-	piece_chip.name = "PieceChip"
-	piece_chip.add_theme_constant_override("separation", 4)
-	piece_chip.visible = false
-	row.add_child(piece_chip)
-	var piece_box := ThemeKit.make_panel()
-	piece_box.custom_minimum_size = Vector2(120, 112)
-	piece_chip.add_child(piece_box)
-	var piece_col := VBoxContainer.new()
-	piece_col.alignment = BoxContainer.ALIGNMENT_CENTER
-	piece_col.add_theme_constant_override("separation", 0)
-	piece_box.add_child(piece_col)
-	piece_icon = ThemeKit.make_icon("lb_piece", 48)
-	piece_col.add_child(piece_icon)
-	piece_label = ThemeKit.make_label("", ThemeKit.FS_SMALL + 4, ThemeKit.GOLD)
-	piece_label.name = "PieceLabel"
-	piece_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	piece_col.add_child(piece_label)
-	var piece_cap := ThemeKit.make_label(tr("lb_pieces"), ThemeKit.FS_SMALL, ThemeKit.TEXT)
-	piece_cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	piece_chip.add_child(piece_cap)
 	for kind in BOOSTERS:
 		var c := VBoxContainer.new()
 		c.name = "Booster_" + kind
@@ -292,12 +360,23 @@ func _build() -> void:
 		badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 		badge.offset_top = -8
 		badge.offset_right = 8
+		var lock := ThemeKit.make_icon("ui_lock", 64)
+		lock.name = "BoosterLock_" + kind
+		b.add_child(lock)
+		lock.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+		lock.offset_left = -58
+		lock.offset_top = -58
+		lock.offset_right = 6
+		lock.offset_bottom = 6
 		var cap := ThemeKit.make_label(tr("booster_" + kind), ThemeKit.FS_SMALL, ThemeKit.TEXT)
+		cap.name = "BoosterCaption_" + kind
 		cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		c.add_child(cap)
 		row.add_child(c)
 		booster_buttons[kind] = b
 		booster_badges[kind] = badge
+		booster_locks[kind] = lock
+		booster_caps[kind] = cap
 
 	_overlay = Control.new()
 	_overlay.name = "LocalPopups"
@@ -460,7 +539,9 @@ func _start_level(warn: bool = true) -> void:
 		board_view.highlight(board.hint())
 
 
-## Dải cảnh báo độ khó ngang bàn cờ: trượt vào, giữ ngắn, mờ đi rồi tự vào chơi. Chạm để bỏ qua.
+## Dải cảnh báo độ khó theo WarningHardLevelLayer (color-cube-match-puzzle): WarningHardAnimation hiện dần 0.2s rồi
+## nhịp các icon, chữ, vạch chắn chạy; giữ Config.CONTENT.hard_banner_sec (chạm để bỏ qua), mờ đi 0.2s rồi tự vào chơi.
+## Đầu lâu bay về huy hiệu độ khó trên HUD (SkullTarget của prefab) trong lúc đã chơi được.
 func _show_difficulty_banner(very_hard: bool) -> void:
 	await get_tree().process_frame
 	if _left:
@@ -469,57 +550,71 @@ func _show_difficulty_banner(very_hard: bool) -> void:
 	root.name = "DifficultyBanner"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
-	var dim := ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.4)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(dim)
-	var band := ColorRect.new()
-	band.name = "Band"
-	band.color = ThemeKit.HARD_BANNER_VERY if very_hard else ThemeKit.HARD_BANNER
-	var rect := board_view.get_global_rect() if board_view != null else Rect2()
-	var cy := rect.get_center().y if rect.size.y > 0.0 else size.y * 0.5
-	var band_h := 120.0
-	band.position = Vector2(0, cy - band_h * 0.5)
-	band.size = Vector2(size.x, band_h)
-	band.pivot_offset = band.size * 0.5
-	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(band)
-	var text := ThemeKit.make_label(tr("level_very_hard") if very_hard else tr("level_hard"), ThemeKit.FS_HUGE)
-	text.name = "Text"
-	text.set_anchors_preset(Control.PRESET_FULL_RECT)
-	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	band.add_child(text)
-	var skull := ThemeKit.make_icon("ui_superhard" if very_hard else "ui_hard", 130)
-	skull.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	skull.offset_left = -65
-	skull.offset_right = 65
-	skull.offset_top = -120
-	skull.offset_bottom = 10
-	band.add_child(skull)
 	add_child(root)
+	var v: RefCounted = UnityUI.build(root, "WarningHardLevelLayer")
+	var text: Label = v.text("Panel/WarningExtreme/HardLevelTxt", tr("level_very_hard") if very_hard else tr("level_hard"))
+	text.name = "Text"
+	var skull: Control = v.node("GameObject/Skull")
+	v.texture("GameObject/Skull", ThemeKit.icon("ui_superhard" if very_hard else "ui_hard"))
+	UnityUI.image_of(skull).preserve_aspect = true
 	var skip := [false]
 	root.gui_input.connect(func(ev: InputEvent) -> void:
 		if ev is InputEventMouseButton and ev.pressed or ev is InputEventScreenTouch and ev.pressed:
 			skip[0] = true)
 	Sfx.play("button")
-	band.scale = Vector2(1, 0)
-	dim.modulate.a = 0.0
-	var tin := create_tween().set_parallel(true).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tin.tween_property(band, "scale:y", 1.0, 0.22)
-	tin.tween_property(dim, "modulate:a", 1.0, 0.22)
+	# WarningHardAnimation.PlayAnim: fade in, then yoyo pulses (InOutSine) and the barrier tapes shrink from 100x width.
+	var extreme: Control = v.node("Panel/WarningExtreme")
+	extreme.modulate.a = 0.0
+	var loops: Array[Tween] = []
+	var tin := root.create_tween()
+	tin.tween_property(extreme, "modulate:a", 1.0, 0.2)
+	tin.tween_callback(func() -> void:
+		for p in [["Panel/WarningExtreme/Noti1", 1.15, 0.3], ["Panel/WarningExtreme/Noti2", 1.15, 0.3],
+				["GameObject/Skull", 1.12, 0.4], ["Panel/WarningExtreme/HardLevelTxt", 1.12, 0.4]]:
+			var n: Control = v.node(p[0])
+			var tw := n.create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			tw.tween_property(n, "scale", Vector2.ONE * float(p[1]), float(p[2]))
+			tw.tween_property(n, "scale", Vector2.ONE, float(p[2]))
+			loops.append(tw))
+	for p in ["Panel/WarningExtreme/Image", "Panel/WarningExtreme/Image (1)"]:
+		var bar: Control = v.node(p)
+		var r: Dictionary = bar.get_meta("u_rect")
+		var w := float((r.size as Vector2).x)
+		var tw := bar.create_tween().set_loops()
+		tw.tween_method(func(x: float) -> void:
+			r.size = Vector2(x, (r.size as Vector2).y)
+			UnityUI.apply_rect(bar), w * 100.0, w, 30.0)
+		loops.append(tw)
 	var deadline := Time.get_ticks_msec() + int(float(Config.CONTENT.hard_banner_sec) * 1000.0)
 	while not _left and not skip[0] and Time.get_ticks_msec() < deadline:
 		await get_tree().process_frame
 	if _left or not is_instance_valid(root):
 		return
-	var tout := create_tween().set_parallel(true)
-	tout.tween_property(band, "modulate:a", 0.0, 0.18)
-	tout.tween_property(dim, "modulate:a", 0.0, 0.18)
+	# StopAnimAsync: stop the loops, fade out.
+	for tw in loops:
+		tw.kill()
+	var tout := root.create_tween()
+	tout.tween_property(extreme, "modulate:a", 0.0, 0.2)
 	await tout.finished
-	root.queue_free()
+	if _left or not is_instance_valid(root):
+		return
+	# PlaySkullFlyAnimation runs while the level is already playable; the warning itself is over.
+	root.name = "DifficultyBannerOut"
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fly_skull(root, skull, v.node("GameObject/SkullTarget"))
+
+
+## Đầu lâu bay tới huy hiệu độ khó (hoặc SkullTarget) 0.6s: di chuyển InOutQuad, thu còn 0.5 OutQuad.
+func _fly_skull(root: Control, skull: Control, fallback: Control) -> void:
+	var to_global := hard_badge.get_global_rect().get_center() if hard_badge != null and hard_badge.is_visible_in_tree() \
+		else fallback.get_global_rect().get_center()
+	var parent := skull.get_parent() as Control
+	var to := parent.get_global_transform().affine_inverse() * to_global - skull.size * 0.5
+	skull.scale = Vector2.ONE
+	var tw := skull.create_tween().set_parallel(true)
+	tw.tween_property(skull, "position", to, 0.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(skull, "scale", Vector2(0.5, 0.5), 0.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.chain().tween_callback(root.queue_free)
 
 
 ## Level dạy cơ chế (14, 30, 40, 55, 70, 90): một dòng "Tên: luật" ở đầu level. Challenge không có.
@@ -548,10 +643,17 @@ func _refresh_hud() -> void:
 	piece_label.text = "%d/%d" % [int(attempt.get("pieces", 0)), total]
 	for kind in BOOSTERS:
 		var open := Unlocks.is_open(kind, _level)
-		var b: Button = booster_buttons[kind]
-		b.get_parent().visible = open
+		(booster_buttons[kind] as Button).self_modulate = Color.WHITE if open else LOCKED_TINT
+		(booster_locks[kind] as Control).visible = not open
+		(booster_caps[kind] as Label).text = tr("booster_" + kind) if open else tr("level_title") % _unlock_level(kind)
+		var badge: Label = booster_badges[kind]
+		badge.visible = open
 		var n := int(Game.s.inv.get(kind, 0))
-		(booster_badges[kind] as Label).text = (tr("booster_count") % n) if n > 0 else "+"
+		badge.text = (tr("booster_count") % n) if n > 0 else "+"
+
+
+func _unlock_level(kind: String) -> int:
+	return int(Config.UNLOCK.get(kind, 0))
 
 
 func _toast(text: String) -> void:
@@ -803,7 +905,7 @@ func _on_settings_pressed() -> void:
 		return
 	Sfx.play("button")
 	_set_state("dialog")
-	var r: Variant = await _popup_scene(INGAME_SETTINGS, {})
+	var r: Variant = await _popup_scene(INGAME_SETTINGS, {"life_cost": _confirm_life_loss()})
 	if _left:
 		return
 	_set_state("playing")
@@ -846,6 +948,9 @@ func _on_booster_pressed(kind: String) -> void:
 	if state != "playing":
 		return
 	Sfx.play("button")
+	if not Unlocks.is_open(kind, _level):
+		_toast(tr("booster_locked") % _unlock_level(kind))
+		return
 	if _smash_mode:
 		_set_smash_mode(false)
 		if kind == "smash":

@@ -169,13 +169,17 @@ settings_language_en,English,English
 settings_language_vi,Tiếng Việt,Tiếng Việt
 settings_privacy,Privacy settings,Cài đặt quyền riêng tư
 settings_restore,Restore purchases,Khôi phục giao dịch
-settings_support,Contact support,Liên hệ hỗ trợ
+settings_support,Support,Hỗ trợ
 settings_support_subject,Tap Block Out support,Hỗ trợ Tap Block Out
 settings_version,Version %s,Phiên bản %s
 settings_on,On,Bật
 settings_off,Off,Tắt
 settings_tester_title,Tester menu,Menu thử nghiệm
 settings_tester_debugger,Mediation debugger,Mediation debugger
+settings_tester_level,Level,Level
+settings_tester_save,Save,Lưu
+settings_tester_wipe,Delete account,Xoá tài khoản
+settings_tester_wipe_confirm,Tap again to delete,Chạm lần nữa để xoá
 settings_close,Done,Xong
 offer_starter_pack_title,Starter Pack,Gói Khởi Đầu
 offer_starter_pack_body,A boost of gold and one of each booster to get you going. One-time offer.,Một ít gold và mỗi loại booster một cái để bạn khởi đầu thuận lợi. Chỉ mua được một lần.
@@ -470,3 +474,6 @@ streak_keep_ad,Continue,Chơi tiếp
 profile_name_title,Change Name,Đổi tên
 profile_name_rules,"Enter a nickname (3-14 characters), containing only English letters, numbers, underscores, periods, hyphens.","Nhập biệt danh (3-14 ký tự), chỉ gồm chữ cái tiếng Anh, số, gạch dưới, dấu chấm, gạch ngang."
 profile_name_taken,Name is already taken,Tên này đã có người dùng
+profile_nickname,Nickname,Biệt danh
+profile_name_default,Player,Người chơi
+weekly_reward_min,%dm,%dp

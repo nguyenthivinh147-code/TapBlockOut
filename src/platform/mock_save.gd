@@ -27,3 +27,8 @@ func flush() -> void:
 func sync_cloud() -> void:
 	sync_count += 1
 
+
+func wipe() -> void:
+	last_json = ""
+	cloud_json = ""
+

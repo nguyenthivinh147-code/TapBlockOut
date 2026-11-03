@@ -28,11 +28,15 @@ const JOLT := 0.1  # khối bị va lùi chừng này ô
 const RIPPLE_DEPTH := 2  # dư chấn lan sang thêm chừng này khối phía sau
 const RIPPLE_DELAY := 0.05
 const RIPPLE_FADE := 0.5
-const CHIPS_BUMP := 7  # số vụn kẹo mỗi khối lúc va chạm
-const FLASH_SHATTER := 4.8  # cỡ loé sáng, theo ô
-const FLASH_BUMP := 2.6
-const SPARKS_SHATTER := 18
-const SPARKS_BUMP := 7
+const CHIPS_BUMP := 4  # số vụn kẹo mỗi khối lúc va chạm
+const FLASH_BUMP := 1.8  # cỡ loé sáng, theo ô
+const SPARKS_BUMP := 4
+const SPARK_SCALE_BUMP := 115.0  # sao lấp lánh: độ mạnh = ô / số này (tầm bay và cỡ sao)
+const GRIND_SPEED := 9.0  # ô/giây, khối trôi qua thanh để bị nghiền
+const GRIND_BITS := 22.0  # khối vuông nhỏ phun ra cho mỗi ô diện tích đi qua thanh
+const GRIND_SPARKS := 6
+const GRIND_SPARK_SCALE := 110.0
+const GRIND_SETTLE := 0.25  # giây sau khi nghiền xong thì báo xong; vụn còn lại vẫn bay tiếp
 const GATE_TIME := 0.22
 const GHOST_NAME := "Ghost"
 const SIDE_OF_DIR := {"up": Vector2(0, -1), "left": Vector2(-1, 0), "right": Vector2(1, 0), "down": Vector2(0, 1)}
@@ -313,6 +317,10 @@ func _clear() -> void:
 	_owner.clear()
 	for ch in _shadow_root.get_children():
 		ch.queue_free()
+	# khối đang bị nghiền dở: xoá cùng vụn của nó trong _fx_root bên dưới, hoạt ảnh nghiền dừng theo
+	for ch in _blocks_root.get_children():
+		if str(ch.name).begins_with("ExitClip"):
+			ch.queue_free()
 	_pending = 0
 	for side in _gate_tws:
 		var gtw: Tween = _gate_tws[side]
@@ -400,7 +408,7 @@ func _draw() -> void:
 	var br := board_rect()
 	# nền bàn: tới đường giữa các thanh khung
 	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color("151A28")
+	bg.bg_color = ThemeKit.BOARD_BG
 	bg.set_corner_radius_all(int(CandyFrame.TUBE_R * _cell))
 	bg.anti_aliasing = true
 	draw_style_box(bg, CandyFrame.panel_rect(br, _cell))
@@ -500,7 +508,7 @@ func _after_result(valid: bool) -> void:
 	_update_gates(true)
 
 
-## Khối lao nhanh dần tới mặt trong của thanh cùng màu rồi vỡ. Cắt mảnh ngay lúc chạm để lúc vỡ không bị khựng.
+## Khối lao nhanh dần tới mặt trong của thanh cùng màu rồi trôi qua thanh và bị nghiền thành khối vuông nhỏ.
 func _anim_exit(node: BlockNode, dir: Vector2) -> void:
 	_unmap(node.id)
 	_nodes.erase(node.id)
@@ -510,13 +518,12 @@ func _anim_exit(node: BlockNode, dir: Vector2) -> void:
 	var steps := _steps_to_edge(node, dir)
 	var travel := (float(steps) + CandyFrame.gap(side)) * _cell
 	var time := clampf(SLIDE_MIN + SLIDE_PER_CELL * float(steps), SLIDE_MIN, SLIDE_TIME)
-	var polys := CandyShards.fracture(node.local_cells(), dir, _rng)
 	var axis := Vector2(absf(dir.x), absf(dir.y))
 	node.pivot_offset = node.size * 0.5
 	var tw := node.create_tween().set_parallel(true)
 	tw.tween_property(node, "position", node.position + dir * travel, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.tween_property(node, "scale", Vector2.ONE + axis * SLIDE_STRETCH - Vector2(axis.y, axis.x) * SLIDE_STRETCH * 0.5, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tw.finished.connect(_shatter.bind(node, dir, side, polys))
+	tw.finished.connect(_grind.bind(node, dir, side))
 	_links.queue_redraw()
 
 
@@ -550,22 +557,115 @@ func _leading_point(lc: Array, dir: Vector2) -> Vector2:
 	return sum / float(n) * _cell
 
 
-func _shatter(node: BlockNode, dir: Vector2, side: String, polys: Array[PackedVector2Array]) -> void:
+## Khối trôi đều qua thanh cùng màu: phần đã qua mặt trong của thanh bị cắt đi (lùa dưới thanh),
+## đổi thành khối vuông nhỏ phun ra phía ngoài thanh, toả hình nón. Toạ độ theo dir tính trong toạ độ của BoardView.
+func _grind(node: BlockNode, dir: Vector2, side: String) -> void:
 	var ramp := ThemeKit.block_ramp(str(node.view.get("color", "")))
 	var lc := node.local_cells()
-	var xf := node.get_global_transform()
-	var impact := xf * _leading_point(lc, dir)
-	var burst := CandyShards.shatter(_fx_root, polys, lc, _cell, ramp, xf, dir, impact, _rng)
-	burst.settled.connect(_end, CONNECT_ONE_SHOT)
-	BoardFx.impact_flash(_fx_root, impact, ramp["stripe"], _cell * FLASH_SHATTER)
-	BoardFx.sparkles(_fx_root, impact, ramp, dir, _cell / 60.0, SPARKS_SHATTER)
-	_frame.hit(side, get_global_transform().affine_inverse() * impact)
-	Sfx.play_or("shatter", "exit")
-	_shake_root(Vector2(absf(dir.x), absf(dir.y)))
-	# khối giữ thêm một khung vì mảnh chỉ hiện từ khung sau; hai lớp trùng khít nên không lộ, còn bóng đổ thì bỏ ngay
+	var br := board_rect()
+	var inner := br.get_center().dot(dir) + absf(br.size.dot(dir)) * 0.5 + CandyFrame.gap(side) * _cell
+	var outer := inner + float(CandyFrame.BARS[side]["thick"]) * _cell
+	var clip := _exit_clip(dir, inner)
+	node.reparent(clip)
 	node.shadow.hide()
-	get_tree().process_frame.connect(node.queue_free, CONNECT_ONE_SHOT)
+	var to_view := get_global_transform().affine_inverse() * node.get_global_transform()
+	var trail := INF
+	for c: Vector2i in lc:
+		trail = minf(trail, (to_view * ((Vector2(c) + Vector2(0.5, 0.5) - dir * 0.5) * _cell)).dot(dir))
+	var to_go := maxf(0.0, inner - trail) + 1.0
+	var bits := CandyShards.grinder(_fx_root, lc, _cell, ramp) as CandyShards
+	var state := {"done": 0.0, "owed": {}}
+	var tw := node.create_tween()
+	tw.tween_method(_grind_step.bind(node, lc, dir, inner, outer, bits, node.position, state), 0.0, to_go, to_go / (GRIND_SPEED * _cell))
+	tw.finished.connect(_end_grind.bind(clip, bits))
+	var mouth := get_global_transform() * (to_view * _leading_point(lc, dir) + dir * (outer - inner))
+	BoardFx.sparkles(_fx_root, mouth, ramp, dir, _cell / GRIND_SPARK_SCALE, GRIND_SPARKS)
+	_hit_bar(side, node, dir, false, 1.0, CandyFrame.SPIN_EXIT, to_go / (GRIND_SPEED * _cell))
+	Sfx.play_or("shatter", "exit")
+
+
+## Vùng cắt cho khối đang qua thanh: mọi thứ phía trước đường `inner` (theo `dir`) bị giấu.
+func _exit_clip(dir: Vector2, inner: float) -> Control:
+	var r := Rect2(-size, size * 3.0)
+	var line := dir * inner
+	if dir.x > 0.0:
+		r.size.x = line.x - r.position.x
+	elif dir.x < 0.0:
+		r = Rect2(Vector2(line.x, r.position.y), Vector2(r.end.x - line.x, r.size.y))
+	if dir.y > 0.0:
+		r.size.y = line.y - r.position.y
+	elif dir.y < 0.0:
+		r = Rect2(Vector2(r.position.x, line.y), Vector2(r.size.x, r.end.y - line.y))
+	var clip := Control.new()
+	clip.name = "ExitClip"
+	clip.clip_contents = true
+	clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	clip.position = r.position
+	clip.size = r.size
+	_blocks_root.add_child(clip)
+	return clip
+
+
+## Một bước nghiền: dời khối, rồi mỗi ô đang nằm vắt qua mặt trong của thanh phun khối vuông nhỏ theo phần diện tích vừa qua.
+func _grind_step(v: float, node: BlockNode, lc: Array, dir: Vector2, inner: float, outer: float, bits: CandyShards, start: Vector2, state: Dictionary) -> void:
+	node.position = start + dir * v
+	var step := v - float(state["done"])
+	state["done"] = v
+	if step <= 0.0:
+		return
+	var owed: Dictionary = state["owed"]
+	var to_view := get_global_transform().affine_inverse() * node.get_global_transform()
+	var to_canvas := get_global_transform()
+	var perp := Vector2(-dir.y, dir.x)
+	var half := absf(to_view.basis_xform(dir * _cell * 0.5).dot(dir))
+	var width := absf(to_view.basis_xform(perp * _cell).dot(perp))
+	for c: Vector2i in lc:
+		var mid := to_view * ((Vector2(c) + Vector2(0.5, 0.5)) * _cell)
+		var along := inner - mid.dot(dir)
+		if absf(along) > half:
+			continue
+		var due := float(owed.get(c, 0.0)) + step * width / (_cell * _cell) * GRIND_BITS
+		while due >= 1.0:
+			due -= 1.0
+			var t := _rng.randf_range(-0.5, 0.5)
+			# màu lấy ngay chỗ đang qua thanh, lùi vào trong ô để khối vuông không bị mép bo của khối cắt mất
+			var at := Vector2(c) + Vector2(0.5, 0.5) + dir * (along / half * 0.5) + perp * t
+			at = at.clamp(Vector2(c) + Vector2(0.3, 0.3), Vector2(c) + Vector2(0.7, 0.7))
+			var pos := mid + dir * (along + (outer - inner) + _rng.randf_range(0.0, 0.15) * _cell) + perp * t * width
+			bits.bit(at, to_canvas * pos, dir, _rng)
+		owed[c] = due
+
+
+func _end_grind(clip: Control, bits: CandyShards) -> void:
+	clip.queue_free()
+	bits.close()
 	_links.queue_redraw()
+	create_tween().tween_callback(_end).set_delay(GRIND_SETTLE)
+
+
+## Thanh phía `side` bị va: đoạn thanh khối phủ lên (chiếu các ô của khối lên trục thanh) lăn tại chỗ.
+## `leading` chỉ tính các ô ở mép trước, dùng khi khối dội lại thay vì đi xuyên qua; `hold` là giây khối còn đang qua thanh.
+func _hit_bar(side: String, node: BlockNode, dir: Vector2, leading: bool, strength: float, turns: int, hold: float = 0.0) -> void:
+	var lc := node.local_cells()
+	var along := Vector2(absf(dir.y), absf(dir.x))
+	var front := -INF
+	for c: Vector2i in lc:
+		front = maxf(front, Vector2(c).dot(dir))
+	var lo := INF
+	var hi := -INF
+	for c: Vector2i in lc:
+		if leading and Vector2(c).dot(dir) < front - 0.01:
+			continue
+		var v := Vector2(c).dot(along)
+		lo = minf(lo, v)
+		hi = maxf(hi, v + 1.0)
+	var lead := _leading_point(lc, dir) / _cell
+	var mid := lead + along * ((lo + hi) * 0.5 - lead.dot(along))
+	# khối có thể đang giãn theo hướng lao, nên đo chiều dài sau khi đổi toạ độ
+	var xf := get_global_transform().affine_inverse() * node.get_global_transform()
+	var a := xf * (mid * _cell)
+	var b := xf * ((mid + along) * _cell)
+	_frame.hit(side, a, (hi - lo) * a.distance_to(b), strength, turns, hold)
 
 
 func _finish_exit(node: BlockNode) -> void:
@@ -625,12 +725,12 @@ func _impact(node: BlockNode, dir: Vector2, steps: int, blocker: String, gate_si
 	var world := xf * (at * _cell)
 	CandyShards.chips(_fx_root, node.local_cells(), _cell, ramp, xf, at, dir, CHIPS_BUMP, _rng)
 	BoardFx.impact_flash(_fx_root, world, ramp["stripe"], _cell * FLASH_BUMP, 0.26, 0.55)
-	BoardFx.sparkles(_fx_root, world, ramp, -dir, _cell / 95.0, SPARKS_BUMP)
+	BoardFx.sparkles(_fx_root, world, ramp, -dir, _cell / SPARK_SCALE_BUMP, SPARKS_BUMP)
 	node.pivot_offset = at * _cell
 	node.wobble(axis, WOBBLE_SELF, WOBBLE_TIME)
 	if gate_side != "":
 		Sfx.play("gate")
-		_frame.hit(gate_side, get_global_transform().affine_inverse() * world, 0.7)
+		_hit_bar(gate_side, node, dir, true, 0.7, CandyFrame.SPIN_BUMP)
 		_flash_gates()
 	elif blocker == LevelData.STONE:
 		Sfx.play("stone")

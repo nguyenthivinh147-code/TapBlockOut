@@ -1,0 +1,25 @@
+{
+	"name": "ImgVoHanTim",
+	"source": "Assets/_Game/Prefabs/UI/UIStore/ImgVoHanTim.prefab",
+	"root": {
+		"n": "ImgVoHanTim",
+		"id": "4200180609994515350",
+		"a": true,
+		"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 80, 80, 0.5, 0.5],
+		"img": {
+			"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16",
+			"c": "ffffffff",
+			"t": 0,
+			"pa": false,
+			"fc": true,
+			"fm": 4,
+			"fa": 1,
+			"fo": 0,
+			"cw": true,
+			"ppu": 1,
+			"rt": true,
+			"on": true
+		},
+		"anim": {"controller": "ImgBoosterMagnet 1", "on": true}
+	}
+}

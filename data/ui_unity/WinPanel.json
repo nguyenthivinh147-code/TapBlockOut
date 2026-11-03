@@ -1,0 +1,2361 @@
+{
+	"name": "WinPanel",
+	"source": "Assets/_Game/Layer/Prefab/WinPanel.prefab",
+	"root": {
+		"n": "WinPanel",
+		"id": "3562333777916183687",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"cs": [
+			{
+				"name": "VictoryPanel",
+				"canvasGroup": {"node": "3562333777916183687"},
+				"freeButton": {"node": "1896448471903350067"},
+				"continueButton": {"node": "1624971037030105769"},
+				"claimButton": {"node": "6380610255338462664"},
+				"claimTxts": [
+					{"node": "2453229551950804635"},
+					{"node": "8648473731239980926"}
+				],
+				"vfxWinGame": {"node": "509406172288762237"},
+				"levelConfigSO": {"asset": "LevelConfigSO.asset"},
+				"rewardsParent": {"node": "1963858567992476799"},
+				"rewardPrefab": {"asset": "Reward.prefab"},
+				"rankPointImage": {"node": "1115530081318512960"},
+				"uiAnimationManager": {"node": "1889753722223203143"},
+				"_levelShowAdsBtn": "4",
+				"_leaderboardUserCard": {"node": "1171023310710632622"},
+				"mechanicDescriptionSO": {"asset": "MechanicDescriptionSO.asset"},
+				"levelLoopConfigSO": {"asset": "LevelLoopConfig.asset"},
+				"progressText": {"node": "864670383544369285"},
+				"progressSlider": {"node": "3878425241648546003"},
+				"nextMechanicImage": {"node": "6703206104915816289"},
+				"mechanicProgressGroup": {"node": "655672643472329570"},
+				"progressAnimDuration": "0.8",
+				"handleSlider": {"node": "7017849916091399594"},
+				"adsCallbackTimeout": "7",
+				"panelRect": {"node": "3562333777916183687"},
+				"hideAnimDuration": "0.4",
+				"OnClaimReward": []
+			}
+		],
+		"ch": [
+			{
+				"n": "WinPanel",
+				"id": "974254281416510003",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, 151.5, 886, 472.8, 0.5, 0.5],
+				"lay": {
+					"t": "v",
+					"pad": [0, 0, 0, 0],
+					"al": 7,
+					"sp": 95.7,
+					"cw": false,
+					"ch": false,
+					"ew": true,
+					"eh": true,
+					"sw": false,
+					"sh": false,
+					"rev": false
+				},
+				"ch": [
+					{
+						"n": "Panel",
+						"id": "6574447455987329330",
+						"a": true,
+						"r": [0, 0, 0, 0, 0, 0, 748, 0, 0.5, 0.5],
+						"ch": [
+							{
+								"n": "Left",
+								"id": "2276223011517919532",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -124.1, 100, 159.0891, 159.0891, 0.5, 0.5],
+								"s": [-1, 1],
+								"ch": [
+									{
+										"n": "Image (2)",
+										"id": "5632481920984342394",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 19, 19.6889, 212, 212, 0, 0.5],
+										"z": -13.16,
+										"img": {
+											"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_6",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										},
+										"cs": [
+											{
+												"name": "CurveDrivenImageScaler",
+												"rectTransform": null,
+												"duration": "1",
+												"playOnStart": "1",
+												"startOffset": "0.188",
+												"infiniteLoop": "0",
+												"loopCount": "2",
+												"restartOnPlay": "1",
+												"scaleXCurve": {
+													"serializedVersion": "2",
+													"m_Curve": [
+														{
+															"serializedVersion": "3",
+															"time": "0",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.1661571",
+															"value": "1.3495419",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.3173778",
+															"value": "1.2268002",
+															"inSlope": "-0.0122726755",
+															"outSlope": "-0.0122726755",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.53379935"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.4734508",
+															"value": "1.3484242",
+															"inSlope": "0.049838897",
+															"outSlope": "0.049838897",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.7958985"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.62345076",
+															"value": "1.2342842",
+															"inSlope": "-0.018237649",
+															"outSlope": "-0.018237649",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.48905605"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.73452926",
+															"value": "1.4231858",
+															"inSlope": "0.62071234",
+															"outSlope": "0.62071234",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.5109442",
+															"outWeight": "0.5113282"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.8568666",
+															"value": "1.4187576",
+															"inSlope": "-0.8092693",
+															"outSlope": "-0.8092693",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.47022066",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "1",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														}
+													],
+													"m_PreInfinity": "2",
+													"m_PostInfinity": "2",
+													"m_RotationOrder": "4"
+												},
+												"scaleYCurve": {
+													"serializedVersion": "2",
+													"m_Curve": [
+														{
+															"serializedVersion": "3",
+															"time": "0",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.17313907",
+															"value": "0.7395138",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.32451236",
+															"value": "0.8352353",
+															"inSlope": "-0.016342577",
+															"outSlope": "-0.016342577",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5239429"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.46627733",
+															"value": "0.7396206",
+															"inSlope": "0.03852009",
+															"outSlope": "0.03852009",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5485205"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.6245123",
+															"value": "0.82976955",
+															"inSlope": "0.037352655",
+															"outSlope": "0.037352655",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5594521"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.752136",
+															"value": "0.6329972",
+															"inSlope": "-0.92336184",
+															"outSlope": "-0.92336184",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.42850685",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.8599721",
+															"value": "0.6320843",
+															"inSlope": "0.5839286",
+															"outSlope": "0.5839286",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.5505186",
+															"outWeight": "0.45332864"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "1",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														}
+													],
+													"m_PreInfinity": "2",
+													"m_PostInfinity": "2",
+													"m_RotationOrder": "4"
+												}
+											}
+										]
+									},
+									{
+										"n": "Image (1)",
+										"id": "5986473547953290497",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -50.7, 22.3, 169, 169, 0, 0.5],
+										"z": -357.55,
+										"img": {
+											"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_6",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										},
+										"cs": [
+											{
+												"name": "CurveDrivenImageScaler",
+												"rectTransform": null,
+												"duration": "1",
+												"playOnStart": "1",
+												"startOffset": "0.143",
+												"infiniteLoop": "0",
+												"loopCount": "2",
+												"restartOnPlay": "1",
+												"scaleXCurve": {
+													"serializedVersion": "2",
+													"m_Curve": [
+														{
+															"serializedVersion": "3",
+															"time": "0",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.1661571",
+															"value": "1.3495419",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.3173778",
+															"value": "1.2268002",
+															"inSlope": "-0.0122726755",
+															"outSlope": "-0.0122726755",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.53379935"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.4734508",
+															"value": "1.3484242",
+															"inSlope": "0.049838897",
+															"outSlope": "0.049838897",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.7958985"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.62345076",
+															"value": "1.2342842",
+															"inSlope": "-0.018237649",
+															"outSlope": "-0.018237649",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.48905605"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.73452926",
+															"value": "1.4231858",
+															"inSlope": "0.62071234",
+															"outSlope": "0.62071234",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.5109442",
+															"outWeight": "0.5113282"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.8568666",
+															"value": "1.4187576",
+															"inSlope": "-0.8092693",
+															"outSlope": "-0.8092693",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.47022066",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "1",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														}
+													],
+													"m_PreInfinity": "2",
+													"m_PostInfinity": "2",
+													"m_RotationOrder": "4"
+												},
+												"scaleYCurve": {
+													"serializedVersion": "2",
+													"m_Curve": [
+														{
+															"serializedVersion": "3",
+															"time": "0",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.17313907",
+															"value": "0.7395138",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.32451236",
+															"value": "0.8352353",
+															"inSlope": "-0.016342577",
+															"outSlope": "-0.016342577",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5239429"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.46627733",
+															"value": "0.7396206",
+															"inSlope": "0.03852009",
+															"outSlope": "0.03852009",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5485205"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.6245123",
+															"value": "0.82976955",
+															"inSlope": "0.037352655",
+															"outSlope": "0.037352655",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5594521"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.752136",
+															"value": "0.6329972",
+															"inSlope": "-0.92336184",
+															"outSlope": "-0.92336184",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.42850685",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.8599721",
+															"value": "0.6320843",
+															"inSlope": "0.5839286",
+															"outSlope": "0.5839286",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.5505186",
+															"outWeight": "0.45332864"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "1",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														}
+													],
+													"m_PreInfinity": "2",
+													"m_PostInfinity": "2",
+													"m_RotationOrder": "4"
+												}
+											}
+										]
+									}
+								]
+							},
+							{
+								"n": "Right",
+								"id": "7325157161366927530",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 129.62, 100, 159.0891, 159.0891, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "Image (2)",
+										"id": "5981421874864414014",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 9.2, 29, 212, 212, 0, 0.5],
+										"z": -13.16,
+										"img": {
+											"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_6",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										},
+										"cs": [
+											{
+												"name": "CurveDrivenImageScaler",
+												"rectTransform": null,
+												"duration": "1",
+												"playOnStart": "1",
+												"startOffset": "0.188",
+												"infiniteLoop": "0",
+												"loopCount": "2",
+												"restartOnPlay": "1",
+												"scaleXCurve": {
+													"serializedVersion": "2",
+													"m_Curve": [
+														{
+															"serializedVersion": "3",
+															"time": "0",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.1661571",
+															"value": "1.3495419",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.3173778",
+															"value": "1.2268002",
+															"inSlope": "-0.0122726755",
+															"outSlope": "-0.0122726755",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.53379935"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.4734508",
+															"value": "1.3484242",
+															"inSlope": "0.049838897",
+															"outSlope": "0.049838897",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.7958985"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.62345076",
+															"value": "1.2342842",
+															"inSlope": "-0.018237649",
+															"outSlope": "-0.018237649",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.48905605"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.73452926",
+															"value": "1.4231858",
+															"inSlope": "0.62071234",
+															"outSlope": "0.62071234",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.5109442",
+															"outWeight": "0.5113282"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.8568666",
+															"value": "1.4187576",
+															"inSlope": "-0.8092693",
+															"outSlope": "-0.8092693",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.47022066",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "1",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														}
+													],
+													"m_PreInfinity": "2",
+													"m_PostInfinity": "2",
+													"m_RotationOrder": "4"
+												},
+												"scaleYCurve": {
+													"serializedVersion": "2",
+													"m_Curve": [
+														{
+															"serializedVersion": "3",
+															"time": "0",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.17313907",
+															"value": "0.7395138",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.32451236",
+															"value": "0.8352353",
+															"inSlope": "-0.016342577",
+															"outSlope": "-0.016342577",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5239429"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.46627733",
+															"value": "0.7396206",
+															"inSlope": "0.03852009",
+															"outSlope": "0.03852009",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5485205"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.6245123",
+															"value": "0.82976955",
+															"inSlope": "0.037352655",
+															"outSlope": "0.037352655",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5594521"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.752136",
+															"value": "0.6329972",
+															"inSlope": "-0.92336184",
+															"outSlope": "-0.92336184",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.42850685",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.8599721",
+															"value": "0.6320843",
+															"inSlope": "0.5839286",
+															"outSlope": "0.5839286",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.5505186",
+															"outWeight": "0.45332864"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "1",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														}
+													],
+													"m_PreInfinity": "2",
+													"m_PostInfinity": "2",
+													"m_RotationOrder": "4"
+												}
+											}
+										]
+									},
+									{
+										"n": "Image (1)",
+										"id": "3329700015874067977",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -57.8, 22.3, 169, 169, 0, 0.5],
+										"z": 2.45,
+										"img": {
+											"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_6",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										},
+										"cs": [
+											{
+												"name": "CurveDrivenImageScaler",
+												"rectTransform": null,
+												"duration": "1",
+												"playOnStart": "1",
+												"startOffset": "0.143",
+												"infiniteLoop": "0",
+												"loopCount": "2",
+												"restartOnPlay": "1",
+												"scaleXCurve": {
+													"serializedVersion": "2",
+													"m_Curve": [
+														{
+															"serializedVersion": "3",
+															"time": "0",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.1661571",
+															"value": "1.3495419",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.3173778",
+															"value": "1.2268002",
+															"inSlope": "-0.0122726755",
+															"outSlope": "-0.0122726755",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.53379935"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.4734508",
+															"value": "1.3484242",
+															"inSlope": "0.049838897",
+															"outSlope": "0.049838897",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.7958985"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.62345076",
+															"value": "1.2342842",
+															"inSlope": "-0.018237649",
+															"outSlope": "-0.018237649",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.48905605"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.73452926",
+															"value": "1.4231858",
+															"inSlope": "0.62071234",
+															"outSlope": "0.62071234",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.5109442",
+															"outWeight": "0.5113282"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.8568666",
+															"value": "1.4187576",
+															"inSlope": "-0.8092693",
+															"outSlope": "-0.8092693",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.47022066",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "1",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														}
+													],
+													"m_PreInfinity": "2",
+													"m_PostInfinity": "2",
+													"m_RotationOrder": "4"
+												},
+												"scaleYCurve": {
+													"serializedVersion": "2",
+													"m_Curve": [
+														{
+															"serializedVersion": "3",
+															"time": "0",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.17313907",
+															"value": "0.7395138",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.32451236",
+															"value": "0.8352353",
+															"inSlope": "-0.016342577",
+															"outSlope": "-0.016342577",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5239429"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.46627733",
+															"value": "0.7396206",
+															"inSlope": "0.03852009",
+															"outSlope": "0.03852009",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5485205"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.6245123",
+															"value": "0.82976955",
+															"inSlope": "0.037352655",
+															"outSlope": "0.037352655",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.33333334",
+															"outWeight": "0.5594521"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.752136",
+															"value": "0.6329972",
+															"inSlope": "-0.92336184",
+															"outSlope": "-0.92336184",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.42850685",
+															"outWeight": "0.33333334"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "0.8599721",
+															"value": "0.6320843",
+															"inSlope": "0.5839286",
+															"outSlope": "0.5839286",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0.5505186",
+															"outWeight": "0.45332864"
+														},
+														{
+															"serializedVersion": "3",
+															"time": "1",
+															"value": "1",
+															"inSlope": "0",
+															"outSlope": "0",
+															"tangentMode": "0",
+															"weightedMode": "0",
+															"inWeight": "0",
+															"outWeight": "0"
+														}
+													],
+													"m_PreInfinity": "2",
+													"m_PostInfinity": "2",
+													"m_RotationOrder": "4"
+												}
+											}
+										]
+									}
+								]
+							},
+							{
+								"n": "AnimGroup",
+								"id": "1889753722223203143",
+								"a": true,
+								"r": [0.5, 1, 0.5, 1, 0, 0, 692, 337, 0.5, 1],
+								"canvas": {"override_sort": false, "order": 20},
+								"cs": [
+									{
+										"name": "UIAnimationManager",
+										"autoStartOnEnable": "1",
+										"uiAnimations": [
+											{"node": "2033894252852016971"},
+											{"node": "8692772464648313097"},
+											{"node": "5986473547953290497"},
+											{"node": "5632481920984342394"},
+											{"node": "3329700015874067977"},
+											{"node": "5981421874864414014"}
+										]
+									}
+								],
+								"ch": [
+									{
+										"n": "LightRotate",
+										"id": "7740219226750786919",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 332.5, 692, 364, 0.5, 0.5],
+										"img": {
+											"sp": null,
+											"c": "ffffff01",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": false
+										},
+										"ch": [
+											{
+												"n": "Image",
+												"id": "2033894252852016971",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 400, 400, 0.5, 0.5],
+												"img": {
+													"sp": "fx_1",
+													"c": "fae53c80",
+													"t": 0,
+													"pa": true,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": false,
+													"on": true
+												},
+												"cs": [
+													{
+														"name": "SimpleUIRotator",
+														"targetUI": {"node": "2033894252852016971"},
+														"rotationSpeed": "-50",
+														"rotateOnStart": "1"
+													}
+												]
+											},
+											{
+												"n": "Image (1)",
+												"id": "8692772464648313097",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 400, 400, 0.5, 0.5],
+												"img": {
+													"sp": "fx_1",
+													"c": "fae53c80",
+													"t": 0,
+													"pa": true,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": false,
+													"on": true
+												},
+												"cs": [
+													{
+														"name": "SimpleUIRotator",
+														"targetUI": {"node": "8692772464648313097"},
+														"rotationSpeed": "-100",
+														"rotateOnStart": "1"
+													}
+												]
+											},
+											{
+												"n": "Image",
+												"id": "1346637319940016958",
+												"a": true,
+												"r": [0.5, 0, 0.5, 0, 179, 77, 150, 150, 1, 0],
+												"img": {
+													"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_2",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												}
+											},
+											{
+												"n": "Image (2)",
+												"id": "7542137401074740114",
+												"a": true,
+												"r": [0.5, 0, 0.5, 0, -178, 77, 150, 150, 1, 0],
+												"s": [-1, 1],
+												"img": {
+													"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_2",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												}
+											},
+											{
+												"n": "Cup",
+												"id": "3513376554083934441",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 0, 16.8955, 250, 250, 0.5, 0.5],
+												"img": {
+													"sp": "UI_WinLose_Atlas:UI_WinLose_Atlas_4",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												}
+											}
+										]
+									}
+								]
+							},
+							{
+								"n": "Image",
+								"id": "2797593359160172019",
+								"a": true,
+								"r": [0.5, 1, 0.5, 1, 0, 180.1502, 692, 270.54, 0.5, 1],
+								"img": {
+									"sp": "winbg",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "Text (TMP)",
+										"id": "6103585462646830365",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, -32.7, 292.5, 128, 0.5, 0.5],
+										"txt": {
+											"s": "YOU WIN",
+											"fs": 75.6,
+											"auto": [18, 80],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 17,
+											"mat": "Baloo Outline - Red",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"n": "PlayerLeaderboardItem",
+						"id": "1171023310710632622",
+						"a": true,
+						"r": [0, 0, 0, 0, 0, 0, 800, 150, 0.5, 1],
+						"cs": [
+							{
+								"name": "UILeaderboardUserCard",
+								"_avatarImage": {"node": "5865505006047565279"},
+								"_frameImage": {"node": "8151144877862903233"},
+								"_nameText": {"node": "1654869801327632585"},
+								"_rankPositionText": {"node": "7314466775110233140"},
+								"_rankPointText": {"node": "1560249975054797924"},
+								"_rankPointImage": {"node": "1115530081318512960"},
+								"_rankPointSprite": {"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_2"},
+								"_leaderboardTopRewardsSO": {"asset": "LeaderboardTopRewards.asset"},
+								"milestoneItem": {"node": "4153833255427706304"},
+								"_avatarConfigSO": {"asset": "AvatarConfigSO.asset"},
+								"_frameConfigSO": {"asset": "FrameIconSO.asset"},
+								"_imageStates": [
+									{"node": "4153833255427706304"},
+									{"node": "5315759998963421372"},
+									{"node": "3766293980860725399"},
+									{"node": "5636998708985936513"},
+									{"node": "263114586676426562"}
+								],
+								"_shinyEffectForUGUI": {"node": "3766293980860725399"}
+							},
+							{
+								"name": "UILeaderboardUserCardLoader",
+								"_userCard": {"node": "1171023310710632622"}
+							},
+							{
+								"name": "DynamicScrollViewElement",
+								"rectTransform": {"node": "1171023310710632622"},
+								"dataLoader": {
+									"_underlyingValue": {"node": "1171023310710632622"}
+								},
+								"numPerRow": "1",
+								"flexible": "0",
+								"ignoreLayout": "0"
+							}
+						],
+						"ch": [
+							{
+								"n": "BG",
+								"id": "3766293980860725399",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+								"img": {
+									"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_28",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true,
+									"mat": "UI-Effect-Shiny"
+								},
+								"cs": [
+									{"name": "ShinyEffectForUGUI", "PlayAutomatic": "1", "AutoPlayDuration": "1", "AutoPlayInterval": "3"}
+								]
+							},
+							{
+								"n": "RankNumberTxt",
+								"id": "7314466775110233140",
+								"a": true,
+								"r": [0, 0.5, 0, 0.5, 29.1, 0, 88.5, 115.11, 0, 0.5],
+								"txt": {
+									"s": "4",
+									"fs": 50,
+									"auto": null,
+									"c": "000000ff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": true,
+									"rich": true,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "Image",
+										"id": "5315759998963421372",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 65, 70, 0.5, 0.5],
+										"img": {
+											"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_14",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "PlayerArrow",
+								"id": "263114586676426562",
+								"a": false,
+								"r": [0, 0.5, 0, 0.5, 13.02, 0, 50, 50, 0.5, 0.5],
+								"img": {
+									"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_7",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								}
+							},
+							{
+								"n": "Avatar",
+								"id": "5865505006047565279",
+								"a": true,
+								"r": [0, 0.5, 0, 0.5, 124.1, 0, 80, 80, 0, 0.5],
+								"img": {
+									"sp": "Av_02",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "Frame",
+										"id": "8151144877862903233",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 90, 90, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "PlayerName",
+								"id": "1654869801327632585",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -181.4, 0, 295.4, 91.2, 0, 0.5],
+								"txt": {
+									"s": "Playera5cd46",
+									"fs": 45,
+									"auto": [18, 45],
+									"c": "000000ff",
+									"h": 1,
+									"v": 512,
+									"w": true,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": true,
+									"rich": true,
+									"on": true
+								}
+							},
+							{
+								"n": "PointPanel",
+								"id": "5636998708985936513",
+								"a": true,
+								"r": [1, 0.5, 1, 0.5, -30, 0, 145.48, 50, 1, 0.5],
+								"img": {
+									"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_19",
+									"c": "ffffffff",
+									"t": 1,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "RankPointIcon",
+										"id": "1115530081318512960",
+										"a": true,
+										"r": [0, 0.5, 0, 0.5, 9.9, 0, 70, 70, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_2",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									},
+									{
+										"n": "PointText",
+										"id": "1560249975054797924",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 12.4, 0, 88.5, 43.4, 0.5, 0.5],
+										"txt": {
+											"s": "24",
+											"fs": 31.6,
+											"auto": [18, 72],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": true,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Outline - Blue 1",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": true,
+											"rich": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Gift",
+								"id": "4153833255427706304",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 150, 0, 70, 70, 0.5, 0.5],
+								"img": {
+									"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_30",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"btn": {
+									"tr": 1,
+									"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "4153833255427706304",
+									"sprites": {"pressed": null, "disabled": null}
+								},
+								"snd": true,
+								"cs": [
+									{
+										"name": "GiftPanelController",
+										"giftButton": {"node": "4153833255427706304"},
+										"giftPanel": {"node": "7658038423205253357"},
+										"graphicRaycaster": null
+									},
+									{
+										"name": "MilestoneItem",
+										"milestoneText": null,
+										"rewardsContainer": {"node": "7658038423205253357"},
+										"rewardItem": {"node": "782096031071672660"},
+										"tickMark": null
+									}
+								],
+								"ch": [
+									{
+										"n": "RewardsParent",
+										"id": "7658038423205253357",
+										"a": true,
+										"r": [0.5, 1, 0.5, 1, 0, -0.0002, 0, 96.9, 0.5, 0],
+										"lay": {
+											"t": "h",
+											"pad": [15, 15, 5, 0],
+											"al": 0,
+											"sp": 0,
+											"cw": false,
+											"ch": false,
+											"ew": true,
+											"eh": true,
+											"sw": false,
+											"sh": false,
+											"rev": false
+										},
+										"fit": {"h": 2, "v": 0},
+										"canvas": {"override_sort": true, "order": 100},
+										"ch": [
+											{
+												"n": "RewardBG",
+												"id": "3775631738158372663",
+												"a": true,
+												"r": [0.5, 1, 0.5, 1, 0, 0, 90, 95.45, 0.5, 1],
+												"img": {
+													"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												},
+												"le": {"ignore": true, "min": [-1,-1], "pref": [-1,-1], "flex": [-1,-1]}
+											},
+											{
+												"n": "ItemReward4",
+												"id": "782096031071672660",
+												"a": true,
+												"r": [0, 0, 0, 0, 0, 0, 60, 60, 0.5, 0.5],
+												"cs": [
+													{
+														"name": "PopupRewardItem",
+														"ThisItemType": "0",
+														"rewardItemSO": {"asset": "RewardItemSO.asset"},
+														"iconImg": {"node": "1409961800021648185"},
+														"quantityText": {"node": "7393982272894648671"}
+													}
+												],
+												"ch": [
+													{
+														"n": "Icon Item",
+														"id": "1409961800021648185",
+														"a": true,
+														"r": [0, 0, 1, 1, 0, 0, -10, -10, 0.5, 0.5],
+														"img": {
+															"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+															"c": "ffffffff",
+															"t": 0,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 1,
+															"rt": false,
+															"on": true
+														}
+													},
+													{
+														"n": "Quantity",
+														"id": "7393982272894648671",
+														"a": true,
+														"r": [0, 0, 1, 0, 0, 0, 0, 17.04, 0.5, 0],
+														"txt": {
+															"s": "200",
+															"fs": 22,
+															"auto": [22, 48],
+															"c": "ffffffff",
+															"h": 2,
+															"v": 256,
+															"w": true,
+															"ov": 0,
+															"st": 0,
+															"mat": "Baloo Outline - Black",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": true,
+															"on": true
+														}
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"n": "NewFeatureUnlock",
+						"id": "655672643472329570",
+						"a": true,
+						"r": [0, 0, 0, 0, 0, 0, 836.4, 215.7, 0.5, 0.5],
+						"ch": [
+							{
+								"n": "RewardsText",
+								"id": "4538538543248604004",
+								"a": true,
+								"r": [0, 1, 0, 1, 351.5, 29.2, 454.4, 128, 0.5, 0.5],
+								"txt": {
+									"s": "New Feature",
+									"fs": 58.2,
+									"auto": [18, 58.2],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Outline - Blue 1",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Slider",
+								"id": "3878425241648546003",
+								"a": true,
+								"r": [0, 1, 1, 1, -59.51, 0, -244.78, 108.7, 0.5, 1],
+								"slider": {
+									"fill": "5815449251277920679",
+									"handle": "7017849916091399594",
+									"dir": 0,
+									"min": 0,
+									"max": 1,
+									"whole": false,
+									"value": 0.176,
+									"inter": false
+								},
+								"ch": [
+									{
+										"n": "Background",
+										"id": "7937265772619563234",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_84",
+											"c": "ffffffff",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									},
+									{
+										"n": "Fill Area",
+										"id": "8003085376250458906",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, -28, 0.5, 0.5],
+										"ch": [
+											{
+												"n": "Fill",
+												"id": "5815449251277920679",
+												"a": true,
+												"r": [0, 0, 0, 0, -2, 0, -51.9999, 0, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_85",
+													"c": "ffffffff",
+													"t": 3,
+													"pa": false,
+													"fc": true,
+													"fm": 0,
+													"fa": 0.176,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1.51,
+													"rt": true,
+													"on": true
+												}
+											}
+										]
+									},
+									{
+										"n": "Handle Slide Area",
+										"id": "5265020537158786028",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, -20, 0, 0.5, 0.5],
+										"ch": [
+											{
+												"n": "Handle",
+												"id": "7017849916091399594",
+												"a": false,
+												"r": [0, 0, 0, 0, 7.65, 0, 23.8, -28, 0, 0.5],
+												"s": [-1, 1],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_85",
+													"c": "ffffffff",
+													"t": 1,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												}
+											}
+										]
+									},
+									{
+										"n": "ProgressText",
+										"id": "864670383544369285",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 454.4, 128, 0.5, 0.5],
+										"txt": {
+											"s": "4/5",
+											"fs": 58.2,
+											"auto": [18, 58.2],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Outline - Blue 1",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										}
+									},
+									{
+										"n": "Image",
+										"id": "2064785291701220897",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 318.91, 17.6, 180, 180, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_95",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"ch": [
+											{
+												"n": "FeatureImage",
+												"id": "6703206104915816289",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 150, 150, 0.5, 0.5],
+												"img": {
+													"sp": "ic_MysteryContainer",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												}
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"n": "BG",
+				"id": "6047756085230943575",
+				"a": true,
+				"r": [0, 0.5, 1, 0.5, 0, -626, 0, 856.77, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "RewardGroup",
+						"id": "4101177043273136221",
+						"a": true,
+						"r": [0.5, 1, 0.5, 1, 0, -160, 886, 320, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_89",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1.25,
+							"rt": true,
+							"on": true
+						},
+						"ch": [
+							{
+								"n": "RewardsText",
+								"id": "5898824128604044530",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 0, 207.87, 687.5, 128, 0.5, 0.5],
+								"txt": {
+									"s": "REWARDS",
+									"fs": 58.2,
+									"auto": [18, 58.2],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 17,
+									"mat": "Baloo Outline - Blue 1",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Rewards",
+								"id": "1963858567992476799",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+								"lay": {
+									"t": "h",
+									"pad": [0, 0, -100, 0],
+									"al": 4,
+									"sp": -300,
+									"cw": false,
+									"ch": false,
+									"ew": true,
+									"eh": true,
+									"sw": false,
+									"sh": false,
+									"rev": false
+								}
+							}
+						]
+					},
+					{
+						"n": "GameObject",
+						"id": "7940946474485234012",
+						"a": true,
+						"r": [0.5, 1, 0.5, 1, 0, -498.7, 723.1999, 137.2, 0.5, 0],
+						"lay": {
+							"t": "h",
+							"pad": [0, 0, 137, 0],
+							"al": 4,
+							"sp": 41.5,
+							"cw": false,
+							"ch": false,
+							"ew": true,
+							"eh": false,
+							"sw": false,
+							"sh": false,
+							"rev": false
+						},
+						"ch": [
+							{
+								"n": "FreeBtn",
+								"id": "1896448471903350067",
+								"a": true,
+								"r": [0, 0, 0, 0, 0, 0, 332, 132, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_50",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 2,
+									"rt": true,
+									"on": true
+								},
+								"btn": {
+									"tr": 1,
+									"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c8ff"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "1896448471903350067",
+									"sprites": {"pressed": null, "disabled": null}
+								},
+								"snd": true,
+								"vib": true,
+								"cs": [
+									{
+										"name": "AnimScaleButton",
+										"targetRect": {"node": "1896448471903350067"},
+										"endScale": "1.1",
+										"duration": "0.7",
+										"ease": "26"
+									}
+								],
+								"ch": [
+									{
+										"n": "Text (TMP)",
+										"id": "3004686988553718528",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 32.91, 300, 78.8, 0.5, 0.5],
+										"txt": {
+											"s": "FREE",
+											"fs": 40,
+											"auto": [18, 40],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 17,
+											"mat": "Baloo Outline - Yellow",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										}
+									},
+									{
+										"n": "GameObject (1)",
+										"id": "418971399698745292",
+										"a": true,
+										"r": [0.5, 1, 0.5, 1, 6.3, -82.5, 0, 70.2625, 0.5, 0.5],
+										"lay": {
+											"t": "h",
+											"pad": [0, 0, 0, 0],
+											"al": 4,
+											"sp": 10,
+											"cw": true,
+											"ch": false,
+											"ew": false,
+											"eh": false,
+											"sw": false,
+											"sh": false,
+											"rev": false
+										},
+										"fit": {"h": 2, "v": 0},
+										"ch": [
+											{
+												"n": "Text (TMP)",
+												"id": "2453229551950804635",
+												"a": true,
+												"r": [0, 0, 0, 0, 0, 0, 0, 59.3074, 0.5, 0.5],
+												"txt": {
+													"s": "10",
+													"fs": 68,
+													"auto": null,
+													"c": "ffffffff",
+													"h": 2,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 0,
+													"mat": "Baloo Outline - Yellow",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											},
+											{
+												"n": "Image",
+												"id": "4042842472943424438",
+												"a": true,
+												"r": [0, 0, 0, 0, 0, 0, 0, 60, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												},
+												"le": {"ignore": false, "min": [0,0], "pref": [60,60], "flex": [-1,-1]}
+											}
+										]
+									}
+								]
+							},
+							{
+								"n": "ClaimBtn",
+								"id": "6380610255338462664",
+								"a": true,
+								"r": [0, 0, 0, 0, 0, 0, 332, 132, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_50",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 2,
+									"rt": true,
+									"on": true
+								},
+								"btn": {
+									"tr": 1,
+									"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c8ff"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "6380610255338462664",
+									"sprites": {"pressed": null, "disabled": null}
+								},
+								"snd": true,
+								"vib": true,
+								"cs": [
+									{
+										"name": "AnimScaleButton",
+										"targetRect": {"node": "6380610255338462664"},
+										"endScale": "1.1",
+										"duration": "0.7",
+										"ease": "26"
+									}
+								],
+								"ch": [
+									{
+										"n": "Text (TMP)",
+										"id": "5776309526213870584",
+										"a": true,
+										"r": [0.5, 1, 0.5, 1, 0, -29, 300, 60.1058, 0.5, 0.5],
+										"txt": {
+											"s": "Claim",
+											"fs": 40,
+											"auto": [18, 40],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 17,
+											"mat": "Baloo Outline - Yellow",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										}
+									},
+									{
+										"n": "GameObject (1)",
+										"id": "6096312031829579415",
+										"a": true,
+										"r": [0.5, 1, 0.5, 1, 6.3, -82.5, 0, 70.2625, 0.5, 0.5],
+										"lay": {
+											"t": "h",
+											"pad": [0, 0, 0, 0],
+											"al": 4,
+											"sp": 10,
+											"cw": true,
+											"ch": false,
+											"ew": false,
+											"eh": false,
+											"sw": false,
+											"sh": false,
+											"rev": false
+										},
+										"fit": {"h": 2, "v": 0},
+										"ch": [
+											{
+												"n": "Text (TMP)",
+												"id": "8648473731239980926",
+												"a": true,
+												"r": [0, 0, 0, 0, 0, 0, 0, 59.3074, 0.5, 0.5],
+												"txt": {
+													"s": "10",
+													"fs": 68,
+													"auto": null,
+													"c": "ffffffff",
+													"h": 2,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 0,
+													"mat": "Baloo Outline - Yellow",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											},
+											{
+												"n": "Image",
+												"id": "4830062603749961800",
+												"a": true,
+												"r": [0, 0, 0, 0, 0, 0, 0, 60, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												},
+												"le": {"ignore": false, "min": [0,0], "pref": [60,60], "flex": [-1,-1]}
+											}
+										]
+									},
+									{
+										"n": "Image",
+										"id": "3753686290702555309",
+										"a": true,
+										"r": [1, 1, 1, 1, -23.7, -18.69, 96, 96, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_5",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "ContinueBtn",
+								"id": "1624971037030105769",
+								"a": true,
+								"r": [0, 0, 0, 0, 0, 0, 332, 132, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 2,
+									"rt": true,
+									"on": true
+								},
+								"btn": {
+									"tr": 1,
+									"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "ffffffff"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "1624971037030105769",
+									"sprites": {"pressed": null, "disabled": null}
+								},
+								"snd": true,
+								"vib": true,
+								"ch": [
+									{
+										"n": "Text (TMP)",
+										"id": "1765547571985282142",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 300, 67.7, 0.5, 0.5],
+										"txt": {
+											"s": "Continue",
+											"fs": 49.3,
+											"auto": [18, 60],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 17,
+											"mat": "Baloo Outline - Green",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": true,
+											"on": true
+										}
+									},
+									{
+										"n": "GameObject",
+										"id": "5055775129021251129",
+										"a": false,
+										"r": [0.5, 1, 0.5, 1, 6.3, -82.5, 126.58, 70.2625, 0.5, 0.5],
+										"lay": {
+											"t": "h",
+											"pad": [0, 0, 0, 0],
+											"al": 4,
+											"sp": 0,
+											"cw": true,
+											"ch": false,
+											"ew": false,
+											"eh": false,
+											"sw": false,
+											"sh": false,
+											"rev": false
+										},
+										"fit": {"h": 2, "v": 0},
+										"ch": [
+											{
+												"n": "Text (TMP)",
+												"id": "68971059647518367",
+												"a": true,
+												"r": [0, 1, 0, 1, 33.29, -35.1312, 66.58, 59.3074, 0.5, 0.5],
+												"txt": {
+													"s": "10",
+													"fs": 68,
+													"auto": null,
+													"c": "ffffffff",
+													"h": 2,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 0,
+													"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											},
+											{
+												"n": "Image",
+												"id": "3020163519648858267",
+												"a": true,
+												"r": [0, 1, 0, 1, 96.58, -35.1312, 60, 60, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_UI_Maincenter:UI_Maincenter_2",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												},
+												"le": {"ignore": false, "min": [0,0], "pref": [60,60], "flex": [-1,-1]}
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"n": "FireWorkEndgame",
+						"id": "509406172288762237",
+						"a": false,
+						"r": [0.5, 0.5, 0.5, 0.5, 817, -278.9133, 100, 100, 0.5, 0.5],
+						"z": 37.56,
+						"ch": [
+							{
+								"n": "FireWorkEndgame (1)",
+								"id": "6123136587975603404",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -1251, 926, 100, 100, 0.5, 0.5],
+								"z": -71.86
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

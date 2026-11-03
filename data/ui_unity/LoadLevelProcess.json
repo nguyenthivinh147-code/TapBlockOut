@@ -1,0 +1,61 @@
+{
+	"name": "LoadLevelProcess",
+	"source": "Assets/_Game/Prefabs/Layers/LoadLevelProcess.prefab",
+	"root": {
+		"n": "LoadLevelProcess",
+		"id": "7219197735921211012",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"canvas": {"override_sort": true, "order": 0},
+		"cs": [
+			{
+				"name": "LoadLevelProcess",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"_swirlTransition": {"node": "5393293856497901906"},
+				"_progressAnimDuration": "0.5"
+			}
+		],
+		"ch": [
+			{
+				"n": "BG",
+				"id": "5393293856497901906",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": null,
+					"c": "000000ff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true,
+					"mat": "SwirlMask"
+				},
+				"cs": [
+					{
+						"name": "SwirlTransitionUI",
+						"_material": {"asset": "SwirlMask.mat"},
+						"_progress": "1",
+						"_duration": "1",
+						"_swirl": "3",
+						"_softness": "0.1",
+						"_color": {"r": "0", "g": "0", "b": "0", "a": "1"},
+						"_center": {"x": "0.5", "y": "0.5"},
+						"_aspectRatio": "2"
+					}
+				]
+			}
+		]
+	}
+}

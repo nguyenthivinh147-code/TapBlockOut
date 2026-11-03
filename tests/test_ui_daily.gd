@@ -40,7 +40,7 @@ func test_seven_cells_and_claim(t: T) -> void:
 	t.eq(_states(node), ["current", "locked", "locked", "locked", "locked", "locked", "locked"], "trạng thái ô")
 	t.ok(node.claim_button.visible, "nút nhận hiện")
 	t.ok(not node.video_button.visible, "video chưa hiện trước khi nhận")
-	t.ok(node.claim_button.custom_minimum_size.y >= 96, "nút đủ lớn")
+	t.ok(node.claim_button.hit_size().y >= 96, "nút đủ lớn")
 	var coins0 := int(g.s.coins)
 	node.claim_button.pressed.emit()
 	t.eq(int(g.s.coins), coins0 + 50, "nhận 50 gold ô 1")
@@ -95,13 +95,14 @@ func test_booster_cell_and_week_two(t: T) -> void:
 	t.eq(node.cell_nodes.size(), 7, "tuần 2 có 7 ô")
 	t.eq(_states(node)[0], "current", "ô 8 là ô hiện tại")
 	t.eq(_states(node)[6], "locked", "ô 14 khoá")
-	t.eq(node.cell_nodes[2].find_child("Reward", true, false).text.contains("x1"), true, "ô quà booster có số lượng")
+	t.eq(node.cell_nodes[2].find_child("Quantity", true, false).text.contains("x1"), true, "ô quà booster có số lượng")
 	node.queue_free()
 	g.s.daily.idx = 27
 	node = _open()
 	t.eq(node.cell_nodes.size(), 7, "tuần 4 có 7 ô")
-	var last: String = node.cell_nodes[6].find_child("Reward", true, false).text
-	t.eq(last.split("\n").size(), 4, "ô 28: gold và ba booster")
+	# Mỗi món là một ItemReward (icon + số lượng) trong Rewards của ô.
+	var last: Node = node.cell_nodes[6].find_child("Rewards", true, false)
+	t.eq(last.find_children("Reward*", "", false, false).size(), 4, "ô 28: gold và ba booster")
 	node.queue_free()
 
 

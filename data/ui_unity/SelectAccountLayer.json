@@ -1,0 +1,302 @@
+{
+	"name": "SelectAccountLayer",
+	"source": "Assets/_Game/Prefabs/Layers/SelectAccountLayer.prefab",
+	"root": {
+		"n": "SelectAccountLayer",
+		"id": "5169305971227251520",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"img": {
+			"sp": null,
+			"c": "0a090999",
+			"t": 0,
+			"pa": false,
+			"fc": true,
+			"fm": 4,
+			"fa": 1,
+			"fo": 0,
+			"cw": true,
+			"ppu": 1,
+			"rt": true,
+			"on": true
+		},
+		"canvas": {"override_sort": true, "order": 32767},
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"cs": [
+			{
+				"name": "SelectAccountLayer",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"panelTransform": {"node": "3628668439490650949"},
+				"selectAccountItem": {"node": "6090557025330292258"}
+			}
+		],
+		"ch": [
+			{
+				"n": "BG",
+				"id": "9113135910765170488",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": null,
+					"c": "0f0f11ff",
+					"t": 1,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				}
+			},
+			{
+				"n": "Title",
+				"id": "3000629520240064318",
+				"a": true,
+				"r": [0.5, 1, 0.5, 1, 0, -320, 800, 100, 0.5, 0.5],
+				"txt": {
+					"s": "Select Account",
+					"fs": 72,
+					"auto": null,
+					"c": "ffffffff",
+					"h": 2,
+					"v": 512,
+					"w": false,
+					"ov": 0,
+					"st": 16,
+					"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+					"font": "Baloo Bhaijaan Regular 400 SDF",
+					"cs": 0,
+					"ws": 0,
+					"ls": 0,
+					"m": [0, 0, 0, 0],
+					"rt": false,
+					"rich": false,
+					"on": true
+				}
+			},
+			{
+				"n": "Text (TMP)",
+				"id": "5159346750827301677",
+				"a": true,
+				"r": [0, 0.5, 1, 0.5, 0.5, 477.5501, -84, 224.9, 0.5, 0.5],
+				"txt": {
+					"s": "Choose the account you want to continue.\nOnce you choose, another one will be deleted permanently.",
+					"fs": 31.05,
+					"auto": [18, 36],
+					"c": "ffffffff",
+					"h": 2,
+					"v": 512,
+					"w": false,
+					"ov": 0,
+					"st": 0,
+					"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+					"font": "Baloo Bhaijaan Regular 400 SDF",
+					"cs": 0,
+					"ws": 0,
+					"ls": 0,
+					"m": [0, 0, 0, 0],
+					"rt": false,
+					"rich": false,
+					"on": true
+				}
+			},
+			{
+				"n": "Panel",
+				"id": "3628668439490650949",
+				"a": true,
+				"r": [0, 0.5, 1, 0.5, 0, 0, -40, 500, 0.5, 0.5],
+				"lay": {
+					"t": "h",
+					"pad": [0, 0, 0, 0],
+					"al": 1,
+					"sp": 100,
+					"cw": false,
+					"ch": false,
+					"ew": false,
+					"eh": false,
+					"sw": false,
+					"sh": false,
+					"rev": false
+				},
+				"ch": [
+					{
+						"n": "AccountItem",
+						"id": "6090557025330292258",
+						"a": true,
+						"r": [0, 0, 0, 0, 0, 0, 300, 350, 0.5, 0.5],
+						"cs": [
+							{
+								"name": "SelectAccountItem",
+								"avatarConfigSO": {"asset": "AvatarConfigSO.asset"},
+								"avatarImage": {"node": "799006556121553181"},
+								"nameText": {"node": "8490044170455124406"},
+								"levelText": {"node": "6975416102168300039"},
+								"selectButton": {"node": "748004081829848596"}
+							}
+						],
+						"ch": [
+							{
+								"n": "Image",
+								"id": "5041944972604201942",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+								"img": {
+									"sp": null,
+									"c": "717171ff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": false
+								}
+							},
+							{
+								"n": "Avatar",
+								"id": "799006556121553181",
+								"a": true,
+								"r": [0.5, 1, 0.5, 1, 0, -181, 220, 220, 0.5, 0.5],
+								"img": {
+									"sp": null,
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								}
+							},
+							{
+								"n": "NickName",
+								"id": "8490044170455124406",
+								"a": true,
+								"r": [0, 0, 1, 0, 0, 19, -10, 72, 0.5, 0.5],
+								"txt": {
+									"s": "Name",
+									"fs": 52,
+									"auto": [18, 52],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Level",
+								"id": "6975416102168300039",
+								"a": true,
+								"r": [0, 0, 1, 0, 0, -43, -10, 57, 0.5, 0.5],
+								"txt": {
+									"s": "Lv. 120",
+									"fs": 41.5,
+									"auto": [18, 72],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Button",
+								"id": "748004081829848596",
+								"a": true,
+								"r": [0.5, 0, 0.5, 0, 0, -136, 220, 96, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 6,
+									"rt": true,
+									"on": true
+								},
+								"btn": {
+									"tr": 1,
+									"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "748004081829848596",
+									"sprites": {"pressed": null, "disabled": null}
+								},
+								"vib": true,
+								"ch": [
+									{
+										"n": "Text (TMP)",
+										"id": "1935146875609243185",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"txt": {
+											"s": "Select",
+											"fs": 46,
+											"auto": null,
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 16,
+											"mat": "Baloo Outline - Green",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

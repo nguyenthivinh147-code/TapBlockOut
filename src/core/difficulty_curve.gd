@@ -9,6 +9,13 @@ const HARD_BONUS := 2
 const VERY_HARD_BONUS := 3
 ## Số màu (hướng) L1-4; từ L5 là đủ 4.
 const EARLY_COLORS := [2, 3, 3, 4]
+## Từ level SHAPED_FROM: số khối nhân BOOST (trần BOOST_MAX), khối xếp theo hình trong `motifs.gd`, và bộ sinh ưu
+## tiên khối bị chặn lúc đầu mạnh hơn (BLOCKED_POWER, level Hard/VeryHard dùng BLOCKED_POWER_HARD; trước đó là 1 và 2).
+const SHAPED_FROM := 14
+const BOOST := 1.3
+const BOOST_MAX := 40
+const BLOCKED_POWER := 2
+const BLOCKED_POWER_HARD := 3
 
 ## Điểm độ khó đã làm mượt (x100), L1 ở chỉ số 0.
 const SCORE := [
@@ -55,7 +62,7 @@ static func color_count(id: int) -> int:
 	return 4
 
 
-## Số khối mục tiêu: điểm chuẩn hoá theo min-max trên 100 level, nội suy MIN_BLOCKS..MAX_BLOCKS.
+## Số khối mục tiêu: điểm chuẩn hoá theo min-max trên 100 level, nội suy MIN_BLOCKS..MAX_BLOCKS; từ SHAPED_FROM nhân BOOST.
 static func block_count(id: int) -> int:
 	var lo: float = SCORE.min() / 100.0
 	var hi: float = SCORE.max() / 100.0
@@ -65,4 +72,14 @@ static func block_count(id: int) -> int:
 		n += VERY_HARD_BONUS
 	elif is_hard(id):
 		n += HARD_BONUS
-	return clampi(n, MIN_BLOCKS, MAX_BLOCKS)
+	n = clampi(n, MIN_BLOCKS, MAX_BLOCKS)
+	if id >= SHAPED_FROM:
+		n = mini(BOOST_MAX, roundi(n * BOOST))
+	return n
+
+
+## Số mũ trọng số "khối bị chặn lúc đầu" khi bộ sinh gán hướng: càng lớn càng ít khối thoát được ngay.
+static func blocked_power(id: int) -> int:
+	if id >= SHAPED_FROM:
+		return BLOCKED_POWER_HARD if is_hard(id) else BLOCKED_POWER
+	return 2 if is_hard(id) else 1

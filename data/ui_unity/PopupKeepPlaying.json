@@ -1,0 +1,385 @@
+{
+	"name": "PopupKeepPlaying",
+	"source": "Assets/_Game/Prefabs/Layers/PopupKeepPlaying.prefab",
+	"root": {
+		"n": "PopupKeepPlaying",
+		"id": "7219197735921211012",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"canvas": {"override_sort": true, "order": 0},
+		"cs": [
+			{
+				"name": "PopupKeepPlaying",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [
+					{"target": "7219197735921211012", "method": "StartHeartAnimation", "arg": null}
+				],
+				"OnHideLayer": [
+					{"target": "7219197735921211012", "method": "StopHeartAnimation", "arg": null}
+				],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"closeButtons": [
+					{"node": "3406546784345224705"},
+					{"node": "4811059741127286920"}
+				],
+				"continueButton": {"node": "2976045016534427140"},
+				"continueText": {"node": "5028444773256912849"},
+				"continueImage": {"node": "2976045016534427140"},
+				"textStateHandler": {"node": "5028444773256912849"},
+				"imageStateKeeper": {"node": "2976045016534427140"}
+			},
+			{
+				"name": "HeartAnimation",
+				"HeartAnimIntroEaseType": "28",
+				"HeartAnimLoopEaseType": "26",
+				"HeartAnimLoopType": "1",
+				"HeartIconTransform": {"node": "1599643956646113407"},
+				"DefaultScale": {"x": "1", "y": "1", "z": "1"},
+				"StartScale": {"x": "1.15", "y": "1.15", "z": "1"},
+				"EndScale": {"x": "0.94", "y": "0.85", "z": "1"},
+				"PulseScale": {"x": "1", "y": "1", "z": "1"},
+				"FirstDuration": "0.75",
+				"PulseDuration": "0.35"
+			},
+			{
+				"name": "DialogueReveal",
+				"panelRect": {"node": "5505950304007009561"},
+				"dimCanvasGroup": {"node": "3406546784345224705"},
+				"duration": "0.4",
+				"easeType": "26",
+				"OnStartAnim": [],
+				"OnCompleteAnim": []
+			}
+		],
+		"ch": [
+			{
+				"n": "Bg",
+				"id": "3406546784345224705",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": null,
+					"c": "000000f5",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				},
+				"btn": {
+					"tr": 0,
+					"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+					"mult": 1,
+					"dur": 0.1,
+					"inter": true,
+					"target": "3406546784345224705",
+					"sprites": {"pressed": null, "disabled": null}
+				},
+				"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false}
+			},
+			{
+				"n": "Panel",
+				"id": "5505950304007009561",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 724, 660, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "Bg",
+						"id": "874811807890749285",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 724, 660, 0.5, 0.5],
+						"img": {
+							"sp": "Popup2",
+							"c": "ffffffff",
+							"t": 1,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					},
+					{
+						"n": "GameObject",
+						"id": "5123406139810265736",
+						"a": true,
+						"r": [0.5, 1, 0.5, 1, 0, 0, 450, 150, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						},
+						"ch": [
+							{
+								"n": "txtHeader",
+								"id": "2809704552690345925",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 455.4326, 87.4, 0.5, 0.5],
+								"txt": {
+									"s": "Notify",
+									"fs": 63.7,
+									"auto": [18, 64],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 16,
+									"mat": "Baloo Outline - Purple",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					},
+					{
+						"n": "Top",
+						"id": "960523223670233931",
+						"a": true,
+						"r": [0, 1, 1, 1, 0, -65, 0, 130, 0.5, 0.5],
+						"ch": [
+							{
+								"n": "btnTurnOff",
+								"id": "4811059741127286920",
+								"a": true,
+								"r": [1, 1, 1, 1, 0, 0, 64, 64, 1, 1],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"btn": {
+									"tr": 1,
+									"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "4811059741127286920",
+									"sprites": {"pressed": null, "disabled": null}
+								},
+								"snd": true,
+								"vib": true
+							}
+						]
+					},
+					{
+						"n": "Content",
+						"id": "5267989572481793134",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"ch": [
+							{
+								"n": "Image",
+								"id": "1714781818686251041",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 32.7395, -104, -374.521, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+									"c": "ffffffff",
+									"t": 1,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Description",
+								"id": "709436973652917155",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 111.3, 29.7, 355.5, 204.7, 0.5, 0.5],
+								"txt": {
+									"s": "You will lose 1 heart!",
+									"fs": 40,
+									"auto": [18, 40],
+									"c": "1c4a83ff",
+									"h": 1,
+									"v": 512,
+									"w": true,
+									"ov": 0,
+									"st": 1,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Button",
+								"id": "8058291767023344588",
+								"a": true,
+								"r": [0, 0, 1, 0, 0, 68, -112, 120, 0.5, 0],
+								"lay": {
+									"t": "h",
+									"pad": [0, 0, 0, 0],
+									"al": 4,
+									"sp": 52,
+									"cw": false,
+									"ch": false,
+									"ew": false,
+									"eh": false,
+									"sw": false,
+									"sh": false,
+									"rev": false
+								},
+								"ch": [
+									{
+										"n": "Ok",
+										"id": "2976045016534427140",
+										"a": true,
+										"r": [0, 0, 0, 0, 0, 0, 395.9375, 120, 0.5, 1],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_49",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": true,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 2.25,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "2976045016534427140",
+											"sprites": {"pressed": null, "disabled": null}
+										},
+										"snd": true,
+										"vib": true,
+										"ch": [
+											{
+												"n": "Out",
+												"id": "5028444773256912849",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 4, 0, -8, 0.5, 0.5],
+												"txt": {
+													"s": "Quit",
+													"fs": 56,
+													"auto": [18, 56],
+													"c": "ffffffff",
+													"h": 2,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 16,
+													"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											}
+										]
+									}
+								]
+							},
+							{
+								"n": "HeartIcon",
+								"id": "1599643956646113407",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -184.2, 45.07, 200, 200, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_14",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Text (TMP)",
+								"id": "2297516452554505281",
+								"a": false,
+								"r": [0.5, 0.5, 0.5, 0.5, -5.6, 74.1, 200, 147.4455, 0.5, 0.5],
+								"txt": {
+									"s": "-1",
+									"fs": 64,
+									"auto": null,
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

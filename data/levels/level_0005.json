@@ -1,15 +1,14 @@
 {
 	"id": 5, "w": 14, "h": 19, "hard": false,
-	"min_taps": 7, "moves": 10, "seed": 0,
+	"min_taps": 6, "moves": 8, "seed": 20261101,
 	"stones": [],
 	"pulse_sides": [],
 	"blocks": [
-		{"id":"b1","color":"green","cells":[[4,7],[5,7],[4,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b2","color":"yellow","cells":[[7,7],[8,7],[8,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b3","color":"green","cells":[[6,6],[6,7]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b4","color":"yellow","cells":[[4,9],[4,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b5","color":"yellow","cells":[[8,9],[8,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b6","color":"green","cells":[[5,10],[5,11]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b7","color":"yellow","cells":[[7,10],[7,11]],"ice":0,"chained_by":"","inner_color":"","fog":false}
+		{"id":"b1","color":"yellow","cells":[[6,6],[7,6],[6,7]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b2","color":"purple","cells":[[5,7],[5,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b3","color":"purple","cells":[[7,7],[8,7],[8,8],[8,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b4","color":"green","cells":[[5,9],[5,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b5","color":"purple","cells":[[8,10],[7,11],[8,11]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b6","color":"purple","cells":[[6,11],[6,12],[7,12]],"ice":0,"chained_by":"","inner_color":"","fog":false}
 	]
 }

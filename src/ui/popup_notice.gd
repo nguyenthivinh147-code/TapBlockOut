@@ -1,11 +1,17 @@
 extends "res://src/ui/stub_ui.gd"
-## Wireframe 11.2 Ad Not Available: thông báo chung một nút OK. Chưa nối logic.
+## Wireframe 11.2 Ad Not Available: one-button notice. Layout of PopupOkLayer (color-cube-match-puzzle),
+## the cancel button hidden like PopupOkLayerData.IsHideCancelButton. Not wired to logic.
 
-func _title() -> String:
-	return tr(str(view.get("title", "ads_notice_title")))
+const UnityUI := preload("res://src/ui/unity_ui.gd")
 
 
-func _fill(box: VBoxContainer) -> void:
-	box.add_child(ThemeKit.make_sprite("big_tv", 150))
-	box.add_child(_say(tr(str(view.get("body", "ads_not_available")))))
-	box.add_child(_btn(tr("common_ok"), "primary", "ok"))
+func _build() -> void:
+	ui = UnityUI.build(self, "PopupOkLayer")
+	ui.text("Panel/Image/txtHeader", tr(str(view.get("title", "ads_notice_title"))))
+	ui.text("Panel/Content/Description", tr(str(view.get("body", "ads_not_available"))))
+	ui.show("Panel/Content/Button/Cancel", false)
+	ui.text("Panel/Content/Button/Ok/Out", tr("common_ok"))
+	ui.on_click("Panel/Content/Button/Ok", _send.bind("ok"))
+	for b in ui.field("closeButtons", "PopupOkUICoreLayer"):
+		(b as Button).connect("clicked", _send.bind("close"))
+	ui.relayout("Panel/Content/Button")

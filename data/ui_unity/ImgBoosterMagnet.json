@@ -1,0 +1,25 @@
+{
+	"name": "ImgBoosterMagnet",
+	"source": "Assets/_Game/Prefabs/UI/UIStore/ImgBoosterMagnet.prefab",
+	"root": {
+		"n": "ImgBoosterMagnet",
+		"id": "1310367697357929072",
+		"a": true,
+		"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 80, 80, 0.5, 0.5],
+		"img": {
+			"sp": "ic_booster1",
+			"c": "ffffffff",
+			"t": 0,
+			"pa": false,
+			"fc": true,
+			"fm": 4,
+			"fa": 1,
+			"fo": 0,
+			"cw": true,
+			"ppu": 1,
+			"rt": true,
+			"on": true
+		},
+		"anim": {"controller": "ImgBoosterMagnet", "on": true}
+	}
+}

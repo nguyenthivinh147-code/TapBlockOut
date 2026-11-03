@@ -1,20 +1,51 @@
 extends Control
 ## Shop đầy đủ (màn "shop", mở từ L5): gói gold theo giá hôm nay, video gold, gói khác, Restore.
-## Chung khung hub (thanh trên, thanh dưới) với Home theo wireframe 6.1, 6.2.
+## Thân màn là ShopCashLayer của color-cube-match-puzzle (unity_ui.gd): ScrollRect với thẻ Remove Ads, các thẻ gói
+## (Starter, Level, Rescue), tiêu đề Gold, gói lớn và lưới gold (FreeGoldPack là video gold mỗi ngày của game).
+## Thanh trên, thanh dưới dùng chung với Home (HubTop, HubNav) đè lên trên như CurrencyLayer, BottomBarLayer của Unity.
 ## setup({source}); signal closed({bought: bool, action?}); action: shop, profile, settings, no_lives, ranking.
 
 signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
-const PopupKit := preload("res://src/ui/popup_kit.gd")
-const UiAtlas := preload("res://src/ui/ui_atlas.gd")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UnityKit := preload("res://src/ui/unity_kit.gd")
 const HubTop := preload("res://src/ui/hub_top.gd")
 const HubNav := preload("res://src/ui/hub_nav.gd")
 const SampleData := preload("res://src/ui/sample_data.gd")
 const Config := preload("res://src/config.gd")
 
+const LAYER := "ShopCashLayer"
+const PANEL := "GameObject"
+const SCROLL := "GameObject/GameObject/Scroll View"
+const C := "GameObject/GameObject/Scroll View/Viewport/Content"
 const PACK_SKUS := ["starter_pack", "level_pack", "rescue_pack", "remove_ads"]
-const GOLD_COLS := 3
+## ShopCashLayer card for each pack (remove_ads has its own Shop_RemoveAds card).
+const PACK_CARDS := {"starter_pack": "StarterPack", "level_pack": "SpecialPack", "rescue_pack": "BundleSweet"}
+## UIShopCashLayer.SetupLayerData: the panel is 183 units shorter when the bottom bar shows. HubNav is taller
+## than Unity's BottomBarLayer, so the panel loses the height of HubNav's bar (182 of its 886-wide frame) when larger.
+const BOTTOM_BAR := 183.0
+const NAV_BAR_FRAME := Vector2(886, 182)
+## UIShopCashLayer.ShowLayer fades the scroll view in.
+const FADE_IN := 0.3
+## RewardItemSO gold icons: IAPProductSO gives cube.sort.color.gold.N the gold ItemId N.
+const GOLD_ICONS := ["Gold1", "Gold2", "Gold3", "Gold4", "Gold5"]
+const HEART_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_15"
+const HEART_INF_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_16"
+## UIGradient on "BG (2)" (_topColor, _bottomColor).
+const BG_TOP := Color(0.28235295, 0.3529412, 0.59607846)
+const BG_BOTTOM := Color(0.23529413, 0.28627452, 0.53333336)
+const BOOSTERS := ["hint", "move", "smash"]
+## ShopProductSetup: rewardPerRow 3, rows 104 high, VerticalLayoutGroup spacing 20, HorizontalLayoutGroup spacing 2.
+const PER_ROW := 3
+const ROW_H := 104.0
+const ROW_GAP := 20.0
+const ITEM_GAP := 2.0
+## BonusItem clones baked into the StarterPack card: gold (100), booster (80), infinite heart (80), plus (28).
+const ITEM_GOLD := "/StarterPack/ItemContainer/Row(Clone)/ShopRewardItem(Clone)"
+const ITEM_BOOSTER := "/StarterPack/ItemContainer/Row(Clone)#2/ShopRewardItem(Clone)"
+const ITEM_HEART := "/StarterPack/ItemContainer/Row(Clone)/ShopRewardItem(Clone) (1)"
+const ITEM_PLUS := "/StarterPack/ItemContainer/Row(Clone)/Plus(Clone)"
 
 var close_button: Button = null
 var video_button: Button = null
@@ -23,14 +54,17 @@ var toast_label: Label = null
 var coins_label: Label = null
 ## sku -> nút mua
 var buy_buttons: Dictionary = {}
+## sku -> chữ giá trên nút mua
+var price_labels: Dictionary = {}
 var bought_any: bool = false
 var last_toast: String = ""
+var ui: RefCounted = null
 
 var _source: String = ""
 var _busy: bool = false
 var _closed: bool = false
-var _list: VBoxContainer = null
 var _toast_tween: Tween = null
+var _video_text: Label = null
 
 
 func setup(args: Dictionary) -> void:
@@ -44,78 +78,82 @@ func _build() -> void:
 	for c in get_children():
 		c.queue_free()
 	buy_buttons.clear()
+	price_labels.clear()
 	theme = ThemeKit.make_theme()
-	add_child(ThemeKit.make_background())
+	ui = UnityUI.build(self, LAYER, {"reveal": false})
+	_gradient_bg()
+	# The shared bottom bar replaces the exit button (closeButton hidden when showBottomBar).
+	ui.show("GameObject/GameObject/ExitBtn", false)
+	_fit_panel()
+	# Builder gap: a Mask inside the Viewport's Mask does not clip in Godot (nested clip_children), so the
+	# rectangular Viewport mask clips by rect and the cards' BlurredBorder masks work.
+	var vp: Control = ui.node(SCROLL + "/Viewport")
+	vp.clip_children = CanvasItem.CLIP_CHILDREN_DISABLED
+	vp.clip_contents = true
+	vp.call("set_color", Color(1, 1, 1, 0))  # showMaskGraphic off
+
+	var catalog: Array = Game.shop_catalog()
+	for t in ["/NoAdsTitle/Text (TMP)", "/BundleTitle/Text (TMP)", "/GoldTitle/Text (TMP)"]:
+		one_line(ui.label(C + t))
+	ui.text(C + "/NoAdsTitle/Text (TMP)", tr("shop_remove_ads"))
+	ui.show(C + "/Shop_RemoveAdsBundle", false)
+	_remove_ads_card()
+	ui.text(C + "/BundleTitle/Text (TMP)", tr("shop_section_other"))
+	for sku in PACK_CARDS:
+		_pack_card(str(PACK_CARDS[sku]), sku)
+	for p in ["BundleTasty", "BundleYummy", "SmallPack", "GreatPack", "EpicPack"]:
+		ui.show(C + "/" + p, false)
+	ui.text(C + "/GoldTitle/Text (TMP)", tr("shop_section_gold"))
+	_gold_cards(catalog)
+	_video_card()
+	_restore_row()
+	if Config.ui_preview():
+		_add_preview_sections()
+	_pass_scroll_buttons()
+	ui.relayout(C)
+	_fade_in()
+
+	toast_label = UnityKit.label(ui.node(""), "", Rect2(0, 0, 100, 100), 44.0, "ffffffff", "Baloo Outline - Black")
+	toast_label.name = "Toast"
+	toast_label.modulate.a = 0.0
+	_fit_panel()
+
+	_hub_bars()
+	if not resized.is_connected(_fit_panel):
+		resized.connect(_fit_panel)
+
+
+func _fit_panel() -> void:
+	if ui == null or not is_instance_valid(ui.node(PANEL)):
+		return
+	var w := size.x if size.x > 0.0 else 720.0
+	var vp := size if size.y > 0.0 else Vector2(720, 1280)
+	var bar := NAV_BAR_FRAME.y * w / NAV_BAR_FRAME.x / UnityUI.canvas_scale(vp)
+	UnityKit.set_size(ui.node(PANEL), Vector2(0, -maxf(BOTTOM_BAR, bar)))
+	if is_instance_valid(toast_label):
+		_anchor(toast_label, Vector2(0, 0), Vector2(1, 0), Vector2(0, maxf(BOTTOM_BAR, bar) + 90.0), Vector2(-120, 120))
+
+
+## HubTop and HubNav over the layer, like Home (CurrencyLayer and BottomBarLayer sit over ShopCashLayer in Unity).
+func _hub_bars() -> void:
 	var page := VBoxContainer.new()
+	page.name = "Hub"
 	page.set_anchors_preset(Control.PRESET_FULL_RECT)
+	page.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	page.add_theme_constant_override("separation", 0)
 	add_child(page)
 	var margin := MarginContainer.new()
 	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	margin.add_theme_constant_override("margin_left", 20)
 	margin.add_theme_constant_override("margin_right", 20)
 	margin.add_theme_constant_override("margin_top", 40)
-	margin.add_theme_constant_override("margin_bottom", 8)
 	page.add_child(margin)
-	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 12)
-	margin.add_child(root)
-
 	var top := HubTop.new()
 	top.action.connect(_on_hub_action)
-	root.add_child(top)
+	top.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	margin.add_child(top)
 	coins_label = top.gold_label
-
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	root.add_child(scroll)
-	_list = VBoxContainer.new()
-	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_list.add_theme_constant_override("separation", 12)
-	scroll.add_child(_list)
-
-	_add_video_row()
-
-	var catalog: Array = Game.shop_catalog()
-	var any_sale := false
-	for e in catalog:
-		if bool(e.get("sale", false)):
-			any_sale = true
-	if any_sale:
-		var sale := ThemeKit.make_label(tr("shop_sale_weekend"), ThemeKit.FS_BUTTON, ThemeKit.GOLD)
-		sale.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_list.add_child(sale)
-
-	_list.add_child(_section(tr("shop_section_gold")))
-	var grid := GridContainer.new()
-	grid.columns = GOLD_COLS
-	grid.add_theme_constant_override("h_separation", 8)
-	grid.add_theme_constant_override("v_separation", 8)
-	_list.add_child(grid)
-	for e in catalog:
-		var tile := _gold_tile(e)
-		buy_buttons[str(e.sku)] = tile.button
-		(tile.button as Button).pressed.connect(buy.bind(str(e.sku)))
-		grid.add_child(tile.panel)
-
-	_list.add_child(_section(tr("shop_section_other")))
-	for sku in PACK_SKUS:
-		_add_pack_row(sku)
-
-	if Config.ui_preview():
-		_add_preview_sections()
-
-	restore_button = ThemeKit.make_button(tr("shop_restore"), "secondary")
-	restore_button.pressed.connect(restore)
-	_list.add_child(restore_button)
-
-	toast_label = ThemeKit.make_label("", ThemeKit.FS_BODY, ThemeKit.TEXT)
-	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	toast_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	toast_label.modulate.a = 0.0
-	root.add_child(toast_label)
-
 	var nav := HubNav.new("shop")
 	nav.tab.connect(_on_tab)
 	page.add_child(nav)
@@ -123,98 +161,342 @@ func _build() -> void:
 	close_button = nav.home_btn
 
 
-## Dải tiêu đề mục (sprite ribbon vàng).
-func _section(text: String) -> Control:
-	var p := PanelContainer.new()
-	p.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	p.custom_minimum_size = Vector2(420, 76)
-	p.add_theme_stylebox_override("panel", UiAtlas.box("strip_yellow", Vector4(60, 0, 60, 0), Vector4(56, 2, 56, 16)))
-	var l := ThemeKit.make_label(text, ThemeKit.FS_BODY)
-	l.add_theme_color_override("font_outline_color", ThemeKit.GOLD_STROKE)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	p.add_child(l)
-	return p
+## Builder gap: UIGradient (vertex colours bottom -> top) is not drawn; a gradient texture stands in for it.
+func _gradient_bg() -> void:
+	var g := Gradient.new()
+	g.set_color(0, BG_TOP)
+	g.set_color(1, BG_BOTTOM)
+	var tex := GradientTexture2D.new()
+	tex.gradient = g
+	tex.fill_from = Vector2(0, 0)
+	tex.fill_to = Vector2(0, 1)
+	tex.width = 4
+	tex.height = 256
+	ui.texture("BG (2)", tex)
+	ui.image("BG (2)").call("set_color", Color.WHITE)
 
 
-## Ô gói gold trong lưới 3 cột: khung shop xanh, ảnh gold, số gold, giá. Trả {panel, button}.
-func _gold_tile(entry: Dictionary) -> Dictionary:
-	var panel := PanelContainer.new()
-	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	panel.add_theme_stylebox_override("panel", UiAtlas.box("frame_shop_blue", Vector4(40, 40, 40, 90), Vector4(16, 16, 16, 12)))
-	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 2)
-	panel.add_child(v)
-	v.add_child(ThemeKit.make_icon("shop_" + str(entry.id), 110))
-	var gold := ThemeKit.ink_label(tr("shop_gold_pack") % int(entry.gold), ThemeKit.FS_SMALL, ThemeKit.BROWN)
-	gold.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	v.add_child(gold)
-	if bool(entry.get("sale", false)):
-		var tag := tr("shop_sale")
-		if int(entry.get("sale_percent", 0)) > 0:
-			tag = "%s -%d%%" % [tag, int(entry.sale_percent)]
-		var t := ThemeKit.ink_label(tag, ThemeKit.FS_SMALL - 4, ThemeKit.INK_DANGER)
-		t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		v.add_child(t)
-	var b := ThemeKit.make_button(str(entry.get("price_text", "")), "primary")
-	b.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL + 2)
-	v.add_child(b)
-	return {"panel": panel, "button": b}
+func _fade_in() -> void:
+	var sv: Control = ui.node(SCROLL)
+	sv.modulate.a = 0.0
+	_fade_later.call_deferred(sv)
 
 
-## Mục Figma chưa có logic bán (wireframe 6.2): Hearts, Helper Packs, Bundles. Nút chỉ báo "sắp có".
+func _fade_later(sv: Control) -> void:
+	if is_instance_valid(sv) and sv.is_inside_tree():
+		sv.create_tween().tween_property(sv, "modulate:a", 1.0, FADE_IN)
+	elif is_instance_valid(sv):
+		sv.modulate.a = 1.0
+
+
+## Builder gap: buttons added after build() into a ScrollRect content keep MOUSE_FILTER_STOP and would eat drags.
+func _pass_scroll_buttons() -> void:
+	for b in ui.node(C).find_children("*", "Button", true, false):
+		(b as Control).mouse_filter = Control.MOUSE_FILTER_PASS
+
+
+func _anchor(c: Control, amin: Vector2, amax: Vector2, pos: Vector2, sz: Vector2) -> void:
+	var r: Dictionary = c.get_meta("u_rect")
+	r.amin = amin
+	r.amax = amax
+	r.pos = pos
+	r.size = sz
+	UnityUI.apply_rect(c)
+
+
+# --- cards ---
+
+func _remove_ads_card() -> void:
+	var p := C + "/Shop_RemoveAds"
+	ui.text(p + "/PackName", tr("shop_remove_ads"))
+	# One game sentence instead of three short lines: the description takes the rect of all three.
+	ui.show(p + "/InterAdsTxt", false)
+	ui.show(p + "/BannerAdsTxt", false)
+	var d: Label = ui.node(p + "/Description")
+	var r: Dictionary = d.get_meta("u_rect")
+	r.pos = Vector2((r.pos as Vector2).x, -113.0)
+	r.size = Vector2((r.size as Vector2).x, 160.0)
+	UnityUI.apply_rect(d)
+	ui.text(p + "/Description", _pack_desc("remove_ads"))
+	_buy_button(p + "/Button_Purchase", "remove_ads")
+
+
+func _pack_card(card: String, sku: String) -> void:
+	var p := C + "/" + card
+	ui.text(p + "/PackName", _pack_title(sku))
+	for x in ["/Image", "/SellBadge", "/BGPeriod", "/Button_Soldout"]:
+		if ui.has(p + x):
+			ui.show(p + x, false)
+	fill_items(ui.node(p + "/ItemContainer"), sku_items(sku))
+	_buy_button(p + "/Button_Purchase", sku)
+
+
+func _buy_button(path: String, sku: String) -> void:
+	var b: Button = ui.button(path)
+	buy_buttons[sku] = b
+	price_labels[sku] = ui.label(path + "/Text (TMP)")
+	b.connect("clicked", buy.bind(sku))
+	_show_owned(sku)
+
+
+func _show_owned(sku: String) -> void:
+	var owned := is_owned(sku)
+	var l: Label = price_labels.get(sku)
+	if l != null:
+		UnityUI.set_text(l, tr("shop_owned") if owned else Platform.price(sku))
+	var b: Button = buy_buttons.get(sku)
+	if b != null:
+		b.call("set_interactable", not owned)
+
+
+## Shop_GoldBigPack takes the biggest pack, the grid tiles (Shop_GoldPack .. (4)) the others in order.
+func _gold_cards(catalog: Array) -> void:
+	var tiles := ["Shop_GoldPack", "Shop_GoldPack (1)", "Shop_GoldPack (2)", "Shop_GoldPack (3)", "Shop_GoldPack (4)"]
+	var any_sale := false
+	for i in catalog.size():
+		var e: Dictionary = catalog[i]
+		any_sale = any_sale or bool(e.get("sale", false))
+		var sku := str(e.sku)
+		var p := ""
+		if i == catalog.size() - 1 or i >= tiles.size():
+			p = C + "/Shop_GoldBigPack"
+			# One line like "10,000" in the prefab: bigger amounts grow past the rect instead of wrapping.
+			ui.label(p + "/GoldQuantityTxt").autowrap_mode = TextServer.AUTOWRAP_OFF
+			ui.text(p + "/GoldQuantityTxt", fmt_n0(int(e.gold)))
+		else:
+			p = C + "/SmallPack#2/" + str(tiles[i])
+			ui.sprite(p + "/BG/Icon", str(GOLD_ICONS[mini(i, GOLD_ICONS.size() - 1)]))
+			ui.text(p + "/GoldAmount/GoldQuantity", fmt_n0(int(e.gold)))
+		var b: Button = ui.button(p + "/Button_Purchase")
+		buy_buttons[sku] = b
+		price_labels[sku] = ui.label(p + "/Button_Purchase/Text (TMP)")
+		UnityUI.set_text(price_labels[sku], str(e.get("price_text", "")))
+		b.connect("clicked", buy.bind(sku))
+		if bool(e.get("sale", false)) and int(e.get("sale_percent", 0)) > 0:
+			_sale_badge(ui.node(p), "-%d%%" % int(e.sale_percent))
+	# Weekend sale: the big pack's PopularTag ribbon carries the game's sale line.
+	ui.show(C + "/Shop_GoldBigPack/PopularTag", any_sale)
+	if any_sale:
+		ui.text(C + "/Shop_GoldBigPack/PopularTag/PopularTag", tr("shop_sale_weekend"))
+
+
+## SellBadge of the pack cards (StarterPack/SellBadge), at the tile's top-left corner like on the cards.
+func _sale_badge(parent: Control, text: String) -> void:
+	var s := UnityKit.spec(LAYER, C + "/StarterPack/SellBadge")
+	s.a = true
+	var v: RefCounted = UnityKit.add(parent, s, Rect2(-22, -26, 100, 100))
+	v.text("SellBadgeTxt", text)
+
+
+## FreeGoldPack = ADS Daily: shop_video_coins gold per video, shop_video_max videos a day.
+func _video_card() -> void:
+	var p := C + "/SmallPack#2/FreeGoldPack"
+	ui.node(p).name = "AdsDaily"
+	ui.text(p + "/GoldQuantity", fmt_n0(int(Config.ECON.shop_video_coins)))
+	ui.show(p + "/Button_Free", false)
+	ui.show(p + "/Button_Ads", true)
+	ui.show(p + "/Image", true)
+	video_button = ui.button(p + "/Button_Ads")
+	video_button.connect("clicked", watch_video)
+	# The game's "Watch video" is longer than Unity's "0/5": it moves right of the TV icon (icon right edge -46).
+	var bt: Label = ui.label(p + "/Button_Ads/Text (TMP)")
+	var br: Dictionary = bt.get_meta("u_rect")
+	br.pos = Vector2(24, (br.pos as Vector2).y)
+	br.size = Vector2(136, (br.size as Vector2).y)
+	UnityUI.apply_rect(bt)
+	UnityUI.set_text(bt, tr("ads_daily_watch"))
+	_video_text = ui.label(p + "/Image/Text (TMP)")
+	_refresh_video()
+	if Game.shop_videos_left() > 0:
+		Game.offer_video("shop_coins")
+
+
+func _refresh_video() -> void:
+	var total := int(Config.ECON.shop_video_max)
+	var left: int = Game.shop_videos_left()
+	if is_instance_valid(_video_text):
+		UnityUI.set_text(_video_text, tr("ads_daily_progress") % [total - left, total])
+	if is_instance_valid(video_button):
+		video_button.call("set_interactable", left > 0 and not _busy)
+
+
+## RestorePurchase (iOS only in Unity); the game offers it on every platform.
+func _restore_row() -> void:
+	var p := C + "/RestorePurchase"
+	ui.show(p, true)
+	ui.text(p + "/Button/Text (TMP)", tr("shop_restore"))
+	restore_button = ui.button(p + "/Button")
+	restore_button.connect("clicked", restore)
+
+
+# --- ShopProductSetup ---
+
+## Builder gap: with word wrap on, fit_text keeps a size whose single line it measures as fitting, then the Label
+## wraps it onto a second line (Vietnamese ribbon titles, Unity's own "MIỄN PHÍ"). Short labels stay on one line
+## and auto size by width. The text spec is shared with the layout cache, so it is copied first.
+static func one_line(l: Label) -> void:
+	if l == null:
+		return
+	var t: Dictionary = (l.get_meta("u_txt") as Dictionary).duplicate(true)
+	t.w = false
+	l.set_meta("u_txt", t)
+	l.autowrap_mode = TextServer.AUTOWRAP_OFF
+	UnityUI.set_text(l, l.text)
+
+## C# ToString("N0") as the Unity shop shows amounts: 1234567 -> "1,234,567" (Vietnamese: "1.234.567").
+static func fmt_n0(n: int) -> String:
+	var sep := "." if TranslationServer.get_locale().begins_with("vi") else ","
+	var digits := str(absi(n))
+	var out := ""
+	while digits.length() > 3:
+		out = sep + digits.right(3) + out
+		digits = digits.left(digits.length() - 3)
+	return ("-" if n < 0 else "") + digits + out
+
+
+## [[kind, amount], ...] of a SKU: gold, then hint, move, smash.
+static func sku_items(sku: String) -> Array:
+	var info: Dictionary = Config.SKUS.get(sku, {})
+	var out: Array = []
+	if int(info.get("gold", 0)) > 0:
+		out.append(["gold", int(info.gold)])
+	var inv: Dictionary = info.get("inv", {})
+	for k in BOOSTERS:
+		if int(inv.get(k, 0)) > 0:
+			out.append([k, int(inv[k])])
+	return out
+
+
+## ShopProductSetup.SetupItem: the baked rows are replaced by rows of BonusItem copies (first row holds the
+## remainder, then rows of PER_ROW, a Plus between items), centred like its layout groups.
+## items: [[kind, amount]]; kind gold, hint, move, smash, heart (amount lives) or heart_inf (amount hours).
+static func fill_items(ic: Control, items: Array) -> void:
+	for c in ic.get_children():
+		if c is Control and (c as Control).has_meta("u"):
+			(c as Control).visible = false
+	var rows: Array = []
+	var i := 0
+	var n := items.size() % PER_ROW
+	if n == 0:
+		n = PER_ROW
+	while i < items.size():
+		rows.append(items.slice(i, i + n))
+		i += n
+		n = PER_ROW
+	var box := UnityUI.rect_size(ic)
+	var y := (box.y - (rows.size() * ROW_H + maxi(0, rows.size() - 1) * ROW_GAP)) * 0.5
+	for row in rows:
+		var specs: Array = []
+		for j in row.size():
+			if j > 0:
+				specs.append(UnityKit.spec(LAYER, C + ITEM_PLUS))
+			specs.append(item_spec(row[j]))
+		var w := 0.0
+		for s in specs:
+			w += float(s.r[6])
+		w += ITEM_GAP * (specs.size() - 1)
+		var x := (box.x - w) * 0.5
+		for j in specs.size():
+			var s: Dictionary = specs[j]
+			var sz := Vector2(float(s.r[6]), float(s.r[7]))
+			var v: RefCounted = UnityKit.add(ic, s, Rect2(Vector2(x, y + (ROW_H - sz.y) * 0.5), sz))
+			if j % 2 == 0:
+				_item_fill(v, row[j / 2])
+			x += sz.x + ITEM_GAP
+		y += ROW_H + ROW_GAP
+
+
+## Spec of the BonusItem for one reward.
+static func item_spec(item: Array) -> Dictionary:
+	match str(item[0]):
+		"gold":
+			return UnityKit.spec(LAYER, C + ITEM_GOLD)
+		"heart", "heart_inf":
+			return UnityKit.spec(LAYER, C + ITEM_HEART)
+	return UnityKit.spec(LAYER, C + ITEM_BOOSTER)
+
+
+## PopupRewardItem.SetupData: icon and quantity (gold "N0", boosters "x1", hearts "x5" or "1h").
+static func _item_fill(v: RefCounted, item: Array) -> void:
+	var kind := str(item[0])
+	var n := int(item[1])
+	var root: Control = v.root
+	root.name = "Item_" + kind
+	match kind:
+		"gold":
+			v.text("Text (TMP)", fmt_n0(n))
+		"heart", "heart_inf":
+			v.sprite("ImgVoHanTim", HEART_INF_ICON if kind == "heart_inf" else HEART_ICON)
+			v.text("Text (TMP)", (TranslationServer.translate("shop_heart_inf") % n) if kind == "heart_inf" \
+				else TranslationServer.translate("shop_heart_count") % n)
+		_:
+			# The game's booster icon in the magnet's image slot (its size animation stays).
+			v.texture("ImgBoosterMagnet", ThemeKit.icon("booster_" + kind))
+			v.text("Text (TMP)", TranslationServer.translate("booster_count") % n)
+
+
+# --- preview (wireframe 6.2, no selling logic yet) ---
+
+## Hearts, Helper Packs, Bundles from SampleData. Buttons only toast "coming soon".
 func _add_preview_sections() -> void:
-	_list.add_child(_section(tr("shop_section_hearts")))
-	var hearts := HBoxContainer.new()
-	hearts.add_theme_constant_override("separation", 8)
-	_list.add_child(hearts)
+	var content: Control = ui.node(C)
+	var at: int = ui.node(C + "/BundleSweet").get_index() + 1
+	at = _preview_title(content, at, tr("shop_section_hearts"))
+	var grid := UnityKit.add(content, UnityKit.spec(LAYER, C + "/SmallPack#2"))
+	grid.root.name = "HeartPacks"
+	content.move_child(grid.root, at)
+	at += 1
+	for c in grid.root.get_children():
+		(c as Control).visible = false
 	for h in SampleData.SHOP_HEARTS:
-		hearts.add_child(_preview_tile("big_heart_inf" if bool(h.get("infinite", false)) else "big_heart",
-			tr("shop_heart_inf") % int(h.hours) if bool(h.get("infinite", false)) else tr("shop_heart_count") % int(h.count), str(h.price)))
-	_list.add_child(_section(tr("shop_section_helpers")))
-	var packs := HBoxContainer.new()
-	packs.add_theme_constant_override("separation", 8)
-	_list.add_child(packs)
-	for p in SampleData.SHOP_HELPERS:
-		packs.add_child(_preview_tile("banner_coins", tr(str(p.title)), str(p.price)))
-	_list.add_child(_section(tr("shop_section_bundles")))
-	for b in SampleData.SHOP_BUNDLES:
-		var well := ThemeKit.make_well()
-		var h := HBoxContainer.new()
-		h.add_theme_constant_override("separation", 12)
-		well.add_child(h)
-		var v := VBoxContainer.new()
-		v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		v.alignment = BoxContainer.ALIGNMENT_CENTER
-		h.add_child(v)
-		v.add_child(ThemeKit.ink_label(tr(str(b.title)), ThemeKit.FS_SMALL + 4, ThemeKit.BROWN))
-		v.add_child(ThemeKit.ink_label(tr("shop_bundle_desc"), ThemeKit.FS_SMALL - 2, ThemeKit.INK_DIM))
-		h.add_child(_soon_button(str(b.price)))
-		_list.add_child(well)
+		var inf := bool(h.get("infinite", false))
+		var t := UnityKit.add(grid.root, UnityKit.spec(LAYER, C + "/SmallPack#2/Shop_GoldPack"))
+		t.sprite("BG/Icon", HEART_INF_ICON if inf else HEART_ICON)
+		t.text("GoldAmount/GoldQuantity", tr("shop_heart_inf") % int(h.hours) if inf else tr("shop_heart_count") % int(h.count))
+		t.text("Button_Purchase/Text (TMP)", str(h.price))
+		t.on_click("Button_Purchase", toast.bind(tr("common_coming_soon")))
+	at = _preview_title(content, at, tr("shop_section_helpers"))
+	# GreatPack / EpicPack are unfinished in the prefab (white placeholder art): copies of the bundle cards instead.
+	var cards := ["BundleTasty", "BundleYummy"]
+	for i in SampleData.SHOP_HELPERS.size():
+		var hp: Dictionary = SampleData.SHOP_HELPERS[i]
+		var s := UnityKit.spec(LAYER, C + "/" + str(cards[mini(i, cards.size() - 1)]))
+		s.a = true
+		var hv: RefCounted = UnityKit.add(content, s)
+		hv.root.name = "Helper%d" % i
+		content.move_child(hv.root, at)
+		at += 1
+		hv.text("PackName", tr(str(hp.title)))
+		hv.sprite("Image (2)", "HelperOffer")
+		hv.show("ItemContainer", false)
+		hv.text("Button_Purchase/Text (TMP)", str(hp.price))
+		hv.on_click("Button_Purchase", toast.bind(tr("common_coming_soon")))
+	at = _preview_title(content, at, tr("shop_section_bundles"))
+	var bundles := ["BundleSweet", "BundleTasty", "BundleYummy"]
+	for i in SampleData.SHOP_BUNDLES.size():
+		var bd: Dictionary = SampleData.SHOP_BUNDLES[i]
+		var card := str(bundles[mini(i, bundles.size() - 1)])
+		# Copies: the real BundleSweet card sells the rescue pack.
+		var s := UnityKit.spec(LAYER, C + "/" + card)
+		s.a = true
+		var v: RefCounted = UnityKit.add(content, s)
+		v.root.name = card + "Preview"
+		content.move_child(v.root, at)
+		at += 1
+		v.text("PackName", tr(str(bd.title)))
+		v.text("Button_Purchase/Text (TMP)", str(bd.price))
+		v.on_click("Button_Purchase", toast.bind(tr("common_coming_soon")))
 
 
-func _preview_tile(region: String, caption: String, price: String) -> Control:
-	var panel := PanelContainer.new()
-	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	panel.add_theme_stylebox_override("panel", UiAtlas.box("frame_shop_blue", Vector4(40, 40, 40, 90), Vector4(16, 16, 16, 12)))
-	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 2)
-	panel.add_child(v)
-	v.add_child(ThemeKit.make_sprite(region, 100))
-	var l := ThemeKit.ink_label(caption, ThemeKit.FS_SMALL - 2, ThemeKit.BROWN)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	v.add_child(l)
-	v.add_child(_soon_button(price))
-	return panel
+func _preview_title(content: Control, at: int, text: String) -> int:
+	var v := UnityKit.add(content, UnityKit.spec(LAYER, C + "/BundleTitle"))
+	one_line(v.label("Text (TMP)"))
+	v.text("Text (TMP)", text)
+	content.move_child(v.root, at)
+	return at + 1
 
 
-func _soon_button(price: String) -> Button:
-	var b := ThemeKit.make_button(price, "primary")
-	b.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL + 2)
-	b.pressed.connect(func() -> void: toast(tr("common_coming_soon")))
-	return b
-
+# --- hub ---
 
 func _on_hub_action(action: String) -> void:
 	Sfx.play("sfx_button")
@@ -237,71 +519,6 @@ func _leave(action: String) -> void:
 		return
 	_closed = true
 	closed.emit({"bought": bought_any, "action": action})
-
-
-## Một dòng gói gold: {panel, button}. Dùng chung với shop_mini.
-static func make_gold_row(entry: Dictionary, gold_text: String, sale_text: String) -> Dictionary:
-	var panel := ThemeKit.make_well()
-	var h := HBoxContainer.new()
-	h.add_theme_constant_override("separation", 12)
-	panel.add_child(h)
-	h.add_child(ThemeKit.make_icon("shop_" + str(entry.id), ThemeKit.ICON_SIZE))
-	var v := VBoxContainer.new()
-	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	h.add_child(v)
-	v.add_child(ThemeKit.ink_label(gold_text, ThemeKit.FS_SMALL + 4, ThemeKit.BROWN))
-	if bool(entry.get("sale", false)):
-		var tag := sale_text
-		if int(entry.get("sale_percent", 0)) > 0:
-			tag = "%s -%d%%" % [sale_text, int(entry.sale_percent)]
-		v.add_child(ThemeKit.ink_label(tag, ThemeKit.FS_SMALL - 2, ThemeKit.INK_DANGER))
-		var base_price := str(entry.get("base_price_text", ""))
-		if base_price != "":
-			var old := RichTextLabel.new()
-			old.bbcode_enabled = true
-			old.fit_content = true
-			old.scroll_active = false
-			old.autowrap_mode = TextServer.AUTOWRAP_OFF
-			old.add_theme_font_size_override("normal_font_size", ThemeKit.FS_SMALL)
-			old.add_theme_color_override("default_color", ThemeKit.INK_DIM)
-			old.text = "[s]%s[/s]" % base_price.replace("[", "[lb]")
-			v.add_child(old)
-	var b := ThemeKit.make_button(str(entry.get("price_text", "")), "primary")
-	b.custom_minimum_size = Vector2(170, ThemeKit.MIN_BUTTON.y)
-	b.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL + 4)
-	h.add_child(b)
-	return {"panel": panel, "button": b}
-
-
-func _add_video_row() -> void:
-	var left: int = Game.shop_videos_left()
-	var panel := ThemeKit.make_well(ThemeKit.WELL_HOT, ThemeKit.WELL_HEADER)
-	var h := HBoxContainer.new()
-	h.add_theme_constant_override("separation", 12)
-	panel.add_child(h)
-	h.add_child(ThemeKit.make_icon("ui_gold", 80))
-	var v := VBoxContainer.new()
-	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	h.add_child(v)
-	v.add_child(ThemeKit.ink_label(tr("shop_free_gold") % int(Config.ECON.shop_video_coins), ThemeKit.FS_SMALL + 4, ThemeKit.BROWN))
-	var info := ThemeKit.ink_label("", ThemeKit.FS_SMALL - 2, ThemeKit.INK_DIM)
-	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	v.add_child(info)
-	video_button = ThemeKit.make_button(tr("ads_watch"), "video")
-	video_button.custom_minimum_size = Vector2(170, 96)
-	video_button.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL + 2)
-	video_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	video_button.pressed.connect(watch_video)
-	h.add_child(video_button)
-	if left > 0:
-		info.text = tr("shop_video_left") % [left, int(Config.ECON.shop_video_max)]
-		Game.offer_video("shop_coins")
-	else:
-		info.text = tr("shop_video_none")
-		video_button.disabled = true
-	_list.add_child(panel)
 
 
 func _pack_title(sku: String) -> String:
@@ -343,31 +560,12 @@ func is_owned(sku: String) -> bool:
 	return false
 
 
-func _add_pack_row(sku: String) -> void:
-	if not Config.SKUS.has(sku):
-		return
-	var panel := ThemeKit.make_well()
-	var h := HBoxContainer.new()
-	h.add_theme_constant_override("separation", 12)
-	panel.add_child(h)
-	h.add_child(ThemeKit.make_icon("shop_" + sku, ThemeKit.ICON_SIZE))
-	var v := VBoxContainer.new()
-	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	h.add_child(v)
-	v.add_child(ThemeKit.ink_label(_pack_title(sku), ThemeKit.FS_SMALL + 4, ThemeKit.BROWN))
-	var d := ThemeKit.ink_label(_pack_desc(sku), ThemeKit.FS_SMALL - 2, ThemeKit.INK_DIM)
-	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	v.add_child(d)
-	var owned := is_owned(sku)
-	var b := ThemeKit.make_button(tr("shop_owned") if owned else Platform.price(sku), "primary")
-	b.custom_minimum_size = Vector2(170, ThemeKit.MIN_BUTTON.y)
-	b.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL + 4)
-	b.disabled = owned
-	b.pressed.connect(buy.bind(sku))
-	h.add_child(b)
-	buy_buttons[sku] = b
-	_list.add_child(panel)
+## Cập nhật trạng thái sau mua, xem video, restore (giữ vị trí cuộn).
+func _refresh() -> void:
+	for sku in PACK_SKUS:
+		if buy_buttons.has(sku):
+			_show_owned(sku)
+	_refresh_video()
 
 
 func buy(sku: String) -> void:
@@ -381,7 +579,7 @@ func buy(sku: String) -> void:
 	_set_busy(false)
 	if bool(r.get("granted", false)):
 		bought_any = true
-		_build()
+		_refresh()
 	_show_buy_result(r)
 
 
@@ -414,7 +612,7 @@ func watch_video() -> void:
 	if ok:
 		bought_any = true
 		Sfx.play("sfx_coin")
-		_build()
+		_refresh()
 	elif Game.shop_videos_left() <= 0:
 		toast(tr("shop_video_none"))
 	else:
@@ -429,7 +627,7 @@ func restore() -> void:
 	if not is_inside_tree():
 		return
 	_set_busy(false)
-	_build()
+	_refresh()
 	toast(tr("shop_restore_ok") if ok else tr("shop_restore_none"))
 
 
@@ -437,11 +635,10 @@ func _set_busy(v: bool) -> void:
 	_busy = v
 	for b in buy_buttons.values():
 		if is_instance_valid(b) and not is_owned_button(b):
-			(b as Button).disabled = v
-	if is_instance_valid(video_button) and (v or Game.shop_videos_left() > 0):
-		video_button.disabled = v
+			(b as Button).call("set_interactable", not v)
+	_refresh_video()
 	if is_instance_valid(restore_button):
-		restore_button.disabled = v
+		restore_button.call("set_interactable", not v)
 
 
 func is_owned_button(b: Button) -> bool:
@@ -455,7 +652,7 @@ func toast(text: String) -> void:
 	last_toast = text
 	if not is_instance_valid(toast_label):
 		return
-	toast_label.text = text
+	UnityUI.set_text(toast_label, text)
 	toast_label.modulate.a = 1.0
 	if _toast_tween != null:
 		_toast_tween.kill()

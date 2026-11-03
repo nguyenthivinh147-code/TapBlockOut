@@ -1,0 +1,599 @@
+{
+	"name": "PopupWinStreakInfo",
+	"source": "Assets/_Game/Prefabs/Layers/PopupWinStreakInfo.prefab",
+	"root": {
+		"n": "PopupWinStreakInfo",
+		"id": "4690541560169085059",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
+		"canvas": {"override_sort": true, "order": 0},
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"ch": [
+			{
+				"n": "Panel",
+				"id": "4416965250531763950",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": null,
+					"c": "000000fc",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				},
+				"btn": {
+					"tr": 1,
+					"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+					"mult": 1,
+					"dur": 0.1,
+					"inter": true,
+					"target": "4416965250531763950",
+					"sprites": {"pressed": null, "disabled": null}
+				},
+				"ch": [
+					{
+						"n": "LeaguesDesc",
+						"id": "7100209783628716400",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 100, 100, 0.5, 0.5],
+						"cs": [
+							{
+								"name": "LeaderboarDescriptionAnim",
+								"_step1": {"node": "4202317718471214780"},
+								"_step2": {"node": "1507915892260074308"},
+								"_step3": {"node": "6178694998781776502"},
+								"_step4": {"node": "7419449410973632042"},
+								"_animDuration": "0.8",
+								"_delayBetweenSteps": "0.3"
+							}
+						],
+						"ch": [
+							{
+								"n": "Step1",
+								"id": "4202317718471214780",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -196.3, 558, 400, 400, 0.5, 0.5],
+								"s": [0, 0],
+								"img": {
+									"sp": "ic_league1",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "Desc",
+										"id": "1856720778199893786",
+										"a": true,
+										"r": [0.5, 0, 0.5, 0, 0, 28.6, 405.6, 138.5, 0.5, 1],
+										"txt": {
+											"s": "Collect points as you complete levels!",
+											"fs": 44.9,
+											"auto": [18, 72],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 256,
+											"w": true,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": true,
+											"on": true
+										}
+									},
+									{
+										"n": "Image",
+										"id": "6767676485681947947",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 391.02, -59.5, 200, 200, 0.5, 0.5],
+										"z": -60,
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_98",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Step2",
+								"id": "1507915892260074308",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 229.7, 258.9, 400, 400, 0.5, 0.5],
+								"s": [0, 0],
+								"img": {
+									"sp": "ic_league3",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "Desc",
+										"id": "2815883722066423637",
+										"a": true,
+										"r": [0.5, 0, 0.5, 0, 0, 26.29, 416, 150.536, 0.5, 1],
+										"txt": {
+											"s": "Rank among the TOP 10 players to move up to the next league!",
+											"fs": 38.85,
+											"auto": [18, 72],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 256,
+											"w": true,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": true,
+											"on": true
+										}
+									},
+									{
+										"n": "Image (1)",
+										"id": "6088827250832427555",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -73.7, -460.1999, 200, 200, 0.5, 0.5],
+										"z": -171.1,
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_98",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Step3",
+								"id": "6178694998781776502",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -198.5, -196.7, 400, 400, 0.5, 0.5],
+								"s": [0, 0],
+								"img": {
+									"sp": "ic_league2",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "Desc",
+										"id": "1688478639772790211",
+										"a": true,
+										"r": [0.5, 0, 0.5, 0, 0, 45.7, 401.51, 138.5, 0.5, 1],
+										"txt": {
+											"s": "Finish in the TOP 5 and receive rewards!",
+											"fs": 43.65,
+											"auto": [18, 72],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 256,
+											"w": true,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "txtHeader",
+								"id": "8330690810238500552",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 3, 725.7, 714.81, 244.1369, 0.5, 0.5],
+								"txt": {
+									"s": "HOW TO PLAY?",
+									"fs": 100,
+									"auto": null,
+									"c": "ffffffff",
+									"h": 2,
+									"v": 256,
+									"w": true,
+									"ov": 0,
+									"st": 16,
+									"mat": "Baloo Outline - StarterPack",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": -41.05,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								},
+								"cs": [
+									{"name": "CurvedTextMeshPro"}
+								]
+							},
+							{
+								"n": "Desc",
+								"id": "7419449410973632042",
+								"a": true,
+								"r": [0.5, 0, 0.5, 0, 0, -526, 800, 138.5, 0.5, 1],
+								"s": [0, 0],
+								"txt": {
+									"s": "League rankings are updated every Monday.",
+									"fs": 52.8,
+									"auto": [18, 72],
+									"c": "fee113ff",
+									"h": 2,
+									"v": 256,
+									"w": true,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": true,
+									"on": true
+								}
+							}
+						]
+					},
+					{
+						"n": "RankingDesc",
+						"id": "3198927028337197346",
+						"a": false,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 100, 100, 0.5, 0.5],
+						"cs": [
+							{
+								"name": "LeaderboarDescriptionAnim",
+								"_step1": {"node": "4582546163241076050"},
+								"_step2": {"node": "9144115114903407410"},
+								"_step3": {"node": "5048440439018444809"},
+								"_step4": {"node": "456178163822094666"},
+								"_animDuration": "0.8",
+								"_delayBetweenSteps": "0.3"
+							}
+						],
+						"ch": [
+							{
+								"n": "Step1",
+								"id": "4582546163241076050",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -196.3, 533.4, 400, 400, 0.5, 0.5],
+								"s": [0, 0],
+								"img": {
+									"sp": "ic_league1",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "Desc",
+										"id": "525871820016723742",
+										"a": true,
+										"r": [0.5, 0, 0.5, 0, 0, 28.6, 405.6, 138.5, 0.5, 1],
+										"txt": {
+											"s": "Earn points by completing levels!",
+											"fs": 50.5,
+											"auto": [18, 72],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 256,
+											"w": true,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": true,
+											"on": true
+										}
+									},
+									{
+										"n": "Image",
+										"id": "9213948754824043310",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 391.02, -121.5799, 200, 200, 0.5, 0.5],
+										"z": -60,
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_98",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Step2",
+								"id": "9144115114903407410",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 229.7001, 176.9, 400, 400, 0.5, 0.5],
+								"s": [0, 0],
+								"img": {
+									"sp": "ic_ranking2",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "Desc",
+										"id": "806746121692088831",
+										"a": true,
+										"r": [0.5, 0, 0.5, 0, 0, 26.29, 416, 150.536, 0.5, 1],
+										"txt": {
+											"s": "Be one of the TOP 3 players",
+											"fs": 57.4,
+											"auto": [18, 72],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 256,
+											"w": true,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": true,
+											"on": true
+										}
+									},
+									{
+										"n": "Image (1)",
+										"id": "5849952797341737929",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -73.7001, -453.1, 200, 200, 0.5, 0.5],
+										"z": -171.1,
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_98",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Step3",
+								"id": "5048440439018444809",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -198.5, -258.7, 400, 400, 0.5, 0.5],
+								"s": [0, 0],
+								"img": {
+									"sp": "ic_ranking1",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "Desc",
+										"id": "2154281050142622009",
+										"a": true,
+										"r": [0.5, 0, 0.5, 0, 0, 45.7, 401.51, 138.5, 0.5, 1],
+										"txt": {
+											"s": "Get featured in the Hall of Frame",
+											"fs": 52.8,
+											"auto": [18, 72],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 256,
+											"w": true,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "txtHeader (1)",
+								"id": "629508787164465312",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 3, 712.4, 714.81, 244.1369, 0.5, 0.5],
+								"txt": {
+									"s": "HOW TO PLAY?",
+									"fs": 100,
+									"auto": null,
+									"c": "ffffffff",
+									"h": 2,
+									"v": 256,
+									"w": true,
+									"ov": 0,
+									"st": 16,
+									"mat": "Baloo Outline - StarterPack",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": -41.05,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								},
+								"cs": [
+									{"name": "CurvedTextMeshPro"}
+								]
+							},
+							{
+								"n": "Desc",
+								"id": "456178163822094666",
+								"a": true,
+								"r": [0.5, 0, 0.5, 0, 0, -561.3, 800, 138.5, 0.5, 1],
+								"s": [0, 0],
+								"txt": {
+									"s": "The Hall of Fame updates weekly and displays the TOP 3 positions",
+									"fs": 52.8,
+									"auto": [18, 72],
+									"c": "fee113ff",
+									"h": 2,
+									"v": 256,
+									"w": true,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": true,
+									"on": true
+								}
+							}
+						]
+					},
+					{
+						"n": "TapToContinueTxt",
+						"id": "8982093110051392268",
+						"a": true,
+						"r": [0.5, 1, 0.5, 1, 0, -1798, 491.8, 95.2, 0.5, 0.5],
+						"txt": {
+							"s": "Tap to continue",
+							"fs": 35,
+							"auto": null,
+							"c": "ffffff7b",
+							"h": 2,
+							"v": 512,
+							"w": true,
+							"ov": 0,
+							"st": 0,
+							"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+							"font": "Baloo Bhaijaan Regular 400 SDF",
+							"cs": 0,
+							"ws": 0,
+							"ls": 0,
+							"m": [0, 0, 0, 0],
+							"rt": false,
+							"rich": true,
+							"on": true
+						}
+					}
+				]
+			}
+		]
+	}
+}

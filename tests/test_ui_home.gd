@@ -38,7 +38,9 @@ func test_play_shows_level(t: T) -> void:
 	var g := _g(7)
 	g.s.coins = 1234
 	var h := _home()
-	t.ok(h.play_btn.text.contains("Level 7") or h.play_btn.text.contains("7"), "nút Chơi có số level")
+	t.eq(h.path_nodes[1].num.text, "7", "mốc hiện tại ghi số level")
+	t.eq(h.play_label.text, "PLAY", "nút Chơi ghi PLAY")
+	t.ok(not h.hard_tag.visible, "level thường không ghi độ khó")
 	t.eq(h.gold_label.text, "1234", "gold")
 	t.ok(not h.play_btn.disabled, "nút Chơi bấm được")
 	t.ok(not h.coming_soon_label.visible, "không hiện sắp có level mới")
@@ -54,8 +56,8 @@ func test_early_levels_hide_lives_gift_shop(t: T) -> void:
 	t.ok(h.shop_btn.disabled, "L1 shop khoá")
 	t.ok(h.shop_caption.text.contains("5"), "shop khoá ghi Level 5")
 	t.ok(h.challenge_btn.disabled, "challenge khoá")
-	t.eq(h.challenge_btn.text, "Unlocked at Level 50", "challenge ghi Unlocked at Level 50")
-	t.ok(not h.offer_chip.visible, "không có offer thì không hiện chip")
+	t.eq(h.challenge_caption.text, "Level 50", "challenge ghi Level 50")
+	t.ok(not h.offer_chip.get_parent().visible, "không có offer thì không hiện icon offer")
 	h.queue_free()
 
 
@@ -91,7 +93,7 @@ func test_lives_and_countdown(t: T) -> void:
 	g.s.lives.next_at = g.now() + 125
 	g.lives_changed.emit()
 	t.ok(h.lives_label.text.contains("8"), "còn 8 mạng")
-	t.eq(h.lives_timer_label.text, "Next life in 2:05", "đếm hồi")
+	t.eq(h.lives_timer_label.text, "2:05", "đếm hồi")
 	h.queue_free()
 
 
@@ -109,9 +111,9 @@ func test_offer_chip(t: T) -> void:
 	g.s.offers.items["starter_pack"] = {"shown": 1, "at": g.now(), "until": g.now() + 3700,
 		"bought": 0, "bought_at": 0, "day": 0, "day_n": 1, "key": 0}
 	var h := _home()
-	t.ok(h.offer_chip.visible, "có offer mở thì hiện chip")
-	t.ok(h.offer_chip.text.contains("Starter Pack"), "chip ghi tên offer")
-	t.ok(h.offer_chip.text.contains("1:01:40"), "chip ghi thời gian còn")
+	t.ok(h.offer_chip.get_parent().visible, "có offer mở thì hiện icon offer")
+	t.eq(h.offer_chip.tooltip_text, "Starter Pack", "tên offer")
+	t.eq(h.offer_caption.text, "1:01:40", "ribbon ghi thời gian còn")
 	var r := _press(h, h.offer_chip)
 	t.eq(r.get("action", ""), "offer", "bấm chip")
 	t.eq(r.get("id", ""), "starter_pack", "id offer")
@@ -170,3 +172,26 @@ func test_challenge_button_emits_action(t: T) -> void:
 	t.ok(h.challenge_btn.disabled, "demo khoá challenge")
 	h.queue_free()
 	Config.demo_override = -1
+
+
+## Ba khung Figma "main menu": thường (kim cương xanh, PLAY xanh), Hard (lục giác đỏ, đầu lâu), Super Hard (tím).
+func test_difficulty_tiers(t: T) -> void:
+	var g := _g(1)
+	var h := _home()
+	t.eq(h.path_nodes[2].num.text, "1", "level 1: mốc hiện tại ở dưới cùng")
+	t.eq(h.path_nodes[0].num.text, "3", "level 1: hai mốc khoá phía trên")
+	t.ok(h.path_nodes[0].badge.texture != null, "mốc khoá có icon khoá")
+	h.queue_free()
+	for tier in ["hard", "very_hard"]:
+		var lv := 2
+		while lv < 400 and g.difficulty_of(lv) != tier:
+			lv += 1
+		t.ok(lv < 400, "có level %s" % tier)
+		g.s.level = lv
+		h = _home()
+		t.ok(h.hard_tag.visible, "%s: nút Chơi ghi độ khó" % tier)
+		t.eq(h.hard_tag.text, "VERY HARD" if tier == "very_hard" else "HARD", "%s: chữ độ khó" % tier)
+		t.ok(h.path_nodes[1].skull.texture != null, "%s: mốc hiện tại có đầu lâu" % tier)
+		t.eq(h.path_nodes[2].num.text, str(lv - 1), "%s: mốc vừa qua ở dưới" % tier)
+		t.ok(h.path_nodes[2].badge.texture != null, "%s: mốc vừa qua có dấu tích" % tier)
+		h.queue_free()

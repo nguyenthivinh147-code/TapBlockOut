@@ -11,6 +11,8 @@ const POPUP_OFFER := "res://scenes/popup_offer.tscn"
 const SETTINGS := "res://scenes/settings.tscn"
 const WEEKLY_PASS := "res://scenes/weekly_pass.tscn"
 const CHAIN_OFFER := "res://scenes/chain_offer.tscn"
+const TESTER := "res://scenes/tester_menu.tscn"
+const TesterMenu := preload("res://src/ui/tester_menu.gd")
 
 var current_screen: Node = null
 var current_name: String = ""
@@ -178,6 +180,42 @@ func _popup_then(path: String, args: Dictionary, rebuild: bool) -> void:
 			go("home")
 		elif host.has_method("refresh"):
 			host.call("refresh"))
+
+
+## F1 (a device with a keyboard): toggles the tester menu over any screen, like 10 taps on the version in Settings.
+func _input(event: InputEvent) -> void:
+	var k := event as InputEventKey
+	if k != null and k.pressed and not k.echo and k.keycode == KEY_F1:
+		get_viewport().set_input_as_handled()
+		toggle_tester()
+
+
+func toggle_tester() -> Node:
+	if not is_booted:
+		return null
+	for open in get_tree().get_nodes_in_group(TesterMenu.GROUP):
+		if not open.is_queued_for_deletion():
+			open.emit_signal("closed", null)
+			return null
+	var p := open_popup(TESTER)
+	if p != null:
+		p.connect("closed", _on_tester_closed)
+	return p
+
+
+## Saved: rebuild Home, or refresh the screen in place (a level keeps its attempt; a new level number applies to
+## the next one). Deleted: every popup closes and the game starts again from Home.
+func _on_tester_closed(result: Variant) -> void:
+	if not (result is Dictionary):
+		return
+	if str(result.get("action", "")) == "wiped":
+		for c in popup_layer.get_children():
+			c.queue_free()
+		go("home")
+	elif current_name == "home":
+		go("home")
+	elif current_screen != null and current_screen.has_method("refresh"):
+		current_screen.call("refresh")
 
 
 func _notification(what: int) -> void:

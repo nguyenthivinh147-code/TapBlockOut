@@ -1,0 +1,1191 @@
+{
+	"name": "SettingInGameLayer",
+	"source": "Assets/_Game/Prefabs/Layers/SettingInGameLayer.prefab",
+	"root": {
+		"n": "SettingInGameLayer",
+		"id": "2336176072922937704",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"canvas": {"override_sort": true, "order": 0},
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"cs": [
+			{
+				"name": "GameplaySettingsUI",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [
+					{"target": "516431204600285299", "method": "OnShowLayer", "arg": null},
+					{"target": "2336176072922937704", "method": "CheckRequired", "arg": null},
+					{"target": "2336176072922937704", "method": "PlayAllAnimationsSync", "arg": null}
+				],
+				"OnHideLayout": [],
+				"settingMusicButton": {"node": "6106011180622730584"},
+				"settingVibrationButton": {"node": "4702382724692304221"},
+				"returnMainMenuButton": {"node": "516431204600285299"},
+				"closeButtons": [
+					{"node": "1590072735812032041"},
+					{"node": "641052179846054816"}
+				],
+				"versionDataSO": {"asset": "VersionDataSO.asset"},
+				"versionText": {"node": "8491410961096260918"},
+				"content": {"node": "1629233615669166226"},
+				"contentHeightBuyAds": "680",
+				"removeHeartUI": {"node": "6673784354674449938"}
+			},
+			{
+				"name": "CompletePurchaseValidator",
+				"productIDRequired": ["candy.cat.ads.2"],
+				"OnPurchased": [
+					{"target": "8691145006127558743", "method": "SetActive", "arg": false},
+					{"target": "8475821382408807680", "method": "SetActive", "arg": false},
+					{"target": "2336176072922937704", "method": "OnPurchasedAds", "arg": null}
+				]
+			},
+			{
+				"name": "DialogueReveal",
+				"panelRect": {"node": "5208920821355030406"},
+				"dimCanvasGroup": {"node": "1590072735812032041"},
+				"duration": "0.4",
+				"easeType": "26",
+				"OnStartAnim": [
+					{"target": "8491410961096260918", "method": "set_enabled", "arg": false}
+				],
+				"OnCompleteAnim": [
+					{"target": "8491410961096260918", "method": "set_enabled", "arg": true}
+				]
+			},
+			{
+				"name": "UIAnimationGroup",
+				"_animations": [
+					{"node": "344949375825919855"},
+					{"node": "4702382724692304221"},
+					{"node": "6106011180622730584"},
+					{"node": "5170270658803132161"},
+					{"node": "8691145006127558743"}
+				],
+				"_initialDelay": "0",
+				"_delayBetweenAnims": "0",
+				"_playOnEnable": "0"
+			}
+		],
+		"ch": [
+			{
+				"n": "Bg",
+				"id": "1590072735812032041",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": null,
+					"c": "000000fc",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				},
+				"btn": {
+					"tr": 0,
+					"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+					"mult": 1,
+					"dur": 0.1,
+					"inter": true,
+					"target": "1590072735812032041",
+					"sprites": {"pressed": null, "disabled": null}
+				},
+				"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false}
+			},
+			{
+				"n": "VersionText",
+				"id": "8491410961096260918",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 360, -348, 400, 50, 1, 0],
+				"txt": {
+					"s": "0.0.0.0",
+					"fs": 36.4,
+					"auto": [18, 48],
+					"c": "ffffffff",
+					"h": 4,
+					"v": 512,
+					"w": false,
+					"ov": 0,
+					"st": 0,
+					"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+					"font": "Baloo Bhaijaan Regular 400 SDF",
+					"cs": 0,
+					"ws": 0,
+					"ls": 0,
+					"m": [0, 0, 0, 0],
+					"rt": false,
+					"rich": false,
+					"on": true
+				}
+			},
+			{
+				"n": "Panel",
+				"id": "5208920821355030406",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "PauseMenu",
+						"id": "1629233615669166226",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 724, 540.4, 0.5, 0.5],
+						"ch": [
+							{
+								"n": "Bg",
+								"id": "2005729142746732927",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+								"img": {
+									"sp": "Popup2",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								}
+							},
+							{
+								"n": "Image",
+								"id": "8151875659459712269",
+								"a": true,
+								"r": [0.5, 1, 0.5, 1, 0, -12, 450, 150, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{
+										"n": "txtHeader",
+										"id": "1003881244676388150",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 455.4326, 104, 0.5, 0.5],
+										"txt": {
+											"s": "SETTING",
+											"fs": 64,
+											"auto": [18, 64],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 512,
+											"w": false,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Outline - Purple",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": false,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Top",
+								"id": "5299223922982401401",
+								"a": true,
+								"r": [0, 1, 1, 1, 0, -65, 0, 130, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "btnTurnOff",
+										"id": "641052179846054816",
+										"a": true,
+										"r": [1, 1, 1, 1, 0, 0, 80, 80, 1, 1],
+										"img": {
+											"sp": null,
+											"c": "ffffff00",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "2798665062556229336",
+											"sprites": {"pressed": null, "disabled": null}
+										},
+										"snd": true,
+										"vib": true,
+										"ch": [
+											{
+												"n": "Image",
+												"id": "2798665062556229336",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 64, 64, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": false,
+													"on": true
+												}
+											}
+										]
+									}
+								]
+							},
+							{
+								"n": "Content",
+								"id": "7906482251260163123",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, -65, 0, -130, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "Image",
+										"id": "8555384372782386506",
+										"a": false,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": null,
+											"c": "d1fefcff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									},
+									{
+										"n": "SettingBtn",
+										"id": "6260814198165972331",
+										"a": true,
+										"r": [0.5, 1, 0.5, 1, 0, -72.2, 620, 170, 0.5, 0.5],
+										"ch": [
+											{
+												"n": "Image",
+												"id": "1659599881615418939",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+													"c": "ffffffff",
+													"t": 1,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": false,
+													"on": true
+												}
+											},
+											{
+												"n": "Content",
+												"id": "7349753005290235103",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+												"ch": [
+													{
+														"n": "Mute",
+														"id": "344949375825919855",
+														"a": true,
+														"r": [0.5, 0.5, 0.5, 0.5, -188, 0, 140, 140, 0.5, 0.5],
+														"img": {
+															"sp": null,
+															"c": "ffffff00",
+															"t": 1,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 2,
+															"rt": true,
+															"on": true
+														},
+														"btn": {
+															"tr": 1,
+															"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+															"mult": 1,
+															"dur": 0.1,
+															"inter": true,
+															"target": "344949375825919855",
+															"sprites": {"pressed": null, "disabled": null}
+														},
+														"snd": true,
+														"vib": true,
+														"cs": [
+															{
+																"name": "SoundEffectsButton",
+																"button": {"node": "344949375825919855"}
+															},
+															{
+																"name": "UIAnim_ScaleAppear",
+																"_trigger": "3",
+																"_playOnce": "0",
+																"_duration": "0.5",
+																"_startScale": "0.2",
+																"_ease": "26"
+															},
+															{
+																"name": "UIAnim_Pulse",
+																"_trigger": "2",
+																"_playOnce": "0",
+																"_shrinkScale": "0.95",
+																"_duration": "0.25",
+																"_easeIn": "6",
+																"_easeOut": "26"
+															}
+														],
+														"ch": [
+															{
+																"n": "Image",
+																"id": "7033638035631750267",
+																"a": true,
+																"r": [0.5, 0.5, 0.5, 0.5, 0, 4.6, 90, 90, 0.5, 0.5],
+																"img": {
+																	"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_28",
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": true,
+																	"on": true
+																}
+															}
+														]
+													},
+													{
+														"n": "Vibrate",
+														"id": "4702382724692304221",
+														"a": true,
+														"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 140, 140, 0.5, 0.5],
+														"img": {
+															"sp": null,
+															"c": "ffffff00",
+															"t": 1,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 2,
+															"rt": true,
+															"on": true
+														},
+														"btn": {
+															"tr": 1,
+															"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+															"mult": 1,
+															"dur": 0.1,
+															"inter": true,
+															"target": "4702382724692304221",
+															"sprites": {"pressed": null, "disabled": null}
+														},
+														"snd": true,
+														"vib": true,
+														"cs": [
+															{
+																"name": "SettingVibrationButton",
+																"button": {"node": "4702382724692304221"}
+															},
+															{
+																"name": "UIAnim_ScaleAppear",
+																"_trigger": "3",
+																"_playOnce": "0",
+																"_duration": "0.5",
+																"_startScale": "0.2",
+																"_ease": "26"
+															},
+															{
+																"name": "UIAnim_Pulse",
+																"_trigger": "2",
+																"_playOnce": "0",
+																"_shrinkScale": "0.95",
+																"_duration": "0.25",
+																"_easeIn": "6",
+																"_easeOut": "26"
+															}
+														],
+														"ch": [
+															{
+																"n": "Image",
+																"id": "5825689508464704335",
+																"a": true,
+																"r": [0.5, 0.5, 0.5, 0.5, 0, 4.6, 90, 90, 0.5, 0.5],
+																"img": {
+																	"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_40",
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": true,
+																	"on": true
+																}
+															}
+														]
+													},
+													{
+														"n": "Sound",
+														"id": "6106011180622730584",
+														"a": true,
+														"r": [0.5, 0.5, 0.5, 0.5, 188, 0, 140, 140, 0.5, 0.5],
+														"img": {
+															"sp": null,
+															"c": "ffffff00",
+															"t": 1,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 2,
+															"rt": true,
+															"on": true
+														},
+														"btn": {
+															"tr": 1,
+															"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+															"mult": 1,
+															"dur": 0.1,
+															"inter": true,
+															"target": "6106011180622730584",
+															"sprites": {"pressed": null, "disabled": null}
+														},
+														"snd": true,
+														"vib": true,
+														"cs": [
+															{
+																"name": "SettingMusicButton",
+																"button": {"node": "6106011180622730584"}
+															},
+															{
+																"name": "UIAnim_ScaleAppear",
+																"_trigger": "3",
+																"_playOnce": "0",
+																"_duration": "0.5",
+																"_startScale": "0.2",
+																"_ease": "26"
+															},
+															{
+																"name": "UIAnim_Pulse",
+																"_trigger": "2",
+																"_playOnce": "0",
+																"_shrinkScale": "0.95",
+																"_duration": "0.25",
+																"_easeIn": "6",
+																"_easeOut": "26"
+															}
+														],
+														"ch": [
+															{
+																"n": "Image",
+																"id": "2042780883725172048",
+																"a": true,
+																"r": [0.5, 0.5, 0.5, 0.5, 0, 4.6, 72, 72, 0.5, 0.5],
+																"img": {
+																	"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_42",
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": true,
+																	"on": true
+																}
+															}
+														]
+													}
+												]
+											}
+										]
+									},
+									{
+										"n": "Language",
+										"id": "1424752991311274485",
+										"a": true,
+										"r": [0.5, 1, 0.5, 1, 592, 2307, 268, 120, 0.5, 0],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_Button2",
+											"c": "ffffff00",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 2,
+											"rt": false,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "1424752991311274485",
+											"sprites": {"pressed": null, "disabled": null}
+										},
+										"snd": true,
+										"cs": [
+											{
+												"name": "LocalizationButton",
+												"button": {"node": "1424752991311274485"}
+											}
+										],
+										"ch": [
+											{
+												"n": "Out",
+												"id": "2411366028369970932",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 4, -32, -40, 0.5, 0.5],
+												"txt": {
+													"s": "LANGUAGE",
+													"fs": 48,
+													"auto": [18, 48],
+													"c": "ffffff00",
+													"h": 2,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 16,
+													"mat": "Baloo Outline - DarkBlue",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											}
+										]
+									},
+									{
+										"n": "PolicyButton",
+										"id": "2393001623782575761",
+										"a": false,
+										"r": [0, 1, 0, 1, 70, -698, 228, 78, 0, 0.5],
+										"img": {
+											"sp": null,
+											"c": "ffffff00",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "742337647580945628",
+											"sprites": {"pressed": null, "disabled": null}
+										},
+										"snd": true,
+										"cs": [
+											{
+												"name": "CustomerSupportButton",
+												"button": {"node": "2393001623782575761"},
+												"gameDataSO": {"asset": "VersionDataSO.asset"}
+											}
+										],
+										"ch": [
+											{
+												"n": "Text (TMP)",
+												"id": "742337647580945628",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 0, 0, -22.6819, 0.5, 0.5],
+												"txt": {
+													"s": "プライバシーポリシー",
+													"fs": 24.35,
+													"auto": [18, 40],
+													"c": "166dccff",
+													"h": 1,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 5,
+													"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											}
+										]
+									},
+									{
+										"n": "TermsButton",
+										"id": "2720931388369701475",
+										"a": false,
+										"r": [1, 1, 1, 1, -70, -698, 228, 78, 1, 0.5],
+										"img": {
+											"sp": null,
+											"c": "ffffff00",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "1848320165676353625",
+											"sprites": {"pressed": null, "disabled": null}
+										},
+										"snd": true,
+										"cs": [
+											{
+												"name": "CustomerSupportButton",
+												"button": {"node": "2720931388369701475"},
+												"gameDataSO": {"asset": "VersionDataSO.asset"}
+											}
+										],
+										"ch": [
+											{
+												"n": "Text (TMP)",
+												"id": "1848320165676353625",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 0, 0, -22.6819, 0.5, 0.5],
+												"txt": {
+													"s": "サービス利用規約",
+													"fs": 28.8,
+													"auto": [18, 40],
+													"c": "166dccff",
+													"h": 4,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 5,
+													"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											}
+										]
+									},
+									{
+										"n": "HomeBtn",
+										"id": "516431204600285299",
+										"a": false,
+										"r": [0.5, 1, 0.5, 1, -158, -403, 268, 124, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_Button3",
+											"c": "ffffffff",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 2,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "516431204600285299",
+											"sprites": {"pressed": null, "disabled": null}
+										},
+										"snd": true,
+										"cs": [
+											{
+												"name": "OffHeartListener",
+												"TurnOnHeart": [
+													{"target": "6998903598465972886", "method": "SetActive", "arg": true}
+												],
+												"TurnOffHeart": [
+													{"target": "6998903598465972886", "method": "SetActive", "arg": false}
+												]
+											}
+										],
+										"ch": [
+											{
+												"n": "Out (1)",
+												"id": "5683786571990523278",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 4, -32, -40, 0.5, 0.5],
+												"txt": {
+													"s": "SẢNH",
+													"fs": 48,
+													"auto": null,
+													"c": "ffffffff",
+													"h": 2,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 16,
+													"mat": "Baloo Outline - Red",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											},
+											{
+												"n": "Image",
+												"id": "6998903598465972886",
+												"a": true,
+												"r": [1, 1, 1, 1, -20, -10, 68, 68, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_UI_Maincenter:UI_Maincenter_77",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												},
+												"ch": [
+													{
+														"n": "Text (TMP)",
+														"id": "4629616994881441997",
+														"a": true,
+														"r": [0.5, 0.5, 0.5, 0.5, -3, -2, 68, 68, 0.5, 0.5],
+														"txt": {
+															"s": "-1",
+															"fs": 40,
+															"auto": [18, 40],
+															"c": "ffffffff",
+															"h": 2,
+															"v": 512,
+															"w": false,
+															"ov": 0,
+															"st": 0,
+															"mat": "Baloo Outline - Blue 1",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": false,
+															"on": true
+														}
+													}
+												]
+											}
+										]
+									},
+									{
+										"n": "ReplayBtn",
+										"id": "5516255346980072930",
+										"a": false,
+										"r": [0.5, 0, 0.5, 0, 158, 68, 268, 120, 0.5, 0],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_Button4",
+											"c": "ffffffff",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 2,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "5516255346980072930",
+											"sprites": {"pressed": null, "disabled": null}
+										},
+										"snd": true,
+										"ch": [
+											{
+												"n": "Out",
+												"id": "1814007841698799932",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 4, -32, -40, 0.5, 0.5],
+												"txt": {
+													"s": "REPLAY",
+													"fs": 48,
+													"auto": [18, 48],
+													"c": "ffffffff",
+													"h": 2,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 16,
+													"mat": "Baloo Outline - Orange",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											}
+										]
+									},
+									{
+										"n": "ButtonGroup",
+										"id": "8213173804184489052",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 0, -60.6, 617.5, 138.1, 0.5, 0.5],
+										"lay": {
+											"t": "h",
+											"pad": [0, 0, 0, 0],
+											"al": 4,
+											"sp": 0,
+											"cw": false,
+											"ch": false,
+											"ew": true,
+											"eh": true,
+											"sw": false,
+											"sh": false,
+											"rev": false
+										},
+										"ch": [
+											{
+												"n": "HomeButton",
+												"id": "5170270658803132161",
+												"a": true,
+												"r": [0, 0, 0, 0, 0, 0, 300, 124, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_49",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": true,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 2,
+													"rt": true,
+													"on": true
+												},
+												"btn": {
+													"tr": 1,
+													"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+													"mult": 1,
+													"dur": 0.1,
+													"inter": true,
+													"target": "5170270658803132161",
+													"sprites": {"pressed": null, "disabled": null}
+												},
+												"snd": true,
+												"vib": true,
+												"cs": [
+													{
+														"name": "ReturnToMenuButton",
+														"button": {"node": "5170270658803132161"}
+													},
+													{
+														"name": "UIAnim_ScaleAppear",
+														"_trigger": "3",
+														"_playOnce": "0",
+														"_duration": "0.4",
+														"_startScale": "0.2",
+														"_ease": "11"
+													},
+													{
+														"name": "UIHoldAnim_Pulse",
+														"_holdDuration": "0.5",
+														"_pressScale": "0.95",
+														"_easeDuration": "0.15",
+														"_ease": "5",
+														"_objectsToEnableOnHold": [],
+														"_objectsToDisableOnHold": []
+													}
+												],
+												"ch": [
+													{
+														"n": "Image",
+														"id": "6673784354674449938",
+														"a": true,
+														"r": [1, 1, 1, 1, 9, 16.98, 70, 70, 1, 1],
+														"img": {
+															"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_15",
+															"c": "ffffffff",
+															"t": 0,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 1,
+															"rt": true,
+															"on": true
+														},
+														"ch": [
+															{
+																"n": "Text (TMP)",
+																"id": "2712621231209697856",
+																"a": true,
+																"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 50, 50, 0.5, 0.5],
+																"txt": {
+																	"s": "-1",
+																	"fs": 36,
+																	"auto": null,
+																	"c": "ffffffff",
+																	"h": 2,
+																	"v": 512,
+																	"w": true,
+																	"ov": 0,
+																	"st": 0,
+																	"mat": "Baloo Outline - Red",
+																	"font": "Baloo Bhaijaan Regular 400 SDF",
+																	"cs": 0,
+																	"ws": 0,
+																	"ls": 0,
+																	"m": [0, 0, 0, 0],
+																	"rt": true,
+																	"rich": true,
+																	"on": true
+																}
+															}
+														]
+													},
+													{
+														"n": "Text (TMP)",
+														"id": "3432440612801766609",
+														"a": true,
+														"r": [0, 0, 1, 1, 0, 0, -32, -32, 0.5, 0.5],
+														"txt": {
+															"s": "HOME",
+															"fs": 48,
+															"auto": [18, 48],
+															"c": "ffffffff",
+															"h": 2,
+															"v": 512,
+															"w": false,
+															"ov": 0,
+															"st": 0,
+															"mat": "Baloo Outline - Red",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": false,
+															"on": true
+														}
+													}
+												]
+											},
+											{
+												"n": "RetryButton",
+												"id": "8691145006127558743",
+												"a": true,
+												"r": [0, 0, 0, 0, 0, 0, 300, 124, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": true,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 2,
+													"rt": true,
+													"on": true
+												},
+												"btn": {
+													"tr": 1,
+													"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+													"mult": 1,
+													"dur": 0.1,
+													"inter": true,
+													"target": "8691145006127558743",
+													"sprites": {"pressed": null, "disabled": null}
+												},
+												"snd": true,
+												"vib": true,
+												"cs": [
+													{
+														"name": "ReplayGameButton",
+														"button": {"node": "8691145006127558743"}
+													},
+													{
+														"name": "UIAnim_ScaleAppear",
+														"_trigger": "3",
+														"_playOnce": "0",
+														"_duration": "0.4",
+														"_startScale": "0.2",
+														"_ease": "11"
+													},
+													{
+														"name": "UIHoldAnim_Pulse",
+														"_holdDuration": "0.5",
+														"_pressScale": "0.95",
+														"_easeDuration": "0.15",
+														"_ease": "5",
+														"_objectsToEnableOnHold": [],
+														"_objectsToDisableOnHold": []
+													}
+												],
+												"ch": [
+													{
+														"n": "Text (TMP)",
+														"id": "3582087303870257874",
+														"a": true,
+														"r": [0, 0, 1, 1, 0, 0, -80, -32, 0.5, 0.5],
+														"txt": {
+															"s": "REPLAY",
+															"fs": 50,
+															"auto": [18, 50],
+															"c": "ffffffff",
+															"h": 2,
+															"v": 512,
+															"w": false,
+															"ov": 3,
+															"st": 16,
+															"mat": "Baloo Outline - Green",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": false,
+															"on": true
+														}
+													}
+												]
+											}
+										]
+									}
+								]
+							},
+							{
+								"n": "Image",
+								"id": "8475821382408807680",
+								"a": false,
+								"r": [0.5, 1, 0.5, 1, 0, -633.4, 335.8752, 8, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_UI_Maincenter:UI_Maincenter_14",
+									"c": "2174c6ff",
+									"t": 1,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 10,
+									"rt": true,
+									"on": true
+								}
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

@@ -1,0 +1,439 @@
+{
+	"name": "MainTutorialLayer",
+	"source": "Assets/_Game/Prefabs/Layers/MainTutorialLayer.prefab",
+	"root": {
+		"n": "MainTutorialLayer",
+		"id": "5676859109278462881",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"canvas": {"override_sort": true, "order": 32767},
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"cs": [
+			{
+				"name": "MainTutorialOverlay",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"tutorialSteps": [
+					{"node": "4030178389688558196"},
+					{"node": "36826580037507695"}
+				]
+			}
+		],
+		"ch": [
+			{
+				"n": "GameObject",
+				"id": "6689267149989120801",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "Block",
+						"id": "9106521653725269209",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 1],
+						"img": {
+							"sp": null,
+							"c": "ffffff00",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					},
+					{
+						"n": "Step1",
+						"id": "4030178389688558196",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"anim": {"controller": "TutController_Step1", "on": false},
+						"cg": {"alpha": 1, "inter": false, "block": false, "ignore_parent": false},
+						"cs": [
+							{
+								"name": "MainTutStep",
+								"stepIndex": "1",
+								"prefab": {"node": "4030178389688558196"},
+								"animator": {"node": "4030178389688558196"},
+								"canvasGroup": {"node": "4030178389688558196"},
+								"targetButton": {"node": "6591460346536119132"}
+							}
+						],
+						"ch": [
+							{
+								"n": "Hand",
+								"id": "2006395342566275393",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -81.5, -206, 100, 100, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "TargetButton",
+										"id": "6591460346536119132",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -34, 30, 160, 243, 0.5, 0.5],
+										"img": {
+											"sp": null,
+											"c": "ffffff00",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "6591460346536119132",
+											"sprites": {"pressed": null, "disabled": null}
+										}
+									},
+									{
+										"n": "TapFx",
+										"id": "8546611001829085719",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -32.9, 22, 150.5482, 150.5482, 0.5, 0.5],
+										"s": [0, 0],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_63",
+											"c": "ffffff1e",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true,
+											"mat": ""
+										}
+									},
+									{
+										"n": "TapFx2",
+										"id": "4858004428760831614",
+										"a": false,
+										"r": [0.5, 0.5, 0.5, 0.5, -32.9, 22, 80, 80, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_64",
+											"c": "ffffff52",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true,
+											"mat": ""
+										}
+									},
+									{
+										"n": "HandSprite",
+										"id": "8699202792434890296",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 43, -42, 148, 148, 0.5, 0.5],
+										"s": [1.25, 1.25],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_19",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Panel",
+								"id": "2630984447690231473",
+								"a": true,
+								"r": [0.5, 0, 0.5, 0, 0, 450, 772.4, 224, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "Image",
+										"id": "5926547161430032327",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Popup2",
+											"c": "ffffffff",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 2.18,
+											"rt": true,
+											"on": true
+										},
+										"le": {"ignore": true, "min": [-1,-1], "pref": [-1,-1], "flex": [-1,-1]}
+									},
+									{
+										"n": "NPC",
+										"id": "3001824057669977569",
+										"a": true,
+										"r": [0, 0.5, 0, 0.5, -16.3, 23.1, 306.2651, 306.2651, 0.5, 0.5]
+									},
+									{
+										"n": "Canvas",
+										"id": "361991542656816960",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"canvas": {"override_sort": false, "order": 0},
+										"ch": [
+											{
+												"n": "Text (TMP)",
+												"id": "1123739710269370327",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 0, -40, 0, 0.5, 0.5],
+												"txt": {
+													"s": "Tap a group of same-colored cubes to send them to the conveyor",
+													"fs": 44,
+													"auto": [18, 44],
+													"c": "1c4a83ff",
+													"h": 2,
+													"v": 512,
+													"w": true,
+													"ov": 0,
+													"st": 0,
+													"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"n": "Step2",
+						"id": "36826580037507695",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"anim": {"controller": "TutController_Step1", "on": false},
+						"cg": {"alpha": 0, "inter": false, "block": false, "ignore_parent": false},
+						"cs": [
+							{
+								"name": "MainTutStep",
+								"stepIndex": "2",
+								"prefab": {"node": "36826580037507695"},
+								"animator": {"node": "36826580037507695"},
+								"canvasGroup": {"node": "36826580037507695"},
+								"targetButton": {"node": "5502823104452043598"}
+							}
+						],
+						"ch": [
+							{
+								"n": "Hand",
+								"id": "7900347686491922448",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 175, -200, 100, 100, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "TargetButton",
+										"id": "5502823104452043598",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -44.5, 21, 156, 250, 0.5, 0.5],
+										"img": {
+											"sp": null,
+											"c": "ffffff00",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "5502823104452043598",
+											"sprites": {"pressed": null, "disabled": null}
+										}
+									},
+									{
+										"n": "TapFx",
+										"id": "4126711537395301528",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -32.9, 22, 150.5482, 150.5482, 0.5, 0.5],
+										"s": [0, 0],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_63",
+											"c": "ffffff1e",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true,
+											"mat": ""
+										}
+									},
+									{
+										"n": "TapFx2",
+										"id": "3054270829327111486",
+										"a": false,
+										"r": [0.5, 0.5, 0.5, 0.5, -32.9, 22, 80, 80, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_64",
+											"c": "ffffff52",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true,
+											"mat": ""
+										}
+									},
+									{
+										"n": "HandSprite",
+										"id": "6960824148097348690",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, 43, -42, 148, 148, 0.5, 0.5],
+										"s": [1.25, 1.25],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_19",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "Panel",
+								"id": "7063728132234014078",
+								"a": true,
+								"r": [0.5, 0, 0.5, 0, 0, 450, 772.4, 224, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "Image",
+										"id": "5770775284551551108",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Popup2",
+											"c": "ffffffff",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 2.18,
+											"rt": true,
+											"on": true
+										},
+										"le": {"ignore": true, "min": [-1,-1], "pref": [-1,-1], "flex": [-1,-1]}
+									},
+									{
+										"n": "NPC",
+										"id": "8666652028403979506",
+										"a": true,
+										"r": [0, 0.5, 0, 0.5, -16.3, 23.1, 306.2651, 306.2651, 0.5, 0.5]
+									},
+									{
+										"n": "Canvas",
+										"id": "721511204777480429",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"canvas": {"override_sort": false, "order": 0},
+										"ch": [
+											{
+												"n": "Text (TMP)",
+												"id": "5707766250187072739",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 0, -40, 0, 0.5, 0.5],
+												"txt": {
+													"s": "Clear a box that matches the conveyor cubes. It will fill and disappear",
+													"fs": 44,
+													"auto": [18, 44],
+													"c": "476b97ff",
+													"h": 2,
+													"v": 512,
+													"w": true,
+													"ov": 0,
+													"st": 0,
+													"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

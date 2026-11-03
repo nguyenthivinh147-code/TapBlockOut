@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Booster +3 Move: striped blue candy arc arrow over a yellow plus. Open arc so it never reads as the restart loop. -->
+  <defs>
+    <linearGradient id="blue" gradientUnits="userSpaceOnUse" x1="0" y1="138" x2="0" y2="342">
+      <stop offset="0" stop-color="#5CCBFF"/>
+      <stop offset="0.45" stop-color="#0C9CFD"/>
+      <stop offset="1" stop-color="#0260E6"/>
+    </linearGradient>
+    <linearGradient id="gold" gradientUnits="userSpaceOnUse" x1="0" y1="314" x2="0" y2="430">
+      <stop offset="0" stop-color="#FFF08A"/>
+      <stop offset="0.5" stop-color="#FFD21F"/>
+      <stop offset="1" stop-color="#F7A300"/>
+    </linearGradient>
+    <clipPath id="arrow">
+      <path d="M151.68 302.05 A42 42 0 0 1 70.54 280.31 A192 192 0 0 1 422.28 234 L465.6 209 L435.9 341.6 L306.2 301 L349.53 276 A108 108 0 0 0 151.68 302.05 Z"/>
+    </clipPath>
+  </defs>
+  <g transform="translate(256 256) scale(1.08) translate(-267 -284)">
+    <!-- outlines -->
+    <path fill="none" stroke="#0A3F8F" stroke-width="28" stroke-linejoin="round"
+      d="M151.68 302.05 A42 42 0 0 1 70.54 280.31 A192 192 0 0 1 422.28 234 L465.6 209 L435.9 341.6 L306.2 301 L349.53 276 A108 108 0 0 0 151.68 302.05 Z"/>
+    <g fill="none" stroke="#C46A00" stroke-width="28">
+      <rect x="200" y="314" width="52" height="116" rx="16"/>
+      <rect x="168" y="346" width="116" height="52" rx="16"/>
+    </g>
+    <!-- arrow body with block-style 45 degree stripes -->
+    <path fill="url(#blue)"
+      d="M151.68 302.05 A42 42 0 0 1 70.54 280.31 A192 192 0 0 1 422.28 234 L465.6 209 L435.9 341.6 L306.2 301 L349.53 276 A108 108 0 0 0 151.68 302.05 Z"/>
+    <g clip-path="url(#arrow)" fill="#7FD8FF" fill-opacity="0.45">
+      <path d="M-260 520 L-228 520 L172 120 L140 120 Z"/>
+      <path d="M-188 520 L-156 520 L244 120 L212 120 Z"/>
+      <path d="M-116 520 L-84 520 L316 120 L284 120 Z"/>
+      <path d="M-44 520 L-12 520 L388 120 L356 120 Z"/>
+      <path d="M28 520 L60 520 L460 120 L428 120 Z"/>
+      <path d="M100 520 L132 520 L532 120 L500 120 Z"/>
+      <path d="M172 520 L204 520 L604 120 L572 120 Z"/>
+    </g>
+    <path fill="none" stroke="#FFFFFF" stroke-opacity="0.8" stroke-width="14" stroke-linecap="round"
+      d="M105.3 243 A174 174 0 0 1 301 161.9"/>
+    <circle cx="343" cy="179.3" r="7.5" fill="#FFFFFF" fill-opacity="0.85"/>
+    <!-- plus -->
+    <rect x="200" y="314" width="52" height="116" rx="16" fill="url(#gold)"/>
+    <rect x="168" y="346" width="116" height="52" rx="16" fill="url(#gold)"/>
+    <rect x="210" y="324" width="11" height="36" rx="5.5" fill="#FFFFFF" fill-opacity="0.8"/>
+    <rect x="178" y="355" width="30" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.65"/>
+    <circle cx="268" cy="388" r="5" fill="#FFFFFF" fill-opacity="0.5"/>
+  </g>
+</svg>

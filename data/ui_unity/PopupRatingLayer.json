@@ -1,0 +1,509 @@
+{
+	"name": "PopupRatingLayer",
+	"source": "Assets/_Game/Prefabs/Layers/PopupRatingLayer.prefab",
+	"root": {
+		"n": "PopupRatingLayer",
+		"id": "7219197735921211012",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"canvas": {"override_sort": true, "order": 0},
+		"cs": [
+			{
+				"name": "PopupRatingUICoreLayer",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [
+					{"target": "3386221321213642454", "method": "set_enabled", "arg": true}
+				],
+				"OnHideLayout": [
+					{"target": "3386221321213642454", "method": "set_enabled", "arg": false}
+				],
+				"button": {"node": "8113718371564240341"},
+				"closeButtons": [
+					{"node": "2750634203823560167"}
+				],
+				"inAppReviewManager": {"node": "7219197735921211012"}
+			},
+			{
+				"name": "DialogueReveal",
+				"panelRect": {"node": "5505950304007009561"},
+				"dimCanvasGroup": {"node": "5227445294147618665"},
+				"duration": "0.4",
+				"easeType": "26",
+				"OnStartAnim": [],
+				"OnCompleteAnim": []
+			},
+			{"name": "InAppReviewManager"}
+		],
+		"ch": [
+			{
+				"n": "Dim",
+				"id": "5227445294147618665",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": null,
+					"c": "000000cc",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				},
+				"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false}
+			},
+			{
+				"n": "Panel",
+				"id": "5505950304007009561",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 724, 653.1, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "Bg",
+						"id": "7015428857272264045",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"img": {
+							"sp": "Popup2",
+							"c": "ffffffff",
+							"t": 1,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					},
+					{
+						"n": "Image",
+						"id": "6846540274179373805",
+						"a": true,
+						"r": [0.5, 1, 0.5, 1, 0, 0, 475.1932, 163.48, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": true,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						},
+						"ch": [
+							{
+								"n": "txtHeader",
+								"id": "4532371269527757320",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 455.4326, 104, 0.5, 0.5],
+								"txt": {
+									"s": "Rate us",
+									"fs": 64,
+									"auto": [18, 64],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 16,
+									"mat": "Baloo Outline - Purple",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					},
+					{
+						"n": "Star",
+						"id": "3386221321213642454",
+						"a": true,
+						"r": [0.5, 0, 0.5, 0, 0, 334, 620, 204, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+							"c": "ffffffff",
+							"t": 1,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": false,
+							"on": true
+						},
+						"anim": {"controller": "Rating", "on": false},
+						"ch": [
+							{
+								"n": "StarBase1",
+								"id": "3346579898651389955",
+								"a": true,
+								"r": [0, 1, 0, 1, 78, -102, 140, 140, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_UI_Maincenter:UI_Maincenter_74",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{"n": "UIParticle", "id": "2447758577406077263", "a": false, "r": [0.5,0.5,0.5,0.5,-1,-2,0,0,0.5,0.5]},
+									{
+										"n": "StarFill1",
+										"id": "295046907240715780",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_73",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "StarBase2",
+								"id": "3960820773973631664",
+								"a": true,
+								"r": [0, 1, 0, 1, 194, -102, 140, 140, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_UI_Maincenter:UI_Maincenter_74",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{"n": "UIParticle", "id": "4371759856342097555", "a": false, "r": [0.5,0.5,0.5,0.5,3.5,-2,0,0,0.5,0.5]},
+									{
+										"n": "StarFill2",
+										"id": "7355607500348883632",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_73",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "StarBase3",
+								"id": "4891357838247673880",
+								"a": true,
+								"r": [0, 1, 0, 1, 310, -102, 140, 140, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_UI_Maincenter:UI_Maincenter_74",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{"n": "UIParticle", "id": "4945347862920166909", "a": false, "r": [0.5,0.5,0.5,0.5,1,-2,0,0,0.5,0.5]},
+									{
+										"n": "StarFill3",
+										"id": "1569497214449419067",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_73",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "StarBase4",
+								"id": "4334055439764866941",
+								"a": true,
+								"r": [0, 1, 0, 1, 426, -102, 140, 140, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_UI_Maincenter:UI_Maincenter_74",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{"n": "UIParticle", "id": "3063908997086614846", "a": false, "r": [0.5,0.5,0.5,0.5,-1.5,-2,0,0,0.5,0.5]},
+									{
+										"n": "StarFill4",
+										"id": "2638819104844178100",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_73",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							},
+							{
+								"n": "StarBase5",
+								"id": "9189019843991362219",
+								"a": true,
+								"r": [0, 1, 0, 1, 542, -102, 140, 140, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_UI_Maincenter:UI_Maincenter_74",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								},
+								"ch": [
+									{"n": "UIParticle", "id": "116369283124374752", "a": false, "r": [0.5,0.5,0.5,0.5,0.1,-2,0,0,0.5,0.5]},
+									{
+										"n": "StarFill5",
+										"id": "240142603455809755",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_73",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"n": "Top",
+						"id": "7827310412597054464",
+						"a": true,
+						"r": [0, 1, 1, 1, 0, -65, 0, 130, 0.5, 0.5],
+						"ch": [
+							{
+								"n": "btnTurnOff",
+								"id": "2750634203823560167",
+								"a": true,
+								"r": [1, 1, 1, 1, 0, 0, 80, 80, 1, 1],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"btn": {
+									"tr": 1,
+									"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "2750634203823560167",
+									"sprites": {"pressed": null, "disabled": null}
+								},
+								"snd": true,
+								"vib": true,
+								"cs": [
+									{
+										"name": "NavigationBackButton",
+										"button": {"node": "2750634203823560167"}
+									}
+								]
+							}
+						]
+					},
+					{
+						"n": "Ok",
+						"id": "8113718371564240341",
+						"a": true,
+						"r": [0.5, 0, 0.5, 0, 0, 68, 280, 120, 0.5, 0],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 2,
+							"rt": true,
+							"on": true
+						},
+						"btn": {
+							"tr": 1,
+							"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+							"mult": 1,
+							"dur": 0.1,
+							"inter": true,
+							"target": "8113718371564240341",
+							"sprites": {"pressed": null, "disabled": null}
+						},
+						"snd": true,
+						"vib": true,
+						"ch": [
+							{
+								"n": "Out",
+								"id": "5814779943950924207",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 4, 0, -8, 0.5, 0.5],
+								"txt": {
+									"s": "Yes",
+									"fs": 56,
+									"auto": [18, 56],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 16,
+									"mat": "Baloo Outline - Green",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					},
+					{
+						"n": "Text (TMP)",
+						"id": "9142881438627692719",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 182.5, 606.5398, 173.1316, 0.5, 0.5],
+						"txt": {
+							"s": "Please rate and help us get better!",
+							"fs": 40,
+							"auto": [18, 40],
+							"c": "126dccff",
+							"h": 2,
+							"v": 512,
+							"w": false,
+							"ov": 0,
+							"st": 0,
+							"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+							"font": "Baloo Bhaijaan Regular 400 SDF",
+							"cs": 0,
+							"ws": 0,
+							"ls": 0,
+							"m": [0, 0, 0, 0],
+							"rt": false,
+							"rich": false,
+							"on": true
+						}
+					}
+				]
+			}
+		]
+	}
+}

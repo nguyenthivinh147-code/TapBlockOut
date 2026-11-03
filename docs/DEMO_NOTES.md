@@ -33,6 +33,13 @@ Dành cho người duyệt bản thử. Không cần biết lập trình.
 - Khi mua hàng sẽ hiện overlay **"Mua giả lập"** với nút Mua hoặc Huỷ. Không trừ tiền thật.
 - Analytics, Remote Config, lưu đám mây và thông báo cũng là bản giả lập (không gửi gì ra ngoài). Lưu game cục bộ trên máy thì chạy thật.
 
+## 3b. Menu tester (sửa tài khoản)
+
+- Mở: vào Cài đặt, chạm nhanh 10 lần vào số phiên bản dưới góc popup. Chạy trên máy tính thì bấm **F1** ở màn nào cũng được.
+- Sửa gold, level, số booster (gợi ý, +3 Move, phá khối) rồi bấm **Save**: game về Home với số mới. Ô nhập sai (chữ, số âm, level 0) tô đỏ và không lưu.
+- **Xoá tài khoản**: chạm hai lần (lần đầu nút đổi thành "Chạm lần nữa để xoá"). Game quay về như mới cài: Level 1, gold ban đầu, cài đặt mặc định, món mua giả lập bị quên.
+- Chỉ có ở bản debug (như APK demo này). Bản phát hành chỉ còn nút mediation debugger.
+
 ## 4. Việc cần duyệt trên máy thật
 
 - [ ] Cài trên máy 2 GB RAM (loại Galaxy A10): chạy từ 30 khung/giây trở lên.
@@ -55,7 +62,7 @@ Dành cho người duyệt bản thử. Không cần biết lập trình.
 | Layout Level 6 đến 8 | Bàn hẹp |
 | Icon app ở 48 px | Chưa xem trên máy thật |
 | Icon đơn sắc (themed icon Android 13) | Chưa có |
-| `booster_hint`, `booster_move`, `booster_smash` | Dùng tạm icon `ui_hint`, `ui_moves`, `ui_smash` |
+| `booster_hint`, `booster_move`, `booster_smash` | Icon mới (AI từ bố cục SVG), chưa xem trên máy thật |
 
 ## 6. Lệch so với kế hoạch
 

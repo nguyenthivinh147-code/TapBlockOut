@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Booster Hint: glossy candy light bulb. Style = assets/ui/figma ic_* (thick tone outline, gradient body, white gloss). -->
+  <defs>
+    <radialGradient id="glass" gradientUnits="userSpaceOnUse" cx="214" cy="140" r="230">
+      <stop offset="0" stop-color="#FFFCD6"/>
+      <stop offset="0.3" stop-color="#FFEA5C"/>
+      <stop offset="0.7" stop-color="#FFC81A"/>
+      <stop offset="1" stop-color="#F59A00"/>
+    </radialGradient>
+    <linearGradient id="pink" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF9BCB"/>
+      <stop offset="1" stop-color="#E8337F"/>
+    </linearGradient>
+    <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F7D9E7"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(256 262) scale(0.86) translate(-256 -224)">
+    <!-- rays -->
+    <g fill="none" stroke-linecap="round">
+      <path stroke="#C46A00" stroke-width="46" d="M84 200 L44 200 M134.4 78.4 L106.1 50.1 M256 28 L256 -12 M377.6 78.4 L405.9 50.1 M428 200 L468 200"/>
+      <path stroke="#FFE04A" stroke-width="22" d="M84 200 L44 200 M134.4 78.4 L106.1 50.1 M256 28 L256 -12 M377.6 78.4 L405.9 50.1 M428 200 L468 200"/>
+    </g>
+    <!-- outlines -->
+    <path fill="none" stroke="#C46A00" stroke-width="28" stroke-linejoin="round"
+      d="M196 352 C196 318 150 302 126.7 276 A150 150 0 1 1 385.3 276 C362 302 316 318 316 352 Z"/>
+    <g fill="none" stroke="#A3245F" stroke-width="28" stroke-linejoin="round">
+      <rect x="222" y="424" width="68" height="36" rx="18"/>
+      <rect x="194" y="396" width="124" height="34" rx="17"/>
+      <rect x="190" y="368" width="132" height="34" rx="17"/>
+      <rect x="184" y="336" width="144" height="38" rx="19"/>
+    </g>
+    <!-- glass -->
+    <path fill="url(#glass)"
+      d="M196 352 C196 318 150 302 126.7 276 A150 150 0 1 1 385.3 276 C362 302 316 318 316 352 Z"/>
+    <path fill="none" stroke="#F08C00" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85"
+      d="M234 346 L234 298 M278 346 L278 298 M222 298 Q233 268 245 298 Q256 268 267 298 Q278 268 290 298"/>
+    <ellipse cx="178" cy="162" rx="30" ry="68" transform="rotate(32 178 162)" fill="#FFFFFF" fill-opacity="0.85"/>
+    <circle cx="216" cy="90" r="14" fill="#FFFFFF" fill-opacity="0.9"/>
+    <path fill="none" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="10" stroke-linecap="round"
+      d="M350 262 A132 132 0 0 0 386 190"/>
+    <!-- candy screw base -->
+    <g stroke="#A3245F" stroke-width="7">
+      <rect x="222" y="424" width="68" height="36" rx="18" fill="#C02A6C"/>
+      <rect x="194" y="396" width="124" height="34" rx="17" fill="url(#pink)"/>
+      <rect x="190" y="368" width="132" height="34" rx="17" fill="url(#cream)"/>
+      <rect x="184" y="336" width="144" height="38" rx="19" fill="url(#pink)"/>
+    </g>
+    <g fill="#FFFFFF">
+      <rect x="204" y="344" width="64" height="9" rx="4.5" fill-opacity="0.75"/>
+      <rect x="212" y="404" width="44" height="8" rx="4" fill-opacity="0.6"/>
+      <circle cx="240" cy="434" r="5" fill-opacity="0.6"/>
+    </g>
+  </g>
+</svg>

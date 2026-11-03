@@ -103,6 +103,13 @@ func restore() -> bool:
 	return true
 
 
+## Tester menu "delete account": forget owned items and unfinished orders. Tokens keep counting up.
+func wipe() -> void:
+	_owned.clear()
+	_pending.clear()
+	_save_state()
+
+
 func _make_result(sku: String, status: String) -> Dictionary:
 	var res := {"status": status, "sku": sku, "token": "", "order_id": ""}
 	if status == "ok" or status == "invalid":

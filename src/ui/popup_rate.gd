@@ -1,14 +1,16 @@
 extends "res://src/ui/stub_ui.gd"
-## Wireframe 4.3 Rate Us: xin đánh giá. Chưa nối logic.
+## Wireframe 4.3 Rate Us. Layout of PopupRatingLayer (color-cube-match-puzzle): Ok rates, btnTurnOff closes
+## (PopupRatingUICoreLayer.button / closeButtons). OnDisplayLayout enables the Star Animator, whose "Rating" clip
+## pops the five star fills in one after another. Not wired to logic.
 
-func _title() -> String:
-	return tr("win_rate_title")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
 
 
-func _fill(box: VBoxContainer) -> void:
-	box.add_child(_say(tr("win_rate_body")))
-	var stars: Array = []
-	for i in 5:
-		stars.append(ThemeKit.make_sprite("star_gold", 84))
-	box.add_child(PopupKit.row(stars, 4))
-	box.add_child(_btn(tr("common_yes"), "primary", "rate"))
+func _build() -> void:
+	ui = UnityUI.build(self, "PopupRatingLayer")
+	ui.text("Panel/Image/txtHeader", tr("win_rate_title"))
+	ui.text("Panel/Text (TMP)", tr("win_rate_body"))
+	ui.text("Panel/Ok/Out", tr("common_yes"))
+	ui.on_click("Panel/Ok", _send.bind("rate"))
+	for b in ui.field("closeButtons", "PopupRatingUICoreLayer"):
+		(b as Button).connect("clicked", _send.bind("close"))

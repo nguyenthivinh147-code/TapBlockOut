@@ -34,6 +34,8 @@ var _syncing: bool = false
 var _pushing: bool = false
 var _trailing: bool = false
 var _dirty: bool = false
+## Account deleted from the tester menu: the cloud copy loaded later is ignored and overwritten by the next push.
+var _wiped: bool = false
 var _last_push_at: int = -1000000
 var _last_sync_try: int = -1000000
 
@@ -87,6 +89,9 @@ func sync_cloud() -> void:
 	if got.is_empty() or not bool(got["args"][1]):
 		return
 	var raw := str(got["args"][0])
+	if _wiped:
+		raw = ""
+		_loser = ""
 	var win := _parse(raw)
 	var write_back := false
 	if _loser != "":
@@ -103,6 +108,17 @@ func sync_cloud() -> void:
 		await _cloud_save(cloud_json)
 	cloud_synced.emit(cloud_json)
 	_maybe_push(false)
+
+
+## Tester menu "delete account": forget the cloud copy here and in the cache file, so backup() is empty and
+## the next push (the fresh save) is not held back by an older cloud copy that played further.
+func wipe() -> void:
+	_wiped = true
+	_backup = ""
+	_loser = ""
+	cloud_json = ""
+	if FileAccess.file_exists(cache_path):
+		DirAccess.remove_absolute(cache_path)
 
 
 func _maybe_push(force: bool) -> void:

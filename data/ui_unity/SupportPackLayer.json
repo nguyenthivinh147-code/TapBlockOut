@@ -1,0 +1,1287 @@
+{
+	"name": "SupportPackLayer",
+	"source": "Assets/_Game/Prefabs/Layers/SupportPackLayer.prefab",
+	"root": {
+		"n": "SupportPackLayer",
+		"id": "7219197735921211012",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"canvas": {"override_sort": true, "order": 0},
+		"cs": [
+			{
+				"name": "SupportPackUICoreLayer",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"bundlePackBases": [
+					{"node": "9019879804181378210"},
+					{"node": "4540096597060258940"}
+				],
+				"threshold": "20",
+				"_scrollRect": {"node": "5984851508010262287"},
+				"_snapDuration": "0.3",
+				"_spacing": "20",
+				"_itemWidth": "720",
+				"_fadeDistance": "0.5"
+			}
+		],
+		"ch": [
+			{
+				"n": "Scroll View",
+				"id": "5984851508010262287",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, -642, 720, 370.63, 0.5, 0.5],
+				"img": {
+					"sp": null,
+					"c": "ffffff64",
+					"t": 1,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": false
+				},
+				"scroll": {
+					"h": true,
+					"v": false,
+					"content": "6548710114484379329",
+					"viewport": "8609979348804856041",
+					"move": 1,
+					"elastic": 0.1,
+					"inertia": true,
+					"decel": 0.135,
+					"wheel": 1
+				},
+				"ch": [
+					{
+						"n": "Viewport",
+						"id": "8609979348804856041",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 40, 0, 40, 0, 1],
+						"img": {
+							"sp": null,
+							"c": "ffffffff",
+							"t": 1,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						},
+						"mask": {"show": false},
+						"ch": [
+							{
+								"n": "Content",
+								"id": "6548710114484379329",
+								"a": true,
+								"r": [0, 0, 0, 1, -730.3382, 0, 0, 0, 0, 1],
+								"lay": {
+									"t": "h",
+									"pad": [0, 720, 40, 0],
+									"al": 3,
+									"sp": 20,
+									"cw": true,
+									"ch": false,
+									"ew": false,
+									"eh": false,
+									"sw": false,
+									"sh": false,
+									"rev": false
+								},
+								"fit": {"h": 2, "v": 0},
+								"ch": [
+									{
+										"n": "Starter_Pack",
+										"id": "9019879804181378210",
+										"a": true,
+										"r": [0, 0, 0, 0, 0, 0, 0, 370.73, 0, 0.5],
+										"img": {
+											"sp": null,
+											"c": "ffffff00",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+										"le": {"ignore": false, "min": [-1,-1], "pref": [720,370.73], "flex": [-1,-1]},
+										"canvas": {"override_sort": false, "order": 0},
+										"cs": [
+											{
+												"name": "SupportBase",
+												"productID": "wool.scape.starter.pack",
+												"nameTxt": {"node": "7432716924644019160"},
+												"priceTxt": {"node": "3359354171657681025"},
+												"purchaseButton": {"node": "88880417115480586"},
+												"productIDRequired": ["wool.scape.starter.pack"],
+												"canvasGroup": {"node": "9019879804181378210"},
+												"tabElement": {"node": "6900009720591659749"}
+											}
+										],
+										"ch": [
+											{
+												"n": "Bg",
+												"id": "5944459356408230520",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_UI_Maincenter:UI_Maincenter_16",
+													"c": "ffffffff",
+													"t": 1,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												},
+												"ch": [
+													{
+														"n": "Image",
+														"id": "342858612239214149",
+														"a": true,
+														"r": [0, 0.5, 1, 0.5, 0, 58.7331, -28, 224.3339, 0.5, 0.5],
+														"img": {
+															"sp": null,
+															"c": "ffffffff",
+															"t": 0,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 1,
+															"rt": true,
+															"on": true
+														}
+													},
+													{
+														"n": "Icon",
+														"id": "4573424510743171358",
+														"a": true,
+														"r": [0, 1, 0, 1, 35.9038, 48.4438, 321.114, 329.6266, 0, 1],
+														"img": {
+															"sp": null,
+															"c": "ffffffff",
+															"t": 0,
+															"pa": true,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 1,
+															"rt": false,
+															"on": true
+														}
+													}
+												]
+											},
+											{
+												"n": "Bottom_Group",
+												"id": "3780011502665399604",
+												"a": true,
+												"r": [0, 0, 1, 0, 0, 26, 0, 90, 0.5, 0],
+												"ch": [
+													{
+														"n": "Button",
+														"id": "88880417115480586",
+														"a": true,
+														"r": [1, 0, 1, 0, -130.8, 45, 226, 90, 0.5, 0.5],
+														"img": {
+															"sp": "Resources_UI_Maincenter:UI_Maincenter_30",
+															"c": "ffffffff",
+															"t": 1,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 3.1,
+															"rt": true,
+															"on": true
+														},
+														"btn": {
+															"tr": 1,
+															"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+															"mult": 1,
+															"dur": 0.1,
+															"inter": true,
+															"target": "88880417115480586",
+															"sprites": {"pressed": null, "disabled": null}
+														},
+														"vib": true,
+														"ch": [
+															{
+																"n": "Text (TMP)",
+																"id": "3359354171657681025",
+																"a": true,
+																"r": [0, 0, 1, 1, 0, 0, -20, 0, 0.5, 0.5],
+																"txt": {
+																	"s": "127000d",
+																	"fs": 47.6,
+																	"auto": [18, 50],
+																	"c": "ffffffff",
+																	"h": 2,
+																	"v": 512,
+																	"w": false,
+																	"ov": 0,
+																	"st": 1,
+																	"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+																	"font": "Baloo Bhaijaan Regular 400 SDF",
+																	"cs": 0,
+																	"ws": 0,
+																	"ls": 0,
+																	"m": [0, 0, 0, 0],
+																	"rt": false,
+																	"rich": true,
+																	"on": true
+																}
+															}
+														]
+													},
+													{
+														"n": "HELPER PACK",
+														"id": "7432716924644019160",
+														"a": true,
+														"r": [0, 0.5, 0, 0.5, 24, 0, 450.4, 90, 0, 0.5],
+														"txt": {
+															"s": "STARTER PACK",
+															"fs": 59,
+															"auto": [18, 64],
+															"c": "ffffffff",
+															"h": 1,
+															"v": 512,
+															"w": false,
+															"ov": 3,
+															"st": 16,
+															"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": false,
+															"on": true
+														}
+													}
+												]
+											},
+											{
+												"n": "Right_Panel",
+												"id": "277981331766773882",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 172.7418, 70, 359.7164, 225.3023, 0.5, 0.5],
+												"cs": [
+													{
+														"name": "ShopProductSetup",
+														"productID": "wool.scape.starter.pack",
+														"productSO": {"asset": "IAPProductSO.asset"},
+														"verticalLayoutGroup": {"node": "277981331766773882"},
+														"horizontalLayoutGroup": {"asset": "ee4bb794e6f85404db083b9581793e8b"},
+														"rewardItemPrefab": {"asset": "999d04b0ad20d7e4c94d9168a7d92caa"},
+														"plusItemPrefab": {"asset": "dc2bb501aba259a429e763c3ac8e1902"},
+														"rewardPerRow": "2"
+													}
+												],
+												"ch": [
+													{
+														"n": "Row(Clone)",
+														"id": "4654088013680352833",
+														"a": true,
+														"r": [0, 1, 0, 1, 179.8582, -56.6512, 100, 104, 0.5, 0.5],
+														"ch": [
+															{
+																"n": "ShopRewardItem(Clone)",
+																"id": "7072466246113720734",
+																"a": true,
+																"r": [0, 1, 0, 1, 50, -52, 100, 100, 0.5, 0.5],
+																"img": {
+																	"sp": null,
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": false,
+																	"on": true
+																},
+																"cs": [
+																	{
+																		"name": "PopupRewardItem",
+																		"ThisItemType": "0",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "7072466246113720734"},
+																		"quantityText": {"node": "6488678526277808848"}
+																	},
+																	{
+																		"name": "BonusItem",
+																		"ThisItemType": "1",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "7072466246113720734"},
+																		"quantityText": {"node": "6488678526277808848"}
+																	}
+																],
+																"ch": [
+																	{
+																		"n": "Text (TMP)",
+																		"id": "6488678526277808848",
+																		"a": true,
+																		"r": [0.5, 0, 0.5, 0, 0, 4.4, 120, 48, 0.5, 0.5],
+																		"txt": {
+																			"s": "1,000",
+																			"fs": 44,
+																			"auto": null,
+																			"c": "ffffffff",
+																			"h": 2,
+																			"v": 512,
+																			"w": false,
+																			"ov": 0,
+																			"st": 0,
+																			"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+																			"font": "Baloo Bhaijaan Regular 400 SDF",
+																			"cs": 0,
+																			"ws": 0,
+																			"ls": 0,
+																			"m": [0, 0, 0, 0],
+																			"rt": false,
+																			"rich": false,
+																			"on": true
+																		}
+																	}
+																]
+															}
+														]
+													},
+													{
+														"n": "Row(Clone)",
+														"id": "8857389834335550364",
+														"a": true,
+														"r": [0, 1, 0, 1, 179.8582, -168.6511, 232, 104, 0.5, 0.5],
+														"ch": [
+															{
+																"n": "ShopRewardItem(Clone)",
+																"id": "7482640688077393842",
+																"a": true,
+																"r": [0, 1, 0, 1, 50, -52, 100, 100, 0.5, 0.5],
+																"img": {
+																	"sp": null,
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": false,
+																	"on": true
+																},
+																"cs": [
+																	{
+																		"name": "PopupRewardItem",
+																		"ThisItemType": "0",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "7482640688077393842"},
+																		"quantityText": {"node": "1952621575709225839"}
+																	},
+																	{
+																		"name": "BonusItem",
+																		"ThisItemType": "7",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "7482640688077393842"},
+																		"quantityText": {"node": "1952621575709225839"}
+																	}
+																],
+																"ch": [
+																	{
+																		"n": "Text (TMP)",
+																		"id": "1952621575709225839",
+																		"a": true,
+																		"r": [0.5, 0, 0.5, 0, 0, 4.4, 120, 48, 0.5, 0.5],
+																		"txt": {
+																			"s": "x3",
+																			"fs": 44,
+																			"auto": null,
+																			"c": "ffffffff",
+																			"h": 2,
+																			"v": 512,
+																			"w": false,
+																			"ov": 0,
+																			"st": 0,
+																			"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+																			"font": "Baloo Bhaijaan Regular 400 SDF",
+																			"cs": 0,
+																			"ws": 0,
+																			"ls": 0,
+																			"m": [0, 0, 0, 0],
+																			"rt": false,
+																			"rich": false,
+																			"on": true
+																		}
+																	}
+																]
+															},
+															{
+																"n": "Plus(Clone)",
+																"id": "8267723266904231237",
+																"a": true,
+																"r": [0, 1, 0, 1, 116, -52, 28, 28, 0.5, 0.5],
+																"img": {
+																	"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": false,
+																	"on": true
+																}
+															},
+															{
+																"n": "ShopRewardItem(Clone)",
+																"id": "7673484495728532616",
+																"a": true,
+																"r": [0, 1, 0, 1, 182, -52, 100, 100, 0.5, 0.5],
+																"img": {
+																	"sp": null,
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": false,
+																	"on": true
+																},
+																"cs": [
+																	{
+																		"name": "PopupRewardItem",
+																		"ThisItemType": "0",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "7673484495728532616"},
+																		"quantityText": {"node": "1071925718571918139"}
+																	},
+																	{
+																		"name": "BonusItem",
+																		"ThisItemType": "4",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "7673484495728532616"},
+																		"quantityText": {"node": "1071925718571918139"}
+																	}
+																],
+																"ch": [
+																	{
+																		"n": "Text (TMP)",
+																		"id": "1071925718571918139",
+																		"a": true,
+																		"r": [0.5, 0, 0.5, 0, 0, 4.4, 120, 48, 0.5, 0.5],
+																		"txt": {
+																			"s": "x3",
+																			"fs": 44,
+																			"auto": null,
+																			"c": "ffffffff",
+																			"h": 2,
+																			"v": 512,
+																			"w": false,
+																			"ov": 0,
+																			"st": 0,
+																			"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+																			"font": "Baloo Bhaijaan Regular 400 SDF",
+																			"cs": 0,
+																			"ws": 0,
+																			"ls": 0,
+																			"m": [0, 0, 0, 0],
+																			"rt": false,
+																			"rich": false,
+																			"on": true
+																		}
+																	}
+																]
+															}
+														]
+													}
+												]
+											},
+											{
+												"n": "Image",
+												"id": "4852141763781103646",
+												"a": true,
+												"r": [0, 1, 0, 1, 195.6, -195.8, 293.038, 64.4332, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_UI_Maincenter:UI_Maincenter_10",
+													"c": "142167ff",
+													"t": 1,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1.5,
+													"rt": true,
+													"on": true
+												},
+												"cs": [
+													{
+														"name": "PackTimeCounter",
+														"canvasGroup": {"node": "7219197735921211012"},
+														"productId": "wool.scape.starter.pack",
+														"coolDownText": {"node": "6062190690866211942"}
+													}
+												],
+												"ch": [
+													{
+														"n": "Text (TMP)",
+														"id": "6062190690866211942",
+														"a": true,
+														"r": [0, 0, 1, 1, 20.5094, 0, -41.0187, 0, 0.5, 0.5],
+														"txt": {
+															"s": "1D -12:12:12",
+															"fs": 36,
+															"auto": null,
+															"c": "ffffffff",
+															"h": 2,
+															"v": 512,
+															"w": false,
+															"ov": 0,
+															"st": 0,
+															"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": false,
+															"on": true
+														}
+													},
+													{
+														"n": "Image",
+														"id": "3729828293065988276",
+														"a": true,
+														"r": [0.5, 0.5, 0.5, 0.5, -108.8, 3.5393, 57.3546, 57.3546, 0.5, 0.5],
+														"img": {
+															"sp": "Resources_UI_Maincenter:UI_Maincenter_79",
+															"c": "ffffffff",
+															"t": 0,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 1,
+															"rt": true,
+															"on": true
+														}
+													}
+												]
+											},
+											{
+												"n": "Sale",
+												"id": "532415032844175226",
+												"a": true,
+												"r": [0, 1, 0, 1, 66.6, -26.9, 128, 128, 0.5, 0.5],
+												"z": 20,
+												"img": {
+													"sp": "Resources_UI_Maincenter:UI_Maincenter_56",
+													"c": "ffffffff",
+													"t": 0,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": false,
+													"on": true
+												},
+												"ch": [
+													{
+														"n": "Text (TMP)",
+														"id": "3345960175944787341",
+														"a": true,
+														"r": [0.5, 0.5, 0.5, 0.5, 0, 17.56, 108.4265, 56.0993, 0.5, 0.5],
+														"txt": {
+															"s": "60%",
+															"fs": 44,
+															"auto": [18, 44],
+															"c": "ffe200ff",
+															"h": 2,
+															"v": 512,
+															"w": false,
+															"ov": 0,
+															"st": 0,
+															"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": false,
+															"on": true
+														}
+													},
+													{
+														"n": "Text (TMP) (1)",
+														"id": "8937556456413630833",
+														"a": true,
+														"r": [0.5, 0.5, 0.5, 0.5, 0, -17.07, 108.4265, 56.0993, 0.5, 0.5],
+														"txt": {
+															"s": "Sconto",
+															"fs": 34.75,
+															"auto": [18, 40],
+															"c": "ffe200ff",
+															"h": 2,
+															"v": 512,
+															"w": false,
+															"ov": 0,
+															"st": 0,
+															"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": false,
+															"on": true
+														}
+													}
+												]
+											}
+										]
+									},
+									{
+										"n": "Helper_Pack",
+										"id": "4540096597060258940",
+										"a": true,
+										"r": [0, 0, 0, 0, 0, 0, 0, 370.73, 0, 0.5],
+										"img": {
+											"sp": null,
+											"c": "ffffff00",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+										"le": {"ignore": false, "min": [-1,-1], "pref": [720,370.73], "flex": [-1,-1]},
+										"canvas": {"override_sort": false, "order": 0},
+										"cs": [
+											{
+												"name": "PopupHelper",
+												"productID": "wool.scape.helper",
+												"nameTxt": {"node": "942160049340487452"},
+												"priceTxt": {"node": "5891246146003107721"},
+												"purchaseButton": {"node": "4343128802993594005"},
+												"productIDRequired": [],
+												"canvasGroup": {"node": "4540096597060258940"},
+												"tabElement": {"node": "8845523633835060259"}
+											}
+										],
+										"ch": [
+											{
+												"n": "Bg",
+												"id": "2795552055061112470",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+												"img": {
+													"sp": "Resources_UI_Maincenter:UI_Maincenter_90",
+													"c": "ffffffff",
+													"t": 1,
+													"pa": false,
+													"fc": true,
+													"fm": 4,
+													"fa": 1,
+													"fo": 0,
+													"cw": true,
+													"ppu": 1,
+													"rt": true,
+													"on": true
+												},
+												"ch": [
+													{
+														"n": "Image",
+														"id": "3926781923582622721",
+														"a": true,
+														"r": [0.5, 1, 0.5, 1, 0, -14, 692, 226.2758, 0.5, 1],
+														"img": {
+															"sp": null,
+															"c": "ffffffff",
+															"t": 0,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 1,
+															"rt": false,
+															"on": true
+														}
+													},
+													{
+														"n": "Icon",
+														"id": "3046605439503544629",
+														"a": true,
+														"r": [0, 1, 0, 1, 21, -14.1904, 341.3149, 245.1742, 0, 1],
+														"img": {
+															"sp": null,
+															"c": "ffffffff",
+															"t": 0,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 1,
+															"rt": false,
+															"on": true
+														}
+													}
+												]
+											},
+											{
+												"n": "Bottom_Group",
+												"id": "6782250733808271508",
+												"a": true,
+												"r": [0, 0, 1, 0, 0, 26, 0, 90, 0.5, 0],
+												"ch": [
+													{
+														"n": "Button",
+														"id": "4343128802993594005",
+														"a": true,
+														"r": [1, 0, 1, 0, -130.8, 45, 226, 90, 0.5, 0.5],
+														"img": {
+															"sp": "Resources_UI_Maincenter:UI_Maincenter_30",
+															"c": "ffffffff",
+															"t": 1,
+															"pa": false,
+															"fc": true,
+															"fm": 4,
+															"fa": 1,
+															"fo": 0,
+															"cw": true,
+															"ppu": 3.1,
+															"rt": true,
+															"on": true
+														},
+														"btn": {
+															"tr": 1,
+															"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+															"mult": 1,
+															"dur": 0.1,
+															"inter": true,
+															"target": "4343128802993594005",
+															"sprites": {"pressed": null, "disabled": null}
+														},
+														"vib": true,
+														"ch": [
+															{
+																"n": "Text (TMP)",
+																"id": "5891246146003107721",
+																"a": true,
+																"r": [0, 0, 1, 1, 0, 0, -20, 0, 0.5, 0.5],
+																"txt": {
+																	"s": "127000d",
+																	"fs": 47.6,
+																	"auto": [18, 50],
+																	"c": "ffffffff",
+																	"h": 2,
+																	"v": 512,
+																	"w": false,
+																	"ov": 0,
+																	"st": 1,
+																	"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+																	"font": "Baloo Bhaijaan Regular 400 SDF",
+																	"cs": 0,
+																	"ws": 0,
+																	"ls": 0,
+																	"m": [0, 0, 0, 0],
+																	"rt": false,
+																	"rich": false,
+																	"on": true
+																}
+															}
+														]
+													},
+													{
+														"n": "HELPER PACK",
+														"id": "942160049340487452",
+														"a": true,
+														"r": [0, 0.5, 0, 0.5, 24, 0, 450.4, 90, 0, 0.5],
+														"txt": {
+															"s": "HELPER PACK",
+															"fs": 64,
+															"auto": [18, 64],
+															"c": "ffffffff",
+															"h": 1,
+															"v": 512,
+															"w": false,
+															"ov": 3,
+															"st": 16,
+															"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+															"font": "Baloo Bhaijaan Regular 400 SDF",
+															"cs": 0,
+															"ws": 0,
+															"ls": 0,
+															"m": [0, 0, 0, 0],
+															"rt": false,
+															"rich": false,
+															"on": true
+														}
+													}
+												]
+											},
+											{
+												"n": "Right_Panel",
+												"id": "7994377719117594001",
+												"a": true,
+												"r": [0.5, 0.5, 0.5, 0.5, 153, 81.4, 397, 225.3023, 0.5, 0.5],
+												"cs": [
+													{
+														"name": "ShopProductSetup",
+														"productID": "wool.scape.helper",
+														"productSO": {"asset": "IAPProductSO.asset"},
+														"verticalLayoutGroup": {"node": "7994377719117594001"},
+														"horizontalLayoutGroup": {"asset": "ee4bb794e6f85404db083b9581793e8b"},
+														"rewardItemPrefab": {"asset": "999d04b0ad20d7e4c94d9168a7d92caa"},
+														"plusItemPrefab": {"asset": "dc2bb501aba259a429e763c3ac8e1902"},
+														"rewardPerRow": "3"
+													}
+												],
+												"ch": [
+													{
+														"n": "Row(Clone)",
+														"id": "4811157529197381099",
+														"a": true,
+														"r": [0, 1, 0, 1, 198.5, -52, 100, 104, 0.5, 0.5],
+														"ch": [
+															{
+																"n": "ShopRewardItem(Clone)",
+																"id": "1413646018275489489",
+																"a": true,
+																"r": [0, 1, 0, 1, 50, -52, 100, 100, 0.5, 0.5],
+																"img": {
+																	"sp": null,
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": false,
+																	"on": true
+																},
+																"cs": [
+																	{
+																		"name": "PopupRewardItem",
+																		"ThisItemType": "0",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "1413646018275489489"},
+																		"quantityText": {"node": "180412049788151508"}
+																	},
+																	{
+																		"name": "BonusItem",
+																		"ThisItemType": "1",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "1413646018275489489"},
+																		"quantityText": {"node": "180412049788151508"}
+																	}
+																],
+																"ch": [
+																	{
+																		"n": "Text (TMP)",
+																		"id": "180412049788151508",
+																		"a": true,
+																		"r": [0.5, 0, 0.5, 0, 0, 4.4, 120, 48, 0.5, 0.5],
+																		"txt": {
+																			"s": "1,000",
+																			"fs": 44,
+																			"auto": null,
+																			"c": "ffffffff",
+																			"h": 2,
+																			"v": 512,
+																			"w": false,
+																			"ov": 0,
+																			"st": 0,
+																			"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+																			"font": "Baloo Bhaijaan Regular 400 SDF",
+																			"cs": 0,
+																			"ws": 0,
+																			"ls": 0,
+																			"m": [0, 0, 0, 0],
+																			"rt": false,
+																			"rich": false,
+																			"on": true
+																		}
+																	}
+																]
+															}
+														]
+													},
+													{
+														"n": "Row(Clone)",
+														"id": "7942787613290563432",
+														"a": true,
+														"r": [0, 1, 0, 1, 198.5, -176, 364, 104, 0.5, 0.5],
+														"ch": [
+															{
+																"n": "ShopRewardItem(Clone)",
+																"id": "8324214132574148310",
+																"a": true,
+																"r": [0, 1, 0, 1, 50, -52, 100, 100, 0.5, 0.5],
+																"img": {
+																	"sp": null,
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": false,
+																	"on": true
+																},
+																"cs": [
+																	{
+																		"name": "PopupRewardItem",
+																		"ThisItemType": "0",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "8324214132574148310"},
+																		"quantityText": {"node": "7984197581602639638"}
+																	},
+																	{
+																		"name": "BonusItem",
+																		"ThisItemType": "7",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "8324214132574148310"},
+																		"quantityText": {"node": "7984197581602639638"}
+																	}
+																],
+																"ch": [
+																	{
+																		"n": "Text (TMP)",
+																		"id": "7984197581602639638",
+																		"a": true,
+																		"r": [0.5, 0, 0.5, 0, 0, 4.4, 120, 48, 0.5, 0.5],
+																		"txt": {
+																			"s": "x1",
+																			"fs": 44,
+																			"auto": null,
+																			"c": "ffffffff",
+																			"h": 2,
+																			"v": 512,
+																			"w": false,
+																			"ov": 0,
+																			"st": 0,
+																			"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+																			"font": "Baloo Bhaijaan Regular 400 SDF",
+																			"cs": 0,
+																			"ws": 0,
+																			"ls": 0,
+																			"m": [0, 0, 0, 0],
+																			"rt": false,
+																			"rich": false,
+																			"on": true
+																		}
+																	}
+																]
+															},
+															{
+																"n": "Plus(Clone)",
+																"id": "848713009406763569",
+																"a": true,
+																"r": [0, 1, 0, 1, 116, -52, 28, 28, 0.5, 0.5],
+																"img": {
+																	"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": false,
+																	"on": true
+																}
+															},
+															{
+																"n": "ShopRewardItem(Clone)",
+																"id": "1280436090019134597",
+																"a": true,
+																"r": [0, 1, 0, 1, 182, -52, 100, 100, 0.5, 0.5],
+																"img": {
+																	"sp": null,
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": false,
+																	"on": true
+																},
+																"cs": [
+																	{
+																		"name": "PopupRewardItem",
+																		"ThisItemType": "0",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "1280436090019134597"},
+																		"quantityText": {"node": "1361921303980347365"}
+																	},
+																	{
+																		"name": "BonusItem",
+																		"ThisItemType": "4",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "1280436090019134597"},
+																		"quantityText": {"node": "1361921303980347365"}
+																	}
+																],
+																"ch": [
+																	{
+																		"n": "Text (TMP)",
+																		"id": "1361921303980347365",
+																		"a": true,
+																		"r": [0.5, 0, 0.5, 0, 0, 4.4, 120, 48, 0.5, 0.5],
+																		"txt": {
+																			"s": "x1",
+																			"fs": 44,
+																			"auto": null,
+																			"c": "ffffffff",
+																			"h": 2,
+																			"v": 512,
+																			"w": false,
+																			"ov": 0,
+																			"st": 0,
+																			"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+																			"font": "Baloo Bhaijaan Regular 400 SDF",
+																			"cs": 0,
+																			"ws": 0,
+																			"ls": 0,
+																			"m": [0, 0, 0, 0],
+																			"rt": false,
+																			"rich": false,
+																			"on": true
+																		}
+																	}
+																]
+															},
+															{
+																"n": "Plus(Clone)",
+																"id": "2353328536894762548",
+																"a": true,
+																"r": [0, 1, 0, 1, 248, -52, 28, 28, 0.5, 0.5],
+																"img": {
+																	"sp": "Resources_UI_Maincenter:UI_Maincenter_24",
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": false,
+																	"on": true
+																}
+															},
+															{
+																"n": "ShopRewardItem(Clone)",
+																"id": "8046798496660439910",
+																"a": true,
+																"r": [0, 1, 0, 1, 314, -52, 100, 100, 0.5, 0.5],
+																"img": {
+																	"sp": null,
+																	"c": "ffffffff",
+																	"t": 0,
+																	"pa": false,
+																	"fc": true,
+																	"fm": 4,
+																	"fa": 1,
+																	"fo": 0,
+																	"cw": true,
+																	"ppu": 1,
+																	"rt": false,
+																	"on": true
+																},
+																"cs": [
+																	{
+																		"name": "PopupRewardItem",
+																		"ThisItemType": "0",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "8046798496660439910"},
+																		"quantityText": {"node": "4376433901869287351"}
+																	},
+																	{
+																		"name": "BonusItem",
+																		"ThisItemType": "8",
+																		"rewardItemSO": {"asset": "RewardItemSO.asset"},
+																		"iconImg": {"node": "8046798496660439910"},
+																		"quantityText": {"node": "4376433901869287351"}
+																	}
+																],
+																"ch": [
+																	{
+																		"n": "Text (TMP)",
+																		"id": "4376433901869287351",
+																		"a": true,
+																		"r": [0.5, 0, 0.5, 0, 0, 4.4, 120, 48, 0.5, 0.5],
+																		"txt": {
+																			"s": "x1",
+																			"fs": 44,
+																			"auto": null,
+																			"c": "ffffffff",
+																			"h": 2,
+																			"v": 512,
+																			"w": false,
+																			"ov": 0,
+																			"st": 0,
+																			"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+																			"font": "Baloo Bhaijaan Regular 400 SDF",
+																			"cs": 0,
+																			"ws": 0,
+																			"ls": 0,
+																			"m": [0, 0, 0, 0],
+																			"rt": false,
+																			"rich": false,
+																			"on": true
+																		}
+																	}
+																]
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"n": "Tab",
+				"id": "3655129926629385324",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, -838, 720, 60, 0.5, 0.5],
+				"lay": {
+					"t": "h",
+					"pad": [0, 0, 0, 0],
+					"al": 4,
+					"sp": 20,
+					"cw": false,
+					"ch": false,
+					"ew": false,
+					"eh": false,
+					"sw": false,
+					"sh": false,
+					"rev": false
+				},
+				"ch": [
+					{
+						"n": "TabElement (1)",
+						"id": "6900009720591659749",
+						"a": true,
+						"r": [0, 0, 0, 0, 0, 0, 40, 40, 0.5, 0.5],
+						"img": {
+							"sp": null,
+							"c": "c3c3c3ff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": false,
+							"on": true
+						}
+					},
+					{
+						"n": "TabElement",
+						"id": "8845523633835060259",
+						"a": true,
+						"r": [0, 0, 0, 0, 0, 0, 40, 40, 0.5, 0.5],
+						"img": {
+							"sp": null,
+							"c": "45c4ffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": false,
+							"on": true
+						}
+					}
+				]
+			}
+		]
+	}
+}

@@ -82,6 +82,11 @@ func load_state() -> void:
 	pass
 
 
+## Mock forgets its purchases on "delete account"; Google Play keeps real ones (Restore brings them back).
+func wipe() -> void:
+	pass
+
+
 func price(sku: String) -> String:
 	if _bc == null:
 		return ""

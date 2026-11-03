@@ -49,6 +49,16 @@ func _lbl(node: Node, node_name: String) -> Label:
 	return node.find_child(node_name, true, false) as Label
 
 
+## Chữ hiển thị của nút: nút prefab (unity_ui.gd) vẽ chữ bằng Label con, nút thường dùng Button.text.
+func _btn_text(b: Button) -> String:
+	if b.text != "":
+		return b.text
+	for l in b.find_children("*", "Label", true, false):
+		if (l as Label).visible:
+			return (l as Label).text
+	return ""
+
+
 func _offer_args(g: Node, attempt: Dictionary) -> Dictionary:
 	var args: Dictionary = g.rescue_offer(attempt).duplicate()
 	args["attempt"] = attempt
@@ -64,7 +74,7 @@ func test_buy_with_gold(t: T) -> void:
 	var st := _watch(p)
 	t.eq(_lbl(p, "TitleLabel").text, p.tr("rescue_title"), "tiêu đề")
 	t.eq(_lbl(p, "RemainingLabel").text, p.tr("rescue_remaining") % attempt.board.remaining_count(), "Còn N khối")
-	t.eq(_btn(p, "BuyButton").text, p.tr("rescue_buy") % 1900, "nút mua có giá")
+	t.eq(_btn_text(_btn(p, "BuyButton")), p.tr("rescue_buy") % 1900, "nút mua có giá")
 	t.ok(_btn(p, "UseButton") == null, "không có nút Dùng khi kho trống")
 	t.ok(_btn(p, "VideoButton") != null, "lần 1 có video")
 	t.ok(_lbl(p, "WarnLabel") == null, "cảnh báo mạng nằm ở hộp xác nhận, không ở popup")
@@ -101,7 +111,7 @@ func test_inventory(t: T) -> void:
 	var st := _watch(p)
 	t.ok(_btn(p, "UseButton") != null, "có nút Dùng")
 	t.ok(_btn(p, "BuyButton") == null, "không nút mua")
-	t.eq(_btn(p, "UseButton").text, p.tr("rescue_use"), "chữ nút Dùng")
+	t.eq(_btn_text(_btn(p, "UseButton")), p.tr("rescue_use"), "chữ nút Dùng")
 	t.ok(_lbl(p, "StockLabel") != null, "hiện số trong kho")
 	_btn(p, "UseButton").pressed.emit()
 	await _wait(st)
@@ -116,7 +126,7 @@ func test_skip_closes_with_skip(t: T) -> void:
 	var attempt: Dictionary = g.start_attempt()
 	var p := _mount(_offer_args(g, attempt))
 	var st := _watch(p)
-	t.eq(_btn(p, "SkipButton").text, p.tr("rescue_give_up"), "nút bỏ cuộc")
+	t.eq(_btn_text(_btn(p, "SkipButton")), p.tr("rescue_give_up"), "nút bỏ cuộc")
 	_btn(p, "SkipButton").pressed.emit()
 	await _wait(st)
 	t.eq(st.get("r"), "skip", "bỏ qua")
@@ -132,7 +142,7 @@ func test_video_every_time(t: T) -> void:
 		var before: int = attempt.board.moves_left()
 		var p := _mount(_offer_args(g, attempt))
 		var st := _watch(p)
-		t.eq(_btn(p, "BuyButton").text, p.tr("rescue_buy") % prices[i], "giá lần %d" % (i + 1))
+		t.eq(_btn_text(_btn(p, "BuyButton")), p.tr("rescue_buy") % prices[i], "giá lần %d" % (i + 1))
 		t.ok(_btn(p, "VideoButton") != null, "lần %d có video" % (i + 1))
 		_btn(p, "VideoButton").pressed.emit()
 		await _wait(st)
@@ -182,9 +192,14 @@ func test_layout_rules(t: T) -> void:
 	var p := _mount(_offer_args(g, attempt))
 	for b in p.find_children("*", "Button", true, false):
 		var btn := b as Button
-		t.ok(btn.custom_minimum_size.x >= 96 and btn.custom_minimum_size.y >= 96, "nút >= 96x96: " + btn.name)
+		# Prefab buttons (unity_ui.gd) keep the Unity art size and grow only their hit area.
+		var hit: Vector2 = btn.call("hit_size") if btn.has_method("hit_size") else btn.custom_minimum_size
+		t.ok(hit.x >= 96 - 0.01 and hit.y >= 96 - 0.01, "nút >= 96x96: " + btn.name)
 	t.eq(p.find_children("*", "Timer", true, false).size(), 0, "không đếm ngược")
-	t.eq(p.find_children("*", "ColorRect", true, false).size(), 1, "chỉ một nền mờ, không màn đỏ")
-	var dim := p.find_child("Dim", true, false) as ColorRect
-	t.ok(dim.color.r < 0.1 and dim.color.g < 0.1, "nền mờ trung tính")
+	# PopupReviveLayer: một nền mờ (Bg của prefab, đổi tên Dim), không màn đỏ.
+	t.eq(p.find_children("*", "ColorRect", true, false).size(), 0, "không ColorRect, nền mờ là ảnh prefab")
+	var dim: Control = p.find_child("Dim", true, false)
+	var img: Control = dim.get("image") if dim.get("image") != null else dim
+	var c: Color = img.get("color")
+	t.ok(c.r < 0.1 and c.g < 0.1 and c.a > 0.5, "nền mờ trung tính")
 	p.free()

@@ -1,0 +1,255 @@
+{
+	"name": "SpeedUpTutorialLayer",
+	"source": "Assets/_Game/Prefabs/Layers/SpeedUpTutorialLayer.prefab",
+	"root": {
+		"n": "SpeedUpTutorialLayer",
+		"id": "5676859109278462881",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+		"canvas": {"override_sort": true, "order": 32767},
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"cs": [
+			{
+				"name": "UISpeedUpTutorialLayer",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"tutorialSteps": [
+					{"node": "2278075681059089971"}
+				]
+			},
+			{
+				"name": "SafeAreaUIAdjuster",
+				"rectPanelSafes": [
+					{"node": "5676859109278462881"}
+				],
+				"debugLog": "0"
+			}
+		],
+		"ch": [
+			{
+				"n": "Panel",
+				"id": "8521110720646267982",
+				"a": true,
+				"r": [0.5, 0, 0.5, 0, 0, 483.39, 772.4, 200, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "Image",
+						"id": "265319172560652174",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"img": {
+							"sp": "Popup2",
+							"c": "ffffffff",
+							"t": 1,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 2.18,
+							"rt": true,
+							"on": true
+						},
+						"le": {"ignore": true, "min": [-1,-1], "pref": [-1,-1], "flex": [-1,-1]}
+					},
+					{
+						"n": "NPC",
+						"id": "3913578804408113379",
+						"a": true,
+						"r": [0, 0.5, 0, 0.5, -16.3, 23.1, 306.2651, 306.2651, 0.5, 0.5]
+					},
+					{
+						"n": "Canvas",
+						"id": "3576783509056098112",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"canvas": {"override_sort": false, "order": 0},
+						"ch": [
+							{
+								"n": "Text (TMP)",
+								"id": "3340748270032341426",
+								"a": true,
+								"r": [0, 0, 1, 1, 0, 0, -40, 0, 0.5, 0.5],
+								"txt": {
+									"s": "Tap here to double the conveyor speed",
+									"fs": 44,
+									"auto": [18, 44],
+									"c": "1c4a83ff",
+									"h": 2,
+									"v": 512,
+									"w": true,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"n": "GameObject",
+				"id": "6689267149989120801",
+				"a": true,
+				"r": [1, 1, 1, 1, 0, 0, 886, 1920, 1, 1],
+				"ch": [
+					{
+						"n": "Block",
+						"id": "9106521653725269209",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 1],
+						"img": {
+							"sp": null,
+							"c": "ffffff00",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					},
+					{
+						"n": "Step1",
+						"id": "2278075681059089971",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"anim": {"controller": "TutController_Step1", "on": true},
+						"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+						"cs": [
+							{
+								"name": "SpeedUpStep",
+								"stepIndex": "1",
+								"prefab": {"node": "2278075681059089971"},
+								"animator": {"node": "2278075681059089971"},
+								"canvasGroup": {"node": "2278075681059089971"},
+								"targetButton": {"node": "6586465823932898560"},
+								"speedUpTutorialData": {"asset": "SpeedUpTutorialSO.asset"}
+							}
+						],
+						"ch": [
+							{
+								"n": "Hand",
+								"id": "4250250045236606069",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 348.02, 703.07, 100, 100, 0.5, 0.5],
+								"ch": [
+									{
+										"n": "TargetButton",
+										"id": "6586465823932898560",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -73.872, 42, 239.3, 136.6, 0.5, 0.5],
+										"img": {
+											"sp": null,
+											"c": "ffffff00",
+											"t": 1,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "6586465823932898560",
+											"sprites": {"pressed": null, "disabled": null}
+										}
+									},
+									{
+										"n": "TapFx",
+										"id": "2638067187781154079",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -60, 54, 150.5482, 150.5482, 0.5, 0.5],
+										"s": [0, 0],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_63",
+											"c": "ffffff32",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true,
+											"mat": ""
+										}
+									},
+									{
+										"n": "TapFx2",
+										"id": "1566819623762813551",
+										"a": false,
+										"r": [0.5, 0.5, 0.5, 0.5, -60, 50.6, 80, 80, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_64",
+											"c": "ffffff67",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true,
+											"mat": ""
+										}
+									},
+									{
+										"n": "HandSprite",
+										"id": "5313378795592166384",
+										"a": true,
+										"r": [0.5, 0.5, 0.5, 0.5, -138.6, -29.8, 148, 148, 0.5, 0.5],
+										"s": [-1.25, 1.25],
+										"img": {
+											"sp": "Resources_UI_Maincenter:UI_Maincenter_19",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

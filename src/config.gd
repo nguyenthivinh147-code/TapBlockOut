@@ -271,6 +271,10 @@ const BOARD_CELL := 42
 const SHAPE_MIN_BLOCKS := 6
 const SHAPE_MAX_ASPECT := 1.9
 const SHAPE_ROUGHEN := 0.06
+## Từ DifficultyCurve.SHAPED_FROM khối xếp theo hình vẽ tay trong `src/core/motifs.gd`: chọn cỡ hình có số ô (trừ đá) chia
+## số khối trong khoảng MOTIF_FILL_MIN..MOTIF_FILL_MAX; khối cắt đối xứng theo trục của hình, không khoét rìa.
+const MOTIF_FILL_MIN := 2.3
+const MOTIF_FILL_MAX := 3.6
 
 ## Ngày sale theo Time.get_datetime_dict_from_unix_time().weekday (0 = Chủ nhật, 6 = thứ Bảy).
 const _SALE_WEEKDAYS := [5, 6, 0]
@@ -321,10 +325,22 @@ static func ui_preview() -> bool:
 	return OS.is_debug_build()
 
 
+## Account editing in the tester menu (gold, level, boosters, delete account): debug builds only, like ui_preview.
+## Tests force it with account_tool_override: -1 follows the build, 0 off, 1 on. reset() sets -1.
+static var account_tool_override: int = -1
+
+
+static func account_tool() -> bool:
+	if account_tool_override >= 0:
+		return account_tool_override > 0
+	return OS.is_debug_build()
+
+
 ## Trả mọi nhóm về mặc định (test dùng sau khi apply_remote).
 static func reset() -> void:
 	demo_override = -1
 	ui_preview_override = -1
+	account_tool_override = -1
 	ECON = _ECON.duplicate(true)
 	LIVES = _LIVES.duplicate(true)
 	ADS = _ADS.duplicate(true)

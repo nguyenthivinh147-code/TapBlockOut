@@ -1,5 +1,6 @@
 extends RefCounted
-## 300 level đóng gói sẵn (Task 9.3): L1-20 làm sẵn, L21-300 do tools/gen_levels.gd sinh, 6 level dạy làm tay.
+## 100 level đóng gói sẵn: L1-4 làm tay (bảng EARLY), còn lại do tools/gen_levels.gd sinh. Từ L14 (kể cả 6 level dạy
+## cơ chế) khối xếp theo hình vẽ tay, đối xứng, nhiều khối hơn.
 const T := preload("res://tests/t.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
@@ -79,7 +80,73 @@ func test_levels_form_shapes_with_gaps(t: T) -> void:
 			gappy += 1
 		shapes[str(box.size) + ":" + str(cells.size())] = true
 	t.ok(gappy >= TOTAL * 0.95, "hầu hết level có khoảng trống trong hình (%d/%d)" % [gappy, TOTAL])
-	t.ok(shapes.size() >= 40, "nhiều hình dạng khác nhau (%d)" % shapes.size())
+	t.ok(shapes.size() >= 30, "nhiều hình dạng khác nhau (%d)" % shapes.size())
+
+
+## Từ DifficultyCurve.SHAPED_FROM: khối và đá xếp thành hình đối xứng (trái phải hoặc trên dưới), cách cắt khối cũng
+## đối xứng, hình nằm đúng giữa bàn theo chiều ngang, và các level dùng nhiều hình khác nhau.
+func test_shaped_levels_are_symmetric(t: T) -> void:
+	var outlines := {}
+	for id in range(DifficultyCurve.SHAPED_FROM, TOTAL + 1):
+		var d := _level(id)
+		if d.is_empty():
+			continue
+		var box := _footprint(d)
+		t.eq(box.position.x, Config.BOARD_W - box.end.x, "L%d đúng giữa bàn theo chiều ngang" % id)
+		var occ := {}
+		for s in d["stones"]:
+			occ[LevelData.cell_of(s)] = "#"
+		var sigs := {}
+		for b in d["blocks"]:
+			var cells: Array = []
+			for c in b["cells"]:
+				cells.append(LevelData.cell_of(c))
+				occ[LevelData.cell_of(c)] = "b"
+			cells.sort()
+			sigs[str(cells)] = true
+		var sym := {"h": true, "v": true}
+		for axis in sym:
+			for b in d["blocks"]:
+				var m: Array = []
+				for raw in b["cells"]:
+					var c := LevelData.cell_of(raw)
+					m.append(Vector2i(box.position.x + box.end.x - 1 - c.x, c.y) if axis == "h" \
+						else Vector2i(c.x, box.position.y + box.end.y - 1 - c.y))
+				m.sort()
+				sym[axis] = sym[axis] and sigs.has(str(m))
+			for c: Vector2i in occ:
+				var mc := Vector2i(box.position.x + box.end.x - 1 - c.x, c.y) if axis == "h" \
+					else Vector2i(c.x, box.position.y + box.end.y - 1 - c.y)
+				sym[axis] = sym[axis] and occ.get(mc, "") == occ[c]
+		t.ok(sym["h"] or sym["v"], "L%d khối và đá đối xứng theo hình" % id)
+		var norm: Array = []
+		for c: Vector2i in occ:
+			norm.append(c - box.position)
+		norm.sort()
+		outlines[str(norm)] = true
+	t.ok(outlines.size() >= 40, "L%d-%d dùng nhiều hình (%d dạng)" % [DifficultyCurve.SHAPED_FROM, TOTAL, outlines.size()])
+
+
+## Từ DifficultyCurve.SHAPED_FROM khó hơn bản cũ: nhiều khối hơn và ít khối thoát được ngay lúc đầu.
+func test_shaped_levels_are_harder(t: T) -> void:
+	var blocks := 0
+	var free0 := 0
+	var count := 0
+	for id in range(DifficultyCurve.SHAPED_FROM, TOTAL + 1):
+		var d := _level(id)
+		if d.is_empty():
+			continue
+		var n: int = d["blocks"].size()
+		t.ok(absi(n - DifficultyCurve.block_count(id)) <= 2 or (d["pulse_sides"].size() > 0 and n <= Gen.GATE_MAX_BLOCKS + 2),
+			"L%d số khối %d ~ đường cong %d" % [id, n, DifficultyCurve.block_count(id)])
+		var b := BoardState.new(d)
+		for bid in b.block_ids():
+			if b.peek(bid) == "exit":
+				free0 += 1
+		blocks += n
+		count += 1
+	t.ok(float(blocks) / count >= 27.0, "trung bình %.1f khối mỗi level" % (float(blocks) / count))
+	t.ok(float(free0) / blocks <= 0.3, "chỉ %.0f%% khối thoát được ngay lúc đầu" % (100.0 * free0 / blocks))
 
 
 func _early_range(id: int) -> Array:
@@ -193,7 +260,7 @@ func test_early_levels_follow_curve(t: T) -> void:
 		var sum := 0
 		var cnt := 0
 		for id in range(start, start + 10):
-			if GenTool.teach_mech(id) != "":
+			if Gen.teach_mech(id) != "":
 				continue
 			sum += _level(id)["blocks"].size()
 			cnt += 1
@@ -246,17 +313,16 @@ func test_teaching_levels(t: T) -> void:
 	for m in MECHS:
 		var id := int(Config.UNLOCK[m])
 		ids[m] = id
-		t.eq(GenTool.teach_id(m), id, "%s: id dạy khớp Config.UNLOCK" % m)
-		t.eq(GenTool.teach_mech(id), m, "L%d dạy %s" % [id, m])
+		t.eq(Gen.teach_mech(id), m, "L%d dạy %s" % [id, m])
 		var d := _level(id)
 		if d.is_empty():
 			continue
 		var mech := _mechs(d)
 		t.eq(mech.keys(), [m], "L%d chỉ có đúng cơ chế mới %s" % [id, m])
 		t.ok(not bool(d["hard"]), "L%d không HARD" % id)
+		# Level dạy sinh to như level thường (từ L14 xếp theo hình), không còn bảng làm tay nhỏ.
 		var n: int = d["blocks"].size()
-		var box := _footprint(d)
-		t.ok(n <= 8 and box.size.x * box.size.y <= 25, "L%d hình nhỏ (%d khối, %s)" % [id, n, str(box.size)])
+		t.ok(n >= 15, "L%d level to (%d khối)" % [id, n])
 		var b := BoardState.new(d)
 		t.ok(b.hint() != "", "L%d có khối thoát ngay" % id)
 		var exits := 0
@@ -265,9 +331,8 @@ func test_teaching_levels(t: T) -> void:
 				exits += 1
 		# Level hai lớp: khối nhiều lớp tính là "đi được" (bóc) nên chờ thể hiện ở min_taps (kiểm riêng bên dưới).
 		t.ok(exits >= 2 and (exits < n or m == "layer"), "L%d có khối thoát ngay và có khối phải chờ (%d/%d)" % [id, exits, n])
-		# Dựng lại bằng bảng tay phải ra đúng file đã đóng gói.
-		var rebuilt := GenTool.build_teach(m)
-		t.eq(_norm(rebuilt), _norm(d), "L%d khớp bảng TEACH" % id)
+		# Sinh lại bằng seed gốc phải ra đúng file đã đóng gói.
+		t.eq(_norm(Gen.generate(id, GenTool.BASE_SEED)), _norm(d), "L%d khớp generate(id, BASE_SEED)" % id)
 		var r := Solver.solve(d)
 		match m:
 			"stone":

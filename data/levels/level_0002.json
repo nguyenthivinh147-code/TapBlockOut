@@ -1,11 +1,11 @@
 {
 	"id": 2, "w": 14, "h": 19, "hard": false,
-	"min_taps": 3, "moves": 6, "seed": 0,
+	"min_taps": 3, "moves": 8, "seed": 0,
 	"stones": [],
 	"pulse_sides": [],
 	"blocks": [
-		{"id":"b1","color":"yellow","cells":[[5,9],[6,9],[6,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b2","color":"yellow","cells":[[7,8],[7,9],[7,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b3","color":"yellow","cells":[[5,8],[6,8]],"ice":0,"chained_by":"","inner_color":"","fog":false}
+		{"id":"b1","color":"yellow","cells":[[6,8],[6,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b2","color":"blue","cells":[[8,8],[8,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b3","color":"green","cells":[[6,10],[7,10]],"ice":0,"chained_by":"","inner_color":"","fog":false}
 	]
 }

@@ -1,0 +1,348 @@
+{
+	"name": "PopupNextMonth",
+	"source": "Assets/_Game/Prefabs/Layers/PopupNextMonth.prefab",
+	"root": {
+		"n": "PopupNextMonth",
+		"id": "5965426870249138963",
+		"a": true,
+		"r": [0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
+		"canvas": {"override_sort": true, "order": 0},
+		"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false},
+		"cs": [
+			{
+				"name": "UIPopupNextMonth",
+				"debugOnOff": "0",
+				"breakEnable": "0",
+				"OnShowLayer": [],
+				"OnHideLayer": [],
+				"OnDisplayLayout": [],
+				"OnHideLayout": [],
+				"closeButton": {"node": "7064414998011149018"}
+			},
+			{
+				"name": "ShowPopupAnimation",
+				"mUICoreLayer": {"node": "5965426870249138963"},
+				"panelRect": {"node": "6803296335977953487"},
+				"dimCanvasGroup": {"node": "6518689930669714614"},
+				"duration": "0.4",
+				"easeType": "26",
+				"OnStartAnim": [],
+				"OnCompleteAnim": []
+			}
+		],
+		"ch": [
+			{
+				"n": "Bg",
+				"id": "6518689930669714614",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": null,
+					"c": "0000007a",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				},
+				"btn": {
+					"tr": 0,
+					"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+					"mult": 1,
+					"dur": 0.1,
+					"inter": true,
+					"target": "6518689930669714614",
+					"sprites": {"pressed": null, "disabled": null}
+				},
+				"cg": {"alpha": 1, "inter": true, "block": true, "ignore_parent": false}
+			},
+			{
+				"n": "Panel",
+				"id": "6803296335977953487",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 724, 660, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "Bg",
+						"id": "5476312582270579767",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 600, 500, 0.5, 0.5],
+						"img": {
+							"sp": "Popup4",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					},
+					{
+						"n": "GameObject",
+						"id": "198027009012189082",
+						"a": false,
+						"r": [0.5, 1, 0.5, 1, 0, 0, 450, 150, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						},
+						"ch": [
+							{
+								"n": "txtHeader",
+								"id": "7624494842451651384",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 455.4326, 87.4, 0.5, 0.5],
+								"txt": {
+									"s": "Notify",
+									"fs": 63.7,
+									"auto": [18, 64],
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 16,
+									"mat": "Baloo Outline - Purple",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					},
+					{
+						"n": "Top",
+						"id": "49924113763759034",
+						"a": false,
+						"r": [0, 1, 1, 1, 0, -65, 0, 130, 0.5, 0.5],
+						"ch": [
+							{
+								"n": "btnTurnOff",
+								"id": "1074181591867711667",
+								"a": true,
+								"r": [1, 1, 1, 1, 0, 0, 64, 64, 1, 1],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_20",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"btn": {
+									"tr": 1,
+									"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+									"mult": 1,
+									"dur": 0.1,
+									"inter": true,
+									"target": "1074181591867711667",
+									"sprites": {"pressed": null, "disabled": null}
+								},
+								"snd": true,
+								"vib": true
+							}
+						]
+					},
+					{
+						"n": "Content",
+						"id": "4992489388750828432",
+						"a": true,
+						"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+						"ch": [
+							{
+								"n": "Image",
+								"id": "9034017615177535968",
+								"a": false,
+								"r": [0, 0, 1, 1, 0, 32.7395, -104, -374.521, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_68",
+									"c": "ffffffff",
+									"t": 1,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Description",
+								"id": "6962357939398140563",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, -5, -37, 500, 204.7, 0.5, 0.5],
+								"txt": {
+									"s": "Please come back next month!",
+									"fs": 50,
+									"auto": [18, 50],
+									"c": "1c4a83ff",
+									"h": 2,
+									"v": 512,
+									"w": true,
+									"ov": 0,
+									"st": 1,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							},
+							{
+								"n": "ClockIcon",
+								"id": "7229322078978521478",
+								"a": true,
+								"r": [0.5, 0.5, 0.5, 0.5, 0, 134, 150, 150, 0.5, 0.5],
+								"img": {
+									"sp": "Resources_UI_Maincenter:UI_Maincenter_79",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": false,
+									"on": true
+								}
+							},
+							{
+								"n": "Button",
+								"id": "6409081671249541739",
+								"a": true,
+								"r": [0, 0, 1, 0, 0, 45, -112, 120, 0.5, 0],
+								"ch": [
+									{
+										"n": "Close",
+										"id": "7064414998011149018",
+										"a": true,
+										"r": [0, 1, 0, 1, 306, 0, 260, 120, 0.5, 1],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": true,
+											"fc": false,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 2.25,
+											"rt": true,
+											"on": true
+										},
+										"btn": {
+											"tr": 1,
+											"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+											"mult": 1,
+											"dur": 0.1,
+											"inter": true,
+											"target": "7064414998011149018",
+											"sprites": {"pressed": null, "disabled": null}
+										},
+										"snd": true,
+										"vib": true,
+										"ch": [
+											{
+												"n": "Out",
+												"id": "4292258388391276514",
+												"a": true,
+												"r": [0, 0, 1, 1, 0, 4, 0, -8, 0.5, 0.5],
+												"txt": {
+													"s": "Close",
+													"fs": 56,
+													"auto": [18, 56],
+													"c": "ffffffff",
+													"h": 2,
+													"v": 512,
+													"w": false,
+													"ov": 0,
+													"st": 16,
+													"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+													"font": "Baloo Bhaijaan Regular 400 SDF",
+													"cs": 0,
+													"ws": 0,
+													"ls": 0,
+													"m": [0, 0, 0, 0],
+													"rt": false,
+													"rich": false,
+													"on": true
+												}
+											}
+										]
+									}
+								]
+							},
+							{
+								"n": "Text (TMP)",
+								"id": "5514456861304764767",
+								"a": false,
+								"r": [0.5, 0.5, 0.5, 0.5, -5.6, 74.1, 200, 147.4455, 0.5, 0.5],
+								"txt": {
+									"s": "-1",
+									"fs": 64,
+									"auto": null,
+									"c": "ffffffff",
+									"h": 2,
+									"v": 512,
+									"w": false,
+									"ov": 0,
+									"st": 0,
+									"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+									"font": "Baloo Bhaijaan Regular 400 SDF",
+									"cs": 0,
+									"ws": 0,
+									"ls": 0,
+									"m": [0, 0, 0, 0],
+									"rt": false,
+									"rich": false,
+									"on": true
+								}
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

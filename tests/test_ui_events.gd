@@ -52,7 +52,8 @@ func test_weekly_active_claim_and_buy(t: T) -> void:
 	t.eq(node.main_buttons["free_0"].disabled, false, "free mốc khởi đầu nhận được")
 	t.eq(node.main_buttons["free_3"].disabled, true, "mốc 15 key chưa đủ điểm")
 	t.eq(node.main_buttons["vip_0"].disabled, true, "VIP khoá")
-	t.ok(node.main_buttons["free_0"].custom_minimum_size.y >= 96, "nút đủ lớn")
+	# Prefab cards keep their Unity size; u_button.gd grows only the hit area.
+	t.ok(node.main_buttons["free_0"].hit_size().y >= 96, "nút đủ lớn")
 	var c0 := int(g.s.coins)
 	node.main_buttons["free_0"].pressed.emit()
 	t.eq(int(g.s.coins), c0, "mốc khởi đầu không cộng gold")

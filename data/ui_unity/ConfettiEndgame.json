@@ -1,0 +1,13 @@
+{
+	"name": "ConfettiEndgame",
+	"source": "Assets/_Game/Layer/Prefab/ConfettiEndgame.prefab",
+	"root": {
+		"n": "ConfettiEndgame",
+		"id": "8760929117646647194",
+		"a": true,
+		"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 100, 100, 0.5, 0.5],
+		"s": [0, 0],
+		"z": 37.56,
+		"canvas": {"override_sort": true, "order": 1000}
+	}
+}

@@ -50,7 +50,7 @@ func test_shop_lists_gold_packs_and_others(t: T) -> void:
 	for i in range(1, 7):
 		t.ok(shop.buy_buttons.has("gold_pack_%d" % i), "gói gold %d" % i)
 		t.ok(not shop.buy_buttons.has("gold_pack_%d_sale" % i), "không sale ngày thường")
-	t.eq((shop.buy_buttons["gold_pack_1"] as Button).text, "$1.99", "giá hiển thị")
+	t.eq(_text(shop.buy_buttons["gold_pack_1"]), "$1.99", "giá hiển thị")
 	for sku in ["starter_pack", "level_pack", "rescue_pack", "remove_ads"]:
 		t.ok(shop.buy_buttons.has(sku), "gói " + sku)
 	t.ok(shop.restore_button != null, "có Restore")
@@ -58,7 +58,7 @@ func test_shop_lists_gold_packs_and_others(t: T) -> void:
 	t.eq(_p().an.named("shop_open").size(), 1, "log shop_open")
 	t.eq(_p().an.named("rv_offer").size(), 1, "rv_offer khi hiện nút video")
 	for b in shop.buy_buttons.values():
-		t.ok((b as Button).custom_minimum_size.y >= 96, "nút đủ cao")
+		t.ok(_hit_h(b) >= 96 - 0.01, "nút đủ cao")
 	_free(shop)
 
 
@@ -67,7 +67,7 @@ func test_shop_weekend_sale(t: T) -> void:
 	var shop := _open(ShopScene)
 	for i in range(1, 7):
 		t.ok(shop.buy_buttons.has("gold_pack_%d_sale" % i), "SKU sale %d" % i)
-	t.eq((shop.buy_buttons["gold_pack_1_sale"] as Button).text, "$0.99", "giá sale")
+	t.eq(_text(shop.buy_buttons["gold_pack_1_sale"]), "$0.99", "giá sale")
 	_free(shop)
 
 
@@ -114,7 +114,7 @@ func test_shop_remove_ads_owned_and_restore(t: T) -> void:
 	t.eq(bool(g.s.no_ads), true, "no_ads")
 	t.eq(int(g.s.coins), 1500, "tặng 500 gold")
 	t.ok((shop.buy_buttons["remove_ads"] as Button).disabled, "nút khoá khi đã sở hữu")
-	t.eq((shop.buy_buttons["remove_ads"] as Button).text, shop.tr("shop_owned"), "Đã sở hữu")
+	t.eq(_text(shop.buy_buttons["remove_ads"]), shop.tr("shop_owned"), "Đã sở hữu")
 	# Restore không giao lần hai.
 	shop.restore_button.pressed.emit()
 	await _root().get_tree().process_frame
@@ -161,6 +161,46 @@ func test_shop_video(t: T) -> void:
 	_free(shop)
 
 
+func test_shop_ads_daily(t: T) -> void:
+	var g := _g()
+	var shop := _open(ShopScene)
+	t.ok(shop.find_child("AdsDaily", true, false) != null, "ADS Daily nằm trong Shop")
+	t.ok(_has_label(shop, shop.tr("ads_daily_progress") % [0, 5]), "0 / 5")
+	await shop.watch_video()
+	t.eq(int(g.s.coins), 1200, "+200 gold")
+	t.ok(_has_label(shop, shop.tr("ads_daily_progress") % [1, 5]), "dựng lại: 1 / 5")
+	_free(shop)
+	g.test_now = MONDAY + 86400
+	shop = _open(ShopScene)
+	t.ok(_has_label(shop, shop.tr("ads_daily_progress") % [0, 5]), "ngày mới làm mới")
+	t.ok(not shop.video_button.disabled, "ngày mới xem được")
+	_free(shop)
+
+
+## Prefab buttons (unity_ui.gd) draw their text in a child TMP label.
+func _text(b: Node) -> String:
+	if b is Button and (b as Button).text != "":
+		return (b as Button).text
+	for l in b.find_children("*", "Label", true, false):
+		if (l as Label).visible:
+			return (l as Label).text
+	return ""
+
+
+## Prefab buttons keep the Unity art size and grow only their hit area.
+func _hit_h(b: Node) -> float:
+	return (b.call("hit_size") as Vector2).y if b.has_method("hit_size") else (b as Control).custom_minimum_size.y
+
+
+func _has_label(n: Node, needle: String) -> bool:
+	if n is Label and not n.is_queued_for_deletion() and (n as Label).text.contains(needle):
+		return true
+	for c in n.get_children():
+		if _has_label(c, needle):
+			return true
+	return false
+
+
 func test_shop_mini(t: T) -> void:
 	var g := _g()
 	var mini := _open(MiniScene, {"source": "rescue"})
@@ -191,7 +231,7 @@ func test_offer_popup(t: T) -> void:
 	var pop := _open(OfferScene, {"id": id})
 	t.eq(pop.sku, "starter_pack", "sku")
 	t.eq(pop.contents().size(), 4, "gold + 3 booster")
-	t.eq(pop.buy_button.text, pop.tr("offer_buy") % "$6.99", "giá trên nút")
+	t.eq(_text(pop.buy_button), pop.tr("offer_buy") % "$6.99", "giá trên nút")
 	t.ok(pop.time_label.visible, "đếm ngược khi có hạn")
 	t.eq(pop.time_label.text, pop.tr("offer_time_left") % "48:00:00", "còn 48 giờ")
 	var res: Array = []

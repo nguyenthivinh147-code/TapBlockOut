@@ -3,6 +3,7 @@ const T := preload("res://tests/t.gd")
 const MockIap := preload("res://src/platform/mock_iap.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const Config := preload("res://src/config.gd")
+const ThemeKit := preload("res://src/ui/theme_kit.gd")
 
 const DIR := "user://test_ui_level"
 const NOW := 1800000000
@@ -73,6 +74,16 @@ func _press(lv: Control, node_name: String) -> void:
 	(_pop(lv, node_name) as Button).pressed.emit()
 
 
+## Chữ hiển thị của nút: nút prefab (unity_ui.gd) vẽ chữ bằng Label con, nút thường dùng Button.text.
+func _btn_text(b: Button) -> String:
+	if b.text != "":
+		return b.text
+	for l in b.find_children("*", "Label", true, false):
+		if (l as Label).visible:
+			return (l as Label).text
+	return ""
+
+
 func _solve(lv: Control) -> void:
 	for i in 100:
 		if lv.board.is_won():
@@ -94,6 +105,19 @@ func _blocked_level() -> Array:
 	return [0, ""]
 
 
+## Nền màn level: ảnh bg_level nằm dưới cùng, lớp dim phủ trên ảnh; giống nhau ở mọi độ khó.
+func _check_bg(t: T, lv: Control, label: String) -> void:
+	var bg := lv.get_node_or_null("Background")
+	t.ok(bg != null and bg.get_index() == 0, "%s: nền nằm dưới cùng" % label)
+	if bg == null:
+		return
+	var pic := bg.get_node_or_null("Image") as TextureRect
+	t.ok(pic != null and pic.texture.resource_path == ThemeKit.LEVEL_BG_IMAGE, "%s: ảnh nền bg_level" % label)
+	var dim := bg.get_node_or_null("Dim") as ColorRect
+	t.ok(dim != null and dim.color == ThemeKit.LEVEL_BG_DIM, "%s: có lớp dim" % label)
+	t.ok(pic != null and dim != null and dim.get_index() > pic.get_index(), "%s: dim phủ trên ảnh" % label)
+
+
 func _burn_moves(lv: Control, id: String) -> void:
 	for i in 40:
 		if lv.board.moves_left() <= 0:
@@ -109,8 +133,18 @@ func test_hud_level1(t: T) -> void:
 	t.eq(lv.title_label.text, lv.tr("level_title") % 1, "tên level")
 	t.eq(lv.moves_label.text, lv.tr("level_moves_left") % lv.board.moves_left(), "MOVES")
 	t.ok(not lv.hard_badge.visible, "không HARD")
+	_check_bg(t, lv, "L1")
 	for k in ["hint", "move", "smash"]:
-		t.ok(not lv.booster_buttons[k].get_parent().visible, "booster %s chưa mở ở L1" % k)
+		t.ok(lv.booster_buttons[k].get_parent().visible, "ô booster %s luôn hiện" % k)
+		t.ok(lv.booster_locks[k].visible, "booster %s khoá ở L1" % k)
+		t.ok(not lv.booster_badges[k].visible, "ô khoá không có nhãn số %s" % k)
+		t.eq(lv.booster_caps[k].text, lv.tr("level_title") % int(Config.UNLOCK[k]), "ô khoá ghi level mở %s" % k)
+	var inv_hint := int(g.s.inv.get("hint", 0))
+	lv.booster_buttons.hint.pressed.emit()
+	t.ok(lv.toast_label.visible, "chạm ô khoá hiện thông báo")
+	t.eq(lv.toast_label.text, lv.tr("booster_locked") % int(Config.UNLOCK.hint), "báo level mở")
+	t.eq(lv.state, "playing", "không mở hộp mua")
+	t.eq(int(g.s.inv.get("hint", 0)), inv_hint, "không dùng booster")
 	t.eq(lv.tut_label.text, lv.tr("tut_tap"), "hướng dẫn L1")
 	t.eq(lv.board_view.highlighted_id(), lv.board.hint(), "chỉ khối đi được")
 	t.eq(int(g.s.runs), 0, "chưa tính lượt")
@@ -229,7 +263,7 @@ func test_rescue_gold(t: T) -> void:
 	for i in prices.size():
 		_burn_moves(lv, bl[1])
 		t.ok(await _wait_until(_has_pop(lv, "BuyButton")), "popup lần %d" % (i + 2))
-		t.eq((_pop(lv, "BuyButton") as Button).text, lv.tr("rescue_buy") % prices[i], "giá lần %d" % (i + 2))
+		t.eq(_btn_text(_pop(lv, "BuyButton") as Button), lv.tr("rescue_buy") % prices[i], "giá lần %d" % (i + 2))
 		var before: int = g.s.coins
 		_press(lv, "BuyButton")
 		t.ok(await _wait_until(_playing.bind(lv)), "chơi tiếp lần %d" % (i + 2))
@@ -273,8 +307,9 @@ func test_booster_gift_and_hint(t: T) -> void:
 	t.eq(int(g.s.inv.hint), 1, "kho +1 gợi ý")
 	_press(lv, "GotItButton")
 	await _wait_until(_playing.bind(lv))
-	t.ok(lv.booster_buttons.hint.get_parent().visible, "gợi ý mở ở L5")
-	t.ok(not lv.booster_buttons.move.get_parent().visible, "+3 Move chưa mở")
+	t.ok(not lv.booster_locks.hint.visible, "gợi ý mở ở L5")
+	t.eq(lv.booster_caps.hint.text, lv.tr("booster_hint"), "ô mở ghi tên booster")
+	t.ok(lv.booster_locks.move.visible, "+3 Move chưa mở")
 	t.eq(lv.booster_badges.hint.text, lv.tr("booster_count") % 1, "nhãn số còn lại")
 	lv.booster_buttons.hint.pressed.emit()
 	t.eq(int(g.s.inv.hint), 0, "dùng gợi ý")
@@ -527,12 +562,14 @@ func test_hard_warning(t: T) -> void:
 	t.ok(not _playing(lv), "chưa chơi khi đang cảnh báo")
 	t.eq(lv.hard_badge.text, lv.tr("level_hard"), "huy hiệu KHÓ")
 	t.eq((lv.find_child("Text", true, false) as Label).text, lv.tr("level_hard"), "dải ghi KHÓ")
+	_check_bg(t, lv, "L24 (Hard)")
 	t.ok(await _wait_until(_playing.bind(lv)), "tự vào chơi")
 	lv.free()
 	_g(29)
 	lv = _mount()
 	t.ok(await _wait_until(func() -> bool: return lv.find_child("DifficultyBanner", true, false) != null), "L29 (VeryHard) có dải cảnh báo")
 	t.eq(lv.hard_badge.text, lv.tr("level_very_hard"), "huy hiệu RẤT KHÓ")
+	_check_bg(t, lv, "L29 (VeryHard)")
 	t.ok(await _wait_until(_playing.bind(lv)), "L29 tự vào chơi")
 	lv._on_restart_pressed()
 	await _wait_until(func() -> bool: return _pop(lv, "ConfirmButton") != null or _playing(lv))

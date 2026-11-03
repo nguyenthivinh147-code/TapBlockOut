@@ -1,45 +1,80 @@
 extends Control
-## Cài đặt: âm thanh, nhạc, rung, thông báo, ngôn ngữ, Privacy, Restore, hỗ trợ, phiên bản.
-## Chạm nhiều lần vào dòng phiên bản mở menu tester. setup(args: Dictionary); signal closed(result).
+## Settings (wireframe 10.3) on SettingMainMenuLayer of color-cube-match-puzzle: sound effects, vibration and music
+## icons in the cream well, Support and Language pills, a Privacy Policy link row, the version under the popup's right
+## edge. The game's extras are copies of prefab nodes: a notifications toggle (copy of Vibrate, the well split in 4),
+## Restore purchases / UI preview rows and the restore result (copies of PolicyButton, one 78-unit row each; the popup
+## grows like GameplaySettingsUI.OnPurchasedAds). Language opens SettingLanguage (popup_language.gd).
+## 10 quick taps on the version open the tester menu (tester_menu.gd); after it saves or deletes the account,
+## Settings closes so Main rebuilds Home. setup(args: Dictionary); signal closed(result).
 
 signal closed(result: Variant)
 
-const ThemeKit := preload("res://src/ui/theme_kit.gd")
-const PopupKit := preload("res://src/ui/popup_kit.gd")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UView := preload("res://src/ui/u_view.gd")
+const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Config := preload("res://src/config.gd")
+const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const PopupLanguage := preload("res://src/ui/popup_language.gd")
 
+const LAYER := "SettingMainMenuLayer"
+const PANEL := "Panel/PauseMenu"
+const CONTENT := "Panel/PauseMenu/Content"
+const WELL := "Panel/PauseMenu/Content/SettingBtn/Content"
+const POLICY := "Panel/PauseMenu/Content/PolicyButton"
+## Game setting -> prefab icon button and its ImageStateKeeper sprites (UI_Maincenter_<on>, _<off>).
+## notif has no prefab button: a copy of Vibrate with the game's icon, greyed when off.
 const TOGGLES: Array[Dictionary] = [
-	{"key": "music", "label": "settings_music", "on": "ic_music_on", "off": "ic_music_off"},
-	{"key": "sfx", "label": "settings_sound", "on": "ic_sound_on", "off": "ic_sound_off"},
-	{"key": "haptics", "label": "settings_haptics", "on": "ic_vibrance_on", "off": "ic_vibrance_off"},
-	{"key": "notif", "label": "settings_notifications", "on": "ic_clock", "off": "ic_clock"},
+	{"key": "sfx", "node": "Mute", "on": 28, "off": 29},
+	{"key": "haptics", "node": "Vibrate", "on": 40, "off": 41},
+	{"key": "music", "node": "Sound", "on": 42, "off": 43},
+	{"key": "notif", "node": "", "icon": "ic_clock"},
 ]
-const ROW_ICON := 64.0
-const SCROLL_H := 800.0
+## Icons in the 620-unit well: the prefab spaces 3 by 188; 4 share the well evenly.
+const WELL_W := 620.0
+const OFF_TINT := Color(0.55, 0.55, 0.55, 0.9)
+## ImageStateKeeper is not exported, so its off sprites are missing from _sprites.json: rects (top-left origin) from
+## Resources_moved/Sprites/UI_Maincenter.png.meta.
+const STATE_TEX := "res://assets/ui/cc/Resources_moved_UI_Maincenter.png"
+const STATE_SRC := 2048.0
+const STATE_RECTS := {29: Rect2(300, 617, 96, 96), 41: Rect2(100, 719, 96, 96), 43: Rect2(298, 719, 96, 96)}
+const MAINCENTER := "Resources_moved_UI_Maincenter:UI_Maincenter_%d"
+## PolicyButton row: centre 80.9 above the panel bottom, 78 tall; each extra row adds one row height.
+const ROW_Y := 80.9
+const ROW_H := 78.0
+const PANEL_SIZE := Vector2(724, 559)
+const VERSION_Y := -330.0
+const INK := "1c4a83ff"
 const GALLERY := "res://scenes/ui_gallery.tscn"
+const TESTER := "res://scenes/tester_menu.tscn"
 const LANGS: Array[Dictionary] = [
 	{"value": "", "label": "settings_language_auto"},
 	{"value": "en", "label": "settings_language_en"},
 	{"value": "vi", "label": "settings_language_vi"},
 ]
-const TESTER_TAPS := 7
+const TESTER_TAPS := 10
 const TAP_GAP_MS := 1500
 
 ## Test thay được để không mở mailto thật. Mặc định OS.shell_open.
 var opener: Callable = Callable()
+var ui: UView = null
 var toggle_buttons: Dictionary = {}
 var lang_buttons: Dictionary = {}
 var privacy_button: Button = null
 var restore_button: Button = null
+var gallery_button: Button = null
 var support_button: Button = null
+var language_button: Button = null
 var version_button: Button = null
 var close_button: Button = null
+var language_panel: Control = null
 var tester_panel: Control = null
-var debugger_button: Button = null
 var status_label: Label = null
 var last_url: String = ""
 
-var _content: Control = null
+var _built: bool = false
+var _rows: Array[Control] = []
+var _version_label: Label = null
+var _lang: Dictionary = {}
 var _version_taps: int = 0
 var _last_tap_ms: int = 0
 var _busy: bool = false
@@ -47,18 +82,15 @@ var _status_text: String = ""
 
 
 func setup(_args: Dictionary = {}) -> void:
-	if _content == null:
-		_build()
+	_build()
 
 
 func _ready() -> void:
-	if _content == null:
-		_build()
-	ThemeKit.popup_in(_content)
+	_build()
 
 
 func version_text() -> String:
-	return tr("settings_version") % str(Config.CONTENT.build)
+	return str(Config.CONTENT.build)
 
 
 func support_url() -> String:
@@ -75,114 +107,256 @@ func _open_url(url: String) -> void:
 
 
 func _build() -> void:
-	if _content != null:
-		_content.queue_free()
-		_content = null
-	for c in get_children():
-		c.queue_free()
-	toggle_buttons.clear()
-	lang_buttons.clear()
-	privacy_button = null
-	tester_panel = null
-	debugger_button = null
-
-	var k := PopupKit.make(self, tr("settings_title"), close)
-	_content = k.card
-	close_button = k.close
-	var box: VBoxContainer = k.box
-
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(PopupKit.CONTENT_W, SCROLL_H)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	box.add_child(scroll)
-	var rows := VBoxContainer.new()
-	rows.add_theme_constant_override("separation", 12)
-	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(rows)
-
-	for def in TOGGLES:
-		rows.add_child(_toggle_row(def))
-	var note := PopupKit.text(tr("settings_notifications_off"), ThemeKit.FS_SMALL, ThemeKit.INK_DIM)
-	note.visible = bool(Game.s.settings.get("notif", true)) and not Platform.enabled()
-	note.name = "NotifNote"
-	rows.add_child(note)
-
-	rows.add_child(PopupKit.text(tr("settings_language"), ThemeKit.FS_BODY, ThemeKit.BROWN))
-	var lang_row := HBoxContainer.new()
-	lang_row.add_theme_constant_override("separation", 10)
-	rows.add_child(lang_row)
-	var cur_lang := str(Game.s.settings.get("lang", ""))
-	for def in LANGS:
-		var b := ThemeKit.make_button(tr(str(def.label)), "primary" if cur_lang == str(def.value) else "secondary")
-		b.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL - 2)
-		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		b.pressed.connect(_on_language.bind(str(def.value)))
-		lang_row.add_child(b)
-		lang_buttons[str(def.value)] = b
-
-	if Platform.has_privacy:
-		privacy_button = ThemeKit.make_button(tr("settings_privacy"), "secondary")
-		privacy_button.pressed.connect(_on_privacy)
-		rows.add_child(privacy_button)
-	restore_button = ThemeKit.make_button(tr("settings_restore"), "secondary")
-	restore_button.pressed.connect(_on_restore)
-	rows.add_child(restore_button)
-	support_button = ThemeKit.make_button(tr("settings_support"), "video")
-	support_button.pressed.connect(_on_support)
-	rows.add_child(support_button)
-	if Config.ui_preview():
-		var gallery := ThemeKit.make_button(tr("settings_gallery"), "purple")
-		gallery.name = "GalleryButton"
-		gallery.pressed.connect(_on_gallery)
-		rows.add_child(gallery)
-
-	status_label = PopupKit.text(_status_text, ThemeKit.FS_SMALL, ThemeKit.BROWN)
-	rows.add_child(status_label)
-
-	version_button = ThemeKit.make_button(version_text(), "ghost")
-	version_button.add_theme_font_size_override("font_size", ThemeKit.FS_SMALL)
-	version_button.add_theme_color_override("font_color", ThemeKit.INK_DIM)
-	version_button.pressed.connect(_on_version)
-	rows.add_child(version_button)
+	if _built:
+		return
+	_built = true
+	set_anchors_preset(Control.PRESET_FULL_RECT)
+	ui = UnityUI.build(self, LAYER)
+	close_button = ui.on_click("Panel/PauseMenu/Top/btnTurnOff", close)
+	close_button.name = "CloseX"
+	ui.on_click("Bg", close)
+	support_button = ui.on_click(CONTENT + "/btnSupport", _on_support)
+	support_button.name = "SupportButton"
+	language_button = ui.on_click(CONTENT + "/btnLanguage", open_language)
+	language_button.name = "LanguageButton"
+	_build_toggles()
+	ui.show(POLICY, false)
+	ui.show("Panel/PauseMenu/Content/TermsButton", false)
+	_build_version()
+	_apply_texts()
 
 
-func _toggle_row(def: Dictionary) -> Control:
-	var key := str(def.key)
+## Prefab icons for sfx, vibration, music; a copy of Vibrate for notifications. MainMenuSettingsUI.InitLayer sets
+## each ImageStateKeeper from the saved setting.
+func _build_toggles() -> void:
+	var well := ui.node(WELL)
+	var step := WELL_W / TOGGLES.size()
+	for i in TOGGLES.size():
+		var def := TOGGLES[i]
+		var key := str(def.key)
+		var b: Button = null
+		if str(def.node) != "":
+			b = ui.button(WELL + "/" + str(def.node))
+		else:
+			var s := UnityKit.spec(LAYER, WELL + "/Vibrate")
+			s.n = "Notif"
+			var v: RefCounted = UnityKit.add(well, s)
+			v.texture("Image", ThemeKit.icon(str(def.icon)))
+			b = v.root as Button
+			# Not in the prefab's UIAnimationGroup: play its ScaleAppear with the group (OnShowLayer).
+			_appear_later.call_deferred(b, v.anims.get(str(s.get("id", "")), Callable()))
+		b.name = "Toggle_" + key
+		var r: Dictionary = b.get_meta("u_rect")
+		r.pos = Vector2(step * (i + 0.5) - WELL_W * 0.5, 0)
+		UnityUI.apply_rect(b)
+		b.connect("clicked", _on_toggle.bind(key))
+		toggle_buttons[key] = b
+		_show_toggle(key)
+
+
+func _show_toggle(key: String) -> void:
+	var b: Control = toggle_buttons.get(key)
+	if b == null:
+		return
 	var on := bool(Game.s.settings.get(key, true))
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 12)
-	row.add_child(ThemeKit.make_icon(str(def.on) if on else str(def.off), ROW_ICON))
-	var l := ThemeKit.ink_label(tr(str(def.label)), ThemeKit.FS_SMALL + 4)
-	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(l)
-	var b := ThemeKit.make_button(tr("settings_on") if on else tr("settings_off"), "primary" if on else "secondary")
-	b.custom_minimum_size = Vector2(150, 96)
-	b.toggle_mode = false
-	b.pressed.connect(_on_toggle.bind(key))
-	row.add_child(b)
-	toggle_buttons[key] = b
-	return row
+	var icon: Control = b.get_node("Image")
+	for def in TOGGLES:
+		if str(def.key) != key:
+			continue
+		if def.has("on"):
+			set_state_sprite(icon, int(def.on) if on else int(def.off))
+		else:
+			icon.modulate = Color.WHITE if on else OFF_TINT
+
+
+## UI_Maincenter_<n> on an Image node, including the ImageStateKeeper sprites _sprites.json lacks (STATE_RECTS).
+static func set_state_sprite(c: Control, n: int) -> void:
+	if not STATE_RECTS.has(n):
+		UnityUI.set_sprite(c, MAINCENTER % n)
+		return
+	var img := UnityUI.image_of(c)
+	var tex := load(STATE_TEX) as Texture2D
+	if img == null or tex == null:
+		return
+	var k := float(tex.get_width()) / STATE_SRC
+	var r: Rect2 = STATE_RECTS[n]
+	img.call("set_texture", tex, Rect2(r.position * k, r.size * k), Vector4.ZERO, 1.0 / k)
+
+
+## The prefab's VersionText is a plain label; the game taps it for the tester menu, so it sits in a transparent button.
+func _build_version() -> void:
+	var text := UnityKit.spec(LAYER, "VersionText")
+	var s := {"n": "VersionButton", "a": true, "r": (text.r as Array).duplicate(),
+		"img": {"sp": null, "c": "ffffff00", "t": 0, "rt": true, "on": true},
+		"btn": {"tr": 0, "c": ["ffffffff", "ffffffff", "ffffffff", "ffffffff"], "inter": true, "target": null}, "ch": [text]}
+	text.r = [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5]
+	var v: RefCounted = UnityKit.add(ui.node(""), s)
+	version_button = v.root as Button
+	_version_label = v.label("VersionText")
+	version_button.connect("clicked", _on_version)
+	ui.show("VersionText", false)
+
+
+## Every visible string (also after a language change, like I2 Localize updating in place).
+func _apply_texts() -> void:
+	ui.text("Panel/PauseMenu/Image/txtHeader", tr("settings_title"))
+	ui.text(CONTENT + "/btnSupport/Text (TMP)", tr("settings_support"))
+	ui.text(CONTENT + "/btnLanguage/Out", tr("settings_language"))
+	UnityUI.set_text(_version_label, version_text())
+	_layout_rows()
+	if language_panel != null:
+		_fill_language()
+
+
+## Link rows under the pills (Privacy, Restore, UI preview) and the restore result, bottom-up like PolicyButton.
+func _layout_rows() -> void:
+	for c in _rows:
+		if is_instance_valid(c):
+			c.queue_free()
+	_rows.clear()
+	privacy_button = null
+	restore_button = null
+	gallery_button = null
+	status_label = null
+	var defs: Array[Array] = []
+	if Platform.has_privacy:
+		defs.append(["PrivacyButton", tr("settings_privacy"), _on_privacy])
+	defs.append(["RestoreButton", tr("settings_restore"), _on_restore])
+	if Config.ui_preview():
+		defs.append(["GalleryButton", tr("settings_gallery"), _on_gallery])
+	if _status_text != "":
+		defs.append(["StatusLabel", _status_text, Callable()])
+	var n := defs.size()
+	var grow := ROW_H * (n - 1)
+	UnityKit.set_size(ui.node(PANEL), PANEL_SIZE + Vector2(0, grow))
+	var vr: Dictionary = version_button.get_meta("u_rect")
+	vr.pos = Vector2((vr.pos as Vector2).x, VERSION_Y - grow * 0.5)
+	UnityUI.apply_rect(version_button)
+	for i in n:
+		var d: Array = defs[i]
+		var s := UnityKit.spec(LAYER, POLICY)
+		s.r[5] = ROW_Y + ROW_H * (n - 1 - i)
+		var row: Control = null
+		if (d[2] as Callable).is_valid():
+			s.n = str(d[0])
+			var v: RefCounted = UnityKit.add(ui.node(CONTENT), s)
+			row = v.root
+			var l: Label = v.text("Text (TMP)", str(d[1]))
+			underline(l)
+			row.connect("clicked", d[2])
+		else:
+			# Plain line in the row's place: PolicyButton's text without bold or underline, body ink.
+			var t: Dictionary = (s.ch as Array)[0]
+			var text_h := ROW_H + float(t.r[7])
+			t.n = "StatusLabel"
+			t.r = (s.r as Array).duplicate()
+			t.r[7] = text_h
+			t.txt.st = 0
+			t.txt.c = INK
+			t.txt.s = str(d[1])
+			row = UnityKit.add(ui.node(CONTENT), t).root
+			status_label = row as Label
+		_rows.append(row)
+		match str(d[0]):
+			"PrivacyButton":
+				privacy_button = row as Button
+			"RestoreButton":
+				restore_button = row as Button
+			"GalleryButton":
+				gallery_button = row as Button
+
+
+## TMP Underline (fontStyle 4) is not drawn by unity_ui.gd: a line under the text in its colour, refitted when the
+## label resizes or auto-sizes (TMP underline: about 6% thick, 8% below the baseline).
+static func underline(l: Label) -> void:
+	var line := ColorRect.new()
+	line.name = "Underline"
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.add_child(line)
+	l.resized.connect(_fit_underline.bind(l, line))
+	_fit_underline.call_deferred(l, line)
+
+
+## Variant args: the label may be freed before the deferred call (tests build and free in one frame).
+static func _fit_underline(lv: Variant, linev: Variant) -> void:
+	if not is_instance_valid(lv) or not is_instance_valid(linev):
+		return
+	var l: Label = lv
+	var line: ColorRect = linev
+	var font := l.get_theme_font("font")
+	var fs := l.get_theme_font_size("font_size")
+	var w := font.get_string_size(l.text.to_upper() if l.uppercase else l.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var base := (l.size.y - font.get_height(fs)) * 0.5 + font.get_ascent(fs)
+	line.color = l.get_theme_color("font_color")
+	var x := (l.size.x - w) * 0.5 if l.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER else 0.0
+	line.position = Vector2(x, base + fs * 0.08)
+	line.size = Vector2(w, maxf(2.0, fs * 0.06))
+
+
+## Runs a builder animation later only if its node still exists (its lambda would get a freed capture).
+static func _appear_later(node: Variant, cb: Callable) -> void:
+	if is_instance_valid(node) and cb.is_valid():
+		cb.call()
 
 
 func _on_toggle(key: String) -> void:
-	Sfx.play("sfx_button")
-	var on := bool(Game.s.settings.get(key, true))
-	Game.set_setting(key, not on)
-	_build()
+	Game.set_setting(key, not bool(Game.s.settings.get(key, true)))
+	_show_toggle(key)
+
+
+# --- Language (SettingLanguage) ---
+
+func open_language() -> void:
+	if language_panel != null:
+		return
+	language_panel = Control.new()
+	language_panel.name = "LanguagePanel"
+	language_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(language_panel)
+	var rows: Array = []
+	for def in LANGS:
+		rows.append([str(def.value), str(def.label)])
+	_lang = PopupLanguage.build_layer(language_panel, rows, true)
+	lang_buttons = _lang.buttons
+	for value in lang_buttons:
+		(lang_buttons[value] as Button).connect("clicked", _on_language.bind(str(value)))
+	var ok: Button = _lang.save
+	ok.name = "LanguageOk"
+	ok.connect("clicked", close_language)
+	for b in _lang.close:
+		(b as Button).connect("clicked", close_language)
+	_fill_language()
+
+
+func _fill_language() -> void:
+	var v: RefCounted = _lang.ui
+	v.text("Panel/PauseMenu/Image/txtHeader", tr("settings_language"))
+	v.text("Panel/PauseMenu/Content/Save/Out", tr("common_ok"))
+	var cur := str(Game.s.settings.get("lang", ""))
+	for def in LANGS:
+		var b: Button = lang_buttons[str(def.value)]
+		UnityUI.set_text(b.get_node("Txt") as Label, tr(str(def.label)))
+		b.button_pressed = cur == str(def.value)
+
+
+func close_language() -> void:
+	if language_panel != null:
+		language_panel.queue_free()
+		language_panel = null
+		lang_buttons = {}
+		_lang = {}
 
 
 func _on_language(value: String) -> void:
-	Sfx.play("sfx_button")
 	Game.set_setting("lang", value)
 	_status_text = ""
-	_build()
+	# Texts follow the new language in place; the Language popup stays open.
+	_apply_texts()
 
+
+# --- links ---
 
 func _on_privacy() -> void:
-	Sfx.play("sfx_button")
 	Platform.open_privacy()
 
 
@@ -190,18 +364,16 @@ func _on_restore() -> void:
 	if _busy:
 		return
 	_busy = true
-	Sfx.play("sfx_button")
-	restore_button.disabled = true
+	restore_button.call("set_interactable", false)
 	var ok: bool = await Game.restore_purchases()
 	_busy = false
 	if not is_inside_tree():
 		return
 	_status_text = tr("shop_restore_ok") if ok else tr("shop_restore_none")
-	_build()
+	_layout_rows()
 
 
 func _on_support() -> void:
-	Sfx.play("sfx_button")
 	_open_url(support_url())
 
 
@@ -219,30 +391,27 @@ func _on_version() -> void:
 func open_tester() -> void:
 	if tester_panel != null:
 		return
-	tester_panel = Control.new()
-	tester_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tester_panel = (load(TESTER) as PackedScene).instantiate() as Control
 	add_child(tester_panel)
-	var k := PopupKit.make(tester_panel, tr("settings_tester_title"), close_tester)
-	debugger_button = ThemeKit.make_button(tr("settings_tester_debugger"), "video")
-	debugger_button.pressed.connect(_on_debugger)
-	(k.box as VBoxContainer).add_child(debugger_button)
+	tester_panel.call("setup", {})
+	tester_panel.connect("closed", _on_tester_closed)
 
 
 func close_tester() -> void:
 	if tester_panel != null:
 		tester_panel.queue_free()
 		tester_panel = null
-		debugger_button = null
 
 
-func _on_debugger() -> void:
-	Sfx.play("sfx_button")
-	Platform.open_debugger()
+## The account changed (or was deleted, settings included): Settings closes and Main rebuilds Home.
+func _on_tester_closed(result: Variant) -> void:
+	close_tester()
+	if result is Dictionary:
+		close()
 
 
 ## Danh sách các màn đã dựng UI nhưng chưa nối logic (chỉ có khi Config.ui_preview).
 func _on_gallery() -> void:
-	Sfx.play("sfx_button")
 	var node := (load(GALLERY) as PackedScene).instantiate()
 	add_child(node)
 	node.call("setup", {})
@@ -250,5 +419,4 @@ func _on_gallery() -> void:
 
 
 func close() -> void:
-	Sfx.play("sfx_button")
 	closed.emit(null)

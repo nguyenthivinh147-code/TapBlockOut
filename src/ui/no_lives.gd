@@ -3,14 +3,23 @@ extends Control
 ## setup(args): không cần khoá nào. Dữ liệu lấy từ Game.lives_view().
 ## closed(result): "refilled" (đã có mạng, quay lại chơi) | "home".
 ## Không có video thì hiện dòng báo, vẫn chờ được.
+## Dựng theo PopupMoreHeartLayer (color-cube-match-puzzle): tim kèm số mạng, "mạng kế tiếp" và chip đồng hồ,
+## nút video (AdsBtn) và nút gold (GoldBtn: +N tim, giá gold). X và chạm nền (NavigationBackButton) là về Home.
+## Không bán BundleHeart (game không có gói này ở đây): chỗ của nó dành cho dòng giải thích và thông báo.
 
 signal closed(result: Variant)
 
-const ThemeKit := preload("res://src/ui/theme_kit.gd")
-const PopupKit := preload("res://src/ui/popup_kit.gd")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Config := preload("res://src/config.gd")
 const VIDEO_PLACEMENT := "refill_life"
+const LAYER := "PopupMoreHeartLayer"
+## Lines under the popup (where BundleHeart sits), from the panel's bottom edge: body, no-video note, message.
+const NOTE_Y := [-150.0, -290.0, -400.0]
+## The chip holds "All lives back in h:mm:ss": wider than the prefab's 246 (sliced pill).
+const CHIP_W := 340.0
 
+var ui: RefCounted = null
 var _busy: bool = false
 var _built: bool = false
 var _title: Label
@@ -22,6 +31,7 @@ var _video_btn: Button
 var _no_ads_lbl: Label
 var _msg: Label
 var _timer: Timer
+var _beat: Tween = null
 
 
 func setup(_args: Dictionary = {}) -> void:
@@ -40,55 +50,51 @@ static func format_time(sec: int) -> String:
 	return "%d:%02d" % [sec / 60, sec % 60]
 
 
-func _label(text: String, size: int, color: Color, node_name: String) -> Label:
-	return PopupKit.text(text, size, color, node_name)
-
-
 func _build() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(ThemeKit.make_background())
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(center)
-	var k := PopupKit.make_card(tr("no_lives_title"), _on_home_pressed)
-	center.add_child(k.card)
-	_title = k.title
-	var box: VBoxContainer = k.box
-
-	var heart := ThemeKit.make_sprite("big_heart", 170)
-	box.add_child(heart)
-	_lives_lbl = _label("", ThemeKit.FS_BODY, ThemeKit.BROWN, "LivesLabel")
-	box.add_child(_lives_lbl)
-	box.add_child(_label(tr("no_lives_body"), ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "BodyLabel"))
-	_next_lbl = _label("", ThemeKit.FS_BODY + 4, ThemeKit.INK, "NextLabel")
-	box.add_child(_next_lbl)
-	_full_lbl = _label("", ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "FullLabel")
-	box.add_child(_full_lbl)
-
-	_video_btn = ThemeKit.make_button(tr("no_lives_video"), "video")
-	_video_btn.name = "VideoButton"
-	ThemeKit.set_button_icon(_video_btn, "ui_video")
-	_video_btn.add_theme_font_size_override("font_size", ThemeKit.FS_BODY - 2)
-	_video_btn.pressed.connect(_on_video_pressed)
-	box.add_child(_video_btn)
-	_gold_btn = ThemeKit.make_button("", "gold")
-	_gold_btn.name = "GoldButton"
-	ThemeKit.set_button_icon(_gold_btn, "ui_gold")
-	_gold_btn.add_theme_font_size_override("font_size", ThemeKit.FS_BODY - 2)
-	_gold_btn.pressed.connect(_on_gold_pressed)
-	box.add_child(_gold_btn)
-	_no_ads_lbl = _label(tr("no_lives_no_ads"), ThemeKit.FS_SMALL, ThemeKit.INK_DIM, "NoAdsLabel")
-	box.add_child(_no_ads_lbl)
-
-	_msg = _label("", ThemeKit.FS_SMALL, ThemeKit.INK_DANGER, "MessageLabel")
-	_msg.visible = false
-	box.add_child(_msg)
-
-	var home := ThemeKit.make_button(tr("no_lives_home"), "ghost")
+	ui = UnityUI.build(self, LAYER)
+	_title = ui.text("Panel/Image/txtHeader", tr("no_lives_title"))
+	var home: Button = ui.button("Panel/Top/btnTurnOff")
 	home.name = "HomeButton"
-	home.pressed.connect(_on_home_pressed)
-	box.add_child(home)
+	home.connect("clicked", _on_home_pressed)
+	ui.on_click("Bg", _on_home_pressed)
+	ui.show("Panel/BundleHeart", false)
+	var pc := "Panel/Content/Preview/Content"
+	for p in [pc + "/Amount_Backup", pc + "/Infinite", pc + "/Continue (1)", "Panel/Content/Description/Text (TMP)#2"]:
+		ui.show(p, false)
+	_lives_lbl = ui.label(pc + "/HeartIcon/Text (TMP)")
+	_lives_lbl.name = "LivesLabel"
+	_next_lbl = ui.label("Panel/Content/Description/Text (TMP)")
+	_next_lbl.name = "NextLabel"
+	var chip: Control = ui.node("Panel/Content/Description/Image")
+	UnityKit.set_size(chip, Vector2(CHIP_W, (chip.get_meta("u_rect").size as Vector2).y))
+	_full_lbl = ui.label("Panel/Content/Description/Image/Text (TMP)")
+	_full_lbl.name = "FullLabel"
+	var fr: Dictionary = _full_lbl.get_meta("u_rect")
+	fr.pos = Vector2(38, (fr.pos as Vector2).y)
+	fr.size = Vector2(CHIP_W - 100.0, (fr.size as Vector2).y)
+	UnityUI.apply_rect(_full_lbl)
+	_auto_size(_full_lbl, 38.0, true)
+
+	_video_btn = ui.button("Panel/Content/GameObject/AdsBtn")
+	_video_btn.name = "VideoButton"
+	_video_btn.connect("clicked", _on_video_pressed)
+	var vt: Label = ui.label("Panel/Content/GameObject/AdsBtn/Out")
+	_auto_size(vt, 56.0, true)
+	UnityUI.set_text(vt, tr("no_lives_video"))
+	_gold_btn = ui.button("Panel/Content/GameObject/GoldBtn")
+	_gold_btn.name = "GoldButton"
+	_gold_btn.connect("clicked", _on_gold_pressed)
+	ui.label("Panel/Content/GameObject/GoldBtn/Price/Text (TMP)").name = "GoldPrice"
+	ui.text("Panel/Content/GameObject/GoldBtn/Image/Out", "+%d" % int(Config.ECON.refill_lives))
+
+	var panel: Control = ui.node("Panel")
+	var body := _note(panel, tr("no_lives_body"), NOTE_Y[0], "BodyLabel")
+	body.visible = true
+	_no_ads_lbl = _note(panel, tr("no_lives_no_ads"), NOTE_Y[1], "NoAdsLabel")
+	_msg = _note(panel, "", NOTE_Y[2], "MessageLabel")
+	_msg.visible = false
+	ui.relayout("Panel/Content/GameObject")
 
 	_timer = Timer.new()
 	_timer.wait_time = 1.0
@@ -96,7 +102,53 @@ func _build() -> void:
 	_timer.timeout.connect(refresh)
 	add_child(_timer)
 	_timer.start()
-	PopupKit.show_in(k)
+	_heart_beat.call_deferred()
+
+
+## White outlined line on the dim under the popup (Baloo Outline - Black, like text on art in the prefabs).
+func _note(panel: Control, text: String, y: float, node_name: String) -> Label:
+	var l := UnityKit.label(panel, text, Rect2(0, 0, 100, 100), 40.0, "ffffffff", "Baloo Outline - Black")
+	l.name = node_name
+	var r: Dictionary = l.get_meta("u_rect")
+	r.amin = Vector2(0.5, 0)
+	r.amax = Vector2(0.5, 0)
+	r.pos = Vector2(0, y)
+	r.size = Vector2(760, 120)
+	r.pivot = Vector2(0.5, 0.5)
+	UnityUI.apply_rect(l)
+	return l
+
+
+## TMP auto size (and word wrap) on a text the prefab sized for a shorter Unity string. The text spec is shared
+## with the layout cache, so it is copied before the change.
+func _auto_size(l: Label, max_size: float, wrap: bool) -> void:
+	var t: Dictionary = (l.get_meta("u_txt") as Dictionary).duplicate(true)
+	t.auto = [18.0, max_size]
+	t.w = wrap
+	l.set_meta("u_txt", t)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if wrap else TextServer.AUTOWRAP_OFF
+	if not l.resized.is_connected(UnityUI.fit_text):
+		l.resized.connect(UnityUI.fit_text.bind(l))
+
+
+## HeartAnimation (StartHeartAnimation on show): intro from StartScale, then a squash pulse to EndScale and back.
+## Builder gap: the script is not run by unity_ui.gd.
+func _heart_beat() -> void:
+	var heart: Control = ui.node("Panel/Content/Preview/Content/HeartIcon")
+	if heart == null or not heart.is_inside_tree():
+		return
+	var base := heart.scale
+	var intro := UnityUI.ease_of(28)
+	var loop := UnityUI.ease_of(26)
+	heart.scale = base * 1.15
+	_beat = heart.create_tween()
+	_beat.tween_property(heart, "scale", base, 0.75).set_trans(intro[0]).set_ease(intro[1])
+	_beat.tween_callback(func() -> void:
+		if not is_instance_valid(heart):
+			return
+		var tw := heart.create_tween().set_loops()
+		tw.tween_property(heart, "scale", Vector2(base.x * 0.94, base.y * 0.85), 0.35).set_trans(loop[0]).set_ease(loop[1])
+		tw.tween_property(heart, "scale", base, 0.35).set_trans(loop[0]).set_ease(loop[1]))
 
 
 ## Làm mới số liệu từ Game.lives_view(); đóng "refilled" khi đã có mạng.
@@ -109,16 +161,17 @@ func refresh() -> void:
 	if bool(v.can_play):
 		_finish("refilled")
 		return
-	_lives_lbl.text = tr("no_lives_lives") % [count, mx]
+	UnityUI.set_text(_lives_lbl, str(count))
 	var secs := int(v.seconds_to_next)
-	_next_lbl.text = tr("no_lives_next") % format_time(secs)
+	UnityUI.set_text(_next_lbl, tr("no_lives_next") % format_time(secs))
 	var regen := int(Config.LIVES.regen_sec)
-	_full_lbl.text = tr("no_lives_full_in") % format_time(secs + maxi(mx - count - 1, 0) * regen)
-	_gold_btn.text = tr("no_lives_refill_gold") % int(v.refill_price)
+	UnityUI.set_text(_full_lbl, tr("no_lives_full_in") % format_time(secs + maxi(mx - count - 1, 0) * regen))
+	ui.text("Panel/Content/GameObject/GoldBtn/Price/Text (TMP)", str(int(v.refill_price)))
+	ui.relayout("Panel/Content/GameObject/GoldBtn/Price")
 	var can_gold := bool(v.can_refill_gold)
 	_gold_btn.modulate.a = 1.0 if can_gold else 0.6
 	var video_ready := bool(v.video_ready)
-	_video_btn.disabled = not video_ready
+	_video_btn.call("set_interactable", video_ready)
 	_no_ads_lbl.visible = not video_ready
 
 
@@ -128,20 +181,22 @@ func _finish(result: Variant) -> void:
 
 
 func _show_msg(text: String) -> void:
-	_msg.text = text
+	UnityUI.set_text(_msg, text)
 	_msg.visible = true
 
 
 func _set_busy(v: bool) -> void:
 	_busy = v
 	for b in find_children("*", "Button", true, false):
-		(b as Button).disabled = v
+		if b.has_method("set_interactable"):
+			b.call("set_interactable", not v)
+		else:
+			(b as Button).disabled = v
 
 
 func _on_gold_pressed() -> void:
 	if _busy:
 		return
-	Sfx.play("sfx_button")
 	if not Game.refill_gold():
 		_show_msg(tr("no_lives_not_enough_gold"))
 		return
@@ -152,7 +207,6 @@ func _on_gold_pressed() -> void:
 func _on_video_pressed() -> void:
 	if _busy:
 		return
-	Sfx.play("sfx_button")
 	_set_busy(true)
 	var ok: bool = await Game.refill_video()
 	if not is_inside_tree():
@@ -174,5 +228,4 @@ func _on_video_pressed() -> void:
 func _on_home_pressed() -> void:
 	if _busy:
 		return
-	Sfx.play("sfx_button")
 	_finish("home")

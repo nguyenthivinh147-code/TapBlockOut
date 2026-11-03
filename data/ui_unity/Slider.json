@@ -1,0 +1,98 @@
+{
+	"name": "Slider",
+	"source": "Assets/_Game/Prefabs/UI/Slider.prefab",
+	"root": {
+		"n": "Slider",
+		"id": "6109928512297137465",
+		"a": true,
+		"r": [0.5, 0, 0.5, 0, 0, -237, 600, 80, 0.5, 0.5],
+		"slider": {
+			"fill": "1055796078134408685",
+			"handle": "2997341410301354593",
+			"dir": 0,
+			"min": 0,
+			"max": 1,
+			"whole": false,
+			"value": 0.11,
+			"inter": false
+		},
+		"ch": [
+			{
+				"n": "Background",
+				"id": "6159021087723854739",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": "Resources_UI_Maincenter:UI_Maincenter_60",
+					"c": "ffffffff",
+					"t": 1,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1.1,
+					"rt": false,
+					"on": true
+				}
+			},
+			{
+				"n": "Fill Area",
+				"id": "8806500678376450195",
+				"a": true,
+				"r": [0, 0, 1, 1, -0.24, 0.98, -7.7601, -10.76, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "Fill",
+						"id": "1055796078134408685",
+						"a": true,
+						"r": [0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_UI_Maincenter:UI_Maincenter_61",
+							"c": "ffffffff",
+							"t": 1,
+							"pa": false,
+							"fc": true,
+							"fm": 0,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1.1,
+							"rt": false,
+							"on": true
+						}
+					}
+				]
+			},
+			{
+				"n": "Handle Slide Area",
+				"id": "511653947599562809",
+				"a": true,
+				"r": [0, 0, 1, 1, 5, 0, -10, 0, 0.5, 0.5],
+				"ch": [
+					{
+						"n": "Handle",
+						"id": "2997341410301354593",
+						"a": true,
+						"r": [0, 0, 0, 0, 3.5, 2, 80, 0, 1, 0.5],
+						"img": {
+							"sp": "Resources_UI_Maincenter:UI_Maincenter_62",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": false,
+							"on": true
+						}
+					}
+				]
+			}
+		]
+	}
+}

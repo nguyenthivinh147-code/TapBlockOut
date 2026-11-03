@@ -51,7 +51,9 @@ func test_every_screen_builds(t: T) -> void:
 		t.eq(raw, [], scene + " không lộ tên khoá dịch")
 		for b in node.find_children("*", "Button", true, false):
 			var btn := b as Button
-			t.ok(btn.custom_minimum_size.y >= 96, "%s/%s cao >= 96" % [scene, btn.name])
+			# Prefab buttons (unity_ui.gd) keep the Unity art size and grow only their hit area.
+			var h: float = (btn.call("hit_size") as Vector2).y if btn.has_method("hit_size") else btn.custom_minimum_size.y
+			t.ok(h >= 96 - 0.01, "%s/%s cao >= 96" % [scene, btn.name])
 		node.free()
 
 
@@ -115,6 +117,9 @@ func test_entry_points_in_preview(t: T) -> void:
 	home.closed.connect(func(r: Variant) -> void: got.append(r))
 	home.find_child("RankingTab", true, false).pressed.emit()
 	t.eq(got[0], {"action": "ranking"}, "tab Ranking")
+	var labels: Array = []
+	_walk_labels(home, labels)
+	t.ok(not labels.has(home.tr("home_ads_daily")), "ADS Daily nằm trong Shop, không có trên Home")
 	home.free()
 	var settings := _open("settings")
 	t.ok(settings.find_child("GalleryButton", true, false) != null, "có danh sách xem trước")

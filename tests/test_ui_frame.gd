@@ -106,3 +106,44 @@ func test_ramps_cover_every_side(t: T) -> void:
 		for i in range(1, stops.size()):
 			t.ok(float(stops[i][0]) > float(stops[i - 1][0]), "%s: vị trí mặt cắt tăng dần" % side)
 		t.ok(CandyFrame.ramp_texture(side) != null, "%s: có texture" % side)
+
+
+## Khối đi qua thanh trái: đoạn thanh khối phủ lên (2 ô theo trục thanh) lăn theo hướng khối, dừng đúng một mặt lục giác rồi chìm lại.
+func test_hit_spins_segment_under_block(t: T) -> void:
+	var v := _make(_lv(4, 5, {"blocks": [{"id": "b1", "color": "green", "cells": [[0, 1], [0, 2], [1, 2]], "ice": 0, "chained_by": "", "inner_color": "", "fog": false}]}))
+	var frame: Node = v.get_node("Frame")
+	var cell: float = v._cell
+	var br: Rect2 = v.board_rect()
+	v._hit_bar("left", v._nodes["b1"], Vector2(-1, 0), false, 1.0, CandyFrame.SPIN_EXIT)
+	t.near(float(_part_param(v, "left", "seg_half")), cell, 0.5, "đoạn dài bằng 2 ô khối phủ lên")
+	var bar_mid := CandyFrame.bar_rect("left", br, cell).get_center().y
+	t.near(float(_part_param(v, "left", "seg_at")), br.position.y + 2.0 * cell - bar_mid, 0.5, "đoạn nằm ngang hàng khối")
+	(frame._hit_tws["left"] as Tween).custom_step(0.2)
+	t.ok(float(_part_param(v, "left", "spin")) > 0.0, "khối đi sang trái thì đoạn lăn chiều dương")
+	t.ok(float(_part_param(v, "left", "seg")) > 0.9, "đang lăn thì đoạn nổi hẳn lên")
+	(frame._hit_tws["left"] as Tween).custom_step(CandyFrame.SPIN_TIME)
+	t.near(float(_part_param(v, "left", "spin")), CandyFrame.SPIN_EXIT * PI / 3.0, 0.001, "dừng đúng sau 3 mặt lục giác")
+	t.near(float(_part_param(v, "left", "seg")), 0.0, 0.001, "dừng rồi thì đoạn chìm lại vào thanh")
+	# cổng đóng: chỉ các ô mép trước chạm thanh, lăn ngược chiều với cạnh phải
+	v._hit_bar("right", v._nodes["b1"], Vector2(1, 0), true, 0.7, CandyFrame.SPIN_BUMP)
+	t.near(float(_part_param(v, "right", "seg_half")), cell * 0.5, 0.5, "dội lại: chỉ ô mép trước")
+	(frame._hit_tws["right"] as Tween).custom_step(CandyFrame.SPIN_TIME + 0.1)
+	t.near(float(_part_param(v, "right", "spin")), -PI / 3.0, 0.001, "cạnh phải lăn chiều âm, 1 mặt lục giác")
+	v.queue_free()
+
+
+## Lăn đều trong lúc khối còn qua thanh rồi chậm dần, không giật ở chỗ nối.
+func test_spin_holds_then_slows_smoothly(t: T) -> void:
+	var v := _make(_lv(4, 5))
+	var frame: Node = v.get_node("Frame")
+	var angle := PI * 1.5
+	var hold := 0.3
+	var at := func(s: float) -> float:
+		frame._apply_spin(s, "up", 0.0, angle, hold)
+		return float(frame._spin["up"])
+	var dt := 0.001
+	var before: float = (at.call(hold) - at.call(hold - dt)) / dt
+	var after: float = (at.call(hold + dt) - at.call(hold)) / dt
+	t.near(after, before, before * 0.02, "vận tốc liền ở chỗ hết hold")
+	t.near(at.call(hold + CandyFrame.SPIN_TIME), 3.0 * angle / CandyFrame.SPIN_TIME * hold + angle, 0.001, "tổng góc = lăn đều + chậm dần")
+	v.queue_free()

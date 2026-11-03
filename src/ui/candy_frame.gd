@@ -46,6 +46,13 @@ const END_COLORS := {"up": Color("EFA512"), "left": Color("33BD11"), "right": Co
 const HIT_TIME := 0.45  # giây, sóng sáng và nảy của thanh khi bị va
 const HIT_BUMP := 0.1  # thanh bật ra ngoài chừng này ô
 const HIT_POP := 0.42  # mũi tên phồng thêm chừng này
+## Đoạn thanh khối phủ lên nổi thành lăng trụ lục giác, lăn theo hướng khối đi rồi chậm dần và nhập lại vào thanh.
+const SPIN_FACE := PI / 3.0  # góc một mặt lục giác
+const SPIN_TIME := 0.6  # giây chậm dần tới khi dừng, sau khi khối đã qua hết
+const SPIN_EXIT := 3  # khối thoát qua: lăn chừng này mặt trong lúc chậm dần
+const SPIN_BUMP := 1  # khối dội vào cổng đóng
+const SPIN_RISE := 0.05  # giây để đoạn nổi lên
+const SPIN_SINK := 0.7  # từ phần này của SPIN_TIME đoạn chìm dần vào thanh
 
 static var _ramp_cache: Dictionary = {}
 
@@ -54,6 +61,7 @@ var _corners: Dictionary = {}  # góc -> ColorRect
 var _open: Dictionary = {}  # cạnh -> 0 (đóng) .. 1 (mở)
 var _bar_home: Dictionary = {}  # cạnh -> vị trí khi chưa bị va
 var _hit_tws: Dictionary = {}  # cạnh -> Tween
+var _spin: Dictionary = {}  # cạnh -> góc quay hiện tại của đoạn bị va
 var _cell: float = 64.0
 
 
@@ -209,18 +217,37 @@ func set_flash(v: float) -> void:
 		(_bars[side].material as ShaderMaterial).set_shader_parameter("flash", v)
 
 
-## Khối đập vào thanh tại `at` (toạ độ của khung): thanh bật ra rồi nảy về, sóng sáng chạy dọc thanh, mũi tên phồng lên.
-func hit(side: String, at: Vector2, strength: float = 1.0) -> void:
+## Khối đập vào thanh, phủ một đoạn dài `span` px có tâm ở `at` (toạ độ của khung): thanh bật ra rồi nảy về,
+## sóng sáng chạy dọc thanh, mũi tên phồng lên, đoạn bị phủ lăn đều trong `hold` giây (khối còn đang qua thanh)
+## rồi chậm dần qua `turns` mặt.
+func hit(side: String, at: Vector2, span: float, strength: float = 1.0, turns: int = SPIN_EXIT, hold: float = 0.0) -> void:
 	var part: ColorRect = _bars[side]
+	var m: ShaderMaterial = part.material
 	var center: Vector2 = _bar_home[side] + part.size * 0.5
 	var along := at.y - center.y if side == "left" or side == "right" else at.x - center.x
-	(part.material as ShaderMaterial).set_shader_parameter("hit_at", along)
+	m.set_shader_parameter("hit_at", along)
+	m.set_shader_parameter("seg_at", along)
+	m.set_shader_parameter("seg_half", span * 0.5)
 	var old: Tween = _hit_tws.get(side, null)
 	if old != null and old.is_valid():
 		old.kill()
-	var tw := create_tween()
+	var tw := create_tween().set_parallel(true)
 	_hit_tws[side] = tw
 	tw.tween_method(_apply_hit.bind(side, strength), 0.0, 1.0, HIT_TIME)
+	# mặt trên lăn cùng hướng khối đi; tiếp từ góc đang dở nếu thanh đang lăn
+	var out: Vector2 = ARROWS[side]["dir"]
+	var angle := -(out.x + out.y) * float(turns) * SPIN_FACE
+	tw.tween_method(_apply_spin.bind(side, _spin.get(side, 0.0), angle, hold), 0.0, hold + SPIN_TIME, hold + SPIN_TIME)
+
+
+## `s` tính bằng giây. Lăn đều trong `hold`, rồi chậm dần (cubic) thêm `angle`, nối liền vận tốc.
+func _apply_spin(s: float, side: String, from: float, angle: float, hold: float) -> void:
+	var m: ShaderMaterial = (_bars[side] as ColorRect).material
+	var speed := 3.0 * angle / SPIN_TIME
+	var u := clampf((s - hold) / SPIN_TIME, 0.0, 1.0)
+	_spin[side] = from + speed * minf(s, hold) + angle * (1.0 - pow(1.0 - u, 3.0))
+	m.set_shader_parameter("spin", _spin[side])
+	m.set_shader_parameter("seg", smoothstep(0.0, SPIN_RISE, s) * (1.0 - smoothstep(SPIN_SINK, 1.0, u)))
 
 
 func _apply_hit(t: float, side: String, strength: float) -> void:

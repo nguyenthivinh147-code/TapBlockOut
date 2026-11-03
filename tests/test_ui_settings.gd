@@ -30,6 +30,12 @@ func _game() -> Node:
 	return g
 
 
+## Text of the first label inside a prefab button (TMP child).
+func _label_text(b: Node) -> String:
+	var l := b.find_children("*", "Label", true, false)
+	return (l[0] as Label).text if not l.is_empty() else ""
+
+
 func _open(opened: Array) -> Control:
 	var node := (load("res://scenes/settings.tscn") as PackedScene).instantiate() as Control
 	node.opener = func(url: String) -> void: opened.append(url)
@@ -47,7 +53,7 @@ func test_toggles_write_settings(t: T) -> void:
 		t.eq(bool(g.s.settings[key]), true, key + " mặc định bật")
 		node.toggle_buttons[key].pressed.emit()
 		t.eq(bool(g.s.settings[key]), false, key + " tắt")
-		t.ok(node.toggle_buttons[key].custom_minimum_size.y >= 96, key + " đủ lớn")
+		t.ok(node.toggle_buttons[key].hit_size().y >= 96, key + " đủ lớn")
 		node.toggle_buttons[key].pressed.emit()
 		t.eq(bool(g.s.settings[key]), true, key + " bật lại")
 	node.toggle_buttons["sfx"].pressed.emit()
@@ -59,14 +65,21 @@ func test_toggles_write_settings(t: T) -> void:
 func test_language(t: T) -> void:
 	var g := _game()
 	var node := _open([])
+	t.eq(node.lang_buttons.size(), 0, "chưa mở popup Language")
+	node.language_button.pressed.emit()
+	t.ok(node.language_panel != null, "nút Language mở popup")
 	t.eq(node.lang_buttons.size(), 3, "3 lựa chọn ngôn ngữ")
 	node.lang_buttons["vi"].pressed.emit()
+	t.ok(node.language_panel != null, "đổi ngôn ngữ vẫn mở popup")
+	t.eq(_label_text(node.language_button), "Ngôn ngữ", "chữ đổi theo ngôn ngữ mới")
 	t.eq(str(g.s.settings.lang), "vi", "lưu lang vi")
 	t.eq(TranslationServer.get_locale().begins_with("vi"), true, "đổi locale")
 	node.lang_buttons["en"].pressed.emit()
 	t.eq(str(g.s.settings.lang), "en", "lưu lang en")
 	node.lang_buttons[""].pressed.emit()
 	t.eq(str(g.s.settings.lang), "", "theo thiết bị")
+	node.language_panel.find_child("LanguageOk", true, false).pressed.emit()
+	t.eq(node.language_panel, null, "OK đóng popup Language")
 	node.queue_free()
 	TranslationServer.set_locale("en")
 
@@ -112,18 +125,33 @@ func test_version_and_tester_menu(t: T) -> void:
 	var plugin := FakePlugin.new()
 	_root().get_node("Platform")._plugin = plugin
 	var node := _open([])
-	t.ok(node.version_button.text.contains(str(Config.CONTENT.build)), "hiện phiên bản")
-	for i in 6:
+	t.ok(_label_text(node.version_button).contains(str(Config.CONTENT.build)), "hiện phiên bản")
+	for i in 9:
 		node.version_button.pressed.emit()
-	t.eq(node.tester_panel, null, "6 lần chưa mở")
+	t.eq(node.tester_panel, null, "9 lần chưa mở")
 	node.version_button.pressed.emit()
-	t.ok(node.tester_panel != null, "7 lần mở menu tester")
-	node.debugger_button.pressed.emit()
+	t.ok(node.tester_panel != null, "10 lần mở menu tester")
+	node.tester_panel.debugger_button.pressed.emit()
 	t.eq(plugin.debugger_calls, 1, "mở mediation debugger")
-	node.close_tester()
-	t.eq(node.tester_panel, null, "đóng menu tester")
+	node.tester_panel.close()
+	t.eq(node.tester_panel, null, "X đóng menu tester, Settings vẫn mở")
 	node.queue_free()
 	_root().get_node("Platform")._plugin = null
+
+
+func test_tester_save_closes_settings(t: T) -> void:
+	var g := _game()
+	Config.account_tool_override = 1
+	var node := _open([])
+	var got: Array = []
+	node.closed.connect(func(r: Variant) -> void: got.append(r))
+	node.open_tester()
+	node.tester_panel.fields["coins"].text = "777"
+	node.tester_panel.save_button.pressed.emit()
+	t.eq(int(g.s.coins), 777, "lưu gold")
+	t.eq(node.tester_panel, null, "menu tester đóng")
+	t.eq(got.size(), 1, "Settings đóng để Main dựng lại Home")
+	node.queue_free()
 
 
 func test_close_signal(t: T) -> void:
@@ -134,3 +162,27 @@ func test_close_signal(t: T) -> void:
 	node.close_button.pressed.emit()
 	t.eq(got.size(), 1, "closed phát")
 	node.queue_free()
+
+
+func test_prefab_layout_touch_targets(t: T) -> void:
+	_game()
+	var node := _open([])
+	var card: Control = node.find_child("PauseMenu", true, false)
+	t.ok(absf(card.size.x - 724.0) < 0.5, "rộng popup theo prefab SettingMainMenuLayer (724)")
+	var hits: Array = [node.close_button, node.support_button, node.language_button, node.restore_button, node.version_button]
+	hits.append_array(node.toggle_buttons.values())
+	for b in hits:
+		var s: Vector2 = b.hit_size()
+		t.ok(s.x >= 95.9 and s.y >= 95.9, "%s chạm được ít nhất 96 px" % (b as Node).name)
+	node.queue_free()
+
+
+func test_ingame_life_badge(t: T) -> void:
+	_game()
+	for cost in [false, true]:
+		var node := (load("res://scenes/popup_ingame_settings.tscn") as PackedScene).instantiate() as Control
+		_root().add_child(node)
+		node.setup({"life_cost": cost})
+		t.eq(node.home_button.find_child("LifeBadge", true, false) != null, cost, "huy hiệu -1 tim trên Home khi life_cost=%s" % cost)
+		t.eq(node.retry_button.find_child("LifeBadge", true, false) != null, cost, "huy hiệu -1 tim trên Retry khi life_cost=%s" % cost)
+		node.queue_free()

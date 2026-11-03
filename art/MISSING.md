@@ -5,7 +5,7 @@
 - Cơ chế (Task 9.5): đã tạo xong `mech_stone`, `mech_ice`, `mech_chain`, `mech_key`, `mech_fog` (art/manifest.mech.json, gộp vào manifest.json).
 - Bản bỏ (superseded): `art/images/block_surface.png`, `art/images/art_no_lives.png` (thay bằng `_v2`).
 - Chưa có icon riêng cho `shop_<sku>` (gói shop, popup offer): `ThemeKit.icon` trả placeholder vẽ bằng code.
-  `booster_hint|move|smash` dùng tạm `ui_hint|ui_moves|ui_smash` qua `ICON_ALIAS`.
+- `booster_hint|move|smash` (2026-11-03): bản AI (`art/images/booster_*_ai.png`) dựng từ bố cục SVG vẽ tay (`art/images/booster_*.svg`). Ảnh tách nền của MCP để lại alpha 1-4 phủ cả khung; `tools/fit_icon.gd` đã lọc.
 
 ## Âm thanh
 - Không có `art/MISSING.audio.md` (không thiếu file demo nào).

@@ -38,7 +38,8 @@ const HEART_BUNDLE := {"ends_in": "23:59:52", "rows": [
 ]}
 const HEART_SUPPORT := {"price": "$2.99"}
 const WEEKLY_UPSELL := {"price": "$4.99", "ends_in": "6d"}
-const STREAK_MAIN := {"ends_in": "2d 11h", "streak": 3, "milestones": [6, 4, 2, 0]}
+const STREAK_INTRO := {"ends_in": "2d 11h"}
+const STREAK_MAIN :={"ends_in": "2d 11h", "streak": 3, "milestones": [6, 4, 2, 0]}
 const STREAK_REWARDS := {"rows": [
 	{"streak": 2, "kind": "gold", "amount": 200},
 	{"streak": 4, "kind": "hint", "amount": 2},

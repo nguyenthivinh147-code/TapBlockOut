@@ -6,8 +6,8 @@ const LevelData := preload("res://src/core/level_data.gd")
 const Solver := preload("res://src/core/solver.gd")
 const Validate := preload("res://tools/validate_levels.gd")
 const Config := preload("res://src/config.gd")
+const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
-const HARD_LEVELS := [8, 12, 16, 20]
 const NEIGHBORS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 
 
@@ -15,41 +15,6 @@ func _load(id: int) -> Dictionary:
 	var path := "res://data/levels/level_%04d.json" % id
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 	return parsed if parsed is Dictionary else {}
-
-
-## [min, max] số khối theo bảng design.md.
-func _count_range(id: int) -> Array:
-	if id == 1:
-		return [2, 2]
-	if id <= 3:
-		return [3, 4]
-	if id <= 5:
-		return [5, 7]
-	if id <= 7:
-		return [8, 10]
-	if id == 8:
-		return [10, 10]
-	if id <= 11:
-		return [12, 15]
-	if id == 12:
-		return [16, 16]
-	if id <= 15:
-		return [16, 20]
-	if id == 16:
-		return [22, 22]
-	if id <= 19:
-		return [22, 26]
-	return [28, 28]
-
-
-func _colors_wanted(id: int) -> int:
-	if id <= 3:
-		return 1
-	if id <= 5:
-		return 2
-	if id <= 8:
-		return 3
-	return 4
 
 
 func _colors_of(d: Dictionary) -> Dictionary:
@@ -128,28 +93,26 @@ func test_files_exist_and_valid(t: T) -> void:
 
 
 func test_table(t: T) -> void:
-	var prev_count := 0
 	for id in range(1, 21):
 		var d := _load(id)
 		if d.is_empty():
 			continue
 		var n: int = d["blocks"].size()
-		var rng := _count_range(id)
-		t.ok(n >= rng[0] and n <= rng[1], "L%d số khối %d trong [%d, %d]" % [id, n, rng[0], rng[1]])
-		t.ok(n >= prev_count, "L%d số khối không giảm" % id)
-		prev_count = n
-		t.eq(bool(d["hard"]), HARD_LEVELS.has(id), "L%d cờ HARD" % id)
-		t.eq(_colors_of(d).size(), _colors_wanted(id), "L%d số màu" % id)
+		var want := DifficultyCurve.block_count(id)
+		t.ok(absi(n - want) <= 1 or Config.UNLOCK.stone == id, "L%d số khối %d ~ đường cong %d" % [id, n, want])
+		t.eq(bool(d["hard"]), DifficultyCurve.is_hard(id), "L%d cờ HARD" % id)
+		if id <= 4:
+			t.eq(_colors_of(d).size(), [2, 3, 3, 4][id - 1], "L%d số màu" % id)
+		else:
+			t.ok(_colors_of(d).size() >= 3, "L%d có ít nhất 3 màu" % id)
 		t.eq(int(d["w"]), Config.BOARD_W, "L%d bàn rộng cố định" % id)
 		t.eq(int(d["h"]), Config.BOARD_H, "L%d bàn cao cố định" % id)
-		t.eq(d["stones"].size(), 0, "L%d không có đá" % id)
+		if id < int(Config.UNLOCK.stone):
+			t.eq(d["stones"].size(), 0, "L%d chưa có đá" % id)
 		t.eq(d["pulse_sides"].size(), 0, "L%d không có cổng nhịp" % id)
-	# màu tăng dần: vàng từ đầu, thêm xanh lá L4, xanh dương L6, tím L9
-	t.ok(_colors_of(_load(1)).has("yellow") and _colors_of(_load(1)).size() == 1, "L1 chỉ vàng")
-	t.ok(_colors_of(_load(4)).has("green"), "L4 có xanh lá")
-	t.ok(_colors_of(_load(6)).has("blue"), "L6 có xanh dương")
-	t.ok(_colors_of(_load(9)).has("purple"), "L9 có tím")
-	t.ok(not _colors_of(_load(8)).has("purple"), "L8 chưa có tím")
+	# L1 có 2 màu, L4 đủ 4 màu: số màu tăng ngay từ 4 level đầu
+	t.ok(_colors_of(_load(1)).size() == 2, "L1 hai màu")
+	t.ok(_colors_of(_load(4)).size() == 4, "L4 đủ bốn màu")
 
 
 func test_no_mechanics(t: T) -> void:
@@ -175,9 +138,9 @@ func test_solver_and_moves(t: T) -> void:
 		t.eq(int(d["min_taps"]), int(r["min_taps"]), "L%d min_taps lưu" % id)
 		var slack: int = Solver.slack_for(d)
 		t.eq(int(d["moves"]), int(r["min_taps"]) + slack, "L%d moves" % id)
-		if id <= 5:
-			t.eq(slack, 3, "L%d dư 3" % id)
-		elif HARD_LEVELS.has(id):
+		if id <= 3:
+			t.eq(slack, 5, "L%d dư 5" % id)
+		elif DifficultyCurve.is_hard(id):
 			t.eq(slack, 1, "L%d HARD dư 1" % id)
 		else:
 			t.ok(slack >= 2, "L%d dư >= 2" % id)
@@ -199,8 +162,8 @@ func test_play_through(t: T) -> void:
 
 
 func test_early_levels_have_blocked_block(t: T) -> void:
-	# L2-3: có khối đầu tiên bị chặn (không phải khối nào cũng thoát ngay)
-	for id in [2, 3]:
+	# L3-4: có khối đầu tiên bị chặn (không phải khối nào cũng thoát ngay)
+	for id in [3, 4]:
 		var d := _load(id)
 		var b := BoardState.new(d)
 		var stuck := 0
@@ -208,10 +171,11 @@ func test_early_levels_have_blocked_block(t: T) -> void:
 			if not b.can_exit(bid):
 				stuck += 1
 		t.ok(stuck >= 1, "L%d có khối bị chặn" % id)
-	# L1 chỉ cần chạm là đi
-	var b1 := BoardState.new(_load(1))
-	for bid in b1.block_ids():
-		t.ok(b1.can_exit(bid), "L1 %s thoát ngay" % bid)
+	# L1-2 chỉ cần chạm là đi
+	for id in [1, 2]:
+		var b1 := BoardState.new(_load(id))
+		for bid in b1.block_ids():
+			t.ok(b1.can_exit(bid), "L%d %s thoát ngay" % [id, bid])
 
 
 func test_shapes_and_layouts(t: T) -> void:
@@ -229,7 +193,5 @@ func test_shapes_and_layouts(t: T) -> void:
 		var sig := JSON.stringify(d["blocks"])
 		t.ok(not sigs.has(sig), "L%d không trùng layout level khác" % id)
 		sigs[sig] = true
-	for k in ["bar", "L", "T", "S", "U"]:
+	for k in ["bar", "L"]:
 		t.ok(seen.has(k), "có khối dạng %s" % k)
-	t.ok(not seen.has("other"), "không có hình lạ")
-	t.ok(sym >= 4, "ít nhất 4 level đối xứng (có %d)" % sym)

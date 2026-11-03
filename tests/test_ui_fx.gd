@@ -54,31 +54,7 @@ func _home(v: Control, id: String) -> Vector2:
 	return v.board_rect().position + Vector2(n.origin_cell) * v.cell_size()
 
 
-func test_fracture_covers_the_block_exactly(t: T) -> void:
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 7
-	for cells: Array in [[Vector2i.ZERO], [Vector2i.ZERO, Vector2i(1, 0), Vector2i(2, 0)],
-			[Vector2i.ZERO, Vector2i(1, 0), Vector2i(2, 0), Vector2i(0, 1), Vector2i(2, 1), Vector2i(0, 2), Vector2i(2, 2), Vector2i(1, 3)]]:
-		var polys := CandyShards.fracture(cells, Vector2.UP, rng)
-		var area := 0.0
-		for poly in polys:
-			area += absf(CandyShards._area(poly))
-			t.ok(poly.size() >= 3, "mảnh là đa giác")
-		t.near(area, float(cells.size()), 0.01, "%d ô: mảnh ghép khít đúng diện tích" % cells.size())
-		t.ok(polys.size() >= cells.size() * 2, "%d ô: đủ mảnh để thấy vỡ (%d)" % [cells.size(), polys.size()])
-		t.ok(polys.size() <= CandyShards.SHARD_BUDGET + cells.size() + 6, "%d ô: không quá nhiều mảnh (%d)" % [cells.size(), polys.size()])
-
-
-func test_clip_half_keeps_the_near_side(t: T) -> void:
-	var square := PackedVector2Array([Vector2.ZERO, Vector2(1, 0), Vector2(1, 1), Vector2(0, 1)])
-	var left := CandyShards._clip_half(square, Vector2(0.5, 0.5), Vector2(-1, 0))
-	t.near(absf(CandyShards._area(left)), 0.5, 0.0001, "còn nửa hình")
-	for p in left:
-		t.ok(p.x <= 0.5001, "chỉ giữ phía trái")
-	t.eq(CandyShards._clip_half(square, Vector2(2, 0), Vector2(1, 0)).size(), 0, "ngoài hẳn thì không còn gì")
-
-
-func test_exit_shatters_at_the_bar_and_cleans_up(t: T) -> void:
+func test_exit_grinds_through_the_bar_and_cleans_up(t: T) -> void:
 	var board := BoardState.new(_lv([_b("a", "yellow", [[2, 3], [2, 4]]), _b("c", "blue", [[4, 6]])]))
 	var v := _make(board)
 	await _frames()
@@ -86,20 +62,21 @@ func test_exit_shatters_at_the_bar_and_cleans_up(t: T) -> void:
 	v.apply_result(board.tap("a"))
 	t.eq(v.block_count(), 1, "khối rời bàn ngay khi chạm")
 	t.ok(v.block_at(v.cell_center(Vector2i(2, 3))) == "", "ô đã trống ngay khi chạm")
-	t.eq(_fx_named(v, "Shards").size(), 0, "chưa vỡ khi còn đang lao")
+	t.eq(_fx_named(v, "Shards").size(), 0, "chưa nghiền khi còn đang lao")
 	await _tree().create_timer(0.30).timeout
 	var bursts := _fx_named(v, "Shards")
-	t.eq(bursts.size(), 1, "tới thanh thì vỡ")
-	if bursts.size() == 1:
-		t.ok(bursts[0].top_level, "mảnh thoát khỏi vùng cắt của bàn")
-		t.ok(bursts[0].shard_count() > 8, "đủ mảnh và vụn")
-	await _frames(4)
-	t.ok(not is_instance_valid(node), "khối đã xoá")
-	t.ok(_fx_named(v, "Flash").size() >= 1, "có loé sáng")
+	t.eq(bursts.size(), 1, "tới thanh thì bắt đầu nghiền")
+	t.ok(is_instance_valid(node) and (node.get_parent() as Control).clip_contents, "khối trôi vào vùng cắt ở mặt trong thanh")
 	t.ok(_fx_named(v, "Sparkles").size() >= 1, "có sao lấp lánh")
 	t.ok(await _wait_done(v), "báo xong hoạt ảnh")
+	await _frames(2)
+	t.ok(not is_instance_valid(node), "khối đã xoá")
+	if bursts.size() == 1 and is_instance_valid(bursts[0]):
+		t.ok(bursts[0].top_level, "vụn thoát khỏi vùng cắt của bàn")
+		# hai ô đi qua thanh, mỗi ô diện tích ra GRIND_BITS khối vuông
+		t.ok(bursts[0].shard_count() >= 24, "đủ khối vuông nhỏ (%d)" % bursts[0].shard_count())
 	await _tree().create_timer(1.3).timeout
-	t.eq(_fx_named(v, "Shards").size(), 0, "mảnh tự dọn khi hết đời")
+	t.eq(_fx_named(v, "Shards").size(), 0, "vụn tự dọn khi hết đời")
 	v.queue_free()
 
 

@@ -1,0 +1,22 @@
+{
+	"name": "FireWorkEndgame",
+	"source": "Assets/_Game/Layer/Prefab/FireWorkEndgame.prefab",
+	"root": {
+		"n": "FireWorkEndgame",
+		"id": "6177914810676446325",
+		"a": true,
+		"r": [0.5, 0.5, 0.5, 0.5, 817, -192, 100, 100, 0.5, 0.5],
+		"s": [0, 0],
+		"z": 37.56,
+		"ch": [
+			{
+				"n": "FireWorkEndgame (1)",
+				"id": "456089207554503108",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, -1251, 926, 100, 100, 0.5, 0.5],
+				"s": [0, 0],
+				"z": -71.86
+			}
+		]
+	}
+}

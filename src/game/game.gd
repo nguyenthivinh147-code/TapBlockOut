@@ -163,16 +163,31 @@ func boot() -> void:
 ## Dùng trong test: file lưu riêng, trạng thái và nhật ký sạch.
 func reset_for_test(path: String) -> void:
 	save_path = path
-	for p in [path, path + ".bak", path + ".tmp"]:
+	_remove_save_files()
+	Config.reset()
+	_clear_session()
+	in_level = false
+	test_now = 0
+	test_tz = null
+	_session_start = now()
+	_first_session = false
+	if Platform.an != null and Platform.an.has_method("clear"):
+		Platform.an.clear()
+
+
+func _remove_save_files() -> void:
+	for p in [save_path, save_path + ".bak", save_path + ".tmp"]:
 		if FileAccess.file_exists(p):
 			DirAccess.remove_absolute(p)
+
+
+## Back to the state before boot: default save, new store (drops a queued write), no session leftovers.
+func _clear_session() -> void:
 	store = null
 	_ensure_store()
-	Config.reset()
 	s = SaveSchema.defaults()
 	_booted = false
 	_boot_done = false
-	in_level = false
 	_buying = 0
 	_cloud_applied = ""
 	_cloud_late = ""
@@ -183,13 +198,7 @@ func reset_for_test(path: String) -> void:
 	_x2_pending = 0
 	_x2_free = false
 	_gen_cache = {}
-	test_now = 0
-	test_tz = null
 	last_ad_reason = ""
-	_session_start = now()
-	_first_session = false
-	if Platform.an != null and Platform.an.has_method("clear"):
-		Platform.an.clear()
 
 
 func save_now() -> void:
@@ -1541,6 +1550,45 @@ func set_setting(key: String, value: Variant) -> void:
 func haptic(ms: int) -> void:
 	if bool(s.settings.get("haptics", true)):
 		Platform.haptic(ms)
+
+
+# --- tester menu (Config.account_tool: debug builds only) ---
+
+## Sets account values straight from the tester menu: any of {coins, level, inv: {hint, move, smash}}. Not
+## logged as earn/spend. Gold and boosters stay >= 0, level >= 1 (past the last level Home shows "coming soon").
+## Returns false (nothing changed) when the build has no account tool.
+func tester_edit(edits: Dictionary) -> bool:
+	if not Config.account_tool():
+		return false
+	if edits.has("coins"):
+		s["coins"] = maxi(int(edits.coins), 0)
+	var inv: Dictionary = edits.get("inv", {})
+	for k in inv:
+		if Wallet.KINDS.has(k):
+			s.inv[k] = maxi(int(inv[k]), 0)
+	if edits.has("level"):
+		s["level"] = maxi(int(edits.level), 1)
+		# Weekly Pass hearts and the leaderboard depend on the level.
+		weekly_refresh()
+		lb_refresh()
+	save_now()
+	coins_changed.emit(int(s.coins))
+	inv_changed.emit()
+	lives_changed.emit()
+	return true
+
+
+## Deletes the account: save file and .bak, the platform's cloud backup and mock purchases, then boots again as
+## a fresh install. The fresh save is pushed over the cloud copy right away (Platform.flush).
+func tester_wipe() -> bool:
+	if not Config.account_tool():
+		return false
+	_remove_save_files()
+	Platform.wipe()
+	_clear_session()
+	await boot()
+	Platform.flush()
+	return true
 
 
 func _notif_candidates() -> Array:

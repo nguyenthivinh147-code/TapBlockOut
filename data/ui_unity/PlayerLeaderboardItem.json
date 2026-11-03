@@ -1,0 +1,432 @@
+{
+	"name": "PlayerLeaderboardItem",
+	"source": "Assets/_Game/Prefabs/UI/PlayerLeaderboardItem.prefab",
+	"root": {
+		"n": "PlayerLeaderboardItem",
+		"id": "29476936861034364",
+		"a": false,
+		"r": [0, 1, 0, 1, 400, 0, 800, 150, 0.5, 1],
+		"cs": [
+			{
+				"name": "UILeaderboardUserCard",
+				"_avatarImage": {"node": "4705843628370379277"},
+				"_frameImage": {"node": "7004884631244999187"},
+				"_nameText": {"node": "495309303844402971"},
+				"_rankPositionText": {"node": "8478803267770874854"},
+				"_rankPointText": {"node": "400795580441615286"},
+				"_rankPointImage": {"node": "2257392839777353362"},
+				"_rankPointSprite": {"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_2"},
+				"_leaderboardTopRewardsSO": {"asset": "LeaderboardTopRewards.asset"},
+				"milestoneItem": {"node": "2994215591793515026"},
+				"_avatarConfigSO": {"asset": "AvatarConfigSO.asset"},
+				"_frameConfigSO": {"asset": "FrameIconSO.asset"},
+				"_imageStates": [
+					{"node": "2994215591793515026"},
+					{"node": "6480022283174987630"},
+					{"node": "2624584879288217413"},
+					{"node": "6778570638023060819"},
+					{"node": "1409120030068744336"}
+				],
+				"_shinyEffectForUGUI": {"node": "2624584879288217413"}
+			},
+			{
+				"name": "UILeaderboardUserCardLoader",
+				"_userCard": {"node": "29476936861034364"}
+			},
+			{
+				"name": "DynamicScrollViewElement",
+				"rectTransform": {"node": "29476936861034364"},
+				"dataLoader": {
+					"_underlyingValue": {"node": "29476936861034364"}
+				},
+				"numPerRow": "1",
+				"flexible": "0",
+				"ignoreLayout": "0"
+			}
+		],
+		"ch": [
+			{
+				"n": "BG",
+				"id": "2624584879288217413",
+				"a": true,
+				"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5],
+				"img": {
+					"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_28",
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true,
+					"mat": "UI-Effect-Shiny"
+				},
+				"cs": [
+					{"name": "ShinyEffectForUGUI", "PlayAutomatic": "1", "AutoPlayDuration": "1", "AutoPlayInterval": "3"}
+				]
+			},
+			{
+				"n": "RankNumberTxt",
+				"id": "8478803267770874854",
+				"a": true,
+				"r": [0, 0.5, 0, 0.5, 29.1, 0, 88.5, 115.11, 0, 0.5],
+				"txt": {
+					"s": "4",
+					"fs": 50,
+					"auto": null,
+					"c": "000000ff",
+					"h": 2,
+					"v": 512,
+					"w": false,
+					"ov": 0,
+					"st": 0,
+					"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+					"font": "Baloo Bhaijaan Regular 400 SDF",
+					"cs": 0,
+					"ws": 0,
+					"ls": 0,
+					"m": [0, 0, 0, 0],
+					"rt": true,
+					"rich": true,
+					"on": true
+				},
+				"ch": [
+					{
+						"n": "Image",
+						"id": "6480022283174987630",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 65, 70, 0.5, 0.5],
+						"img": {
+							"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_14",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					}
+				]
+			},
+			{
+				"n": "PlayerArrow",
+				"id": "1409120030068744336",
+				"a": true,
+				"r": [0, 0.5, 0, 0.5, 13.02, 0, 50, 50, 0.5, 0.5],
+				"img": {
+					"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_7",
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				}
+			},
+			{
+				"n": "Avatar",
+				"id": "4705843628370379277",
+				"a": true,
+				"r": [0, 0.5, 0, 0.5, 124.1, 0, 80, 80, 0, 0.5],
+				"img": {
+					"sp": "Av_02",
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				},
+				"ch": [
+					{
+						"n": "Frame",
+						"id": "7004884631244999187",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 90, 90, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					}
+				]
+			},
+			{
+				"n": "PlayerName",
+				"id": "495309303844402971",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, -181.4, 0, 295.4, 91.2, 0, 0.5],
+				"txt": {
+					"s": "Playera5cd46",
+					"fs": 45,
+					"auto": [18, 45],
+					"c": "000000ff",
+					"h": 1,
+					"v": 512,
+					"w": true,
+					"ov": 0,
+					"st": 0,
+					"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
+					"font": "Baloo Bhaijaan Regular 400 SDF",
+					"cs": 0,
+					"ws": 0,
+					"ls": 0,
+					"m": [0, 0, 0, 0],
+					"rt": true,
+					"rich": true,
+					"on": true
+				}
+			},
+			{
+				"n": "PointPanel",
+				"id": "6778570638023060819",
+				"a": true,
+				"r": [1, 0.5, 1, 0.5, -30, 0, 145.48, 50, 1, 0.5],
+				"img": {
+					"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_19",
+					"c": "ffffffff",
+					"t": 1,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				},
+				"ch": [
+					{
+						"n": "RankPointIcon",
+						"id": "2257392839777353362",
+						"a": true,
+						"r": [0, 0.5, 0, 0.5, 9.9, 0, 70, 70, 0.5, 0.5],
+						"img": {
+							"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_2",
+							"c": "ffffffff",
+							"t": 0,
+							"pa": false,
+							"fc": true,
+							"fm": 4,
+							"fa": 1,
+							"fo": 0,
+							"cw": true,
+							"ppu": 1,
+							"rt": true,
+							"on": true
+						}
+					},
+					{
+						"n": "PointText",
+						"id": "400795580441615286",
+						"a": true,
+						"r": [0.5, 0.5, 0.5, 0.5, 12.4, 0, 88.5, 43.4, 0.5, 0.5],
+						"txt": {
+							"s": "24",
+							"fs": 31.6,
+							"auto": [18, 72],
+							"c": "ffffffff",
+							"h": 2,
+							"v": 512,
+							"w": true,
+							"ov": 0,
+							"st": 0,
+							"mat": "Baloo Outline - Blue 1",
+							"font": "Baloo Bhaijaan Regular 400 SDF",
+							"cs": 0,
+							"ws": 0,
+							"ls": 0,
+							"m": [0, 0, 0, 0],
+							"rt": true,
+							"rich": true,
+							"on": true
+						}
+					}
+				]
+			},
+			{
+				"n": "Gift",
+				"id": "2994215591793515026",
+				"a": true,
+				"r": [0.5, 0.5, 0.5, 0.5, 150, 0, 70, 70, 0.5, 0.5],
+				"img": {
+					"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_30",
+					"c": "ffffffff",
+					"t": 0,
+					"pa": false,
+					"fc": true,
+					"fm": 4,
+					"fa": 1,
+					"fo": 0,
+					"cw": true,
+					"ppu": 1,
+					"rt": true,
+					"on": true
+				},
+				"btn": {
+					"tr": 1,
+					"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+					"mult": 1,
+					"dur": 0.1,
+					"inter": true,
+					"target": "2994215591793515026",
+					"sprites": {"pressed": null, "disabled": null}
+				},
+				"snd": true,
+				"cs": [
+					{
+						"name": "GiftPanelController",
+						"giftButton": {"node": "2994215591793515026"},
+						"giftPanel": {"node": "8822031868233893695"},
+						"graphicRaycaster": null
+					},
+					{
+						"name": "MilestoneItem",
+						"milestoneText": null,
+						"rewardsContainer": {"node": "8822031868233893695"},
+						"rewardItem": {"node": "1941726897435430534"},
+						"tickMark": null
+					}
+				],
+				"ch": [
+					{
+						"n": "RewardsParent",
+						"id": "8822031868233893695",
+						"a": true,
+						"r": [0.5, 1, 0.5, 1, 0, -0.0002, 90, 96.9, 0.5, 0],
+						"lay": {
+							"t": "h",
+							"pad": [15, 15, 5, 0],
+							"al": 0,
+							"sp": 0,
+							"cw": false,
+							"ch": false,
+							"ew": true,
+							"eh": true,
+							"sw": false,
+							"sh": false,
+							"rev": false
+						},
+						"fit": {"h": 2, "v": 0},
+						"canvas": {"override_sort": true, "order": 100},
+						"ch": [
+							{
+								"n": "RewardBG",
+								"id": "2615829897874899173",
+								"a": true,
+								"r": [0.5, 1, 0.5, 1, 0, 0, 90, 95.45, 0.5, 1],
+								"img": {
+									"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12",
+									"c": "ffffffff",
+									"t": 0,
+									"pa": false,
+									"fc": true,
+									"fm": 4,
+									"fa": 1,
+									"fo": 0,
+									"cw": true,
+									"ppu": 1,
+									"rt": true,
+									"on": true
+								},
+								"le": {"ignore": true, "min": [-1,-1], "pref": [-1,-1], "flex": [-1,-1]}
+							},
+							{
+								"n": "ItemReward4",
+								"id": "1941726897435430534",
+								"a": true,
+								"r": [0, 1, 0, 1, 45, -35, 60, 60, 0.5, 0.5],
+								"cs": [
+									{
+										"name": "PopupRewardItem",
+										"ThisItemType": "0",
+										"rewardItemSO": {"asset": "RewardItemSO.asset"},
+										"iconImg": {"node": "268464079425369323"},
+										"quantityText": {"node": "8553538363873498765"}
+									}
+								],
+								"ch": [
+									{
+										"n": "Icon Item",
+										"id": "268464079425369323",
+										"a": true,
+										"r": [0, 0, 1, 1, 0, 0, -10, -10, 0.5, 0.5],
+										"img": {
+											"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_3",
+											"c": "ffffffff",
+											"t": 0,
+											"pa": false,
+											"fc": true,
+											"fm": 4,
+											"fa": 1,
+											"fo": 0,
+											"cw": true,
+											"ppu": 1,
+											"rt": false,
+											"on": true
+										}
+									},
+									{
+										"n": "Quantity",
+										"id": "8553538363873498765",
+										"a": true,
+										"r": [0, 0, 1, 0, 0, 0, 0, 17.04, 0.5, 0],
+										"txt": {
+											"s": "200",
+											"fs": 22,
+											"auto": [22, 48],
+											"c": "ffffffff",
+											"h": 2,
+											"v": 256,
+											"w": true,
+											"ov": 0,
+											"st": 0,
+											"mat": "Baloo Outline - Black",
+											"font": "Baloo Bhaijaan Regular 400 SDF",
+											"cs": 0,
+											"ws": 0,
+											"ls": 0,
+											"m": [0, 0, 0, 0],
+											"rt": false,
+											"rich": true,
+											"on": true
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

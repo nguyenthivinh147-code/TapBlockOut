@@ -1,0 +1,1771 @@
+{
+	"AutoFill_BoosterData.asset": {
+		"script": "BoosterDataSO",
+		"BoosterType": "1",
+		"BoosterCost": "300",
+		"LevelOpen": "6",
+		"BoosterIcon": {
+			"sprite": "ic_booster1_1"
+		}
+	},
+	"AvatarConfigSO.asset": {
+		"script": "AvatarConfigSO",
+		"avatarConfigs": [
+			{
+				"ID": "0",
+				"AvatarIcon": {
+					"sprite": "Icon_Legacy_193"
+				},
+				"Price": {
+					"Gold": "0",
+					"Ads": "0"
+				}
+			},
+			{
+				"ID": "1",
+				"AvatarIcon": {
+					"sprite": "Av_02"
+				},
+				"Price": {
+					"Gold": "100",
+					"Ads": "0"
+				}
+			},
+			{
+				"ID": "2",
+				"AvatarIcon": {
+					"sprite": "Av_03"
+				},
+				"Price": {
+					"Gold": "100",
+					"Ads": "0"
+				}
+			},
+			{
+				"ID": "3",
+				"AvatarIcon": {
+					"sprite": "Av_04"
+				},
+				"Price": {
+					"Gold": "100",
+					"Ads": "0"
+				}
+			},
+			{
+				"ID": "4",
+				"AvatarIcon": {
+					"sprite": "Av_05"
+				},
+				"Price": {
+					"Gold": "100",
+					"Ads": "0"
+				}
+			},
+			{
+				"ID": "5",
+				"AvatarIcon": {
+					"sprite": "Av_06"
+				},
+				"Price": {
+					"Gold": "100",
+					"Ads": "0"
+				}
+			}
+		]
+	},
+	"Capacity_BoosterData.asset": {
+		"script": "BoosterDataSO",
+		"BoosterType": "3",
+		"BoosterCost": "300",
+		"LevelOpen": "14",
+		"BoosterIcon": {
+			"sprite": "ic_booster3_1"
+		}
+	},
+	"ChainOfferConfig.asset": {
+		"script": "ChainOfferConfig",
+		"ChainId": "chainId",
+		"ResetDurationMinutes": "4320",
+		"Slots": [
+			{
+				"Index": "0",
+				"PurchaseType": "0",
+				"ProductID": "",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "100"
+					}
+				]
+			},
+			{
+				"Index": "1",
+				"PurchaseType": "2",
+				"ProductID": "cube.sort.color.chain.offer.1",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "100"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "6",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Index": "2",
+				"PurchaseType": "0",
+				"ProductID": "",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "100"
+					}
+				]
+			},
+			{
+				"Index": "3",
+				"PurchaseType": "0",
+				"ProductID": "",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "100"
+					}
+				]
+			},
+			{
+				"Index": "4",
+				"PurchaseType": "0",
+				"ProductID": "",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "150"
+					}
+				]
+			},
+			{
+				"Index": "5",
+				"PurchaseType": "0",
+				"ProductID": "",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "100"
+					}
+				]
+			},
+			{
+				"Index": "6",
+				"PurchaseType": "0",
+				"ProductID": "",
+				"Rewards": [
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Index": "7",
+				"PurchaseType": "2",
+				"ProductID": "cube.sort.color.chain.offer.2",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "0",
+						"Quantity": "100"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "4",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Index": "8",
+				"PurchaseType": "0",
+				"ProductID": "",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "100"
+					}
+				]
+			},
+			{
+				"Index": "9",
+				"PurchaseType": "0",
+				"ProductID": "",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "150"
+					}
+				]
+			}
+		]
+	},
+	"DailyRewadsAdSO.asset": {
+		"script": "DailyRewardsAdSO",
+		"MaxMilestone": "5",
+		"MilestoneRewards": [
+			{
+				"Milestone": "1",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "50"
+					}
+				]
+			},
+			{
+				"Milestone": "2",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "100"
+					}
+				]
+			},
+			{
+				"Milestone": "3",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "100"
+					}
+				]
+			},
+			{
+				"Milestone": "4",
+				"RewardItems": [
+					{
+						"RewardType": "5",
+						"ItemId": "6",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Milestone": "5",
+				"RewardItems": [
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			}
+		]
+	},
+	"FrameIconSO.asset": {
+		"script": "FrameConfigSO",
+		"frameConfigs": [
+			{
+				"ID": "0",
+				"FrameIcon": {
+					"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_64"
+				},
+				"Price": {
+					"Gold": "0",
+					"Ads": "0"
+				}
+			},
+			{
+				"ID": "1",
+				"FrameIcon": {
+					"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_67"
+				},
+				"Price": {
+					"Gold": "100",
+					"Ads": "0"
+				}
+			},
+			{
+				"ID": "2",
+				"FrameIcon": {
+					"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_65"
+				},
+				"Price": {
+					"Gold": "100",
+					"Ads": "0"
+				}
+			}
+		]
+	},
+	"FreeGoldConfigSO.asset": {
+		"script": "FreeGoldConfigSO",
+		"FreeGoldAmount": "50",
+		"FreeInterval": "1440",
+		"AdsGoldAmount": "100",
+		"AdsLimitPerDay": "5"
+	},
+	"HeartConfigSO.asset": {
+		"script": "HeartConfigSO",
+		"MaxHeart": "5",
+		"RecoverTime": "600",
+		"GoldCost1": "150",
+		"HeartInfiniteDatas": [
+			{
+				"Id": "1",
+				"Duration": "30"
+			},
+			{
+				"Id": "2",
+				"Duration": "15"
+			},
+			{
+				"Id": "3",
+				"Duration": "60"
+			},
+			{
+				"Id": "4",
+				"Duration": "20"
+			},
+			{
+				"Id": "5",
+				"Duration": "120"
+			},
+			{
+				"Id": "6",
+				"Duration": "10"
+			},
+			{
+				"Id": "7",
+				"Duration": "45"
+			}
+		]
+	},
+	"IAPProductSO.asset": {
+		"script": "IAPProductSO",
+		"iapProducts": [
+			{
+				"ItemId": "1",
+				"Category": "102",
+				"Name": "cube.sort.color.ads.3",
+				"ProductID": "cube.sort.color.ads.3",
+				"ProductType": "1",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "0",
+						"Quantity": "3000"
+					},
+					{
+						"RewardType": "2",
+						"ItemId": "1",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "1",
+						"Quantity": "3"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "1",
+						"Quantity": "3"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "1",
+						"Quantity": "3"
+					}
+				],
+				"RealPrice": "9.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "1",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "2",
+				"Category": "101",
+				"Name": "cube.sort.color.ads.1",
+				"ProductID": "cube.sort.color.ads.1",
+				"ProductType": "1",
+				"Rewards": [
+					{
+						"RewardType": "2",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				],
+				"RealPrice": "5.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "1",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "3",
+				"Category": "0",
+				"Name": "cube.sort.color.gold.1",
+				"ProductID": "cube.sort.color.gold.1",
+				"ProductType": "1",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "550"
+					}
+				],
+				"RealPrice": "1.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "4",
+				"Category": "0",
+				"Name": "cube.sort.color.gold.2",
+				"ProductID": "cube.sort.color.gold.2",
+				"ProductType": "2",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "2750"
+					}
+				],
+				"RealPrice": "7.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "5",
+				"Category": "0",
+				"Name": "cube.sort.color.gold.3",
+				"ProductID": "cube.sort.color.gold.3",
+				"ProductType": "2",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "3",
+						"Quantity": "5500"
+					}
+				],
+				"RealPrice": "14.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "6",
+				"Category": "0",
+				"Name": "cube.sort.color.gold.4",
+				"ProductID": "cube.sort.color.gold.4",
+				"ProductType": "2",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "4",
+						"Quantity": "12500"
+					}
+				],
+				"RealPrice": "30.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "7",
+				"Category": "0",
+				"Name": "cube.sort.color.gold.5",
+				"ProductID": "cube.sort.color.gold.5",
+				"ProductType": "2",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "5",
+						"Quantity": "25000"
+					}
+				],
+				"RealPrice": "49.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "8",
+				"Category": "0",
+				"Name": "cube.sort.color.gold.6",
+				"ProductID": "cube.sort.color.gold.6",
+				"ProductType": "2",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "5",
+						"Quantity": "55000"
+					}
+				],
+				"RealPrice": "99.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "9",
+				"Category": "301",
+				"Name": "cube.sort.color.starter.pack",
+				"ProductID": "cube.sort.color.starter.pack",
+				"ProductType": "4",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "1500"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "2"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "1",
+						"Quantity": "1"
+					}
+				],
+				"RealPrice": "1.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "10",
+				"Category": "302",
+				"Name": "cube.sort.color.helper.offer",
+				"ProductID": "cube.sort.color.helper.offer",
+				"ProductType": "3",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "1000"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "2",
+						"Quantity": "1"
+					}
+				],
+				"RealPrice": "3.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "11",
+				"Category": "0",
+				"Name": "cube.sort.color.special.pack",
+				"ProductID": "cube.sort.color.special.pack",
+				"ProductType": "6",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "2500"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "3"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "3"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "1",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "3"
+					}
+				],
+				"RealPrice": "9.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "12",
+				"Category": "102",
+				"Name": "cube.sort.color.ads.3",
+				"ProductID": "cube.sort.color.ads.3.discount",
+				"ProductType": "1",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "0",
+						"Quantity": "3000"
+					},
+					{
+						"RewardType": "2",
+						"ItemId": "1",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "1",
+						"Quantity": "3"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "1",
+						"Quantity": "3"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "1",
+						"Quantity": "3"
+					}
+				],
+				"RealPrice": "6.99",
+				"SaleRate": "30",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "1",
+				"DiscountRuleSO": {
+					"asset": "IAP_Discount6_7_CN.asset"
+				}
+			},
+			{
+				"ItemId": "13",
+				"Category": "301",
+				"Name": "cube.sort.color.starter.pack",
+				"ProductID": "cube.sort.color.starter.pack.discount",
+				"ProductType": "4",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "1500"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "2"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "1",
+						"Quantity": "1"
+					}
+				],
+				"RealPrice": "0.99",
+				"SaleRate": "50",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": {
+					"asset": "IAP_Discount6_7_CN.asset"
+				}
+			},
+			{
+				"ItemId": "14",
+				"Category": "302",
+				"Name": "cube.sort.color.helper.offer",
+				"ProductID": "cube.sort.color.helper.offer.discount",
+				"ProductType": "3",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "1000"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "2",
+						"Quantity": "1"
+					}
+				],
+				"RealPrice": "1.99",
+				"SaleRate": "50",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": {
+					"asset": "IAP_Discount6_7_CN.asset"
+				}
+			},
+			{
+				"ItemId": "15",
+				"Category": "0",
+				"Name": "cube.sort.color.special.pack",
+				"ProductID": "cube.sort.color.special.pack.discount",
+				"ProductType": "6",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "2500"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "3"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "3"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "1",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "3"
+					}
+				],
+				"RealPrice": "4.99",
+				"SaleRate": "50",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": {
+					"asset": "IAP_Discount6_7_CN.asset"
+				}
+			},
+			{
+				"ItemId": "16",
+				"Category": "306",
+				"Name": "cube.sort.color.sweet.pack",
+				"ProductID": "cube.sort.color.sweet.pack",
+				"ProductType": "5",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "3",
+						"Quantity": "1000"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				],
+				"RealPrice": "4.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "17",
+				"Category": "307",
+				"Name": "cube.sort.color.tasty.pack",
+				"ProductID": "cube.sort.color.tasty.pack",
+				"ProductType": "5",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "3",
+						"Quantity": "4000"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "2"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "2"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "2"
+					}
+				],
+				"RealPrice": "12.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "18",
+				"Category": "308",
+				"Name": "cube.sort.color.yummy.pack",
+				"ProductID": "cube.sort.color.yummy.pack",
+				"ProductType": "5",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "3",
+						"Quantity": "11000"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "5"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "5"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "5"
+					}
+				],
+				"RealPrice": "29.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "19",
+				"Category": "309",
+				"Name": "cube.sort.color.heart.pack",
+				"ProductID": "cube.sort.color.heart.pack",
+				"ProductType": "7",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "3",
+						"Quantity": "900"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "7",
+						"ItemId": "0",
+						"Quantity": "5"
+					}
+				],
+				"RealPrice": "2.49",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "20",
+				"Category": "310",
+				"Name": "cube.sort.color.flash.pack",
+				"ProductID": "cube.sort.color.flash.pack",
+				"ProductType": "8",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "3",
+						"Quantity": "3000"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "2"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "2"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "2"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "3",
+						"Quantity": "1"
+					}
+				],
+				"RealPrice": "7.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "21",
+				"Category": "311",
+				"Name": "",
+				"ProductID": "cube.sort.color.chain.offer.1",
+				"ProductType": "9",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "100"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "6",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				],
+				"RealPrice": "1.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "22",
+				"Category": "311",
+				"Name": "",
+				"ProductID": "cube.sort.color.chain.offer.2",
+				"ProductType": "9",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "2",
+						"Quantity": "100"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "4",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				],
+				"RealPrice": "1.99",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "23",
+				"Category": "311",
+				"Name": "",
+				"ProductID": "cube.sort.color.chainoffer.pack",
+				"ProductType": "9",
+				"Rewards": [],
+				"RealPrice": "0",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			},
+			{
+				"ItemId": "24",
+				"Category": "101",
+				"Name": "",
+				"ProductID": "ingame.remove.ads",
+				"ProductType": "1",
+				"Rewards": [],
+				"RealPrice": "0",
+				"SaleRate": "0",
+				"Android_StoreProductType": "0",
+				"Ios_StoreProductType": "0",
+				"DiscountRuleSO": null
+			}
+		]
+	},
+	"IAP_Discount6_7_CN.asset": {
+		"script": "IAPDiscountRuleSO",
+		"AlwaysOn": "0",
+		"ActiveWeekDays": "97"
+	},
+	"LeaderboardRankBadges.asset": {
+		"script": "LeaderboardRankBadgesSO",
+		"_rankBadges": [
+			{
+				"RankId": "0",
+				"BadgeSprite": {
+					"sprite": "ic_Bronze"
+				}
+			},
+			{
+				"RankId": "1",
+				"BadgeSprite": {
+					"sprite": "ic_Silver"
+				}
+			},
+			{
+				"RankId": "2",
+				"BadgeSprite": {
+					"sprite": "ic_Gold"
+				}
+			},
+			{
+				"RankId": "3",
+				"BadgeSprite": {
+					"sprite": "ic_Platinum"
+				}
+			},
+			{
+				"RankId": "4",
+				"BadgeSprite": {
+					"sprite": "ic_Diamond"
+				}
+			}
+		]
+	},
+	"LeaderboardRankRewards.asset": {
+		"script": "LeaderboardRankRewardsSO",
+		"RankMilestoneRewards": [
+			{
+				"Milestone": "0",
+				"RewardItems": []
+			},
+			{
+				"Milestone": "1",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "150"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "1",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Milestone": "2",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "250"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "1",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "1",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Milestone": "3",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "350"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "1",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "1",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "1",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Milestone": "4",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "550"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "1",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "1",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "1",
+						"Quantity": "1"
+					}
+				]
+			}
+		]
+	},
+	"LeaderboardTopRewards.asset": {
+		"script": "LeaderboardTopRewardsSO",
+		"RankMilestoneRewards": [
+			{
+				"Milestone": "0",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "200"
+					}
+				]
+			},
+			{
+				"Milestone": "1",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "125"
+					}
+				]
+			},
+			{
+				"Milestone": "2",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "100"
+					}
+				]
+			},
+			{
+				"Milestone": "3",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "50"
+					}
+				]
+			},
+			{
+				"Milestone": "4",
+				"RewardItems": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "50"
+					}
+				]
+			}
+		]
+	},
+	"LevelLoopConfig.asset": {
+		"script": "LevelLoopConfigSO",
+		"BaseLevelCount": "801",
+		"LoopRules": [
+			{
+				"StartLevel": "802",
+				"CloneFromLevel": "42",
+				"ColorPalette": {
+					"asset": "NewColorPalette.asset"
+				}
+			}
+		]
+	},
+	"ME_WinStreakConfig.asset": {
+		"script": "ME_WinStreakConfig",
+		"Milestones": [
+			{
+				"Gap": "2",
+				"_actualStreak": "2",
+				"Rewards": [
+					{
+						"RewardType": "5",
+						"ItemId": "2",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Gap": "2",
+				"_actualStreak": "4",
+				"Rewards": [
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Gap": "3",
+				"_actualStreak": "7",
+				"Rewards": [
+					{
+						"RewardType": "5",
+						"ItemId": "4",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Gap": "3",
+				"_actualStreak": "10",
+				"Rewards": [
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Gap": "4",
+				"_actualStreak": "14",
+				"Rewards": [
+					{
+						"RewardType": "5",
+						"ItemId": "4",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Gap": "4",
+				"_actualStreak": "18",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "0",
+						"Quantity": "50"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Gap": "5",
+				"_actualStreak": "23",
+				"Rewards": [
+					{
+						"RewardType": "5",
+						"ItemId": "4",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Gap": "5",
+				"_actualStreak": "28",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "50"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "7",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "4",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Gap": "6",
+				"_actualStreak": "34",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "100"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "4",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "3",
+						"ItemId": "0",
+						"Quantity": "1"
+					}
+				]
+			},
+			{
+				"Gap": "6",
+				"_actualStreak": "40",
+				"Rewards": [
+					{
+						"RewardType": "1",
+						"ItemId": "1",
+						"Quantity": "250"
+					},
+					{
+						"RewardType": "5",
+						"ItemId": "3",
+						"Quantity": "1"
+					},
+					{
+						"RewardType": "6",
+						"ItemId": "0",
+						"Quantity": "2"
+					}
+				]
+			}
+		],
+		"ActiveDays": "050000000600000000000000",
+		"ClaimOnlyDays": "01000000020000000300000004000000"
+	},
+	"MechanicDescriptionSO.asset": {
+		"script": "MechanicDescriptionSO",
+		"MechanicDescriptionDataList": [
+			{
+				"Level": "4",
+				"NameI2Key": "ui_mec_layer_container",
+				"DescriptionI2Key": "ui_tut_3",
+				"Icon": {
+					"sprite": "ic_Layer"
+				}
+			},
+			{
+				"Level": "12",
+				"NameI2Key": "ui_mec_multicolor_container_name",
+				"DescriptionI2Key": "ui_mec_multicolor_container",
+				"Icon": {
+					"sprite": "ic_MulticolorContainer"
+				}
+			},
+			{
+				"Level": "16",
+				"NameI2Key": "ui_mec_mystery_container_name",
+				"DescriptionI2Key": "ui_mec_mystery_container",
+				"Icon": {
+					"sprite": "ic_MysteryContainer"
+				}
+			},
+			{
+				"Level": "22",
+				"NameI2Key": "ui_mec_portal_name",
+				"DescriptionI2Key": "ui_mec_portal",
+				"Icon": {
+					"sprite": "ic_Portal"
+				}
+			},
+			{
+				"Level": "26",
+				"NameI2Key": "ui_mec_mystery_cube_name",
+				"DescriptionI2Key": "ui_mec_mystery_cube",
+				"Icon": {
+					"sprite": "ic_MysteryCube"
+				}
+			},
+			{
+				"Level": "36",
+				"NameI2Key": "ui_mec_locked_container_ice_name",
+				"DescriptionI2Key": "ui_mec_locked_container_ice",
+				"Icon": {
+					"sprite": "ic_LockedContainerIceMode_"
+				}
+			},
+			{
+				"Level": "42",
+				"NameI2Key": "ui_mec_blocked_cube_name",
+				"DescriptionI2Key": "ui_mec_blocked_cube",
+				"Icon": {
+					"sprite": "ic_BlockedCube"
+				}
+			},
+			{
+				"Level": "62",
+				"NameI2Key": "ui_mec_multishaped_cube_name",
+				"DescriptionI2Key": "ui_mec_multishaped_cube",
+				"Icon": {
+					"sprite": "ic_MultishapedCube"
+				}
+			},
+			{
+				"Level": "82",
+				"NameI2Key": "ui_mec_locked_container_ribbon_name",
+				"DescriptionI2Key": "ui_mec_locked_container_ribbon",
+				"Icon": {
+					"sprite": "ic_LockedContainerRibbonMode"
+				}
+			},
+			{
+				"Level": "102",
+				"NameI2Key": "ui_mec_unlocked_task_name",
+				"DescriptionI2Key": "ui_mec_unlocked_task",
+				"Icon": {
+					"sprite": "ic_Task"
+				}
+			},
+			{
+				"Level": "112",
+				"NameI2Key": "ui_mec_bomb_cube_name",
+				"DescriptionI2Key": "ui_mec_bomb_cube",
+				"Icon": {
+					"sprite": "ic_BombCube"
+				}
+			},
+			{
+				"Level": "127",
+				"NameI2Key": "ui_mec_tower_cube_name",
+				"DescriptionI2Key": "ui_mec_tower_cube",
+				"Icon": {
+					"sprite": "ic_TowerCube"
+				}
+			},
+			{
+				"Level": "162",
+				"NameI2Key": "ui_mec_linked_container_name",
+				"DescriptionI2Key": "ui_mec_linked_container",
+				"Icon": {
+					"sprite": "ic_LinkedContainer"
+				}
+			},
+			{
+				"Level": "182",
+				"NameI2Key": "ui_mec_transit_tray_name",
+				"DescriptionI2Key": "ui_mec_transit_tray",
+				"Icon": {
+					"sprite": "ic_TransitTray"
+				}
+			},
+			{
+				"Level": "252",
+				"NameI2Key": "ui_mec_jumping_cube_name",
+				"DescriptionI2Key": "ui_mec_jumping_cube",
+				"Icon": {
+					"sprite": "ic_JumpingCube"
+				}
+			},
+			{
+				"Level": "212",
+				"NameI2Key": "ui_mec_storage_machine_name",
+				"DescriptionI2Key": "ui_mec_storage_machine",
+				"Icon": {
+					"sprite": "ic_StorageMachine"
+				}
+			},
+			{
+				"Level": "302",
+				"NameI2Key": "ui_mec_unlock_chest_name",
+				"DescriptionI2Key": "ui_mec_unlock_chest",
+				"Icon": {
+					"sprite": "ic_Cobweb"
+				}
+			},
+			{
+				"Level": "352",
+				"NameI2Key": "ui_mec_printer_machine_name",
+				"DescriptionI2Key": "ui_mec_printer_machine",
+				"Icon": {
+					"sprite": "ic_Printer"
+				}
+			},
+			{
+				"Level": "402",
+				"NameI2Key": "ui_mec_fence_name",
+				"DescriptionI2Key": "ui_mec_fence",
+				"Icon": {
+					"sprite": "ic_Fence"
+				}
+			},
+			{
+				"Level": "452",
+				"NameI2Key": "ui_mec_scissor_name",
+				"DescriptionI2Key": "ui_mec_scissor",
+				"Icon": {
+					"sprite": "ic_Scissors"
+				}
+			},
+			{
+				"Level": "502",
+				"NameI2Key": "ui_mec_painter_name",
+				"DescriptionI2Key": "ui_mec_painter",
+				"Icon": {
+					"sprite": "ic_PaintConvey"
+				}
+			},
+			{
+				"Level": "602",
+				"NameI2Key": "ui_mec_specialslot_name",
+				"DescriptionI2Key": "ui_mec_specialslot",
+				"Icon": {
+					"sprite": "ic_SpecialSlot"
+				}
+			},
+			{
+				"Level": "702",
+				"NameI2Key": "ui_mec_switchbox_name",
+				"DescriptionI2Key": "ui_mec_switchbox",
+				"Icon": {
+					"sprite": "ic_SwitchBox"
+				}
+			}
+		]
+	},
+	"New Multiple Item Top Left Cursor.asset": {
+		"script": "MultipleItemTopLeftCursor"
+	},
+	"New Vertical Scroll Element Visibility Checker.asset": {
+		"script": "VerticalScrollElementVisibilityChecker"
+	},
+	"NewColorPalette.asset": {
+		"script": "ColorPaletteDataSO",
+		"PaletteName": "Bộ palette 1",
+		"OldColorIndexes": "00000000010000000200000003000000040000000500000006000000070000000800000009000000",
+		"NewColorIndexes": "01000000070000000800000000000000050000000600000009000000040000000300000002000000"
+	},
+	"RewardItemSO.asset": {
+		"script": "RewardItemSO",
+		"rewardItems": [
+			{
+				"ItemId": "0",
+				"RewardType": "1",
+				"Icon": {
+					"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_3"
+				}
+			},
+			{
+				"ItemId": "1",
+				"RewardType": "1",
+				"Icon": {
+					"sprite": "Gold1"
+				}
+			},
+			{
+				"ItemId": "2",
+				"RewardType": "1",
+				"Icon": {
+					"sprite": "Gold2"
+				}
+			},
+			{
+				"ItemId": "3",
+				"RewardType": "1",
+				"Icon": {
+					"sprite": "Gold3"
+				}
+			},
+			{
+				"ItemId": "4",
+				"RewardType": "1",
+				"Icon": {
+					"sprite": "Gold4"
+				}
+			},
+			{
+				"ItemId": "5",
+				"RewardType": "1",
+				"Icon": {
+					"sprite": "Gold5"
+				}
+			},
+			{
+				"ItemId": "6",
+				"RewardType": "1",
+				"Icon": {
+					"sprite": "Gold6"
+				}
+			},
+			{
+				"ItemId": "0",
+				"RewardType": "2",
+				"Icon": {
+					"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_13"
+				}
+			},
+			{
+				"ItemId": "0",
+				"RewardType": "3",
+				"Icon": {
+					"sprite": "ic_booster1"
+				}
+			},
+			{
+				"ItemId": "0",
+				"RewardType": "4",
+				"Icon": {
+					"sprite": "ic_booster2"
+				}
+			},
+			{
+				"ItemId": "0",
+				"RewardType": "5",
+				"Icon": {
+					"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_16"
+				}
+			},
+			{
+				"ItemId": "0",
+				"RewardType": "6",
+				"Icon": {
+					"sprite": "ic_booster3_1"
+				}
+			},
+			{
+				"ItemId": "0",
+				"RewardType": "7",
+				"Icon": {
+					"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_15"
+				}
+			},
+			{
+				"ItemId": "0",
+				"RewardType": "8",
+				"Icon": {
+					"sprite": "Resources_moved_UI_Maincenter:UI_Maincenter_2"
+				}
+			}
+		]
+	},
+	"SpeedUpTutorialSO.asset": {
+		"script": "SpeedUpTutorialSO",
+		"LevelShow": "8"
+	},
+	"Storage_BoosterData.asset": {
+		"script": "BoosterDataSO",
+		"BoosterType": "2",
+		"BoosterCost": "300",
+		"LevelOpen": "10",
+		"BoosterIcon": {
+			"sprite": "ic_booster2"
+		}
+	},
+	"VersionDataSO.asset": {
+		"script": "VersionData",
+		"BundleVersion": "1.0.2.7",
+		"BundleVersionCode": "100",
+		"DefaultLevelVersion": "1",
+		"DefaultBaseServerUrl": "https://r2-dlc-pz.bulletstrike.com/dlc/cubesort/candysort"
+	}
+}
