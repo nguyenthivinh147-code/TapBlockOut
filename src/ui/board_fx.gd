@@ -1,9 +1,8 @@
 extends RefCounted
-## Vẽ khối và hiệu ứng cho BoardView: hình khối bo góc, mũi tên, băng, xích, hạt, rung.
+## Vẽ khối và hiệu ứng cho BoardView: hình khối bo góc, băng, xích, hạt, rung.
 ## Hàm tĩnh, không giữ trạng thái.
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
-const LevelData := preload("res://src/core/level_data.gd")
 const Pudding := preload("res://src/ui/pudding.gd")
 
 const FOG_COLOR := Color("6B7390")
@@ -24,12 +23,7 @@ static func mech_tex(mech_name: String) -> Texture2D:
 	return ThemeKit.icon(mech_name)
 
 
-## Mũi tên hỗ trợ mù màu có hiện không: tắt theo cài đặt, và ẩn khi khối còn trong sương mù.
-static func arrow_shown(view: Dictionary, show_arrow: bool) -> bool:
-	return show_arrow and not bool(view.get("is_fog_hidden", false))
-
-
-## Ô gần trọng tâm nhất: nơi đặt mũi tên và biểu tượng.
+## Ô gần trọng tâm nhất: nơi đặt biểu tượng.
 static func anchor_cell(cells: Array) -> Vector2i:
 	var sum := Vector2.ZERO
 	for c: Vector2i in cells:
@@ -64,13 +58,12 @@ static func inner_palette(view: Dictionary) -> Dictionary:
 	return Pudding.palette_of(inner_color, ThemeKit.block_color(inner_color))
 
 
-## Draws what sits on top of the pudding body of a block: fog, ice, arrow, chain, key. The body itself
+## Draws what sits on top of the pudding body of a block: fog, ice, chain, key. The body itself
 ## (including the inner pudding of a two-layer block) is `Pudding.Body`, behind the BlockNode.
 ## `cells` are relative to this CanvasItem's origin cell.
-static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictionary, show_arrow: bool) -> void:
+static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictionary) -> void:
 	var fog_hidden: bool = view.get("is_fog_hidden", false)
 	var chained: bool = view.get("chained", false)
-	var two_layer := not inner_palette(view).is_empty()
 	var anchor := anchor_cell(cells)
 	var center := (Vector2(anchor) + Vector2(0.5, 0.5)) * cell
 	if fog_hidden:
@@ -78,35 +71,11 @@ static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictiona
 	var ice := int(view.get("ice", 0))
 	if ice > 0:
 		draw_ice(ci, cells, cell, ice)
-	if arrow_shown(view, show_arrow):
-		if two_layer:
-			# two-layer block: the outer layer's arrow sits above the cell centre
-			draw_arrow(ci, center + Vector2(0, -cell * 0.3), LevelData.dir_of(str(view.get("color", ""))), cell * 0.6)
-		elif chained:
-			draw_arrow(ci, center + Vector2(0, -cell * 0.2), LevelData.dir_of(str(view.get("color", ""))), cell * 0.7)
-		else:
-			# slightly low so it stays off the highlight in the top-left corner
-			draw_arrow(ci, center + Vector2(0, cell * 0.05), LevelData.dir_of(str(view.get("color", ""))), cell)
 	if chained:
 		draw_chain(ci, cells, cell)
 		draw_lock(ci, center + Vector2(0, cell * 0.14), cell)
 	if bool(view.get("is_key", false)):
 		draw_key(ci, Vector2(anchor) * cell + Vector2(cell * 0.24, cell * 0.24), cell)
-
-
-static func draw_arrow(ci: CanvasItem, center: Vector2, dir: Vector2i, cell: float) -> void:
-	var d := Vector2(dir)
-	if d == Vector2.ZERO:
-		return
-	var n := Vector2(-d.y, d.x)
-	var s := cell * 0.2
-	var tip := center + d * s
-	var pts := PackedVector2Array([tip, center - d * s * 0.7 + n * s * 0.95, center - d * s * 0.7 - n * s * 0.95])
-	var shadow := PackedVector2Array()
-	for p in pts:
-		shadow.append(p + Vector2(0, cell * 0.025))
-	ci.draw_colored_polygon(shadow, Color(0, 0, 0, 0.3))
-	ci.draw_colored_polygon(pts, Color(1, 1, 1, 0.92))
 
 
 static func draw_lock(ci: CanvasItem, center: Vector2, cell: float) -> void:

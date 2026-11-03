@@ -37,7 +37,7 @@ Game làm bằng **Godot 4.7.2, GDScript, xuất Android gốc**. Tài liệu Ho
 - Cảnh báo độ khó (theo video demo): trên Home có nhãn HARD / VERY HARD phía trên nút Play; vào level thì một dải màu ngang bàn cờ ghi HARD (tím) hoặc VERY HARD (đỏ) trượt vào, giữ `hard_banner_sec` giây rồi tự mờ đi và vào chơi (chạm để bỏ qua). Level HARD từ L100 (`very_hard_from_level`) tính là VERY HARD. Chơi lại cùng level không hiện lại.
 - Nghĩ quá lâu rồi đi đúng (mặc định từ 8 giây): hiệu ứng vỗ tay.
 - Mỗi level có ít nhất một khối thoát được ngay. Solver kiểm 100% level trong unit test và lúc build.
-- Hỗ trợ người mù màu: mũi tên nhỏ trên khối, bật mặc định, tắt được trong Settings.
+- Khối không có mũi tên chỉ hướng: hướng đi đọc theo màu khối và cạnh cổng cùng màu.
 
 ### Khi hết MOVES
 
@@ -134,7 +134,7 @@ Booster với cơ chế:
 
 - Phá khối: không dùng được trên đá; dùng trên băng, xích hoặc hai lớp thì xoá hẳn cả khối.
 - Gợi ý: chỉ khối đi được ngay, có tính cổng nhịp.
-- Sương mù: mũi tên hỗ trợ mù màu cũng ẩn tới khi lộ. Chạm khối chưa lộ vẫn tốn 1 MOVES nếu bị chặn.
+- Sương mù: chạm khối chưa lộ vẫn tốn 1 MOVES nếu bị chặn.
 
 ### Mở khoá theo level
 
@@ -391,7 +391,7 @@ Horus SDK là JavaScript và `JavaScriptBridge` của Godot chỉ có ở bản 
 
 Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên có sẵn của người khác, rồi lưu thành file trong project. Game chạy offline nên bản build không gọi MCP và không cần máy chủ ComfyUI.
 
-**Concept theme: pudding 3D (2026-11-02).** Khối trên bàn là viên pudding trong như gel, theo ảnh duyệt `art/concepts/concept_pudding_board.png` (chất liệu tham khảo dòng game kẹo xếp hình, không dùng hình hay tên game đó). Khe giữa các khối và vị trí lòng khối cố ý khác ảnh: khe hẹp hơn, lòng khối lệch về góc trên trái nhiều hơn một chút. Mã màu bốn khối lấy từ tâm khối trong ảnh, nằm trong `ThemeKit.BLOCK_COLORS`: vàng `#FDE437`, xanh lá `#8DD142`, xanh dương `#2EA4FF`, tím `#8D45E0`. Cổng và hạt dùng chung mã này vì màu quyết định hướng. Thân khối vẽ bằng shader từ các trường khoảng cách của hình khối (`src/ui/pudding.gd`, `src/ui/pudding.gdshader`), phần phủ (mũi tên, băng, xích, sương mù) vẽ bằng code (`BoardFx.draw_block`):
+**Concept theme: pudding 3D (2026-11-02).** Khối trên bàn là viên pudding trong như gel, theo ảnh duyệt `art/concepts/concept_pudding_board.png` (chất liệu tham khảo dòng game kẹo xếp hình, không dùng hình hay tên game đó). Khe giữa các khối và vị trí lòng khối cố ý khác ảnh: khe hẹp hơn, lòng khối lệch về góc trên trái nhiều hơn một chút. Mã màu bốn khối lấy từ tâm khối trong ảnh, nằm trong `ThemeKit.BLOCK_COLORS`: vàng `#FDE437`, xanh lá `#8DD142`, xanh dương `#2EA4FF`, tím `#8D45E0`. Cổng và hạt dùng chung mã này vì màu quyết định hướng. Thân khối vẽ bằng shader từ các trường khoảng cách của hình khối (`src/ui/pudding.gd`, `src/ui/pudding.gdshader`), phần phủ (băng, xích, sương mù) vẽ bằng code (`BoardFx.draw_block`):
 
 | Lớp | Hình |
 | --- | --- |
@@ -412,7 +412,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 - Chưa áp dụng cho nền, khung cổng, đá, icon (giữ nét hiện tại, trừ màu cổng). Khi tạo hoặc làm lại hình bằng MCP, thêm từ khoá pudding/gel 3D (xem quy tắc prompt bên dưới) để cùng phong cách.
 - Màn level chỉ có thanh trên (lượt, tên level, restart, bánh răng; Home nằm trong popup cài đặt) và hàng booster chiếm chiều cao, luôn giữ chỗ cho booster; chữ hướng dẫn và nhãn Phá khối phủ lên phần trên của bàn. Nhờ vậy khung không xê dịch giữa các level. Nền bàn trơn, không vẽ lưới ô.
 
-**Vẫn vẽ bằng code (và shader):** hình khối, cổng, mũi tên hỗ trợ mù màu, hạt, và mọi chữ. Khối phải khớp từng ô, mũi tên phải rõ ở cỡ nhỏ, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
+**Vẫn vẽ bằng code (và shader):** hình khối, cổng, hạt, và mọi chữ. Khối phải khớp từng ô, chữ phải đổi được giữa `en` và `vi`. Hình do MCP tạo không có chữ; số như "+3" vẽ đè bằng code.
 
 | Việc | Công cụ | Ghi chú |
 | --- | --- | --- |
@@ -483,3 +483,7 @@ Hình, icon và âm thanh tạo bằng MCP `comfyui`, không dùng tài nguyên 
 - Thêm Weekly Pass, Chain Offer, Special Pack (mục 7). Weekly Pass chỉ có ở bản phát hành vì demo không có level HARD thứ 2 trong phạm vi L1-20.
 - Weekly Pass: thêm mốc khởi đầu 0 key, hàng tiến độ (nút "i", chìa, thanh tới mốc kế), tutorial 3 bước và popup "How to earn rewards"; key chỉ được cộng sau khi xem tutorial. Giảm chiều cao vùng cuộn của layer (640 xuống 500) vì panel vượt màn 720x1280.
 - Thêm loại thưởng "mạng vô hạn" (`inf_min`, phút; `s.lives.inf_until`): đang còn hạn thì thua không mất mạng, Home hiện "Mạng: vô hạn" cùng đếm ngược, cảnh báo mất mạng khi bỏ ván bị ẩn; cấp thêm khi còn hạn thì cộng dồn. Dùng cho mốc khởi đầu Weekly Pass (15 phút, theo video) và VIP mốc 3 key (30 phút).
+
+**2026-11-03**
+
+- Bỏ mũi tên hỗ trợ mù màu trên khối và dòng bật tắt trong Settings (`settings.arrows`, chuỗi `settings_arrows`). Bản lưu cũ còn khoá `arrows` thì để yên, không đọc nữa.

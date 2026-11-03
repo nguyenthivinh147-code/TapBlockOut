@@ -41,7 +41,8 @@ func _open(opened: Array) -> Control:
 func test_toggles_write_settings(t: T) -> void:
 	var g := _game()
 	var node := _open([])
-	for key in ["sfx", "music", "haptics", "notif", "arrows"]:
+	t.ok(not node.toggle_buttons.has("arrows"), "không còn nút mũi tên")
+	for key in ["sfx", "music", "haptics", "notif"]:
 		t.ok(node.toggle_buttons.has(key), "có nút " + key)
 		t.eq(bool(g.s.settings[key]), true, key + " mặc định bật")
 		node.toggle_buttons[key].pressed.emit()
