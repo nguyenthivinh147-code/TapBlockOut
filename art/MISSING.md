@@ -6,6 +6,8 @@
 - Bản bỏ (superseded): `art/images/block_surface.png`, `art/images/art_no_lives.png` (thay bằng `_v2`).
 - Chưa có icon riêng cho `shop_<sku>` (gói shop, popup offer): `ThemeKit.icon` trả placeholder vẽ bằng code.
 - `booster_hint|move|smash` (2026-11-03): bản AI (`art/images/booster_*_ai.png`) dựng từ bố cục SVG vẽ tay (`art/images/booster_*.svg`). Ảnh tách nền của MCP để lại alpha 1-4 phủ cả khung; `tools/fit_icon.gd` đã lọc.
+- `booster_hint|move` (2026-11-04): vẽ lại theo phong cách 3D đồ chơi của `art/concepts/ref_booster_style.png`, ảnh gốc `art/images/booster_hint_toy_ai.png`, `booster_move_toy_ai.png`. Đưa icon cũ làm ảnh 1 thì model giữ nguyên kiểu sticker viền đậm, nên chỉ dùng ảnh ref hoặc tả bằng chữ. Mũi tên ra alpha 245-254 nên cắt với `--solid=240`.
+- `booster_hint|move` (2026-11-04, lần 2): vẽ lại khối 3D chất liệu kẹo, người dùng chọn từ bảng 3 phương án `art/concepts/concept_booster_candy_v1.png` (cột 1 là bản đồ chơi nhựa trước đó). Ảnh gốc `art/images/booster_hint_candy_ai.png`, `booster_move_candy_ai.png`; bản đồ chơi nhựa `*_toy_ai.png` giữ lại để so. Hint là phương án 1 (bóng đèn kẹo), Move là phương án 2 (chữ "+3" kẹo dẻo xanh; lúc đầu chọn mũi tên gậy kẹo rồi đổi). Model vẫn vẽ vệt bóng mờ dưới số 3 dù prompt cấm, nhìn ở 56-96 px không thành quầng. Thân kẹo ra alpha 245-254 nên cắt với `--solid=240`. `booster_smash` vẫn kiểu sticker viền đậm, lệch phong cách với hai icon này.
 
 ## Âm thanh
 - Không có `art/MISSING.audio.md` (không thiếu file demo nào).
