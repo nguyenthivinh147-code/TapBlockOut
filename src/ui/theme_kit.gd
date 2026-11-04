@@ -49,12 +49,13 @@ const SCRIM := Color(0.0, 0.016, 0.059, POPUP_DIM_ALPHA)
 const SLATE_BG := Color("504D73")
 const SLATE_SURFACE := Color("3D3A63")
 # Gameplay background: one picture for every difficulty, drawn faint at LEVEL_BG_IMAGE_ALPHA over the pastel pink LEVEL_BG
-# (same as Home; alone if the picture is missing), LEVEL_BG_DIM left clear, and the board panel behind the blocks.
+# (alone if the picture is missing), LEVEL_BG_DIM left clear, and the board panel behind the blocks.
+# BOARD_BG: same pink tone as the blended background (~#F7E6E5 over the board area), a little darker.
 const LEVEL_BG := Color("FFEEF4")
 const LEVEL_BG_IMAGE := "res://assets/bg/bg_level.png"
 const LEVEL_BG_IMAGE_ALPHA := 0.35
 const LEVEL_BG_DIM := Color(0, 0, 0, 0)
-const BOARD_BG := Color("504B98")
+const BOARD_BG := Color("E9CDD2")
 # Chữ và khối trên thân popup kem (Theme Warm + Popup Lavender)
 const INK_DIM := Color("6C74AE")
 const INK_GOOD := Color("3E7F1E")
@@ -104,6 +105,10 @@ const FS_HUGE := 80
 const FONT: FontFile = preload("res://assets/fonts/baloo.res")
 
 const MIN_BUTTON := Vector2(96, 96)
+## Text on a button keeps min(height * H, width * W) off each side of the button's frame, so the glyphs and their
+## outline clear a pill's round ends (button_text_area).
+const BUTTON_TEXT_INSET_H := 0.3
+const BUTTON_TEXT_INSET_W := 0.12
 const RADIUS := 24
 const ICON_SIZE := 96
 const ICON_DIRS := ["res://assets/ui/", "res://assets/ui/figma/", "res://assets/ui/hud/", "res://assets/avatars/", "res://assets/frames/"]
@@ -114,8 +119,6 @@ const PILL_DIR := "res://assets/ui/figma/pill/"
 ## Tên UI hay gọi mà file mang tên khác.
 const ICON_ALIAS := {
 	"coin": "ui_gold",
-	# mảnh leaderboard: dùng tạm ngôi sao cho tới khi có assets/ui/figma/lb_piece.png
-	"lb_piece": "ic_star1",
 }
 ## Tên UI -> icon Figma (assets/ui/figma/<tên>.png). Có trong bảng này thì ưu tiên hơn file cũ.
 const FIGMA_ICON := {
@@ -166,6 +169,15 @@ static func block_ramp(color_name: String, base: Color = TEXT_DIM) -> Dictionary
 	if BLOCK_RAMPS.has(color_name):
 		return BLOCK_RAMPS[color_name]
 	return {"deep": base.darkened(0.38), "side": base.darkened(0.2), "face": base, "stripe": base.lightened(0.14)}
+
+
+## Dấu nhóm nghìn theo ngôn ngữ đang dùng: "1.234" (vi, pt, tr, de, id, es, it), "1 234" (fr, ru, uk, khoảng trắng
+## không ngắt dòng), còn lại "1,234".
+static func thousands_sep() -> String:
+	var lang := TranslationServer.get_locale().get_slice("_", 0)
+	if lang in ["fr", "ru", "uk"]:
+		return "\u00a0"
+	return "." if lang in ["vi", "pt", "tr", "de", "id", "es", "it"] else ","
 
 
 ## Nền toàn màn hình, thêm vào đầu danh sách con của màn.
@@ -323,6 +335,12 @@ static func make_button(text: String, kind: String = "primary", size_name: Strin
 	for st in ["normal", "hover", "pressed", "disabled"]:
 		b.add_theme_stylebox_override(st, _button_box(kind, st, size_name))
 	return b
+
+
+## Where text may sit on a button frame of this size: the frame less the BUTTON_TEXT_INSET_* side margins.
+static func button_text_area(frame: Vector2) -> Rect2:
+	var pad := minf(frame.y * BUTTON_TEXT_INSET_H, frame.x * BUTTON_TEXT_INSET_W)
+	return Rect2(pad, 0.0, maxf(frame.x - pad * 2.0, 0.0), frame.y)
 
 
 ## Nút trong ô hẹp (lưới 3 cột): bớt lề trái phải để chữ không đẩy rộng ô.

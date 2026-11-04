@@ -1,10 +1,9 @@
 extends RefCounted
-## Hiệu ứng va chạm và mất vật cản theo chất liệu: gỗ, pudding, xích, hộp giấy.
+## Hiệu ứng va chạm và mất vật cản theo chất liệu: thùng sắt, pudding, xích, hộp giấy, khối crystal.
 ## Mọi hạt nằm trên mọi thứ (`top_level`), toạ độ canvas, tự xoá khi xong. Cỡ và tốc độ theo cỡ ô (`cell / 42`).
 
 const BoardFx := preload("res://src/ui/board_fx.gd")
 
-const SAWDUST := Color("E8C08A")
 const JELLY := Color(1.0, 0.86, 0.92)
 const JELLY_DEEP := Color("F07AA8")
 const STEEL := Color("DDE3F0")
@@ -16,20 +15,40 @@ const LOCK_POP_TIME := 0.55
 static var _tex: Dictionary = {}  # tên -> Texture2D dựng bằng code
 
 
-## Gỗ bị va: dằm gỗ văng ngược về phía khối va, mùn cưa bốc lên, loé vàng ấm.
-static func wood_hit(parent: Node, pos: Vector2, out_dir: Vector2, cell: float, strength: float = 1.0) -> void:
+## Thùng sắt bị va: tia lửa thép toé ngược về phía khối va rồi rơi, vài tia đỏ cam nặng rơi sớm,
+## loé trắng xanh với vòng sóng rõ (tiếng "keng"), sao bạc nhỏ.
+static func iron_hit(parent: Node, pos: Vector2, out_dir: Vector2, cell: float, strength: float = 1.0) -> void:
 	var k := cell / 42.0 * strength
-	var chips := _emit(parent, pos, "splinter", {
-		"name": "WoodChips", "amount": int(round(7 * strength)), "lifetime": 0.55, "dir": out_dir, "spread": 65.0,
-		"v": Vector2(180, 420) * k, "gravity": 1100.0 * k, "scale": Vector2(0.6, 1.0) * k, "align": true,
-		"ramp": [BoardFx.WOOD_LIGHT, BoardFx.WOOD, Color(BoardFx.WOOD_DARK, 0.0)], "box": cell * 0.12})
-	chips.angular_velocity_min = -540.0
-	chips.angular_velocity_max = 540.0
-	_emit(parent, pos, "puff", {"amount": 6, "lifetime": 0.5, "dir": out_dir, "spread": 120.0,
-		"v": Vector2(30, 90) * k, "gravity": -40.0 * k, "damping": Vector2(60, 120), "scale": Vector2(0.5, 0.9) * k,
-		"grow": true, "ramp": [Color(SAWDUST, 0.7), Color(SAWDUST, 0.0)], "box": cell * 0.2})
-	BoardFx.impact_flash(parent, pos, Color("FFB347"), cell * 2.0 * strength, 0.28, 0.6)
-	BoardFx.sparkles(parent, pos, {"stripe": SPARK_HOT}, out_dir, cell / 120.0, 4)
+	_emit(parent, pos, "streak", {"name": "IronSparks", "amount": int(round(12 * strength)), "lifetime": 0.4,
+		"dir": out_dir, "spread": 75.0, "v": Vector2(260, 640) * k, "gravity": 1500.0 * k, "damping": Vector2(200, 450),
+		"scale": Vector2(0.45, 0.95) * k, "align": true, "add": true,
+		"ramp": [Color.WHITE, SPARK_HOT, Color(1.0, 0.45, 0.1, 0.0)], "box": cell * 0.08})
+	_emit(parent, pos, "streak", {"amount": int(round(5 * strength)), "lifetime": 0.55, "dir": out_dir, "spread": 50.0,
+		"v": Vector2(140, 320) * k, "gravity": 1800.0 * k, "scale": Vector2(0.35, 0.6) * k, "align": true, "add": true,
+		"ramp": [SPARK_HOT, Color(1.0, 0.4, 0.12), Color(0.8, 0.2, 0.05, 0.0)], "box": cell * 0.06})
+	BoardFx.impact_flash(parent, pos, STEEL, cell * 1.9 * strength, 0.24, 0.95)
+	BoardFx.sparkles(parent, pos, {"stripe": BoardFx.IRON_LIGHT}, out_dir, cell / 130.0, 3)
+
+
+## Khối crystal va hoặc bị va (tiếng "ting" thuỷ tinh): mảnh kính lấp lánh toé ngược ra rồi rơi, loé trắng lạnh pha màu
+## khối với vòng sóng rõ, sao lấp lánh. `ramp` là bốn tông của khối crystal.
+static func crystal_hit(parent: Node, pos: Vector2, out_dir: Vector2, cell: float, ramp: Dictionary, strength: float = 1.0) -> void:
+	crystal_glints(parent, pos, out_dir, cell, ramp, strength, 80.0)
+	var icy: Color = (ramp["stripe"] as Color).lerp(Color.WHITE, 0.55)
+	BoardFx.impact_flash(parent, pos, icy, cell * 2.1 * strength, 0.3, 1.0)
+	BoardFx.sparkles(parent, pos, {"stripe": icy}, out_dir, cell / 100.0 * strength, int(round(6 * strength)))
+
+
+## Mảnh kính crystal nhỏ hình thoi, cộng sáng, vừa bay vừa lật và loé theo màu khối; không loé quầng (dùng cả lúc
+## khối crystal thoát qua thanh, vốn không loé).
+static func crystal_glints(parent: Node, pos: Vector2, out_dir: Vector2, cell: float, ramp: Dictionary, strength: float = 1.0, spread: float = 80.0) -> void:
+	var k := cell / 42.0 * strength
+	var p := _emit(parent, pos, "gem", {"name": "CrystalGlints", "amount": int(round(10 * strength)), "lifetime": 0.5,
+		"dir": out_dir, "spread": spread, "v": Vector2(200, 560) * k, "gravity": 1100.0 * k, "damping": Vector2(120, 320),
+		"scale": Vector2(0.45, 1.0) * k, "add": true,
+		"ramp": [Color.WHITE, (ramp["stripe"] as Color).lerp(Color.WHITE, 0.3), Color(ramp["face"], 0.0)], "box": cell * 0.1})
+	p.angular_velocity_min = -900.0
+	p.angular_velocity_max = 900.0
 
 
 ## Khối phủ pudding bị va: vài giọt pudding bắn ra, loé hồng.
@@ -210,13 +229,15 @@ static func _grow_curve() -> Curve:
 	return _tex["_grow"]
 
 
-## Hình hạt trắng dựng một lần bằng code, tô màu bằng `color` của hạt: splinter (dằm gỗ), puff (bụi mềm),
-## blob (giọt pudding có vệt bóng), streak (tia lửa), link (mắt xích), paper (mẩu giấy có nếp gấp).
+## Hình hạt trắng dựng một lần bằng code, tô màu bằng `color` của hạt: puff (bụi mềm),
+## blob (giọt pudding có vệt bóng), streak (tia lửa), link (mắt xích), paper (mẩu giấy có nếp gấp),
+## gem (mảnh crystal hình thoi hai mặt sáng tối, tâm loé).
 static func texture(tex_name: String) -> Texture2D:
 	if _tex.has(tex_name):
 		return _tex[tex_name]
-	var sz: Vector2i = {"splinter": Vector2i(10, 30), "puff": Vector2i(32, 32), "blob": Vector2i(32, 32),
-		"streak": Vector2i(6, 28), "link": Vector2i(28, 18), "paper": Vector2i(16, 12)}.get(tex_name, Vector2i(16, 16))
+	var sz: Vector2i = {"puff": Vector2i(32, 32), "blob": Vector2i(32, 32),
+		"streak": Vector2i(6, 28), "link": Vector2i(28, 18), "paper": Vector2i(16, 12),
+		"gem": Vector2i(16, 24)}.get(tex_name, Vector2i(16, 16))
 	var img := Image.create(sz.x, sz.y, false, Image.FORMAT_RGBA8)
 	for y in sz.y:
 		for x in sz.x:
@@ -229,10 +250,6 @@ static func texture(tex_name: String) -> Texture2D:
 
 static func _texel(tex_name: String, u: Vector2) -> Color:
 	match tex_name:
-		"splinter":
-			var half := 0.9 * (1.0 - absf(u.y)) + 0.1  # thon hai đầu
-			var a := clampf((half - absf(u.x)) * 6.0, 0.0, 1.0)
-			return Color(Color.WHITE * (0.85 + 0.15 * signf(-u.x)), a)
 		"puff":
 			return Color(1, 1, 1, clampf(exp(-u.length_squared() * 3.0) * 1.2 - 0.05, 0.0, 1.0))
 		"blob":
@@ -255,4 +272,11 @@ static func _texel(tex_name: String, u: Vector2) -> Color:
 			var a := 1.0 if absf(u.x) < 0.94 and absf(u.y) < 0.9 else 0.0
 			var fold := 0.85 if u.x > 0.1 else 1.0
 			return Color(fold, fold, fold, a)
+		"gem":
+			var e := absf(u.x) + absf(u.y)
+			var a := clampf((0.96 - e) * 10.0, 0.0, 1.0)
+			var face := 1.0 if u.x < 0.0 else 0.62
+			var core := exp(-(u - Vector2(-0.18, -0.2)).length_squared() * 18.0)
+			var v := clampf(face * 0.8 + core * 0.6, 0.0, 1.0)
+			return Color(v, v, v, a)
 	return Color.WHITE

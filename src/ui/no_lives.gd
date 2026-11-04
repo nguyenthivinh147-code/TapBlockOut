@@ -7,7 +7,8 @@ extends Control
 ## nạp xong cũng là "home".
 ## Không có video thì hiện dòng báo, vẫn chờ được.
 ## Dựng theo PopupMoreHeartLayer (color-cube-match-puzzle): tim kèm số mạng, "mạng kế tiếp" và chip đồng hồ,
-## nút video (AdsBtn) và nút gold (GoldBtn: +N tim, giá gold). X và chạm nền (NavigationBackButton) là về Home.
+## nút video (AdsBtn) và nút gold (GoldBtn: +N tim, icon gold và giá qua UnityKit.gold_price). X và chạm nền
+## (NavigationBackButton) là về Home.
 ## Không bán BundleHeart (game không có gói này ở đây): chỗ của nó dành cho dòng giải thích và thông báo.
 ## Ba dòng dưới popup (giải thích, không có video, thông báo), chip đồng hồ nới rộng (340) và đồng hồ làm mới là node
 ## trong scenes/no_lives.tscn.
@@ -15,6 +16,7 @@ extends Control
 signal closed(result: Variant)
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Config := preload("res://src/config.gd")
 const VIDEO_PLACEMENT := "refill_life"
 const LAYER := "PopupMoreHeartLayer"
@@ -142,8 +144,7 @@ func refresh() -> void:
 	UnityUI.set_text(_next_lbl, tr("no_lives_next") % format_time(secs))
 	var regen := int(Config.LIVES.regen_sec)
 	UnityUI.set_text(_full_lbl, tr("no_lives_full_in") % format_time(secs + maxi(mx - count - 1, 0) * regen))
-	ui.text("Panel/Content/GameObject/GoldBtn/Price/Text (TMP)", str(int(v.refill_price)))
-	ui.relayout("Panel/Content/GameObject/GoldBtn/Price")
+	UnityKit.gold_price(_gold_btn, int(v.refill_price))
 	var can_gold := bool(v.can_refill_gold)
 	_gold_btn.modulate.a = 1.0 if can_gold else 0.6
 	var video_ready := bool(v.video_ready)

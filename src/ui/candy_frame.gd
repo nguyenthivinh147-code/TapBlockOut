@@ -2,7 +2,8 @@ extends Control
 ## Khung bàn theo concept kẹo: bốn thanh capsule là bốn cổng, bốn ống góc hồng đỏ nằm dưới đầu thanh.
 ## BoardView gọi layout(board, cell) khi xếp lại, set_gate() và set_flash() khi cổng đổi.
 ## Node `Frame` và các thanh, ống góc (ColorRect có shader) nằm sẵn trong scenes/board_view.tscn; script chỉ xếp chỗ.
-## Mọi số hình học tính theo ô, đo từ `art/concepts/ref_board_size.png`; màu lấy từ `art/concepts/concept_candy_board_v5_stripe.png`.
+## Mọi số hình học tính theo đơn vị khung (`Config.BOARD_FRAME_UNIT` ở màn chuẩn, không theo cỡ ô khối), đo từ
+## `art/concepts/ref_board_size.png`; màu lấy từ `art/concepts/concept_candy_board_v5_stripe.png`.
 
 const SIDES := ["up", "left", "right", "down"]
 ## axis: từ mép bàn tới đường giữa thanh; thick: bề dày; inset: từ mép ngoài khung tới đầu thanh.
@@ -148,7 +149,7 @@ static func ramp_texture(side: String) -> Texture2D:
 	return _ramp_cache[side]
 
 
-## Xếp lại toàn bộ theo bàn và cỡ ô hiện tại. `board` tính theo toạ độ cục bộ của khung.
+## Xếp lại toàn bộ theo vùng bàn và đơn vị khung `cell`. `board` tính theo toạ độ cục bộ của khung.
 func layout(board: Rect2, cell: float) -> void:
 	_cell = cell
 	var pad := PAD * cell

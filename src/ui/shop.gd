@@ -3,10 +3,10 @@ extends Control
 ## Thân màn là ShopCashLayer của color-cube-match-puzzle (unity_ui.gd): ScrollRect với thẻ Remove Ads, các thẻ gói
 ## (Starter, Level, Rescue), tiêu đề Gold, gói lớn và lưới gold (FreeGoldPack là video gold mỗi ngày của game).
 ## Thanh trên, thanh dưới dùng chung với Home (HubTop, HubNav) đè lên trên như CurrencyLayer, BottomBarLayer của Unity.
-## scenes/shop.tscn giữ layer đã chỉnh cho game: nền gradient thay UIGradient của "BG (2)" (_topColor 485A98,
-## _bottomColor 3C4988), ExitBtn và các thẻ không dùng ẩn, Viewport cắt theo rect, rect chữ thẻ Remove Ads và nút
-## video; cùng Toast, khung Hub. Script điền chữ, giá, món theo SKU, thẻ preview, đặt các giá trị trùng mặc định của
-## Godot (_defaults); HubTop, HubNav dựng lúc chạy.
+## scenes/shop.tscn giữ layer đã chỉnh cho game: "BG (2)" ẩn, nền là node Background ở gốc màn (bg_shop.png của
+## Figma, phủ cả vùng ngoài safe area), ExitBtn và các thẻ không dùng ẩn, Viewport cắt theo rect, rect chữ thẻ
+## Remove Ads và nút video; cùng Toast, khung Hub. Script điền chữ, giá, món theo SKU, thẻ preview, đặt các giá trị
+## trùng mặc định của Godot (_defaults); HubTop, HubNav dựng lúc chạy.
 ## setup({source}); signal closed({bought: bool, action?}); action: shop, profile, settings, lives, ranking.
 
 signal closed(result: Variant)
@@ -303,9 +303,10 @@ static func one_line(l: Label) -> void:
 	l.autowrap_mode = TextServer.AUTOWRAP_OFF
 	UnityUI.set_text(l, l.text)
 
-## C# ToString("N0") as the Unity shop shows amounts: 1234567 -> "1,234,567" (Vietnamese: "1.234.567").
+## C# ToString("N0") as the Unity shop shows amounts: 1234567 -> "1,234,567" (separator per language,
+## ThemeKit.thousands_sep: Vietnamese "1.234.567").
 static func fmt_n0(n: int) -> String:
-	var sep := "." if TranslationServer.get_locale().begins_with("vi") else ","
+	var sep := ThemeKit.thousands_sep()
 	var digits := str(absi(n))
 	var out := ""
 	while digits.length() > 3:

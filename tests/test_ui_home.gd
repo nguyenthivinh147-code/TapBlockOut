@@ -2,6 +2,7 @@ extends RefCounted
 const T := preload("res://tests/t.gd")
 const Config := preload("res://src/config.gd")
 const HomeScript := preload("res://src/ui/home.gd")
+const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 
 const DIR := "user://test_ui_home"
 const SCENE := "res://scenes/home.tscn"
@@ -181,6 +182,7 @@ func test_difficulty_tiers(t: T) -> void:
 	t.eq(h.path_nodes[2].num.text, "1", "level 1: mốc hiện tại ở dưới cùng")
 	t.eq(h.path_nodes[0].num.text, "3", "level 1: hai mốc khoá phía trên")
 	t.ok(h.path_nodes[0].badge.texture != null, "mốc khoá có icon khoá")
+	_check_background(t, h, "thường")
 	h.queue_free()
 	for tier in ["hard", "very_hard"]:
 		var lv := 2
@@ -194,4 +196,38 @@ func test_difficulty_tiers(t: T) -> void:
 		t.ok(h.path_nodes[1].skull.texture != null, "%s: mốc hiện tại có đầu lâu" % tier)
 		t.eq(h.path_nodes[2].num.text, str(lv - 1), "%s: mốc vừa qua ở dưới" % tier)
 		t.ok(h.path_nodes[2].badge.texture != null, "%s: mốc vừa qua có dấu tích" % tier)
+		_check_background(t, h, tier)
 		h.queue_free()
+
+
+## Ba mốc nằm trên đường giữa ray kẹo, zigzag như ref: mốc hiện tại lệch trái, hai mốc kia lệch phải; mốc khoá là
+## lục giác xám ở mọi độ khó.
+func test_nodes_on_rail(t: T) -> void:
+	for level in [1, 7]:
+		_g(level)
+		var h := _home()
+		var rail := h.get_node("%Rail") as Control
+		var k := rail.size.y / HomeScript.RAIL_RECT.size.y
+		t.near(rail.size.x / HomeScript.RAIL_RECT.size.x, k, 0.001, "L%d: ray co đều hai chiều" % level)
+		var xs: Array[float] = []
+		for pn: Dictionary in h.path_nodes:
+			var c: Vector2 = (pn.root as Control).get_rect().get_center()
+			var want := rail.position.x + HomeScript.rail_x((c.y - rail.position.y) / k) * k
+			t.near(c.x, want, 1.0, "L%d: mốc %s nằm trên ray" % [level, (pn.num as Label).text])
+			xs.append(c.x)
+		# cả hai bố cục: mốc giữa nằm ở khúc cong trái, mốc trên và dưới lệch phải
+		t.ok(xs[0] - xs[1] > 100.0 * k and xs[2] - xs[1] > 100.0 * k, "L%d: zigzag" % level)
+		var cur := 2 if level == 1 else 1
+		var locked: Dictionary = h.path_nodes[0]
+		t.eq((locked.sprite as TextureRect).texture, UiAtlas.tex("hex_gray"), "L%d: mốc khoá là lục giác xám" % level)
+		var glow := h.get_node("%Glow") as Control
+		t.near(glow.get_rect().get_center().x, (h.path_nodes[cur].root as Control).get_rect().get_center().x, 1.0,
+			"L%d: glow theo mốc hiện tại" % level)
+		h.queue_free()
+
+
+## Nền Home giống nhau ở mọi độ khó: dải xanh của khung Hard, lớp TopShade, hoạ tiết kẹo mờ 7%.
+func _check_background(t: T, h: Control, label: String) -> void:
+	t.ok(h.get_node("%Gradient").visible, "%s: dải nền xanh" % label)
+	t.ok(h.get_node("%TopShade").visible, "%s: lớp TopShade" % label)
+	t.near(h.get_node("%CandyPattern").modulate.a, 0.07, 0.0001, "%s: hoạ tiết kẹo mờ" % label)

@@ -30,6 +30,11 @@ func _rewarded(d: D, placement: String) -> Array:
 	return out
 
 
+## Gold của lần thắng gần nhất (thưởng thắng + MOVES thừa), đọc từ level_end.
+func _win_coins(d: D) -> int:
+	return int(d.plat().an.named("level_end").back().params.coins)
+
+
 ## Đưa trạng thái về "đến lượt interstitial" cho lần thắng kế (trừ chuyện x2).
 func _prep_inter(d: D) -> void:
 	var g := d.game()
@@ -71,16 +76,20 @@ func test_full_demo_l1_to_l20(t: T) -> void:
 		t.ok(await d.wait_until(func() -> bool: return d.main.current_name == "home" and d.main.popup_count() == 0), "về Home")
 	# Kết quả tổng
 	t.eq(int(g.s.runs), 20, "20 lượt xong")
-	t.eq(int(g.s.coins), 1000 + 20 * int(Config.ECON.win_coins), "gold = ban đầu + 20 lần thắng, không chi")
+	var ends: Array = d.plat().an.named("level_end")
+	t.eq(ends.size(), 20, "20 sự kiện level_end")
+	var won := 0
+	for e in ends:
+		t.eq(int(e.params.won), 1, "level_end thắng")
+		t.eq(int(e.params.coins), int(Config.ECON.win_coins) + int(e.params.moves_left) * int(Config.ECON.win_move_coins),
+			"gold L%d = thưởng thắng + MOVES thừa" % int(e.params.level))
+		won += int(e.params.coins)
+	t.eq(int(g.s.coins), 1000 + won, "gold = ban đầu + thưởng 20 lần thắng, không chi")
 	for k in ["hint", "move", "smash"]:
 		t.ok(bool(g.s.gifted[k]), "đã tặng booster %s" % k)
 		t.eq(int(g.s.inv[k]), 1, "kho %s" % k)
 	t.ok(d.gifts_seen == 3, "thấy 3 hộp tặng booster (L4/6/9)")
 	t.ok(bool(g.s.meta.rated), "đã hỏi đánh giá sau L18")
-	var ends: Array = d.plat().an.named("level_end")
-	t.eq(ends.size(), 20, "20 sự kiện level_end")
-	for e in ends:
-		t.eq(int(e.params.won), 1, "level_end thắng")
 	t.eq(_rewarded(d, "x2_coins").size(), 0, "không xem video x2 trong lượt chơi này")
 	# luật interstitial: phiên đầu chặn tới hết L10, cách nhau >= inter_every lượt, chỉ ở result_exit
 	var shows: Array = d.plat().an.named("inter_show")
@@ -289,21 +298,23 @@ func test_x2_free_video_and_closed_early(t: T) -> void:
 	var d := D.new()
 	await d.begin(DIR + "/x2", 1)
 	var g := d.game()
-	var win: int = int(Config.ECON.win_coins)
 	t.ok(await d.play_from_home(1), "vào L1")
 	# L1: x2 miễn phí, không quảng cáo
 	t.ok(await d.win_level(), "thắng L1")
-	t.eq(int(g.s.coins), 1000 + win, "+gold thắng")
+	var win1 := _win_coins(d)
+	t.ok(win1 > int(Config.ECON.win_coins), "L1 có gold MOVES thừa")
+	t.eq(int(g.s.coins), 1000 + win1, "+gold thắng")
 	t.ok(d.popup("X2Button") != null, "L1 có x2")
 	d.press("X2Button")
-	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == 1000 + 2 * win), "x2 miễn phí ở L1")
+	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == 1000 + 2 * win1), "x2 miễn phí ở L1")
 	t.eq(_rewarded(d, "x2_coins").size(), 0, "L1 không gọi quảng cáo")
 	t.ok(await d.continue_to(2), "sang L2")
 	# L2: x2 bằng video
 	t.ok(await d.win_level(), "thắng L2")
-	t.eq(int(g.s.coins), 1000 + 3 * win, "+gold L2")
+	var win2 := _win_coins(d)
+	t.eq(int(g.s.coins), 1000 + 2 * win1 + win2, "+gold L2")
 	d.press("X2Button")
-	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == 1000 + 4 * win), "x2 L2 sau video")
+	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == 1000 + 2 * win1 + 2 * win2), "x2 L2 sau video")
 	t.eq(_rewarded(d, "x2_coins").size(), 1, "một lần xem video x2")
 	t.ok(await d.continue_to(3), "sang L3")
 	# L3: đóng video sớm không thưởng, thử lại được
@@ -317,7 +328,7 @@ func test_x2_free_video_and_closed_early(t: T) -> void:
 	t.eq(msg.text, _tr("ads_closed_early"), "nội dung báo")
 	t.eq(int(g.s.coins), before, "đóng sớm không thưởng")
 	d.press("X2Button")
-	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == before + win), "thử lại xem hết thì x2")
+	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == before + _win_coins(d)), "thử lại xem hết thì x2")
 	t.eq(_rewarded(d, "x2_coins").size(), 3, "tổng 3 lần gọi video x2")
 	t.eq(d.plat().an.count("rv_done"), 2, "rv_done hai lần")
 	t.ok(d.plat().an.count("rv_cancel") >= 1, "rv_cancel khi đóng sớm")
@@ -344,7 +355,7 @@ func test_interstitial_rules_with_x2(t: T) -> void:
 	t.ok(await d.win_level(), "thắng L13")
 	var coins13: int = int(g.s.coins)
 	d.press("X2Button")
-	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == coins13 + int(Config.ECON.win_coins)), "x2 L13 cộng gold")
+	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == coins13 + _win_coins(d)), "x2 L13 cộng gold")
 	t.eq(_rewarded(d, "x2_coins").size(), 1, "xem video x2 L13")
 	t.ok(await d.continue_to(14), "sang L14")
 	t.eq(_inters(d).size(), 1, "lấy x2 thì không hiện inter")

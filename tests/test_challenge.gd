@@ -133,9 +133,11 @@ func test_first_win_of_day_bonus_only_once(t: T) -> void:
 	var coins0 := int(g.s.coins)
 	var a: Dictionary = g.start_challenge()
 	t.ok(await _solve(g, a), "giải được bàn")
+	var left: int = (a.board as BoardState).moves_left()
 	var res: Dictionary = g.on_level_won(a)
-	t.eq(res.coins, 100, "+100 gold lần thắng đầu")
-	t.eq(int(g.s.coins), coins0 + 100, "ví +100")
+	t.eq(res.move_coins, left, "gold MOVES thừa")
+	t.eq(res.coins, 100 + left, "+100 gold và MOVES thừa lần thắng đầu")
+	t.eq(int(g.s.coins), coins0 + 100 + left, "ví +100 và MOVES thừa")
 	t.eq(int(g.s.level), 50, "level người chơi giữ nguyên")
 	t.eq(int(g.s.challenge.day), g.today(), "ghi ngày")
 	t.eq(bool(g.s.challenge.won), true, "ghi đã thắng")
@@ -146,16 +148,18 @@ func test_first_win_of_day_bonus_only_once(t: T) -> void:
 	var b2: Dictionary = g._begin_attempt(g.challenge_data(), g.challenge_level_id(), true)
 	t.ok(await _solve(g, b2), "giải lại")
 	var res2: Dictionary = g.on_level_won(b2)
-	t.eq(res2.coins, 0, "lần thắng thứ hai trong ngày: 0 gold")
-	t.eq(int(g.s.coins), coins0 + 100, "ví không đổi")
+	t.eq(res2.coins, 0, "lần thắng thứ hai trong ngày: 0 gold, kể cả MOVES thừa")
+	t.eq(res2.move_coins, 0, "không gold MOVES thừa")
+	t.eq(int(g.s.coins), coins0 + 100 + left, "ví không đổi")
 	t.eq(res2.x2_available, false, "không x2 khi 0 gold")
 	# qua ngày: thưởng lại
 	g.test_now = NOW + 86400
 	t.eq(g.challenge_view().available, true, "ngày mới mở lại")
 	var a3: Dictionary = g.start_challenge()
 	t.ok(await _solve(g, a3), "giải ngày mới")
-	t.eq(g.on_level_won(a3).coins, 100, "ngày mới +100")
-	t.eq(int(g.s.coins), coins0 + 200, "ví +200")
+	var left3: int = (a3.board as BoardState).moves_left()
+	t.eq(g.on_level_won(a3).coins, 100 + left3, "ngày mới +100 và MOVES thừa")
+	t.eq(int(g.s.coins), coins0 + 200 + left + left3, "ví +200 và MOVES thừa")
 	t.eq(_plat().an.count("level_end"), 0, "không log level_end cho challenge")
 	t.eq(_plat().an.count("challenge_end"), 3, "3 sự kiện challenge_end")
 
@@ -171,7 +175,7 @@ func test_x2_doubles_challenge_gold(t: T) -> void:
 	t.eq(int(_plat().an.count("rv_offer")), 1, "log rv_offer")
 	var ok: bool = await g.claim_x2()
 	t.ok(ok, "xem video xong")
-	t.eq(int(g.s.coins), coins0 + 200, "x2: 100 + 100")
+	t.eq(int(g.s.coins), coins0 + 2 * int(res.coins), "x2: (100 + MOVES thừa) x 2")
 	t.eq(_plat().an.named("rv_done")[0].params.pl, "x2_coins", "placement x2_coins")
 	t.eq(bool(g.claim_x2()), false, "không x2 hai lần")
 
@@ -216,7 +220,7 @@ func test_analytics_flat_snake_case_with_build(t: T) -> void:
 			t.ok(re.search(str(k)) != null, "tham số snake_case: " + str(k))
 			t.ok(typeof(e.params[k]) in [TYPE_INT, TYPE_STRING, TYPE_FLOAT, TYPE_BOOL], "giá trị phẳng: " + str(k))
 	t.eq(int(end[0].params.won), 1, "thắng")
-	t.eq(int(end[0].params.coins), 100, "coins")
+	t.eq(int(end[0].params.coins), 100 + int(end[0].params.moves_left), "coins: 100 và MOVES thừa")
 	t.eq(int(start[0].params.level), 50, "level")
 
 
@@ -352,10 +356,11 @@ func test_challenge_screen_full_win(t: T) -> void:
 		await _tree().process_frame
 	t.ok(lv.board.is_won(), "thắng")
 	t.ok(await _wait_until(func() -> bool: return _pop(lv, "ContinueButton") != null), "thẻ thắng")
-	t.eq(int(g.s.coins), coins0 + 100, "+100 gold")
+	var won: int = 100 + int(lv.board.moves_left())
+	t.eq(int(g.s.coins), coins0 + won, "+100 gold và MOVES thừa")
 	t.ok(_pop(lv, "X2Button") != null, "có nút x2 (video)")
 	(_pop(lv, "X2Button") as Button).pressed.emit()
-	t.ok(await _wait_until(func() -> bool: return int(g.s.coins) == coins0 + 200), "x2 xong")
+	t.ok(await _wait_until(func() -> bool: return int(g.s.coins) == coins0 + 2 * won), "x2 xong")
 	(_pop(lv, "ContinueButton") as Button).pressed.emit()
 	t.ok(await _wait_until(func() -> bool:
 		if is_instance_valid(lv) and _offer_popup(lv) != null:

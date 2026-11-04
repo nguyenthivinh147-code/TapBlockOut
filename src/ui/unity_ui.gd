@@ -8,6 +8,7 @@ const UView := preload("res://src/ui/u_view.gd")
 const UImage := preload("res://src/ui/u_image.gd")
 const UButton := preload("res://src/ui/u_button.gd")
 const UAnim := preload("res://src/ui/u_anim.gd")
+const UiMotion := preload("res://src/ui/ui_motion.gd")
 const UScroll := preload("res://src/ui/u_scroll.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const TMP_SHADER := preload("res://src/ui/tmp_text.gdshader")
@@ -31,6 +32,10 @@ const TMP_BOLD_SPACING := 0.0
 const GODOT_LINE_HEIGHT := 43.9
 ## Atlas material used when a text has no material of its own.
 const DEFAULT_MATERIAL := "Baloo Bhaijaan Regular 400 SDF (atlas)"
+## Smallest auto size of button text the prefab does not auto size (the prefabs' own fontSizeMin).
+const BUTTON_TEXT_MIN := 18.0
+## A button this much of its canvas in both axes (a dim, "tap anywhere") holds content, not a caption.
+const COVER_BUTTON := Vector2(0.9, 0.5)
 
 static var _layouts := {}
 static var _sprites := {}
@@ -308,7 +313,7 @@ static func _wire(c: Control, v: UView, path: String) -> void:
 		var img := c.get_node_or_null("image")
 		if img is UImage:
 			(c as UButton).image = img
-	if c is Label and c.has_meta("u_txt") and (c.get_meta("u_txt") as Dictionary).get("auto") != null and not baking:
+	if c is Label and c.has_meta("u_txt") and ((c.get_meta("u_txt") as Dictionary).get("auto") != null or _in_button(c)) and not baking:
 		var fit := fit_text.bind(c)
 		if not c.resized.is_connected(fit):
 			c.resized.connect(fit)
@@ -337,6 +342,10 @@ static func _wire(c: Control, v: UView, path: String) -> void:
 			a.enabled = bool(spec.anim.get("on", true))
 			c.add_child(a)
 			a.setup(c, clip)
+	# Video-ad icons hop and glows breathe, by the sprite the prefab draws.
+	var motion := UiMotion.kind_for_sprite((spec.get("img", {}) as Dictionary).get("sp"))
+	if motion >= 0:
+		UiMotion.attach(c, motion)
 
 
 ## Makes one prefab node and its children with every property the prefab sets; adopt() wires them.
@@ -624,31 +633,44 @@ static func _fit_later(l: Variant) -> void:
 ## Sets text and re-runs TMP auto size.
 static func set_text(l: Label, s: String) -> void:
 	l.text = s
-	if l.has_meta("u_txt") and (l.get_meta("u_txt") as Dictionary).get("auto") != null:
-		fit_text(l)
+	fit_text(l)
 
 
-## TMP enableAutoSizing: the largest size in [min, max] whose text fits the rect.
+## TMP enableAutoSizing: the largest size in [min, max] whose text fits the rect. Text on a button always auto
+## sizes (_auto_range) and also stays inside the button's frame (_caption_room).
 static func fit_text(l: Label) -> void:
-	# Changing the font size resizes the label, which emits resized again.
+	# Changing the margins or the font size resizes the label, which emits resized again.
 	if not is_instance_valid(l) or not l.has_meta("u_txt") or l.has_meta("u_fitting"):
 		return
-	var t: Dictionary = l.get_meta("u_txt")
-	var auto: Variant = t.get("auto")
+	var auto: Variant = _auto_range(l)
 	if auto == null:
 		return
-	var m: Array = t.get("m", [0, 0, 0, 0])
-	var avail := rect_size(l) - Vector2(float(m[0]) + float(m[2]), float(m[1]) + float(m[3]))
-	if avail.x <= 0.0 or avail.y <= 0.0:
-		return
 	l.set_meta("u_fitting", true)
+	var room := {} if baking else _caption_room(l)
+	_set_inset(l, room.get("inset", Vector4.ZERO))
+	var avail := rect_size(l) - l.get_theme_stylebox("normal").get_minimum_size()
+	# TMP lets text it does not auto size overflow its rect: only the button's frame bounds its height.
+	if room.has("h") and (l.get_meta("u_txt") as Dictionary).get("auto") == null:
+		avail.y = float(room.h)
+	if avail.x <= 0.0 or avail.y <= 0.0:
+		l.remove_meta("u_fitting")
+		return
 	var text := l.text.to_upper() if l.uppercase else l.text
 	var lo := int(floor(float(auto[0])))
 	var hi := int(ceil(float(auto[1])))
+	# Text on a button shrinks until its longest word fits a line rather than breaking inside it, and a one-line
+	# text that overflows even at the smallest size goes onto lines (meta u_wrapped) instead.
+	var caption := room.has("h")
+	if l.has_meta("u_wrapped"):
+		l.autowrap_mode = TextServer.AUTOWRAP_OFF
+		l.remove_meta("u_wrapped")
+	if caption and l.autowrap_mode == TextServer.AUTOWRAP_OFF and not _fits(l, text, lo, avail):
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.set_meta("u_wrapped", true)
 	var best := lo
 	while lo <= hi:
 		var mid := (lo + hi) / 2
-		if _fits(l, text, mid, avail):
+		if _fits(l, text, mid, avail, caption):
 			best = mid
 			lo = mid + 1
 		else:
@@ -657,7 +679,7 @@ static func fit_text(l: Label) -> void:
 	l.remove_meta("u_fitting")
 
 
-static func _fits(l: Label, text: String, size: int, avail: Vector2) -> bool:
+static func _fits(l: Label, text: String, size: int, avail: Vector2, whole_words: bool = false) -> bool:
 	_text_size(l, float(size))
 	var font := l.get_theme_font("font")
 	var line := float(l.get_theme_constant("line_spacing"))
@@ -668,10 +690,132 @@ static func _fits(l: Label, text: String, size: int, avail: Vector2) -> bool:
 		for s in lines:
 			w = maxf(w, font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x)
 		return w <= avail.x + 0.5 and lh * lines.size() - line <= avail.y + 0.5
-	var sz := font.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, avail.x, size, -1,
-		TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND | TextServer.BREAK_ADAPTIVE)
+	var brk := TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND
+	if not whole_words:
+		brk |= TextServer.BREAK_ADAPTIVE
+	var sz := font.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, avail.x, size, -1, brk)
 	var n := maxi(1, roundi(sz.y / font.get_height(size)))
 	return sz.x <= avail.x + 0.5 and lh * n - line <= avail.y + 0.5
+
+
+## Auto size range [min, max]: the prefab's, else [BUTTON_TEXT_MIN, fontSize] for text on a button; null for other
+## fixed-size text. Baking keeps the prefab's sizes.
+static func _auto_range(l: Label) -> Variant:
+	var t: Dictionary = l.get_meta("u_txt", {})
+	if t.is_empty() or t.get("auto") != null or baking or _caption_room(l).is_empty():
+		return t.get("auto")
+	var fs := float(t.get("fs", 36.0))
+	return [minf(BUTTON_TEXT_MIN, fs), fs]
+
+
+static func _in_button(c: Control) -> bool:
+	var n := c.get_parent()
+	while n is Control and not n.has_meta("u_canvas"):
+		if n is UButton:
+			return true
+		n = n.get_parent()
+	return false
+
+
+## Nearest button above c, unless it covers the canvas (COVER_BUTTON): text there is popup content.
+static func _caption_button(c: Control) -> Control:
+	var n := c.get_parent()
+	while n is Control and not n.has_meta("u_canvas"):
+		if n is UButton:
+			var b := n as Control
+			var canvas := b.get_parent()
+			while canvas is Control and not canvas.has_meta("u_canvas"):
+				canvas = canvas.get_parent()
+			var cs := (canvas as Control).size if canvas is Control else Vector2.INF
+			return null if b.size.x >= cs.x * COVER_BUTTON.x and b.size.y >= cs.y * COVER_BUTTON.y else b
+		n = n.get_parent()
+	return null
+
+
+## Frame text on a button fits in: the nearest drawn Image above it holding its center (a price pill, a badge),
+## else the button. Returns [frame, label rect, rect of the label's parent (the label's own when the parent is
+## the frame)], both in frame coords; empty for other text.
+static func _caption_frame(l: Label) -> Array:
+	var b := _caption_button(l)
+	if b == null:
+		return []
+	var n := l.get_parent() as Control
+	var ps := n.size
+	var r := Rect2(l.anchor_left * ps.x + l.offset_left, l.anchor_top * ps.y + l.offset_top, 0.0, 0.0)
+	r.end = Vector2(l.anchor_right * ps.x + l.offset_right, l.anchor_bottom * ps.y + l.offset_bottom)
+	var p := Rect2(Vector2.ZERO, ps)
+	while n != b:
+		if n is UImage and (n as UImage).color.a > 0.0 and Rect2(Vector2.ZERO, n.size).has_point(r.get_center()):
+			break
+		r.position += n.position
+		p.position += n.position
+		n = n.get_parent() as Control
+	if not Rect2(Vector2.ZERO, n.size).has_point(r.get_center()):
+		return []
+	return [n, r, r if n == l.get_parent() else p]
+
+
+## Where text on a button may go inside ThemeKit.button_text_area of its frame: "inset", the margins beyond the
+## label's own that cut its rect to that area (only the sides past it), and "h", the height the frame leaves it by
+## its vertical alignment. Empty for other text and for text neither it nor
+## its group (an icon and price row) crosses the frame's middle: a corner count.
+static func _caption_room(l: Label) -> Dictionary:
+	var fr := _caption_frame(l)
+	if fr.is_empty():
+		return {}
+	var art := _art_rect(fr[0])
+	var area := ThemeKit.button_text_area(art.size)
+	area.position += art.position
+	var own: Vector4 = _margins(l) - (l.get_meta("u_inset", Vector4.ZERO) as Vector4)
+	var r: Rect2 = fr[1]
+	var c := Rect2(r.position + Vector2(own.x, own.y), r.size - Vector2(own.x + own.z, own.y + own.w))
+	var mid := area.get_center().x
+	var group: Rect2 = fr[2]
+	if (c.position.x > mid or c.end.x < mid) and (group.position.x > mid or group.end.x < mid):
+		return {}
+	var h := Vector2(maxf(area.position.x - c.position.x, 0.0), maxf(c.end.x - area.end.x, 0.0))
+	var v := Vector2(maxf(area.position.y - c.position.y, 0.0), maxf(c.end.y - area.end.y, 0.0))
+	var room_h := area.end.y - c.position.y
+	if l.vertical_alignment == VERTICAL_ALIGNMENT_CENTER:
+		room_h = 2.0 * minf(c.get_center().y - area.position.y, area.end.y - c.get_center().y)
+	elif l.vertical_alignment == VERTICAL_ALIGNMENT_BOTTOM:
+		room_h = c.end.y - area.position.y
+	return {"inset": Vector4(h.x, v.x, h.y, v.y), "h": room_h}
+
+
+## Where a frame's sprite is drawn, in its coords: a preserveAspect sprite on a widened button keeps its shape.
+static func _art_rect(frame: Control) -> Rect2:
+	var img := image_of(frame)
+	if img == null:
+		return Rect2(Vector2.ZERO, frame.size)
+	var r: Rect2 = img.call("drawn_rect")
+	if img != frame:
+		r.position += img.position
+	return r
+
+
+static func _margins(l: Label) -> Vector4:
+	var box := l.get_theme_stylebox("normal")
+	return Vector4(box.get_margin(SIDE_LEFT), box.get_margin(SIDE_TOP), box.get_margin(SIDE_RIGHT), box.get_margin(SIDE_BOTTOM))
+
+
+## Swaps the inset added to the label's margins (meta u_inset) for a new one.
+static func _set_inset(l: Label, inset: Vector4) -> void:
+	var old: Vector4 = l.get_meta("u_inset", Vector4.ZERO)
+	if inset.is_equal_approx(old):
+		return
+	var m := _margins(l) - old + inset
+	var box := StyleBoxEmpty.new()
+	box.content_margin_left = m.x
+	box.content_margin_top = m.y
+	box.content_margin_right = m.z
+	box.content_margin_bottom = m.w
+	# Before the box: it resizes the label, and resized re-runs fit_text, which reads the meta.
+	if inset == Vector4.ZERO:
+		l.remove_meta("u_inset")
+	else:
+		l.set_meta("u_inset", inset)
+	l.add_theme_stylebox_override("normal", box)
 
 
 ## One ShaderMaterial per TMP material (and bold flag), see tmp_text.gdshader.
@@ -1299,7 +1443,7 @@ static func _text_preferred(l: Label) -> Vector2:
 	var font := l.get_theme_font("font")
 	var size := l.get_theme_font_size("font_size")
 	var line := float(l.get_theme_constant("line_spacing"))
-	var auto: Variant = t.get("auto")
+	var auto: Variant = _auto_range(l)
 	if auto is Array:
 		# fit_text's upper bound.
 		var mt := _text_metrics(t, ceilf(float(auto[1])))

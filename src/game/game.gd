@@ -37,7 +37,8 @@ const SAVE_PATH := "user://save.json"
 const LEVEL_PATH := "res://data/levels/level_%04d.json"
 ## Gộp ghi: có thay đổi nhỏ (queue) thì ghi sau chừng này giây.
 const FLUSH_SEC := 2.5
-const LANGS := ["en", "vi"]
+## Mã locale theo thứ tự cột của i18n/strings.csv và ô của popup Language.
+const LANGS := ["en", "vi", "pt_BR", "tr", "de", "fr", "id", "es", "ru", "ko", "ja", "hi", "uk", "it"]
 ## Daily Challenge không dùng level thấp hơn mức này (mở khoá ở L50).
 const CHALLENGE_MIN_ID := 50
 ## Level Daily Challenge sinh trong game: seed cơ sở = id * SEED_STRIDE, mỗi lần sinh lại cộng RESEED_STEP
@@ -225,12 +226,26 @@ func log_event(event_name: String, params: Dictionary = {}) -> void:
 
 
 func _apply_language() -> void:
+	TranslationServer.set_locale(current_lang())
+
+
+## Ngôn ngữ đang dùng: mã đã chọn trong Settings, chưa chọn thì theo máy.
+func current_lang() -> String:
 	var lang := str(s.settings.get("lang", ""))
-	if lang == "":
-		lang = OS.get_locale_language()
-	if not LANGS.has(lang):
-		lang = "en"
-	TranslationServer.set_locale(lang)
+	return lang if LANGS.has(lang) else match_lang(OS.get_locale())
+
+
+## Mã trong LANGS cho một locale của máy: khớp đủ, rồi khớp ngôn ngữ ("pt_PT" -> "pt_BR"), không có thì "en".
+## standardize_locale đổi mã cũ Android còn trả ("in" -> "id").
+static func match_lang(locale: String) -> String:
+	var std := TranslationServer.standardize_locale(locale)
+	if LANGS.has(std):
+		return std
+	var base := std.get_slice("_", 0)
+	for code: String in LANGS:
+		if code.get_slice("_", 0) == base:
+			return code
+	return "en"
 
 
 func _on_paused() -> void:
@@ -505,20 +520,25 @@ func _finish_attempt(attempt: Dictionary, won: bool, coins: int) -> void:
 		"replay": 1 if bool(attempt.get("replay", false)) else 0})
 
 
-## {coins, x2_available, x2_free, rate_prompt, progress, unlocked}. Cộng gold, tăng level, tăng s.runs, lưu ngay.
+## {coins, move_coins, x2_available, x2_free, rate_prompt, progress, unlocked}. Cộng gold, tăng level, tăng s.runs,
+## lưu ngay. coins = thưởng thắng + move_coins (MOVES còn lại x win_move_coins), x2 nhân đôi cả hai.
 func on_level_won(attempt: Dictionary) -> Dictionary:
 	if bool(attempt.get("ended", false)):
-		return {"coins": 0, "x2_available": false, "x2_free": false, "rate_prompt": false,
+		return {"coins": 0, "move_coins": 0, "x2_available": false, "x2_free": false, "rate_prompt": false,
 			"progress": {}, "unlocked": [] as Array[String]}
 	var level := int(attempt.level)
 	var is_challenge := bool(attempt.get("challenge", false))
-	var coins := int(Config.ECON.win_coins)
+	var base := int(Config.ECON.win_coins)
+	var move_coins := maxi((attempt.board as BoardState).moves_left(), 0) * int(Config.ECON.win_move_coins)
 	if is_challenge:
-		# +challenge_coins chỉ cho lần thắng đầu tiên trong ngày của bàn; thắng lại thì 0.
+		# +challenge_coins và gold MOVES thừa chỉ cho lần thắng đầu tiên trong ngày của bàn; thắng lại thì 0.
 		var day := int(attempt.get("day", today()))
 		var done: bool = int(s.challenge.get("day", -1)) == day and bool(s.challenge.get("won", false))
-		coins = 0 if done else int(Config.ECON.challenge_coins)
+		base = 0 if done else int(Config.ECON.challenge_coins)
+		if done:
+			move_coins = 0
 		s["challenge"] = {"day": day, "won": true}
+	var coins := base + move_coins
 	_finish_attempt(attempt, true, coins)
 	if not is_challenge:
 		Offers.note_win(s, level)
@@ -553,7 +573,7 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 	var progress: Dictionary = {}
 	if not is_challenge:
 		progress = Unlocks.feature_progress(level, _content_cap())
-	return {"coins": coins, "x2_available": avail, "x2_free": _x2_free, "rate_prompt": rate,
+	return {"coins": coins, "move_coins": move_coins, "x2_available": avail, "x2_free": _x2_free, "rate_prompt": rate,
 		"progress": progress, "unlocked": progress.get("unlocked", [] as Array[String]),
 		"weekly_points": weekly_pts, "lb": lb}
 

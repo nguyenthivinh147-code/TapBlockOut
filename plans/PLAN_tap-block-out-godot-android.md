@@ -40,7 +40,7 @@ Tạo ngày 2026-11-01, đối chiếu lại với thư mục thực tế cùng 
 - Sub-agent trong nhóm song song **không gọi tool MCP `godot-ai`**. Quy tắc dùng MCP ở mục 1.12.
 - Module trong `src/core` và `src/meta` là logic thuần: `extends RefCounted`, không `Node`, không gọi `Platform`, không đọc giờ hệ thống, không dùng `randf()` toàn cục. Thời gian truyền vào qua tham số `now: int` (unix giây) hoặc `day: int`.
 - Mọi con số nằm trong `src/config.gd`. Không viết số kinh tế hay quảng cáo trong code khác.
-- Mọi chữ hiển thị qua `tr("KEY")`, khoá trong `i18n/strings.csv`.
+- Mọi chữ hiển thị qua `tr("KEY")`, khoá trong `i18n/strings.csv` (cột `keys` rồi 14 ngôn ngữ theo `Game.LANGS`; thêm khoá thì điền đủ mọi cột, `tests/test_i18n.gd` kiểm).
 - Gold trong code và save tên `coins`; analytics và UI gọi `gold`.
 - Sự kiện analytics và tham số: chữ thường, `snake_case`, giá trị phẳng.
 - Sub-agent **không chạy lệnh git ghi** (`add`, `commit`, `reset`, `checkout`, `stash`). Orchestrator giữ git.
@@ -232,7 +232,7 @@ func today() -> int
 # level
 func current_level_data() -> Dictionary
 func start_attempt() -> Dictionary  # trả BoardState mới và RescueFlow mới: {board, rescue}
-func on_level_won(attempt: Dictionary) -> Dictionary  # {coins, x2_available, x2_free, rate_prompt}
+func on_level_won(attempt: Dictionary) -> Dictionary  # {coins, move_coins, x2_available, x2_free, rate_prompt}; coins gồm move_coins (MOVES thừa x ECON.win_move_coins)
 func on_level_lost(attempt: Dictionary) -> void
 func restart_cost_life(attempt: Dictionary) -> bool
 func leave_win_card(x2_offered: bool, x2_taken: bool) -> void  # chạy luật interstitial
@@ -429,7 +429,7 @@ Các module chỉ phụ thuộc `src/config.gd` và `save_schema.gd`. Test tự 
 
 - [x] **Task 3.3: 20 level demo**
   - **Allowed Files:** `data/levels/level_0001.json` … `level_0020.json`, `tools/validate_levels.gd`, `tests/test_levels_demo.gd`.
-  - **Specs:** Bảng trong `design.md` mục 4: đúng màu, số khối, HARD ở L8, 12, 16, 20, polyomino thanh, L, T, S, U, bàn cố định 14×19 (`Config.BOARD_W`, `BOARD_H`), hình ở giữa bàn (đối xứng, vòng lồng nhau, hình vòm), không chép game gốc. Không dùng cơ chế mới. `moves` và `min_taps` do solver tính, không viết tay. `tools/validate_levels.gd` (chạy bằng `-s`) kiểm `validate`, solver, có khối thoát ngay, `moves` đúng công thức. Task này phụ thuộc đọc `src/core/*`, không sửa.
+  - **Specs:** Bảng trong `design.md` mục 4: đúng màu, số khối, HARD ở L8, 12, 16, 20, polyomino thanh, L, T, S, U, lưới 14×18 (`Config.BOARD_W`, `BOARD_H`), hình ở giữa bàn (đối xứng, vòng lồng nhau, hình vòm), không chép game gốc. Không dùng cơ chế mới. `moves` và `min_taps` do solver tính, không viết tay. `tools/validate_levels.gd` (chạy bằng `-s`) kiểm `validate`, solver, có khối thoát ngay, `moves` đúng công thức. Task này phụ thuộc đọc `src/core/*`, không sửa.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tools/validate_levels.gd && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_levels_demo` (`tools/` có `.gdignore` chỉ chặn import; đã kiểm trên 4.7.2 là script trong đó vẫn chạy được bằng `-s`).
 
 ### Phase 4: Điều phối
@@ -450,7 +450,7 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 5.1: BoardView**
   - **Allowed Files:** `scenes/board_view.tscn`, `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `src/ui/pudding.gd`, `src/ui/pudding.gdshader`, `tests/test_ui_board.gd`.
-  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 ô mỗi bên và 0,61 ô trên dưới, `frame_rect()` trả về trọn khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; cỡ ô là số nguyên, cố định `Config.BOARD_CELL`, chỉ co khi vùng chứa nhỏ hơn bàn chuẩn). Khối thoát lao nhanh dần tới thanh cùng màu (tối đa 0,30 giây) rồi trôi qua thanh và bị nghiền thành khối vuông kẹo nhỏ phun ra ngoài thanh (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)` (khối vỡ thành mảnh kẹo, gọi lúc búa kẹo mút của `src/ui/smash_fx.gd` gõ), `strike_point(id)` (tâm ô của khối gần tâm khối nhất, nơi búa gõ). Cơ chế mới để Task 9.2.
+  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 đơn vị khung mỗi bên và 0,61 đơn vị trên dưới, `frame_rect()` trả về trọn khung, `frame_unit()` là đơn vị khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; khung cố định theo màn: `board_rect()` là `Config.BOARD_AREA` ở màn chuẩn `BOARD_SCREEN` nhân theo màn, chỉ co khi vùng chứa nhỏ hơn khung; cỡ ô là số nguyên, theo hình của level `content_box()` cộng một ô lề mỗi phía, tối đa 14×18 ô, vừa `board_rect()`, to nhất `BOARD_CELL_MAX`; hình ở giữa khung, `content_rect()`). Khối thoát lao nhanh dần tới thanh cùng màu (tối đa 0,30 giây), 0,1 giây cuối chậm dần về đúng tốc độ nghiền (`EXIT_BRAKE`; khối cuối trên bàn không hãm) rồi trôi qua thanh và bị nghiền thành khối vuông kẹo nhỏ phun ra ngoài thanh (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)` (khối vỡ thành mảnh kẹo, gọi lúc búa kẹo mút của `src/ui/smash_fx.gd` gõ), `strike_point(id)` (tâm ô của khối gần tâm khối nhất, nơi búa gõ). Cơ chế mới để Task 9.2.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_board`
 
 - [x] **Task 5.2: Home và Profile**
@@ -477,7 +477,7 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 6.1: Màn level và điều hướng**
   - **Allowed Files:** `scenes/level.tscn`, `src/ui/level.gd`, `src/ui/main.gd`, `scenes/main.tscn`, `tests/test_ui_level.gd`.
-  - **Specs:** HUD: level, MOVES, HARD, nút restart có xác nhận từ L10, luôn 3 ô booster (chưa mở thì hiện khoá kèm level mở, chạm báo level mở; đã mở thì hiện tồn kho), chip đếm mảnh leaderboard ở thanh trên dưới chip lượt, hướng dẫn L1, tặng booster L4/6/9 kèm giới thiệu. Booster thiếu gold mời `booster_free` một lần mỗi lượt. Hết MOVES: chạy `RescueFlow`, hiện `popup_rescue`, `need_coins` mở `shop_mini` rồi quay lại popup. Bỏ cuộc: từ `from_level` hiện hộp xác nhận mất 1 mạng (huỷ thì quay lại popup, xác nhận thì `rescue_skip` rồi thẻ thua), dưới đó thua ngay. Thắng mở win card; rời win card gọi `Game.leave_win_card`. Thua mở lose card. Vỗ tay khi nghĩ từ `think_clap_sec`. Hết mạng chuyển `no_lives`. Hỏi đánh giá sau L18. `main.gd` gọi `Game.boot()`, nối đủ màn và nút Back.
+  - **Specs:** HUD: level, MOVES, HARD, nút restart có xác nhận từ L10, luôn 3 ô booster (chưa mở thì hiện khoá kèm level mở, chạm báo level mở; đã mở thì hiện tồn kho), chip đếm mảnh leaderboard ở thanh trên dưới chip lượt, hướng dẫn L1, tặng booster L4/6/9 kèm giới thiệu. Booster thiếu gold mời `booster_free` một lần mỗi lượt. Hết MOVES: chạy `RescueFlow`, hiện `popup_rescue`, `need_coins` mở `shop_mini` rồi quay lại popup. Bỏ cuộc: từ `from_level` hiện hộp xác nhận mất 1 mạng (huỷ thì quay lại popup, xác nhận thì `rescue_skip` rồi thẻ thua), dưới đó thua ngay. Thắng mở win card; rời win card gọi `Game.leave_win_card`. Thua mở lose card. Vỗ tay khi nghĩ từ `think_clap_sec`. Bổ sung 2026-11-04: không chạm màn hình `CONTENT.idle_hint_sec` (15) giây thì nhắc Gợi ý (`design.md` mục booster với cơ chế): nút Gợi ý lắc, node `%BoosterNudge_hint` (ảnh `booster_hint`) phủ lên bóng đèn, bong bóng `%IdleTip` ("Available Block : N", khoá `level_idle_blocks`) hiện `idle_hint_show_sec` (2) giây, chạm là tắt; test lùi `idle_start_ms`. Hết mạng chuyển `no_lives`. Hỏi đánh giá sau L18. `main.gd` gọi `Game.boot()`, nối đủ màn và nút Back.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_level`
 
 - [x] **Task 6.2: E2E headless toàn demo**
@@ -524,12 +524,12 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
 
 - [x] **Task 9.1: Bộ sinh level**
   - **Allowed Files:** `src/core/level_generator.gd`, `src/core/silhouette.gd`, `tests/test_generator.gd`, `tests/test_silhouette.gd`, `tools/gen_levels.gd`.
-  - **Specs:** `generate(id: int, seed: int) -> Dictionary` thuần, theo `RandomNumberGenerator` có seed: chọn hình trong `src/core/silhouette.gd`, lát hình thành khối (tự do hoặc đối xứng), dịch vào giữa bàn cố định 14×19, bật cơ chế theo `Config.UNLOCK`, HARD mỗi 4 level, số khối tăng tới trần 30 (từ L14 xem Task 9.6; mọi level nhân `DifficultyCurve.COUNT_SCALE` = 2 từ 2026-11-03, `design.md` mục 4), qua `validate` và `solver`, sinh lại với seed kế tiếp nếu không đạt. Dùng cho Daily Challenge; level sau L100 (`CONTENT.release_pregen_level`) không sinh mà lặp lại nội dung từ `CONTENT.loop_start_level` (`src/core/level_loop.gd`, `Game.content_level`). Cùng `id` và `seed` phải ra cùng level.
+  - **Specs:** `generate(id: int, seed: int) -> Dictionary` thuần, theo `RandomNumberGenerator` có seed: chọn hình trong `src/core/silhouette.gd`, lát hình thành khối (tự do hoặc đối xứng), dịch vào giữa lưới 14×18 (hình lớn nhất 12×17), bật cơ chế theo `Config.UNLOCK`, HARD mỗi 4 level, số khối tăng tới trần 30 (từ L14 xem Task 9.6; mọi level nhân `DifficultyCurve.COUNT_SCALE` = 2 từ 2026-11-03, `design.md` mục 4), qua `validate` và `solver`, sinh lại với seed kế tiếp nếu không đạt. Dùng cho Daily Challenge; level sau L100 (`CONTENT.release_pregen_level`) không sinh mà lặp lại nội dung từ `CONTENT.loop_start_level` (`src/core/level_loop.gd`, `Game.content_level`). Cùng `id` và `seed` phải ra cùng level.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_generator` (500 level hợp lệ, xác định, mỗi level dưới 200 ms trên máy dev).
 
 - [x] **Task 9.2: Hiển thị cơ chế**
   - **Allowed Files:** `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `scenes/board_view.tscn`, `tests/test_ui_mech.gd`.
-  - **Specs:** Vẽ đá, băng và nứt, xích và chìa, hai lớp và bóc lớp, sương mù, cổng nhịp đóng mở. Âm thanh gọi `Sfx` theo bảng `design.md`, thiếu file thì im. Dùng `assets/ui/mech_*` nếu có, nếu không vẽ bằng code. Theme kẹo (2026-11-03): đá vẽ thành khối gỗ, băng thành lớp pudding, hai lớp thành hộp giấy, xích quấn cả khối; hiệu ứng va chạm và mất vật cản theo chất liệu ở `src/ui/obstacle_fx.gd` (`design.md` mục 4 và 8). Tên trong dữ liệu và code giữ nguyên.
+  - **Specs:** Vẽ đá, băng và nứt, xích và chìa, hai lớp và bóc lớp, sương mù, cổng nhịp đóng mở. Âm thanh gọi `Sfx` theo bảng `design.md`, thiếu file thì im. Dùng `assets/ui/mech_*` nếu có, nếu không vẽ bằng code. Theme kẹo (2026-11-03): đá vẽ thành khối gỗ (2026-11-04 đổi thành thùng sắt bốn đinh tán), băng thành lớp pudding, hai lớp thành hộp giấy, xích quấn cả khối; hiệu ứng va chạm và mất vật cản theo chất liệu ở `src/ui/obstacle_fx.gd` (`design.md` mục 4 và 8). Tên trong dữ liệu và code giữ nguyên.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_mech`
 
 - [x] **Task 9.3: Sinh L21–300 và level dạy**
@@ -596,6 +596,7 @@ Orchestrator không đánh dấu các mục này, chỉ liệt kê lại trong b
 - [ ] Nhận từ Horus: `appId`, khoá MAX và ad unit, `google-services.json`, token Adjust, id Play Games, public key Billing. Đặt theo `docs/HORUS_HANDOFF.md`.
 - [ ] Có cấu hình rồi: test rewarded, interstitial, mua hàng bằng license tester, Remote Config, cloud save, thông báo trên bản nội bộ.
 - [ ] Thông báo trên máy thật, Android 13 trở lên.
+- [ ] Nhờ người bản xứ duyệt 12 cột dịch máy trong `i18n/strings.csv` (`pt_BR`, `tr`, `de`, `fr`, `id`, `es`, `ru`, `ko`, `ja`, `hi`, `uk`, `it`) và xem chữ có tràn khung trên máy thật (tiếng Đức, Nga dài nhất; Hindi, Hàn, Nhật dùng font fallback).
 
 ## 5. Blocker thật sự
 

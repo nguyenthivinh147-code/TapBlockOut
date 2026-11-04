@@ -1,9 +1,11 @@
 extends "res://src/ui/stub_ui.gd"
 ## Wireframe 3.8 New Booster Unlocked: mở booster mới. Bố cục BoosterTutorialLayer (color-cube-match-puzzle): tiêu đề
-## ba lớp chữ, tên booster, icon giữa tia sáng quay, số lượng, mô tả, nút xanh (nút mua của game). Dòng "Chạm để tiếp
-## tục" là bản sao chữ mô tả đặt dưới nút; chạm ra ngoài nút thì đóng. Chưa nối logic.
+## ba lớp chữ, tên booster, icon giữa tia sáng quay, số lượng, mô tả, nút mua bằng gold (ClaimButton thành nút vàng chỉ
+## có icon gold và giá, UnityKit.gold_price). Dòng "Chạm để tiếp tục" là bản sao chữ mô tả đặt dưới nút; chạm ra ngoài
+## nút thì đóng. Chưa nối logic.
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UnityKit := preload("res://src/ui/unity_kit.gd")
 
 const PANEL := "GameObject/UnlockPanel"
 const HEADERS := ["txtHeader BG2", "txtHeader BG1", "txtHeader"]
@@ -22,9 +24,9 @@ func _build() -> void:
 	ui.text(PANEL + "/BoosterName", tr("booster_new_name"))
 	ui.text(PANEL + "/BoosterQuantity", tr("booster_count") % int(view.count))
 	ui.text(PANEL + "/BoosterDescription", tr("booster_new_body"))
-	ui.node(PANEL + "/ClaimButton").name = "BuyButton"
-	ui.text(PANEL + "/ClaimButton/Text (TMP)", tr("booster_buy") % int(view.price))
-	ui.on_click(PANEL + "/ClaimButton", _send.bind("buy"))
+	var buy: Button = ui.on_click(PANEL + "/ClaimButton", _send.bind("buy"))
+	buy.name = "BuyButton"
+	UnityKit.gold_price(buy, int(view.price))
 	UnityUI.set_text(%TapLabel, tr("boot_tap_continue"))
 
 

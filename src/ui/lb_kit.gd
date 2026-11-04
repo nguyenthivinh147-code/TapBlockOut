@@ -269,9 +269,9 @@ static func _podium_column(r: Dictionary) -> VBoxContainer:
 	return v
 
 
-## 1234567 -> "1,234,567" (tiếng Việt: "1.234.567").
+## 1234567 -> "1,234,567" (dấu nhóm theo ngôn ngữ, ThemeKit.thousands_sep: tiếng Việt "1.234.567").
 static func fmt_int(n: int) -> String:
-	var sep := "." if TranslationServer.get_locale().begins_with("vi") else ","
+	var sep := ThemeKit.thousands_sep()
 	var neg := n < 0
 	var digits := str(absi(n))
 	var out := ""

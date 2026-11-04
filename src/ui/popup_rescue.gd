@@ -1,6 +1,7 @@
 extends Control
 ## Popup hết MOVES: +3 Move bằng gold, kho hoặc video. Bố cục PopupReviveLayer (color-cube-match-puzzle): khung tím,
 ## ô kem có icon +3 Move, hàng nút [video][gold], dòng "Bỏ cuộc" dưới khung như nút Retry của prefab.
+## Nút gold chỉ có icon gold và giá (UnityKit.gold_price); còn trong kho thì cùng nút đó ghi "Dùng".
 ## setup(args): kết quả RescueFlow.offer (hoặc Game.rescue_offer), thêm tuỳ chọn:
 ##   attempt: Dictionary  có thì popup tự gọi Game.rescue_accept và chỉ đóng khi thành công.
 ## closed(result): "inventory" | "gold" | "video" (đã +3 MOVES nếu có attempt),
@@ -52,8 +53,13 @@ func _build() -> void:
 
 	var use_inv := bool(_args.get("use_inventory", false))
 	var affordable := bool(_args.get("affordable", false))
-	var main_btn := _pill(ROW + "/GoldBtn", "UseButton" if use_inv else "BuyButton",
-		tr("rescue_use") if use_inv else tr("rescue_buy") % int(_args.get("price", 0)), "Baloo Outline - Yellow")
+	var main_btn: Button
+	if use_inv:
+		main_btn = _pill(ROW + "/GoldBtn", "UseButton", tr("rescue_use"), "Baloo Outline - Yellow")
+	else:
+		main_btn = ui.button(ROW + "/GoldBtn")
+		main_btn.name = "BuyButton"
+		UnityKit.gold_price(main_btn, int(_args.get("price", 0)))
 	main_btn.connect("clicked", _on_main_pressed)
 	if use_inv and _args.has("inv_move"):
 		_status("StockLabel", tr("rescue_in_stock") % int(_args.inv_move))

@@ -70,6 +70,11 @@ static func set_layers(body: Control, jelly: float, paper: float, tape: Vector2 
 	m.set_shader_parameter("candy_a", candy_a)
 
 
+## Chất liệu thân: `crystal` 1 là khối crystal (mảnh leaderboard), 0 là kẹo sọc.
+static func set_crystal(body: Control, crystal: float) -> void:
+	(body.material as ShaderMaterial).set_shader_parameter("crystal", crystal)
+
+
 ## Đặt các tham số chất liệu chung (`candy_body.gdshaderinc`) cho một material.
 static func apply_material(m: ShaderMaterial, entry: Dictionary, cell: float, ramp: Dictionary) -> void:
 	m.set_shader_parameter("sdf", entry["tex"])

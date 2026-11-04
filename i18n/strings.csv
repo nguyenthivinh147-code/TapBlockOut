@@ -1,483 +1,485 @@
-keys,en,vi
-APP_NAME,Candy Away,Candy Away
-common_ok,OK,OK
-common_cancel,Cancel,Huỷ
-common_close,Close,Đóng
-common_back,Back,Quay lại
-common_yes,Yes,Có
-common_no,No,Không
-common_confirm,Confirm,Xác nhận
-common_free,Free,Miễn phí
-common_loading,Loading...,Đang tải...
-common_gold,Gold,Gold
-common_locked_level,Unlocked at Level %d,Mở khoá ở Level %d
-common_not_enough_gold,Not enough gold,Chưa đủ gold
-home_play,Play,Chơi
-home_play_level,Level %d,Level %d
-home_lives_full,Full,Đầy
-home_lives_next,Next life in %s,Mạng kế tiếp sau %s
-home_lives_unlimited,Lives: unlimited,Mạng: vô hạn
-home_lives_unlimited_left,Unlimited for %s,Vô hạn trong %s
-home_gift,Daily gift,Quà mỗi ngày
-home_shop,Shop,Cửa hàng
-home_weekend_sale,Weekend sale,Sale cuối tuần
-home_settings,Settings,Cài đặt
-home_profile,Profile,Hồ sơ
-home_challenge,Daily Challenge,Thử thách ngày
-home_challenge_locked,Unlocked at Level %d,Mở khoá ở Level %d
-home_shop_locked,Unlocked at Level %d,Mở khoá ở Level %d
-home_coming_soon,New levels coming soon,Sắp có level mới
-home_offer_chip,Special offer,Ưu đãi đặc biệt
-home_offer_left,%s left,Còn %s
-level_title,Level %d,Level %d
-level_hard,HARD,KHÓ
-level_very_hard,VERY HARD,RẤT KHÓ
-level_moves,Moves,Lượt
-level_moves_left,Moves: %d,Lượt: %d
-level_remaining,%d blocks left,Còn %d khối
-level_remaining_one,1 block left,Còn 1 khối
-level_restart,Restart,Chơi lại
-level_restart_confirm_title,Restart this level?,Chơi lại level này?
-level_restart_confirm_free,Start over from the beginning.,Bắt đầu lại từ đầu nhé.
-level_restart_confirm_life,Restarting now will cost 1 life.,Chơi lại lúc này sẽ mất 1 mạng.
-level_restart_yes,Restart,Chơi lại
-level_restart_no,Keep playing,Chơi tiếp
-level_home,Home,Trang chủ
-level_clap,Nice one!,Hay lắm!
-level_hint_none,No block can slide out right now.,Chưa có khối nào thoát được lúc này.
-level_demo_end,That's all the levels for now. New ones are coming soon!,Đã hết level hiện có. Level mới sắp ra mắt!
-booster_hint,Hint,Gợi ý
-booster_move,+3 Move,+3 Lượt
-booster_smash,Smash,Phá khối
-booster_hint_desc,Points to a block that can slide out right now.,Chỉ ra một khối có thể thoát ngay.
-booster_move_desc,Adds 3 moves to this level.,Thêm 3 lượt cho level này.
-booster_smash_desc,Removes one block from the board.,Xoá một khối khỏi bàn cờ.
-booster_buy,Buy for %d,Mua với %d
-booster_use,Use,Dùng
-booster_count,x%d,x%d
-booster_free_video,Free with a video,Miễn phí khi xem video
-booster_locked,Unlocked at Level %d,Mở khoá ở Level %d
-booster_smash_pick,Tap a block to smash it,Chạm vào một khối để phá
-booster_smash_stone,Stones can't be smashed.,Không thể phá đá.
-booster_not_enough,Not enough gold,Chưa đủ gold
-rescue_title,Out of moves,Hết lượt rồi
-rescue_body,Add 3 more moves and keep going?,Thêm 3 lượt để chơi tiếp nhé?
-rescue_remaining,%d blocks left,Còn %d khối
-rescue_remaining_one,1 block left,Còn 1 khối
-rescue_buy,Get +3 Moves for %d,Nhận +3 Lượt với %d
-rescue_use,Use +3 Move,Dùng +3 Lượt
-rescue_in_stock,You have %d,Bạn đang có %d
-rescue_video,Watch a video for +3 Moves,Xem video để nhận +3 Lượt
-rescue_give_up,Give up,Bỏ cuộc
-rescue_need_gold,Not enough gold,Chưa đủ gold
-rescue_confirm_title,Give up this level?,Bỏ cuộc level này?
-rescue_warn_life,"If you give up, you'll lose 1 life.","Nếu bỏ cuộc, bạn sẽ mất 1 mạng."
-rescue_confirm_yes,Give up (-1 life),Bỏ cuộc (-1 mạng)
-win_title,Level complete!,Hoàn thành level!
-win_subtitle,Nicely done.,Làm tốt lắm.
-win_reward,+%d gold,+%d gold
-win_x2,Double it! x2,Nhân đôi! x2
-win_x2_free,Free x2 this time,Nhân đôi miễn phí lần này
-win_x2_done,Doubled!,Đã nhân đôi!
-win_continue,Continue,Tiếp tục
-lose_title,Not this time,Chưa được rồi
-lose_body,Try again whenever you're ready.,Thử lại khi bạn sẵn sàng nhé.
-lose_retry,Try again,Thử lại
-lose_home,Home,Trang chủ
-lose_life_lost,You used 1 life.,Bạn đã dùng 1 mạng.
-lose_pack_title,Need a hand?,Cần giúp một tay?
-lose_pack_body,Rescue Pack: a +3 Move to help next time.,Gói Cứu Nguy: một +3 Lượt cho lần sau.
-lose_pack_buy,Get it for %s,Nhận với %s
-no_lives_title,Out of lives,Hết mạng
-no_lives_body,"Lives come back over time. Take a break, or refill now.",Mạng sẽ hồi dần theo thời gian. Nghỉ một chút hoặc nạp lại ngay nhé.
-no_lives_next,Next life in %s,Mạng kế tiếp sau %s
-no_lives_full_in,All lives back in %s,Đầy mạng sau %s
-no_lives_refill_gold,Refill with %d gold,Nạp lại với %d gold
-no_lives_refill_amount,Get %d lives,Nhận %d mạng
-no_lives_video,Watch a video: +1 life,Xem video: +1 mạng
-no_lives_no_ads,No video is available right now. You can wait for a life to come back.,Hiện chưa có video. Bạn có thể đợi mạng hồi lại nhé.
-no_lives_wait,Wait,Đợi
-no_lives_home,Back to Home,Về trang chủ
-no_lives_not_enough_gold,Not enough gold,Chưa đủ gold
-no_lives_lives,Lives: %d/%d,Mạng: %d/%d
-no_lives_more_title,More lives,Thêm mạng
-no_lives_more_body,Top up your lives with gold or a video.,Nạp thêm mạng bằng gold hoặc xem video nhé.
-no_lives_full_body,Your lives are full. Go play!,Mạng đã đầy. Chơi thôi!
-no_lives_unlimited_body,You have unlimited lives right now.,Bạn đang có mạng vô hạn.
-ads_watch,Watch video,Xem video
-ads_loading,Loading video...,Đang tải video...
-ads_not_available,No video is available right now. Please try again later.,Hiện chưa có video. Bạn thử lại sau nhé.
-ads_failed,"The video didn't finish, so no reward this time.",Video chưa xem xong nên chưa có phần thưởng.
-ads_closed_early,Watch the whole video to get the reward.,Hãy xem hết video để nhận thưởng.
-ads_reward_ok,Reward received!,Đã nhận thưởng!
-ads_privacy,Privacy settings,Cài đặt quyền riêng tư
-shop_title,Shop,Cửa hàng
-shop_gold_pack,%d gold,%d gold
-shop_sale,SALE,GIẢM GIÁ
-shop_sale_weekend,Weekend sale!,Giảm giá cuối tuần!
-shop_video,Watch a video: +%d gold,Xem video: +%d gold
-shop_video_left,%d of %d left today,Hôm nay còn %d/%d
-shop_video_none,No more videos today. Come back tomorrow!,Hôm nay hết video rồi. Mai quay lại nhé!
-shop_section_gold,Gold,Gold
-shop_section_other,Special packs,Gói đặc biệt
-shop_remove_ads,Remove Ads,Bỏ quảng cáo
-shop_remove_ads_desc,"No more full-screen ads, plus %d gold.","Không còn quảng cáo toàn màn hình, tặng thêm %d gold."
-shop_starter_pack,Starter Pack,Gói Khởi Đầu
-shop_starter_pack_desc,%d gold and one of each booster.,%d gold và mỗi loại booster một cái.
-shop_level_pack,Level Pack,Gói Level
-shop_level_pack_desc,%d gold and one of each booster.,%d gold và mỗi loại booster một cái.
-shop_rescue_pack,Rescue Pack,Gói Cứu Nguy
-shop_rescue_pack_desc,One +3 Move booster.,Một booster +3 Lượt.
-shop_restore,Restore purchases,Khôi phục giao dịch
-shop_restore_ok,Purchases restored.,Đã khôi phục giao dịch.
-shop_restore_none,Nothing to restore.,Không có gì để khôi phục.
-shop_owned,Owned,Đã sở hữu
-shop_buy_ok,Thank you!,Cảm ơn bạn!
-shop_buy_failed,The purchase didn't go through.,Giao dịch chưa thành công.
-shop_buy_pending,Your purchase is pending.,Giao dịch đang chờ xử lý.
-shop_locked,Unlocked at Level %d,Mở khoá ở Level %d
-shop_mini_title,Need more gold?,Cần thêm gold?
-shop_mini_close,Back,Quay lại
-daily_title,Daily gift,Quà mỗi ngày
-daily_week,Week %d,Tuần %d
-daily_day,Day %d,Ngày %d
-daily_today,Today,Hôm nay
-daily_claim,Claim,Nhận
-daily_claimed,Claimed,Đã nhận
-daily_come_back,Come back tomorrow for the next gift.,Mai quay lại để nhận quà tiếp theo nhé.
-daily_video,Watch a video: claim the next gift now,Xem video: nhận trước món quà kế tiếp
-daily_video_used,You've already claimed ahead today.,Hôm nay bạn đã nhận trước rồi.
-daily_reward_gold,%d gold,%d gold
-daily_reward_item,%s x%d,%s x%d
-daily_reward_received,Gift received!,Đã nhận quà!
-profile_title,Profile,Hồ sơ
-profile_avatars,Avatars,Ảnh đại diện
-profile_frames,Frames,Khung
-profile_default,Default,Mặc định
-profile_equipped,Equipped,Đang đeo
-profile_equip,Equip,Đeo
-profile_owned,Owned,Đã có
-profile_buy,Buy for %d,Mua với %d
-profile_video,Watch a video to unlock,Xem video để mở khoá
-profile_level,Level %d,Level %d
-profile_not_enough,Not enough gold,Chưa đủ gold
-settings_title,Settings,Cài đặt
-settings_sound,Sound effects,Hiệu ứng âm thanh
-settings_music,Music,Nhạc nền
-settings_haptics,Vibration,Rung
-settings_notifications,Notifications,Thông báo
-settings_notifications_off,Notifications are turned off in your device settings.,Thông báo đang tắt trong cài đặt của thiết bị.
-settings_language,Language,Ngôn ngữ
-settings_language_auto,Device language,Theo thiết bị
-settings_language_en,English,English
-settings_language_vi,Tiếng Việt,Tiếng Việt
-settings_privacy,Privacy settings,Cài đặt quyền riêng tư
-settings_restore,Restore purchases,Khôi phục giao dịch
-settings_support,Support,Hỗ trợ
-settings_support_subject,Candy Away support,Hỗ trợ Candy Away
-settings_version,Version %s,Phiên bản %s
-settings_on,On,Bật
-settings_off,Off,Tắt
-settings_tester_title,Tester menu,Menu thử nghiệm
-settings_tester_debugger,Mediation debugger,Mediation debugger
-settings_tester_level,Level,Level
-settings_tester_save,Save,Lưu
-settings_tester_wipe,Delete account,Xoá tài khoản
-settings_tester_wipe_confirm,Tap again to delete,Chạm lần nữa để xoá
-settings_close,Done,Xong
-offer_starter_pack_title,Starter Pack,Gói Khởi Đầu
-offer_starter_pack_body,A boost of gold and one of each booster to get you going. One-time offer.,Một ít gold và mỗi loại booster một cái để bạn khởi đầu thuận lợi. Chỉ mua được một lần.
-offer_level_pack_title,Level Pack,Gói Level
-offer_level_pack_body,You've come a long way. Here's some gold and a booster of each kind.,Bạn đã đi được một chặng dài. Tặng bạn ít gold và mỗi loại booster một cái.
-offer_remove_ads_title,Remove Ads,Bỏ quảng cáo
-offer_remove_ads_body,Enjoy the puzzles without full-screen ads. One-time purchase.,"Chơi thoải mái, không còn quảng cáo toàn màn hình. Chỉ mua một lần."
-offer_rescue_pack_title,Rescue Pack,Gói Cứu Nguy
-offer_rescue_pack_body,A +3 Move to help with the tricky ones.,Một +3 Lượt để vượt qua những level khó.
-offer_buy,Get it for %s,Nhận với %s
-offer_no_thanks,Maybe later,Để sau
-offer_time_left,Ends in %s,Kết thúc sau %s
-tut_tap,Tap the block,Chạm vào khối
-tut_color_dir,Each color slides toward its own edge.,Mỗi màu trượt về một cạnh riêng.
-tut_blocked,Blocked blocks bounce back. Try another one.,Khối bị chặn sẽ bật về. Thử khối khác nhé.
-tut_hint_gift,A free Hint for you! Tap it when you're unsure.,Tặng bạn một Gợi ý! Chạm vào khi bạn phân vân.
-tut_move_gift,A free +3 Move for you! It adds moves when you run low.,Tặng bạn một +3 Lượt! Dùng khi sắp hết lượt.
-tut_smash_gift,A free Smash for you! It removes one block.,Tặng bạn một Phá khối! Nó xoá một khối khỏi bàn cờ.
-tut_x2,Tap to double your gold. It's free this time!,Chạm để nhân đôi gold. Lần này miễn phí!
-tut_gift_unlocked,Daily gifts are unlocked. Tap the gift icon to see them.,Đã mở quà mỗi ngày. Chạm vào biểu tượng quà để xem.
-tut_shop_unlocked,The shop is now open.,Cửa hàng đã mở.
-tut_lives_intro,"From now on, losing a level uses 1 life. Lives come back over time.","Từ giờ, thua một level sẽ dùng 1 mạng. Mạng sẽ hồi dần theo thời gian."
-mech_new,New: %s,Mới: %s
-mech_got_it,Got it,Đã hiểu
-mech_stone,Wood,Gỗ
-mech_stone_desc,Wooden blocks never move. Slide the candies around them.,Khối gỗ không bao giờ di chuyển. Hãy trượt kẹo qua bên cạnh.
-mech_ice,Pudding,Pudding
-mech_ice_desc,"Tap once to burst the pudding, then tap again to slide.","Chạm một lần để làm vỡ lớp pudding, chạm lần nữa để trượt."
-mech_chain,Chain,Xích
-mech_chain_desc,A chained candy can only move after its key block has left.,Kẹo bị xích chỉ đi được sau khi khối chìa đã thoát.
-mech_layer,Paper box,Hộp giấy
-mech_layer_desc,Send the box out to reveal the candy inside. It has a new color!,Đẩy hộp giấy ra ngoài để lộ viên kẹo bên trong. Kẹo có màu mới!
-mech_fog,Fog,Sương mù
-mech_fog_desc,Colors stay hidden until a neighboring block leaves.,Màu sẽ ẩn cho tới khi khối bên cạnh rời đi.
-mech_pulse,Pulse gate,Cổng nhịp
-mech_pulse_desc,Gates open and close after every tap.,Cổng đóng mở luân phiên sau mỗi lần chạm.
-challenge_title,Daily Challenge,Thử thách ngày
-challenge_bonus,First win today: +%d gold,Thắng lần đầu hôm nay: +%d gold
-challenge_done,Done for today. See you tomorrow!,Hôm nay xong rồi. Mai gặp lại nhé!
-challenge_play,Play,Chơi
-notif_daily_gift_title,Your daily gift is waiting,Quà mỗi ngày đang chờ bạn
-notif_daily_gift_body,Come and pick up today's gift.,Ghé qua nhận quà hôm nay nhé.
-notif_lives_full_title,Your lives are full,Mạng của bạn đã đầy
-notif_lives_full_body,All lives are back. Ready for a calm puzzle?,Mạng đã hồi đầy. Sẵn sàng giải một màn nhẹ nhàng chưa?
-notif_offer_open_title,Your offer is still open,Ưu đãi của bạn vẫn còn
-notif_offer_open_body,Take a look before it ends.,Xem thử trước khi hết hạn nhé.
-notif_challenge_title,Today's challenge is ready,Thử thách hôm nay đã sẵn sàng
-notif_challenge_body,A fresh board is waiting for you.,Một bàn cờ mới đang chờ bạn.
-notif_come_back_title,A few blocks are waiting,Vài khối đang chờ bạn
-notif_come_back_body,Take a moment to slide them out.,Dành chút thời gian để trượt chúng ra nhé.
-feature_next,Next unlock: %s,Mở khoá tiếp: %s
-feature_unlocked,%s unlocked!,Đã mở khoá %s!
-feature_daily_gift,Daily gift,Quà mỗi ngày
-feature_hint,Hint,Gợi ý
-feature_shop,Shop,Cửa hàng
-feature_move,+3 Move,+3 Move
-feature_smash,Smash,Phá khối
-feature_lives,Lives,Mạng
-feature_challenge,Daily Challenge,Thử thách ngày
-feature_leaderboard,Ranking,Xếp hạng
-feature_stone,Stones,Đá
-feature_ice,Ice,Băng
-feature_chain,Chains,Xích
-feature_layer,Layers,Lớp khối
-feature_fog,Fog,Sương mù
-feature_pulse,Pulse gates,Cổng nhịp
-home_weekly,Weekly Pass,Weekly Pass
-home_weekly_waiting,New season soon,Mùa mới sắp mở
-home_chain,Chain offer,Chuỗi quà
-home_special_pack,Special pack,Gói đặc biệt
-offer_special_pack_title,Special Pack,Gói Đặc Biệt
-offer_special_pack_body,"A big stash of gold and boosters for when you want to go further. Buy as many times as you like.",Một kho gold và booster lớn để bạn đi xa hơn. Mua bao nhiêu lần tuỳ ý.
-weekly_title,Weekly Pass,Weekly Pass
-weekly_keys,%d / %d keys,%d / %d chìa
-weekly_time_left,%s left,Còn %s
-weekly_waiting_title,Next season starts soon,Mùa mới sắp bắt đầu
-weekly_waiting_body,The Weekly Pass opens in %s. See you then!,Weekly Pass mở sau %s. Hẹn gặp bạn nhé!
-weekly_locked,Pass the second HARD level to unlock the Weekly Pass.,Vượt qua level HARD thứ hai để mở Weekly Pass.
-weekly_free,Free,Miễn phí
-weekly_vip,VIP,VIP
-weekly_milestone,%d keys,%d chìa
-weekly_claim,Claim,Nhận
-weekly_claim_all,Claim all,Nhận tất cả
-weekly_claimed,Claimed,Đã nhận
-weekly_buy_vip,Get VIP for %s,Mở VIP với %s
-weekly_vip_active,VIP active,Đã có VIP
-weekly_vip_hearts,+%d max hearts this week,+%d mạng tối đa trong tuần này
-weekly_vip_hint,VIP rewards unlock with the pass. Unclaimed VIP rewards are collected for you when the season ends.,Thưởng VIP mở khi có pass. Thưởng VIP chưa nhận sẽ tự được trao khi hết mùa.
-weekly_bank_title,Bonus Bank,Kho thưởng thêm
-weekly_bank_locked,Reach the last milestone with VIP to unlock the Bonus Bank.,Đạt mốc cuối cùng với VIP để mở Kho thưởng thêm.
-weekly_bank_step,Every %d extra keys,Mỗi %d chìa thừa
-weekly_end_title,Season ended,Mùa đã kết thúc
-weekly_end_vip,Your unclaimed rewards were collected for you: %s,Thưởng chưa nhận đã được trao cho bạn: %s
-weekly_end_free,You earned %d keys this season. A new season is coming!,Bạn đã kiếm được %d chìa trong mùa này. Mùa mới sắp đến!
-weekly_reward_gold,%d gold,%d gold
-weekly_start,Start,Khởi đầu
-weekly_reward_inf,Unlimited lives %d min,Mạng vô hạn %d phút
-weekly_tut_free_claim,Welcome to Weekly Pass! Claim your first reward!,Chào mừng đến Weekly Pass! Hãy nhận phần thưởng đầu tiên nào!
-weekly_tut_free_earn,Welcome to Weekly Pass! Earn keys to unlock rewards like this one!,Chào mừng đến Weekly Pass! Kiếm chìa để mở những phần thưởng như thế này!
-weekly_tut_vip,Activating VIP gives you access to unique rewards!,Mở VIP để nhận thêm những phần thưởng độc quyền!
-weekly_tut_progress,This is your progress. Tap this icon to learn how to earn rewards!,Đây là tiến độ của bạn. Chạm biểu tượng này để biết cách kiếm thưởng!
-weekly_howto_title,How to earn rewards,Cách kiếm thưởng
-weekly_howto_normal,Win a level,Thắng một level
-weekly_howto_hard,Win a HARD level,Thắng một level HARD
-weekly_howto_very_hard,Win a VERY HARD level,Thắng một level VERY HARD
-weekly_howto_points,+%d,+%d
-weekly_howto_claim,Collect keys to reach milestones. Then tap Claim to take the free reward.,Kiếm chìa để đạt các mốc. Sau đó chạm Nhận để lấy thưởng miễn phí.
-weekly_howto_vip,VIP unlocks the VIP reward of every milestone and +%d max hearts this week. It also opens the Bonus Bank.,VIP mở thưởng VIP ở mọi mốc và +%d mạng tối đa trong tuần này. VIP còn mở Kho thưởng thêm.
-weekly_howto_season,A new season starts every week. Free rewards you forgot are lost. VIP rewards are collected for you.,Mỗi tuần có một mùa mới. Thưởng miễn phí chưa nhận sẽ mất. Thưởng VIP sẽ tự được trao cho bạn.
-chain_title,Chain Offer,Chuỗi quà
-chain_time_left,Ends in %s,Kết thúc sau %s
-chain_step,Step %d,Bước %d
-chain_free,Free,Miễn phí
-chain_ad,Watch video,Xem video
-chain_pay,%s,%s
-chain_claim,Claim,Nhận
-chain_claimed,Claimed,Đã nhận
-chain_locked,Locked,Chưa mở
-chain_done,All steps done. Come back for the next chain!,Đã xong mọi bước. Lần sau sẽ có chuỗi mới!
-chain_failed,Couldn't complete this step. Please try again.,Chưa hoàn thành bước này. Bạn thử lại nhé.
-chain_expired,This chain has ended.,Chuỗi quà này đã kết thúc.
-home_home,Home,Trang chủ
-home_ranking,Ranking,Xếp hạng
-home_ads_daily,ADS Daily,Quà video
-home_path_locked,Locked,Khoá
-home_path_cleared,Cleared,Đã qua
-common_coming_soon,Coming soon,Sắp có
-settings_gallery,UI preview,Xem trước UI
-settings_save,Save,Lưu
-settings_help_title,Help & Support,Trợ giúp
-settings_help_sub,How can we help?,Bạn cần giúp gì?
-settings_help_bug,Bug / crash,Lỗi / văng game
-settings_help_purchase,Purchase problem,Vấn đề mua hàng
-settings_help_idea,Suggestion,Góp ý
-settings_help_placeholder,Describe your issue...,Mô tả vấn đề của bạn...
-settings_help_send,Send,Gửi
-settings_help_note,Customer support email / FAQ,Email hỗ trợ / Câu hỏi thường gặp
-settings_lang_en,English,Tiếng Anh
-settings_lang_vi,Vietnamese,Tiếng Việt
-settings_lang_pt,Brazil,Bồ Đào Nha (Brazil)
-settings_lang_tr,Turkish,Thổ Nhĩ Kỳ
-settings_lang_de,German,Tiếng Đức
-settings_lang_fr,France,Tiếng Pháp
-settings_lang_id,Indonesian,Indonesia
-settings_lang_es,Spanish,Tây Ban Nha
-settings_lang_ru,Russian,Tiếng Nga
-settings_lang_ko,Korean,Tiếng Hàn
-boot_tagline,Tap · Slide · Clear,Chạm · Trượt · Dọn sạch
-boot_loading,Loading... %d%%,Đang tải... %d%%
-boot_update_title,Update Available,Có bản cập nhật
-boot_update_body,A new version is available. Update now for new levels and fixes.,Đã có phiên bản mới. Cập nhật ngay để có level mới và các bản sửa lỗi.
-boot_update_now,Update Now,Cập nhật ngay
-boot_later,Later,Để sau
-boot_download_title,Download Resources,Tải dữ liệu
-boot_download_sub,First-time content pack,Gói nội dung lần đầu
-boot_download_need,Extra content needed (%d MB),Cần thêm dữ liệu (%d MB)
-boot_download_wifi,Download on Wi-Fi only,Chỉ tải qua Wi-Fi
-boot_download_cell,Allow cellular data,Cho phép dùng dữ liệu di động
-boot_download_progress,%d%% · %d MB / %d MB,%d%% · %d MB / %d MB
-boot_download_go,Download,Tải xuống
-boot_skip,Skip for now,Bỏ qua lúc này
-boot_account_title,Select Account,Chọn tài khoản
-boot_account_body,Choose the account you want to continue.,Chọn tài khoản bạn muốn chơi tiếp.
-boot_account_warn,"Once you choose, the other will be deleted permanently.","Sau khi chọn, tài khoản còn lại sẽ bị xoá vĩnh viễn."
-boot_account_linked,Linked: Google / Game Center,Đã liên kết: Google / Game Center
-boot_select,Select,Chọn
-boot_tut_body,Tap a block to slide it out toward the matching coloured edge.,Chạm một khối để trượt nó ra cạnh cùng màu.
-boot_tap_continue,Tap to continue,Chạm để tiếp tục
-boot_offline_title,No Internet,Mất kết nối
-boot_offline_lost,Connection lost,Đã mất kết nối
-boot_offline_body,Please check your internet and try again.,Hãy kiểm tra Internet rồi thử lại.
-boot_retry,Retry,Thử lại
-ads_daily_sub,Watch ads to fill the reward track,Xem quảng cáo để đầy thanh thưởng
-ads_daily_progress,%d / %d ads watched,Đã xem %d / %d quảng cáo
-ads_daily_watch,Watch video,Xem video
-ads_daily_reset,Resets daily,Làm mới mỗi ngày
-ads_noads_one,No interstitial or banner ads,Không còn quảng cáo xen kẽ và banner
-ads_noads_two,Rewarded ads stay optional (x2 rewards),Video thưởng vẫn tuỳ chọn (x2 thưởng)
-ads_noads_three,Bonus gold bundle,Tặng thêm gói gold
-ads_noads_buy,%s · Remove Ads,%s · Bỏ quảng cáo
-ads_noads_bundle,Remove Ads + Bundle %s,Bỏ quảng cáo + Gói %s
-ads_notice_title,Notice,Thông báo
-ads_reward_title,Reward,Phần thưởng
-ads_reward_x2,Claim x2,Nhận x2
-level_new_mechanic,New Mechanic,Cơ chế mới
-level_speed_title,Hold to speed up,Giữ để tăng tốc
-level_speed_body,Blocks move 2x faster while held.,Khối chạy nhanh gấp đôi khi bạn giữ.
-level_speed_hold,Hold,Giữ
-booster_soon_body,You'll unlock this trick soon.,Bạn sắp mở khoá mẹo này rồi.
-booster_soon_keep,Keep playing!,Chơi tiếp nhé!
-booster_new_title,NEW BOOSTER!,BOOSTER MỚI!
-booster_new_short,New Booster,Booster mới
-booster_new_name,Capacity,Sức chứa
-booster_new_body,Add 2 slots to the conveyor!,Thêm 2 ô cho băng chuyền!
-booster_free_pick,FREE PICK,CHỌN MIỄN PHÍ
-booster_free_pick_body,Pick any block in the queue,Chọn một khối bất kỳ trong hàng chờ
-win_bonus_title,BONUS REWARD,THƯỞNG THÊM
-win_bonus_tap,Tap to stop the arrow,Chạm để dừng mũi tên
-win_bonus_total,= %d Gold,= %d Gold
-win_bonus_claim,Claim,Nhận
-win_rate_title,Rate Us,Đánh giá
-win_rate_body,Please rate and help us get better!,Hãy đánh giá để giúp game tốt hơn nhé!
-lose_keep_title,Keep Playing?,Chơi tiếp chứ?
-lose_keep_body,Quit now and lose 1 heart?,Thoát bây giờ sẽ mất 1 mạng?
-lose_keep_quit,Quit,Thoát
-lose_keep_note,Replay uses 1 heart. Quit returns to menu.,Chơi lại dùng 1 mạng. Thoát sẽ về menu.
-lose_helper_title,HELPER PACK,GÓI TRỢ GIÚP
-lose_helper_chest,Chest,Rương
-hearts_bundle_title,Heart Bundle,Gói mạng
-hearts_bundle_body,Infinite hearts,Mạng vô hạn
-hearts_hours,%d hours,%d giờ
-hearts_hour_one,1 hour,1 giờ
-hearts_support_title,Out of Hearts!,Hết mạng rồi!
-hearts_support_body,Keep playing without waiting. Includes hearts and helpers.,Chơi tiếp không cần chờ. Gồm mạng và đồ hỗ trợ.
-hearts_support_buy,%s · Get Pack,%s · Mua gói
-hearts_support_refill,Refill with Gold / Video,Nạp bằng Gold / Video
-shop_free_gold,Free Gold: +%d,Gold miễn phí: +%d
-shop_section_hearts,HEARTS,MẠNG
-shop_section_helpers,HELPER PACKS,GÓI TRỢ GIÚP
-shop_section_bundles,BUNDLES,GÓI TỔNG HỢP
-shop_heart_count,x%d,x%d
-shop_heart_inf,Infinite %dh,Vô hạn %d giờ
-shop_helper_great,Great Pack,Gói Lớn
-shop_helper_epic,Epic Pack,Gói Siêu Lớn
-shop_bundle_sweet,Sweet Bundle,Gói Ngọt Ngào
-shop_bundle_tasty,Tasty Bundle,Gói Hấp Dẫn
-shop_bundle_yummy,Yummy Bundle,Gói Tuyệt Hảo
-shop_bundle_desc,Gold + Hearts + Boosters,Gold + Mạng + Booster
-weekly_upsell_one,Chests full of gold and rewards,Rương đầy gold và phần thưởng
-weekly_upsell_two,Golden avatar frame and name,Khung avatar và tên vàng
-weekly_upsell_three,Max heart boost for more tries,Tăng mạng tối đa để chơi nhiều hơn
-lb_title,Leaderboard,Bảng xếp hạng
-lb_tab_league,League,Giải đấu
-lb_tab_world,World,Thế giới
-lb_you,You,Bạn
-lb_rank,Rank #%d %s,Hạng %d %s
-lb_league,%s League,Giải %s
-lb_league_silver,Silver,Bạc
-lb_league_gold,Gold,Vàng
-lb_league_platinum,Platinum,Bạch kim
-lb_league_emerald,Emerald,Lục bảo
-lb_league_diamond,Diamond,Kim cương
-lb_league_immortal,Immortal,Bất tử
-lb_league_one_above_all,One Above All,Tối thượng
-lb_to_next,%d more to %s,Còn %d điểm lên %s
-lb_top_league,Top league reached!,Đã ở giải cao nhất!
-lb_top_percent,Top %d%%,Top %d%%
-lb_updates_in,Updates in %s,Cập nhật sau %s
-lb_world_rank,World rank #%s,Hạng thế giới %s
-lb_world_sub,%s players worldwide,%s người chơi trên thế giới
-lb_player_points,%d rank points,%d điểm xếp hạng
-lb_locked,Unlocked at Level %d,Mở khoá ở Level %d
-lb_howto_title,How it works,Cách hoạt động
-lb_howto_1,Break star blocks in levels to collect pieces,Phá khối ngôi sao trong level để nhặt mảnh
-lb_howto_2,Win the level: every piece is 1 rank point,Thắng level: mỗi mảnh là 1 điểm xếp hạng
-lb_howto_3,Climb past the other 99 players in your league,Vượt 99 người chơi khác trong giải của bạn
-lb_howto_4,Reach the next league's points to move up and get its reward,Đủ điểm của giải kế tiếp để lên giải và nhận thưởng
-lb_leagues_title,Leagues,Các giải đấu
-lb_leagues_sub,Reach the points to move up and claim the reward,Đủ điểm để lên giải và nhận thưởng
-lb_league_range,%d–%d points,%d–%d điểm
-lb_league_range_top,%d+ points,Từ %d điểm
-lb_current,Current,Hiện tại
-lb_reached,Reached,Đã đạt
-lb_result_title,League Up!,Lên giải!
-lb_result_promoted,Welcome to %s League!,Chào mừng tới giải %s!
-lb_result_reward,Your reward,Phần thưởng của bạn
-lb_win_points,+%d rank points,+%d điểm xếp hạng
-lb_win_rank,Rank #%d,Hạng %d
-lb_pieces,Pieces,Mảnh
-streak_title,Win Streak,Chuỗi thắng
-streak_go,Let's go,Bắt đầu thôi
-streak_intro_1,Win levels in a row: streak +1 each win,Thắng liên tiếp: mỗi trận thắng +1 chuỗi
-streak_intro_2,Reach milestones: chests along the track,Đạt các mốc: có rương dọc đường
-streak_intro_3,Lose and the streak ends. Use Keep Playing to save it.,Thua là mất chuỗi. Dùng Chơi tiếp để giữ lại.
-streak_ends,Event ends in %s,Sự kiện kết thúc sau %s
-streak_current,Current streak,Chuỗi hiện tại
-streak_rewards_title,Rewards,Phần thưởng
-streak_row,Streak %d,Chuỗi %d
-streak_reward_gold,%d Gold,%d Gold
-streak_reward_hint,Hint x%d,Gợi ý x%d
-streak_reward_heart,%dh Infinite Hearts,%d giờ mạng vô hạn
-streak_reward_chest,Chest + Frame x%d,Rương + Khung x%d
-streak_rewards_note,Win a level every day to keep it alive,Thắng một level mỗi ngày để giữ chuỗi
-streak_end_title,STREAK ENDED,HẾT CHUỖI
-streak_end_final,Final streak: %d,Chuỗi cuối: %d
-streak_end_ready,Your rewards are ready!,Phần thưởng đã sẵn sàng!
-streak_chest,Chest,Rương
-streak_keep_title,Keep Your Streak?,Giữ chuỗi nhé?
-streak_keep_reset,It will reset if you quit,Thoát là chuỗi về 0
-streak_keep_body,Continue now to protect it,Chơi tiếp để giữ chuỗi
-streak_keep_ad,Continue,Chơi tiếp
-profile_name_title,Change Name,Đổi tên
-profile_name_rules,"Enter a nickname (3-14 characters), containing only English letters, numbers, underscores, periods, hyphens.","Nhập biệt danh (3-14 ký tự), chỉ gồm chữ cái tiếng Anh, số, gạch dưới, dấu chấm, gạch ngang."
-profile_name_taken,Name is already taken,Tên này đã có người dùng
-profile_nickname,Nickname,Biệt danh
-profile_name_default,Player,Người chơi
-weekly_reward_min,%dm,%dp
+keys,en,vi,pt_BR,tr,de,fr,id,es,ru,ko,ja,hi,uk,it
+APP_NAME,Candy Away,Candy Away,Candy Away,Candy Away,Candy Away,Candy Away,Candy Away,Candy Away,Candy Away,Candy Away,Candy Away,Candy Away,Candy Away,Candy Away
+common_ok,OK,OK,OK,Tamam,OK,OK,OK,OK,ОК,확인,OK,ठीक है,ОК,OK
+common_cancel,Cancel,Huỷ,Cancelar,İptal,Abbrechen,Annuler,Batal,Cancelar,Отмена,취소,キャンセル,रद्द करें,Скасувати,Annulla
+common_close,Close,Đóng,Fechar,Kapat,Schließen,Fermer,Tutup,Cerrar,Закрыть,닫기,閉じる,बंद करें,Закрити,Chiudi
+common_back,Back,Quay lại,Voltar,Geri,Zurück,Retour,Kembali,Volver,Назад,뒤로,戻る,वापस,Назад,Indietro
+common_yes,Yes,Có,Sim,Evet,Ja,Oui,Ya,Sí,Да,예,はい,हाँ,Так,Sì
+common_no,No,Không,Não,Hayır,Nein,Non,Tidak,No,Нет,아니요,いいえ,नहीं,Ні,No
+common_confirm,Confirm,Xác nhận,Confirmar,Onayla,Bestätigen,Confirmer,Konfirmasi,Confirmar,Подтвердить,확인,確認,पुष्टि करें,Підтвердити,Conferma
+common_free,Free,Miễn phí,Grátis,Ücretsiz,Gratis,Gratuit,Gratis,Gratis,Бесплатно,무료,無料,मुफ़्त,Безкоштовно,Gratis
+common_loading,Loading...,Đang tải...,Carregando...,Yükleniyor...,Lädt...,Chargement...,Memuat...,Cargando...,Загрузка...,로딩 중...,読み込み中…,लोड हो रहा है...,Завантаження...,Caricamento...
+common_gold,Gold,Gold,Ouro,Altın,Gold,Or,Emas,Oro,Золото,골드,ゴールド,गोल्ड,Золото,Oro
+common_locked_level,Unlocked at Level %d,Mở khoá ở Level %d,Disponível no Nível %d,Seviye %d gerekli,Ab Level %d,Dès le niveau %d,Terbuka di Level %d,Disponible en el Nivel %d,Откроется на уровне %d,레벨 %d에서 잠금 해제,レベル%dで解放,लेवल %d पर खुलेगा,Відкриється на рівні %d,Dal livello %d
+common_not_enough_gold,Not enough gold,Chưa đủ gold,Ouro insuficiente,Yeterli altın yok,Nicht genug Gold,Pas assez d'or,Emas tidak cukup,Oro insuficiente,Не хватает золота,골드가 부족해요,ゴールドが足りません,गोल्ड कम है,Недостатньо золота,Oro insufficiente
+home_play,Play,Chơi,Jogar,Oyna,Spielen,Jouer,Main,Jugar,Играть,플레이,プレイ,खेलें,Грати,Gioca
+home_play_level,Level %d,Level %d,Nível %d,Seviye %d,Level %d,Niveau %d,Level %d,Nivel %d,Уровень %d,레벨 %d,レベル%d,लेवल %d,Рівень %d,Livello %d
+home_lives_full,Full,Đầy,Cheio,Dolu,Voll,Plein,Penuh,Lleno,Полно,가득,満タン,फ़ुल,Повно,Piene
+home_lives_next,Next life in %s,Mạng kế tiếp sau %s,Próxima vida em %s,Sonraki can: %s,Nächstes Leben in %s,Prochaine vie dans %s,Nyawa berikutnya dalam %s,Próxima vida en %s,Новая жизнь через %s,다음 하트까지 %s,次のハートまで%s,अगली लाइफ %s में,Нове життя через %s,Prossima vita tra %s
+home_lives_unlimited,Lives: unlimited,Mạng: vô hạn,Vidas: ilimitadas,Can: sınırsız,Leben: unbegrenzt,Vies : illimitées,Nyawa: tak terbatas,Vidas: ilimitadas,Бесконечные жизни,하트: 무제한,ハート：無制限,लाइफ: अनलिमिटेड,Нескінченні життя,Vite: illimitate
+home_lives_unlimited_left,Unlimited for %s,Vô hạn trong %s,Ilimitadas por %s,%s boyunca sınırsız,Unbegrenzt für %s,Illimitées pendant %s,Tak terbatas selama %s,Ilimitadas por %s,Бесконечно ещё %s,%s 동안 무제한,無制限：残り%s,%s के लिए अनलिमिटेड,Нескінченно ще %s,Illimitate per %s
+home_gift,Daily gift,Quà mỗi ngày,Presente diário,Günlük hediye,Tagesgeschenk,Cadeau du jour,Hadiah harian,Regalo diario,Подарок дня,일일 선물,デイリーギフト,दैनिक तोहफ़ा,Подарунок дня,Regalo del giorno
+home_shop,Shop,Cửa hàng,Loja,Mağaza,Shop,Boutique,Toko,Tienda,Магазин,상점,ショップ,शॉप,Магазин,Negozio
+home_weekend_sale,Weekend sale,Sale cuối tuần,Promo de fim de semana,Hafta sonu indirimi,Wochenend-Sale,Promo du week-end,Diskon akhir pekan,Oferta de fin de semana,Скидки выходных,주말 세일,週末セール,वीकेंड सेल,Знижки вихідних,Sconti del weekend
+home_settings,Settings,Cài đặt,Configurações,Ayarlar,Einstellungen,Paramètres,Pengaturan,Ajustes,Настройки,설정,設定,सेटिंग्स,Налаштування,Impostazioni
+home_profile,Profile,Hồ sơ,Perfil,Profil,Profil,Profil,Profil,Perfil,Профиль,프로필,プロフィール,प्रोफ़ाइल,Профіль,Profilo
+home_challenge,Daily Challenge,Thử thách ngày,Desafio Diário,Günlük Meydan Okuma,Tages-Challenge,Défi du jour,Tantangan Harian,Desafío Diario,Испытание дня,일일 챌린지,デイリーチャレンジ,दैनिक चुनौती,Випробування дня,Sfida del giorno
+home_challenge_locked,Unlocked at Level %d,Mở khoá ở Level %d,Disponível no Nível %d,Seviye %d gerekli,Ab Level %d,Dès le niveau %d,Terbuka di Level %d,Disponible en el Nivel %d,Откроется на уровне %d,레벨 %d에서 잠금 해제,レベル%dで解放,लेवल %d पर खुलेगा,Відкриється на рівні %d,Dal livello %d
+home_shop_locked,Unlocked at Level %d,Mở khoá ở Level %d,Disponível no Nível %d,Seviye %d gerekli,Ab Level %d,Dès le niveau %d,Terbuka di Level %d,Disponible en el Nivel %d,Откроется на уровне %d,레벨 %d에서 잠금 해제,レベル%dで解放,लेवल %d पर खुलेगा,Відкриється на рівні %d,Dal livello %d
+home_coming_soon,New levels coming soon,Sắp có level mới,Novos níveis em breve,Yeni seviyeler yakında,Neue Level kommen bald,Nouveaux niveaux à venir,Level baru segera hadir,Pronto habrá niveles nuevos,Скоро новые уровни,새 레벨이 곧 나와요,新しいレベルを準備中です,नए लेवल जल्द आ रहे हैं,Незабаром нові рівні,Nuovi livelli in arrivo
+home_offer_chip,Special offer,Ưu đãi đặc biệt,Oferta especial,Özel teklif,Sonderangebot,Offre spéciale,Penawaran spesial,Oferta especial,Спецпредложение,특별 혜택,特別オファー,स्पेशल ऑफ़र,Спецпропозиція,Offerta speciale
+home_offer_left,%s left,Còn %s,Restam %s,Kalan: %s,Noch %s,Reste %s,Sisa %s,Quedan %s,Осталось %s,%s 남음,残り%s,%s बाकी,Залишилось %s,Ancora %s
+level_title,Level %d,Level %d,Nível %d,Seviye %d,Level %d,Niveau %d,Level %d,Nivel %d,Уровень %d,레벨 %d,レベル%d,लेवल %d,Рівень %d,Livello %d
+level_hard,HARD,KHÓ,DIFÍCIL,ZOR,SCHWER,DIFFICILE,SULIT,DIFÍCIL,СЛОЖНЫЙ,어려움,ハード,कठिन,СКЛАДНИЙ,DIFFICILE
+level_very_hard,VERY HARD,RẤT KHÓ,MUITO DIFÍCIL,ÇOK ZOR,SEHR SCHWER,TRÈS DIFFICILE,SANGAT SULIT,MUY DIFÍCIL,ОЧЕНЬ СЛОЖНЫЙ,매우 어려움,ベリーハード,बहुत कठिन,ДУЖЕ СКЛАДНИЙ,MOLTO DIFFICILE
+level_moves,Moves,Lượt,Jogadas,Hamle,Züge,Coups,Langkah,Jugadas,Ходы,이동,手数,चालें,Ходи,Mosse
+level_moves_left,Moves: %d,Lượt: %d,Jogadas: %d,Hamle: %d,Züge: %d,Coups : %d,Langkah: %d,Jugadas: %d,Ходы: %d,이동: %d,手数：%d,चालें: %d,Ходи: %d,Mosse: %d
+level_remaining,%d blocks left,Còn %d khối,Faltam %d blocos,%d blok kaldı,Noch %d Blöcke,%d blocs restants,Sisa %d blok,Quedan %d bloques,Осталось блоков: %d,블록 %d개 남음,残り%dブロック,%d ब्लॉक बाकी,Залишилось блоків: %d,%d blocchi rimasti
+level_remaining_one,1 block left,Còn 1 khối,Falta 1 bloco,1 blok kaldı,Noch 1 Block,1 bloc restant,Sisa 1 blok,Queda 1 bloque,Остался 1 блок,블록 1개 남음,残り1ブロック,1 ब्लॉक बाकी,Залишився 1 блок,1 blocco rimasto
+level_restart,Restart,Chơi lại,Reiniciar,Yeniden başla,Neustart,Recommencer,Ulangi,Reiniciar,Заново,다시 시작,やり直す,फिर से शुरू,Заново,Ricomincia
+level_restart_confirm_title,Restart this level?,Chơi lại level này?,Reiniciar este nível?,Seviye yeniden başlatılsın mı?,Level neu starten?,Recommencer ce niveau ?,Ulangi level ini?,¿Reiniciar este nivel?,Начать уровень заново?,이 레벨을 다시 시작할까요?,このレベルをやり直しますか？,यह लेवल फिर से शुरू करें?,Почати рівень заново?,Ricominciare il livello?
+level_restart_confirm_free,Start over from the beginning.,Bắt đầu lại từ đầu nhé.,Recomece do início.,En baştan başlayacaksın.,Du beginnst wieder ganz von vorn.,Tu recommences depuis le début.,Mulai lagi dari awal.,Vuelve a empezar desde el principio.,Уровень начнётся заново.,처음부터 다시 시작해요.,最初からやり直します。,शुरुआत से दोबारा खेलें।,Рівень почнеться заново.,Ricominci dall'inizio.
+level_restart_confirm_life,Restarting now will cost 1 life.,Chơi lại lúc này sẽ mất 1 mạng.,Reiniciar agora vai custar 1 vida.,Şimdi yeniden başlamak 1 cana mal olur.,Ein Neustart kostet jetzt 1 Leben.,Recommencer maintenant te coûtera 1 vie.,Mengulang sekarang akan memakai 1 nyawa.,Reiniciar ahora te costará 1 vida.,Перезапуск сейчас будет стоить 1 жизнь.,지금 다시 시작하면 하트 1개를 사용해요.,今やり直すとハートを1つ使います。,अभी फिर से शुरू करने पर 1 लाइफ लगेगी।,Перезапуск зараз коштуватиме 1 життя.,Ricominciare ora ti costerà 1 vita.
+level_restart_yes,Restart,Chơi lại,Reiniciar,Yeniden başla,Neustart,Recommencer,Ulangi,Reiniciar,Заново,다시 시작,やり直す,फिर से शुरू,Заново,Ricomincia
+level_restart_no,Keep playing,Chơi tiếp,Continuar jogando,Oynamaya devam,Weiterspielen,Continuer à jouer,Lanjut main,Seguir jugando,Играть дальше,계속하기,続ける,खेलते रहें,Грати далі,Continua a giocare
+level_home,Home,Trang chủ,Início,Ana Sayfa,Startseite,Accueil,Beranda,Inicio,Главная,홈,ホーム,होम,Головна,Home
+level_clap,Nice one!,Hay lắm!,Muito bem!,Harika!,Super!,Joli coup !,Mantap!,¡Genial!,Здорово!,잘했어요!,ナイス！,बहुत खूब!,Клас!,Ottima mossa!
+level_idle_blocks,Available Block :,Khối đi được :,Blocos livres :,Uygun blok :,Freie Blöcke :,Blocs libres :,Blok tersedia :,Bloques libres :,Свободных блоков :,움직일 수 있는 블록 :,動かせるブロック：,उपलब्ध ब्लॉक :,Вільних блоків :,Blocchi liberi :
+level_hint_none,No block can slide out right now.,Chưa có khối nào thoát được lúc này.,Nenhum bloco pode sair agora.,Şu anda hiçbir blok kayarak çıkamıyor.,Gerade kann kein Block hinausgleiten.,Aucun bloc ne peut sortir pour l'instant.,Belum ada blok yang bisa keluar saat ini.,Ningún bloque puede salir ahora.,Сейчас ни один блок не может уйти с поля.,지금은 빠져나갈 수 있는 블록이 없어요.,今は外に出せるブロックがありません。,अभी कोई ब्लॉक बाहर नहीं निकल सकता।,Зараз жоден блок не може покинути поле.,Nessun blocco può uscire adesso.
+level_demo_end,That's all the levels for now. New ones are coming soon!,Đã hết level hiện có. Level mới sắp ra mắt!,Esses são todos os níveis por enquanto. Novos níveis em breve!,Şimdilik seviyeler bu kadar. Yenileri yakında geliyor!,Das waren vorerst alle Level. Neue kommen bald!,Tu as terminé tous les niveaux pour l'instant. D'autres arrivent bientôt !,Itu semua level untuk saat ini. Level baru segera hadir!,Esos son todos los niveles por ahora. ¡Pronto habrá más!,Пока это все уровни. Скоро будут новые!,지금 준비된 레벨은 여기까지예요. 새 레벨이 곧 나와요!,今遊べるレベルはここまでです。新しいレベルをお楽しみに！,अभी के लिए बस इतने ही लेवल हैं। नए लेवल जल्द आ रहे हैं!,Поки що це всі рівні. Незабаром будуть нові!,Per ora hai finito tutti i livelli. Ne arriveranno presto di nuovi!
+booster_hint,Hint,Gợi ý,Dica,İpucu,Tipp,Indice,Petunjuk,Pista,Подсказка,힌트,ヒント,हिंट,Підказка,Indizio
+booster_move,+3 Move,+3 Lượt,+3 Jogadas,+3 Hamle,+3 Züge,+3 coups,+3 Langkah,+3 Jugadas,+3 хода,+3 이동,+3手,+3 चाल,+3 ходи,+3 mosse
+booster_smash,Smash,Phá khối,Martelada,Çekiç,Hammer,Casse-bloc,Penghancur,Martillazo,Молоток,부수기,スマッシュ,स्मैश,Молоток,Spaccablocchi
+booster_hint_desc,Points to a block that can slide out right now.,Chỉ ra một khối có thể thoát ngay.,Mostra um bloco que pode sair agora.,Şu an kayarak çıkabilecek bir bloğu gösterir.,"Zeigt einen Block, der jetzt hinausgleiten kann.",Montre un bloc qui peut sortir tout de suite.,Menunjukkan blok yang bisa keluar sekarang.,Señala un bloque que puede salir ahora.,"Показывает блок, который может уйти с поля прямо сейчас.",지금 빠져나갈 수 있는 블록을 알려 줘요.,今すぐ外に出せるブロックを教えてくれます。,वह ब्लॉक दिखाता है जो अभी बाहर निकल सकता है।,"Показує блок, який може покинути поле просто зараз.",Indica un blocco che può uscire subito.
+booster_move_desc,Adds 3 moves to this level.,Thêm 3 lượt cho level này.,Adiciona 3 jogadas a este nível.,Bu seviyeye 3 hamle ekler.,Gibt dir 3 Züge mehr für dieses Level.,Ajoute 3 coups à ce niveau.,Menambah 3 langkah di level ini.,Añade 3 jugadas a este nivel.,Добавляет 3 хода на этом уровне.,이 레벨에 이동 3회를 추가해요.,このレベルの手数を3増やします。,इस लेवल में 3 चालें जोड़ता है।,Додає 3 ходи на цьому рівні.,Aggiunge 3 mosse a questo livello.
+booster_smash_desc,Removes one block from the board.,Xoá một khối khỏi bàn cờ.,Remove um bloco do tabuleiro.,Tahtadan bir bloğu kaldırır.,Entfernt einen Block vom Spielfeld.,Retire un bloc du plateau.,Menghapus satu blok dari papan.,Quita un bloque del tablero.,Убирает один блок с поля.,보드에서 블록 하나를 없애요.,盤面からブロックを1つ取り除きます。,बोर्ड से एक ब्लॉक हटाता है।,Прибирає один блок з поля.,Rimuove un blocco dal tabellone.
+booster_buy,Buy for %d,Mua với %d,Comprar por %d,%d altına al,Für %d kaufen,Acheter pour %d,Beli seharga %d,Comprar por %d,Купить за %d,%d에 구매,%dで購入,%d में खरीदें,Купити за %d,Compra per %d
+booster_use,Use,Dùng,Usar,Kullan,Nutzen,Utiliser,Pakai,Usar,Применить,사용,使う,इस्तेमाल करें,Задіяти,Usa
+booster_count,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d
+booster_free_video,Free with a video,Miễn phí khi xem video,Grátis com um vídeo,Videoyla ücretsiz,Gratis mit Video,Gratuit avec une vidéo,Gratis dengan video,Gratis con un video,Бесплатно за видео,영상 보고 무료,動画を見て無料,वीडियो देखकर मुफ़्त,Безкоштовно за відео,Gratis con un video
+booster_locked,Unlocked at Level %d,Mở khoá ở Level %d,Disponível no Nível %d,Seviye %d gerekli,Ab Level %d,Dès le niveau %d,Terbuka di Level %d,Disponible en el Nivel %d,Откроется на уровне %d,레벨 %d에서 잠금 해제,レベル%dで解放,लेवल %d पर खुलेगा,Відкриється на рівні %d,Dal livello %d
+booster_smash_pick,Tap a block to smash it,Chạm vào một khối để phá,Toque em um bloco para quebrá-lo,Kırmak için bir bloğa dokun,Tippe auf einen Block zum Zerschlagen,Touche un bloc pour le casser,Ketuk blok untuk menghancurkannya,Toca un bloque para romperlo,"Нажмите на блок, чтобы разбить его",부술 블록을 탭하세요,壊すブロックをタップしてください,स्मैश करने के लिए किसी ब्लॉक पर टैप करें,"Натисніть на блок, щоб розбити його",Tocca un blocco per spaccarlo
+booster_smash_stone,Stones can't be smashed.,Không thể phá đá.,Pedras não podem ser quebradas.,Taşlar kırılamaz.,Steine kann man nicht zerschlagen.,Les pierres ne peuvent pas être cassées.,Batu tidak bisa dihancurkan.,Las piedras no se pueden romper.,Камни нельзя разбить.,돌은 부술 수 없어요.,石は壊せません。,पत्थर स्मैश नहीं हो सकते।,Камені не можна розбити.,Le pietre non si possono spaccare.
+booster_not_enough,Not enough gold,Chưa đủ gold,Ouro insuficiente,Yeterli altın yok,Nicht genug Gold,Pas assez d'or,Emas tidak cukup,Oro insuficiente,Не хватает золота,골드가 부족해요,ゴールドが足りません,गोल्ड कम है,Недостатньо золота,Oro insufficiente
+rescue_title,Out of moves,Hết lượt rồi,Sem jogadas,Hamlen kalmadı,Keine Züge mehr,Plus de coups,Langkah habis,Sin jugadas,Ходы закончились,이동을 다 썼어요,手数がなくなりました,चालें खत्म,Ходи закінчилися,Mosse finite
+rescue_body,Add 3 more moves and keep going?,Thêm 3 lượt để chơi tiếp nhé?,Adicionar mais 3 jogadas e continuar?,3 hamle daha ekleyip devam etmek ister misin?,Mit 3 weiteren Zügen weiterspielen?,Ajouter 3 coups et continuer ?,Tambah 3 langkah dan lanjut main?,¿Añadir 3 jugadas más y seguir?,Добавить 3 хода и продолжить?,이동 3회를 추가하고 계속할까요?,手数を3増やして続けますか？,3 चालें और जोड़कर खेलते रहें?,Додати 3 ходи й продовжити?,Vuoi aggiungere 3 mosse e continuare?
+rescue_remaining,%d blocks left,Còn %d khối,Faltam %d blocos,%d blok kaldı,Noch %d Blöcke,%d blocs restants,Sisa %d blok,Quedan %d bloques,Осталось блоков: %d,블록 %d개 남음,残り%dブロック,%d ब्लॉक बाकी,Залишилось блоків: %d,%d blocchi rimasti
+rescue_remaining_one,1 block left,Còn 1 khối,Falta 1 bloco,1 blok kaldı,Noch 1 Block,1 bloc restant,Sisa 1 blok,Queda 1 bloque,Остался 1 блок,블록 1개 남음,残り1ブロック,1 ब्लॉक बाकी,Залишився 1 блок,1 blocco rimasto
+rescue_buy,Get +3 Moves for %d,Nhận +3 Lượt với %d,Obter +3 Jogadas por %d,%d altına +3 Hamle al,+3 Züge für %d,Obtenir +3 coups pour %d,Dapatkan +3 Langkah seharga %d,Obtener +3 Jugadas por %d,Получить +3 хода за %d,%d에 +3 이동 받기,%dで+3手をゲット,%d में +3 चाल पाएँ,Отримати +3 ходи за %d,Ottieni +3 mosse per %d
+rescue_use,Use +3 Move,Dùng +3 Lượt,Usar +3 Jogadas,+3 Hamle kullan,+3 Züge nutzen,Utiliser +3 coups,Pakai +3 Langkah,Usar +3 Jugadas,Применить +3 хода,+3 이동 사용,+3手を使う,+3 चाल इस्तेमाल करें,Задіяти +3 ходи,Usa +3 mosse
+rescue_in_stock,You have %d,Bạn đang có %d,Você tem %d,Elinde: %d,Du hast %d,Tu en as %d,Kamu punya %d,Tienes %d,У вас: %d,보유: %d,所持数：%d,आपके पास %d हैं,У вас: %d,Ne hai %d
+rescue_video,+3 Moves,+3 Lượt,+3 Jogadas,+3 Hamle,+3 Züge,+3 coups,+3 Langkah,+3 Jugadas,+3 хода,+3 이동,+3手,+3 चाल,+3 ходи,+3 mosse
+rescue_give_up,Give up,Bỏ cuộc,Desistir,Pes et,Aufgeben,Abandonner,Menyerah,Abandonar,Сдаться,포기,あきらめる,हार मानें,Здатися,Rinuncia
+rescue_need_gold,Not enough gold,Chưa đủ gold,Ouro insuficiente,Yeterli altın yok,Nicht genug Gold,Pas assez d'or,Emas tidak cukup,Oro insuficiente,Не хватает золота,골드가 부족해요,ゴールドが足りません,गोल्ड कम है,Недостатньо золота,Oro insufficiente
+rescue_confirm_title,Give up this level?,Bỏ cuộc level này?,Desistir deste nível?,Pes etmek istiyor musun?,Level aufgeben?,Abandonner ce niveau ?,Menyerah di level ini?,¿Abandonar este nivel?,Сдаться на этом уровне?,이 레벨을 포기할까요?,このレベルをあきらめますか？,यह लेवल छोड़ दें?,Здатися на цьому рівні?,Rinunciare al livello?
+rescue_warn_life,"If you give up, you'll lose 1 life.","Nếu bỏ cuộc, bạn sẽ mất 1 mạng.","Se você desistir, perderá 1 vida.",Pes edersen 1 can kaybedersin.,"Wenn du aufgibst, verlierst du 1 Leben.","Si tu abandonnes, tu perdras 1 vie.","Jika menyerah, kamu akan kehilangan 1 nyawa.","Si abandonas, perderás 1 vida.","Если сдадитесь, потеряете 1 жизнь.",포기하면 하트 1개를 잃어요.,あきらめるとハートを1つ失います。,हार मानने पर आपकी 1 लाइफ चली जाएगी।,"Якщо здастеся, втратите 1 життя.","Se rinunci, perderai 1 vita."
+rescue_confirm_yes,Give up (-1 life),Bỏ cuộc (-1 mạng),Desistir (-1 vida),Pes et (-1 can),Aufgeben (-1 Leben),Abandonner (-1 vie),Menyerah (-1 nyawa),Abandonar (-1 vida),Сдаться (-1 жизнь),포기 (하트 -1),あきらめる（ハート-1）,हार मानें (-1 लाइफ),Здатися (-1 життя),Rinuncia (-1 vita)
+win_title,Level complete!,Hoàn thành level!,Nível concluído!,Seviye tamamlandı!,Level geschafft!,Niveau terminé !,Level selesai!,¡Nivel completado!,Уровень пройден!,레벨 클리어!,レベルクリア！,लेवल पूरा!,Рівень пройдено!,Livello completato!
+win_subtitle,Nicely done.,Làm tốt lắm.,Mandou bem.,İyi iş çıkardın.,Gut gemacht.,Beau travail.,Kerja bagus.,Bien hecho.,Отличная работа.,멋지게 해냈어요.,お見事です。,बहुत बढ़िया।,Чудова робота.,Ben fatto.
+win_reward,+%d gold,+%d gold,+%d de ouro,+%d altın,+%d Gold,+%d or,+%d emas,+%d de oro,+%d золота,+%d 골드,+%dゴールド,+%d गोल्ड,+%d золота,+%d oro
+win_x2,Double it! x2,Nhân đôi! x2,Dobrar! x2,İkiye katla! x2,Verdoppeln! x2,Doubler ! x2,Gandakan! x2,¡Duplícalo! x2,Удвоить! x2,두 배 받기! x2,2倍にしよう！x2,दोगुना करें! x2,Подвоїти! x2,Raddoppia! x2
+win_x2_free,Free x2 this time,Nhân đôi miễn phí lần này,x2 grátis desta vez,Bu sefer x2 ücretsiz,Diesmal x2 gratis,x2 gratuit cette fois,x2 gratis kali ini,x2 gratis esta vez,В этот раз x2 бесплатно,이번엔 무료로 x2,今回は無料でx2,इस बार x2 मुफ़्त,Цього разу x2 безкоштовно,x2 gratis stavolta
+win_x2_done,Doubled!,Đã nhân đôi!,Dobrado!,İkiye katlandı!,Verdoppelt!,Doublé !,Digandakan!,¡Duplicado!,Удвоено!,두 배 획득!,2倍になりました！,दोगुना हो गया!,Подвоєно!,Raddoppiato!
+win_continue,Continue,Tiếp tục,Continuar,Devam et,Weiter,Continuer,Lanjut,Continuar,Продолжить,계속,続ける,आगे बढ़ें,Продовжити,Continua
+lose_title,Not this time,Chưa được rồi,Não foi dessa vez,Bu sefer olmadı,Diesmal nicht,Pas cette fois,Belum berhasil,Esta vez no,В этот раз не вышло,이번엔 아쉬워요,今回は残念,इस बार नहीं,Цього разу не вийшло,Non stavolta
+lose_body,Try again whenever you're ready.,Thử lại khi bạn sẵn sàng nhé.,Tente de novo quando quiser.,Hazır olduğunda tekrar dene.,"Versuch es nochmal, wenn du bereit bist.",Réessaie quand tu veux.,Coba lagi kapan pun kamu siap.,Inténtalo de nuevo cuando quieras.,"Попробуйте снова, когда будете готовы.",준비되면 언제든 다시 도전해 보세요.,準備ができたら、いつでも再挑戦してください。,जब तैयार हों तब फिर से कोशिश करें।,"Спробуйте знову, коли будете готові.",Riprova quando vuoi.
+lose_retry,Try again,Thử lại,Tentar de novo,Tekrar dene,Nochmal,Réessayer,Coba lagi,Reintentar,Ещё раз,다시 도전,再挑戦,फिर कोशिश करें,Ще раз,Riprova
+lose_home,Home,Trang chủ,Início,Ana Sayfa,Startseite,Accueil,Beranda,Inicio,Главная,홈,ホーム,होम,Головна,Home
+lose_life_lost,You used 1 life.,Bạn đã dùng 1 mạng.,Você usou 1 vida.,1 can kullandın.,Du hast 1 Leben verbraucht.,Tu as utilisé 1 vie.,Kamu memakai 1 nyawa.,Usaste 1 vida.,Потрачена 1 жизнь.,하트 1개를 사용했어요.,ハートを1つ使いました。,आपकी 1 लाइफ इस्तेमाल हुई।,Витрачено 1 життя.,Hai usato 1 vita.
+lose_pack_title,Need a hand?,Cần giúp một tay?,Precisa de uma ajuda?,Yardım ister misin?,Brauchst du Hilfe?,Besoin d'aide ?,Butuh bantuan?,¿Necesitas ayuda?,Нужна помощь?,도움이 필요하세요?,お手伝いしましょうか？,मदद चाहिए?,Потрібна допомога?,Ti serve una mano?
+lose_pack_body,Rescue Pack: a +3 Move to help next time.,Gói Cứu Nguy: một +3 Lượt cho lần sau.,Pacote de Resgate: um +3 Jogadas para ajudar na próxima vez.,Kurtarma Paketi: sonraki sefer için bir +3 Hamle.,Rettungspaket: +3 Züge als Hilfe fürs nächste Mal.,Pack Secours : un +3 coups pour t'aider la prochaine fois.,Paket Penyelamat: +3 Langkah untuk membantu lain kali.,Paquete de Rescate: un +3 Jugadas para la próxima vez.,Спасательный набор: +3 хода на следующий раз.,구조 팩: 다음 도전에 도움이 될 +3 이동이에요.,レスキューパック：次回に役立つ+3手です。,बचाव पैक: अगली बार मदद के लिए एक +3 चाल।,Рятувальний набір: +3 ходи на наступний раз.,Pacchetto Soccorso: un +3 mosse per aiutarti la prossima volta.
+lose_pack_buy,Get it for %s,Nhận với %s,Obter por %s,Satın al: %s,Für %s holen,Obtenir pour %s,Dapatkan seharga %s,Obtener por %s,Купить за %s,%s에 구매,%sで購入,%s में पाएँ,Купити за %s,Ottienilo a %s
+no_lives_title,Out of lives,Hết mạng,Sem vidas,Canın kalmadı,Keine Leben mehr,Plus de vies,Nyawa habis,Sin vidas,Жизни закончились,하트가 없어요,ハートがありません,लाइफ खत्म,Життя закінчилися,Vite finite
+no_lives_body,"Lives come back over time. Take a break, or refill now.",Mạng sẽ hồi dần theo thời gian. Nghỉ một chút hoặc nạp lại ngay nhé.,As vidas voltam com o tempo. Faça uma pausa ou recarregue agora.,Canlar zamanla dolar. Biraz mola ver ya da şimdi doldur.,Leben kommen mit der Zeit zurück. Mach eine Pause oder fülle sie jetzt auf.,Les vies reviennent avec le temps. Fais une pause ou recharge-les maintenant.,"Nyawa terisi seiring waktu. Istirahat dulu, atau isi ulang sekarang.",Las vidas se recuperan con el tiempo. Tómate un descanso o recarga ahora.,Жизни восстанавливаются со временем. Отдохните или пополните их сейчас.,하트는 시간이 지나면 다시 차요. 잠시 쉬어 가거나 지금 바로 충전해 보세요.,ハートは時間がたつと回復します。ひと休みするか、今すぐ回復しましょう。,लाइफ समय के साथ वापस आती है। थोड़ा आराम करें या अभी भर लें।,Життя відновлюються з часом. Відпочиньте або поповніть їх зараз.,Le vite tornano col tempo. Fai una pausa o ricaricale subito.
+no_lives_next,Next life in %s,Mạng kế tiếp sau %s,Próxima vida em %s,Sonraki can: %s,Nächstes Leben in %s,Prochaine vie dans %s,Nyawa berikutnya dalam %s,Próxima vida en %s,Новая жизнь через %s,다음 하트까지 %s,次のハートまで%s,अगली लाइफ %s में,Нове життя через %s,Prossima vita tra %s
+no_lives_full_in,All lives back in %s,Đầy mạng sau %s,Vidas cheias em %s,Tüm canlar %s içinde dolar,Alle Leben voll in %s,Vies au complet dans %s,Nyawa penuh dalam %s,Vidas llenas en %s,Все жизни через %s,%s 후 하트 모두 회복,全回復まで%s,सारी लाइफ %s में वापस,Усі життя через %s,Vite al completo tra %s
+no_lives_refill_gold,Refill with %d gold,Nạp lại với %d gold,Recarregar com %d de ouro,%d altınla doldur,Für %d Gold auffüllen,Recharger pour %d or,Isi ulang dengan %d emas,Recargar con %d de oro,Пополнить за %d золота,%d 골드로 충전,%dゴールドで回復,%d गोल्ड से भरें,Поповнити за %d золота,Ricarica con %d oro
+no_lives_refill_amount,Get %d lives,Nhận %d mạng,Obter %d vidas,%d can al,%d Leben holen,Obtenir %d vies,Dapatkan %d nyawa,Obtener %d vidas,Получить жизни: %d,하트 %d개 받기,ハートを%d個ゲット,%d लाइफ पाएँ,Отримати життя: %d,Ottieni %d vite
+no_lives_video,+1 life,+1 mạng,+1 vida,+1 can,+1 Leben,+1 vie,+1 nyawa,+1 vida,+1 жизнь,하트 +1,ハート+1,+1 लाइफ,+1 життя,+1 vita
+no_lives_no_ads,No video is available right now. You can wait for a life to come back.,Hiện chưa có video. Bạn có thể đợi mạng hồi lại nhé.,Nenhum vídeo disponível agora. Você pode esperar uma vida voltar.,Şu an video yok. Bir canın dolmasını bekleyebilirsin.,"Gerade ist kein Video verfügbar. Du kannst warten, bis ein Leben zurückkommt.",Aucune vidéo disponible pour le moment. Tu peux attendre qu'une vie revienne.,Belum ada video saat ini. Kamu bisa menunggu nyawa terisi kembali.,No hay videos disponibles ahora. Puedes esperar a que vuelva una vida.,"Сейчас нет доступных видео. Можно подождать, пока восстановится жизнь.",지금은 볼 수 있는 영상이 없어요. 하트가 다시 찰 때까지 기다려 주세요.,今は見られる動画がありません。ハートの回復を待つこともできます。,अभी कोई वीडियो उपलब्ध नहीं है। आप लाइफ वापस आने तक इंतज़ार कर सकते हैं।,"Зараз немає доступних відео. Можна зачекати, поки відновиться життя.",Nessun video disponibile al momento. Puoi aspettare che torni una vita.
+no_lives_wait,Wait,Đợi,Esperar,Bekle,Warten,Attendre,Tunggu,Esperar,Подождать,기다리기,待つ,इंतज़ार करें,Зачекати,Aspetta
+no_lives_home,Back to Home,Về trang chủ,Voltar ao início,Ana Sayfaya dön,Zur Startseite,Retour à l'accueil,Kembali ke Beranda,Volver al inicio,На главную,홈으로,ホームに戻る,होम पर वापस,На головну,Torna alla Home
+no_lives_not_enough_gold,Not enough gold,Chưa đủ gold,Ouro insuficiente,Yeterli altın yok,Nicht genug Gold,Pas assez d'or,Emas tidak cukup,Oro insuficiente,Не хватает золота,골드가 부족해요,ゴールドが足りません,गोल्ड कम है,Недостатньо золота,Oro insufficiente
+no_lives_lives,Lives: %d/%d,Mạng: %d/%d,Vidas: %d/%d,Can: %d/%d,Leben: %d/%d,Vies : %d/%d,Nyawa: %d/%d,Vidas: %d/%d,Жизни: %d/%d,하트: %d/%d,ハート：%d/%d,लाइफ: %d/%d,Життя: %d/%d,Vite: %d/%d
+no_lives_more_title,More lives,Thêm mạng,Mais vidas,Daha fazla can,Mehr Leben,Des vies en plus,Tambah nyawa,Más vidas,Больше жизней,하트 충전,ハートを補充,और लाइफ,Більше життів,Altre vite
+no_lives_more_body,Top up your lives with gold or a video.,Nạp thêm mạng bằng gold hoặc xem video nhé.,Recarregue suas vidas com ouro ou um vídeo.,Canlarını altınla ya da video izleyerek doldur.,Fülle deine Leben mit Gold oder einem Video auf.,Recharge tes vies avec de l'or ou une vidéo.,Isi nyawamu dengan emas atau video.,Recarga tus vidas con oro o un video.,Пополните жизни за золото или видео.,골드나 영상으로 하트를 채워 보세요.,ゴールドか動画でハートを補充しましょう。,गोल्ड या वीडियो से अपनी लाइफ भरें।,Поповніть життя за золото або відео.,Ricarica le vite con l'oro o con un video.
+no_lives_full_body,Your lives are full. Go play!,Mạng đã đầy. Chơi thôi!,Suas vidas estão cheias. Hora de jogar!,Canların dolu. Hadi oyna!,Deine Leben sind voll. Los geht's!,Tes vies sont au max. À toi de jouer !,Nyawamu penuh. Ayo main!,Tus vidas están llenas. ¡A jugar!,Все жизни на месте. Вперёд!,하트가 가득 찼어요. 플레이하러 가요!,ハートは満タンです。さあ遊びましょう！,आपकी लाइफ फ़ुल है। चलिए खेलें!,Усі життя на місці. Уперед!,Le tue vite sono al completo. Gioca!
+no_lives_unlimited_body,You have unlimited lives right now.,Bạn đang có mạng vô hạn.,Você tem vidas ilimitadas agora.,Şu an sınırsız canın var.,Du hast gerade unbegrenzt Leben.,Tu as des vies illimitées en ce moment.,Saat ini nyawamu tak terbatas.,Ahora tienes vidas ilimitadas.,Сейчас у вас бесконечные жизни.,지금은 하트가 무제한이에요.,今はハートが無制限です。,अभी आपके पास अनलिमिटेड लाइफ है।,Зараз у вас нескінченні життя.,Al momento hai vite illimitate.
+ads_watch,Watch video,Xem video,Assistir vídeo,Video izle,Video ansehen,Voir la vidéo,Tonton video,Ver video,Смотреть видео,영상 보기,動画を見る,वीडियो देखें,Дивитися відео,Guarda video
+ads_loading,Loading video...,Đang tải video...,Carregando vídeo...,Video yükleniyor...,Video lädt...,Chargement de la vidéo...,Memuat video...,Cargando video...,Загрузка видео...,영상 불러오는 중...,動画を読み込み中…,वीडियो लोड हो रहा है...,Завантаження відео...,Caricamento video...
+ads_not_available,No video is available right now. Please try again later.,Hiện chưa có video. Bạn thử lại sau nhé.,Nenhum vídeo disponível agora. Tente de novo mais tarde.,Şu an video yok. Lütfen daha sonra tekrar dene.,Gerade ist kein Video verfügbar. Bitte versuch es später nochmal.,Aucune vidéo disponible pour le moment. Réessaie plus tard.,Belum ada video saat ini. Coba lagi nanti ya.,No hay videos disponibles ahora. Inténtalo más tarde.,Сейчас нет доступных видео. Попробуйте позже.,지금은 볼 수 있는 영상이 없어요. 잠시 후 다시 시도해 주세요.,今は見られる動画がありません。しばらくしてからもう一度お試しください。,अभी कोई वीडियो उपलब्ध नहीं है। कृपया बाद में फिर कोशिश करें।,Зараз немає доступних відео. Спробуйте пізніше.,Nessun video disponibile al momento. Riprova più tardi.
+ads_failed,"The video didn't finish, so no reward this time.",Video chưa xem xong nên chưa có phần thưởng.,"O vídeo não terminou, então não há recompensa desta vez.",Video bitmediği için bu sefer ödül yok.,"Das Video lief nicht bis zum Ende, daher diesmal keine Belohnung.","La vidéo ne s'est pas terminée, pas de récompense cette fois.","Videonya belum selesai, jadi belum ada hadiah kali ini.","El video no terminó, así que esta vez no hay recompensa.","Видео не досмотрено, так что в этот раз без награды.",영상이 끝까지 재생되지 않아 이번엔 보상이 없어요.,動画が最後まで再生されなかったため、今回は報酬がありません。,"वीडियो पूरा नहीं हुआ, इसलिए इस बार इनाम नहीं मिला।","Відео не переглянуто до кінця, тож цього разу без нагороди.","Il video non è finito, quindi niente premio stavolta."
+ads_closed_early,Watch the whole video to get the reward.,Hãy xem hết video để nhận thưởng.,Assista ao vídeo inteiro para ganhar a recompensa.,Ödülü almak için videonun tamamını izle.,"Sieh dir das ganze Video an, um die Belohnung zu bekommen.",Regarde toute la vidéo pour obtenir la récompense.,Tonton video sampai habis untuk dapat hadiah.,Mira el video completo para obtener la recompensa.,"Досмотрите видео до конца, чтобы получить награду.",영상을 끝까지 보면 보상을 받을 수 있어요.,動画を最後まで見ると報酬がもらえます。,इनाम पाने के लिए पूरा वीडियो देखें।,"Перегляньте відео до кінця, щоб отримати нагороду.",Guarda tutto il video per ottenere il premio.
+ads_reward_ok,Reward received!,Đã nhận thưởng!,Recompensa recebida!,Ödül alındı!,Belohnung erhalten!,Récompense reçue !,Hadiah diterima!,¡Recompensa recibida!,Награда получена!,보상을 받았어요!,報酬を受け取りました！,इनाम मिल गया!,Нагороду отримано!,Premio ricevuto!
+ads_privacy,Privacy settings,Cài đặt quyền riêng tư,Configurações de privacidade,Gizlilik ayarları,Datenschutz,Confidentialité,Pengaturan privasi,Ajustes de privacidad,Конфиденциальность,개인정보 설정,プライバシー設定,प्राइवेसी सेटिंग्स,Конфіденційність,Impostazioni privacy
+shop_title,Shop,Cửa hàng,Loja,Mağaza,Shop,Boutique,Toko,Tienda,Магазин,상점,ショップ,शॉप,Магазин,Negozio
+shop_gold_pack,%d gold,%d gold,%d de ouro,%d altın,%d Gold,%d or,%d emas,%d de oro,%d золота,%d 골드,%dゴールド,%d गोल्ड,%d золота,%d oro
+shop_sale,SALE,GIẢM GIÁ,PROMOÇÃO,İNDİRİM,SALE,PROMO,DISKON,OFERTA,СКИДКА,세일,セール,सेल,ЗНИЖКА,SCONTO
+shop_sale_weekend,Weekend sale!,Giảm giá cuối tuần!,Promo de fim de semana!,Hafta sonu indirimi!,Wochenend-Sale!,Promo du week-end !,Diskon akhir pekan!,¡Oferta de fin de semana!,Скидки выходных!,주말 세일!,週末セール！,वीकेंड सेल!,Знижки вихідних!,Sconti del weekend!
+shop_video,Watch a video: +%d gold,Xem video: +%d gold,Assista a um vídeo: +%d de ouro,Video izle: +%d altın,Video ansehen: +%d Gold,Regarde une vidéo : +%d or,Tonton video: +%d emas,Mira un video: +%d de oro,Смотреть видео: +%d золота,영상 보기: +%d 골드,動画を見る：+%dゴールド,वीडियो देखें: +%d गोल्ड,Дивитися відео: +%d золота,Guarda un video: +%d oro
+shop_video_left,%d of %d left today,Hôm nay còn %d/%d,%d de %d restantes hoje,Bugün %d/%d kaldı,Heute noch %d von %d,Encore %d sur %d aujourd'hui,Sisa %d dari %d hari ini,Quedan %d de %d hoy,Осталось сегодня: %d из %d,오늘 %d/%d회 남음,本日残り%d/%d回,आज %d/%d बाकी,Залишилось сьогодні: %d з %d,Oggi ne restano %d su %d
+shop_video_none,No more videos today. Come back tomorrow!,Hôm nay hết video rồi. Mai quay lại nhé!,Sem mais vídeos hoje. Volte amanhã!,Bugünlük video kalmadı. Yarın tekrar gel!,Heute keine Videos mehr. Komm morgen wieder!,Fini les vidéos pour aujourd'hui. Reviens demain !,Video hari ini sudah habis. Kembali lagi besok!,No hay más videos hoy. ¡Vuelve mañana!,На сегодня видео закончились. Возвращайтесь завтра!,오늘 볼 수 있는 영상을 모두 봤어요. 내일 또 만나요!,今日の動画はもう終わりです。また明日どうぞ！,आज के वीडियो खत्म। कल फिर आइए!,На сьогодні відео закінчилися. Повертайтеся завтра!,Video finiti per oggi. Torna domani!
+shop_section_gold,Gold,Gold,Ouro,Altın,Gold,Or,Emas,Oro,Золото,골드,ゴールド,गोल्ड,Золото,Oro
+shop_section_other,Special packs,Gói đặc biệt,Pacotes especiais,Özel paketler,Spezialpakete,Packs spéciaux,Paket spesial,Paquetes especiales,Особые наборы,스페셜 팩,スペシャルパック,स्पेशल पैक,Особливі набори,Pacchetti speciali
+shop_remove_ads,Remove Ads,Bỏ quảng cáo,Remover Anúncios,Reklamları Kaldır,Werbung entfernen,Supprimer les pubs,Hapus Iklan,Quitar Anuncios,Убрать рекламу,광고 제거,広告削除,विज्ञापन हटाएँ,Прибрати рекламу,Rimuovi pubblicità
+shop_remove_ads_desc,"No more full-screen ads, plus %d gold.","Không còn quảng cáo toàn màn hình, tặng thêm %d gold.",Sem anúncios em tela cheia e ainda %d de ouro.,"Artık tam ekran reklam yok, ayrıca %d altın.","Keine Vollbild-Werbung mehr, dazu %d Gold.","Fini les pubs plein écran, et %d or en prime.","Tanpa iklan layar penuh, plus %d emas.",Sin anuncios a pantalla completa y además %d de oro.,"Без полноэкранной рекламы, плюс %d золота.",전면 광고가 사라지고 %d 골드도 받아요.,全画面広告がなくなり、%dゴールドももらえます。,"फ़ुल-स्क्रीन विज्ञापन बंद, साथ में %d गोल्ड।","Без повноекранної реклами, плюс %d золота.",Niente più pubblicità a schermo intero e %d oro in regalo.
+shop_starter_pack,Starter Pack,Gói Khởi Đầu,Pacote Inicial,Başlangıç Paketi,Starterpaket,Pack Débutant,Paket Pemula,Paquete Inicial,Стартовый набор,스타터 팩,スターターパック,स्टार्टर पैक,Стартовий набір,Pacchetto Iniziale
+shop_starter_pack_desc,%d gold and one of each booster.,%d gold và mỗi loại booster một cái.,%d de ouro e um booster de cada tipo.,%d altın ve her güçlendiriciden bir tane.,%d Gold und von jedem Booster einen.,%d or et un booster de chaque type.,%d emas dan satu dari setiap booster.,%d de oro y un potenciador de cada tipo.,%d золота и по одному бустеру каждого вида.,%d 골드와 부스터 종류별 1개.,%dゴールドと各ブースター1個。,%d गोल्ड और हर बूस्टर में से एक।,%d золота й по одному бустеру кожного виду.,%d oro e un booster di ogni tipo.
+shop_level_pack,Level Pack,Gói Level,Pacote de Nível,Seviye Paketi,Level-Paket,Pack Niveau,Paket Level,Paquete de Nivel,Набор уровня,레벨 팩,レベルパック,लेवल पैक,Набір рівня,Pacchetto Livello
+shop_level_pack_desc,%d gold and one of each booster.,%d gold và mỗi loại booster một cái.,%d de ouro e um booster de cada tipo.,%d altın ve her güçlendiriciden bir tane.,%d Gold und von jedem Booster einen.,%d or et un booster de chaque type.,%d emas dan satu dari setiap booster.,%d de oro y un potenciador de cada tipo.,%d золота и по одному бустеру каждого вида.,%d 골드와 부스터 종류별 1개.,%dゴールドと各ブースター1個。,%d गोल्ड और हर बूस्टर में से एक।,%d золота й по одному бустеру кожного виду.,%d oro e un booster di ogni tipo.
+shop_rescue_pack,Rescue Pack,Gói Cứu Nguy,Pacote de Resgate,Kurtarma Paketi,Rettungspaket,Pack Secours,Paket Penyelamat,Paquete de Rescate,Спасательный набор,구조 팩,レスキューパック,बचाव पैक,Рятувальний набір,Pacchetto Soccorso
+shop_rescue_pack_desc,One +3 Move booster.,Một booster +3 Lượt.,Um booster +3 Jogadas.,Bir +3 Hamle güçlendiricisi.,Ein Booster +3 Züge.,Un booster +3 coups.,Satu booster +3 Langkah.,Un potenciador +3 Jugadas.,Один бустер +3 хода.,+3 이동 부스터 1개.,+3手ブースター1個。,एक +3 चाल बूस्टर।,Один бустер +3 ходи.,Un booster +3 mosse.
+shop_restore,Restore purchases,Khôi phục giao dịch,Restaurar compras,Satın alımları geri yükle,Käufe wiederherstellen,Restaurer les achats,Pulihkan pembelian,Restaurar compras,Восстановить покупки,구매 복원,購入を復元,खरीदारी वापस लाएँ,Відновити покупки,Ripristina acquisti
+shop_restore_ok,Purchases restored.,Đã khôi phục giao dịch.,Compras restauradas.,Satın alımlar geri yüklendi.,Käufe wiederhergestellt.,Achats restaurés.,Pembelian dipulihkan.,Compras restauradas.,Покупки восстановлены.,구매를 복원했어요.,購入を復元しました。,खरीदारी वापस आ गई।,Покупки відновлено.,Acquisti ripristinati.
+shop_restore_none,Nothing to restore.,Không có gì để khôi phục.,Nada para restaurar.,Geri yüklenecek bir şey yok.,Nichts wiederherzustellen.,Rien à restaurer.,Tidak ada yang perlu dipulihkan.,No hay nada que restaurar.,Нечего восстанавливать.,복원할 구매 내역이 없어요.,復元できる購入はありません。,वापस लाने के लिए कुछ नहीं है।,Немає чого відновлювати.,Niente da ripristinare.
+shop_owned,Owned,Đã sở hữu,Adquirido,Sende var,Im Besitz,Acquis,Dimiliki,Adquirido,Куплено,보유 중,購入済み,आपके पास है,Придбано,Acquistato
+shop_buy_ok,Thank you!,Cảm ơn bạn!,Obrigado!,Teşekkürler!,Danke!,Merci !,Terima kasih!,¡Gracias!,Спасибо!,감사합니다!,ありがとうございます！,धन्यवाद!,Дякуємо!,Grazie!
+shop_buy_failed,The purchase didn't go through.,Giao dịch chưa thành công.,A compra não foi concluída.,Satın alma tamamlanamadı.,Der Kauf hat nicht geklappt.,L'achat n'a pas abouti.,Pembelian tidak berhasil.,No se pudo completar la compra.,Покупка не прошла.,구매가 완료되지 않았어요.,購入が完了しませんでした。,खरीदारी पूरी नहीं हुई।,Покупка не вдалася.,L'acquisto non è andato a buon fine.
+shop_buy_pending,Your purchase is pending.,Giao dịch đang chờ xử lý.,Sua compra está pendente.,Satın alman beklemede.,Dein Kauf wird bearbeitet.,Ton achat est en attente.,Pembelianmu sedang diproses.,Tu compra está pendiente.,Покупка обрабатывается.,구매를 처리하는 중이에요.,購入を処理中です。,आपकी खरीदारी प्रोसेस हो रही है।,Покупка обробляється.,Il tuo acquisto è in attesa.
+shop_locked,Unlocked at Level %d,Mở khoá ở Level %d,Disponível no Nível %d,Seviye %d gerekli,Ab Level %d,Dès le niveau %d,Terbuka di Level %d,Disponible en el Nivel %d,Откроется на уровне %d,레벨 %d에서 잠금 해제,レベル%dで解放,लेवल %d पर खुलेगा,Відкриється на рівні %d,Dal livello %d
+shop_mini_title,Need more gold?,Cần thêm gold?,Precisa de mais ouro?,Daha fazla altın mı lazım?,Brauchst du mehr Gold?,Besoin d'or ?,Butuh emas lagi?,¿Necesitas más oro?,Нужно больше золота?,골드가 더 필요하세요?,ゴールドが必要ですか？,और गोल्ड चाहिए?,Потрібно більше золота?,Ti serve altro oro?
+shop_mini_close,Back,Quay lại,Voltar,Geri,Zurück,Retour,Kembali,Volver,Назад,뒤로,戻る,वापस,Назад,Indietro
+daily_title,Daily gift,Quà mỗi ngày,Presente diário,Günlük hediye,Tagesgeschenk,Cadeau du jour,Hadiah harian,Regalo diario,Подарок дня,일일 선물,デイリーギフト,दैनिक तोहफ़ा,Подарунок дня,Regalo del giorno
+daily_week,Week %d,Tuần %d,Semana %d,Hafta %d,Woche %d,Semaine %d,Minggu %d,Semana %d,Неделя %d,%d주차,%d週目,हफ़्ता %d,Тиждень %d,Settimana %d
+daily_day,Day %d,Ngày %d,Dia %d,Gün %d,Tag %d,Jour %d,Hari %d,Día %d,День %d,%d일차,%d日目,दिन %d,День %d,Giorno %d
+daily_today,Today,Hôm nay,Hoje,Bugün,Heute,Aujourd'hui,Hari ini,Hoy,Сегодня,오늘,今日,आज,Сьогодні,Oggi
+daily_claim,Claim,Nhận,Resgatar,Al,Abholen,Récupérer,Klaim,Reclamar,Забрать,받기,受け取る,लें,Забрати,Ritira
+daily_claimed,Claimed,Đã nhận,Resgatado,Alındı,Abgeholt,Récupéré,Diklaim,Reclamado,Получено,수령 완료,受け取り済み,ले लिया,Отримано,Ritirato
+daily_come_back,Come back tomorrow for the next gift.,Mai quay lại để nhận quà tiếp theo nhé.,Volte amanhã para o próximo presente.,Sonraki hediye için yarın tekrar gel.,Komm morgen für das nächste Geschenk wieder.,Reviens demain pour le prochain cadeau.,Kembali besok untuk hadiah berikutnya.,Vuelve mañana por el siguiente regalo.,Возвращайтесь завтра за новым подарком.,다음 선물은 내일 받을 수 있어요.,次のギフトはまた明日受け取れます。,अगले तोहफ़े के लिए कल आइए।,Повертайтеся завтра по новий подарунок.,Torna domani per il prossimo regalo.
+daily_video,Claim the next gift now,Nhận trước món quà kế tiếp,Resgate o próximo presente agora,Sonraki hediyeyi şimdi al,Nächstes Geschenk sofort holen,Cadeau suivant dès maintenant,Klaim hadiah berikutnya sekarang,Reclama ya el siguiente regalo,Следующий подарок сразу,다음 선물 미리 받기,次のギフトを今すぐ受け取る,अगला तोहफ़ा अभी लें,Наступний подарунок одразу,Ritira subito il prossimo regalo
+daily_video_used,You've already claimed ahead today.,Hôm nay bạn đã nhận trước rồi.,Você já resgatou um presente adiantado hoje.,Bugünkü erken alma hakkını zaten kullandın.,Du hast heute schon ein Geschenk vorab geholt.,Tu as déjà pris un cadeau en avance aujourd'hui.,Kamu sudah klaim lebih awal hari ini.,Hoy ya reclamaste un regalo por adelantado.,Сегодня вы уже забрали подарок заранее.,오늘은 이미 미리 받았어요.,今日はすでに先取りで受け取りました。,आज आप पहले ही आगे का तोहफ़ा ले चुके हैं।,Сьогодні ви вже забрали подарунок наперед.,Oggi hai già ritirato un regalo in anticipo.
+daily_reward_gold,%d gold,%d gold,%d de ouro,%d altın,%d Gold,%d or,%d emas,%d de oro,%d золота,%d 골드,%dゴールド,%d गोल्ड,%d золота,%d oro
+daily_reward_item,%s x%d,%s x%d,%s x%d,%s x%d,%s x%d,%s x%d,%s x%d,%s x%d,%s x%d,%s x%d,%s x%d,%s x%d,%s x%d,%s x%d
+daily_reward_received,Gift received!,Đã nhận quà!,Presente recebido!,Hediye alındı!,Geschenk erhalten!,Cadeau reçu !,Hadiah diterima!,¡Regalo recibido!,Подарок получен!,선물을 받았어요!,ギフトを受け取りました！,तोहफ़ा मिल गया!,Подарунок отримано!,Regalo ricevuto!
+profile_title,Profile,Hồ sơ,Perfil,Profil,Profil,Profil,Profil,Perfil,Профиль,프로필,プロフィール,प्रोफ़ाइल,Профіль,Profilo
+profile_avatars,Avatars,Ảnh đại diện,Avatares,Avatarlar,Avatare,Avatars,Avatar,Avatares,Аватары,아바타,アバター,अवतार,Аватари,Avatar
+profile_frames,Frames,Khung,Molduras,Çerçeveler,Rahmen,Cadres,Bingkai,Marcos,Рамки,프레임,フレーム,फ़्रेम,Рамки,Cornici
+profile_default,Default,Mặc định,Padrão,Varsayılan,Standard,Par défaut,Bawaan,Predeterminado,По умолчанию,기본,デフォルト,डिफ़ॉल्ट,За замовчуванням,Predefinito
+profile_equipped,Equipped,Đang đeo,Equipado,Kullanılıyor,Ausgerüstet,Équipé,Dipakai,Equipado,Выбрано,장착 중,装備中,लगा हुआ,Вибрано,In uso
+profile_equip,Equip,Đeo,Equipar,Kullan,Ausrüsten,Équiper,Pakai,Equipar,Выбрать,장착,装備する,लगाएँ,Вибрати,Usa
+profile_owned,Owned,Đã có,Adquirido,Sende var,Im Besitz,Acquis,Dimiliki,Adquirido,Открыто,보유 중,所持済み,आपके पास है,Відкрито,Sbloccato
+profile_buy,Buy for %d,Mua với %d,Comprar por %d,%d altına al,Für %d kaufen,Acheter pour %d,Beli seharga %d,Comprar por %d,Купить за %d,%d에 구매,%dで購入,%d में खरीदें,Купити за %d,Compra per %d
+profile_video,Watch a video to unlock,Xem video để mở khoá,Assista a um vídeo para desbloquear,Açmak için video izle,Per Video freischalten,Regarde une vidéo pour débloquer,Tonton video untuk membuka,Mira un video para desbloquear,Открыть за видео,영상 보고 잠금 해제,動画を見て解放,अनलॉक करने के लिए वीडियो देखें,Відкрити за відео,Guarda un video per sbloccare
+profile_level,Level %d,Level %d,Nível %d,Seviye %d,Level %d,Niveau %d,Level %d,Nivel %d,Уровень %d,레벨 %d,レベル%d,लेवल %d,Рівень %d,Livello %d
+profile_not_enough,Not enough gold,Chưa đủ gold,Ouro insuficiente,Yeterli altın yok,Nicht genug Gold,Pas assez d'or,Emas tidak cukup,Oro insuficiente,Не хватает золота,골드가 부족해요,ゴールドが足りません,गोल्ड कम है,Недостатньо золота,Oro insufficiente
+settings_title,Settings,Cài đặt,Configurações,Ayarlar,Einstellungen,Paramètres,Pengaturan,Ajustes,Настройки,설정,設定,सेटिंग्स,Налаштування,Impostazioni
+settings_sound,Sound effects,Hiệu ứng âm thanh,Efeitos sonoros,Ses efektleri,Soundeffekte,Effets sonores,Efek suara,Efectos de sonido,Звуковые эффекты,효과음,効果音,साउंड इफ़ेक्ट,Звукові ефекти,Effetti sonori
+settings_music,Music,Nhạc nền,Música,Müzik,Musik,Musique,Musik,Música,Музыка,음악,BGM,म्यूज़िक,Музика,Musica
+settings_haptics,Vibration,Rung,Vibração,Titreşim,Vibration,Vibrations,Getar,Vibración,Вибрация,진동,振動,वाइब्रेशन,Вібрація,Vibrazione
+settings_notifications,Notifications,Thông báo,Notificações,Bildirimler,Benachrichtigungen,Notifications,Notifikasi,Notificaciones,Уведомления,알림,通知,नोटिफ़िकेशन,Сповіщення,Notifiche
+settings_notifications_off,Notifications are turned off in your device settings.,Thông báo đang tắt trong cài đặt của thiết bị.,As notificações estão desativadas nas configurações do aparelho.,Bildirimler cihaz ayarlarında kapalı.,Benachrichtigungen sind in den Geräteeinstellungen ausgeschaltet.,Les notifications sont désactivées dans les réglages de ton appareil.,Notifikasi dimatikan di pengaturan perangkatmu.,Las notificaciones están desactivadas en los ajustes del dispositivo.,Уведомления отключены в настройках устройства.,기기 설정에서 알림이 꺼져 있어요.,端末の設定で通知がオフになっています。,आपके डिवाइस की सेटिंग्स में नोटिफ़िकेशन बंद हैं।,Сповіщення вимкнено в налаштуваннях пристрою.,Le notifiche sono disattivate nelle impostazioni del dispositivo.
+settings_language,Language,Ngôn ngữ,Idioma,Dil,Sprache,Langue,Bahasa,Idioma,Язык,언어,言語,भाषा,Мова,Lingua
+settings_language_en,English,English,English,English,English,English,English,English,English,English,English,English,English,English
+settings_language_vi,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt,Tiếng Việt
+settings_language_pt_br,Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil),Português (Brasil)
+settings_language_tr,Türkçe,Türkçe,Türkçe,Türkçe,Türkçe,Türkçe,Türkçe,Türkçe,Türkçe,Türkçe,Türkçe,Türkçe,Türkçe,Türkçe
+settings_language_de,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch,Deutsch
+settings_language_fr,Français,Français,Français,Français,Français,Français,Français,Français,Français,Français,Français,Français,Français,Français
+settings_language_id,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia,Bahasa Indonesia
+settings_language_es,Español,Español,Español,Español,Español,Español,Español,Español,Español,Español,Español,Español,Español,Español
+settings_language_ru,Русский,Русский,Русский,Русский,Русский,Русский,Русский,Русский,Русский,Русский,Русский,Русский,Русский,Русский
+settings_language_ko,한국어,한국어,한국어,한국어,한국어,한국어,한국어,한국어,한국어,한국어,한국어,한국어,한국어,한국어
+settings_language_ja,日本語,日本語,日本語,日本語,日本語,日本語,日本語,日本語,日本語,日本語,日本語,日本語,日本語,日本語
+settings_language_hi,हिन्दी,हिन्दी,हिन्दी,हिन्दी,हिन्दी,हिन्दी,हिन्दी,हिन्दी,हिन्दी,हिन्दी,हिन्दी,हिन्दी,हिन्दी,हिन्दी
+settings_language_uk,Українська,Українська,Українська,Українська,Українська,Українська,Українська,Українська,Українська,Українська,Українська,Українська,Українська,Українська
+settings_language_it,Italiano,Italiano,Italiano,Italiano,Italiano,Italiano,Italiano,Italiano,Italiano,Italiano,Italiano,Italiano,Italiano,Italiano
+settings_privacy,Privacy settings,Cài đặt quyền riêng tư,Configurações de privacidade,Gizlilik ayarları,Datenschutz,Confidentialité,Pengaturan privasi,Ajustes de privacidad,Конфиденциальность,개인정보 설정,プライバシー設定,प्राइवेसी सेटिंग्स,Конфіденційність,Impostazioni privacy
+settings_restore,Restore purchases,Khôi phục giao dịch,Restaurar compras,Satın alımları geri yükle,Käufe wiederherstellen,Restaurer les achats,Pulihkan pembelian,Restaurar compras,Восстановить покупки,구매 복원,購入を復元,खरीदारी वापस लाएँ,Відновити покупки,Ripristina acquisti
+settings_support,Support,Hỗ trợ,Suporte,Destek,Support,Assistance,Bantuan,Soporte,Поддержка,고객 지원,サポート,सहायता,Підтримка,Assistenza
+settings_support_subject,Candy Away support,Hỗ trợ Candy Away,Suporte do Candy Away,Candy Away destek,Candy Away Support,Assistance Candy Away,Bantuan Candy Away,Soporte de Candy Away,Поддержка Candy Away,Candy Away 고객 지원,Candy Awayサポート,Candy Away सहायता,Підтримка Candy Away,Assistenza Candy Away
+settings_version,Version %s,Phiên bản %s,Versão %s,Sürüm %s,Version %s,Version %s,Versi %s,Versión %s,Версия %s,버전 %s,バージョン%s,वर्शन %s,Версія %s,Versione %s
+settings_on,On,Bật,Ligado,Açık,An,Oui,Aktif,Sí,Вкл.,켜짐,オン,चालू,Увімк.,Sì
+settings_off,Off,Tắt,Desligado,Kapalı,Aus,Non,Nonaktif,No,Выкл.,꺼짐,オフ,बंद,Вимк.,No
+settings_tester_title,Tester menu,Menu thử nghiệm,Menu de testes,Test menüsü,Testmenü,Menu testeur,Menu penguji,Menú de pruebas,Меню тестера,테스터 메뉴,テスターメニュー,टेस्टर मेन्यू,Меню тестувальника,Menu tester
+settings_tester_debugger,Mediation debugger,Mediation debugger,Depurador de mediação,Mediation debugger,Mediation-Debugger,Débogueur de médiation,Debugger mediasi,Depurador de mediación,Mediation debugger,미디에이션 디버거,メディエーションデバッガー,मीडिएशन डीबगर,Mediation debugger,Debugger mediazione
+settings_tester_level,Level,Level,Nível,Seviye,Level,Niveau,Level,Nivel,Уровень,레벨,レベル,लेवल,Рівень,Livello
+settings_tester_save,Save,Lưu,Salvar,Kaydet,Speichern,Enregistrer,Simpan,Guardar,Сохранить,저장,保存,सेव करें,Зберегти,Salva
+settings_tester_wipe,Delete account,Xoá tài khoản,Excluir conta,Hesabı sil,Konto löschen,Supprimer le compte,Hapus akun,Eliminar cuenta,Удалить аккаунт,계정 삭제,アカウント削除,अकाउंट डिलीट करें,Видалити акаунт,Elimina account
+settings_tester_wipe_confirm,Tap again to delete,Chạm lần nữa để xoá,Toque de novo para excluir,Silmek için tekrar dokun,Zum Löschen erneut tippen,Touche à nouveau pour supprimer,Ketuk lagi untuk menghapus,Toca de nuevo para eliminar,"Нажмите ещё раз, чтобы удалить",한 번 더 탭하면 삭제돼요,もう一度タップで削除,डिलीट करने के लिए फिर से टैप करें,"Натисніть ще раз, щоб видалити",Tocca di nuovo per eliminare
+settings_close,Done,Xong,Pronto,Bitti,Fertig,Terminé,Selesai,Listo,Готово,완료,完了,हो गया,Готово,Fatto
+offer_starter_pack_title,Starter Pack,Gói Khởi Đầu,Pacote Inicial,Başlangıç Paketi,Starterpaket,Pack Débutant,Paket Pemula,Paquete Inicial,Стартовый набор,스타터 팩,スターターパック,स्टार्टर पैक,Стартовий набір,Pacchetto Iniziale
+offer_starter_pack_body,A boost of gold and one of each booster to get you going. One-time offer.,Một ít gold và mỗi loại booster một cái để bạn khởi đầu thuận lợi. Chỉ mua được một lần.,Um reforço de ouro e um booster de cada tipo para você começar bem. Oferta única.,Güzel bir başlangıç için biraz altın ve her güçlendiriciden bir tane. Tek seferlik teklif.,Etwas Gold und von jedem Booster einen für einen guten Start. Einmaliges Angebot.,De l'or et un booster de chaque type pour bien démarrer. Offre unique.,Tambahan emas dan satu dari setiap booster untuk memulai. Penawaran sekali saja.,Un impulso de oro y un potenciador de cada tipo para empezar con todo. Oferta única.,Немного золота и по одному бустеру каждого вида для лёгкого старта. Предложение разовое.,골드와 부스터 종류별 1개로 힘차게 시작해요. 한 번만 구매할 수 있어요.,ゴールドと各ブースター1個で幸先よくスタート。1回限りのオファーです。,शुरुआत के लिए थोड़ा गोल्ड और हर बूस्टर में से एक। सिर्फ़ एक बार का ऑफ़र।,Трохи золота й по одному бустеру кожного виду для легкого старту. Разова пропозиція.,Un po' d'oro e un booster di ogni tipo per partire alla grande. Offerta unica.
+offer_level_pack_title,Level Pack,Gói Level,Pacote de Nível,Seviye Paketi,Level-Paket,Pack Niveau,Paket Level,Paquete de Nivel,Набор уровня,레벨 팩,レベルパック,लेवल पैक,Набір рівня,Pacchetto Livello
+offer_level_pack_body,You've come a long way. Here's some gold and a booster of each kind.,Bạn đã đi được một chặng dài. Tặng bạn ít gold và mỗi loại booster một cái.,Você já foi longe. Aqui tem um pouco de ouro e um booster de cada tipo.,Uzun bir yol geldin. İşte biraz altın ve her güçlendiriciden bir tane.,Du bist weit gekommen. Hier gibt's etwas Gold und von jedem Booster einen.,Tu as fait du chemin. Voici de l'or et un booster de chaque type.,Kamu sudah melangkah jauh. Ini ada emas dan satu booster dari setiap jenis.,Has llegado lejos. Aquí tienes algo de oro y un potenciador de cada tipo.,Вы прошли большой путь. Вот немного золота и по бустеру каждого вида.,벌써 여기까지 왔네요! 골드와 부스터 종류별 1개를 준비했어요.,ここまでよく頑張りましたね。ゴールドと各ブースター1個をどうぞ。,आप काफ़ी आगे आ गए हैं। यह लीजिए कुछ गोल्ड और हर तरह का एक बूस्टर।,Ви пройшли довгий шлях. Ось трохи золота й по бустеру кожного виду.,Hai fatto tanta strada. Ecco un po' d'oro e un booster di ogni tipo.
+offer_remove_ads_title,Remove Ads,Bỏ quảng cáo,Remover Anúncios,Reklamları Kaldır,Werbung entfernen,Supprimer les pubs,Hapus Iklan,Quitar Anuncios,Убрать рекламу,광고 제거,広告削除,विज्ञापन हटाएँ,Прибрати рекламу,Rimuovi pubblicità
+offer_remove_ads_body,Enjoy the puzzles without full-screen ads. One-time purchase.,"Chơi thoải mái, không còn quảng cáo toàn màn hình. Chỉ mua một lần.",Curta os quebra-cabeças sem anúncios em tela cheia. Compra única.,Bulmacaların tadını tam ekran reklamlar olmadan çıkar. Tek seferlik satın alım.,Genieße die Rätsel ohne Vollbild-Werbung. Einmaliger Kauf.,Profite des puzzles sans pubs plein écran. Achat unique.,Nikmati puzzle tanpa iklan layar penuh. Cukup sekali beli.,Disfruta los rompecabezas sin anuncios a pantalla completa. Compra única.,Решайте головоломки без полноэкранной рекламы. Разовая покупка.,전면 광고 없이 퍼즐을 즐겨 보세요. 한 번만 구매하면 돼요.,全画面広告なしでパズルを楽しめます。1回限りの購入です。,फ़ुल-स्क्रीन विज्ञापनों के बिना पज़ल का मज़ा लें। सिर्फ़ एक बार खरीदें।,Розв'язуйте головоломки без повноекранної реклами. Разова покупка.,Goditi i puzzle senza pubblicità a schermo intero. Acquisto unico.
+offer_rescue_pack_title,Rescue Pack,Gói Cứu Nguy,Pacote de Resgate,Kurtarma Paketi,Rettungspaket,Pack Secours,Paket Penyelamat,Paquete de Rescate,Спасательный набор,구조 팩,レスキューパック,बचाव पैक,Рятувальний набір,Pacchetto Soccorso
+offer_rescue_pack_body,A +3 Move to help with the tricky ones.,Một +3 Lượt để vượt qua những level khó.,Um +3 Jogadas para ajudar nos níveis complicados.,Zorlu seviyeler için bir +3 Hamle.,+3 Züge als Hilfe für knifflige Level.,Un +3 coups pour les niveaux corsés.,+3 Langkah untuk membantu di level yang rumit.,Un +3 Jugadas para ayudarte en los niveles complicados.,+3 хода в помощь на трудных уровнях.,어려운 레벨에서 도움이 될 +3 이동이에요.,難しいレベルで役立つ+3手です。,मुश्किल लेवल में मदद के लिए एक +3 चाल।,+3 ходи на допомогу у важких рівнях.,Un +3 mosse per i livelli più ostici.
+offer_buy,Get it for %s,Nhận với %s,Obter por %s,Satın al: %s,Für %s holen,Obtenir pour %s,Dapatkan seharga %s,Obtener por %s,Купить за %s,%s에 구매,%sで購入,%s में पाएँ,Купити за %s,Ottienilo a %s
+offer_no_thanks,Maybe later,Để sau,Talvez depois,Belki sonra,Vielleicht später,Plus tard,Nanti saja,Quizás más tarde,Не сейчас,다음에 할게요,また今度,बाद में,Не зараз,Magari dopo
+offer_time_left,Ends in %s,Kết thúc sau %s,Termina em %s,%s içinde bitiyor,Endet in %s,Fin dans %s,Berakhir dalam %s,Termina en %s,Закончится через %s,%s 후 종료,終了まで%s,%s में खत्म,Закінчиться через %s,Termina tra %s
+tut_tap,Tap the block,Chạm vào khối,Toque no bloco,Bloğa dokun,Tippe auf den Block,Touche le bloc,Ketuk blok ini,Toca el bloque,Нажмите на блок,블록을 탭하세요,ブロックをタップ,ब्लॉक पर टैप करें,Натисніть на блок,Tocca il blocco
+tut_color_dir,Each color slides toward its own edge.,Mỗi màu trượt về một cạnh riêng.,Cada cor desliza para a sua própria borda.,Her renk kendi kenarına doğru kayar.,Jede Farbe gleitet zu ihrem eigenen Rand.,Chaque couleur glisse vers son propre bord.,Setiap warna meluncur ke tepinya sendiri.,Cada color se desliza hacia su propio borde.,Каждый цвет скользит к своему краю.,블록은 색깔마다 정해진 가장자리로 미끄러져요.,ブロックは色ごとに決まった端へすべります。,हर रंग अपने किनारे की ओर सरकता है।,Кожен колір ковзає до свого краю.,Ogni colore scivola verso il suo bordo.
+tut_blocked,Blocked blocks bounce back. Try another one.,Khối bị chặn sẽ bật về. Thử khối khác nhé.,Blocos travados voltam. Tente outro.,Önü kapalı bloklar geri seker. Başka birini dene.,Blockierte Blöcke prallen zurück. Probier einen anderen.,Un bloc coincé rebondit. Essaie-en un autre.,Blok yang terhalang akan memantul kembali. Coba blok lain.,Los bloques atascados rebotan. Prueba con otro.,"Если путь закрыт, блок отскочит назад. Попробуйте другой.",막힌 블록은 다시 튕겨 나와요. 다른 블록을 골라 보세요.,ふさがれたブロックは跳ね返ります。別のブロックを試しましょう。,रुके हुए ब्लॉक वापस उछल जाते हैं। कोई दूसरा आज़माएँ।,"Якщо шлях закритий, блок відскочить назад. Спробуйте інший.",Un blocco ostruito rimbalza indietro. Provane un altro.
+tut_hint_gift,A free Hint for you! Tap it when you're unsure.,Tặng bạn một Gợi ý! Chạm vào khi bạn phân vân.,Uma Dica grátis para você! Toque nela quando estiver em dúvida.,Sana ücretsiz bir İpucu! Emin olmadığında ona dokun.,"Ein Gratis-Tipp für dich! Tippe darauf, wenn du unsicher bist.",Un Indice offert ! Touche-le en cas de doute.,Petunjuk gratis untukmu! Ketuk saat kamu ragu.,¡Una Pista gratis para ti! Tócala cuando tengas dudas.,"Держите бесплатную подсказку! Нажмите на неё, если сомневаетесь.",무료 힌트를 드려요! 헷갈릴 때 탭하세요.,ヒントを無料でプレゼント！迷ったらタップしましょう。,आपके लिए एक मुफ़्त हिंट! उलझन हो तो इस पर टैप करें।,"Тримайте безкоштовну підказку! Натисніть на неї, якщо сумніваєтеся.",Un Indizio in regalo! Toccalo quando sei in dubbio.
+tut_move_gift,A free +3 Move for you! It adds moves when you run low.,Tặng bạn một +3 Lượt! Dùng khi sắp hết lượt.,Um +3 Jogadas grátis para você! Ele dá mais jogadas quando elas estiverem acabando.,Sana ücretsiz bir +3 Hamle! Hamlelerin azalınca hamle ekler.,"+3 Züge gratis für dich! Nutze sie, wenn die Züge knapp werden.",Un +3 coups offert ! Il ajoute des coups quand tu es à court.,+3 Langkah gratis untukmu! Menambah langkah saat hampir habis.,¡Un +3 Jugadas gratis para ti! Te da más jugadas cuando te queden pocas.,"Держите бесплатный бустер +3 хода! Он выручит, когда ходы на исходе.",무료 +3 이동을 드려요! 이동이 부족할 때 늘려 줘요.,+3手を無料でプレゼント！手数が少ないときに増やせます。,आपके लिए एक मुफ़्त +3 चाल! चालें कम होने पर यह और चालें जोड़ती है।,"Тримайте безкоштовний бустер +3 ходи! Він виручить, коли ходи закінчуються.",Un +3 mosse in regalo! Aggiunge mosse quando stai per finirle.
+tut_smash_gift,A free Smash for you! It removes one block.,Tặng bạn một Phá khối! Nó xoá một khối khỏi bàn cờ.,Uma Martelada grátis para você! Ela remove um bloco.,Sana ücretsiz bir Çekiç! Bir bloğu kaldırır.,Ein Gratis-Hammer für dich! Er entfernt einen Block.,Un Casse-bloc offert ! Il retire un bloc.,Penghancur gratis untukmu! Ini menghapus satu blok.,¡Un Martillazo gratis para ti! Quita un bloque.,Держите бесплатный молоток! Он убирает один блок.,무료 부수기를 드려요! 블록 하나를 없애 줘요.,スマッシュを無料でプレゼント！ブロックを1つ取り除けます。,आपके लिए एक मुफ़्त स्मैश! यह एक ब्लॉक हटाता है।,Тримайте безкоштовний молоток! Він прибирає один блок.,Uno Spaccablocchi in regalo! Rimuove un blocco.
+tut_x2,Tap to double your gold. It's free this time!,Chạm để nhân đôi gold. Lần này miễn phí!,Toque para dobrar seu ouro. Desta vez é grátis!,Altınını ikiye katlamak için dokun. Bu sefer ücretsiz!,"Tippe, um dein Gold zu verdoppeln. Diesmal gratis!",Touche pour doubler ton or. C'est gratuit cette fois !,Ketuk untuk menggandakan emasmu. Kali ini gratis!,Toca para duplicar tu oro. ¡Esta vez es gratis!,"Нажмите, чтобы удвоить золото. В этот раз бесплатно!",탭하면 골드를 두 배로 받아요. 이번엔 무료예요!,タップでゴールドが2倍に。今回は無料です！,अपना गोल्ड दोगुना करने के लिए टैप करें। इस बार मुफ़्त है!,"Натисніть, щоб подвоїти золото. Цього разу безкоштовно!",Tocca per raddoppiare l'oro. Stavolta è gratis!
+tut_gift_unlocked,Daily gifts are unlocked. Tap the gift icon to see them.,Đã mở quà mỗi ngày. Chạm vào biểu tượng quà để xem.,Presentes diários desbloqueados. Toque no ícone de presente para vê-los.,Günlük hediyeler açıldı. Görmek için hediye simgesine dokun.,"Tagesgeschenke sind freigeschaltet. Tippe auf das Geschenk-Symbol, um sie zu sehen.",Les cadeaux du jour sont débloqués. Touche l'icône cadeau pour les voir.,Hadiah harian sudah terbuka. Ketuk ikon hadiah untuk melihatnya.,Regalos diarios desbloqueados. Toca el ícono del regalo para verlos.,"Подарки дня открыты. Нажмите на значок подарка, чтобы посмотреть.",일일 선물이 열렸어요. 선물 아이콘을 탭해 확인해 보세요.,デイリーギフトが解放されました。ギフトアイコンをタップして確認しましょう。,दैनिक तोहफ़े खुल गए हैं। देखने के लिए तोहफ़े वाले आइकन पर टैप करें।,"Подарунки дня відкрито. Натисніть на значок подарунка, щоб переглянути.",Hai sbloccato i regali del giorno. Tocca l'icona del regalo per vederli.
+tut_shop_unlocked,The shop is now open.,Cửa hàng đã mở.,A loja já está aberta.,Mağaza artık açık.,Der Shop ist jetzt geöffnet.,La boutique est ouverte.,Toko sekarang sudah buka.,La tienda ya está abierta.,Теперь магазин открыт.,상점이 열렸어요.,ショップがオープンしました。,शॉप अब खुल गई है।,Тепер магазин відкрито.,Il negozio è aperto.
+tut_lives_intro,"From now on, losing a level uses 1 life. Lives come back over time.","Từ giờ, thua một level sẽ dùng 1 mạng. Mạng sẽ hồi dần theo thời gian.","A partir de agora, perder um nível gasta 1 vida. As vidas voltam com o tempo.",Artık bir seviyeyi kaybetmek 1 can harcar. Canlar zamanla dolar.,Ab jetzt kostet ein verlorenes Level 1 Leben. Leben kommen mit der Zeit zurück.,"Désormais, perdre un niveau coûte 1 vie. Les vies reviennent avec le temps.","Mulai sekarang, kalah di level memakai 1 nyawa. Nyawa terisi kembali seiring waktu.","A partir de ahora, perder un nivel cuesta 1 vida. Las vidas se recuperan con el tiempo.",Теперь за проигрыш уровня тратится 1 жизнь. Жизни восстанавливаются со временем.,이제부터 레벨에 실패하면 하트 1개를 사용해요. 하트는 시간이 지나면 다시 차요.,これからはレベルに失敗するとハートを1つ使います。ハートは時間がたつと回復します。,अब से लेवल हारने पर 1 लाइफ लगेगी। लाइफ समय के साथ वापस आती है।,Відтепер за програш рівня витрачається 1 життя. Життя відновлюються з часом.,"D'ora in poi, perdere un livello costa 1 vita. Le vite tornano col tempo."
+mech_new,New: %s,Mới: %s,Novidade: %s,Yeni: %s,Neu: %s,Nouveau : %s,Baru: %s,Novedad: %s,Новинка: %s,새로 등장: %s,新登場：%s,नया: %s,Новинка: %s,Novità: %s
+mech_got_it,Got it,Đã hiểu,Entendi,Anladım,Verstanden,Compris,Mengerti,Entendido,Понятно,알겠어요,わかりました,समझ गए,Зрозуміло,Capito
+mech_stone,Iron Crate,Thùng sắt,Caixa de Ferro,Demir Kasa,Eisenkiste,Caisse en fer,Peti Besi,Caja de Hierro,Железный ящик,철 상자,鉄の箱,लोहे का बक्सा,Залізний ящик,Cassa di ferro
+mech_stone_desc,Iron crates never move. Slide the candies around them.,Thùng sắt không bao giờ di chuyển. Hãy trượt kẹo qua bên cạnh.,Caixas de ferro nunca se movem. Deslize os doces ao redor delas.,Demir kasalar asla hareket etmez. Şekerleri etraflarından kaydır.,Eisenkisten bewegen sich nie. Lass die Bonbons um sie herum gleiten.,Les caisses en fer ne bougent jamais. Fais glisser les bonbons autour.,Peti besi tidak pernah bergerak. Geser permen di sekitarnya.,Las cajas de hierro nunca se mueven. Desliza los caramelos a su alrededor.,Железные ящики не двигаются. Выводите конфеты в обход.,철 상자는 절대 움직이지 않아요. 상자를 피해 캔디를 빼내 보세요.,鉄の箱は動きません。箱をよけてキャンディをすべらせましょう。,लोहे के बक्से कभी नहीं हिलते। कैंडी को उनके आस-पास से सरकाएँ।,Залізні ящики не рухаються. Виводьте цукерки в обхід.,Le casse di ferro non si muovono mai. Fai scivolare le caramelle intorno.
+mech_ice,Pudding,Pudding,Pudim,Puding,Pudding,Flan,Puding,Pudín,Пудинг,푸딩,プリン,पुडिंग,Пудинг,Budino
+mech_ice_desc,"Tap once to burst the pudding, then tap again to slide.","Chạm một lần để làm vỡ lớp pudding, chạm lần nữa để trượt.",Toque uma vez para estourar o pudim e de novo para deslizar.,"Pudingi patlatmak için bir kez dokun, sonra kaydırmak için tekrar dokun.","Tippe einmal, um den Pudding platzen zu lassen, dann noch einmal zum Gleiten.","Touche une fois pour faire éclater le flan, puis à nouveau pour le faire glisser.","Ketuk sekali untuk memecah puding, lalu ketuk lagi untuk menggeser.",Toca una vez para reventar el pudín y otra vez para deslizarlo.,"Первое нажатие разбивает пудинг, второе – сдвигает конфету.","한 번 탭해 푸딩을 터뜨리고, 다시 탭해 미끄러뜨리세요.",1回タップでプリンがはじけ、もう1回タップですべります。,"पुडिंग फोड़ने के लिए एक बार टैप करें, फिर सरकाने के लिए दोबारा टैप करें।","Перше натискання розбиває пудинг, друге – зсуває цукерку.","Tocca una volta per far scoppiare il budino, poi tocca di nuovo per farlo scivolare."
+mech_chain,Chain,Xích,Corrente,Zincir,Kette,Chaîne,Rantai,Cadena,Цепь,사슬,くさり,ज़ंजीर,Ланцюг,Catena
+mech_chain_desc,A chained candy can only move after its key block has left.,Kẹo bị xích chỉ đi được sau khi khối chìa đã thoát.,Um doce acorrentado só se move depois que seu bloco-chave sair.,Zincirli şeker ancak anahtar bloğu çıktıktan sonra hareket edebilir.,"Ein angekettetes Bonbon kann sich erst bewegen, wenn sein Schlüsselblock weg ist.",Un bonbon enchaîné ne bouge qu'une fois son bloc clé sorti.,Permen yang dirantai baru bisa bergerak setelah blok kuncinya keluar.,Un caramelo encadenado solo se mueve después de que salga su bloque llave.,"Конфета на цепи сможет двигаться только после того, как уйдёт её блок-ключ.",사슬에 묶인 캔디는 열쇠 블록이 빠져나간 뒤에 움직일 수 있어요.,くさりつきのキャンディは、カギのブロックが出た後に動かせます。,ज़ंजीर वाली कैंडी तभी हिल सकती है जब उसका चाबी वाला ब्लॉक निकल जाए।,"Цукерка на ланцюгу зможе рухатися лише після того, як піде її блок-ключ.",Una caramella incatenata si muove solo dopo che il suo blocco chiave è uscito.
+mech_layer,Paper box,Hộp giấy,Caixa de papel,Kağıt kutu,Papierbox,Boîte en carton,Kotak Kertas,Caja de papel,Бумажная коробка,종이 상자,紙の箱,कागज़ का डिब्बा,Паперова коробка,Scatola di carta
+mech_layer_desc,Send the box out to reveal the candy inside. It has a new color!,Đẩy hộp giấy ra ngoài để lộ viên kẹo bên trong. Kẹo có màu mới!,Tire a caixa para revelar o doce de dentro. Ele tem uma cor nova!,İçindeki şekeri görmek için kutuyu dışarı gönder. Yeni bir rengi var!,"Schick die Box hinaus, um das Bonbon darin freizulegen. Es hat eine neue Farbe!",Fais sortir la boîte pour révéler le bonbon caché. Il a une nouvelle couleur !,Keluarkan kotaknya untuk memperlihatkan permen di dalamnya. Warnanya baru!,Saca la caja para revelar el caramelo de adentro. ¡Tiene un color nuevo!,"Выведите коробку с поля, чтобы открыть конфету внутри. У неё новый цвет!",상자를 밖으로 보내면 안에 든 캔디가 나와요. 새로운 색이에요!,箱を外に出すと中のキャンディが現れます。新しい色ですよ！,अंदर की कैंडी देखने के लिए डिब्बे को बाहर भेजें। उसका रंग नया है!,"Виведіть коробку з поля, щоб відкрити цукерку всередині. У неї новий колір!",Fai uscire la scatola per scoprire la caramella dentro. Ha un nuovo colore!
+mech_fog,Fog,Sương mù,Névoa,Sis,Nebel,Brume,Kabut,Niebla,Туман,안개,霧,कोहरा,Туман,Nebbia
+mech_fog_desc,Colors stay hidden until a neighboring block leaves.,Màu sẽ ẩn cho tới khi khối bên cạnh rời đi.,As cores ficam ocultas até um bloco vizinho sair.,Komşu bir blok çıkana kadar renkler gizli kalır.,"Farben bleiben verborgen, bis ein Nachbarblock verschwindet.",Les couleurs restent cachées jusqu'à ce qu'un bloc voisin parte.,Warna tetap tersembunyi sampai blok di sebelahnya keluar.,Los colores quedan ocultos hasta que salga un bloque vecino.,"Цвет скрыт, пока не уйдёт соседний блок.",옆 블록이 빠져나갈 때까지 색이 가려져 있어요.,となりのブロックが出るまで色は隠れています。,पास वाला ब्लॉक निकलने तक रंग छिपे रहते हैं।,"Колір прихований, доки не піде сусідній блок.",I colori restano nascosti finché un blocco vicino non esce.
+mech_pulse,Pulse gate,Cổng nhịp,Portão pulsante,Nabız kapısı,Pulstor,Porte rythmée,Gerbang Denyut,Puerta pulsante,Пульсирующие ворота,펄스 게이트,パルスゲート,पल्स गेट,Пульсуючі ворота,Porta a impulsi
+mech_pulse_desc,Gates open and close after every tap.,Cổng đóng mở luân phiên sau mỗi lần chạm.,Os portões abrem e fecham a cada toque.,Kapılar her dokunuştan sonra açılıp kapanır.,Tore öffnen und schließen sich nach jedem Tippen.,Les portes s'ouvrent et se ferment à chaque fois que tu touches.,Gerbang membuka dan menutup setiap kali kamu mengetuk.,Las puertas se abren y se cierran con cada toque.,Ворота открываются и закрываются после каждого нажатия.,게이트는 탭할 때마다 열리고 닫혀요.,ゲートはタップするたびに開いたり閉じたりします。,हर टैप के बाद गेट खुलते और बंद होते हैं।,Ворота відчиняються й зачиняються після кожного натискання.,Le porte si aprono e si chiudono a ogni tocco.
+challenge_title,Daily Challenge,Thử thách ngày,Desafio Diário,Günlük Meydan Okuma,Tages-Challenge,Défi du jour,Tantangan Harian,Desafío Diario,Испытание дня,일일 챌린지,デイリーチャレンジ,दैनिक चुनौती,Випробування дня,Sfida del giorno
+challenge_bonus,First win today: +%d gold,Thắng lần đầu hôm nay: +%d gold,Primeira vitória hoje: +%d de ouro,Bugünkü ilk galibiyet: +%d altın,Erster Sieg heute: +%d Gold,Première victoire du jour : +%d or,Menang pertama hari ini: +%d emas,Primera victoria de hoy: +%d de oro,Первая победа за день: +%d золота,오늘 첫 승리: +%d 골드,今日の初勝利：+%dゴールド,आज की पहली जीत: +%d गोल्ड,Перша перемога за день: +%d золота,Prima vittoria di oggi: +%d oro
+challenge_done,Done for today. See you tomorrow!,Hôm nay xong rồi. Mai gặp lại nhé!,Concluído por hoje. Até amanhã!,Bugünlük bu kadar. Yarın görüşürüz!,Für heute erledigt. Bis morgen!,C'est fini pour aujourd'hui. À demain !,Selesai untuk hari ini. Sampai jumpa besok!,Listo por hoy. ¡Hasta mañana!,На сегодня всё. До завтра!,오늘은 여기까지! 내일 또 만나요!,今日はクリア済み。また明日！,आज के लिए बस। कल मिलते हैं!,На сьогодні все. До завтра!,Per oggi hai finito. A domani!
+challenge_play,Play,Chơi,Jogar,Oyna,Spielen,Jouer,Main,Jugar,Играть,플레이,プレイ,खेलें,Грати,Gioca
+notif_daily_gift_title,Your daily gift is waiting,Quà mỗi ngày đang chờ bạn,Seu presente diário está esperando,Günlük hediyen seni bekliyor,Dein Tagesgeschenk wartet,Ton cadeau du jour t'attend,Hadiah harianmu sudah menunggu,Tu regalo diario te espera,Вас ждёт подарок дня,일일 선물이 기다리고 있어요,デイリーギフトが届いています,आपका दैनिक तोहफ़ा इंतज़ार कर रहा है,На вас чекає подарунок дня,Il tuo regalo del giorno ti aspetta
+notif_daily_gift_body,Come and pick up today's gift.,Ghé qua nhận quà hôm nay nhé.,Venha pegar o presente de hoje.,"Gel, bugünün hediyesini al.",Hol dir das heutige Geschenk ab.,Viens récupérer le cadeau d'aujourd'hui.,Ayo ambil hadiah hari ini.,Ven a recoger el regalo de hoy.,Заходите за сегодняшним подарком.,오늘의 선물을 받으러 오세요.,今日のギフトを受け取りに来てくださいね。,आज का तोहफ़ा लेने आइए।,Заходьте по сьогоднішній подарунок.,Vieni a ritirare il regalo di oggi.
+notif_lives_full_title,Your lives are full,Mạng của bạn đã đầy,Suas vidas estão cheias,Canların doldu,Deine Leben sind voll,Tes vies sont au max,Nyawamu sudah penuh,Tus vidas están llenas,Жизни восстановлены,하트가 가득 찼어요,ハートが満タンです,आपकी लाइफ फ़ुल है,Життя відновлено,Le tue vite sono al completo
+notif_lives_full_body,All lives are back. Ready for a calm puzzle?,Mạng đã hồi đầy. Sẵn sàng giải một màn nhẹ nhàng chưa?,Todas as vidas voltaram. Que tal um quebra-cabeça tranquilo?,Tüm canlar geri geldi. Sakin bir bulmacaya hazır mısın?,Alle Leben sind zurück. Lust auf ein entspanntes Rätsel?,Toutes tes vies sont revenues. Envie d'un puzzle tout doux ?,Semua nyawa sudah kembali. Siap main puzzle santai?,Recuperaste todas tus vidas. ¿Qué tal un rompecabezas tranquilo?,Все жизни на месте. Как насчёт спокойной головоломки?,하트가 모두 찼어요. 느긋하게 퍼즐 한 판 어때요?,ハートが全回復しました。のんびりパズルはいかがですか？,सारी लाइफ वापस आ गई। एक सुकून भरी पज़ल हो जाए?,Усі життя на місці. Як щодо спокійної головоломки?,Tutte le vite sono tornate. Ti va un puzzle rilassante?
+notif_offer_open_title,Your offer is still open,Ưu đãi của bạn vẫn còn,Sua oferta ainda está disponível,Teklifin hâlâ geçerli,Dein Angebot gilt noch,Ton offre est toujours valable,Penawaranmu masih tersedia,Tu oferta sigue disponible,Ваше предложение ещё действует,혜택이 아직 남아 있어요,オファーはまだ受付中です,आपका ऑफ़र अभी भी चालू है,Ваша пропозиція ще діє,La tua offerta è ancora attiva
+notif_offer_open_body,Take a look before it ends.,Xem thử trước khi hết hạn nhé.,Dê uma olhada antes que termine.,Bitmeden önce bir göz at.,"Schau es dir an, bevor es endet.",Jette un œil avant qu'elle se termine.,Lihat dulu sebelum berakhir.,Échale un vistazo antes de que termine.,"Загляните, пока оно не закончилось.",끝나기 전에 한번 확인해 보세요.,終了前にのぞいてみてください。,खत्म होने से पहले एक नज़र डाल लें।,"Загляньте, поки вона не закінчилася.",Dai un'occhiata prima che scada.
+notif_challenge_title,Today's challenge is ready,Thử thách hôm nay đã sẵn sàng,O desafio de hoje está pronto,Bugünün meydan okuması hazır,Die Tages-Challenge ist bereit,Le défi du jour est prêt,Tantangan hari ini sudah siap,El desafío de hoy está listo,Испытание дня готово,오늘의 챌린지가 준비됐어요,今日のチャレンジが届きました,आज की चुनौती तैयार है,Випробування дня готове,La sfida di oggi è pronta
+notif_challenge_body,A fresh board is waiting for you.,Một bàn cờ mới đang chờ bạn.,Um tabuleiro novinho espera por você.,Yeni bir tahta seni bekliyor.,Ein neues Spielfeld wartet auf dich.,Un nouveau plateau t'attend.,Papan baru sudah menunggumu.,Un tablero nuevo te espera.,Вас ждёт новое поле.,새로운 보드가 기다리고 있어요.,新しい盤面があなたを待っています。,एक नया बोर्ड आपका इंतज़ार कर रहा है।,На вас чекає нове поле.,Un nuovo tabellone ti aspetta.
+notif_come_back_title,A few blocks are waiting,Vài khối đang chờ bạn,Alguns blocos estão esperando,Birkaç blok seni bekliyor,Ein paar Blöcke warten,Quelques blocs t'attendent,Beberapa blok sedang menunggu,Algunos bloques te esperan,Несколько блоков ждут вас,블록들이 기다리고 있어요,ブロックたちが待っています,कुछ ब्लॉक इंतज़ार कर रहे हैं,Кілька блоків чекають на вас,Qualche blocco ti aspetta
+notif_come_back_body,Take a moment to slide them out.,Dành chút thời gian để trượt chúng ra nhé.,Reserve um momentinho para tirá-los do tabuleiro.,Onları kaydırıp çıkarmak için biraz vakit ayır.,Nimm dir kurz Zeit und lass sie hinausgleiten.,Prends un moment pour les faire sortir.,Luangkan waktu sejenak untuk mengeluarkannya.,Tómate un momento para sacarlos del tablero.,"Уделите минутку, чтобы убрать их с поля.",잠깐 들러서 블록을 빼내 보세요.,少しだけ時間をとって、すべらせてみませんか？,थोड़ा समय निकालकर उन्हें बाहर सरकाएँ।,"Приділіть хвилинку, щоб прибрати їх з поля.",Prenditi un momento per farli uscire.
+feature_next,Next unlock: %s,Mở khoá tiếp: %s,Próximo desbloqueio: %s,Sıradaki: %s,Als Nächstes: %s,Prochain déblocage : %s,Terbuka berikutnya: %s,Próximo desbloqueo: %s,Далее откроется: %s,다음 잠금 해제: %s,次の解放：%s,अगला अनलॉक: %s,Далі відкриється: %s,Prossimo sblocco: %s
+feature_unlocked,%s unlocked!,Đã mở khoá %s!,Novo desbloqueio: %s!,%s açıldı!,%s freigeschaltet!,%s : c'est débloqué !,%s terbuka!,¡Nuevo desbloqueo: %s!,Открыто: %s!,%s 잠금 해제!,%s解放！,%s अनलॉक हुआ!,Відкрито: %s!,Hai sbloccato %s!
+feature_daily_gift,Daily gift,Quà mỗi ngày,Presente diário,Günlük hediye,Tagesgeschenk,Cadeau du jour,Hadiah harian,Regalo diario,Подарок дня,일일 선물,デイリーギフト,दैनिक तोहफ़ा,Подарунок дня,Regalo del giorno
+feature_hint,Hint,Gợi ý,Dica,İpucu,Tipp,Indice,Petunjuk,Pista,Подсказка,힌트,ヒント,हिंट,Підказка,Indizio
+feature_shop,Shop,Cửa hàng,Loja,Mağaza,Shop,Boutique,Toko,Tienda,Магазин,상점,ショップ,शॉप,Магазин,Negozio
+feature_move,+3 Move,+3 Move,+3 Jogadas,+3 Hamle,+3 Züge,+3 coups,+3 Langkah,+3 Jugadas,+3 хода,+3 이동,+3手,+3 चाल,+3 ходи,+3 mosse
+feature_smash,Smash,Phá khối,Martelada,Çekiç,Hammer,Casse-bloc,Penghancur,Martillazo,Молоток,부수기,スマッシュ,स्मैश,Молоток,Spaccablocchi
+feature_lives,Lives,Mạng,Vidas,Canlar,Leben,Vies,Nyawa,Vidas,Жизни,하트,ハート,लाइफ,Життя,Vite
+feature_challenge,Daily Challenge,Thử thách ngày,Desafio Diário,Günlük Meydan Okuma,Tages-Challenge,Défi du jour,Tantangan Harian,Desafío Diario,Испытание дня,일일 챌린지,デイリーチャレンジ,दैनिक चुनौती,Випробування дня,Sfida del giorno
+feature_leaderboard,Ranking,Xếp hạng,Ranking,Sıralama,Rangliste,Classement,Peringkat,Ranking,Рейтинг,랭킹,ランキング,रैंकिंग,Рейтинг,Classifica
+feature_stone,Stones,Đá,Pedras,Taşlar,Steine,Pierres,Batu,Piedras,Камни,돌,石,पत्थर,Камені,Pietre
+feature_ice,Ice,Băng,Gelo,Buz,Eis,Glace,Es,Hielo,Лёд,얼음,氷,बर्फ़,Лід,Ghiaccio
+feature_chain,Chains,Xích,Correntes,Zincirler,Ketten,Chaînes,Rantai,Cadenas,Цепи,사슬,くさり,ज़ंजीरें,Ланцюги,Catene
+feature_layer,Layers,Lớp khối,Camadas,Katmanlar,Schichten,Couches,Lapisan,Capas,Слои,레이어,レイヤー,परतें,Шари,Strati
+feature_fog,Fog,Sương mù,Névoa,Sis,Nebel,Brume,Kabut,Niebla,Туман,안개,霧,कोहरा,Туман,Nebbia
+feature_pulse,Pulse gates,Cổng nhịp,Portões pulsantes,Nabız kapıları,Pulstore,Portes rythmées,Gerbang Denyut,Puertas pulsantes,Пульсирующие ворота,펄스 게이트,パルスゲート,पल्स गेट,Пульсуючі ворота,Porte a impulsi
+home_weekly,Weekly Pass,Weekly Pass,Passe Semanal,Haftalık Bilet,Wochenpass,Pass hebdo,Pass Mingguan,Pase Semanal,Недельный пропуск,주간 패스,ウィークリーパス,वीकली पास,Тижнева перепустка,Pass settimanale
+home_weekly_waiting,New season soon,Mùa mới sắp mở,Nova temporada em breve,Yeni sezon yakında,Neue Saison bald,Nouvelle saison bientôt,Musim baru segera tiba,Nueva temporada en breve,Скоро новый сезон,곧 새 시즌 시작,新シーズン準備中,नया सीज़न जल्द,Скоро новий сезон,Nuova stagione a breve
+home_chain,Chain offer,Chuỗi quà,Oferta em Cadeia,Zincir Teklifi,Kettenangebot,Offre en chaîne,Penawaran Berantai,Oferta en Cadena,Цепочка наград,연속 혜택,連続特典,चेन ऑफ़र,Ланцюжок нагород,Offerta a catena
+home_special_pack,Special pack,Gói đặc biệt,Pacote Especial,Özel Paket,Spezialpaket,Pack Spécial,Paket spesial,Paquete Especial,Особый набор,스페셜 팩,スペシャルパック,स्पेशल पैक,Особливий набір,Pacchetto Speciale
+offer_special_pack_title,Special Pack,Gói Đặc Biệt,Pacote Especial,Özel Paket,Spezialpaket,Pack Spécial,Paket Spesial,Paquete Especial,Особый набор,스페셜 팩,スペシャルパック,स्पेशल पैक,Особливий набір,Pacchetto Speciale
+offer_special_pack_body,A big stash of gold and boosters for when you want to go further. Buy as many times as you like.,Một kho gold và booster lớn để bạn đi xa hơn. Mua bao nhiêu lần tuỳ ý.,Um monte de ouro e boosters para você ir mais longe. Compre quantas vezes quiser.,Daha ileri gitmek istediğinde büyük bir altın ve güçlendirici zulası. İstediğin kadar satın alabilirsin.,"Ein großer Vorrat an Gold und Boostern, wenn du weiterkommen willst. Beliebig oft kaufbar.",Une grosse réserve d'or et de boosters pour aller plus loin. Achète-le autant de fois que tu veux.,Simpanan besar emas dan booster saat kamu ingin melaju lebih jauh. Bisa dibeli berkali-kali.,Un gran botín de oro y potenciadores para llegar más lejos. Cómpralo todas las veces que quieras.,"Большой запас золота и бустеров, чтобы пройти дальше. Покупайте сколько угодно раз.",더 멀리 가고 싶을 때 딱 맞는 골드와 부스터 꾸러미예요. 몇 번이든 구매할 수 있어요.,もっと先へ進みたいときに、ゴールドとブースターがたっぷり。何回でも購入できます。,और आगे जाने के लिए गोल्ड और बूस्टर का बड़ा खज़ाना। जितनी बार चाहें खरीदें।,"Великий запас золота й бустерів, щоб пройти далі. Купуйте скільки завгодно разів.",Una grande scorta di oro e booster per andare più lontano. Acquistalo tutte le volte che vuoi.
+weekly_title,Weekly Pass,Weekly Pass,Passe Semanal,Haftalık Bilet,Wochenpass,Pass hebdo,Pass Mingguan,Pase Semanal,Недельный пропуск,주간 패스,ウィークリーパス,वीकली पास,Тижнева перепустка,Pass settimanale
+weekly_keys,%d / %d keys,%d / %d chìa,%d / %d chaves,%d / %d anahtar,%d / %d Schlüssel,%d / %d clés,%d / %d kunci,%d / %d llaves,Ключи: %d / %d,열쇠 %d / %d,カギ %d / %d,%d / %d चाबियाँ,Ключі: %d / %d,%d / %d chiavi
+weekly_time_left,%s left,Còn %s,Restam %s,Kalan: %s,Noch %s,Reste %s,Sisa %s,Quedan %s,Осталось %s,%s 남음,残り%s,%s बाकी,Залишилось %s,Ancora %s
+weekly_waiting_title,Next season starts soon,Mùa mới sắp bắt đầu,A próxima temporada começa em breve,Yeni sezon yakında başlıyor,Neue Saison startet bald,La prochaine saison arrive bientôt,Musim berikutnya segera dimulai,La próxima temporada empieza pronto,Новый сезон скоро начнётся,곧 다음 시즌이 시작돼요,次のシーズンがまもなく開始,अगला सीज़न जल्द शुरू होगा,Новий сезон скоро почнеться,La prossima stagione inizia presto
+weekly_waiting_body,The Weekly Pass opens in %s. See you then!,Weekly Pass mở sau %s. Hẹn gặp bạn nhé!,O Passe Semanal abre em %s. Até lá!,Haftalık Bilet %s içinde açılıyor. Görüşmek üzere!,Der Wochenpass öffnet in %s. Bis dann!,Le Pass hebdo ouvre dans %s. À bientôt !,Pass Mingguan dibuka dalam %s. Sampai jumpa!,El Pase Semanal abre en %s. ¡Nos vemos!,Недельный пропуск откроется через %s. До встречи!,주간 패스는 %s 후에 열려요. 그때 만나요!,ウィークリーパスは%s後に始まります。お楽しみに！,वीकली पास %s में खुलेगा। तब मिलते हैं!,Тижнева перепустка відкриється через %s. До зустрічі!,Il Pass settimanale apre tra %s. A presto!
+weekly_locked,Pass the second HARD level to unlock the Weekly Pass.,Vượt qua level HARD thứ hai để mở Weekly Pass.,Complete o segundo nível DIFÍCIL para desbloquear o Passe Semanal.,Haftalık Bilet'i açmak için ikinci ZOR seviyeyi geç.,"Gewinne das zweite SCHWER-Level, um den Wochenpass freizuschalten.",Termine le deuxième niveau DIFFICILE pour débloquer le Pass hebdo.,Selesaikan level SULIT kedua untuk membuka Pass Mingguan.,Completa el segundo nivel DIFÍCIL para desbloquear el Pase Semanal.,"Пройдите второй СЛОЖНЫЙ уровень, чтобы открыть Недельный пропуск.",두 번째 어려움 레벨을 클리어하면 주간 패스가 열려요.,2つ目のハードレベルをクリアするとウィークリーパスが解放されます。,वीकली पास खोलने के लिए दूसरा कठिन लेवल पार करें।,"Пройдіть другий СКЛАДНИЙ рівень, щоб відкрити Тижневу перепустку.",Supera il secondo livello DIFFICILE per sbloccare il Pass settimanale.
+weekly_free,Free,Miễn phí,Grátis,Ücretsiz,Gratis,Gratuit,Gratis,Gratis,Бесплатно,무료,無料,मुफ़्त,Безкоштовно,Gratis
+weekly_vip,VIP,VIP,VIP,VIP,VIP,VIP,VIP,VIP,VIP,VIP,VIP,VIP,VIP,VIP
+weekly_milestone,%d keys,%d chìa,%d chaves,%d anahtar,%d Schlüssel,%d clés,%d kunci,%d llaves,Ключи: %d,열쇠 %d개,カギ%d個,%d चाबियाँ,Ключі: %d,%d chiavi
+weekly_claim,Claim,Nhận,Resgatar,Al,Abholen,Récupérer,Klaim,Reclamar,Забрать,받기,受け取る,लें,Забрати,Ritira
+weekly_claim_all,Claim all,Nhận tất cả,Resgatar tudo,Hepsini al,Alle abholen,Tout récupérer,Klaim semua,Reclamar todo,Забрать всё,모두 받기,すべて受け取る,सब लें,Забрати все,Ritira tutto
+weekly_claimed,Claimed,Đã nhận,Resgatado,Alındı,Abgeholt,Récupéré,Diklaim,Reclamado,Получено,수령 완료,受け取り済み,ले लिया,Отримано,Ritirato
+weekly_buy_vip,Get VIP for %s,Mở VIP với %s,Seja VIP por %s,VIP al: %s,VIP für %s,Obtenir le VIP pour %s,Dapatkan VIP seharga %s,Hazte VIP por %s,Купить VIP за %s,%s에 VIP 구매,%sでVIPをゲット,%s में VIP पाएँ,Купити VIP за %s,Ottieni il VIP a %s
+weekly_vip_active,VIP active,Đã có VIP,VIP ativo,VIP aktif,VIP aktiv,VIP actif,VIP aktif,VIP activo,VIP активен,VIP 사용 중,VIP有効,VIP चालू है,VIP активний,VIP attivo
+weekly_vip_hearts,+%d max hearts this week,+%d mạng tối đa trong tuần này,+%d no máximo de vidas nesta semana,Bu hafta +%d maks. can,+%d max. Leben diese Woche,+%d vies max cette semaine,+%d nyawa maks minggu ini,+%d al máximo de vidas esta semana,+%d к максимуму жизней на эту неделю,이번 주 최대 하트 +%d,今週の最大ハート+%d,इस हफ़्ते +%d मैक्स लाइफ,+%d до максимуму життів на цей тиждень,+%d vite max questa settimana
+weekly_vip_hint,VIP rewards unlock with the pass. Unclaimed VIP rewards are collected for you when the season ends.,Thưởng VIP mở khi có pass. Thưởng VIP chưa nhận sẽ tự được trao khi hết mùa.,As recompensas VIP são liberadas com o passe. Recompensas VIP não resgatadas são entregues a você quando a temporada termina.,VIP ödülleri biletle açılır. Alınmamış VIP ödülleri sezon bitince senin için toplanır.,VIP-Belohnungen schaltest du mit dem Pass frei. Nicht abgeholte VIP-Belohnungen erhältst du am Saisonende automatisch.,Les récompenses VIP se débloquent avec le pass. Celles non récupérées te sont remises à la fin de la saison.,Hadiah VIP terbuka dengan pass. Hadiah VIP yang belum diklaim akan dikumpulkan untukmu saat musim berakhir.,Las recompensas VIP se desbloquean con el pase. Las recompensas VIP no reclamadas se te entregan al terminar la temporada.,VIP-награды открываются вместе с пропуском. Незабранные VIP-награды начислятся автоматически в конце сезона.,VIP 보상은 패스를 구매하면 열려요. 받지 않은 VIP 보상은 시즌이 끝날 때 자동으로 지급돼요.,VIP報酬はパスの購入で解放されます。受け取っていないVIP報酬は、シーズン終了時に自動で受け取られます。,VIP इनाम पास के साथ खुलते हैं। सीज़न खत्म होने पर बचे हुए VIP इनाम आपको अपने-आप मिल जाते हैं।,VIP-нагороди відкриваються разом із перепусткою. Незабрані VIP-нагороди буде нараховано автоматично наприкінці сезону.,I premi VIP si sbloccano con il pass. Quelli non ritirati vengono raccolti per te a fine stagione.
+weekly_bank_title,Bonus Bank,Kho thưởng thêm,Banco de Bônus,Bonus Bankası,Bonusbank,Banque bonus,Bank Bonus,Banco Extra,Бонусный банк,보너스 금고,ボーナスバンク,बोनस बैंक,Бонусний банк,Banca bonus
+weekly_bank_locked,Reach the last milestone with VIP to unlock the Bonus Bank.,Đạt mốc cuối cùng với VIP để mở Kho thưởng thêm.,Alcance o último marco com VIP para desbloquear o Banco de Bônus.,Bonus Bankası'nı açmak için VIP ile son aşamaya ulaş.,"Erreiche mit VIP den letzten Meilenstein, um die Bonusbank freizuschalten.",Atteins le dernier palier avec le VIP pour débloquer la Banque bonus.,Capai target terakhir dengan VIP untuk membuka Bank Bonus.,Alcanza el último hito con VIP para desbloquear el Banco Extra.,"Достигните последнего этапа с VIP, чтобы открыть Бонусный банк.",VIP로 마지막 목표에 도달하면 보너스 금고가 열려요.,VIPで最後の目標に到達するとボーナスバンクが解放されます。,बोनस बैंक खोलने के लिए VIP के साथ आखिरी पड़ाव तक पहुँचें।,"Досягніть останнього етапу з VIP, щоб відкрити Бонусний банк.",Raggiungi l'ultimo traguardo con il VIP per sbloccare la Banca bonus.
+weekly_bank_step,Every %d extra keys,Mỗi %d chìa thừa,A cada %d chaves extras,Her %d ekstra anahtarda,Alle %d Extra-Schlüssel,Toutes les %d clés en plus,Setiap %d kunci tambahan,Cada %d llaves extra,Доп. ключи: каждые %d,추가 열쇠 %d개마다,追加のカギ%d個ごと,हर %d अतिरिक्त चाबियों पर,Додаткові ключі: кожні %d,Ogni %d chiavi extra
+weekly_end_title,Season ended,Mùa đã kết thúc,Temporada encerrada,Sezon bitti,Saison beendet,Saison terminée,Musim berakhir,Temporada terminada,Сезон завершён,시즌 종료,シーズン終了,सीज़न खत्म,Сезон завершено,Stagione finita
+weekly_end_vip,Your unclaimed rewards were collected for you: %s,Thưởng chưa nhận đã được trao cho bạn: %s,Suas recompensas não resgatadas foram entregues a você: %s,Alınmamış ödüllerin senin için toplandı: %s,Deine nicht abgeholten Belohnungen wurden für dich eingesammelt: %s,Tes récompenses non récupérées t'ont été remises : %s,Hadiah yang belum diklaim sudah dikumpulkan untukmu: %s,Tus recompensas no reclamadas se te entregaron: %s,Незабранные награды начислены автоматически: %s,받지 않은 보상이 자동으로 지급됐어요: %s,未受け取りの報酬を自動で受け取りました：%s,आपके बचे हुए इनाम आपको मिल गए: %s,Незабрані нагороди нараховано автоматично: %s,I premi non ritirati sono stati raccolti per te: %s
+weekly_end_free,You earned %d keys this season. A new season is coming!,Bạn đã kiếm được %d chìa trong mùa này. Mùa mới sắp đến!,Você ganhou %d chaves nesta temporada. Uma nova temporada vem aí!,Bu sezon %d anahtar kazandın. Yeni sezon geliyor!,Du hast diese Saison %d Schlüssel gesammelt. Eine neue Saison kommt!,Tu as gagné %d clés cette saison. Une nouvelle saison arrive !,Kamu mendapat %d kunci musim ini. Musim baru segera hadir!,Ganaste %d llaves esta temporada. ¡Pronto llega una nueva temporada!,Получено ключей за сезон: %d. Скоро новый сезон!,이번 시즌에 열쇠 %d개를 모았어요. 곧 새 시즌이 시작돼요!,今シーズンはカギを%d個集めました。新シーズンがまもなく始まります！,इस सीज़न में आपने %d चाबियाँ कमाईं। नया सीज़न आ रहा है!,Отримано ключів за сезон: %d. Скоро новий сезон!,Hai ottenuto %d chiavi in questa stagione. Presto ne arriva una nuova!
+weekly_reward_gold,%d gold,%d gold,%d de ouro,%d altın,%d Gold,%d or,%d emas,%d de oro,%d золота,%d 골드,%dゴールド,%d गोल्ड,%d золота,%d oro
+weekly_start,Start,Khởi đầu,Início,Başlangıç,Start,Départ,Mulai,Inicio,Старт,시작,スタート,शुरू,Старт,Inizio
+weekly_reward_inf,Unlimited lives %d min,Mạng vô hạn %d phút,Vidas ilimitadas %d min,Sınırsız can %d dk,Unbegrenzte Leben %d Min.,Vies illimitées %d min,Nyawa tak terbatas %d menit,Vidas ilimitadas %d min,Бесконечные жизни %d мин,무제한 하트 %d분,ハート無制限%d分,%d मिनट अनलिमिटेड लाइफ,Нескінченні життя %d хв,Vite illimitate %d min
+weekly_tut_free_claim,Welcome to Weekly Pass! Claim your first reward!,Chào mừng đến Weekly Pass! Hãy nhận phần thưởng đầu tiên nào!,Boas-vindas ao Passe Semanal! Resgate sua primeira recompensa!,Haftalık Bilet'e hoş geldin! İlk ödülünü al!,Willkommen beim Wochenpass! Hol dir deine erste Belohnung!,Bienvenue dans le Pass hebdo ! Récupère ta première récompense !,Selamat datang di Pass Mingguan! Klaim hadiah pertamamu!,¡Bienvenido al Pase Semanal! ¡Reclama tu primera recompensa!,Добро пожаловать в Недельный пропуск! Заберите первую награду!,주간 패스에 오신 걸 환영해요! 첫 보상을 받아 보세요!,ウィークリーパスへようこそ！最初の報酬を受け取りましょう！,वीकली पास में स्वागत है! अपना पहला इनाम लें!,Ласкаво просимо до Тижневої перепустки! Заберіть першу нагороду!,Ecco il Pass settimanale! Ritira il tuo primo premio!
+weekly_tut_free_earn,Welcome to Weekly Pass! Earn keys to unlock rewards like this one!,Chào mừng đến Weekly Pass! Kiếm chìa để mở những phần thưởng như thế này!,Boas-vindas ao Passe Semanal! Ganhe chaves para liberar recompensas como esta!,Haftalık Bilet'e hoş geldin! Bunun gibi ödüller için anahtar kazan!,Willkommen beim Wochenpass! Sammle Schlüssel für Belohnungen wie diese!,Bienvenue dans le Pass hebdo ! Gagne des clés pour débloquer des récompenses comme celle-ci !,Selamat datang di Pass Mingguan! Kumpulkan kunci untuk membuka hadiah seperti ini!,¡Bienvenido al Pase Semanal! ¡Consigue llaves para desbloquear recompensas como esta!,"Добро пожаловать в Недельный пропуск! Собирайте ключи, чтобы открывать такие награды!",주간 패스에 오신 걸 환영해요! 열쇠를 모아 이런 보상을 열어 보세요!,ウィークリーパスへようこそ！カギを集めてこんな報酬を解放しましょう！,वीकली पास में स्वागत है! इस तरह के इनाम खोलने के लिए चाबियाँ कमाएँ!,"Ласкаво просимо до Тижневої перепустки! Збирайте ключі, щоб відкривати такі нагороди!",Ecco il Pass settimanale! Ottieni chiavi per sbloccare premi come questo!
+weekly_tut_vip,Activating VIP gives you access to unique rewards!,Mở VIP để nhận thêm những phần thưởng độc quyền!,Ativar o VIP dá acesso a recompensas exclusivas!,VIP ile özel ödüllerin kilidini aç!,Mit VIP erhältst du exklusive Belohnungen!,Active le VIP pour accéder à des récompenses exclusives !,Aktifkan VIP untuk mendapatkan hadiah eksklusif!,¡Activar el VIP te da acceso a recompensas exclusivas!,VIP открывает доступ к уникальным наградам!,VIP를 활성화하면 특별한 보상을 받을 수 있어요!,VIPを有効にすると特別な報酬がもらえます！,VIP चालू करके खास इनाम पाएँ!,VIP відкриває доступ до унікальних нагород!,Attiva il VIP per accedere a premi esclusivi!
+weekly_tut_progress,This is your progress. Tap this icon to learn how to earn rewards!,Đây là tiến độ của bạn. Chạm biểu tượng này để biết cách kiếm thưởng!,Este é o seu progresso. Toque neste ícone para saber como ganhar recompensas!,Bu senin ilerlemen. Nasıl ödül kazanacağını öğrenmek için bu simgeye dokun!,"Das ist dein Fortschritt. Tippe auf das Symbol, um zu sehen, wie du Belohnungen bekommst!",Voici ta progression. Touche cette icône pour savoir comment gagner des récompenses !,Ini progresmu. Ketuk ikon ini untuk tahu cara mendapat hadiah!,Este es tu progreso. ¡Toca este ícono para ver cómo ganar recompensas!,"Это ваш прогресс. Нажмите на этот значок, чтобы узнать, как получать награды!",여기서 진행 상황을 볼 수 있어요. 이 아이콘을 탭해 보상 받는 법을 알아보세요!,これがあなたの進行状況です。このアイコンをタップして報酬のもらい方を確認しましょう！,यह आपकी प्रगति है। इनाम कमाने का तरीका जानने के लिए इस आइकन पर टैप करें!,"Це ваш прогрес. Натисніть на цей значок, щоб дізнатися, як отримувати нагороди!",Questi sono i tuoi progressi. Tocca questa icona per scoprire come ottenere premi!
+weekly_howto_title,How to earn rewards,Cách kiếm thưởng,Como ganhar recompensas,Ödül nasıl kazanılır,So bekommst du Belohnungen,Comment gagner des récompenses,Cara mendapat hadiah,Cómo ganar recompensas,Как получать награды,보상 받는 법,報酬のもらい方,इनाम कैसे कमाएँ,Як отримувати нагороди,Come ottenere premi
+weekly_howto_normal,Win a level,Thắng một level,Vença um nível,Bir seviye geç,Gewinne ein Level,Gagne un niveau,Menangkan level,Supera un nivel,Пройдите уровень,레벨 클리어,レベルをクリア,कोई लेवल जीतें,Пройдіть рівень,Vinci un livello
+weekly_howto_hard,Win a HARD level,Thắng một level HARD,Vença um nível DIFÍCIL,Bir ZOR seviye geç,Gewinne ein SCHWER-Level,Gagne un niveau DIFFICILE,Menangkan level SULIT,Supera un nivel DIFÍCIL,Пройдите СЛОЖНЫЙ уровень,어려움 레벨 클리어,ハードレベルをクリア,कोई कठिन लेवल जीतें,Пройдіть СКЛАДНИЙ рівень,Vinci un livello DIFFICILE
+weekly_howto_very_hard,Win a VERY HARD level,Thắng một level VERY HARD,Vença um nível MUITO DIFÍCIL,Bir ÇOK ZOR seviye geç,Gewinne ein SEHR-SCHWER-Level,Gagne un niveau TRÈS DIFFICILE,Menangkan level SANGAT SULIT,Supera un nivel MUY DIFÍCIL,Пройдите ОЧЕНЬ СЛОЖНЫЙ уровень,매우 어려움 레벨 클리어,ベリーハードレベルをクリア,कोई बहुत कठिन लेवल जीतें,Пройдіть ДУЖЕ СКЛАДНИЙ рівень,Vinci un livello MOLTO DIFFICILE
+weekly_howto_points,+%d,+%d,+%d,+%d,+%d,+%d,+%d,+%d,+%d,+%d,+%d,+%d,+%d,+%d
+weekly_howto_claim,Collect keys to reach milestones. Then tap Claim to take the free reward.,Kiếm chìa để đạt các mốc. Sau đó chạm Nhận để lấy thưởng miễn phí.,Junte chaves para alcançar os marcos. Depois toque em Resgatar para pegar a recompensa grátis.,Aşamalara ulaşmak için anahtar topla. Sonra ücretsiz ödülü almak için Al'a dokun.,"Sammle Schlüssel, um Meilensteine zu erreichen. Tippe dann auf Abholen für die Gratis-Belohnung.",Récolte des clés pour atteindre les paliers. Touche ensuite Récupérer pour obtenir la récompense gratuite.,Kumpulkan kunci untuk mencapai target. Lalu ketuk Klaim untuk mengambil hadiah gratis.,Reúne llaves para alcanzar los hitos. Luego toca Reclamar para obtener la recompensa gratis.,"Собирайте ключи, чтобы проходить этапы. Затем нажмите «Забрать», чтобы получить бесплатную награду.",열쇠를 모아 목표에 도달하세요. 그다음 '받기'를 탭해 무료 보상을 받으세요.,カギを集めて目標に到達しましょう。到達したら「受け取る」をタップして無料報酬をもらいましょう。,"पड़ाव तक पहुँचने के लिए चाबियाँ जमा करें। फिर मुफ़्त इनाम पाने के लिए ""लें"" पर टैप करें।","Збирайте ключі, щоб проходити етапи. Потім натисніть «Забрати», щоб отримати безкоштовну нагороду.",Raccogli chiavi per raggiungere i traguardi. Poi tocca Ritira per prendere il premio gratis.
+weekly_howto_vip,VIP unlocks the VIP reward of every milestone and +%d max hearts this week. It also opens the Bonus Bank.,VIP mở thưởng VIP ở mọi mốc và +%d mạng tối đa trong tuần này. VIP còn mở Kho thưởng thêm.,O VIP libera a recompensa VIP de cada marco e +%d no máximo de vidas nesta semana. Ele também abre o Banco de Bônus.,VIP her aşamanın VIP ödülünü ve bu hafta +%d maks. canı açar. Ayrıca Bonus Bankası'nı da açar.,VIP schaltet bei jedem Meilenstein die VIP-Belohnung frei und gibt dir diese Woche +%d max. Leben. Außerdem öffnet es die Bonusbank.,Le VIP débloque la récompense VIP de chaque palier et +%d vies max cette semaine. Il ouvre aussi la Banque bonus.,VIP membuka hadiah VIP di setiap target dan +%d nyawa maks minggu ini. VIP juga membuka Bank Bonus.,El VIP desbloquea la recompensa VIP de cada hito y +%d al máximo de vidas esta semana. También abre el Banco Extra.,VIP открывает VIP-награду на каждом этапе и +%d к максимуму жизней на эту неделю. А ещё – Бонусный банк.,VIP는 모든 목표의 VIP 보상을 열고 이번 주 최대 하트를 +%d 늘려 줘요. 보너스 금고도 열려요.,VIPならすべての目標のVIP報酬と、今週の最大ハート+%dが解放されます。ボーナスバンクも開きます。,VIP से हर पड़ाव का VIP इनाम खुलता है और इस हफ़्ते +%d मैक्स लाइफ मिलती है। इससे बोनस बैंक भी खुलता है।,VIP відкриває VIP-нагороду на кожному етапі та +%d до максимуму життів на цей тиждень. А ще – Бонусний банк.,Il VIP sblocca il premio VIP di ogni traguardo e +%d vite max questa settimana. Apre anche la Banca bonus.
+weekly_howto_season,A new season starts every week. Free rewards you forgot are lost. VIP rewards are collected for you.,Mỗi tuần có một mùa mới. Thưởng miễn phí chưa nhận sẽ mất. Thưởng VIP sẽ tự được trao cho bạn.,Uma nova temporada começa toda semana. Recompensas grátis esquecidas são perdidas. As recompensas VIP são entregues a você.,Her hafta yeni bir sezon başlar. Unuttuğun ücretsiz ödüller kaybolur. VIP ödülleri senin için toplanır.,Jede Woche startet eine neue Saison. Vergessene Gratis-Belohnungen verfallen. VIP-Belohnungen werden für dich eingesammelt.,Une nouvelle saison commence chaque semaine. Les récompenses gratuites oubliées sont perdues. Les récompenses VIP te sont remises.,Musim baru dimulai setiap minggu. Hadiah gratis yang terlupa akan hilang. Hadiah VIP dikumpulkan untukmu.,Cada semana empieza una nueva temporada. Las recompensas gratis olvidadas se pierden. Las recompensas VIP se te entregan automáticamente.,Новый сезон начинается каждую неделю. Незабранные бесплатные награды сгорают. VIP-награды начисляются автоматически.,매주 새 시즌이 시작돼요. 깜빡한 무료 보상은 사라지지만 VIP 보상은 자동으로 지급돼요.,毎週新しいシーズンが始まります。受け取り忘れた無料報酬は消えますが、VIP報酬は自動で受け取られます。,हर हफ़्ते नया सीज़न शुरू होता है। भूले हुए मुफ़्त इनाम चले जाते हैं। VIP इनाम आपको अपने-आप मिल जाते हैं।,Новий сезон починається щотижня. Незабрані безкоштовні нагороди згорають. VIP-нагороди нараховуються автоматично.,Ogni settimana inizia una nuova stagione. I premi gratis dimenticati vanno persi. I premi VIP vengono raccolti per te.
+chain_title,Chain Offer,Chuỗi quà,Oferta em Cadeia,Zincir Teklifi,Kettenangebot,Offre en chaîne,Penawaran Berantai,Oferta en Cadena,Цепочка наград,연속 혜택,連続特典,चेन ऑफ़र,Ланцюжок нагород,Offerta a catena
+chain_time_left,Ends in %s,Kết thúc sau %s,Termina em %s,%s içinde bitiyor,Endet in %s,Fin dans %s,Berakhir dalam %s,Termina en %s,Закончится через %s,%s 후 종료,終了まで%s,%s में खत्म,Закінчиться через %s,Termina tra %s
+chain_step,Step %d,Bước %d,Etapa %d,Adım %d,Schritt %d,Étape %d,Tahap %d,Paso %d,Шаг %d,%d단계,ステップ%d,चरण %d,Крок %d,Tappa %d
+chain_free,Free,Miễn phí,Grátis,Ücretsiz,Gratis,Gratuit,Gratis,Gratis,Бесплатно,무료,無料,मुफ़्त,Безкоштовно,Gratis
+chain_ad,Watch video,Xem video,Assistir vídeo,Video izle,Video ansehen,Voir la vidéo,Tonton video,Ver video,Смотреть видео,영상 보기,動画を見る,वीडियो देखें,Дивитися відео,Guarda video
+chain_pay,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s
+chain_claim,Claim,Nhận,Resgatar,Al,Abholen,Récupérer,Klaim,Reclamar,Забрать,받기,受け取る,लें,Забрати,Ritira
+chain_claimed,Claimed,Đã nhận,Resgatado,Alındı,Abgeholt,Récupéré,Diklaim,Reclamado,Получено,수령 완료,受け取り済み,ले लिया,Отримано,Ritirato
+chain_locked,Locked,Chưa mở,Bloqueado,Kilitli,Gesperrt,Verrouillé,Terkunci,Bloqueado,Закрыто,잠김,ロック中,लॉक है,Закрито,Bloccato
+chain_done,All steps done. Come back for the next chain!,Đã xong mọi bước. Lần sau sẽ có chuỗi mới!,Todas as etapas concluídas. Volte para a próxima Oferta em Cadeia!,Tüm adımlar tamam. Sonraki zincir için tekrar gel!,Alle Schritte erledigt. Komm für die nächste Kette wieder!,Toutes les étapes sont terminées. Reviens pour la prochaine chaîne !,Semua tahap selesai. Kembali lagi untuk penawaran berikutnya!,Completaste todos los pasos. ¡Vuelve para la próxima Oferta en Cadena!,Все шаги пройдены. Возвращайтесь за новой цепочкой!,모든 단계를 완료했어요. 다음 연속 혜택에서 또 만나요!,すべてのステップを完了しました。次の連続特典もお楽しみに！,सारे चरण पूरे हुए। अगले चेन ऑफ़र के लिए फिर आइए!,Усі кроки пройдено. Повертайтеся по новий ланцюжок!,Tutte le tappe completate. Torna per la prossima catena!
+chain_failed,Couldn't complete this step. Please try again.,Chưa hoàn thành bước này. Bạn thử lại nhé.,Não foi possível concluir esta etapa. Tente de novo.,Bu adım tamamlanamadı. Lütfen tekrar dene.,Dieser Schritt hat nicht geklappt. Bitte versuch es nochmal.,Impossible de terminer cette étape. Réessaie.,Tahap ini gagal diselesaikan. Coba lagi ya.,No se pudo completar este paso. Inténtalo de nuevo.,Не удалось пройти этот шаг. Попробуйте ещё раз.,이 단계를 완료하지 못했어요. 다시 시도해 주세요.,このステップを完了できませんでした。もう一度お試しください。,यह चरण पूरा नहीं हो सका। कृपया फिर कोशिश करें।,Не вдалося пройти цей крок. Спробуйте ще раз.,Impossibile completare questa tappa. Riprova.
+chain_expired,This chain has ended.,Chuỗi quà này đã kết thúc.,Esta Oferta em Cadeia terminou.,Bu zincir sona erdi.,Dieses Kettenangebot ist beendet.,Cette chaîne est terminée.,Penawaran ini sudah berakhir.,Esta Oferta en Cadena terminó.,Эта цепочка закончилась.,이 연속 혜택은 종료됐어요.,この連続特典は終了しました。,यह चेन ऑफ़र खत्म हो गया है।,Цей ланцюжок закінчився.,Questa catena è terminata.
+home_home,Home,Trang chủ,Início,Ana Sayfa,Startseite,Accueil,Beranda,Inicio,Главная,홈,ホーム,होम,Головна,Home
+home_ranking,Ranking,Xếp hạng,Ranking,Sıralama,Rangliste,Classement,Peringkat,Ranking,Рейтинг,랭킹,ランキング,रैंकिंग,Рейтинг,Classifica
+home_ads_daily,ADS Daily,Quà video,Vídeos diários,Günlük Video,Video-Bonus,Vidéos du jour,Hadiah Video,Videos diarios,Видеобонус,영상 보상,動画ボーナス,वीडियो इनाम,Відеобонус,Video del giorno
+home_path_locked,Locked,Khoá,Bloqueado,Kilitli,Gesperrt,Verrouillé,Terkunci,Bloqueado,Закрыто,잠김,ロック中,लॉक है,Закрито,Bloccato
+home_path_cleared,Cleared,Đã qua,Concluído,Geçildi,Geschafft,Terminé,Selesai,Superado,Пройдено,클리어,クリア済み,पूरा,Пройдено,Superato
+common_coming_soon,Coming soon,Sắp có,Em breve,Çok yakında,Demnächst,Bientôt,Segera hadir,Próximamente,Скоро,곧 공개,近日公開,जल्द आ रहा है,Незабаром,In arrivo
+settings_gallery,UI preview,Xem trước UI,Prévia da UI,UI önizleme,UI-Vorschau,Aperçu UI,Pratinjau UI,Vista previa de UI,Превью UI,UI 미리보기,UIプレビュー,UI प्रीव्यू,Перегляд UI,Anteprima UI
+settings_save,Save,Lưu,Salvar,Kaydet,Speichern,Enregistrer,Simpan,Guardar,Сохранить,저장,保存,सेव करें,Зберегти,Salva
+settings_help_title,Help & Support,Trợ giúp,Ajuda e Suporte,Yardım ve Destek,Hilfe & Support,Aide & assistance,Bantuan & Dukungan,Ayuda y soporte,Помощь и поддержка,도움말 및 지원,ヘルプ＆サポート,मदद और सहायता,Допомога й підтримка,Aiuto e assistenza
+settings_help_sub,How can we help?,Bạn cần giúp gì?,Como podemos ajudar?,Nasıl yardımcı olabiliriz?,Wie können wir helfen?,Comment pouvons-nous t'aider ?,Ada yang bisa kami bantu?,¿Cómo podemos ayudarte?,Чем можем помочь?,무엇을 도와드릴까요?,どのようなご用件ですか？,हम आपकी क्या मदद करें?,Чим можемо допомогти?,Come possiamo aiutarti?
+settings_help_bug,Bug / crash,Lỗi / văng game,Bug / travamento,Hata / çökme,Fehler / Absturz,Bug / plantage,Bug / crash,Error / cierre,Ошибка / вылет,버그 / 강제 종료,バグ / クラッシュ,बग / क्रैश,Помилка / виліт,Bug / crash
+settings_help_purchase,Purchase problem,Vấn đề mua hàng,Problema na compra,Satın alma sorunu,Problem beim Kauf,Problème d'achat,Masalah pembelian,Problema de compra,Проблема с покупкой,구매 문제,購入の問題,खरीदारी में समस्या,Проблема з покупкою,Problema con un acquisto
+settings_help_idea,Suggestion,Góp ý,Sugestão,Öneri,Vorschlag,Suggestion,Saran,Sugerencia,Предложение,제안,ご意見,सुझाव,Пропозиція,Suggerimento
+settings_help_placeholder,Describe your issue...,Mô tả vấn đề của bạn...,Descreva seu problema...,Sorununu anlat...,Beschreibe dein Problem...,Décris ton problème...,Jelaskan masalahmu...,Describe tu problema...,Опишите проблему...,문제를 설명해 주세요...,問題の内容を入力してください…,अपनी समस्या बताएँ...,Опишіть проблему...,Descrivi il problema...
+settings_help_send,Send,Gửi,Enviar,Gönder,Senden,Envoyer,Kirim,Enviar,Отправить,보내기,送信,भेजें,Надіслати,Invia
+settings_help_note,Customer support email / FAQ,Email hỗ trợ / Câu hỏi thường gặp,E-mail de suporte / Perguntas frequentes,Destek e-postası / SSS,Support-E-Mail / FAQ,E-mail d'assistance / FAQ,Email dukungan / FAQ,Correo de soporte / Preguntas frecuentes,Почта поддержки / FAQ,고객 지원 이메일 / FAQ,サポートメール / よくある質問,सहायता ईमेल / FAQ,Пошта підтримки / FAQ,Email assistenza / FAQ
+boot_tagline,Tap · Slide · Clear,Chạm · Trượt · Dọn sạch,Toque. Deslize. Limpe.,Dokun - Kaydır - Temizle,Tippen - Gleiten - Leeren,Touche – Glisse – Libère,Ketuk - Geser - Bersihkan,Toca. Desliza. Limpia.,Нажми · Сдвинь · Очисти,탭 · 슬라이드 · 클리어,タップ・スライド・クリア,टैप - सरकाएँ - साफ़ करें,Натисни · Зсунь · Очисти,Tocca – Scivola – Libera
+boot_loading,Loading... %d%%,Đang tải... %d%%,Carregando... %d%%,Yükleniyor... %d%%,Lädt... %d%%,Chargement... %d%%,Memuat... %d%%,Cargando... %d%%,Загрузка... %d%%,로딩 중... %d%%,読み込み中… %d%%,लोड हो रहा है... %d%%,Завантаження... %d%%,Caricamento... %d%%
+boot_update_title,Update Available,Có bản cập nhật,Atualização disponível,Güncelleme var,Update verfügbar,Mise à jour disponible,Pembaruan Tersedia,Actualización disponible,Доступно обновление,업데이트 안내,アップデートのお知らせ,अपडेट उपलब्ध है,Доступне оновлення,Aggiornamento disponibile
+boot_update_body,A new version is available. Update now for new levels and fixes.,Đã có phiên bản mới. Cập nhật ngay để có level mới và các bản sửa lỗi.,Uma nova versão está disponível. Atualize agora para ter novos níveis e correções.,Yeni bir sürüm var. Yeni seviyeler ve düzeltmeler için şimdi güncelle.,Eine neue Version ist da. Jetzt updaten für neue Level und Fehlerbehebungen.,Une nouvelle version est disponible. Mets à jour pour profiter de nouveaux niveaux et de corrections.,Versi baru sudah tersedia. Perbarui sekarang untuk level baru dan perbaikan.,Hay una nueva versión disponible. Actualiza ahora para obtener nuevos niveles y correcciones.,"Вышла новая версия. Обновитесь, чтобы получить новые уровни и исправления.",새 버전이 나왔어요. 지금 업데이트하고 새 레벨과 수정 사항을 만나 보세요.,新しいバージョンが出ました。今すぐアップデートして、新しいレベルと修正をお楽しみください。,नया वर्शन उपलब्ध है। नए लेवल और सुधारों के लिए अभी अपडेट करें।,"Вийшла нова версія. Оновіться, щоб отримати нові рівні та виправлення.",È disponibile una nuova versione. Aggiorna ora per avere nuovi livelli e correzioni.
+boot_update_now,Update Now,Cập nhật ngay,Atualizar agora,Şimdi güncelle,Jetzt updaten,Mettre à jour,Perbarui Sekarang,Actualizar ahora,Обновить,지금 업데이트,今すぐアップデート,अभी अपडेट करें,Оновити,Aggiorna ora
+boot_later,Later,Để sau,Mais tarde,Sonra,Später,Plus tard,Nanti,Más tarde,Позже,나중에,後で,बाद में,Пізніше,Più tardi
+boot_download_title,Download Resources,Tải dữ liệu,Baixar conteúdo,Kaynakları indir,Daten herunterladen,Télécharger les ressources,Unduh Data,Descargar contenido,Загрузка ресурсов,리소스 다운로드,リソースのダウンロード,डेटा डाउनलोड करें,Завантаження ресурсів,Scarica risorse
+boot_download_sub,First-time content pack,Gói nội dung lần đầu,Pacote de conteúdo inicial,İlk açılış içerik paketi,Inhaltspaket für den ersten Start,Pack de contenu initial,Paket konten awal,Paquete de contenido inicial,Контент для первого запуска,첫 실행 콘텐츠 팩,初回コンテンツパック,पहली बार का कंटेंट पैक,Контент для першого запуску,Pacchetto contenuti iniziale
+boot_download_need,Extra content needed (%d MB),Cần thêm dữ liệu (%d MB),Conteúdo extra necessário (%d MB),Ek içerik gerekli (%d MB),Zusätzliche Inhalte nötig (%d MB),Contenu supplémentaire requis (%d MB),Butuh konten tambahan (%d MB),Se necesita contenido extra (%d MB),Нужны дополнительные данные (%d MB),추가 콘텐츠 필요 (%d MB),追加データが必要です（%d MB）,अतिरिक्त कंटेंट चाहिए (%d MB),Потрібні додаткові дані (%d MB),Servono contenuti extra (%d MB)
+boot_download_wifi,Download on Wi-Fi only,Chỉ tải qua Wi-Fi,Baixar só por Wi-Fi,Sadece Wi-Fi ile indir,Nur über Wi-Fi laden,Télécharger en Wi-Fi uniquement,Unduh hanya lewat Wi-Fi,Descargar solo con Wi-Fi,Загружать только по Wi-Fi,Wi-Fi에서만 다운로드,Wi-Fi接続時のみダウンロード,सिर्फ़ Wi-Fi पर डाउनलोड करें,Завантажувати лише через Wi-Fi,Scarica solo con Wi-Fi
+boot_download_cell,Allow cellular data,Cho phép dùng dữ liệu di động,Permitir dados móveis,Mobil veriye izin ver,Mobile Daten erlauben,Autoriser les données mobiles,Izinkan data seluler,Permitir datos móviles,Разрешить мобильный интернет,모바일 데이터 허용,モバイルデータ通信を許可,मोबाइल डेटा की अनुमति दें,Дозволити мобільний інтернет,Consenti dati mobili
+boot_download_progress,%d%% · %d MB / %d MB,%d%% · %d MB / %d MB,%d%% - %d MB / %d MB,%d%% - %d MB / %d MB,%d%% - %d MB / %d MB,%d%% – %d MB / %d MB,%d%% - %d MB / %d MB,%d%% - %d MB / %d MB,%d%% · %d MB / %d MB,%d%% · %d MB / %d MB,%d%% · %d MB / %d MB,%d%% - %d MB / %d MB,%d%% · %d MB / %d MB,%d%% – %d MB / %d MB
+boot_download_go,Download,Tải xuống,Baixar,İndir,Herunterladen,Télécharger,Unduh,Descargar,Загрузить,다운로드,ダウンロード,डाउनलोड करें,Завантажити,Scarica
+boot_skip,Skip for now,Bỏ qua lúc này,Pular por enquanto,Şimdilik geç,Vorerst überspringen,Passer pour l'instant,Lewati dulu,Omitir por ahora,Пропустить,지금은 건너뛰기,今はスキップ,अभी छोड़ें,Пропустити,Salta per ora
+boot_account_title,Select Account,Chọn tài khoản,Selecionar conta,Hesap seç,Konto wählen,Choisir un compte,Pilih Akun,Seleccionar cuenta,Выбор аккаунта,계정 선택,アカウントを選択,अकाउंट चुनें,Вибір акаунта,Seleziona account
+boot_account_body,Choose the account you want to continue.,Chọn tài khoản bạn muốn chơi tiếp.,Escolha a conta com que deseja continuar.,Devam etmek istediğin hesabı seç.,"Wähle das Konto, mit dem du weiterspielen willst.",Choisis le compte avec lequel tu veux continuer.,Pilih akun untuk lanjut bermain.,Elige la cuenta con la que quieres continuar.,"Выберите аккаунт, с которым хотите продолжить.",계속 플레이할 계정을 선택하세요.,続けるアカウントを選んでください。,वह अकाउंट चुनें जिससे आप आगे खेलना चाहते हैं।,"Виберіть акаунт, з яким хочете продовжити.",Scegli l'account con cui vuoi continuare.
+boot_account_warn,"Once you choose, the other will be deleted permanently.","Sau khi chọn, tài khoản còn lại sẽ bị xoá vĩnh viễn.","Depois de escolher, a outra será excluída para sempre.",Seçim yaptığında diğer hesap kalıcı olarak silinir.,Nach deiner Wahl wird das andere Konto endgültig gelöscht.,"Une fois ton choix fait, l'autre sera supprimé définitivement.","Setelah dipilih, akun yang lain akan dihapus permanen.","Una vez que elijas, la otra se eliminará para siempre.",После выбора второй аккаунт будет удалён навсегда.,선택하지 않은 계정은 영구적으로 삭제돼요.,選ばなかったアカウントは完全に削除されます。,चुनने के बाद दूसरा अकाउंट हमेशा के लिए डिलीट हो जाएगा।,Після вибору інший акаунт буде видалено назавжди.,"Dopo la scelta, l'altro verrà eliminato per sempre."
+boot_account_linked,Linked: Google / Game Center,Đã liên kết: Google / Game Center,Vinculada: Google / Game Center,Bağlı: Google / Game Center,Verknüpft: Google / Game Center,Lié : Google / Game Center,Tertaut: Google / Game Center,Vinculada: Google / Game Center,Привязано: Google / Game Center,연결됨: Google / Game Center,連携済み：Google / Game Center,लिंक किया गया: Google / Game Center,Прив'язано: Google / Game Center,Collegato: Google / Game Center
+boot_select,Select,Chọn,Selecionar,Seç,Wählen,Choisir,Pilih,Seleccionar,Выбрать,선택,選択,चुनें,Вибрати,Seleziona
+boot_tut_body,Tap a block to slide it out toward the matching coloured edge.,Chạm một khối để trượt nó ra cạnh cùng màu.,Toque em um bloco para deslizá-lo até a borda da mesma cor.,Bir bloğu aynı renkteki kenara kaydırmak için ona dokun.,"Tippe auf einen Block, damit er zum Rand seiner Farbe gleitet.",Touche un bloc pour le faire glisser vers le bord de la même couleur.,Ketuk blok untuk menggesernya keluar ke tepi yang warnanya sama.,Toca un bloque para deslizarlo hacia el borde de su mismo color.,"Нажмите на блок, чтобы отправить его к краю того же цвета.",블록을 탭하면 같은 색 가장자리로 미끄러져 나가요.,ブロックをタップすると、同じ色の端へすべり出ます。,ब्लॉक को उसी रंग वाले किनारे से बाहर सरकाने के लिए उस पर टैप करें।,"Натисніть на блок, щоб відправити його до краю того ж кольору.",Tocca un blocco per farlo scivolare verso il bordo dello stesso colore.
+boot_tap_continue,Tap to continue,Chạm để tiếp tục,Toque para continuar,Devam etmek için dokun,Zum Fortfahren tippen,Touche pour continuer,Ketuk untuk lanjut,Toca para continuar,"Нажмите, чтобы продолжить",탭하여 계속,タップして続ける,जारी रखने के लिए टैप करें,"Натисніть, щоб продовжити",Tocca per continuare
+boot_offline_title,No Internet,Mất kết nối,Sem internet,İnternet yok,Kein Internet,Pas d'Internet,Tidak Ada Internet,Sin internet,Нет интернета,인터넷 연결 없음,インターネット未接続,इंटरनेट नहीं है,Немає інтернету,Nessuna connessione
+boot_offline_lost,Connection lost,Đã mất kết nối,Conexão perdida,Bağlantı koptu,Verbindung verloren,Connexion perdue,Koneksi terputus,Conexión perdida,Соединение потеряно,연결이 끊겼어요,接続が切れました,कनेक्शन टूट गया,З'єднання втрачено,Connessione persa
+boot_offline_body,Please check your internet and try again.,Hãy kiểm tra Internet rồi thử lại.,Verifique sua internet e tente de novo.,Lütfen internet bağlantını kontrol edip tekrar dene.,Bitte prüfe deine Internetverbindung und versuch es erneut.,Vérifie ta connexion Internet et réessaie.,Periksa koneksi internetmu dan coba lagi.,Revisa tu conexión a internet e inténtalo de nuevo.,Проверьте подключение к интернету и попробуйте снова.,인터넷 연결을 확인하고 다시 시도해 주세요.,インターネット接続を確認して、もう一度お試しください。,कृपया अपना इंटरनेट जाँचें और फिर कोशिश करें।,Перевірте підключення до інтернету та спробуйте знову.,Controlla la connessione Internet e riprova.
+boot_retry,Retry,Thử lại,Reconectar,Tekrar dene,Wiederholen,Réessayer,Coba lagi,Reintentar,Повторить,다시 시도,再試行,फिर कोशिश करें,Повторити,Riprova
+ads_daily_sub,Watch ads to fill the reward track,Xem quảng cáo để đầy thanh thưởng,Assista a anúncios para encher a trilha de recompensas,Ödül çubuğunu doldurmak için reklam izle,Werbung ansehen und die Belohnungsleiste füllen,Regarde des pubs pour remplir la barre de récompenses,Tonton iklan untuk mengisi jalur hadiah,Mira anuncios para llenar la barra de recompensas,Смотрите рекламу и заполняйте шкалу наград,광고를 보고 보상 게이지를 채우세요,広告を見て報酬ゲージをためましょう,इनाम ट्रैक भरने के लिए विज्ञापन देखें,Дивіться рекламу й заповнюйте шкалу нагород,Guarda pubblicità per riempire la barra dei premi
+ads_daily_progress,%d / %d ads watched,Đã xem %d / %d quảng cáo,%d / %d anúncios assistidos,%d / %d reklam izlendi,%d / %d Videos angesehen,%d / %d pubs vues,%d / %d iklan ditonton,%d / %d anuncios vistos,Просмотрено: %d / %d,광고 시청 %d / %d,広告視聴 %d / %d,%d / %d विज्ञापन देखे,Переглянуто: %d / %d,%d / %d pubblicità viste
+ads_daily_watch,Watch video,Xem video,Assistir vídeo,Video izle,Video ansehen,Voir la vidéo,Tonton video,Ver video,Смотреть видео,영상 보기,動画を見る,वीडियो देखें,Дивитися відео,Guarda video
+ads_daily_reset,Resets daily,Làm mới mỗi ngày,Renova todo dia,Her gün sıfırlanır,Täglich neu,Renouvelé chaque jour,Direset setiap hari,Se renueva cada día,Обновляется ежедневно,매일 초기화,毎日リセット,रोज़ रीसेट होता है,Оновлюється щодня,Si rinnova ogni giorno
+ads_noads_one,No interstitial or banner ads,Không còn quảng cáo xen kẽ và banner,Sem anúncios intersticiais ou banners,Geçiş ve banner reklamları yok,Keine Zwischen- und Bannerwerbung,Aucune pub interstitielle ni bannière,Tanpa iklan interstisial atau banner,Sin anuncios intersticiales ni banners,Без межстраничной и баннерной рекламы,전면 광고와 배너 광고 없음,全画面広告・バナー広告なし,कोई इंटरस्टीशियल या बैनर विज्ञापन नहीं,Без міжсторінкової та банерної реклами,Niente pubblicità a schermo intero né banner
+ads_noads_two,Rewarded ads stay optional (x2 rewards),Video thưởng vẫn tuỳ chọn (x2 thưởng),Vídeos com recompensa são opcionais (recompensas x2),Ödüllü reklamlar isteğe bağlı kalır (x2 ödül),Belohnungsvideos bleiben freiwillig (x2 Belohnungen),Les vidéos récompensées restent facultatives (récompenses x2),Iklan berhadiah tetap opsional (hadiah x2),Videos con recompensa opcionales (recompensas x2),Видео за награду – по желанию (награды x2),보상형 광고는 원할 때만 (보상 x2),リワード広告は任意（報酬x2）,इनाम वाले विज्ञापन आपकी मर्ज़ी पर (x2 इनाम),Відео за нагороду – за бажанням (нагороди x2),I video con premio restano facoltativi (premi x2)
+ads_noads_three,Bonus gold bundle,Tặng thêm gói gold,Pacote bônus de ouro,Bonus altın paketi,Bonus-Goldpaket,Lot d'or en bonus,Bonus paket emas,Paquete de oro extra,Бонусный набор золота,보너스 골드 패키지,ボーナスゴールドセット,बोनस गोल्ड बंडल,Бонусний набір золота,Set di oro bonus
+ads_noads_buy,%s · Remove Ads,%s · Bỏ quảng cáo,%s - Remover Anúncios,%s - Reklamları Kaldır,%s - Werbung entfernen,%s – Supprimer les pubs,%s - Hapus Iklan,%s - Quitar Anuncios,%s · Убрать рекламу,%s · 광고 제거,%s · 広告削除,%s - विज्ञापन हटाएँ,%s · Прибрати рекламу,%s – Rimuovi pubblicità
+ads_noads_bundle,Remove Ads + Bundle %s,Bỏ quảng cáo + Gói %s,Remover Anúncios + Combo %s,Reklamları Kaldır + Paket %s,Werbung entfernen + Bundle %s,Supprimer les pubs + lot %s,Hapus Iklan + Bundel %s,Quitar Anuncios + Combo %s,Убрать рекламу + набор %s,광고 제거 + 패키지 %s,広告削除＋セット%s,विज्ञापन हटाएँ + बंडल %s,Прибрати рекламу + набір %s,Rimuovi pubblicità + Set %s
+ads_notice_title,Notice,Thông báo,Aviso,Bilgi,Hinweis,Information,Pemberitahuan,Aviso,Сообщение,알림,お知らせ,सूचना,Повідомлення,Avviso
+ads_reward_title,Reward,Phần thưởng,Recompensa,Ödül,Belohnung,Récompense,Hadiah,Recompensa,Награда,보상,報酬,इनाम,Нагорода,Premio
+ads_reward_x2,Claim x2,Nhận x2,Resgatar x2,x2 al,x2 abholen,Récupérer x2,Klaim x2,Reclamar x2,Забрать x2,x2 받기,x2で受け取る,x2 लें,Забрати x2,Ritira x2
+level_new_mechanic,New Mechanic,Cơ chế mới,Nova mecânica,Yeni Mekanik,Neue Mechanik,Nouvelle mécanique,Rintangan Baru,Nueva mecánica,Новая механика,새 장애물,新ギミック,नई बाधा,Нова механіка,Nuova meccanica
+level_speed_title,Hold to speed up,Giữ để tăng tốc,Segure para acelerar,Hızlandırmak için basılı tut,Halten zum Beschleunigen,Maintiens pour accélérer,Tahan untuk mempercepat,Mantén presionado para acelerar,Удерживайте для ускорения,길게 눌러 가속,長押しで加速,तेज़ करने के लिए दबाए रखें,Утримуйте для прискорення,Tieni premuto per accelerare
+level_speed_body,Blocks move 2x faster while held.,Khối chạy nhanh gấp đôi khi bạn giữ.,Os blocos andam 2x mais rápido enquanto você segura.,Basılı tutarken bloklar 2x hızlı hareket eder.,"Solange du hältst, bewegen sich Blöcke 2x so schnell.",Les blocs vont deux fois plus vite tant que tu maintiens.,Blok bergerak 2x lebih cepat saat ditahan.,Los bloques van 2x más rápido mientras mantienes presionado.,При удержании блоки движутся в 2 раза быстрее.,누르고 있는 동안 블록이 2배 빨라져요.,押している間、ブロックが2倍速で動きます。,दबाए रखने पर ब्लॉक 2x तेज़ चलते हैं।,Під час утримання блоки рухаються вдвічі швидше.,I blocchi vanno al doppio della velocità finché tieni premuto.
+level_speed_hold,Hold,Giữ,Segurar,Basılı tut,Halten,Maintenir,Tahan,Mantener,Удерживайте,길게 누르기,長押し,दबाए रखें,Утримуйте,Tieni premuto
+booster_soon_body,You'll unlock this trick soon.,Bạn sắp mở khoá mẹo này rồi.,Você vai desbloquear este truque em breve.,Bu numarayı yakında açacaksın.,Diesen Trick schaltest du bald frei.,Tu débloqueras bientôt cette astuce.,Trik ini akan segera terbuka.,Pronto desbloquearás este truco.,Скоро вы откроете этот приём.,곧 이 부스터를 쓸 수 있어요.,このブースターはもうすぐ解放されます。,यह ट्रिक आप जल्द ही अनलॉक करेंगे।,Скоро ви відкриєте цей прийом.,Sbloccherai presto questo trucco.
+booster_soon_keep,Keep playing!,Chơi tiếp nhé!,Continue jogando!,Oynamaya devam!,Weiterspielen!,Continue à jouer !,Terus bermain!,¡Sigue jugando!,Играйте дальше!,계속 즐겨 주세요!,プレイを続けましょう！,खेलते रहें!,Грайте далі!,Continua a giocare!
+booster_new_title,NEW BOOSTER!,BOOSTER MỚI!,NOVO BOOSTER!,YENİ GÜÇLENDİRİCİ!,NEUER BOOSTER!,NOUVEAU BOOSTER !,BOOSTER BARU!,¡NUEVO POTENCIADOR!,НОВЫЙ БУСТЕР!,새 부스터!,新ブースター！,नया बूस्टर!,НОВИЙ БУСТЕР!,NUOVO BOOSTER!
+booster_new_short,New Booster,Booster mới,Novo booster,Yeni Güçlendirici,Neuer Booster,Nouveau booster,Booster Baru,Nuevo potenciador,Новый бустер,새 부스터,新ブースター,नया बूस्टर,Новий бустер,Nuovo booster
+booster_new_name,Capacity,Sức chứa,Capacidade,Kapasite,Kapazität,Capacité,Kapasitas,Capacidad,Вместимость,용량,容量,क्षमता,Місткість,Capacità
+booster_new_body,Add 2 slots to the conveyor!,Thêm 2 ô cho băng chuyền!,Adicione 2 espaços à esteira!,Banda 2 yuva ekle!,2 Plätze mehr auf dem Förderband!,Ajoute 2 places au tapis !,Tambah 2 slot ke konveyor!,¡Añade 2 espacios a la cinta!,+2 ячейки на конвейере!,컨베이어에 칸 2개 추가!,コンベアに2マス追加！,कन्वेयर में 2 स्लॉट जोड़ें!,+2 комірки на конвеєрі!,2 posti in più sul nastro!
+booster_free_pick,FREE PICK,CHỌN MIỄN PHÍ,ESCOLHA GRÁTIS,ÜCRETSİZ SEÇİM,FREIE WAHL,CHOIX GRATUIT,PILIH GRATIS,ELECCIÓN GRATIS,БЕСПЛАТНЫЙ ВЫБОР,무료 선택,無料で選ぶ,मुफ़्त चुनाव,БЕЗКОШТОВНИЙ ВИБІР,SCELTA GRATIS
+booster_free_pick_body,Pick any block in the queue,Chọn một khối bất kỳ trong hàng chờ,Escolha qualquer bloco da fila,Sıradaki herhangi bir bloğu seç,Wähle einen beliebigen Block in der Warteschlange,Choisis n'importe quel bloc de la file,Pilih blok mana saja di antrean,Elige cualquier bloque de la fila,Выберите любой блок из очереди,대기열에서 원하는 블록을 고르세요,待機列から好きなブロックを選びましょう,कतार में से कोई भी ब्लॉक चुनें,Виберіть будь-який блок із черги,Scegli un blocco qualsiasi in coda
+win_bonus_title,BONUS REWARD,THƯỞNG THÊM,RECOMPENSA BÔNUS,BONUS ÖDÜL,BONUS-BELOHNUNG,RÉCOMPENSE BONUS,HADIAH BONUS,RECOMPENSA EXTRA,БОНУСНАЯ НАГРАДА,보너스 보상,ボーナス報酬,बोनस इनाम,БОНУСНА НАГОРОДА,PREMIO BONUS
+win_bonus_tap,Tap to stop the arrow,Chạm để dừng mũi tên,Toque para parar a seta,Oku durdurmak için dokun,"Tippe, um den Pfeil zu stoppen",Touche pour arrêter la flèche,Ketuk untuk menghentikan panah,Toca para detener la flecha,"Нажмите, чтобы остановить стрелку",탭해서 화살표를 멈추세요,タップして矢印を止めましょう,तीर रोकने के लिए टैप करें,"Натисніть, щоб зупинити стрілку",Tocca per fermare la freccia
+win_bonus_total,= %d Gold,= %d Gold,= %d de ouro,= %d Altın,= %d Gold,= %d or,= %d Emas,= %d de oro,= %d золота,= %d 골드,= %dゴールド,= %d गोल्ड,= %d золота,= %d oro
+win_bonus_claim,Claim,Nhận,Resgatar,Al,Abholen,Récupérer,Klaim,Reclamar,Забрать,받기,受け取る,लें,Забрати,Ritira
+win_rate_title,Rate Us,Đánh giá,Avalie-nos,Bizi Değerlendir,Bewerte uns,Note-nous,Beri Nilai,Califícanos,Оцените нас,평가하기,評価する,रेटिंग दें,Оцініть нас,Valutaci
+win_rate_body,Please rate and help us get better!,Hãy đánh giá để giúp game tốt hơn nhé!,Avalie o jogo e ajude a gente a melhorar!,"Lütfen puan ver, daha iyi olmamıza yardım et!","Bitte bewerte uns und hilf uns, besser zu werden!",Donne-nous une note pour nous aider à progresser !,Beri kami nilai dan bantu kami jadi lebih baik!,¡Califícanos y ayúdanos a mejorar!,Поставьте оценку и помогите нам стать лучше!,평가를 남겨 더 좋은 게임을 만들 수 있게 도와주세요!,ぜひ評価して、ゲームの改善にご協力ください！,कृपया रेटिंग दें और हमें बेहतर बनाने में मदद करें!,Поставте оцінку й допоможіть нам стати кращими!,Lasciaci una valutazione e aiutaci a migliorare!
+lose_keep_title,Keep Playing?,Chơi tiếp chứ?,Continuar jogando?,Oynamaya devam mı?,Weiterspielen?,Continuer ?,Lanjut Main?,¿Seguir jugando?,Продолжить игру?,계속할까요?,プレイを続けますか？,खेलते रहें?,Продовжити гру?,Vuoi continuare?
+lose_keep_body,Quit now and lose 1 heart?,Thoát bây giờ sẽ mất 1 mạng?,Sair agora e perder 1 vida?,Şimdi çıkıp 1 can kaybetmek istiyor musun?,Jetzt beenden und 1 Leben verlieren?,Quitter maintenant et perdre 1 vie ?,Keluar sekarang dan kehilangan 1 nyawa?,¿Salir ahora y perder 1 vida?,Выйти сейчас и потерять 1 жизнь?,지금 나가고 하트 1개를 잃을까요?,今やめてハートを1つ失いますか？,अभी छोड़कर 1 लाइफ गँवाएँ?,Вийти зараз і втратити 1 життя?,Uscire ora e perdere 1 vita?
+lose_keep_quit,Quit,Thoát,Sair,Çık,Beenden,Quitter,Keluar,Salir,Выйти,나가기,やめる,छोड़ें,Вийти,Esci
+lose_keep_note,Replay uses 1 heart. Quit returns to menu.,Chơi lại dùng 1 mạng. Thoát sẽ về menu.,Jogar de novo gasta 1 vida. Sair volta ao menu.,Tekrar oynamak 1 can harcar. Çıkarsan menüye dönersin.,Neustart kostet 1 Leben. Beenden führt zum Menü.,Rejouer coûte 1 vie. Quitter ramène au menu.,Main lagi memakai 1 nyawa. Keluar akan kembali ke menu.,Volver a jugar gasta 1 vida. Salir te lleva al menú.,Переиграть – минус 1 жизнь. Выйти – вернуться в меню.,다시 하면 하트 1개를 사용해요. 나가면 메뉴로 돌아가요.,再プレイでハートを1つ使います。やめるとメニューに戻ります。,दोबारा खेलने में 1 लाइफ लगती है। छोड़ने पर आप मेन्यू पर लौटेंगे।,Переграти – мінус 1 життя. Вийти – повернутися в меню.,Riprovare costa 1 vita. Uscendo torni al menu.
+lose_helper_title,HELPER PACK,GÓI TRỢ GIÚP,PACOTE DE AJUDA,YARDIM PAKETİ,HELFERPAKET,PACK D'AIDE,PAKET BANTUAN,PAQUETE DE AYUDA,НАБОР ПОМОЩИ,도우미 팩,ヘルパーパック,हेल्पर पैक,НАБІР ДОПОМОГИ,PACCHETTO AIUTO
+lose_helper_chest,Chest,Rương,Baú,Sandık,Truhe,Coffre,Peti,Cofre,Сундук,보물상자,宝箱,संदूक,Скриня,Forziere
+hearts_bundle_title,Heart Bundle,Gói mạng,Combo de Vidas,Can Paketi,Leben-Bundle,Lot de vies,Bundel Nyawa,Combo de Vidas,Набор жизней,하트 패키지,ハートセット,लाइफ बंडल,Набір життів,Set di vite
+hearts_bundle_body,Infinite hearts,Mạng vô hạn,Vidas infinitas,Sonsuz can,Unendliche Leben,Vies infinies,Nyawa tak terbatas,Vidas infinitas,Бесконечные жизни,무제한 하트,ハート無制限,अनलिमिटेड लाइफ,Нескінченні життя,Vite infinite
+hearts_hours,%d hours,%d giờ,%d horas,%d saat,%d Stunden,%d heures,%d jam,%d horas,%d ч,%d시간,%d時間,%d घंटे,%d год,%d ore
+hearts_hour_one,1 hour,1 giờ,1 hora,1 saat,1 Stunde,1 heure,1 jam,1 hora,1 час,1시간,1時間,1 घंटा,1 година,1 ora
+hearts_support_title,Out of Hearts!,Hết mạng rồi!,Sem vidas!,Canın kalmadı!,Keine Leben mehr!,Plus de vies !,Nyawa Habis!,¡Sin vidas!,Жизни закончились!,하트가 없어요!,ハート切れ！,लाइफ खत्म!,Життя закінчилися!,Vite finite!
+hearts_support_body,Keep playing without waiting. Includes hearts and helpers.,Chơi tiếp không cần chờ. Gồm mạng và đồ hỗ trợ.,Continue jogando sem esperar. Inclui vidas e ajudas.,Beklemeden oynamaya devam et. Can ve yardımcılar içerir.,Spiel ohne Warten weiter. Mit Leben und Helfern.,Continue à jouer sans attendre. Contient des vies et des aides.,Terus main tanpa menunggu. Berisi nyawa dan item bantuan.,Sigue jugando sin esperar. Incluye vidas y ayudas.,Играйте без ожидания. Внутри жизни и бустеры.,기다릴 필요 없이 바로 플레이할 수 있어요. 하트와 도우미 아이템이 들어 있어요.,待たずにすぐプレイを続けられます。ハートとお助けアイテム入り。,बिना इंतज़ार खेलते रहें। इसमें लाइफ और हेल्पर शामिल हैं।,Грайте без очікування. Усередині життя й бустери.,Continua a giocare senza aspettare. Include vite e aiuti.
+hearts_support_buy,%s · Get Pack,%s · Mua gói,%s - Obter pacote,%s - Paketi al,%s - Paket holen,%s – Obtenir le pack,%s - Beli Paket,%s - Obtener paquete,%s · Купить набор,%s · 팩 구매,%s · パックを購入,%s - पैक लें,%s · Купити набір,%s – Prendi il pacchetto
+hearts_support_refill,Refill with Gold / Video,Nạp bằng Gold / Video,Recarregar com ouro / vídeo,Altın / Video ile doldur,Mit Gold / Video auffüllen,Recharger (or / vidéo),Isi dengan Emas / Video,Recargar con oro / video,Пополнить: золото / видео,골드 / 영상으로 충전,ゴールド / 動画で回復,गोल्ड / वीडियो से भरें,Поповнити: золото / відео,Ricarica con oro / video
+shop_free_gold,Free Gold: +%d,Gold miễn phí: +%d,Ouro grátis: +%d,Ücretsiz Altın: +%d,Gratis-Gold: +%d,Or gratuit : +%d,Emas Gratis: +%d,Oro gratis: +%d,Бесплатное золото: +%d,무료 골드: +%d,無料ゴールド：+%d,मुफ़्त गोल्ड: +%d,Безкоштовне золото: +%d,Oro gratis: +%d
+shop_section_hearts,HEARTS,MẠNG,VIDAS,CANLAR,LEBEN,VIES,NYAWA,VIDAS,ЖИЗНИ,하트,ハート,लाइफ,ЖИТТЯ,VITE
+shop_section_helpers,HELPER PACKS,GÓI TRỢ GIÚP,PACOTES DE AJUDA,YARDIM PAKETLERİ,HELFERPAKETE,PACKS D'AIDE,PAKET BANTUAN,PAQUETES DE AYUDA,НАБОРЫ ПОМОЩИ,도우미 팩,ヘルパーパック,हेल्पर पैक,НАБОРИ ДОПОМОГИ,PACCHETTI AIUTO
+shop_section_bundles,BUNDLES,GÓI TỔNG HỢP,COMBOS,PAKETLER,BUNDLES,LOTS,BUNDEL,COMBOS,КОМБО-НАБОРЫ,패키지,セット,बंडल,КОМБО-НАБОРИ,SET
+shop_heart_count,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d,x%d
+shop_heart_inf,Infinite %dh,Vô hạn %d giờ,Infinitas %dh,Sonsuz %d sa,Unendlich %d Std.,Infini %d h,Tak terbatas %d jam,Infinitas %dh,Бесконечно %d ч,무제한 %d시간,無制限%d時間,अनलिमिटेड %d घंटे,Нескінченно %d год,Infinite %d h
+shop_helper_great,Great Pack,Gói Lớn,Pacote Grande,Büyük Paket,Großes Paket,Super Pack,Paket Hebat,Paquete Grande,Большой набор,그레이트 팩,グレートパック,ग्रेट पैक,Великий набір,Pacchetto Grande
+shop_helper_epic,Epic Pack,Gói Siêu Lớn,Pacote Épico,Efsane Paket,Episches Paket,Pack Épique,Paket Epik,Paquete Épico,Эпический набор,에픽 팩,エピックパック,एपिक पैक,Епічний набір,Pacchetto Epico
+shop_bundle_sweet,Sweet Bundle,Gói Ngọt Ngào,Combo Doce,Tatlı Paket,Süßes Bundle,Lot Douceur,Bundel Manis,Combo Dulce,Сладкий набор,달콤 패키지,あまあまセット,स्वीट बंडल,Солодкий набір,Set Dolce
+shop_bundle_tasty,Tasty Bundle,Gói Hấp Dẫn,Combo Saboroso,Lezzetli Paket,Leckeres Bundle,Lot Savoureux,Bundel Lezat,Combo Sabroso,Вкусный набор,맛있는 패키지,おいしいセット,टेस्टी बंडल,Смачний набір,Set Gustoso
+shop_bundle_yummy,Yummy Bundle,Gói Tuyệt Hảo,Combo Delicioso,Nefis Paket,Köstliches Bundle,Lot Délicieux,Bundel Nikmat,Combo Delicioso,Аппетитный набор,냠냠 패키지,ごちそうセット,यम्मी बंडल,Апетитний набір,Set Delizioso
+shop_bundle_desc,Gold + Hearts + Boosters,Gold + Mạng + Booster,Ouro + Vidas + Boosters,Altın + Can + Güçlendirici,Gold + Leben + Booster,Or + vies + boosters,Emas + Nyawa + Booster,Oro + Vidas + Potenciadores,Золото + жизни + бустеры,골드 + 하트 + 부스터,ゴールド＋ハート＋ブースター,गोल्ड + लाइफ + बूस्टर,Золото + життя + бустери,Oro + vite + booster
+weekly_upsell_one,Chests full of gold and rewards,Rương đầy gold và phần thưởng,Baús cheios de ouro e recompensas,Altın ve ödül dolu sandıklar,Truhen voller Gold und Belohnungen,Des coffres pleins d'or et de récompenses,Peti penuh emas dan hadiah,Cofres llenos de oro y recompensas,Сундуки с золотом и наградами,골드와 보상이 가득한 보물상자,ゴールドと報酬がつまった宝箱,गोल्ड और इनामों से भरे संदूक,Скрині із золотом і нагородами,Forzieri pieni di oro e premi
+weekly_upsell_two,Golden avatar frame and name,Khung avatar và tên vàng,Moldura de avatar e nome dourados,Altın avatar çerçevesi ve isim,Goldener Avatar-Rahmen und Name,Cadre d'avatar et nom dorés,Bingkai avatar dan nama emas,Marco de avatar y nombre dorados,Золотая рамка аватара и имя,황금 아바타 프레임과 이름,金色のアバターフレームと名前,सुनहरा अवतार फ़्रेम और नाम,Золота рамка аватара й ім'я,Cornice avatar e nome dorati
+weekly_upsell_three,Max heart boost for more tries,Tăng mạng tối đa để chơi nhiều hơn,Limite de vidas maior para mais tentativas,Daha çok deneme için maks. can artışı,Mehr max. Leben für mehr Versuche,Plus de vies max pour plus d'essais,Tambahan nyawa maks untuk lebih banyak percobaan,Límite de vidas mayor para más intentos,Больше жизней – больше попыток,최대 하트가 늘어나 더 많이 도전,最大ハートが増えてもっと挑戦できる,ज़्यादा मैक्स लाइफ यानी ज़्यादा मौके,Більше життів – більше спроб,Più vite max per più tentativi
+lb_title,Leaderboard,Bảng xếp hạng,Classificação,Liderlik Tablosu,Bestenliste,Classement,Papan Peringkat,Clasificación,Таблица лидеров,리더보드,ランキング,लीडरबोर्ड,Таблиця лідерів,Classifica
+lb_tab_league,League,Giải đấu,Liga,Lig,Liga,Ligue,Liga,Liga,Лига,리그,リーグ,लीग,Ліга,Lega
+lb_tab_world,World,Thế giới,Mundo,Dünya,Welt,Monde,Dunia,Mundo,Мир,전 세계,世界,दुनिया,Світ,Mondo
+lb_you,You,Bạn,Você,Sen,Du,Toi,Kamu,Tú,Вы,나,あなた,आप,Ви,Tu
+lb_rank,Rank #%d %s,Hạng %d %s,Posição #%d %s,Sıra #%d %s,Rang #%d %s,Rang #%d %s,Peringkat #%d %s,Puesto #%d %s,Место #%d %s,%d위 %s,%d位 %s,रैंक #%d %s,Місце #%d %s,Posizione #%d %s
+lb_league,%s League,Giải %s,Liga %s,%s Lig,Liga %s,Ligue %s,Liga %s,Liga %s,Лига: %s,%s 리그,%sリーグ,%s लीग,Ліга: %s,Lega %s
+lb_league_silver,Silver,Bạc,Prata,Gümüş,Silber,Argent,Perak,Plata,Серебро,실버,シルバー,सिल्वर,Срібло,Argento
+lb_league_gold,Gold,Vàng,Ouro,Altın,Gold,Or,Emas,Oro,Золото,골드,ゴールド,गोल्ड,Золото,Oro
+lb_league_platinum,Platinum,Bạch kim,Platina,Platin,Platin,Platine,Platina,Platino,Платина,플래티넘,プラチナ,प्लैटिनम,Платина,Platino
+lb_league_emerald,Emerald,Lục bảo,Esmeralda,Zümrüt,Smaragd,Émeraude,Zamrud,Esmeralda,Изумруд,에메랄드,エメラルド,एमरल्ड,Смарагд,Smeraldo
+lb_league_diamond,Diamond,Kim cương,Diamante,Elmas,Diamant,Diamant,Berlian,Diamante,Алмаз,다이아몬드,ダイヤモンド,डायमंड,Діамант,Diamante
+lb_league_immortal,Immortal,Bất tử,Imortal,Ölümsüz,Unsterblich,Immortel,Abadi,Inmortal,Бессмертный,불멸,イモータル,अमर,Безсмертний,Immortale
+lb_league_one_above_all,One Above All,Tối thượng,Suprema,Yüce,Unübertroffen,Suprême,Tak Tertandingi,Suprema,Абсолют,최강자,頂点,सर्वोपरि,Абсолют,Suprema
+lb_to_next,%d more to %s,Còn %d điểm lên %s,Faltam %d pontos para %s,%d puan daha: %s,Noch %d bis %s,Encore %d points pour %s,%d poin lagi ke Liga %s,Faltan %d puntos para %s,Ещё %d до лиги: %s,%d점 더 모으면 %s 리그 승급,あと%dポイントで%sリーグ,"%d पॉइंट और, फिर %s लीग",Ще %d до ліги: %s,Ancora %d punti per %s
+lb_top_league,Top league reached!,Đã ở giải cao nhất!,Liga máxima alcançada!,En üst lige ulaştın!,Höchste Liga erreicht!,Meilleure ligue atteinte !,Liga tertinggi tercapai!,¡Llegaste a la liga máxima!,Вы в высшей лиге!,최고 리그 달성!,最上位リーグに到達！,आप सबसे ऊँची लीग में हैं!,Ви в найвищій лізі!,Hai raggiunto la lega più alta!
+lb_top_percent,Top %d%%,Top %d%%,Top %d%%,İlk %d%%,Top %d%%,Top %d%%,Top %d%%,Top %d%%,Топ %d%%,상위 %d%%,上位%d%%,टॉप %d%%,Топ %d%%,Top %d%%
+lb_updates_in,Updates in %s,Cập nhật sau %s,Atualiza em %s,%s içinde güncellenir,Update in %s,Mise à jour dans %s,Diperbarui dalam %s,Se actualiza en %s,Обновление через %s,%s 후 업데이트,更新まで%s,%s में अपडेट होगा,Оновлення через %s,Aggiornamento tra %s
+lb_world_rank,World rank #%s,Hạng thế giới %s,Posição mundial #%s,Dünya sırası #%s,Weltrang #%s,Rang mondial #%s,Peringkat dunia #%s,Puesto mundial #%s,Место в мире: #%s,세계 %s위,世界%s位,विश्व रैंक #%s,Місце у світі: #%s,Posizione mondiale #%s
+lb_world_sub,%s players worldwide,%s người chơi trên thế giới,%s jogadores no mundo todo,Dünya genelinde %s oyuncu,%s Spieler weltweit,%s joueurs dans le monde,%s pemain di seluruh dunia,%s jugadores en todo el mundo,Игроков в мире: %s,전 세계 플레이어 %s명,世界中のプレイヤー%s人,दुनिया भर में %s खिलाड़ी,Гравців у світі: %s,%s giocatori nel mondo
+lb_player_points,%d rank points,%d điểm xếp hạng,%d pontos de ranking,%d sıralama puanı,%d Rangpunkte,%d points de classement,%d poin peringkat,%d puntos de ranking,Очки рейтинга: %d,랭킹 점수 %d점,ランクポイント%d,%d रैंक पॉइंट,Очки рейтингу: %d,%d punti classifica
+lb_locked,Unlocked at Level %d,Mở khoá ở Level %d,Disponível no Nível %d,Seviye %d gerekli,Ab Level %d,Dès le niveau %d,Terbuka di Level %d,Disponible en el Nivel %d,Откроется на уровне %d,레벨 %d에서 잠금 해제,レベル%dで解放,लेवल %d पर खुलेगा,Відкриється на рівні %d,Dal livello %d
+lb_howto_title,How it works,Cách hoạt động,Como funciona,Nasıl çalışır,So funktioniert's,Comment ça marche,Cara kerjanya,Cómo funciona,Как это работает,진행 방식,ルール,यह कैसे काम करता है,Як це працює,Come funziona
+lb_howto_1,Break star blocks in levels to collect pieces,Phá khối ngôi sao trong level để nhặt mảnh,Quebre blocos de estrela nos níveis para juntar peças,Parça toplamak için seviyelerde yıldız blokları kır,Knacke Sternblöcke in Leveln und sammle Teile,Casse les blocs étoile dans les niveaux pour récolter des fragments,Pecahkan blok bintang di level untuk mengumpulkan kepingan,Rompe bloques de estrella en los niveles para reunir piezas,Убирайте звёздные блоки в уровнях и собирайте осколки,레벨에서 별 블록을 부숴 조각을 모으세요,レベル内の星ブロックを壊して、かけらを集めましょう,टुकड़े जमा करने के लिए लेवल में स्टार ब्लॉक तोड़ें,Прибирайте зіркові блоки в рівнях і збирайте уламки,Spacca i blocchi stella nei livelli per raccogliere frammenti
+lb_howto_2,Win the level: every piece is 1 rank point,Thắng level: mỗi mảnh là 1 điểm xếp hạng,Vença o nível: cada peça vale 1 ponto de ranking,Seviyeyi kazan: her parça 1 sıralama puanı,Gewinne das Level: Jedes Teil ist 1 Rangpunkt,Gagne le niveau : chaque fragment vaut 1 point de classement,Menangkan level: setiap kepingan = 1 poin peringkat,Gana el nivel: cada pieza vale 1 punto de ranking,Пройдите уровень: каждый осколок = 1 очко рейтинга,레벨 클리어: 조각 1개당 랭킹 점수 1점,レベルクリア：かけら1個につき1ランクポイント,लेवल जीतें: हर टुकड़ा 1 रैंक पॉइंट है,Пройдіть рівень: кожен уламок = 1 очко рейтингу,Vinci il livello: ogni frammento vale 1 punto classifica
+lb_howto_3,Climb past the other 99 players in your league,Vượt 99 người chơi khác trong giải của bạn,Supere os outros 99 jogadores da sua liga,Ligindeki diğer 99 oyuncuyu geç,Überhole die anderen 99 Spieler deiner Liga,Dépasse les 99 autres joueurs de ta ligue,Lampaui 99 pemain lain di ligamu,Supera a los otros 99 jugadores de tu liga,Обгоните остальных 99 игроков своей лиги,리그의 다른 플레이어 99명을 앞질러 보세요,リーグ内のほかの99人を追い抜きましょう,अपनी लीग के बाकी 99 खिलाड़ियों से आगे निकलें,Випередіть інших 99 гравців своєї ліги,Supera gli altri 99 giocatori della tua lega
+lb_howto_4,Reach the next league's points to move up and get its reward,Đủ điểm của giải kế tiếp để lên giải và nhận thưởng,Alcance os pontos da próxima liga para subir e ganhar a recompensa dela,Yükselmek ve ödülünü almak için sonraki ligin puanına ulaş,"Erreiche die Punkte der nächsten Liga, um aufzusteigen und ihre Belohnung zu erhalten",Atteins les points de la ligue suivante pour monter et gagner sa récompense,Capai poin liga berikutnya untuk naik dan dapatkan hadiahnya,Alcanza los puntos de la siguiente liga para subir y obtener su recompensa,"Наберите очки следующей лиги, чтобы перейти в неё и получить награду",다음 리그 점수에 도달하면 승급하고 보상을 받아요,次のリーグのポイントに届くと、昇格して報酬がもらえます,अगली लीग के पॉइंट तक पहुँचकर ऊपर जाएँ और उसका इनाम पाएँ,"Наберіть очки наступної ліги, щоб перейти до неї й отримати нагороду",Raggiungi i punti della lega successiva per salire e ottenere il suo premio
+lb_leagues_title,Leagues,Các giải đấu,Ligas,Ligler,Ligen,Ligues,Liga,Ligas,Лиги,리그,リーグ一覧,लीग,Ліги,Leghe
+lb_leagues_sub,Reach the points to move up and claim the reward,Đủ điểm để lên giải và nhận thưởng,Alcance os pontos para subir e resgatar a recompensa,Yükselmek ve ödülü almak için puana ulaş,"Erreiche die Punkte, um aufzusteigen und die Belohnung abzuholen",Atteins les points requis pour monter et récupérer la récompense,Capai poinnya untuk naik dan klaim hadiahnya,Alcanza los puntos para subir y reclamar la recompensa,"Наберите очки, чтобы подняться и забрать награду",점수에 도달하면 승급하고 보상을 받아요,ポイントに届くと、昇格して報酬がもらえます,पॉइंट तक पहुँचकर ऊपर जाएँ और इनाम लें,"Наберіть очки, щоб піднятися й забрати нагороду",Raggiungi i punti per salire e ritirare il premio
+lb_league_range,%d–%d points,%d–%d điểm,%d–%d pontos,%d–%d puan,%d–%d Punkte,%d–%d points,%d–%d poin,%d–%d puntos,Очки: %d–%d,%d–%d점,%d–%dポイント,%d–%d पॉइंट,Очки: %d–%d,%d–%d punti
+lb_league_range_top,%d+ points,Từ %d điểm,%d+ pontos,%d+ puan,%d+ Punkte,%d+ points,%d+ poin,%d+ puntos,Очки: %d+,%d점 이상,%dポイント以上,%d+ पॉइंट,Очки: %d+,%d+ punti
+lb_current,Current,Hiện tại,Atual,Mevcut,Aktuell,Actuelle,Saat ini,Actual,Текущая,현재,現在,मौजूदा,Поточна,Attuale
+lb_reached,Reached,Đã đạt,Alcançada,Ulaşıldı,Erreicht,Atteinte,Tercapai,Alcanzada,Достигнута,달성,到達済み,पहुँच गए,Досягнуто,Raggiunta
+lb_result_title,League Up!,Lên giải!,Subiu de liga!,Lig atladın!,Aufgestiegen!,Promotion !,Naik Liga!,¡Subiste de liga!,Повышение!,리그 승급!,リーグ昇格！,लीग में तरक्की!,Підвищення!,Promozione!
+lb_result_promoted,Welcome to %s League!,Chào mừng tới giải %s!,Boas-vindas à Liga %s!,%s Lig'e hoş geldin!,Willkommen in der Liga %s!,Bienvenue dans la ligue %s !,Selamat datang di Liga %s!,¡Bienvenido a la Liga %s!,Ваша новая лига: %s!,%s 리그에 오신 걸 환영해요!,%sリーグへようこそ！,%s लीग में स्वागत है!,Ваша нова ліга: %s!,Ora sei nella Lega %s!
+lb_result_reward,Your reward,Phần thưởng của bạn,Sua recompensa,Ödülün,Deine Belohnung,Ta récompense,Hadiahmu,Tu recompensa,Ваша награда,보상,報酬,आपका इनाम,Ваша нагорода,Il tuo premio
+lb_win_points,+%d rank points,+%d điểm xếp hạng,+%d pontos de ranking,+%d sıralama puanı,+%d Rangpunkte,+%d points de classement,+%d poin peringkat,+%d puntos de ranking,+%d к рейтингу,랭킹 점수 +%d,+%dランクポイント,+%d रैंक पॉइंट,+%d до рейтингу,+%d punti classifica
+lb_win_rank,Rank #%d,Hạng %d,Posição #%d,Sıra #%d,Rang #%d,Rang #%d,Peringkat #%d,Puesto #%d,Место #%d,%d위,%d位,रैंक #%d,Місце #%d,Posizione #%d
+lb_pieces,Pieces,Mảnh,Peças,Parçalar,Teile,Fragments,Kepingan,Piezas,Осколки,조각,かけら,टुकड़े,Уламки,Frammenti
+streak_title,Win Streak,Chuỗi thắng,Sequência de Vitórias,Galibiyet Serisi,Siegesserie,Série de victoires,Rentetan Kemenangan,Racha de Victorias,Серия побед,연승,連勝,जीत का सिलसिला,Серія перемог,Serie di vittorie
+streak_go,Let's go,Bắt đầu thôi,Vamos lá,Hadi başlayalım,Los geht's,C'est parti,Ayo mulai,¡Vamos!,Вперёд,시작하기,スタート,चलिए शुरू करें,Уперед,Si parte
+streak_intro_1,Win levels in a row: streak +1 each win,Thắng liên tiếp: mỗi trận thắng +1 chuỗi,Vença níveis seguidos: +1 na sequência a cada vitória,Üst üste seviye kazan: her galibiyette seri +1,Gewinne Level in Folge: Serie +1 pro Sieg,Gagne des niveaux d'affilée : +1 à ta série à chaque victoire,Menang beruntun: rentetan +1 tiap kali menang,Gana niveles seguidos: +1 a la racha por cada victoria,Побеждайте подряд: каждая победа +1 к серии,연속으로 클리어: 승리할 때마다 연승 +1,連続でクリア：勝つたびに連勝+1,लगातार लेवल जीतें: हर जीत पर सिलसिला +1,Перемагайте поспіль: кожна перемога +1 до серії,Vinci livelli di fila: +1 alla serie per ogni vittoria
+streak_intro_2,Reach milestones: chests along the track,Đạt các mốc: có rương dọc đường,Alcance marcos: baús ao longo da trilha,Aşamalara ulaş: yol boyunca sandıklar,Erreiche Meilensteine: Truhen entlang der Strecke,Atteins des paliers : des coffres le long du parcours,Capai target: ada peti di sepanjang jalur,Alcanza hitos: cofres a lo largo del camino,Достигайте этапов: на пути вас ждут сундуки,목표 달성: 트랙을 따라 보물상자 획득,目標を達成：トラック上の宝箱をゲット,पड़ाव तक पहुँचें: रास्ते में संदूक मिलेंगे,Досягайте етапів: на шляху на вас чекають скрині,Raggiungi i traguardi: forzieri lungo il percorso
+streak_intro_3,Lose and the streak ends. Use Keep Playing to save it.,Thua là mất chuỗi. Dùng Chơi tiếp để giữ lại.,"Se perder, a sequência acaba. Use Continuar jogando para salvá-la.",Kaybedersen seri biter. Kurtarmak için oynamaya devam et.,Bei einer Niederlage endet die Serie. Mit Weiterspielen rettest du sie.,Une défaite met fin à la série. Utilise Continuer pour la sauver.,Kalah berarti rentetan berakhir. Pakai Lanjut Main untuk menyelamatkannya.,"Si pierdes, la racha termina. Usa Seguir jugando para salvarla.","Поражение обрывает серию. Чтобы сохранить её, выберите «Продолжить игру».",실패하면 연승이 끝나요. '계속하기'로 연승을 지킬 수 있어요.,負けると連勝が終わります。「プレイを続ける」で連勝を守れます。,"हारने पर सिलसिला टूट जाता है। इसे बचाने के लिए ""खेलते रहें"" इस्तेमाल करें।","Поразка обриває серію. Щоб зберегти її, виберіть «Продовжити гру».","Se perdi, la serie finisce. Usa Continua per salvarla."
+streak_ends,Event ends in %s,Sự kiện kết thúc sau %s,O evento termina em %s,Etkinlik %s içinde bitiyor,Event endet in %s,L'événement se termine dans %s,Event berakhir dalam %s,El evento termina en %s,До конца события: %s,%s 후 이벤트 종료,イベント終了まで%s,इवेंट %s में खत्म होगा,До кінця події: %s,L'evento termina tra %s
+streak_current,Current streak,Chuỗi hiện tại,Sequência atual,Mevcut seri,Aktuelle Serie,Série actuelle,Rentetan saat ini,Racha actual,Текущая серия,현재 연승,現在の連勝,मौजूदा सिलसिला,Поточна серія,Serie attuale
+streak_rewards_title,Rewards,Phần thưởng,Recompensas,Ödüller,Belohnungen,Récompenses,Hadiah,Recompensas,Награды,보상,報酬,इनाम,Нагороди,Premi
+streak_row,Streak %d,Chuỗi %d,Sequência %d,Seri %d,Serie %d,Série %d,Rentetan %d,Racha %d,Серия %d,%d연승,%d連勝,सिलसिला %d,Серія %d,Serie %d
+streak_reward_gold,%d Gold,%d Gold,%d de ouro,%d Altın,%d Gold,%d or,%d Emas,%d de oro,%d золота,%d 골드,%dゴールド,%d गोल्ड,%d золота,%d oro
+streak_reward_hint,Hint x%d,Gợi ý x%d,Dica x%d,İpucu x%d,Tipp x%d,Indice x%d,Petunjuk x%d,Pista x%d,Подсказка x%d,힌트 x%d,ヒント x%d,हिंट x%d,Підказка x%d,Indizio x%d
+streak_reward_heart,%dh Infinite Hearts,%d giờ mạng vô hạn,%dh de vidas infinitas,%d sa sonsuz can,%d Std. unendliche Leben,%d h de vies infinies,%d jam Nyawa Tak Terbatas,%dh de vidas infinitas,%d ч бесконечных жизней,%d시간 무제한 하트,%d時間ハート無制限,%d घंटे अनलिमिटेड लाइफ,%d год нескінченних життів,%d h di vite infinite
+streak_reward_chest,Chest + Frame x%d,Rương + Khung x%d,Baú + Moldura x%d,Sandık + Çerçeve x%d,Truhe + Rahmen x%d,Coffre + cadre x%d,Peti + Bingkai x%d,Cofre + Marco x%d,Сундук + рамка x%d,보물상자 + 프레임 x%d,宝箱＋フレーム x%d,संदूक + फ़्रेम x%d,Скриня + рамка x%d,Forziere + cornice x%d
+streak_rewards_note,Win a level every day to keep it alive,Thắng một level mỗi ngày để giữ chuỗi,Vença um nível por dia para manter a sequência,Seriyi korumak için her gün bir seviye kazan,"Gewinne jeden Tag ein Level, um sie zu halten",Gagne un niveau chaque jour pour la faire durer,Menangkan satu level setiap hari agar rentetan berlanjut,Gana un nivel cada día para mantener la racha,"Проходите уровень каждый день, чтобы не прервать серию",매일 레벨을 클리어해 연승을 이어 가세요,毎日レベルをクリアして連勝をつなげましょう,सिलसिला बनाए रखने के लिए हर दिन एक लेवल जीतें,"Проходьте рівень щодня, щоб не перервати серію",Vinci un livello ogni giorno per tenerla viva
+streak_end_title,STREAK ENDED,HẾT CHUỖI,FIM DA SEQUÊNCIA,SERİ BİTTİ,SERIE BEENDET,SÉRIE TERMINÉE,RENTETAN BERAKHIR,FIN DE LA RACHA,СЕРИЯ ПРЕРВАНА,연승 종료,連勝終了,सिलसिला टूट गया,СЕРІЮ ПЕРЕРВАНО,SERIE FINITA
+streak_end_final,Final streak: %d,Chuỗi cuối: %d,Sequência final: %d,Son seri: %d,Endstand: %d,Série finale : %d,Rentetan akhir: %d,Racha final: %d,Итоговая серия: %d,최종 연승: %d,最終連勝数：%d,आखिरी सिलसिला: %d,Підсумкова серія: %d,Serie finale: %d
+streak_end_ready,Your rewards are ready!,Phần thưởng đã sẵn sàng!,Suas recompensas estão prontas!,Ödüllerin hazır!,Deine Belohnungen sind bereit!,Tes récompenses sont prêtes !,Hadiahmu sudah siap!,¡Tus recompensas están listas!,Ваши награды готовы!,보상이 준비됐어요!,報酬の準備ができました！,आपके इनाम तैयार हैं!,Ваші нагороди готові!,I tuoi premi sono pronti!
+streak_chest,Chest,Rương,Baú,Sandık,Truhe,Coffre,Peti,Cofre,Сундук,보물상자,宝箱,संदूक,Скриня,Forziere
+streak_keep_title,Keep Your Streak?,Giữ chuỗi nhé?,Manter a sequência?,Serini korumak ister misin?,Serie behalten?,Garder ta série ?,Pertahankan Rentetan?,¿Mantener tu racha?,Сохранить серию?,연승을 지킬까요?,連勝を守りますか？,सिलसिला बचाएँ?,Зберегти серію?,Vuoi salvare la serie?
+streak_keep_reset,It will reset if you quit,Thoát là chuỗi về 0,A sequência zera se você sair,Çıkarsan seri sıfırlanır,Beim Beenden wird sie zurückgesetzt,Elle repart à zéro si tu quittes,Rentetan akan direset jika kamu keluar,La racha se reinicia si sales,"Если выйти, серия обнулится",나가면 연승이 초기화돼요,やめると連勝がリセットされます,छोड़ने पर यह रीसेट हो जाएगा,"Якщо вийти, серія обнулиться",Si azzera se esci
+streak_keep_body,Continue now to protect it,Chơi tiếp để giữ chuỗi,Continue agora para protegê-la,Korumak için şimdi devam et,Spiel jetzt weiter und schütze sie,Continue maintenant pour la protéger,Lanjutkan sekarang untuk mempertahankannya,Continúa ahora para protegerla,"Продолжите, чтобы сохранить её",지금 계속하면 연승을 지킬 수 있어요,今続ければ連勝を守れます,इसे बचाने के लिए अभी जारी रखें,"Продовжте, щоб зберегти її",Continua ora per proteggerla
+streak_keep_ad,Continue,Chơi tiếp,Continuar,Devam et,Weiter,Continuer,Lanjut,Continuar,Продолжить,계속,続ける,जारी रखें,Продовжити,Continua
+profile_name_title,Change Name,Đổi tên,Alterar nome,İsim değiştir,Namen ändern,Changer de nom,Ganti Nama,Cambiar nombre,Сменить имя,이름 변경,名前の変更,नाम बदलें,Змінити ім'я,Cambia nome
+profile_name_rules,"Enter a nickname (3-14 characters), containing only English letters, numbers, underscores, periods, hyphens.","Nhập biệt danh (3-14 ký tự), chỉ gồm chữ cái tiếng Anh, số, gạch dưới, dấu chấm, gạch ngang.","Digite um apelido (3-14 caracteres) contendo apenas letras do alfabeto inglês, números, sublinhados, pontos e hífens.","Bir takma ad gir (3-14 karakter). Yalnızca İngilizce harf, rakam, alt çizgi, nokta ve kısa çizgi kullanılabilir.","Gib einen Spitznamen ein (3-14 Zeichen), nur englische Buchstaben, Zahlen, Unterstriche, Punkte und Bindestriche.","Saisis un pseudo (3 à 14 caractères) avec uniquement des lettres de l'alphabet anglais, des chiffres, des tirets bas, des points et des tirets.","Masukkan nama panggilan (3-14 karakter), hanya berisi huruf alfabet Inggris, angka, garis bawah, titik, dan tanda hubung.","Escribe un apodo (3-14 caracteres) que contenga solo letras del alfabeto inglés, números, guiones bajos, puntos y guiones.","Введите ник (3-14 символов): только английские буквы, цифры, подчёркивания, точки и дефисы.","닉네임을 입력하세요(3-14자). 영문, 숫자, 밑줄, 마침표, 하이픈만 사용할 수 있어요.",ニックネーム（3-14文字）を入力してください。使えるのは英字、数字、アンダースコア、ピリオド、ハイフンのみです。,"एक निकनेम डालें (3-14 अक्षर), जिसमें सिर्फ़ अंग्रेज़ी अक्षर, अंक, अंडरस्कोर, पीरियड और हाइफ़न हों।","Введіть нікнейм (3-14 символів): лише англійські літери, цифри, підкреслення, крапки та дефіси.","Inserisci un nickname (3-14 caratteri) con solo lettere dell'alfabeto inglese, numeri, trattini bassi, punti e trattini."
+profile_name_taken,Name is already taken,Tên này đã có người dùng,Esse nome já está em uso,Bu isim zaten alınmış,Name ist schon vergeben,Ce nom est déjà pris,Nama sudah dipakai,Ese nombre ya está en uso,Это имя уже занято,이미 사용 중인 이름이에요,この名前はすでに使われています,यह नाम पहले से लिया जा चुका है,Це ім'я вже зайняте,Nome già in uso
+profile_nickname,Nickname,Biệt danh,Apelido,Takma ad,Spitzname,Pseudo,Nama panggilan,Apodo,Никнейм,닉네임,ニックネーム,निकनेम,Нікнейм,Nickname
+profile_name_default,Player,Người chơi,Jogador,Oyuncu,Spieler,Joueur,Pemain,Jugador,Игрок,플레이어,プレイヤー,खिलाड़ी,Гравець,Giocatore
+weekly_reward_min,%dm,%dp,%d min,%d dk,%d Min.,%d min,%d mnt,%d min,%d мин,%d분,%d分,%d मि.,%d хв,%d min

@@ -44,11 +44,6 @@ const VERSION_Y := -330.0
 const INK := "1c4a83ff"
 const GALLERY := "res://scenes/ui_gallery.tscn"
 const TESTER := "res://scenes/tester_menu.tscn"
-const LANGS: Array[Dictionary] = [
-	{"value": "", "label": "settings_language_auto"},
-	{"value": "en", "label": "settings_language_en"},
-	{"value": "vi", "label": "settings_language_vi"},
-]
 const TESTER_TAPS := 10
 const TAP_GAP_MS := 1500
 
@@ -297,8 +292,8 @@ func open_language() -> void:
 	language_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(language_panel)
 	var rows: Array = []
-	for def in LANGS:
-		rows.append([str(def.value), str(def.label)])
+	for code in Game.LANGS:
+		rows.append([code, PopupLanguage.label_key(code)])
 	_lang = PopupLanguage.build_layer(language_panel, rows, true)
 	lang_buttons = _lang.buttons
 	for value in lang_buttons:
@@ -315,11 +310,12 @@ func _fill_language() -> void:
 	var v: RefCounted = _lang.ui
 	v.text("Panel/PauseMenu/Image/txtHeader", tr("settings_language"))
 	v.text("Panel/PauseMenu/Content/Save/Out", tr("common_ok"))
-	var cur := str(Game.s.settings.get("lang", ""))
-	for def in LANGS:
-		var b: Button = lang_buttons[str(def.value)]
-		UnityUI.set_text(b.get_node("Txt") as Label, tr(str(def.label)))
-		b.button_pressed = cur == str(def.value)
+	# No "device language" cell (the prefab holds the 14 languages): the device locale applies until one is picked.
+	var cur: String = Game.current_lang()
+	for code in Game.LANGS:
+		var b: Button = lang_buttons[code]
+		UnityUI.set_text(b.get_node("Txt") as Label, tr(PopupLanguage.label_key(code)))
+		b.button_pressed = cur == code
 
 
 func close_language() -> void:

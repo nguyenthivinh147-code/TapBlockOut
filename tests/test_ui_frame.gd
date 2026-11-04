@@ -53,13 +53,18 @@ func test_bars_surround_board_without_touching_it(t: T) -> void:
 	t.ok(not CandyFrame.bar_rect("down", board, cell).intersects(CandyFrame.bar_rect("right", board, cell)), "thanh dưới và phải rời nhau")
 
 
-## Trọn khung ở 720 khớp ảnh ref (rộng 505, cao 653 trên ảnh rộng 558, quy đổi x 720/558).
+## Ở màn chuẩn 886x1920 khung khớp ảnh ref `art/concepts/ref_board_scale.png` (ảnh rộng 628: trọn khung 569 x 736, mặt
+## trong các thanh 526 x 693, ô khối 57,25; quy đổi x 886/628).
 func test_frame_matches_reference_size(t: T) -> void:
-	var cell := float(Config.BOARD_CELL)
-	var board := Rect2(0, 0, Config.BOARD_W * cell, Config.BOARD_H * cell)
-	var outer := CandyFrame.outer_rect(board, cell)
-	t.near(outer.size.x, 652.0, 12.0, "khung rộng như ảnh ref (%.0f)" % outer.size.x)
-	t.near(outer.size.y, 843.0, 12.0, "khung cao như ảnh ref (%.0f)" % outer.size.y)
+	var board := Rect2(Vector2.ZERO, Config.BOARD_AREA)
+	var unit := Config.BOARD_FRAME_UNIT
+	var outer := CandyFrame.outer_rect(board, unit)
+	var inner := CandyFrame.inner_rect(board, unit)
+	t.near(outer.size.x, 803.0, 12.0, "khung rộng như ảnh ref (%.0f)" % outer.size.x)
+	t.near(outer.size.y, 1038.0, 12.0, "khung cao như ảnh ref (%.0f)" % outer.size.y)
+	t.near(inner.size.x, 742.0, 12.0, "lòng khung rộng như ảnh ref (%.0f)" % inner.size.x)
+	t.near(inner.size.y, 978.0, 12.0, "lòng khung cao như ảnh ref (%.0f)" % inner.size.y)
+	t.near(float(Config.BOARD_CELL_MAX), 80.8, 1.5, "ô to nhất bằng khối trong ảnh ref")
 
 
 func test_corner_tubes_sit_inside_frame(t: T) -> void:
@@ -112,12 +117,12 @@ func test_ramps_cover_every_side(t: T) -> void:
 func test_hit_spins_segment_under_block(t: T) -> void:
 	var v := _make(_lv(4, 5, {"blocks": [{"id": "b1", "color": "green", "cells": [[0, 1], [0, 2], [1, 2]], "ice": 0, "chained_by": "", "inner_color": "", "fog": false}]}))
 	var frame: Node = v.get_node("Frame")
-	var cell: float = v._cell
+	var cell: float = v.cell_size()
 	var br: Rect2 = v.board_rect()
 	v._hit_bar("left", v._nodes["b1"], Vector2(-1, 0), false, 1.0, CandyFrame.SPIN_EXIT)
 	t.near(float(_part_param(v, "left", "seg_half")), cell, 0.5, "đoạn dài bằng 2 ô khối phủ lên")
-	var bar_mid := CandyFrame.bar_rect("left", br, cell).get_center().y
-	t.near(float(_part_param(v, "left", "seg_at")), br.position.y + 2.0 * cell - bar_mid, 0.5, "đoạn nằm ngang hàng khối")
+	var bar_mid := CandyFrame.bar_rect("left", br, v.frame_unit()).get_center().y
+	t.near(float(_part_param(v, "left", "seg_at")), v.cell_center(Vector2i(0, 2)).y - 0.5 * cell - bar_mid, 0.5, "đoạn nằm ngang hàng khối")
 	(frame._hit_tws["left"] as Tween).custom_step(0.2)
 	t.ok(float(_part_param(v, "left", "spin")) > 0.0, "khối đi sang trái thì đoạn lăn chiều dương")
 	t.ok(float(_part_param(v, "left", "seg")) > 0.9, "đang lăn thì đoạn nổi hẳn lên")

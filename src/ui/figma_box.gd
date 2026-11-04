@@ -79,16 +79,37 @@ func apply(s: float, shift_y: float = 0.0) -> void:
 			continue
 		var f: Array = _fonts[n]
 		var fs := maxi(roundi(float(f[0]) * s), 8)
+		var ol := roundi(float(f[1]) * 2.0 * s)
 		var text := str((n as Object).get("text"))
-		if float(f[2]) > 0.0 and text != "":
-			var limit := float(f[2]) * s
+		if n is Label and (n as Label).uppercase:
+			text = text.to_upper()
+		var limit := minf(float(f[2]) * s if float(f[2]) > 0.0 else INF, _button_room(n as Control, s))
+		if limit < INF and text != "":
+			# The outline is drawn past the glyphs.
+			limit -= ol
 			while fs > 8 and ThemeKit.FONT.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > limit:
 				fs -= 1
 		(n as Control).add_theme_font_size_override("font_size", fs)
-		var ol := roundi(float(f[1]) * 2.0 * s)
 		(n as Control).add_theme_constant_override("outline_size", ol)
 		# Figma: bóng chữ cùng màu viền, lệch xuống (không phải bóng đen mặc định).
 		if n is Label:
 			ThemeKit.underlay(n as Label, ol)
 			if ol > 0:
 				(n as Label).add_theme_color_override("font_shadow_color", (n as Label).get_theme_color("font_outline_color"))
+
+
+## Width a label on a button may fill, by its alignment, inside the button's ThemeKit.button_text_area (px at
+## scale s). INF for a label that is not on a button.
+func _button_room(c: Control, s: float) -> float:
+	var b := c.get_parent() as BaseButton
+	if b == null or not (c is Label):
+		return INF
+	var area := ThemeKit.button_text_area((_rects[b][0] as Rect2).size * s if _rects.has(b) else b.size)
+	var r := Rect2((_rects[c][0] as Rect2).position * s, (_rects[c][0] as Rect2).size * s) if _rects.has(c) else Rect2(c.position, c.size)
+	match (c as Label).horizontal_alignment:
+		HORIZONTAL_ALIGNMENT_CENTER:
+			var mid := r.get_center().x
+			return maxf(2.0 * minf(mid - area.position.x, area.end.x - mid), 0.0)
+		HORIZONTAL_ALIGNMENT_RIGHT:
+			return maxf(r.end.x - area.position.x, 0.0)
+	return maxf(area.end.x - r.position.x, 0.0)

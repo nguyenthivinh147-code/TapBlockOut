@@ -3,6 +3,8 @@ render_mode blend_premul_alpha;
 // TextMeshPro "Distance Field" face/outline/underlay on the Baloo SDF atlas (assets/fonts/baloo.res keeps TMP's
 // single-channel SDF and its 6-texel glyph padding). Thresholds are in atlas alpha units like TMP's material
 // (edge at 0.5); unity_ui.gd computes them from data/ui_unity/_materials.json.
+// The fallback fonts (Baloo 2, Jua, M PLUS Rounded; tools/gen_baloo_font.gd) are Godot MTSDF fonts with the same pixel
+// range and size, so the distance is the median of RGB clamped by A; on the single-channel Baloo atlas that is just R.
 
 uniform vec4 face_color : source_color = vec4(1.0);
 uniform vec4 outline_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
@@ -20,6 +22,10 @@ uniform float px_range = 14.0;
 
 varying vec4 vcolor;
 
+float dist(vec4 t) {
+	return min(max(min(t.r, t.g), min(max(t.r, t.g), t.b)), t.a);
+}
+
 void vertex() {
 	vcolor = COLOR;
 }
@@ -28,7 +34,7 @@ void fragment() {
 	vec2 tex_size = 1.0 / TEXTURE_PIXEL_SIZE;
 	// Screen pixels per alpha unit (same estimate Godot uses for MSDF text).
 	float k = max(0.5 * dot(vec2(px_range) / tex_size, 1.0 / fwidth(UV)), 1.0);
-	float a = texture(TEXTURE, UV).r;
+	float a = dist(texture(TEXTURE, UV));
 	float opacity = vcolor.a;
 
 	vec4 face = vec4(vcolor.rgb, opacity) * face_color;
@@ -46,7 +52,7 @@ void fragment() {
 	vec4 c = mix(face, line, outline_alpha) * face_alpha;
 
 	if (underlay_on) {
-		float b = texture(TEXTURE, UV + underlay_offset * TEXTURE_PIXEL_SIZE).r;
+		float b = dist(texture(TEXTURE, UV + underlay_offset * TEXTURE_PIXEL_SIZE));
 		vec4 under = underlay_color;
 		under.a *= opacity;
 		under.rgb *= under.a;

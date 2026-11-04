@@ -60,6 +60,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | --- | --- |
 | `econ_start_coins` | 1000 |
 | `econ_win_coins` | 40 |
+| `econ_win_move_coins` (gold mỗi MOVES thừa lúc thắng) | 1 |
 | `econ_booster_price_hint` / `_move` / `_smash` | 900 / 1900 / 2900 |
 | `econ_refill_coins` | 900 |
 | `econ_refill_lives` | 5 |

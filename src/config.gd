@@ -6,6 +6,8 @@ extends RefCounted
 const _ECON := {
 	"start_coins": 1000,
 	"win_coins": 40,
+	## Gold per MOVES left on the board at a win, added to the win reward (x2 doubles it too).
+	"win_move_coins": 1,
 	"booster_price": {"hint": 900, "move": 1900, "smash": 2900},
 	"refill_coins": 900,
 	"refill_lives": 5,
@@ -255,6 +257,10 @@ const _CONTENT := {
 	"slack_min": 2,
 	"slack_pct": 10,
 	"think_clap_sec": 8,
+	# Nhắc Gợi ý (level.gd): đang chơi mà không chạm màn hình idle_hint_sec giây thì nút Gợi ý lắc, bóng đèn sáng
+	# vàng và bong bóng "Available Block : N" hiện idle_hint_show_sec giây (chạm là tắt).
+	"idle_hint_sec": 15,
+	"idle_hint_show_sec": 2.0,
 	"win_delay_sec": 0.8,
 	# Màn loading khi mở game: thanh chạy tới splash_hold trong ít nhất splash_min_sec giây (đứng đó nếu boot chưa
 	# xong), rồi đầy trong splash_fill_sec giây và vào Home.
@@ -275,11 +281,18 @@ const _CONTENT := {
 	"ftue_steps": ["open", "first_tap", "first_win", "first_x2", "first_booster", "run_2", "run_5", "level_10"],
 }
 
-## Bàn cờ cố định theo ảnh ref `art/concepts/ref_board_size.png` (design.md mục 3): mọi level cùng lưới và cùng cỡ ô,
-## không đổi theo số khối. BOARD_CELL tính bằng px ở độ phân giải gốc 720x1280.
+## Bàn cờ (design.md mục 3): khung đứng yên và giữ tỉ lệ so với màn như ảnh ref `art/concepts/ref_board_scale.png`;
+## số px tính ở màn chuẩn BOARD_SCREEN, màn khác thì nhân theo min(rộng, cao) so với màn chuẩn.
+## BOARD_AREA: vùng khung bao quanh (mặt trong các thanh cách mép vùng này CandyFrame.gap), BOARD_FRAME_UNIT: đơn vị đo
+## bề dày thanh, ống góc của khung (CandyFrame).
+## Lưới level tối đa BOARD_W x BOARD_H ô. Cỡ ô đổi theo level: hình (khối và thùng sắt) cộng một ô lề mỗi phía nằm vừa
+## BOARD_AREA, to nhất BOARD_CELL_MAX (cỡ khối trong ảnh ref).
+const BOARD_SCREEN := Vector2(886, 1920)
+const BOARD_AREA := Vector2(724, 982)
+const BOARD_FRAME_UNIT := 51.7
 const BOARD_W := 14
-const BOARD_H := 19
-const BOARD_CELL := 42
+const BOARD_H := 18
+const BOARD_CELL_MAX := 80
 ## Hình dạng level: dưới SHAPE_MIN_BLOCKS khối thì xếp hình chữ nhật vì quá ít ô để nhận ra dạng; cao tối đa SHAPE_MAX_ASPECT
 ## lần rộng; khoét SHAPE_ROUGHEN số ô rìa để hình không quá đều, như ảnh ref.
 const SHAPE_MIN_BLOCKS := 6

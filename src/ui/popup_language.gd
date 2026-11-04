@@ -23,7 +23,7 @@ func _sample() -> Dictionary:
 func _build() -> void:
 	var codes: Array = []
 	for code in view.get("rows", []):
-		codes.append([str(code), "settings_lang_" + str(code)])
+		codes.append([str(code), label_key(str(code))])
 	var built := build_layer(self, codes, false)
 	ui = built.ui
 	ui.text("Panel/PauseMenu/Image/txtHeader", tr("settings_language"))
@@ -37,6 +37,11 @@ func _build() -> void:
 	(built.save as Button).connect("clicked", _send.bind("save"))
 	for b in built.close:
 		(b as Button).connect("clicked", _send.bind("close"))
+
+
+## Key of a language's own name ("pt_BR" -> settings_language_pt_br: "Português (Brasil)" in every language).
+static func label_key(code: String) -> String:
+	return "settings_language_" + code.to_lower()
 
 
 ## Builds SettingLanguage into owner with one LanguageCell per row [value, label key]; the prefab's other cells are
@@ -65,7 +70,7 @@ static func build_layer(owner: Control, rows: Array, fit: bool) -> Dictionary:
 		var b := cells[i]
 		b.visible = i < rows.size()
 		if i < rows.size():
-			b.name = "Lang_" + (str(rows[i][0]) if str(rows[i][0]) != "" else "auto")
+			b.name = "Lang_" + str(rows[i][0])
 			buttons[str(rows[i][0])] = b
 	# Content height of the visible rows (the prefab's fixed 868 would scroll into empty space).
 	@warning_ignore("integer_division")

@@ -28,6 +28,8 @@ func _build() -> void:
 	UnityUI.set_text(%FreeButton.get_node("Out"), tr("common_free"))
 	%FreeButton.connect("clicked", _send.bind("free"))
 	UnityUI.set_text(%GoldButton.get_node("Out"), Shop.fmt_n0(int(view.get("gold", 0))))
+	UnityKit.gold_pill(%GoldButton)
+	UnityKit.gold_coin(%GoldButton.get_node("Icon"))
 	%GoldButton.connect("clicked", _send.bind("gold"))
 
 	strip = UnityUI.build(self, "SupportPackLayer", {"reveal": false})

@@ -127,7 +127,7 @@ fill_to = Vector2(0.5, 1)
 [sub_resource type="Shader" id="Shader_0grxe"]
 code = "shader_type canvas_item;
 void fragment() {
-	COLOR.a *= smoothstep(0.0, 0.14, UV.y) * (1.0 - smoothstep(0.86, 0.93, UV.y));
+	COLOR.a *= smoothstep(0.0, 0.05, UV.y) * (1.0 - smoothstep(0.93, 1.0, UV.y));
 }
 "
 
@@ -136,7 +136,7 @@ shader = SubResource("Shader_0grxe")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_w385m"]
 atlas = ExtResource("8_vysw7")
-region = Rect2(1511, 1831, 216, 216)
+region = Rect2(1443, 288, 201, 200)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tnwo6"]
 atlas = ExtResource("8_vysw7")
@@ -322,9 +322,8 @@ anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(1, 0.93333334, 0.95686275, 1)
 
-[node name="HardGradient" type="TextureRect" parent="Background" unique_id=447067345]
+[node name="Gradient" type="TextureRect" parent="Background" unique_id=447067345]
 unique_name_in_owner = true
-visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -334,7 +333,7 @@ expand_mode = 1
 
 [node name="CandyPattern" type="Control" parent="Background" unique_id=89526835]
 unique_name_in_owner = true
-modulate = Color(1, 1, 1, 0.35)
+modulate = Color(1, 1, 1, 0.07)
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -370,54 +369,55 @@ script = ExtResource("5_rqor2")
 
 [node name="Rail" type="TextureRect" parent="." unique_id=30625922]
 unique_name_in_owner = true
-modulate = Color(1, 0.8, 0.9, 0.55)
 material = SubResource("ShaderMaterial_5k1al")
 layout_mode = 0
-offset_left = 336.4334
-offset_top = -17.878103
-offset_right = 387.6298
-offset_bottom = 1419.6841
+offset_left = 278.96976
+offset_top = 88.54382
+offset_right = 474.20795
+offset_bottom = 1369.7147
 mouse_filter = 2
 texture = ExtResource("6_qmde4")
 expand_mode = 1
-metadata/fb_rect = Rect2(414, -22, 63, 1769)
+metadata/fb_rect = Rect2(343.28778, 108.95809, 240.25145, 1576.552)
 
 [node name="Glow" type="TextureRect" parent="." unique_id=1839156603]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 246.54628
-offset_top = 332.50565
-offset_right = 473.45374
-offset_bottom = 559.4131
+offset_left = 131.07364
+offset_top = 306.11316
+offset_right = 461.5749
+offset_bottom = 636.6144
 mouse_filter = 2
 texture = ExtResource("7_wa7t7")
 expand_mode = 1
-metadata/fb_rect = Rect2(303.3889, 409.1667, 279.22223, 279.22223)
+metadata/fb_rect = Rect2(161.2934, 376.68924, 406.70013, 406.70013)
 
 [node name="NextNode" type="Control" parent="." unique_id=2048251102]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = 290.47406
+offset_left = 384.1687
 offset_top = 121.08352
-offset_right = 429.526
-offset_bottom = 260.13544
+offset_right = 524.536
+offset_bottom = 261.45084
 mouse_filter = 2
-metadata/fb_rect = Rect2(357.44446, 149, 171.11111, 171.11111)
+metadata/fb_rect = Rect2(472.74094, 149, 172.7298, 172.7298)
 
 [node name="Sprite" type="TextureRect" parent="NextNode" unique_id=637147799]
 layout_mode = 0
-offset_right = 139.05193
-offset_bottom = 139.05193
+offset_left = 3.1901665
+offset_top = 3.1901665
+offset_right = 137.17715
+offset_bottom = 137.17715
 mouse_filter = 2
 texture = SubResource("AtlasTexture_w385m")
 expand_mode = 1
-metadata/fb_rect = Rect2(0, 0, 171.11111, 171.11111)
+metadata/fb_rect = Rect2(3.925677, 3.925677, 164.87843, 164.87843)
 
 [node name="Number" type="Label" parent="NextNode" unique_id=22393766]
 layout_mode = 0
-offset_top = 2.5282168
-offset_right = 139.05193
-offset_bottom = 141.58014
+offset_top = 2.5521333
+offset_right = 140.36732
+offset_bottom = 142.91946
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0.47058824, 0.47058824, 0.47058824, 1)
 theme_override_colors/font_outline_color = Color(0.47058824, 0.47058824, 0.47058824, 1)
@@ -425,60 +425,60 @@ theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
 theme_override_constants/shadow_outline_size = 4
-theme_override_font_sizes/font_size = 46
+theme_override_font_sizes/font_size = 52
 text = "31"
 horizontal_alignment = 1
 vertical_alignment = 1
-metadata/fb_rect = Rect2(0, 3.1111112, 171.11111, 171.11111)
-metadata/fb_font = [56.46666666666666, 2.7222222222222223, 0.0]
+metadata/fb_rect = Rect2(0, 3.1405418, 172.7298, 172.7298)
+metadata/fb_font = [64.06705054382597, 2.7479739816592024, 0.0]
 
 [node name="Badge" type="TextureRect" parent="NextNode" unique_id=262335817]
 layout_mode = 0
-offset_left = 81.53499
-offset_top = 77.1106
-offset_right = 138.41986
-offset_bottom = 133.99548
+offset_left = 74.01186
+offset_top = 84.2204
+offset_right = 140.36732
+offset_bottom = 150.57587
 mouse_filter = 2
 texture = ExtResource("9_miq5y")
 expand_mode = 1
 stretch_mode = 5
-metadata/fb_rect = Rect2(100.333336, 94.888885, 70, 70)
+metadata/fb_rect = Rect2(91.07571, 103.63788, 81.65408, 81.65408)
 
 [node name="Skull" type="TextureRect" parent="NextNode" unique_id=992263283]
 layout_mode = 0
-offset_left = 49.932278
-offset_top = -21.489841
-offset_right = 132.73137
-offset_bottom = 61.309254
+offset_left = 50.404633
+offset_top = -21.693132
+offset_right = 133.987
+offset_bottom = 61.88923
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-metadata/fb_rect = Rect2(61.444443, -26.444445, 101.888885, 101.888885)
+metadata/fb_rect = Rect2(62.0257, -26.694605, 102.85274, 102.85274)
 
 [node name="CurrentNode" type="Control" parent="." unique_id=116282651]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = 268.35214
-offset_top = 351.15125
-offset_right = 451.64786
-offset_bottom = 534.44696
+offset_left = 203.80943
+offset_top = 375.65878
+offset_right = 388.83908
+offset_bottom = 560.6884
 mouse_filter = 2
-metadata/fb_rect = Rect2(330.22223, 432.1111, 225.55556, 225.55556)
+metadata/fb_rect = Rect2(250.79883, 462.269, 227.68927, 227.68927)
 
 [node name="Sprite" type="TextureRect" parent="CurrentNode" unique_id=250863575]
 layout_mode = 0
-offset_right = 183.29572
-offset_bottom = 183.29572
+offset_right = 185.02965
+offset_bottom = 185.02965
 mouse_filter = 2
 texture = SubResource("AtlasTexture_tnwo6")
 expand_mode = 1
-metadata/fb_rect = Rect2(0, 0, 225.55556, 225.55556)
+metadata/fb_rect = Rect2(0, 0, 227.68927, 227.68927)
 
 [node name="Number" type="Label" parent="CurrentNode" unique_id=1983212985]
 layout_mode = 0
-offset_top = 2.5282168
-offset_right = 183.29572
-offset_bottom = 185.82393
+offset_top = 2.5521333
+offset_right = 185.02965
+offset_bottom = 187.58179
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0.30980393, 0.49803922, 0.0627451, 1)
 theme_override_colors/font_outline_color = Color(0.30980393, 0.49803922, 0.0627451, 1)
@@ -486,61 +486,61 @@ theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
 theme_override_constants/shadow_outline_size = 4
-theme_override_font_sizes/font_size = 60
+theme_override_font_sizes/font_size = 61
 text = "30"
 horizontal_alignment = 1
 vertical_alignment = 1
-metadata/fb_rect = Rect2(0, 3.1111112, 225.55556, 225.55556)
-metadata/fb_font = [74.43333333333334, 2.7222222222222223, 0.0]
+metadata/fb_rect = Rect2(0, 3.1405418, 227.68927, 227.68927)
+metadata/fb_font = [75.13746001279591, 2.7479739816592024, 0.0]
 
 [node name="Badge" type="TextureRect" parent="CurrentNode" unique_id=989618423]
 layout_mode = 0
-offset_left = 81.53499
-offset_top = 77.1106
-offset_right = 138.41986
-offset_bottom = 133.99548
+offset_left = 82.3063
+offset_top = 77.840065
+offset_right = 139.7293
+offset_bottom = 135.26306
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-metadata/fb_rect = Rect2(100.333336, 94.888885, 70, 70)
+metadata/fb_rect = Rect2(101.28247, 95.78652, 70.662186, 70.662186)
 
 [node name="Skull" type="TextureRect" parent="CurrentNode" unique_id=545190557]
 layout_mode = 0
-offset_left = 49.932278
-offset_top = -21.489841
-offset_right = 132.73137
-offset_bottom = 61.309254
+offset_left = 50.404633
+offset_top = -21.693132
+offset_right = 133.987
+offset_bottom = 61.88923
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-metadata/fb_rect = Rect2(61.444443, -26.444445, 101.888885, 101.888885)
+metadata/fb_rect = Rect2(62.0257, -26.694605, 102.85274, 102.85274)
 
 [node name="PrevNode" type="Control" parent="." unique_id=151868953]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = 290.47406
-offset_top = 621.6704
-offset_right = 429.526
-offset_bottom = 760.72235
+offset_left = 349.57452
+offset_top = 645.54694
+offset_right = 489.94183
+offset_bottom = 785.91425
 mouse_filter = 2
-metadata/fb_rect = Rect2(357.44446, 765, 171.11111, 171.11111)
+metadata/fb_rect = Rect2(430.17087, 794.38135, 172.7298, 172.7298)
 
 [node name="Sprite" type="TextureRect" parent="PrevNode" unique_id=429190118]
 layout_mode = 0
-offset_left = 3.160271
-offset_top = 3.160271
-offset_right = 135.89165
-offset_bottom = 135.89165
+offset_left = 3.1901665
+offset_top = 3.1901665
+offset_right = 137.17715
+offset_bottom = 137.17715
 mouse_filter = 2
 texture = SubResource("AtlasTexture_jc146")
 expand_mode = 1
-metadata/fb_rect = Rect2(3.8888888, 3.8888888, 163.33333, 163.33333)
+metadata/fb_rect = Rect2(3.925677, 3.925677, 164.87843, 164.87843)
 
 [node name="Number" type="Label" parent="PrevNode" unique_id=1038263355]
 layout_mode = 0
-offset_top = 2.5282168
-offset_right = 139.05193
-offset_bottom = 141.58014
+offset_top = 2.5521333
+offset_right = 140.36732
+offset_bottom = 142.91946
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0.02745098, 0.43529412, 0.5294118, 1)
 theme_override_colors/font_outline_color = Color(0.02745098, 0.43529412, 0.5294118, 1)
@@ -552,35 +552,34 @@ theme_override_font_sizes/font_size = 52
 text = "29"
 horizontal_alignment = 1
 vertical_alignment = 1
-metadata/fb_rect = Rect2(0, 3.1111112, 171.11111, 171.11111)
-metadata/fb_font = [63.46666666666666, 2.7222222222222223, 0.0]
+metadata/fb_rect = Rect2(0, 3.1405418, 172.7298, 172.7298)
+metadata/fb_font = [64.06705054382597, 2.7479739816592024, 0.0]
 
 [node name="Badge" type="TextureRect" parent="PrevNode" unique_id=1266823541]
 layout_mode = 0
-offset_left = 73.31828
-offset_top = 83.43115
-offset_right = 139.05191
-offset_bottom = 149.1648
+offset_left = 74.01186
+offset_top = 84.2204
+offset_right = 140.36732
+offset_bottom = 150.57587
 mouse_filter = 2
 texture = ExtResource("10_mg211")
 expand_mode = 1
 stretch_mode = 5
-metadata/fb_rect = Rect2(90.22222, 102.666664, 80.888885, 80.888885)
+metadata/fb_rect = Rect2(91.07571, 103.63788, 81.65408, 81.65408)
 
 [node name="Skull" type="TextureRect" parent="PrevNode" unique_id=904220896]
 layout_mode = 0
-offset_left = 49.932278
-offset_top = -21.489841
-offset_right = 132.73137
-offset_bottom = 61.309254
+offset_left = 50.404633
+offset_top = -21.693132
+offset_right = 133.987
+offset_bottom = 61.88923
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-metadata/fb_rect = Rect2(61.444443, -26.444445, 101.888885, 101.888885)
+metadata/fb_rect = Rect2(62.0257, -26.694605, 102.85274, 102.85274)
 
 [node name="TopShade" type="TextureRect" parent="." unique_id=2004564107]
 unique_name_in_owner = true
-visible = false
 layout_mode = 0
 offset_right = 720.0
 offset_bottom = 459.95486

@@ -27,16 +27,8 @@
 [ext_resource type="Texture2D" path="res://assets/ui/cc/Gold2.png" id="26_8ssnr"]
 [ext_resource type="Texture2D" path="res://assets/ui/cc/Gold4.png" id="27_i0ljg"]
 [ext_resource type="Texture2D" path="res://assets/ui/cc/Gold5.png" id="28_scnmg"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/bg_shop.png" id="29_bgshop"]
 [ext_resource type="PackedScene" path="res://scenes/unity/ShopCashLayer.tscn" id="u0"]
-
-[sub_resource type="Gradient" id="Gradient_pyijp"]
-colors = PackedColorArray(0.28235295, 0.3529412, 0.59607846, 1, 0.23529413, 0.28627452, 0.53333336, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_76u24"]
-gradient = SubResource("Gradient_pyijp")
-width = 4
-height = 256
-fill_to = Vector2(0, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j5nr6"]
 shader = ExtResource("6_mt8ix")
@@ -1327,6 +1319,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 
+[node name="Background" type="TextureRect" parent="." unique_id=1593169800]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("29_bgshop")
+expand_mode = 1
+
 [node name="Canvas" parent="." unique_id=1253817884 instance=ExtResource("u0")]
 anchors_preset = 0
 offset_right = 1080.0
@@ -1407,6 +1410,7 @@ metadata/u_rect = {
 }
 
 [node name="BG (2)" parent="Canvas/ShopCashLayer" index="0" unique_id=643848760]
+visible = false
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1415,8 +1419,6 @@ offset_bottom = 400.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
 script = ExtResource("3_p0at6")
-tex = SubResource("GradientTexture2D_76u24")
-region = Rect2(0, 0, 4, 256)
 fill_method = 4
 metadata/u = {
 "a": true,

@@ -17,11 +17,26 @@ const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 const HubTop := preload("res://src/ui/hub_top.gd")
 const HubNav := preload("res://src/ui/hub_nav.gd")
 const FigmaBox := preload("res://src/ui/figma_box.gd")
+const UiMotion := preload("res://src/ui/ui_motion.gd")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
 
 const DESIGN_W := 886.0
 ## Khung Figma 1920 trừ dải ADS 120.
 const DESIGN_H := 1800.0
+## Trục co của cụm mốc khi màn thấp.
 const PATH_X := 443.0
+## Ray kẹo (Figma "Progress line" 71:367, home_rail.png 306x2008) khi cụm mốc không co: khúc cong phải trên cùng
+## ở tâm mốc trên (y 259), khúc cong trái ở tâm mốc hiện tại (y 693), rồi chạy sau nút Chơi xuống thanh dưới.
+const RAIL_RECT := Rect2(316, 98, 306, 2008)
+## Khoảng giữa mốc dưới cùng và nút Chơi (ref; Figma để 101).
+const PATH_GAP := 70.0
+## Đường giữa ray: x (px ảnh) ở các hàng 0, 50, 100... của home_rail.png (giữa vùng alpha > 0,5).
+const RAIL_STEP := 50.0
+const RAIL_MID: Array[float] = [199.0, 231.5, 257.5, 274.0, 278.0, 264.5, 233.5, 184.0, 125.5, 75.0, 43.5, 29.0,
+	27.0, 34.5, 51.0, 75.5, 105.5, 139.0, 172.5, 203.5, 229.5, 248.0, 258.0, 259.0, 249.5, 223.0, 180.0, 132.0, 95.0,
+	71.0, 57.0, 51.0, 50.0, 53.5, 62.0, 74.5, 91.0, 110.5, 134.5, 163.5, 194.0]
+## fx 1 quanh mốc hiện tại: 518 quanh mốc 290 (khung Hard) ở mọi độ khó, như ref.
+const GLOW_K := 518.0 / 290.0
 ## Cột icon hai bên: x, đỉnh mục đầu, bước dọc, cỡ mục.
 const LEFT_X := 12.0
 const RIGHT_X := 682.0
@@ -34,8 +49,8 @@ const NAV_TOP := 1552.0
 ## Tab bên của thanh dưới (cao 146, đỉnh 1654): đáy của cột icon không chạm xuống đây.
 const NAV_SIDE_TOP := 1654.0
 
-# Nền (hồng #FFEEF4; Hard/Super Hard dải #3454AC -> #DEE1F2), hoạ tiết kẹo chìm (lớp sáng lệch 2 px xuống, lớp
-# #F2C2D2 trên), ray mờ hai đầu, phủ TopShade, viền chữ ribbon #9E4D0F: lưu trong scenes/home.tscn.
+# Nền (mọi độ khó như khung Hard: dải #3454AC -> #DEE1F2, phủ TopShade), hoạ tiết kẹo chìm (lớp sáng lệch 2 px xuống,
+# lớp #F2C2D2 trên, độ mờ 7%), ray kẹo mờ hai đầu, viền chữ ribbon #9E4D0F: lưu trong scenes/home.tscn.
 ## Theo độ khó: kiểu nút, viền chữ nút, sprite mốc hiện tại, viền số, icon đầu lâu.
 const TIERS := {
 	"": {"button": "primary", "stroke": Color("5A9016"), "node": "node_green", "num": Color("4F7F10"), "skull": ""},
@@ -87,10 +102,7 @@ var _tier: String = ""
 ## Bố cục đường level: "first" (level 1: hai mốc khoá ở trên, mốc hiện tại ở dưới) hoặc "mid".
 var _path_mode: String = "mid"
 var _bg: ColorRect = null
-var _bg_grad: TextureRect = null
-var _pattern: Control = null
 var _sparkles: Control = null
-var _top_shade: TextureRect = null
 var _rail: TextureRect = null
 var _glow: TextureRect = null
 var _challenge_lock: TextureRect = null
@@ -179,14 +191,15 @@ func _build() -> void:
 	_fb.adopt(self)
 
 	_bg = %Background
-	_bg_grad = %HardGradient
-	_pattern = %CandyPattern
 	_sparkles = _bg.get_node("Sparkles")
 	_rail = %Rail
 	_glow = %Glow
+	if not UnityUI.baking:
+		# The glow behind the current node breathes around its center.
+		_glow.pivot_offset_ratio = Vector2(0.5, 0.5)
+		UiMotion.attach(_glow, UiMotion.PULSE)
 	for n: Control in [%NextNode, %CurrentNode, %PrevNode]:
 		path_nodes.append(_path_node(n))
-	_top_shade = %TopShade
 
 	# cột trái: quà ngày, Daily Challenge
 	gift_btn = _side_item(%GiftButton, tr("home_gift"), false, _emit.bind("gift"))
@@ -277,30 +290,39 @@ func _stack(items: Array[Control], x: float, limit: float) -> void:
 		_fb.move(shown[i], Vector2(x, COL_TOP + i * step))
 
 
-## Ba mốc theo khung Figma; màn thấp hơn khung thì co cả cụm (cỡ và khoảng cách) quanh đỉnh cụm.
-## first (level 1): khoá 220 ở 211, khoá 220 ở 525, hiện tại 290 ở 868.
-## mid: khoá 220 ở 149, hiện tại 290 ở 513, vừa qua 220 ở 941.
+## Ba mốc nằm trên ray kẹo: y theo khung Figma, x theo đường giữa ray ở tâm mốc (zigzag như ref).
+## Màn thấp hơn khung thì co cả cụm (ray, cỡ và khoảng cách mốc) quanh (PATH_X, đỉnh cụm) nên mốc vẫn trên ray.
+## first (level 1, khung thường): khoá 220 ở 211, khoá 220 ở 525, hiện tại 290 ở 868.
+## mid (khung Hard, hạ hai mốc dưới như ref): khoá 220 ở 149, hiện tại 290 ở 548, vừa qua 220 ở 971.
 func _layout_path(shift: float) -> void:
-	var slots: Array = [[211.0, 220.0], [525.0, 220.0], [868.0, 290.0]] if _path_mode == "first" else [[149.0, 220.0], [513.0, 290.0], [941.0, 220.0]]
+	var slots: Array = [[211.0, 220.0], [525.0, 220.0], [868.0, 290.0]] if _path_mode == "first" else [[149.0, 220.0], [548.0, 290.0], [971.0, 220.0]]
 	var top: float = slots[0][0]
 	var span: float = float(slots[2][0]) + float(slots[2][1]) - top
-	# chừa khoảng 101 trên nút Chơi như Figma
-	var avail := PLAY_RECT.position.y - 12.0 + shift - 101.0 - top
+	var avail := PLAY_RECT.position.y - 12.0 + shift - PATH_GAP - top
 	var f := clampf(avail / span, 0.55, 1.0)
-	var off := maxf(avail - span, 0.0) * 0.5
+	var origin := Vector2(PATH_X, top + maxf(avail - span, 0.0) * 0.5)
+	var rail_pos := origin + (RAIL_RECT.position - Vector2(PATH_X, top)) * f
+	_fb.put(_rail, Rect2(rail_pos, RAIL_RECT.size * f))
 	var cur_idx := 2 if _path_mode == "first" else 1
 	for i in 3:
-		var y: float = top + off + (float(slots[i][0]) - top) * f
 		var px: float = float(slots[i][1]) * f
+		var cy: float = float(slots[i][0]) + float(slots[i][1]) * 0.5 - RAIL_RECT.position.y
+		var c := rail_pos + Vector2(rail_x(cy), cy) * f
 		var pn: Dictionary = path_nodes[i]
-		_fb.put(pn.root, Rect2(PATH_X - px * 0.5, y, px, px))
+		_fb.put(pn.root, Rect2(c.x - px * 0.5, c.y - px * 0.5, px, px))
 		_layout_node(pn, px, i == cur_idx)
 	var cur: Rect2 = _fb.rect_of(path_nodes[cur_idx].root)
-	var hard := _tier != ""
-	# fx 1: thường 359 quanh mốc 290 (tâm lệch xuống 5); Hard 518 (tâm lệch lên 16)
-	var gs := cur.size.x * (518.0 / 290.0 if hard else 359.0 / 290.0)
-	var gy := cur.get_center().y + cur.size.x * (-16.0 / 290.0 if hard else 5.0 / 290.0)
-	_fb.put(_glow, Rect2(PATH_X - gs * 0.5, gy - gs * 0.5, gs, gs))
+	# tâm fx 1 lệch lên 16 khi mốc có đầu lâu (Hard), xuống 5 khi không
+	var gs := cur.size.x * GLOW_K
+	var gy := cur.get_center().y + cur.size.x * (-16.0 / 290.0 if _tier != "" else 5.0 / 290.0)
+	_fb.put(_glow, Rect2(cur.get_center().x - gs * 0.5, gy - gs * 0.5, gs, gs))
+
+
+## Đường giữa ray (px ảnh home_rail.png) ở hàng y của ảnh, nội suy tuyến tính RAIL_MID.
+static func rail_x(y: float) -> float:
+	var t := clampf(y / RAIL_STEP, 0.0, RAIL_MID.size() - 1.0)
+	var i := mini(int(t), RAIL_MID.size() - 2)
+	return lerpf(RAIL_MID[i], RAIL_MID[i + 1], t - i)
 
 
 ## Vị trí con trong mốc theo cỡ px (thiết kế). Kim cương: sprite phủ cả mốc. Lục giác: sprite thụt 5/220.
@@ -343,23 +365,20 @@ func _set_node(pn: Dictionary, level: int, kind: String, hex: bool) -> void:
 			(pn.badge as TextureRect).texture = ThemeKit.icon("ui_check")
 
 
-## Đường level, nền và nút Chơi theo độ khó của level hiện tại.
+## Đường level và nút Chơi theo độ khó của level hiện tại (nền giống nhau ở mọi độ khó).
 func _refresh_path(level: int, ended: bool) -> void:
 	_tier = "" if ended else Game.difficulty_of(level)
 	if not TIERS.has(_tier):
 		_tier = ""
 	var hard := _tier != ""
-	_bg_grad.visible = hard
-	_top_shade.visible = hard
-	_pattern.modulate = Color(1, 1, 1, 0.12) if hard else Color(1, 1, 1, 0.35)
-	_rail.modulate = Color(1, 1, 1, 0.75) if hard else Color(1, 0.8, 0.9, 0.55)
 	_path_mode = "first" if level <= 1 else "mid"
+	# mốc khoá luôn là lục giác xám như ref; chỉ mốc hiện tại đổi hình theo độ khó
 	if _path_mode == "first":
-		_set_node(path_nodes[0], level + 2, "locked", hard)
-		_set_node(path_nodes[1], level + 1, "locked", hard)
+		_set_node(path_nodes[0], level + 2, "locked", true)
+		_set_node(path_nodes[1], level + 1, "locked", true)
 		_set_node(path_nodes[2], level, "current", hard)
 	else:
-		_set_node(path_nodes[0], level + 1, "locked", hard)
+		_set_node(path_nodes[0], level + 1, "locked", true)
 		_set_node(path_nodes[1], level, "current", hard)
 		_set_node(path_nodes[2], level - 1, "solved", true)
 

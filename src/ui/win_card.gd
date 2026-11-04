@@ -3,7 +3,10 @@ extends Control
 ## cúp và kèn, ribbon tiêu đề, thẻ người chơi trên bảng xếp hạng, thanh tính năng kế tiếp, dải phần thưởng, hàng nút.
 ## Ô thưởng gold và dòng thông báo là node trong scenes/win_card.tscn; ô điểm xếp hạng và dòng gợi ý x2 thêm lúc chạy
 ## khi có.
-## setup(args): kết quả Game.on_level_won ({coins, x2_available, x2_free, rate_prompt, progress, lb}).
+## setup(args): kết quả Game.on_level_won ({coins, move_coins, x2_available, x2_free, rate_prompt, progress, lb});
+## ô gold hiện coins (đã gồm gold MOVES thừa). Màn level thêm moves_chip (chip lượt), moves_left và
+## on_move_cashed(lượt): khi đó ô gold bắt đầu từ coins - move_coins, đồng gold bay từ chip vào ô (CoinFx), mỗi đồng
+## rời chip thì gọi on_move_cashed, chạm ô thì số gold (cả số trên nút x2) tăng dần. Bấm x2 hay Tiếp tục thì cộng nốt.
 ## x2: popup tự gọi Game.claim_x2 (xem video, hoặc miễn phí ở L1). Nút x2 là FreeBtn (miễn phí) hoặc ClaimBtn (video).
 ## closed(result): {x2_offered, x2_taken, rate_prompt, coins}. Bên gọi (level) gọi
 ## Game.leave_win_card(result.x2_offered, result.x2_taken) rồi mới sang level kế.
@@ -17,7 +20,10 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const UButton := preload("res://src/ui/u_button.gd")
 const UAnim := preload("res://src/ui/u_anim.gd")
+const CoinFx := preload("res://src/ui/coin_fx.gd")
 const X2_PLACEMENT := "x2_coins"
+## Gold MOVES thừa bắt đầu bay khi thẻ đã hiện chừng này giây.
+const MOVE_GOLD_DELAY := 0.45
 
 const WIN := "Panel/WinPanel"
 const TOP := "Panel/WinPanel/WinPanel"
@@ -44,6 +50,14 @@ var _msg: Label = null
 var _x2_btn: Button = null
 var _x2_path: String = ""
 var _x2_label: Label = null
+var _x2_amount: Label = null
+## Gold đang hiện ở ô gold; đếm dần lên coins khi gold MOVES thừa bay vào.
+var _shown: int = 0
+## Còn gold MOVES thừa chưa vào ô; lượt đã báo màn level (chip lượt giảm); hiệu ứng đang bay.
+var _move_gold_left: bool = false
+var _moves_sent: int = 0
+var _coin_fx: Control = null
+var _reward_tw: Tween = null
 var _bar: Control = null
 var _pct: Label = null
 var _prog_before: float = 0.0
@@ -64,11 +78,22 @@ func setup(args: Dictionary) -> void:
 	_args = args
 	_busy = false
 	_x2_taken = false
+	_moves_sent = 0
+	_move_gold_left = _move_coins() > 0 and _moves() > 0 and is_instance_valid(_args.get("moves_chip"))
+	_shown = _coins() - _move_coins() if _move_gold_left else _coins()
 	_build()
 
 
 func _coins() -> int:
 	return int(_args.get("coins", 0))
+
+
+func _move_coins() -> int:
+	return int(_args.get("move_coins", 0))
+
+
+func _moves() -> int:
+	return int(_args.get("moves_left", 0))
 
 
 func _build() -> void:
@@ -93,7 +118,7 @@ func _build_rewards() -> void:
 	# The gold Reward.prefab (CoinIcon, RewardLabel) is a node of the scene; the rank point one shows only with the
 	# leaderboard.
 	_reward = %GoldReward.get_node("RewardLabel")
-	UnityUI.set_text(_reward, tr("win_reward") % _coins())
+	UnityUI.set_text(_reward, tr("win_reward") % _shown)
 	var lb: Dictionary = _args.get("lb", {})
 	if not lb.is_empty():
 		# VictoryPanel adds a RankPoint reward when the leaderboard is open.
@@ -261,7 +286,8 @@ func _build_buttons() -> void:
 			r.pos = Vector2(-30, (r.pos as Vector2).y)
 			r.size = Vector2(236, (r.size as Vector2).y)
 			UnityUI.apply_rect(_x2_label)
-		ui.label(ROW + "/" + keep + "/GameObject (1)/Text (TMP)").text = LbKit.fmt_int(_coins() * 2)
+		_x2_amount = ui.label(ROW + "/" + keep + "/GameObject (1)/Text (TMP)")
+		_x2_amount.text = LbKit.fmt_int(_shown * 2)
 		ui.relayout(ROW + "/" + keep + "/GameObject (1)")
 		_x2_btn.connect("clicked", _on_x2_pressed)
 		if free:
@@ -304,6 +330,92 @@ func _animate_in() -> void:
 			_curve_scale(e.node, e.cs)
 	_animate_progress()
 	_animate_lb()
+	if _move_gold_left:
+		create_tween().tween_callback(_fly_move_gold).set_delay(MOVE_GOLD_DELAY)
+
+
+# --- gold MOVES thừa (CoinFx từ chip lượt của màn level vào ô gold) ---
+
+func _fly_move_gold() -> void:
+	if not _move_gold_left or not is_inside_tree():
+		return
+	var chip: Variant = _args.get("moves_chip")
+	if not is_instance_valid(chip) or not (chip as Control).is_inside_tree():
+		_finish_move_gold()
+		return
+	var icon: Control = %GoldReward.get_node("CoinIcon")
+	_coin_fx = CoinFx.new()
+	_coin_fx.name = "MoveGoldFx"
+	add_child(_coin_fx)
+	_coin_fx.start(chip, icon, _coin_texture(icon), _moves(), _move_coins(), _on_move_coin_launch, _on_move_coin_land)
+
+
+## Hình đồng gold của ô thưởng (u_image: atlas và vùng cắt).
+func _coin_texture(icon: Control) -> Texture2D:
+	var tex: Texture2D = icon.get("tex")
+	var region: Rect2 = icon.get("region")
+	if tex == null or not region.has_area():
+		return tex
+	var at := AtlasTexture.new()
+	at.atlas = tex
+	at.region = region
+	return at
+
+
+func _on_move_coin_launch(moves: int) -> void:
+	if _move_gold_left:
+		_send_moves(moves)
+
+
+func _on_move_coin_land(gold: int, last: bool) -> void:
+	if not _move_gold_left:
+		return
+	_set_shown(_shown + gold)
+	_punch_reward(1.35 if last else 1.15)
+	Sfx.play("sfx_coin")
+	if last:
+		_finish_move_gold(true)
+
+
+## Báo màn level `n` lượt đã đổi ra gold để chip lượt giảm theo.
+func _send_moves(n: int) -> void:
+	_moves_sent += n
+	var cb: Variant = _args.get("on_move_cashed")
+	if cb is Callable and (cb as Callable).is_valid():
+		(cb as Callable).call(n)
+
+
+## Cộng nốt phần chưa bay: chip lượt về 0, ô gold hiện đủ coins. Bỏ qua giữa chừng thì xoá hiệu ứng; đồng cuối vừa
+## chạm (`landed`) thì để hiệu ứng chạy nốt vòng sóng rồi tự xoá.
+func _finish_move_gold(landed: bool = false) -> void:
+	if not _move_gold_left:
+		return
+	if _moves() > _moves_sent:
+		_send_moves(_moves() - _moves_sent)
+	_move_gold_left = false
+	_set_shown(_coins())
+	if not landed and is_instance_valid(_coin_fx):
+		_coin_fx.queue_free()
+	_coin_fx = null
+
+
+func _set_shown(n: int) -> void:
+	_shown = n
+	UnityUI.set_text(_reward, tr("win_reward") % n)
+	if _x2_amount != null and not _x2_taken:
+		_x2_amount.text = LbKit.fmt_int(n * 2)
+		ui.relayout(_x2_path + "/GameObject (1)")
+
+
+func _punch_reward(k: float) -> void:
+	if _reward_tw != null and _reward_tw.is_valid():
+		_reward_tw.kill()
+	var icon: Control = %GoldReward.get_node("CoinIcon")
+	_reward.scale = Vector2(k, k)
+	icon.scale = Vector2(k, k)
+	_reward_tw = create_tween().set_parallel(true)
+	for n in [_reward, icon]:
+		_reward_tw.tween_property(n, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 ## CurveDrivenImageScaler (not in unity_ui.gd): scale x/y from AnimationCurves, loopCount cycles from startOffset.
@@ -364,6 +476,7 @@ func _set_busy(v: bool) -> void:
 func _on_x2_pressed() -> void:
 	if _busy or _x2_taken:
 		return
+	_finish_move_gold()
 	_set_busy(true)
 	var ok: bool = await Game.claim_x2()
 	if not is_inside_tree():
@@ -394,6 +507,7 @@ func _on_x2_pressed() -> void:
 func _on_continue_pressed() -> void:
 	if _busy:
 		return
+	_finish_move_gold()
 	closed.emit({
 		"x2_offered": bool(_args.get("x2_available", false)),
 		"x2_taken": _x2_taken,

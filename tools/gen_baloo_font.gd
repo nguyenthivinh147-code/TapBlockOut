@@ -1,6 +1,11 @@
 extends SceneTree
 ## Builds an MSDF FontFile from the TextMeshPro font asset "Baloo Bhaijaan Regular 400 SDF" (color-cube-match-puzzle);
 ## that project lacks the source TTF, only the baked SDF atlas and glyph table remain.
+## Only Latin, Vietnamese and Cyrillic glyphs are kept: the atlas also holds stray Devanagari, kana, kanji and Hangul
+## glyphs from Unity's dynamic atlas, which would mix with the fallbacks inside one word and skip Hindi shaping.
+## Those scripts come from FALLBACKS, also written here: MSDF FontFiles that embed the OFL TTFs of art/fonts/ (not
+## imported), with the atlas' pixel range and size so tmp_text.gdshader draws them alike, and with Baloo's ascent and
+## descent, because Font.get_height() takes the tallest font of the chain and UnityUI lays text out at Baloo's height.
 ## Run: tools/godot.sh --headless --path . -s res://tools/gen_baloo_font.gd [-- --src=<path to .asset>]
 
 const SRC := "E:/PROJECT HORUS/color-cube-match-puzzle/Assets/_Game/Resources_moved/Fonts/Baloo Bhaijaan Regular 400 SDF.asset"
@@ -8,6 +13,13 @@ const OUT := "res://assets/fonts/baloo.res"
 ## TMP atlas: single-channel SDF, padding 6, GradientScale 7 -> values 0..1 span 14 texels.
 const PIXEL_RANGE := 14
 const PADDING := 6
+## Baloo 2 (same design; Devanagari and missing punctuation), Jua (Hangul), M PLUS Rounded 1c (kana, kanji).
+## lang: language the TextServer prefers the font for when several fallbacks have the glyph.
+const FALLBACKS: Array[Dictionary] = [
+	{"src": "res://art/fonts/Baloo2.ttf", "out": "res://assets/fonts/baloo2.res", "lang": "hi"},
+	{"src": "res://art/fonts/Jua-Regular.ttf", "out": "res://assets/fonts/jua.res", "lang": "ko"},
+	{"src": "res://art/fonts/MPLUSRounded1c-Bold.ttf", "out": "res://assets/fonts/mplus_rounded.res", "lang": "ja"},
+]
 
 
 func _initialize() -> void:
@@ -71,6 +83,9 @@ func _initialize() -> void:
 	var atlas := Image.create_from_data(tex["m_Width"], tex["m_Height"], false, Image.FORMAT_L8, hex.hex_decode())
 	atlas.flip_y()
 	var font := _build(atlas, face, glyphs, chars)
+	if font.fallbacks.size() != FALLBACKS.size():
+		quit(1)
+		return
 	var err := ResourceSaver.save(font, OUT)
 	print("baloo: %d ký tự, lưu %s (err %d)" % [chars.size(), OUT, err])
 	quit(0 if err == OK else 1)
@@ -92,9 +107,15 @@ func _build(atlas: Image, face: Dictionary, glyphs: Dictionary, chars: Dictionar
 	font.set_cache_descent(0, size, -float(face.get("m_DescentLine", -12)))
 	font.set_cache_underline_position(0, size, -float(face.get("m_UnderlineOffset", -8)))
 	font.set_cache_underline_thickness(0, size, float(face.get("m_UnderlineThickness", 2)))
+	var fallbacks: Array[Font] = []
+	for def in FALLBACKS:
+		var fb := _fallback(def, size, font.get_cache_ascent(0, size), font.get_cache_descent(0, size))
+		if fb != null:
+			fallbacks.append(fb)
+	font.fallbacks = fallbacks
 	for uc in chars:
 		var g: Dictionary = glyphs.get(chars[uc], {})
-		if uc < 32 or g.is_empty():
+		if uc < 32 or g.is_empty() or _fallback_script(uc):
 			continue
 		font.set_glyph_advance(0, size, uc, Vector2(g["m_Metrics.m_HorizontalAdvance"], 0.0))
 		var w: float = g["m_GlyphRect.m_Width"]
@@ -107,3 +128,31 @@ func _build(atlas: Image, face: Dictionary, glyphs: Dictionary, chars: Dictionar
 		font.set_glyph_uv_rect(0, key, uc, Rect2(g["m_GlyphRect.m_X"] - p, top - p, w + 2.0 * p, gh + 2.0 * p))
 		font.set_glyph_texture_idx(0, key, uc, 0)
 	return font
+
+
+## Saves def.src as an MSDF FontFile at def.out (so baloo.res links it) with the given line metrics at msdf size.
+static func _fallback(def: Dictionary, size: int, ascent: float, descent: float) -> FontFile:
+	var data := FileAccess.get_file_as_bytes(str(def.src))
+	if data.is_empty():
+		push_error("Không đọc được font fallback " + str(def.src))
+		return null
+	var f := FontFile.new()
+	f.data = data
+	f.multichannel_signed_distance_field = true
+	f.msdf_pixel_range = PIXEL_RANGE
+	f.msdf_size = size
+	f.set_language_support_override(str(def.lang), true)
+	f.set_cache_ascent(0, size, ascent)
+	f.set_cache_descent(0, size, descent)
+	var err := ResourceSaver.save(f, str(def.out))
+	if err != OK:
+		push_error("Không lưu được %s (err %d)" % [def.out, err])
+		return null
+	f.take_over_path(str(def.out))
+	print("fallback: %s -> %s" % [def.src, def.out])
+	return f
+
+
+## Devanagari up to Hangul Jamo, and CJK punctuation, kana, Hangul syllables, kanji, fullwidth forms.
+static func _fallback_script(uc: int) -> bool:
+	return (uc >= 0x0900 and uc < 0x1E00) or uc >= 0x2E80

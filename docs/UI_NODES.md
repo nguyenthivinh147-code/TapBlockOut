@@ -23,6 +23,7 @@ UI của mọi màn nằm trong scene (`.tscn`) dưới dạng node, mở trong 
 - `scenes/home.tscn` chứa mọi node của Home; `HubTop`, `NavBar` là instance của `scenes/hub_top.tscn`, `scenes/hub_nav.tscn`. Shop và Leaderboard tạo thanh bằng `HubTop.create()`, `HubNav.create(tab)`.
 - Toạ độ Figma của node FigmaBox nằm trong meta `fb_rect`, `fb_bottom`, `fb_font`; `FigmaBox.adopt(root)` đọc lại và co theo bề rộng thật. Muốn dời node Home hay hub thì sửa meta đó, kéo node trong editor không có tác dụng lúc chạy.
 - `scenes/main.tscn` có `Background` (instance `scenes/background.tscn`) và `PopupLayer`.
+- `main.go()` giữa Shop, Home, Leaderboard trượt màn (`docs/UI_FIGMA.md`, mục chuyển tab): màn cũ còn trong cây thêm 0.33 s rồi mới bị xoá. `HubTop`, `HubNav` của màn được ghim tại chỗ, nên mỗi màn phải có đúng script đó trên thanh của mình (tìm theo script).
 - Level: HUD là node trong `scenes/level.tscn`, bàn chơi là instance `scenes/board_view.tscn` (khung kẹo và các lớp); khối, hiệu ứng, popup sự kiện vẫn sinh lúc chạy.
 
 ## Chuyển một màn từ code sang node

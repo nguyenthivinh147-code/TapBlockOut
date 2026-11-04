@@ -8,13 +8,15 @@
 [ext_resource type="Texture2D" path="res://assets/ui/hud/hud_pill.png" id="6_5k0ak"]
 [ext_resource type="Texture2D" path="res://assets/ui/hud/hud_btn_restart.png" id="7_wu01b"]
 [ext_resource type="Texture2D" path="res://assets/ui/hud/hud_btn_settings.png" id="8_3ies3"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_star1.png" id="9_xy2fk"]
+[ext_resource type="Texture2D" path="res://assets/ui/lb_piece.png" id="9_xy2fk"]
 [ext_resource type="PackedScene" path="res://scenes/board_view.tscn" id="10_cmcjb"]
 [ext_resource type="Texture2D" path="res://assets/ui/hud/hud_booster_hint.png" id="15_2e2fo"]
 [ext_resource type="Texture2D" path="res://assets/ui/hud/hud_badge_count.png" id="16_gur6y"]
 [ext_resource type="Texture2D" path="res://assets/ui/figma/ic_lock.png" id="17_v3why"]
 [ext_resource type="Texture2D" path="res://assets/ui/hud/hud_booster_move.png" id="18_asl66"]
 [ext_resource type="Texture2D" path="res://assets/ui/hud/hud_booster_smash.png" id="19_2jdvr"]
+[ext_resource type="Texture2D" path="res://assets/ui/booster_hint.png" id="20_k7bul"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="21_uimg"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_q4oe8"]
 content_margin_left = 30.0
@@ -107,10 +109,10 @@ Label/styles/normal = SubResource("StyleBoxEmpty_50fbu")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_0fmhk")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cr74b"]
-content_margin_left = 10.0
-content_margin_top = 2.0
-content_margin_right = 10.0
-content_margin_bottom = 10.0
+content_margin_left = 13.0
+content_margin_top = 3.0
+content_margin_right = 13.0
+content_margin_bottom = 13.0
 texture = ExtResource("5_pqd0y")
 texture_margin_left = 44.0
 texture_margin_top = 44.0
@@ -118,10 +120,10 @@ texture_margin_right = 44.0
 texture_margin_bottom = 48.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uhfbm"]
-content_margin_left = 22.0
+content_margin_left = 28.0
 content_margin_top = 0.0
-content_margin_right = 22.0
-content_margin_bottom = 4.0
+content_margin_right = 28.0
+content_margin_bottom = 5.0
 texture = ExtResource("6_5k0ak")
 texture_margin_left = 22.0
 texture_margin_top = 20.0
@@ -148,24 +150,7 @@ texture_margin_bottom = 22.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v4d4p"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_30hdq"]
-content_margin_left = 16.0
-content_margin_top = 4.0
-content_margin_right = 22.0
-content_margin_bottom = 4.0
-bg_color = Color(0.18039216, 0.19607843, 0.4392157, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.49411765, 0.5254902, 0.78431374, 1)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
-shadow_color = Color(0, 0, 0, 0.35)
-shadow_size = 12
-shadow_offset = Vector2(0, 6)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pc0rw"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nj2gj"]
 
@@ -218,6 +203,23 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 texture = ExtResource("16_gur6y")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_idtip"]
+content_margin_left = 24.0
+content_margin_top = 12.0
+content_margin_right = 24.0
+content_margin_bottom = 12.0
+bg_color = Color(1, 0.9686275, 0.8784314, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.9372549, 0.63529414, 0.22745098, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+anti_aliasing_size = 1.5
+
 [node name="Level" type="Control" unique_id=1028707476]
 layout_mode = 1
 anchors_preset = 15
@@ -259,7 +261,7 @@ anchor_bottom = 1.0
 theme_override_constants/margin_left = 28
 theme_override_constants/margin_top = 36
 theme_override_constants/margin_right = 28
-theme_override_constants/margin_bottom = 36
+theme_override_constants/margin_bottom = 175
 
 [node name="Column" type="VBoxContainer" parent="Margin" unique_id=377993896]
 layout_mode = 2
@@ -275,7 +277,7 @@ theme_override_constants/separation = 12
 
 [node name="MovesChip" type="PanelContainer" parent="Margin/Column/TopBar/TopRow" unique_id=888100895]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 104)
+custom_minimum_size = Vector2(244, 169)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxTexture_cr74b")
@@ -283,7 +285,7 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_cr74b")
 [node name="MovesColumn" type="VBoxContainer" parent="Margin/Column/TopBar/TopRow/MovesChip" unique_id=1032963675]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = -22
+theme_override_constants/separation = -36
 alignment = 1
 
 [node name="MovesCaption" type="Label" parent="Margin/Column/TopBar/TopRow/MovesChip/MovesColumn" unique_id=1698368037]
@@ -293,10 +295,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
 theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 6
-theme_override_constants/shadow_outline_size = 6
-theme_override_font_sizes/font_size = 22
+theme_override_constants/shadow_offset_y = 6
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 10
+theme_override_font_sizes/font_size = 36
 text = "MOVES"
 horizontal_alignment = 1
 
@@ -307,10 +309,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
 theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 6
-theme_override_constants/shadow_outline_size = 6
-theme_override_font_sizes/font_size = 52
+theme_override_constants/shadow_offset_y = 6
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 10
+theme_override_font_sizes/font_size = 85
 horizontal_alignment = 1
 
 [node name="Middle" type="VBoxContainer" parent="Margin/Column/TopBar/TopRow" unique_id=1591153146]
@@ -325,26 +327,26 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 6
-theme_override_constants/shadow_outline_size = 6
-theme_override_font_sizes/font_size = 40
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 8
+theme_override_font_sizes/font_size = 50
 horizontal_alignment = 1
 
 [node name="HardBadge" type="Label" parent="Margin/Column/TopBar/TopRow/Middle" unique_id=1851906103]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(96, 44)
+custom_minimum_size = Vector2(120, 55)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
 theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 6
-theme_override_constants/shadow_outline_size = 6
-theme_override_font_sizes/font_size = 24
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 8
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_uhfbm")
 text = "HARD"
 horizontal_alignment = 1
@@ -388,24 +390,43 @@ icon = ExtResource("8_3ies3")
 icon_alignment = 1
 expand_icon = true
 
-[node name="PieceRow" type="HBoxContainer" parent="Margin/Column/TopBar" unique_id=837775227]
-custom_minimum_size = Vector2(0, 48)
+[node name="PieceRow" type="CenterContainer" parent="Margin/Column/TopBar" unique_id=837775227]
+custom_minimum_size = Vector2(244, 66)
 layout_mode = 2
+size_flags_horizontal = 0
 
 [node name="PieceChip" type="PanelContainer" parent="Margin/Column/TopBar/PieceRow" unique_id=2009584215]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_30hdq")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_pc0rw")
 
-[node name="PieceBox" type="HBoxContainer" parent="Margin/Column/TopBar/PieceRow/PieceChip" unique_id=914979163]
+[node name="PieceFrame" type="Control" parent="Margin/Column/TopBar/PieceRow/PieceChip" unique_id=1738201457]
 layout_mode = 2
-theme_override_constants/separation = 6
+mouse_filter = 2
+script = ExtResource("21_uimg")
+tex = ExtResource("5_pqd0y")
+region = Rect2(0, 0, 288, 185)
+border = Vector4(44, 44, 44, 48)
+border_scale = 0.39
+kind = 1
 
-[node name="PieceIcon" type="TextureRect" parent="Margin/Column/TopBar/PieceRow/PieceChip/PieceBox" unique_id=1986939837]
+[node name="PieceMargin" type="MarginContainer" parent="Margin/Column/TopBar/PieceRow/PieceChip" unique_id=1283746592]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 26
+theme_override_constants/margin_bottom = 10
+
+[node name="PieceBox" type="HBoxContainer" parent="Margin/Column/TopBar/PieceRow/PieceChip/PieceMargin" unique_id=914979163]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PieceIcon" type="TextureRect" parent="Margin/Column/TopBar/PieceRow/PieceChip/PieceMargin/PieceBox" unique_id=1986939837]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -414,17 +435,17 @@ texture = ExtResource("9_xy2fk")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PieceLabel" type="Label" parent="Margin/Column/TopBar/PieceRow/PieceChip/PieceBox" unique_id=1588092482]
+[node name="PieceLabel" type="Label" parent="Margin/Column/TopBar/PieceRow/PieceChip/PieceMargin/PieceBox" unique_id=1588092482]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.7882353, 0.2, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 6
-theme_override_constants/shadow_outline_size = 6
-theme_override_font_sizes/font_size = 28
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 8
+theme_override_font_sizes/font_size = 35
 
 [node name="BoardHolder" type="Control" parent="Margin/Column" unique_id=146205403]
 layout_mode = 2
@@ -547,6 +568,25 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_u0n8q")
 icon = ExtResource("15_2e2fo")
 icon_alignment = 1
 expand_icon = true
+
+[node name="BoosterNudge_hint" type="TextureRect" parent="Margin/Column/BoosterRow/Booster_hint/BoosterButton_hint" unique_id=1583920467]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -52.0
+offset_top = -64.0
+offset_right = 58.0
+offset_bottom = 46.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("20_k7bul")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="BoosterBadge_hint" type="Label" parent="Margin/Column/BoosterRow/Booster_hint/BoosterButton_hint" unique_id=309728837]
 unique_name_in_owner = true
@@ -770,6 +810,64 @@ theme_override_constants/shadow_outline_size = 6
 theme_override_font_sizes/font_size = 24
 text = "Smash"
 horizontal_alignment = 1
+
+[node name="IdleTip" type="Control" parent="." unique_id=694213875]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 200.0
+offset_top = 1068.0
+offset_right = 200.0
+offset_bottom = 1068.0
+mouse_filter = 2
+
+[node name="Bubble" type="PanelContainer" parent="IdleTip" unique_id=1745093318]
+layout_mode = 0
+offset_left = -18.0
+offset_top = -24.0
+offset_right = -18.0
+offset_bottom = -24.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_idtip")
+
+[node name="Row" type="HBoxContainer" parent="IdleTip/Bubble" unique_id=402871659]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="IdleTipLabel" type="Label" parent="IdleTip/Bubble/Row" unique_id=1290364751]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.15294118, 0.1882353, 0.41568628, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_font_sizes/font_size = 34
+text = "Available Block :"
+vertical_alignment = 1
+
+[node name="IdleTipCount" type="Label" parent="IdleTip/Bubble/Row" unique_id=887162035]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.18039216, 0.41960785, 0.9019608, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_font_sizes/font_size = 46
+text = "1"
+vertical_alignment = 1
+
+[node name="TailEdge" type="Polygon2D" parent="IdleTip" unique_id=1938271046]
+color = Color(0.9372549, 0.63529414, 0.22745098, 1)
+antialiased = true
+polygon = PackedVector2Array(1.5, -28, 42, -28, -5, 7)
+
+[node name="TailFill" type="Polygon2D" parent="IdleTip" unique_id=511048379]
+color = Color(1, 0.9686275, 0.8784314, 1)
+antialiased = true
+polygon = PackedVector2Array(6, -30, 38, -30, 0, 0)
 
 [node name="LocalPopups" type="Control" parent="." unique_id=1259204810]
 unique_name_in_owner = true

@@ -126,9 +126,15 @@ func test_shadow_stays_under_blocks_and_follows(t: T) -> void:
 	t.eq(sh.position, n.position + Vector2(3, 0), "bóng theo khối và theo rung bàn")
 	blocks.position = Vector2.ZERO
 	n.position -= Vector2(10, 0)
+	# đường tới thanh dài ngắn theo cỡ ô của level, nên chờ hoạt ảnh xong thay vì chờ cố định
+	var state := {"done": false}
+	v.animation_done.connect(func() -> void: state["done"] = true, CONNECT_ONE_SHOT)
 	v.apply_result(board.tap("a"))
-	await _tree().create_timer(0.6).timeout
+	var deadline := Time.get_ticks_msec() + 2500
+	while not state["done"] and Time.get_ticks_msec() < deadline:
+		await _tree().process_frame
 	await _frames()
+	t.ok(state["done"], "khối thoát xong")
 	t.eq(shadows.get_child_count(), 1, "khối thoát thì bóng mất theo")
 	v.queue_free()
 

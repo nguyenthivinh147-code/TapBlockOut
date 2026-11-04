@@ -49,5 +49,5 @@ const STREAK_REWARDS := {"rows": [
 const STREAK_END := {"streak": 5, "gold": 200, "hint": 2}
 const STREAK_KEEP := {"streak": 5}
 const PROFILE_NAME := {"name": "FP_2692e", "error": true}
-const LANGUAGES := {"current": "en", "rows": ["en", "vi", "pt", "tr", "de", "fr", "id", "es", "ru", "ko"]}
+const LANGUAGES := {"current": "en", "rows": ["en", "vi", "pt_BR", "tr", "de", "fr", "id", "es", "ru", "ko", "ja", "hi", "uk", "it"]}
 const REWARD := {"gold": 40}

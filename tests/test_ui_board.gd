@@ -48,41 +48,76 @@ func _click(v: Control, pos: Vector2) -> void:
 	v._gui_input(ev)
 
 
+## Tỉ lệ khung so với màn chuẩn Config.BOARD_SCREEN của viewport đang chạy.
+func _screen_scale(v: Control) -> float:
+	var vp: Vector2 = v.get_viewport_rect().size
+	return minf(vp.x / Config.BOARD_SCREEN.x, vp.y / Config.BOARD_SCREEN.y)
+
+
+## Hình chữ nhật w x h ô trên lưới chuẩn: hai khối một ô ở hai góc đối nhau, quanh có một ô lề.
+func _span(w: int, h: int) -> Dictionary:
+	return _lv(Config.BOARD_W, Config.BOARD_H, [_b("b1", "yellow", [[1, 1]]), _b("b2", "blue", [[w, h]])])
+
+
 func test_layout_and_fit(t: T) -> void:
 	var v := _make(_lv(5, 7, [_b("b1", "yellow", [[1, 1], [1, 2]]), _b("b2", "blue", [[3, 3]])]))
 	t.eq(v.block_count(), 2, "2 node khối")
 	var br: Rect2 = v.board_rect()
 	t.ok(Rect2(Vector2.ZERO, v.size).encloses(v.frame_rect()), "bàn cùng khung cổng nằm trong vùng")
-	t.ok(v.cell_size() <= 150.0, "ô không quá lớn")
+	t.ok(v.cell_size() <= Config.BOARD_CELL_MAX * _screen_scale(v) + 0.001, "ô không quá cỡ khối trong ảnh ref")
+	t.eq(v.content_box(), Rect2i(1, 1, 3, 3), "ô bao hình của level")
+	t.ok(br.encloses(v.content_rect()), "hình nằm trong khung")
+	var off: Vector2 = (v.content_rect().get_center() - br.get_center()).abs()
+	t.ok(off.x <= 1.0 and off.y <= 1.0, "hình ở giữa khung (lệch %s)" % str(off))
 	var c1: float = v.cell_size()
 	v.fit_to(Vector2(360, 400))
 	t.ok(v.cell_size() < c1, "vùng nhỏ thì ô co lại")
-	t.ok(Rect2(Vector2.ZERO, v.size).encloses(v.board_rect()), "vẫn vừa vùng nhỏ")
+	t.ok(Rect2(Vector2.ZERO, v.size).encloses(v.frame_rect()), "vẫn vừa vùng nhỏ")
 	var n: Control = v.block_node("b1")
 	t.near(n.size.y, v.cell_size() * 2.0, 0.01, "khối 2 ô cao 2 ô")
-	t.eq(n.position, v.board_rect().position + Vector2(1, 1) * v.cell_size(), "vị trí khối theo ô")
+	t.eq(n.position, v.content_rect().position, "vị trí khối theo ô")
+	t.eq(n.position, v.cell_center(Vector2i(1, 1)) - Vector2(0.5, 0.5) * v.cell_size(), "cell_center khớp vị trí khối")
 	v.queue_free()
 
 
-func test_cell_size_constant_across_boards(t: T) -> void:
-	var small := _make(_lv(4, 5, [_b("b1", "yellow", [[1, 1], [1, 2]])]))
-	var big := _make(_lv(Config.BOARD_W, Config.BOARD_H, [_b("b1", "yellow", [[1, 1], [1, 2]])]))
-	t.near(small.cell_size(), big.cell_size(), 0.001, "bàn nhỏ và bàn chuẩn cùng cỡ ô")
-	t.ok(Rect2(Vector2.ZERO, big.size).encloses(big.board_rect()), "bàn chuẩn vẫn vừa vùng")
+## Khung đứng yên ở mọi level; cỡ ô theo hình của level: hình nhỏ ô to (tới BOARD_CELL_MAX), hình lớn nhất (cộng lề là cả
+## lưới BOARD_W x BOARD_H) ô nhỏ nhất.
+func test_cell_size_follows_shape(t: T) -> void:
+	var area := Vector2(1000, 1500)
+	var small := _make(_lv(4, 5, [_b("b1", "yellow", [[1, 1], [1, 2]])]), area)
+	var mid := _make(_span(8, 10), area)
+	var big := _make(_span(Config.BOARD_W - 2, Config.BOARD_H - 2), area)
+	var s := _screen_scale(big)
+	t.eq(small.board_rect(), big.board_rect(), "khung như nhau ở mọi level")
+	t.eq(small.frame_rect(), big.frame_rect(), "khung cổng như nhau ở mọi level")
+	t.near(small.cell_size(), floorf(Config.BOARD_CELL_MAX * s), 0.001, "hình nhỏ: ô to nhất bằng khối trong ảnh ref")
+	var full := minf(Config.BOARD_AREA.x / Config.BOARD_W, Config.BOARD_AREA.y / Config.BOARD_H) * s
+	t.near(big.cell_size(), floorf(full), 0.001, "hình lớn nhất: lưới chuẩn vừa khung")
+	t.ok(small.cell_size() > mid.cell_size() and mid.cell_size() > big.cell_size(), "hình càng lớn ô càng nhỏ")
+	for v: Control in [small, mid, big]:
+		t.ok(v.board_rect().encloses(v.content_rect()), "hình nằm trong khung (ô %s)" % v.cell_size())
 	small.queue_free()
+	mid.queue_free()
 	big.queue_free()
 
 
-## Cỡ ô cố định theo ảnh ref: không đổi theo số khối, không phóng to khi vùng chứa lớn hơn.
-func test_cell_size_fixed_like_reference(t: T) -> void:
-	var blocks := [_b("b1", "yellow", [[1, 1], [1, 2]])]
-	for area in [Vector2(664, 936), Vector2(960, 1400), Vector2(1600, 2000)]:
-		var v := _make(_lv(Config.BOARD_W, Config.BOARD_H, blocks))
-		v.fit_to(area)
-		t.near(v.cell_size(), float(Config.BOARD_CELL), 0.001, "vùng %s: ô đúng cỡ chuẩn" % str(area))
-		t.near(v.board_rect().size.x, float(Config.BOARD_W * Config.BOARD_CELL), 0.001, "vùng %s: bàn đúng bề ngang" % str(area))
+## Khung theo ảnh ref ở màn chuẩn: không phóng to khi vùng chứa lớn hơn, chỉ co khi vùng chứa nhỏ hơn.
+func test_frame_fixed_like_reference(t: T) -> void:
+	var s := 0.0
+	for area in [Vector2(960, 1400), Vector2(1600, 2000)]:
+		var v := _make(_span(Config.BOARD_W - 2, Config.BOARD_H - 2), area)
+		s = _screen_scale(v)
+		t.ok(v.board_rect().size.is_equal_approx(Config.BOARD_AREA * s), "vùng %s: khung đúng cỡ chuẩn (%s)" % [str(area), str(v.board_rect().size)])
+		t.near(v.frame_unit(), Config.BOARD_FRAME_UNIT * s, 0.001, "vùng %s: thanh khung đúng cỡ chuẩn" % str(area))
 		t.ok(Rect2(Vector2.ZERO, area).encloses(v.frame_rect()), "vùng %s: khung nằm trọn" % str(area))
 		v.queue_free()
+	var tight := _make(_span(Config.BOARD_W - 2, Config.BOARD_H - 2), Vector2(664, 936))
+	t.ok(tight.board_rect().size.x < Config.BOARD_AREA.x * s, "vùng nhỏ hơn khung thì khung co lại")
+	# vị trí khung làm tròn xuống px nên có thể lệch dưới 1 px
+	t.ok(Rect2(Vector2.ZERO, tight.size).grow(1.0).encloses(tight.frame_rect()), "khung co vẫn nằm trọn vùng")
+	var r: Vector2 = tight.board_rect().size
+	t.near(r.x / r.y, Config.BOARD_AREA.x / Config.BOARD_AREA.y, 0.01, "khung co giữ tỉ lệ")
+	tight.queue_free()
 
 
 func test_hit_area(t: T) -> void:
@@ -120,23 +155,27 @@ func test_exit_animation(t: T) -> void:
 	v.queue_free()
 
 
-## Khối thoát lao đi: vệt gió hút nằm dưới lớp khối, ở trước mặt trong của thanh cùng màu, tự xoá khi xong.
+## Khối thoát lao đi: vệt gió hút nằm trên lớp khối, ở trước mặt trong của thanh cùng màu, rộng đúng bề ngang khối,
+## tự xoá khi xong.
 func test_exit_suck_wind(t: T) -> void:
-	var board := BoardState.new(_lv(5, 5, [_b("b1", "blue", [[1, 2]])]))
+	var board := BoardState.new(_lv(5, 5, [_b("b1", "blue", [[1, 1], [1, 2]])]))
 	var v := (load(SCENE) as PackedScene).instantiate() as Control
 	_root().add_child(v)
 	v.setup(board, Vector2(720, 900))
 	v.apply_result(board.tap("b1"))
-	var wind: Control = v.get_node("Shadows").get_node_or_null("SuckWind")
-	t.ok(wind != null, "có vệt gió ở lớp dưới các khối")
-	var inner: Rect2 = CandyFrame.inner_rect(v.board_rect(), v.cell_size())
-	t.near(wind._mouth.x, inner.end.x, 0.5, "vệt hút về mặt trong của thanh phải, không lấn lên thanh")
-	t.near(wind._mouth.y, v.cell_center(Vector2i(1, 2)).y, 0.5, "vệt chụm về ngang hàng khối")
-	t.eq(wind._streaks.size(), 14, "14 vệt")
+	var wind: Control = v.get_node("Fx").get_node_or_null("SuckWind")
+	t.ok(wind != null, "có vệt gió ở lớp trên các khối")
+	var inner: Rect2 = CandyFrame.inner_rect(v.board_rect(), v.frame_unit())
 	var cell: float = v.cell_size()
+	var mid_y: float = (v.cell_center(Vector2i(1, 1)).y + v.cell_center(Vector2i(1, 2)).y) * 0.5
+	t.near(wind._mouth.x, inner.end.x, 0.5, "vệt hút về mặt trong của thanh phải, không lấn lên thanh")
+	t.near(wind._mouth.y, mid_y, 0.5, "vệt về giữa đoạn khối phủ")
+	t.near(wind._half, cell, 0.5, "khối cao 2 ô: vệt rải trong đúng 2 ô")
+	t.eq(wind._streaks.size(), 10, "5 vệt mỗi ô bề ngang khối")
 	var first := INF
 	for s: Dictionary in wind._streaks:
 		t.ok(float(s["from"]) >= 0.1 * cell - 0.01 and float(s["from"]) <= 0.8 * cell + 0.01, "vệt hiện cách thanh 0,1–0,8 ô")
+		t.ok(absf(float(s["u"])) <= cell + 0.01, "vệt không ra ngoài bề ngang khối")
 		first = minf(first, float(s["delay"]))
 	t.ok(first > 0.05, "vệt chỉ hiện khi khối đã gần chạm thanh")
 	wind._process(1.0)
@@ -303,7 +342,7 @@ func _fit_in_holder(t: T, w: int, h: int, holder_size: Vector2) -> void:
 		t.ok(Rect2(Vector2.ZERO, hs).grow(1.5).encloses(v.frame_rect()), "%s: trọn holder (%s)" % [tag, str(br)])
 		var off := (br.get_center() - hs * 0.5).abs()
 		t.ok(off.x <= 2.0 and off.y <= 2.0, "%s: căn giữa (lệch %s)" % [tag, str(off)])
-		t.near(br.size.x / float(w), br.size.y / float(h), 0.01, "%s: ô vuông" % tag)
+		t.ok(br.encloses(v.content_rect()), "%s: hình nằm trong khung" % tag)
 		t.eq(v.block_at(v.cell_center(Vector2i(1, 1))), "b1", "%s: chạm đúng ô" % tag)
 		t.eq(v.block_at(v.cell_center(Vector2i(0, 0))), "", "%s: ô trống không chạm" % tag)
 	host.free()

@@ -40,6 +40,13 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
   - Toggle có `ToggleGroup` (ButtonGroup) và `ToggleAnimator`.
 - Layout: `HorizontalLayoutGroup`, `VerticalLayoutGroup`, `GridLayoutGroup`, `LayoutElement`, `ContentSizeFitter` chạy như Unity khi `build()` và khi gọi `relayout()`. Con của layout group lưu ở 0,0 trong prefab, Unity xếp lúc chạy.
 - Auto size đo cỡ preferred (ContentSizeFitter, layout group điều khiển cỡ con) ở `fontSizeMax` như `TMP_Text.GetPreferredWidth`, rồi `fit_text` co chữ trong rect đó.
+- Chữ trên nút luôn best fit, gọn trong khung nút (`fit_text`):
+  - Áp cho nhãn TMP nằm trong `UButton`, trừ nút phủ từ 90% rộng và 50% cao canvas trở lên (dim, "chạm để tiếp tục"): chữ trong đó là nội dung popup.
+  - Prefab không bật auto size thì dùng khoảng [18, `fontSize`]. Chữ loại này được tràn rect theo chiều dọc như TMP, chỉ khung giới hạn chiều cao (giá cạnh icon gold có rect thấp hơn chữ).
+  - Khung là Image có hình gần nhất phía trên nhãn chứa tâm nhãn (pill giá, huy hiệu "+5"); không có thì là chính nút. Vùng tính theo phần hình thực vẽ (`UImage.drawn_rect()`): sprite Simple bật `preserveAspect` trên nút bị kéo rộng vẫn giữ hình gốc.
+  - Chữ chỉ được nằm trong `ThemeKit.button_text_area` của khung: mỗi bên bớt min(0.3 × cao, 0.12 × rộng) (`BUTTON_TEXT_INSET_H`, `BUTTON_TEXT_INSET_W`) để chữ và viền chữ không chạm đầu bo tròn. Phần rect nhãn vượt vùng này thành lề thêm của nhãn (meta `u_inset`), chỉ ở phía vượt, nên chữ cạnh icon (nút video) không mất chỗ phía icon.
+  - Nhãn mà cả nó lẫn nhóm chứa nó (hàng icon + giá) không cắt qua giữa khung, như số đếm ở góc, giữ nguyên.
+  - Fit không ngắt giữa từ: chữ co tới khi từ dài nhất vừa một dòng. Nhãn một dòng mà ở cỡ tối thiểu vẫn không vừa thì được xuống dòng giữa các từ (meta `u_wrapped`, lần fit sau trả về một dòng rồi xét lại).
 - Dim của popup: Image đen, không sprite, không material, chặn raycast, phủ kín cha (anchor 0..1, offset 0) lấy alpha `ThemeKit.POPUP_DIM_ALPHA` (85%) thay cho alpha trong prefab, để mọi popup cùng độ tối. Popup dựng tay (`PopupKit`, `StubUI`) dùng `ThemeKit.SCRIM` cùng alpha đó.
 - Mask: `clip_children`. RectMask2D: `clip_contents`. CanvasGroup: alpha bằng `modulate.a`; `blocksRaycasts` và `interactable` áp xuống cây con.
 - CutoutMaskUI (Image có stencil NotEqual, chỉ vẽ ngoài hình của Mask cha): Mask cha thôi `clip_children`, graphic của nó ẩn khi `showMaskGraphic` tắt, shader `cutout_mask.gdshader` khoét sprite của Mask khỏi ảnh. Mask có cả con thường lẫn CutoutMaskUI thì con thường không bị cắt (có cảnh báo).
@@ -51,6 +58,10 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
   - `UIAnim_ScaleAppear`, `UIAnim_Pulse`, `UIAnimationGroup`, `SimpleUIRotator`, `UIAnimScale`, `AnimScaleButton` (`PlayAnim`/`StopAnim`).
   - Persistent call chạy khi build như `UICoreLayer.SetShow`: `OnDisplayLayout` trước, `OnShowLayer` sau. Hỗ trợ `PlayAnimation`, `PlayAnim`, `StopAnim`, `PlayAllAnimationsSync`, `SetActive`, `set_enabled` (Animator, hoặc chữ).
   - Animator (`u_anim.gd`): clip mặc định, đường cong Hermite như `AnimationCurve`. Animator tắt sẵn trong prefab vẫn được dựng nhưng chưa chạy, cho tới khi `enabled = true`.
+  - Anim thêm của game, không có trong prefab (`src/ui/ui_motion.gd`, node con `Motion` có meta `u_rt`). `adopt` tự gắn theo sprite node vẽ, không gắn khi bake:
+    - Tia sáng, quầng sáng (`fx_1`, `light1`) phập phồng: scale 1 → 1.1 → 1, chu kỳ 1.4 s, sine. Vẫn xoay theo `SimpleUIRotator`.
+    - Icon video ads (TV `Resources_moved_UI_Maincenter:UI_Maincenter_5`, clapper `Resources_UI_Maincenter:UI_Maincenter_7`) nhảy rung theo nhịp 2 s: nhún, bật lên 15% chiều cao, co giãn khi tiếp đất, lắc ±12° ba lần rồi đứng yên. Lần đầu sau 0.5 s, chờ popup hiện xong. `Resources_moved_UI_Maincenter:UI_Maincenter_7` là đồng hồ, không nhảy.
+    - Motion cộng lên vị trí, scale, góc của chính node. Giá trị do nơi khác ghi (layout, xoay, reveal, nhún nút) thành gốc mới nên không trôi. Node ẩn thì dừng và trả về gốc.
   - Đóng popup thì ẩn ngay, như `HideLastStackLayer`.
 - SafeAreaUIAdjuster: anchor theo `DisplayServer.get_display_safe_area()`.
 - `build()` nhiều lần vào cùng một owner được: mọi canvas của owner co lại khi owner đổi cỡ.
@@ -91,6 +102,7 @@ Dùng `UnityKit`. Mỗi mảnh là bản sao node thật của `PopupOkLayer`:
 
 - `UnityKit.popup(owner, title, Vector2(w, h), on_close)`: dim, khung `Popup2`, mũ tiêu đề, nút X. Nội dung đặt vào `v.node("Panel/Content")`.
 - `UnityKit.button(parent, "green", text, Rect2(x, y, 280, 120), cb)`. Màu: `green`, `blue`, `cyan`, `red`, `yellow`, `purple`, `gray`.
+- `UnityKit.gold_price(btn, price)`: biến nút thành nút mua bằng gold (xem quy tắc dưới). `gold_pill(btn)`, `gold_coin(img)` chỉ đổi sprite khi nút đã có sẵn icon và giá.
 - `UnityKit.label(parent, text, rect, 40)`: chữ thân xanh mực `1C4A83`. Chữ trắng viền đen dùng `mat = "Baloo Outline - Black"`.
 - `UnityKit.well(parent, rect)`: ô kem `UI_Maincenter_68`.
 - `UnityKit.sprite(parent, key, rect, tex)`: ảnh giữ tỉ lệ.
@@ -136,7 +148,7 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `settings` | `SettingMainMenuLayer` |
 | `popup_language` | `SettingLanguage` |
 | `profile` | `ProfileLayer` |
-| `shop` | `ShopCashLayer` |
+| `shop` | `ShopCashLayer`; nền `BG (2)` ẩn, thay bằng node `Background` ở gốc màn với `assets/ui/figma/bg_shop.png` (Figma node `22:16980`, dải `#3454AC` → `#CED3EB`, đã khử hạt nhiễu: mỗi hàng lấy màu trung bình, làm mượt theo chiều dọc; kéo giãn phủ kín màn) |
 | `no_lives` | `PopupMoreHeartLayer` |
 | `popup_heart_bundle` | `PopupBundleHeart` |
 | `popup_helper_pack`, `popup_heart_support` | `SupportPackLayer` |
@@ -160,4 +172,5 @@ Home, `level` (bàn chơi, HUD) và thanh trên/dưới dùng chung (`hub_top.gd
 
 - Bố cục lấy từ prefab. Nội dung (chữ qua `tr()`, số, icon vật phẩm của game, các nút hành động) là của game. Mục game có mà prefab không có thì dựng bằng bản sao node của prefab (`UnityKit.spec`), đặt theo nhịp của prefab. Mục prefab có mà game không có thì ẩn.
 - Không dùng sprite có chữ in sẵn. Ribbon tiêu đề trong prefab là ảnh trơn, chữ do TMP vẽ.
+- Mọi nút mua bằng gold (cứu lượt, nạp mạng, mua booster, booster mới, gói trợ giúp, avatar và frame) dùng pill vàng `pill_yellow` và icon `big_coin` của `assets/ui/figma/atlas_main.png`, chỉ có icon gold rồi đến giá, không chữ "Mua"; hàng icon + giá là `Price` của `GoldBtn` trong `PopupReviveLayer`. Thiếu gold thì nút vẫn vàng: popup cứu lượt ghi dòng thiếu gold, hộp mua booster làm mờ nút (alpha 0.6) như nút gold của `no_lives`. Huy hiệu "+N tim" trên nút nạp mạng giữ nguyên.
 - Giữ signal, `setup()`, hành vi và tên node mà test dùng.

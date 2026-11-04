@@ -68,6 +68,56 @@ func test_auto_size_fitter_measures_at_max(t: T) -> void:
 	o.free()
 
 
+## Width of a label's text at its current size.
+func _text_w(l: Label) -> float:
+	var s := l.text.to_upper() if l.uppercase else l.text
+	return l.get_theme_font("font").get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, l.get_theme_font_size("font_size")).x
+
+
+func test_button_text_fits_frame(t: T) -> void:
+	var o := _owner()
+	# Prefab auto size [18, 56] in a rect as wide as the pill: the text keeps off the round ends.
+	var v := UnityUI.build(o, "PopupOkLayer", {"reveal": false})
+	var ok: Control = v.node("Panel/Content/Button/Ok")
+	var l := v.text("Panel/Content/Button/Ok/Out", "Herunterladen")
+	var area := ThemeKit.button_text_area(ok.size)
+	t.ok(_text_w(l) <= area.size.x + 0.5, "chữ auto size nằm trong vùng chữ của nút")
+	t.ok(_text_w(l) > area.size.x * 0.8, "vẫn lấy cỡ lớn nhất vừa vùng")
+	v.text("Panel/Content/Button/Ok/Out", "OK")
+	t.eq(l.get_theme_font_size("font_size"), 56, "chữ ngắn giữ cỡ max")
+	t.near(l.get_global_rect().get_center().x, ok.get_global_rect().get_center().x, 0.5, "lề hai bên bằng nhau, chữ vẫn giữa nút")
+	# One line that overflows even at the smallest size goes onto lines between words; short text comes back to one.
+	t.eq(l.autowrap_mode, TextServer.AUTOWRAP_OFF, "nhãn prefab một dòng")
+	v.text("Panel/Content/Button/Ok/Out", "Obtenir le VIP pour 4,99 € maintenant")
+	t.eq(l.autowrap_mode, TextServer.AUTOWRAP_WORD_SMART, "không vừa ở cỡ nhỏ nhất thì xuống dòng")
+	t.ok(l.get_theme_font_size("font_size") > 18, "xuống dòng để chữ to hơn cỡ nhỏ nhất")
+	v.text("Panel/Content/Button/Ok/Out", "OK")
+	t.eq(l.autowrap_mode, TextServer.AUTOWRAP_OFF, "chữ ngắn về một dòng")
+	# The prefab does not auto size this one: on a button it still fits, between 18 and its own size.
+	var acc := UnityUI.build(o, "SelectAccountLayer", {"reveal": false})
+	var btn: Control = acc.node("Panel/AccountItem/Button")
+	var sel := acc.text("Panel/AccountItem/Button/Text (TMP)", "Seleccionar")
+	t.ok(sel.get_theme_font_size("font_size") < 46, "chữ dài co lại")
+	t.ok(_text_w(sel) <= ThemeKit.button_text_area(btn.size).size.x + 0.5, "chữ cỡ cố định trên nút cũng co vừa")
+	acc.text("Panel/AccountItem/Button/Text (TMP)", "OK")
+	t.eq(sel.get_theme_font_size("font_size"), 46, "không vượt cỡ prefab")
+	o.free()
+
+
+func test_button_text_rect_and_cover(t: T) -> void:
+	var o := _owner()
+	# A price in the icon + price row: its rect is shorter than the text, as TMP allows; only the button bounds it.
+	var hearts := UnityUI.build(o, "PopupMoreHeartLayer", {"reveal": false})
+	var price := hearts.text("Panel/Content/GameObject/GoldBtn/Price/Text (TMP)", "100")
+	t.eq(price.get_theme_font_size("font_size"), roundi(float((price.get_meta("u_txt") as Dictionary).fs)), "giá cạnh icon giữ cỡ prefab")
+	# A button covering the layer ("tap to continue") holds content, not a caption: its texts keep their size.
+	var how := UnityUI.build(o, "LeaderboardDescriptionLayer", {"reveal": false})
+	var tap := how.text("Panel/LeaguesDesc/txtHeader", "Cách hoạt động của bảng xếp hạng tuần")
+	t.eq(tap.get_theme_font_size("font_size"), roundi(float((tap.get_meta("u_txt") as Dictionary).fs)), "nút phủ màn không co chữ")
+	t.ok(not tap.has_meta("u_inset"), "nút phủ màn không thêm lề")
+	o.free()
+
+
 func test_disabled_animator_and_display_layout(t: T) -> void:
 	var o := _owner()
 	var tut := UnityUI.build(o, "MainTutorialLayer", {"reveal": false})

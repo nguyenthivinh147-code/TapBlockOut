@@ -18,9 +18,10 @@ const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 ## Cắt khối đối xứng có thể lệch số khối mục tiêu tới 2.
 const MAX_BLOCKS := DifficultyCurve.BOOST_MAX * DifficultyCurve.COUNT_SCALE + 2
-## Khung lớn nhất của hình: chừa một ô mỗi phía trên bàn cố định.
+## Khung lớn nhất của hình: 12x17, chừa một ô mỗi phía theo chiều ngang; chiều dọc giữ 17 hàng như khi lưới còn 19 hàng
+## nên level sinh ra không đổi (BoardView co ô để hình cộng lề vừa lưới chuẩn).
 const MAX_W := Config.BOARD_W - 2
-const MAX_H := Config.BOARD_H - 2
+const MAX_H := Config.BOARD_H - 1
 const MAX_TRIES := 60
 ## Bàn có cổng nhịp: giữ ít khối để tìm được trạng thái cổng ban đầu không bắt chạm chờ. Từ GATE2_FROM bàn có tới 2
 ## cổng, khó tìm hơn nên trần thấp hơn (GATE2_MAX_BLOCKS) để sinh trong game vẫn nhanh.

@@ -1,9 +1,10 @@
 extends Control
-## Vẽ bàn cờ: nền trơn, đá, khối bo góc, khung cổng (`CandyFrame`); nhận chạm; chạy hoạt ảnh kết quả.
+## Vẽ bàn cờ: nền trơn, thùng sắt, khối bo góc, khung cổng (`CandyFrame`); nhận chạm; chạy hoạt ảnh kết quả.
 ## Dùng: setup(board) rồi nối block_tapped; level gọi board.tap(id) và đưa kết quả vào apply_result().
-## Khung cổng và các lớp (Shadows, Blocks, Links, Fx) nằm sẵn trong scenes/board_view.tscn; khối, nền bàn, gỗ và hiệu ứng
+## Khung cổng và các lớp (Shadows, Blocks, Links, Fx) nằm sẵn trong scenes/board_view.tscn; khối, nền bàn, thùng sắt và hiệu ứng
 ## sinh hoặc vẽ lúc chạy theo bàn.
-## Ô cỡ cố định Config.BOARD_CELL, chỉ co khi vùng chứa (`size` hoặc setup(board, area)) không đủ cho bàn chuẩn; đổi size thì tự xếp lại.
+## Khung cổng cố định theo màn (Config.BOARD_AREA ở màn chuẩn), chỉ co khi vùng chứa (`size` hoặc setup(board, area)) nhỏ
+## hơn khung; cỡ ô theo hình của level, to nhất Config.BOARD_CELL_MAX. Đổi size thì tự xếp lại.
 
 const BoardState := preload("res://src/core/board_state.gd")
 const BoardFx := preload("res://src/ui/board_fx.gd")
@@ -24,6 +25,7 @@ const SLIDE_TIME := 0.30  # lâu nhất của một lần khối lao tới thanh
 const SLIDE_MIN := 0.14  # đường ngắn nhất vẫn đủ thấy khối lấy đà
 const SLIDE_PER_CELL := 0.022
 const SLIDE_STRETCH := 0.09  # khối dài ra theo hướng lao, hẹp lại phía ngang
+const EXIT_BRAKE := 0.1  # giây cuối trước khi chạm thanh: khối thoát chậm dần đều về GRIND_SPEED để trôi êm vào thanh; khối cuối trên bàn không hãm
 const SUCK_WHITE := 0.6  # vệt gió hút: màu thanh pha trắng chừng này
 const SUCK_LEAD := 0.08  # vệt gió hút bắt đầu chừng này giây trước khi khối chạm thanh, kéo dài tới lúc nghiền xong
 const BOUNCE_BACK := 0.24
@@ -48,8 +50,11 @@ const FLASH_SMASH := 3.0
 const SPARKS_SMASH := 10
 const SPARK_SCALE_SMASH := 90.0
 const SMASH_SETTLE := 0.3  # giây sau cú gõ thì báo xong; mảnh vỡ còn bay tiếp
+const CRYSTAL_STRUCK := 0.7  # khối crystal bị va: mảnh kính, loé, sao yếu hơn lúc chính nó va chừng này
+const CRYSTAL_GRIND_GLINTS := 0.8  # mảnh kính lúc khối crystal bắt đầu qua thanh (theo lúc va)
+const CRYSTAL_SMASH_GLINTS := 1.6  # mảnh kính toả tròn lúc khối crystal bị búa gõ
 const GATE_TIME := 0.22
-const WOOD_KNOCK := 0.32  # giây gỗ nhún khi bị gõ
+const CRATE_KNOCK := 0.42  # giây thùng sắt rung và loé khi bị gõ
 const JELLY_JOLT := 2.2  # khối phủ pudding bị va nhún mạnh gấp chừng này khối thường
 const BOX_FLY_MIN := 0.16  # giây ngắn nhất hộp giấy bay tới thanh
 const HINT_POP := 1.22  # khối được Gợi ý nảy to chừng này lúc sao chạm
@@ -120,6 +125,7 @@ class BlockNode extends Control:
 		var tape := BoardFx.tape_center(lc) if layers["paper"] > 0.0 else Vector2(-9, -9)
 		var jelly_only := bool(view.get("jelly_only", false))
 		BoardFx.Pudding.set_layers(_body, layers["jelly"], layers["paper"], tape, 0.0 if jelly_only else 1.0)
+		BoardFx.Pudding.set_crystal(_body, layers["crystal"])
 		if shadow != null:
 			BoardFx.Pudding.update_body(shadow.body, lc, cell_size, ramp)
 			BoardFx.Pudding.set_layers(shadow.body, layers["jelly"], 0.0)
@@ -142,9 +148,11 @@ class BlockNode extends Control:
 var input_enabled: bool = true
 
 var _board: BoardState = null
-var _cell: float = 64.0
-var _origin: Vector2 = Vector2.ZERO
-var _inner: Rect2 = Rect2()  # vùng trong khung cổng (cố định), lưới level nằm giữa vùng này
+var _cell: float = 64.0  # cỡ ô khối, theo hình của level
+var _unit: float = Config.BOARD_FRAME_UNIT  # đơn vị đo khung cổng (CandyFrame), theo màn
+var _area: Rect2 = Rect2()  # vùng khung cổng bao quanh, cố định theo màn; hình của level nằm giữa vùng này
+var _origin: Vector2 = Vector2.ZERO  # góc ô (0, 0) của lưới level
+var _box: Rect2i = Rect2i()  # ô bao hình của level (khối và thùng sắt) lúc setup
 var _nodes: Dictionary = {}  # id -> BlockNode
 var _owner: Dictionary = {}  # Vector2i -> id
 var _vacated: Dictionary = {}  # Vector2i -> true: ô của khối đã đi, không vẽ nền nữa
@@ -163,8 +171,8 @@ var _hl_id: String = ""
 var _hl_tween: Tween = null
 var _shake_tw: Tween = null
 var _rng := RandomNumberGenerator.new()
-var _specials: Dictionary = {}  # id -> true: khối đặc biệt của leaderboard (vẽ huy hiệu mảnh)
-var _knocked: Dictionary = {}  # Vector2i -> true: ô gỗ đang nhún (vẽ bằng node riêng)
+var _specials: Dictionary = {}  # id -> true: khối đặc biệt của leaderboard (vẽ bằng chất liệu crystal)
+var _knocked: Dictionary = {}  # Vector2i -> true: ô thùng sắt đang rung (vẽ bằng node riêng)
 
 static var _fx_prewarmed: bool = false
 
@@ -199,6 +207,7 @@ func setup(board: BoardState, area: Vector2 = Vector2.ZERO) -> void:
 		_set_fixed_size(area)
 	for id in board.block_ids():
 		_add_block(id)
+	_box = _content_box()
 	_gate_state = board.gates()
 	_set_gate_progress_now()
 	_refresh_keys()
@@ -240,16 +249,31 @@ func cell_size() -> float:
 	return _cell
 
 
-## Hình chữ nhật của bàn (không tính khung cổng), toạ độ cục bộ.
+## Đơn vị đo khung cổng (CandyFrame), px.
+func frame_unit() -> float:
+	return _unit
+
+
+## Vùng khung cổng bao quanh (không tính khung), toạ độ cục bộ. Cố định theo màn, không đổi theo level.
 func board_rect() -> Rect2:
 	if _board == null:
 		return Rect2()
-	return Rect2(_origin, Vector2(_board.width(), _board.height()) * _cell)
+	return _area
+
+
+## Ô bao hình của level (khối và thùng sắt lúc setup), toạ độ ô.
+func content_box() -> Rect2i:
+	return _box
+
+
+## Hình chữ nhật của các ô trong `content_box()`, toạ độ cục bộ.
+func content_rect() -> Rect2:
+	return Rect2(_origin + Vector2(_box.position) * _cell, Vector2(_box.size) * _cell)
 
 
 ## Trọn khung cổng quanh bàn, toạ độ cục bộ.
 func frame_rect() -> Rect2:
-	return CandyFrame.outer_rect(board_rect(), _cell)
+	return CandyFrame.outer_rect(board_rect(), _unit)
 
 
 func cell_center(c: Vector2i) -> Vector2:
@@ -384,23 +408,48 @@ func _unmap(id: String) -> void:
 	queue_redraw()
 
 
+## Ô bao mọi khối và thùng sắt của bàn; bàn trống thì là cả lưới.
+func _content_box() -> Rect2i:
+	var mn := Vector2i(1 << 20, 1 << 20)
+	var mx := Vector2i(-(1 << 20), -(1 << 20))
+	var cells: Array[Vector2i] = _board.stones().duplicate()
+	for id in _nodes:
+		cells.append_array((_nodes[id] as BlockNode).cells)
+	for c in cells:
+		mn = Vector2i(mini(mn.x, c.x), mini(mn.y, c.y))
+		mx = Vector2i(maxi(mx.x, c.x), maxi(mx.y, c.y))
+	if cells.is_empty():
+		return Rect2i(Vector2i.ZERO, Vector2i(_board.width(), _board.height()))
+	return Rect2i(mn, mx - mn + Vector2i.ONE)
+
+
+## Màn to hơn màn chuẩn Config.BOARD_SCREEN thì khung to theo: giữ tỉ lệ khung so với màn.
+func _screen_scale() -> float:
+	var screen := get_viewport_rect().size if is_inside_tree() else Config.BOARD_SCREEN
+	return minf(screen.x / Config.BOARD_SCREEN.x, screen.y / Config.BOARD_SCREEN.y)
+
+
 func _layout() -> void:
 	if _board == null:
 		return
-	var w := _board.width()
-	var h := _board.height()
-	if w <= 0 or h <= 0:
+	if _board.width() <= 0 or _board.height() <= 0:
 		return
 	var avail := size
-	if avail.x <= 1.0 or avail.y <= 1.0:
-		_cell = float(Config.BOARD_CELL)
-	else:
-		# Ô cố định; tính theo bàn chuẩn nên không đổi theo level, chỉ co khi vùng chứa nhỏ hơn bàn chuẩn.
-		var m := CandyFrame.margin()
-		var fit_cell := minf(avail.x / (Config.BOARD_W + 2.0 * m.x), avail.y / (Config.BOARD_H + 2.0 * m.y))
-		# Làm tròn xuống số nguyên để các ô trong cùng khối khớp pixel, không lộ đường nối.
-		_cell = floorf(clampf(fit_cell, 8.0, float(Config.BOARD_CELL)))
-	_origin = ((avail - Vector2(w, h) * _cell) * 0.5).floor()
+	var s := _screen_scale()
+	var m := CandyFrame.margin()
+	var outer := Config.BOARD_AREA + 2.0 * m * Config.BOARD_FRAME_UNIT
+	if avail.x > 1.0 and avail.y > 1.0:
+		# khung chỉ co thêm khi vùng chứa nhỏ hơn khung
+		s = minf(s, minf(avail.x / outer.x, avail.y / outer.y))
+	_unit = Config.BOARD_FRAME_UNIT * s
+	var area := Config.BOARD_AREA * s
+	_area = Rect2(((avail - area) * 0.5).floor(), area)
+	# Hình của level cộng một ô lề mỗi phía (tối đa cả lưới chuẩn) vừa vùng khung, to nhất BOARD_CELL_MAX.
+	var need := Vector2(mini(_box.size.x + 2, Config.BOARD_W), mini(_box.size.y + 2, Config.BOARD_H))
+	var fit_cell := minf(area.x / need.x, area.y / need.y)
+	# Làm tròn xuống số nguyên để các ô trong cùng khối khớp pixel, không lộ đường nối.
+	_cell = floorf(clampf(fit_cell, 8.0, Config.BOARD_CELL_MAX * s))
+	_origin = (_area.get_center() - (Vector2(_box.position) + Vector2(_box.size) * 0.5) * _cell).floor()
 	for id in _nodes:
 		var n: BlockNode = _nodes[id]
 		if n.busy:
@@ -413,7 +462,7 @@ func _layout() -> void:
 		n.position = _origin + Vector2(n.origin_cell) * _cell
 		n.pivot_offset = n.size * 0.5
 		n.queue_redraw()
-	_frame.layout(board_rect(), _cell)
+	_frame.layout(_area, _unit)
 	queue_redraw()
 	_links.queue_redraw()
 
@@ -423,62 +472,67 @@ func _layout() -> void:
 func _draw() -> void:
 	if _board == null:
 		return
-	var br := board_rect()
 	# nền bàn: tới đường giữa các thanh khung
 	var bg := StyleBoxFlat.new()
 	bg.bg_color = ThemeKit.BOARD_BG
-	bg.set_corner_radius_all(int(CandyFrame.TUBE_R * _cell))
+	bg.set_corner_radius_all(int(CandyFrame.TUBE_R * _unit))
 	bg.anti_aliasing = true
-	draw_style_box(bg, CandyFrame.panel_rect(br, _cell))
-	# gỗ (vật cản cố định, `stone` trong dữ liệu)
+	draw_style_box(bg, CandyFrame.panel_rect(_area, _unit))
+	# thùng sắt (vật cản cố định, `stone` trong dữ liệu)
 	for s in _board.stones():
 		if not _knocked.has(s):
-			BoardFx.draw_wood(self, _cell_rect(s), _cell)
+			BoardFx.draw_crate(self, _cell_rect(s), _cell)
 
 
 func _cell_rect(c: Vector2i) -> Rect2:
 	return Rect2(_origin + Vector2(c) * _cell, Vector2(_cell, _cell))
 
 
-## Ô gỗ bị gõ theo `dir`: ép lại theo hướng gõ rồi nảy về. Trong lúc nhún ô vẽ bằng node riêng ở lớp hiệu ứng.
-func _knock_wood(c: Vector2i, dir: Vector2) -> void:
+## Ô thùng sắt bị gõ theo `dir`: rung cứng và nhanh theo hướng gõ, nắp loé, vệt sáng quét qua làm đinh loé.
+## Trong lúc rung ô vẽ bằng node riêng ở lớp hiệu ứng.
+func _knock_crate(c: Vector2i, dir: Vector2) -> void:
 	if _knocked.has(c):
 		return
 	_knocked[c] = true
 	queue_redraw()
-	var k := WoodKnock.new()
+	var k := CrateKnock.new()
 	k.cell = _cell
 	k.axis = Vector2(absf(dir.x), absf(dir.y)) if dir != Vector2.ZERO else Vector2(0, 1)
 	k.position = _cell_rect(c).position
 	k.size = Vector2(_cell, _cell)
 	_fx_root.add_child(k)
 	var tw := k.create_tween()
-	tw.tween_method(k.set_t, 0.0, 1.0, WOOD_KNOCK)
+	tw.tween_method(k.set_t, 0.0, 1.0, CRATE_KNOCK)
 	tw.finished.connect(func() -> void:
 		_knocked.erase(c)
 		queue_redraw()
 		k.queue_free())
 
 
-## Ô gỗ đang nhún: dao động tắt dần, ép theo `axis`, nở bù theo trục kia.
-class WoodKnock extends Control:
+## Ô thùng sắt đang rung: kim loại cứng nên ép ít, dao động nhanh tắt dần theo `axis`, nở bù theo trục kia; vẽ thêm loé.
+class CrateKnock extends Control:
 	const BoardFx := preload("res://src/ui/board_fx.gd")
-	const SQUASH := 0.16  # gỗ bị ép chừng này theo hướng va
+	const SQUASH := 0.07  # thùng bị ép chừng này theo hướng va
+	const RINGS := 3.5  # số nhịp rung trong cả lần gõ
 	var cell: float = 42.0
 	var axis: Vector2 = Vector2(0, 1)
 	var _sq: Vector2 = Vector2.ONE
+	var _t: float = 0.0
 
 	func _init() -> void:
-		name = "WoodKnock"
+		name = "CrateKnock"
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	func set_t(t: float) -> void:
-		var f := SQUASH * exp(-5.0 * t) * cos(t * TAU * 1.6)
+		_t = t
+		var f := SQUASH * exp(-6.0 * t) * cos(t * TAU * RINGS)
 		_sq = Vector2.ONE - axis * f + Vector2(axis.y, axis.x) * f * 0.5
 		queue_redraw()
 
 	func _draw() -> void:
-		BoardFx.draw_wood(self, Rect2(Vector2.ZERO, size), cell, _sq)
+		var r := Rect2(Vector2.ZERO, size)
+		BoardFx.draw_crate(self, r, cell, _sq)
+		BoardFx.draw_crate_glint(self, r, cell, _t, _sq)
 
 
 func _draw_links() -> void:
@@ -508,8 +562,8 @@ func _gui_input(event: InputEvent) -> void:
 			if _board.stones().has(c):
 				accept_event()
 				Sfx.play("stone")
-				_knock_wood(c, Vector2.DOWN)
-				ObstacleFx.wood_hit(_fx_root, get_global_transform() * cell_center(c), Vector2.UP, _cell, 0.7)
+				_knock_crate(c, Vector2.DOWN)
+				ObstacleFx.iron_hit(_fx_root, get_global_transform() * cell_center(c), Vector2.UP, _cell, 0.7)
 			return
 		accept_event()
 		Sfx.play("tap")
@@ -552,7 +606,7 @@ func apply_result(result: Dictionary) -> void:
 			_anim_bounce(node, dir, float(dist), dist, str(result.get("blocker", "")), "")
 		"gate_closed":
 			var gate_side := LevelData.side_of(str(node.view.get("color", "")))
-			_anim_bounce(node, dir, float(dist) + CandyFrame.gap(gate_side), dist, "", gate_side)
+			_anim_bounce(node, dir, _cells_to_bar(node, dir), dist, "", gate_side)
 		"chained":
 			Sfx.play("chain")
 			_anim_chained(node, str(result.get("blocker", "")))
@@ -572,28 +626,60 @@ func _after_result(valid: bool) -> void:
 	_update_gates(true)
 
 
-## Khối lao nhanh dần tới mặt trong của thanh cùng màu rồi trôi qua thanh và bị nghiền thành khối vuông nhỏ.
+## Khối lao nhanh dần, gần tới thanh cùng màu thì chậm lại về tốc độ nghiền (trừ khối cuối trên bàn), chạm mặt trong
+## của thanh rồi trôi qua thanh và bị nghiền thành khối vuông nhỏ.
 func _anim_exit(node: BlockNode, dir: Vector2) -> void:
 	_unmap(node.id)
 	_nodes.erase(node.id)
 	node.busy = true
 	_begin()
 	var side := LevelData.side_of(str(node.view.get("color", "")))
-	var steps := _steps_to_edge(node, dir)
-	var travel := (float(steps) + CandyFrame.gap(side)) * _cell
-	var time := clampf(SLIDE_MIN + SLIDE_PER_CELL * float(steps), SLIDE_MIN, SLIDE_TIME)
+	var steps := _cells_to_bar(node, dir)
+	var travel := steps * _cell
+	# khối cuối trên bàn không hãm: lao thẳng vào thanh như cú chốt ván
+	var brake := 0.0 if _nodes.is_empty() else EXIT_BRAKE
+	var plan := _exit_plan(travel, clampf(SLIDE_MIN + SLIDE_PER_CELL * steps, SLIDE_MIN, SLIDE_TIME), brake)
+	var time: float = plan[0] + plan[1]
 	var axis := Vector2(absf(dir.x), absf(dir.y))
+	var stretch := axis * SLIDE_STRETCH - Vector2(axis.y, axis.x) * SLIDE_STRETCH * 0.5
 	node.pivot_offset = node.size * 0.5
 	_suck_wind(node, dir, side, time)
-	var tw := node.create_tween().set_parallel(true)
-	tw.tween_property(node, "position", node.position + dir * travel, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tw.tween_property(node, "scale", Vector2.ONE + axis * SLIDE_STRETCH - Vector2(axis.y, axis.x) * SLIDE_STRETCH * 0.5, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	var tw := node.create_tween()
+	tw.tween_method(_exit_step.bind(node, node.position, dir, stretch, plan[0], plan[1], plan[2]), 0.0, time, time)
 	tw.finished.connect(_grind.bind(node, dir, side))
 	_links.queue_redraw()
 
 
-## Vệt gió hút về đoạn thanh khối sắp phủ, ở lớp dưới các khối; `time` là giây tới lúc khối chạm thanh.
-## Vệt hiện từ lúc khối gần chạm cho tới khi khối trôi hết qua thanh.
+## Đường lao thoát dài `travel` px: nhanh dần đều trong `dash` giây tới tốc độ cao nhất, rồi chậm dần đều trong
+## `brake` giây để chạm thanh đúng GRIND_SPEED; `brake` 0 thì nhanh dần tới tận thanh.
+## Trả [giây nhanh dần, giây chậm dần, tốc độ cao nhất px/giây].
+func _exit_plan(travel: float, dash: float, brake: float = EXIT_BRAKE) -> Array:
+	var grind := GRIND_SPEED * _cell
+	var peak := (2.0 * travel - grind * brake) / (dash + brake)
+	if peak < grind:
+		# sát thanh, không đủ đường để hãm: nhanh dần tới tốc độ nghiền rồi đi đều, hoặc chưa tới đã chạm thanh
+		peak = minf(grind, 2.0 * travel / dash)
+		brake = (travel - peak * dash * 0.5) / grind
+	return [dash, brake, peak]
+
+
+## Một bước lao thoát ở giây `t` theo _exit_plan(); khối dài ra theo bình phương phần tốc độ so với lúc nhanh nhất.
+func _exit_step(t: float, node: BlockNode, start: Vector2, dir: Vector2, stretch: Vector2, dash: float, brake: float, peak: float) -> void:
+	var a := minf(t, dash)
+	var dist := 0.5 * peak * a * a / dash
+	var speed := peak * a / dash
+	if t > dash and brake > 0.0:
+		var u := t - dash
+		var slow := (peak - GRIND_SPEED * _cell) / brake
+		dist += peak * u - 0.5 * slow * u * u
+		speed = peak - slow * u
+	node.position = start + dir * dist
+	var k := speed / peak if peak > 0.0 else 0.0
+	node.scale = Vector2.ONE + stretch * k * k
+
+
+## Vệt gió hút về đoạn thanh khối sắp phủ, rộng đúng bề ngang khối, ở lớp Fx trên các khối; `time` là giây tới lúc
+## khối chạm thanh. Vệt hiện từ lúc khối gần chạm cho tới khi khối trôi hết qua thanh.
 func _suck_wind(node: BlockNode, dir: Vector2, side: String, time: float) -> void:
 	var seg := _bar_segment(node, dir, false)
 	var lo := INF
@@ -602,24 +688,25 @@ func _suck_wind(node: BlockNode, dir: Vector2, side: String, time: float) -> voi
 		lo = minf(lo, Vector2(c).dot(dir))
 		hi = maxf(hi, Vector2(c).dot(dir) + 1.0)
 	var lead := minf(SUCK_LEAD, time)
-	var br := board_rect()
-	var inner := br.get_center().dot(dir) + absf(br.size.dot(dir)) * 0.5 + CandyFrame.gap(side) * _cell
+	var inner := _bar_face(dir)
 	var perp := Vector2(-dir.y, dir.x)
 	var mouth := dir * inner + perp * (seg[0] as Vector2).dot(perp)
 	var col: Color = (CandyFrame.END_COLORS[side] as Color).lerp(Color.WHITE, SUCK_WHITE)
-	SuckWind.spawn(_shadow_root, mouth, dir, float(seg[1]) * 0.5, _cell, col, time - lead, lead + (hi - lo) / GRIND_SPEED, _rng)
+	SuckWind.spawn(_fx_root, mouth, dir, float(seg[1]) * 0.5, _cell, col, time - lead, lead + (hi - lo) / GRIND_SPEED, _rng)
 
 
-## Số ô khối đi được tới khi mép trước chạm mép bàn.
-func _steps_to_edge(node: BlockNode, dir: Vector2) -> int:
-	var d := Vector2i(dir)
-	var steps := 1 << 20
+## Mặt trong của thanh phía `dir`, toạ độ cục bộ chiếu lên `dir`.
+func _bar_face(dir: Vector2) -> float:
+	var r := CandyFrame.inner_rect(_area, _unit)
+	return r.get_center().dot(dir) + absf(r.size.dot(dir)) * 0.5
+
+
+## Số ô (lẻ) khối đi được từ chỗ của nó tới khi mép trước chạm mặt trong của thanh phía `dir`.
+func _cells_to_bar(node: BlockNode, dir: Vector2) -> float:
+	var front := -INF
 	for c: Vector2i in node.cells:
-		if d.x != 0:
-			steps = mini(steps, (_board.width() - 1 - c.x) if d.x > 0 else c.x)
-		else:
-			steps = mini(steps, (_board.height() - 1 - c.y) if d.y > 0 else c.y)
-	return steps
+		front = maxf(front, (Vector2(c) + Vector2(0.5, 0.5) + dir * 0.5).dot(dir))
+	return maxf(0.0, (_bar_face(dir) - _origin.dot(dir)) / _cell - front)
 
 
 ## Giữa mép trước của khối theo hướng `dir`, px theo toạ độ của khối.
@@ -645,9 +732,8 @@ func _leading_point(lc: Array, dir: Vector2) -> Vector2:
 func _grind(node: BlockNode, dir: Vector2, side: String) -> void:
 	var ramp := ThemeKit.block_ramp(str(node.view.get("color", "")))
 	var lc := node.local_cells()
-	var br := board_rect()
-	var inner := br.get_center().dot(dir) + absf(br.size.dot(dir)) * 0.5 + CandyFrame.gap(side) * _cell
-	var outer := inner + float(CandyFrame.BARS[side]["thick"]) * _cell
+	var inner := _bar_face(dir)
+	var outer := inner + float(CandyFrame.BARS[side]["thick"]) * _unit
 	var clip := _exit_clip(dir, inner)
 	node.reparent(clip)
 	node.shadow.hide()
@@ -656,13 +742,16 @@ func _grind(node: BlockNode, dir: Vector2, side: String) -> void:
 	for c: Vector2i in lc:
 		trail = minf(trail, (to_view * ((Vector2(c) + Vector2(0.5, 0.5) - dir * 0.5) * _cell)).dot(dir))
 	var to_go := maxf(0.0, inner - trail) + 1.0
-	var bits := CandyShards.grinder(_fx_root, lc, _cell, ramp) as CandyShards
+	var crystal := bool(node.view.get("special", false))
+	var bits := CandyShards.grinder(_fx_root, lc, _cell, ramp, crystal) as CandyShards
 	var state := {"done": 0.0, "owed": {}}
 	var tw := node.create_tween()
 	tw.tween_method(_grind_step.bind(node, lc, dir, inner, outer, bits, node.position, state), 0.0, to_go, to_go / (GRIND_SPEED * _cell))
 	tw.finished.connect(_end_grind.bind(clip, bits))
 	var mouth := get_global_transform() * (to_view * _leading_point(lc, dir) + dir * (outer - inner))
 	BoardFx.sparkles(_fx_root, mouth, ramp, dir, _cell / GRIND_SPARK_SCALE, GRIND_SPARKS)
+	if crystal:
+		ObstacleFx.crystal_glints(_fx_root, mouth, dir, _cell, ramp, CRYSTAL_GRIND_GLINTS)
 	_hit_bar(side, node, dir, false, 1.0, CandyFrame.SPIN_EXIT, to_go / (GRIND_SPEED * _cell))
 	Sfx.play_or("shatter", "exit")
 
@@ -812,9 +901,14 @@ func _impact(node: BlockNode, dir: Vector2, steps: int, blocker: String, gate_si
 	var at := _contact_local(node, steps, dir, blocker)
 	var xf := node.get_global_transform()
 	var world := xf * (at * _cell)
-	CandyShards.chips(_fx_root, node.local_cells(), _cell, ramp, xf, at, dir, CHIPS_BUMP, _rng)
-	BoardFx.impact_flash(_fx_root, world, ramp["stripe"], _cell * FLASH_BUMP, 0.26, 0.55)
-	BoardFx.sparkles(_fx_root, world, ramp, -dir, _cell / SPARK_SCALE_BUMP, SPARKS_BUMP)
+	var crystal := BoardFx.is_crystal(node.view)
+	CandyShards.chips(_fx_root, node.local_cells(), _cell, ramp, xf, at, dir, CHIPS_BUMP, _rng, crystal)
+	if crystal:
+		Sfx.play("crystal")
+		ObstacleFx.crystal_hit(_fx_root, world, -dir, _cell, ramp)
+	else:
+		BoardFx.impact_flash(_fx_root, world, ramp["stripe"], _cell * FLASH_BUMP, 0.26, 0.55)
+		BoardFx.sparkles(_fx_root, world, ramp, -dir, _cell / SPARK_SCALE_BUMP, SPARKS_BUMP)
 	node.pivot_offset = at * _cell
 	node.wobble(axis, WOBBLE_SELF, WOBBLE_TIME)
 	if gate_side != "":
@@ -824,8 +918,8 @@ func _impact(node: BlockNode, dir: Vector2, steps: int, blocker: String, gate_si
 	elif blocker == LevelData.STONE:
 		Sfx.play("stone")
 		for c in _hit_stones(node, steps, dir):
-			_knock_wood(c, dir)
-		ObstacleFx.wood_hit(_fx_root, world, -dir, _cell)
+			_knock_crate(c, dir)
+		ObstacleFx.iron_hit(_fx_root, world, -dir, _cell)
 	else:
 		Sfx.play_or("bump", "blocked")
 		if _nodes.has(blocker):
@@ -838,7 +932,13 @@ func _impact(node: BlockNode, dir: Vector2, steps: int, blocker: String, gate_si
 			elif str(b.view.get("inner_color", "")) != "":
 				ObstacleFx.paper_hit(_fx_root, world, -dir, _cell, ThemeKit.block_color(str(b.view.get("color", ""))))
 			else:
-				CandyShards.chips(_fx_root, b.local_cells(), _cell, BoardFx.block_ramp(b.view), bxf, bxf.affine_inverse() * world / _cell, -dir, CHIPS_BUMP, _rng)
+				var b_ramp := BoardFx.block_ramp(b.view)
+				var b_crystal := BoardFx.is_crystal(b.view)
+				CandyShards.chips(_fx_root, b.local_cells(), _cell, b_ramp, bxf, bxf.affine_inverse() * world / _cell, -dir, CHIPS_BUMP, _rng, b_crystal)
+				if b_crystal:
+					if not crystal:
+						Sfx.play("crystal")
+					ObstacleFx.crystal_hit(_fx_root, world, dir, _cell, b_ramp, CRYSTAL_STRUCK)
 			if bool(b.view.get("chained", false)):
 				Sfx.play("chain")
 				ObstacleFx.chain_rattle(_fx_root, world, _cell)
@@ -846,7 +946,7 @@ func _impact(node: BlockNode, dir: Vector2, steps: int, blocker: String, gate_si
 			_ripple(b, dir)
 
 
-## Các ô gỗ mép trước của khối đang đụng vào.
+## Các ô thùng sắt mép trước của khối đang đụng vào.
 func _hit_stones(node: BlockNode, steps: int, dir: Vector2) -> Array[Vector2i]:
 	var out: Array[Vector2i] = []
 	var stones := _board.stones()
@@ -1016,13 +1116,13 @@ func _box_fly(n: BlockNode, old_view: Dictionary) -> void:
 	var color := str(old_view.get("color", ""))
 	var dir := Vector2(LevelData.dir_of(color))
 	var side := LevelData.side_of(color)
-	var steps := _steps_to_edge(n, dir)
-	var time := clampf(SLIDE_MIN + SLIDE_PER_CELL * float(steps), BOX_FLY_MIN, SLIDE_TIME)
+	var steps := _cells_to_bar(n, dir)
+	var time := clampf(SLIDE_MIN + SLIDE_PER_CELL * steps, BOX_FLY_MIN, SLIDE_TIME)
 	var axis := Vector2(absf(dir.x), absf(dir.y))
 	_begin()
 	_suck_wind(g, dir, side, time)
 	var tw := g.create_tween().set_parallel(true)
-	tw.tween_property(g, "position", g.position + dir * (float(steps) + CandyFrame.gap(side)) * _cell, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.tween_property(g, "position", g.position + dir * steps * _cell, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.tween_property(g, "scale", Vector2.ONE + axis * SLIDE_STRETCH - Vector2(axis.y, axis.x) * SLIDE_STRETCH * 0.5, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.chain().tween_callback(_box_burst.bind(g, dir, side, color))
 
@@ -1199,9 +1299,13 @@ func smash_anim(id: String) -> void:
 	_begin()
 	Sfx.play("smash")
 	_shake_root(Vector2(0.5, 1), _cell * SHAKE_SMASH)
-	CandyShards.shatter(_fx_root, n.local_cells(), _cell, ramp, xf, at, _rng)
+	var crystal := BoardFx.is_crystal(n.view)
+	CandyShards.shatter(_fx_root, n.local_cells(), _cell, ramp, xf, at, _rng, crystal)
 	BoardFx.impact_flash(_fx_root, world, ramp["stripe"], _cell * FLASH_SMASH, 0.3, 0.8)
 	BoardFx.sparkles(_fx_root, world, ramp, Vector2.UP, _cell / SPARK_SCALE_SMASH, SPARKS_SMASH)
+	if crystal:
+		Sfx.play("crystal")
+		ObstacleFx.crystal_glints(_fx_root, world, Vector2.UP, _cell, ramp, CRYSTAL_SMASH_GLINTS, 180.0)
 	n.modulate.a = 0.0  # mảnh vỡ thay chỗ khối ngay lúc gõ
 	var tw := n.create_tween()
 	tw.tween_interval(SMASH_SETTLE)

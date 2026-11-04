@@ -15,6 +15,10 @@ const NO_LIVES := "res://scenes/no_lives.tscn"
 const TESTER := "res://scenes/tester_menu.tscn"
 const TesterMenu := preload("res://src/ui/tester_menu.gd")
 const LevelCurtain := preload("res://src/ui/level_curtain.gd")
+const HubNav := preload("res://src/ui/hub_nav.gd")
+const HubTop := preload("res://src/ui/hub_top.gd")
+## Hub screens left to right, as on the bottom bar: going between two of them slides the screens (_slide_screens).
+const HUB_SCREENS := ["shop", "home", "leaderboard"]
 
 var current_screen: Node = null
 var current_name: String = ""
@@ -23,6 +27,12 @@ var current_name: String = ""
 var is_booted: bool = false
 ## Màn chuyển cảnh đang chạy (go_curtain); null khi không có.
 var curtain: Control = null
+## Screen slide of a tab switch: the screen sliding out (freed at the end), the bars held in place
+## [{node, base, set}], the touch blocker.
+var _slide_tw: Tween = null
+var _slide_out: Control = null
+var _pinned: Array = []
+var _slide_block: Control = null
 
 
 func _ready() -> void:
@@ -68,8 +78,14 @@ func go(screen: String, args: Dictionary = {}) -> void:
 	if not ResourceLoader.exists(path):
 		push_warning("Thiếu scene màn hình: " + path)
 		return
+	var dir := slide_dir(current_name, screen)
+	_end_slide()
+	var out: Control = null
 	if current_screen != null:
-		current_screen.queue_free()
+		if dir != 0 and current_screen is Control:
+			out = current_screen
+		else:
+			current_screen.queue_free()
 		current_screen = null
 	current_name = screen
 	Game.set_in_level(screen == "level" or screen == "challenge")
@@ -81,8 +97,90 @@ func go(screen: String, args: Dictionary = {}) -> void:
 		node.connect("closed", _on_screen_closed.bind(screen, node))
 	if node.has_method("setup"):
 		node.call("setup", args)
+	if out != null:
+		# Off-screen until the slide starts next frame, once containers have placed the new screen's bars (their
+		# sorts are deferred and may queue more); the old screen keeps its bars for that frame.
+		_slide_out = out
+		(node as Control).position.x = dir * size.x
+		_slide_block = Control.new()
+		_slide_block.name = "SlideBlock"
+		_slide_block.set_anchors_preset(Control.PRESET_FULL_RECT)
+		add_child(_slide_block)
+		move_child(_slide_block, popup_layer.get_index())
+		get_tree().process_frame.connect(_slide_screens.bind(node, dir), CONNECT_ONE_SHOT)
 	if screen == "home" and is_booted:
 		_chain_autoshow.call_deferred()
+
+
+## Side the new screen comes from when going between hub screens: 1 from the right (a tab further right), -1 from the
+## left, 0 no slide.
+static func slide_dir(from: String, to: String) -> int:
+	if not (HUB_SCREENS.has(from) and HUB_SCREENS.has(to)):
+		return 0
+	return signi(HUB_SCREENS.find(to) - HUB_SCREENS.find(from))
+
+
+## Tab switch: the new screen slides in from its tab's side while the old one (_slide_out) slides out, over
+## HubNav.SLIDE_SEC like the bar's highlight. The new screen's top and bottom bars stay in place and the old one's hide;
+## touch and Back wait for the end.
+func _slide_screens(into: Control, dir: int) -> void:
+	if into != current_screen or _slide_out == null:
+		return
+	for bar in _bars(_slide_out):
+		bar.visible = false
+	for bar in _bars(into):
+		_pinned.append({"node": bar, "base": bar.position, "set": bar.position})
+	_slide_step(0.0, dir)
+	_slide_tw = create_tween().set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+	_slide_tw.tween_method(_slide_step.bind(dir), 0.0, 1.0, HubNav.SLIDE_SEC)
+	_slide_tw.finished.connect(_end_slide)
+
+
+func _slide_step(k: float, dir: int) -> void:
+	if is_instance_valid(_slide_out):
+		_slide_out.position.x = -dir * size.x * k
+	var into := current_screen as Control
+	into.position.x = dir * size.x * (1.0 - k)
+	for p: Dictionary in _pinned:
+		var bar: Control = p.node
+		if not is_instance_valid(bar):
+			continue
+		# A bar the screen laid out again since the last step keeps its new place.
+		if not bar.position.is_equal_approx(p.set):
+			p.base = bar.position
+		var sx := (bar.get_parent() as CanvasItem).get_global_transform().get_scale().x
+		bar.position = p.base - Vector2(into.position.x / sx, 0)
+		p.set = bar.position
+
+
+## Ends a screen slide at once (also before the next go()): screen and bars in place, the old screen freed.
+func _end_slide() -> void:
+	if _slide_tw != null:
+		_slide_tw.kill()
+		_slide_tw = null
+	for p: Dictionary in _pinned:
+		var bar: Control = p.node
+		if is_instance_valid(bar) and bar.position.is_equal_approx(p.set):
+			bar.position = p.base
+	_pinned.clear()
+	if _slide_out == null:
+		return
+	if current_screen is Control:
+		(current_screen as Control).position = Vector2.ZERO
+	if is_instance_valid(_slide_out):
+		_slide_out.queue_free()
+	_slide_out = null
+	_slide_block.queue_free()
+	_slide_block = null
+
+
+## A screen's HubTop and HubNav: they stay in place while the screens slide.
+func _bars(screen: Node) -> Array:
+	var out: Array = []
+	for c in screen.find_children("*", "Control", true, false):
+		if c.get_script() == HubNav or c.get_script() == HubTop:
+			out.append(c)
+	return out
 
 
 ## Như go(), có màn chuyển cảnh vào màn chơi.
@@ -260,7 +358,7 @@ func _on_tester_closed(result: Variant) -> void:
 
 
 func _notification(what: int) -> void:
-	if what != NOTIFICATION_WM_GO_BACK_REQUEST or popup_layer == null or curtain != null:
+	if what != NOTIFICATION_WM_GO_BACK_REQUEST or popup_layer == null or curtain != null or _slide_out != null:
 		return
 	var top := _top_popup()
 	if top != null:

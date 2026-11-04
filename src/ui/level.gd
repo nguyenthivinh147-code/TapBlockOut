@@ -3,7 +3,7 @@ extends Control
 ## setup({challenge: true}) chạy Daily Challenge (Game.start_challenge) thay vì level kế tiếp; thắng thì về Home.
 ## closed({"action": "home" | "no_lives"}). Popup mở qua Main.open_popup (hoặc lớp riêng khi chạy lẻ).
 ## HUD theo wireframe 3.4: lượt, tên level, restart, bánh răng (Home và Retry nằm trong popup cài đặt); chip mảnh dưới chip lượt.
-## Hàng booster luôn đủ 3 ô; ô chưa mở tối đi, có ổ khoá và ghi level mở.
+## Hàng booster luôn đủ 3 ô; ô chưa mở tối đi, có ổ khoá và ghi level mở. Treo máy thì nhắc Gợi ý (bong bóng IdleTip).
 ## UI chỉ gọi Game và Sfx; hoạt ảnh bàn do BoardView lo.
 ## HUD, bàn (BoardView) và hàng booster là node trong scenes/level.tscn; script điền chữ, dữ liệu và nối signal.
 ## Dialog, dải cảnh báo độ khó và hiệu ứng bay vẫn sinh lúc chạy.
@@ -19,6 +19,7 @@ const BoardState := preload("res://src/core/board_state.gd")
 const HintFx := preload("res://src/ui/hint_fx.gd")
 const MoveFx := preload("res://src/ui/move_fx.gd")
 const SmashFx := preload("res://src/ui/smash_fx.gd")
+const CrystalFly := preload("res://src/ui/crystal_fly.gd")
 
 const POPUP_RESCUE := "res://scenes/popup_rescue.tscn"
 const POPUP_OFFER := "res://scenes/popup_offer.tscn"
@@ -38,6 +39,7 @@ const LOCKED_TINT := Color(0.55, 0.55, 0.62)
 ## Bấm nút phát chosen(id), rồi closed(id) nếu close (mặc định true). Back của Android phát closed(null).
 ## Mục id "close" là nút X (và chạm nền mờ) như PopupOkUICoreLayer.closeButtons; các mục khác nằm ở hàng nút,
 ## mục "ghost" bên trái như Cancel của prefab. art: ảnh bên trái chữ, đặt như HeartIcon của PopupKeepPlaying.
+## Mục mua bằng gold: {gold: giá} thay cho text, nút vàng chỉ có icon gold và giá; dim: true làm mờ (thiếu gold).
 class Dialog extends Control:
 	const UnityUI := preload("res://src/ui/unity_ui.gd")
 	const UnityKit := preload("res://src/ui/unity_kit.gd")
@@ -110,6 +112,10 @@ class Dialog extends Control:
 			var v: RefCounted = UnityKit.button(ui.node("Panel/Content/Button"), str(KIND_COLOR.get(kind, "green")),
 				str(it.get("text", "")), Rect2(Vector2.ZERO, Vector2(w, BTN.y)), _on_pressed.bind(id, bool(it.get("close", true))))
 			v.root.name = str(it.get("name", "Btn_" + id))
+			if it.has("gold"):
+				UnityKit.gold_price(v.root, int(it.gold))
+			if bool(it.get("dim", false)):
+				v.root.modulate.a = 0.6
 			if kind == "video":
 				# PopupReviveLayer AdsBtn: TV icon on the top-right corner, text kept clear of it.
 				UnityKit.add(v.root, UnityKit.spec("PopupReviveLayer", "Bg/Panel/Content/GameObject/AdsBtn/Image"))
@@ -168,6 +174,10 @@ var booster_locks: Dictionary = {}
 var booster_caps: Dictionary = {}
 ## Mốc bắt đầu "đang nghĩ" (ms); test lùi mốc này để thử tiếng vỗ tay.
 var think_start_ms: int = 0
+## Mốc lần chạm màn hình cuối (ms) để nhắc Gợi ý khi treo máy; test lùi mốc này để thử.
+var idle_start_ms: int = 0
+## Bong bóng "Available Block : N" trên nút Gợi ý; gốc node là đầu đuôi bong bóng.
+var idle_tip: Control = null
 
 var _built: bool = false
 var _challenge: bool = false
@@ -177,9 +187,17 @@ var _offer_id: String = ""
 var _overlay: Control = null
 var _hint_fx: Control = null  # sao Gợi ý đang bay; còn bay thì bấm Gợi ý không làm gì
 var _moves_pending: int = 0  # lượt +Move đã cộng vào bàn nhưng dấu "+" chưa bay tới chip lượt
+var _moves_cashed: int = 0  # lượt thừa thẻ thắng đã đổi ra gold (đồng gold đã rời chip lượt)
+var _chip_tw: Tween = null
+var _pieces_pending: int = 0  # mảnh đã nhặt nhưng icon crystal chưa bay tới chip mảnh
 var _toast_token: int = 0
 var _left: bool = false
 var _waiters: Array = []
+var _idle_bulb: TextureRect = null  # bóng đèn vàng booster_hint phủ lên nút Gợi ý trong lúc nhắc
+var _idle_count: Label = null
+var _nudging: bool = false  # đang nhắc Gợi ý (nút lắc hoặc bong bóng đang hiện)
+var _nudge_token: int = 0
+var _nudge_tweens: Array[Tween] = []
 
 
 func setup(args: Dictionary) -> void:
@@ -250,6 +268,12 @@ func _build() -> void:
 		var cap: Label = get_node("%BoosterCaption_" + kind)
 		cap.text = tr("booster_" + kind)
 		booster_caps[kind] = cap
+	idle_tip = %IdleTip
+	idle_tip.visible = false
+	(%IdleTipLabel as Label).text = tr("level_idle_blocks")
+	_idle_count = %IdleTipCount
+	_idle_bulb = %BoosterNudge_hint
+	_idle_bulb.visible = false
 
 	Game.inv_changed.connect(_on_game_changed)
 	Game.coins_changed.connect(_on_game_changed)
@@ -320,6 +344,10 @@ func _set_state(s: String) -> void:
 	state = s
 	if board_view != null:
 		board_view.input_enabled = s == "playing"
+	if s == "playing":
+		idle_start_ms = Time.get_ticks_msec()
+	elif _nudging:
+		_end_nudge()
 
 
 func _reset_think() -> void:
@@ -349,6 +377,11 @@ func _start_level(warn: bool = true) -> void:
 	_set_state("intro")
 	_set_smash_mode(false)
 	_moves_pending = 0
+	_moves_cashed = 0
+	_pieces_pending = 0
+	for ch in _overlay.get_children():
+		if ch.get_script() == CrystalFly:
+			ch.queue_free()
 	# Daily Challenge sinh trong game: màn chờ ngắn, vẽ xong mới sinh.
 	if _challenge and Game.challenge_needs_generation():
 		tut_label.text = tr("common_loading")
@@ -491,10 +524,10 @@ func _touched() -> bool:
 func _refresh_hud() -> void:
 	if not _built or board == null:
 		return
-	moves_label.text = str(board.moves_left() - _moves_pending)
+	moves_label.text = str(maxi(0, board.moves_left() - _moves_pending - _moves_cashed))
 	var total := (attempt.get("specials", []) as Array).size()
 	piece_chip.visible = total > 0
-	piece_label.text = "%d/%d" % [int(attempt.get("pieces", 0)), total]
+	piece_label.text = "%d/%d" % [int(attempt.get("pieces", 0)) - _pieces_pending, total]
 	for kind in BOOSTERS:
 		var open := Unlocks.is_open(kind, _level)
 		(booster_buttons[kind] as Button).self_modulate = Color.WHITE if open else LOCKED_TINT
@@ -542,28 +575,31 @@ func _block_center(id: String) -> Vector2:
 	return n.get_global_rect().get_center() if n != null else board_view.get_global_rect().get_center()
 
 
-## Mảnh leaderboard bay từ khối vừa rời bàn về chip đếm mảnh, tới nơi thì chip nảy nhẹ.
+## Mảnh leaderboard: icon khối crystal bật ra ở tâm khối vừa rời bàn rồi bay về chip đếm mảnh (`CrystalFly`); số trên
+## chip chỉ tăng lúc icon chạm chip, kèm số nảy. Nơi gọi đã cộng `_pieces_pending` từ lúc Game ghi nhận mảnh.
 func _fly_piece(from: Vector2) -> void:
-	Sfx.play("sfx_coin")
-	var px := 64.0
-	var icon := ThemeKit.make_icon("lb_piece", px)
-	icon.name = "FlyingPiece"
-	_overlay.add_child(icon)
-	icon.size = Vector2(px, px)
-	icon.pivot_offset = icon.size * 0.5
-	icon.position = from - _overlay.global_position - icon.size * 0.5
-	var to := piece_icon.get_global_rect().get_center() - _overlay.global_position - icon.size * 0.5
-	var tw := icon.create_tween()
-	tw.tween_property(icon, "scale", Vector2(1.4, 1.4), 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tw.tween_property(icon, "position", to, 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tw.parallel().tween_property(icon, "scale", Vector2(0.7, 0.7), 0.45)
-	tw.tween_callback(func() -> void:
-		icon.queue_free()
-		if is_instance_valid(piece_icon):
-			piece_icon.pivot_offset = piece_icon.size * 0.5
-			var pulse := piece_icon.create_tween()
-			pulse.tween_property(piece_icon, "scale", Vector2(1.25, 1.25), 0.08)
-			pulse.tween_property(piece_icon, "scale", Vector2.ONE, 0.14))
+	Sfx.play_or("crystal", "sfx_coin")
+	var a := attempt
+	var fx := CrystalFly.new()
+	fx.name = "FlyingPiece"
+	fx.on_launch = Sfx.play_or.bind("crystal_get", "sfx_coin")
+	_overlay.add_child(fx)
+	fx.start(from, piece_icon, func() -> void:
+		if _left or not is_same(attempt, a):
+			return
+		_pieces_pending = maxi(0, _pieces_pending - 1)
+		_refresh_hud()
+		_pop_piece_label())
+
+
+## Số trên chip mảnh nảy to, loé sáng rồi về.
+func _pop_piece_label() -> void:
+	piece_label.pivot_offset = piece_label.size * 0.5
+	piece_label.scale = Vector2(1.5, 1.5)
+	piece_label.modulate = Color(1.8, 1.8, 1.8)
+	var tw := piece_label.create_tween().set_parallel(true)
+	tw.tween_property(piece_label, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	tw.tween_property(piece_label, "modulate", Color.WHITE, 0.3)
 
 
 # --- chạm khối ---
@@ -582,6 +618,7 @@ func _on_block_tapped(id: String) -> void:
 		return
 	board_view.apply_result(res)
 	if bool(res.get("piece", false)):
+		_pieces_pending += 1
 		_fly_piece(from)
 	if (kind == "exit" or kind == "peel") and idle_ms >= int(Config.CONTENT.think_clap_sec) * 1000:
 		_show_clap()
@@ -606,10 +643,10 @@ func _tutorial_after(kind: String) -> void:
 		board_view.highlight(board.hint())
 
 
-## Đợi hoạt ảnh bàn xong (tối đa vài giây) rồi nghỉ một nhịp.
+## Đợi hoạt ảnh bàn và mảnh crystal đang bay xong (tối đa vài giây) rồi nghỉ một nhịp.
 func _settle() -> void:
 	var t0 := Time.get_ticks_msec()
-	while board_view.is_animating() and Time.get_ticks_msec() - t0 < 2500:
+	while (board_view.is_animating() or _pieces_pending > 0) and Time.get_ticks_msec() - t0 < 2500:
 		await get_tree().process_frame
 	await get_tree().create_timer(0.25).timeout
 
@@ -691,7 +728,12 @@ func _win_flow() -> void:
 	_set_state("over")
 	var res: Dictionary = Game.on_level_won(attempt)
 	_refresh_hud()
-	var wr: Variant = await _popup_scene(WIN_CARD, res)
+	# Gold MOVES thừa bay từ chip lượt vào ô gold của thẻ; mỗi đồng rời chip thì số lượt giảm.
+	var card := res.duplicate()
+	card["moves_chip"] = moves_chip
+	card["moves_left"] = board.moves_left()
+	card["on_move_cashed"] = _cash_moves
+	var wr: Variant = await _popup_scene(WIN_CARD, card)
 	if _left:
 		return
 	var x2_offered := bool(res.get("x2_available", false))
@@ -877,6 +919,20 @@ func _fly_moves(n: int) -> void:
 		_refresh_hud())
 
 
+## Thẻ thắng đổi `n` lượt thừa ra gold: số lượt hiện giảm (bàn giữ nguyên) và chip nảy nhẹ.
+func _cash_moves(n: int) -> void:
+	if _left or not is_inside_tree():
+		return
+	_moves_cashed += n
+	_refresh_hud()
+	if _chip_tw != null and _chip_tw.is_valid():
+		_chip_tw.kill()
+	moves_chip.pivot_offset = moves_chip.size * 0.5
+	moves_chip.scale = Vector2(1.12, 1.12)
+	_chip_tw = moves_chip.create_tween()
+	_chip_tw.tween_property(moves_chip, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
 func _set_smash_mode(on: bool) -> void:
 	_smash_mode = on
 	if smash_label != null:
@@ -893,6 +949,8 @@ func _do_smash(id: String) -> void:
 	var from := _block_center(id)
 	var target: Vector2 = board_view.strike_point(id)
 	var r: Dictionary = Game.smash_block(attempt, id)
+	if bool(r.get("piece", false)):
+		_pieces_pending += 1  # số trên chip đợi icon crystal bay tới (sau cú gõ)
 	_reset_think()
 	_refresh_hud()
 	if not bool(r.ok):
@@ -925,8 +983,7 @@ func _booster_dialog(kind: String) -> void:
 	for i in 8:
 		var price := int(Config.ECON.booster_price.get(kind, 0))
 		var can_afford := int(Game.s.coins) >= price
-		var items: Array = [{"id": "buy", "text": tr("booster_buy") % price,
-			"kind": "primary" if can_afford else "secondary", "name": "BuyButton"}]
+		var items: Array = [{"id": "buy", "gold": price, "kind": "gold", "dim": not can_afford, "name": "BuyButton"}]
 		var free_ok := not can_afford and not bool((attempt.free_used as Dictionary).get("any", false)) \
 			and bool(Game.lives_view().get("video_ready", false))
 		if free_ok:
@@ -963,3 +1020,97 @@ func _booster_dialog(kind: String) -> void:
 	_reset_think()
 	if got:
 		_use_booster(kind)
+
+
+# --- nhắc Gợi ý khi treo máy ---
+
+## Đang chơi mà không chạm màn hình Config.CONTENT.idle_hint_sec giây thì nhắc Gợi ý. Không đếm khi chưa mở Gợi ý,
+## đang chọn khối để phá, sao Gợi ý đang bay hay có popup; không khối nào thoát được thì bỏ lượt nhắc đó.
+func _process(_delta: float) -> void:
+	if not _built or board == null:
+		return
+	var now := Time.get_ticks_msec()
+	if _nudging or state != "playing" or _smash_mode or is_instance_valid(_hint_fx) or not Unlocks.is_open("hint", _level):
+		idle_start_ms = now
+		return
+	if now - idle_start_ms < int(float(Config.CONTENT.idle_hint_sec) * 1000.0):
+		return
+	idle_start_ms = now
+	var n := _exit_count()
+	if n > 0:
+		_start_nudge(n)
+
+
+## Chạm bất kỳ đâu: tính lại thời gian treo và tắt lời nhắc ngay. Chạm không bị nuốt, vẫn tới bàn và nút.
+func _input(event: InputEvent) -> void:
+	if (event is InputEventScreenTouch or event is InputEventMouseButton) and event.is_pressed():
+		idle_start_ms = Time.get_ticks_msec()
+		if _nudging:
+			_end_nudge()
+
+
+func _notification(what: int) -> void:
+	# Thời gian app nằm nền không tính là treo.
+	if what == NOTIFICATION_APPLICATION_FOCUS_IN or what == NOTIFICATION_APPLICATION_RESUMED:
+		idle_start_ms = Time.get_ticks_msec()
+
+
+## Số khối thoát được ngay (cùng luật với Gợi ý), ghi trên bong bóng nhắc.
+func _exit_count() -> int:
+	var n := 0
+	for id in board.block_ids():
+		if board.can_exit(id):
+			n += 1
+	return n
+
+
+## Nút Gợi ý lắc, bóng đèn trắng đổi sang bóng đèn vàng booster_hint, rồi bong bóng hiện trên nút.
+func _start_nudge(n: int) -> void:
+	_nudging = true
+	_nudge_token += 1
+	var token := _nudge_token
+	var b: Button = booster_buttons.hint
+	_idle_bulb.visible = true
+	b.pivot_offset = b.size * 0.5
+	var tw := b.create_tween()
+	for deg in [-12.0, 10.0, -8.0, 6.0, -3.0, 0.0]:
+		tw.tween_property(b, "rotation_degrees", deg, 0.06)
+	tw.tween_callback(_show_idle_tip.bind(n, token))
+	_nudge_tweens.append(tw)
+
+
+## Bong bóng "Available Block : N" bật ra, đuôi chỉ xuống nút Gợi ý; tự tắt sau Config.CONTENT.idle_hint_show_sec giây.
+func _show_idle_tip(n: int, token: int) -> void:
+	if token != _nudge_token:
+		return
+	_idle_count.text = str(n)
+	var r := (booster_buttons.hint as Button).get_global_rect()
+	var tip := r.position + r.size * Vector2(0.6, 0.1)
+	idle_tip.position = (idle_tip.get_parent() as Control).get_global_transform().affine_inverse() * tip
+	idle_tip.scale = Vector2(0.4, 0.4)
+	idle_tip.modulate.a = 0.0
+	idle_tip.visible = true
+	var tw := idle_tip.create_tween()
+	tw.tween_property(idle_tip, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.parallel().tween_property(idle_tip, "modulate:a", 1.0, 0.1)
+	tw.tween_interval(float(Config.CONTENT.idle_hint_show_sec))
+	tw.tween_property(idle_tip, "modulate:a", 0.0, 0.15)
+	tw.tween_callback(func() -> void:
+		if token == _nudge_token:
+			_end_nudge())
+	_nudge_tweens.append(tw)
+
+
+func _end_nudge() -> void:
+	_nudging = false
+	_nudge_token += 1
+	idle_start_ms = Time.get_ticks_msec()
+	for tw in _nudge_tweens:
+		if tw.is_valid():
+			tw.kill()
+	_nudge_tweens.clear()
+	(booster_buttons.hint as Button).rotation = 0.0
+	_idle_bulb.visible = false
+	idle_tip.visible = false
+	idle_tip.scale = Vector2.ONE
+	idle_tip.modulate.a = 1.0

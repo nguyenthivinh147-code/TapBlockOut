@@ -1,5 +1,5 @@
 {
-	"id": 26, "w": 14, "h": 19, "hard": false,
+	"id": 26, "w": 14, "h": 18, "hard": false,
 	"min_taps": 52, "moves": 58, "seed": 20261101,
 	"stones": [[3,12],[10,12]],
 	"pulse_sides": [],

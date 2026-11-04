@@ -62,7 +62,7 @@ Dành cho người duyệt bản thử. Không cần biết lập trình.
 | Layout Level 6 đến 8 | Bàn hẹp |
 | Icon app ở 48 px | Chưa xem trên máy thật |
 | Icon đơn sắc (themed icon Android 13) | Chưa có |
-| `booster_hint`, `booster_move`, `booster_smash` | Icon mới (AI từ bố cục SVG), chưa xem trên máy thật |
+| `booster_hint`, `booster_move`, `booster_smash` | Icon mới; Hint, Move vẽ lại 2026-11-04 thành khối 3D chất liệu kẹo (bóng đèn kẹo chanh, chữ "+3" kẹo dẻo xanh). Chưa xem trên máy thật |
 
 ## 6. Lệch so với kế hoạch
 

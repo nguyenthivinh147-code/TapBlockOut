@@ -11,6 +11,7 @@ signal closed(result: Variant)
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UnityKit := preload("res://src/ui/unity_kit.gd")
 const UView := preload("res://src/ui/u_view.gd")
 const Config := preload("res://src/config.gd")
 
@@ -213,6 +214,13 @@ func _wire_kind(kind: String) -> void:
 	var used := ui.button(g + "/UsedButton")
 	ui.text(g + "/UsedButton/Text (TMP)", tr("profile_equipped"))
 	var buy := ui.on_click(g + "/BuyButton", _on_buy_selected)
+	# Gold buy button like every gold price: atlas_main's yellow pill, coin then price (the prefab has price then coin).
+	UnityKit.gold_pill(buy)
+	var coin := ui.node(g + "/BuyButton/Image")
+	UnityKit.gold_coin(coin)
+	var price := ui.node(g + "/BuyButton/Text (TMP)")
+	if coin.get_index() > price.get_index():
+		buy.move_child(coin, price.get_index())
 	_actions[kind] = {"save": save, "used": used, "buy": buy, "video": _video_button(g)}
 
 

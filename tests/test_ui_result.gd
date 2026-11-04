@@ -76,27 +76,31 @@ func _won(g: Node, level: int) -> Dictionary:
 func test_win_l1_free_x2(t: T) -> void:
 	var g := _g()
 	var res := _won(g, 1)
-	t.eq(int(g.s.coins), 1040, "thắng +40")
+	var won := 40 + int(res.move_coins)
+	t.ok(int(res.move_coins) > 0, "gold MOVES thừa")
+	t.eq(int(res.coins), won, "+40 và MOVES thừa")
+	t.eq(int(g.s.coins), 1000 + won, "thắng vào ví")
 	t.ok(res.x2_free, "L1 x2 miễn phí")
 	var p := _mount("win_card", res)
 	var st := _watch(p)
-	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % 40, "hiện +40")
+	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % won, "hiện tổng gold")
 	t.eq(_btn_text(_btn(p, "X2Button")), p.tr("win_x2_free"), "nút x2 miễn phí")
 	t.ok(_lbl(p, "X2HintLabel") != null, "gợi ý L1")
 	_btn(p, "X2Button").pressed.emit()
 	await _wait_until(func() -> bool: return _btn_text(_btn(p, "X2Button")) == p.tr("win_x2_done"))
-	t.eq(int(g.s.coins), 1080, "x2 cộng thêm 40")
-	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % 80, "hiện +80")
+	t.eq(int(g.s.coins), 1000 + 2 * won, "x2 cộng thêm một lần nữa")
+	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % (2 * won), "hiện gấp đôi")
 	t.ok(_btn(p, "X2Button").disabled, "x2 một lần")
 	t.eq(_plat().ads.calls.size(), 0, "L1 không xem quảng cáo")
 	_btn(p, "ContinueButton").pressed.emit()
-	t.eq(st.get("r"), {"x2_offered": true, "x2_taken": true, "rate_prompt": false, "coins": 80}, "kết quả")
+	t.eq(st.get("r"), {"x2_offered": true, "x2_taken": true, "rate_prompt": false, "coins": 2 * won}, "kết quả")
 	p.free()
 
 
 func test_win_x2_video_closed_then_ok(t: T) -> void:
 	var g := _g()
 	var res := _won(g, 2)
+	var won := int(res.coins)
 	t.ok(res.x2_available and not res.x2_free, "L2 x2 qua video")
 	var p := _mount("win_card", res)
 	var st := _watch(p)
@@ -105,14 +109,65 @@ func test_win_x2_video_closed_then_ok(t: T) -> void:
 	_btn(p, "X2Button").pressed.emit()
 	await _wait_until(func() -> bool: return _lbl(p, "MessageLabel").visible)
 	t.eq(_lbl(p, "MessageLabel").text, p.tr("ads_closed_early"), "đóng sớm")
-	t.eq(int(g.s.coins), 1040, "không thưởng")
+	t.eq(int(g.s.coins), 1000 + won, "không thưởng")
 	t.ok(not _btn(p, "X2Button").disabled, "thử lại được")
 	_btn(p, "X2Button").pressed.emit()
 	await _wait_until(func() -> bool: return _btn(p, "X2Button").disabled)
-	t.eq(int(g.s.coins), 1080, "xem hết thì x2")
+	t.eq(int(g.s.coins), 1000 + 2 * won, "xem hết thì x2")
 	_btn(p, "ContinueButton").pressed.emit()
 	t.eq(st.get("r").x2_taken, true, "x2_taken")
 	p.free()
+
+
+func _wait_ms(cond: Callable, ms: int = 4000) -> bool:
+	var deadline := Time.get_ticks_msec() + ms
+	while Time.get_ticks_msec() < deadline:
+		if cond.call():
+			return true
+		await _tree().process_frame
+	return cond.call()
+
+
+## Màn level truyền chip lượt: gold MOVES thừa bay vào ô gold, nút x2 đếm theo; bấm x2 giữa chừng thì cộng nốt rồi x2.
+func test_win_move_gold_then_x2_mid_flight(t: T) -> void:
+	var g := _g()
+	g.s.level = 2
+	var attempt: Dictionary = g.start_attempt()
+	var res: Dictionary = g.on_level_won(attempt)
+	var moves: int = attempt.board.moves_left()
+	var won := int(res.coins)
+	var base := won - int(res.move_coins)
+	t.ok(moves > 1 and int(res.move_coins) == moves, "1 gold mỗi MOVES thừa")
+	var chip := Control.new()
+	chip.size = Vector2(120, 100)
+	_tree().root.add_child(chip)
+	var cashed := {"n": 0}
+	var args := res.duplicate()
+	args["moves_chip"] = chip
+	args["moves_left"] = moves
+	args["on_move_cashed"] = func(n: int) -> void: cashed.n += n
+	var p := _mount("win_card", args)
+	var amount := _btn(p, "X2Button").get_node("GameObject (1)/Text (TMP)") as Label
+	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % base, "ô gold bắt đầu ở thưởng gốc")
+	t.eq(amount.text, str(base * 2), "nút x2 theo số đang hiện")
+	t.ok(await _wait_ms(func() -> bool: return cashed.n > 0), "đồng đầu rời chip")
+	t.ok(p.find_child("MoveGoldFx", true, false) != null, "đang bay")
+	# Video đóng sớm: x2 không thành nhưng phần gold MOVES thừa đã cộng nốt.
+	_plat().ads.simulate("closed")
+	_btn(p, "X2Button").pressed.emit()
+	t.ok(await _wait_ms(func() -> bool: return _lbl(p, "MessageLabel").visible), "báo đóng sớm")
+	t.eq(cashed.n, moves, "bấm x2 thì chip lượt nhận đủ")
+	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % won, "cộng nốt gold MOVES thừa")
+	t.eq(amount.text, str(won * 2), "nút x2 hiện đủ")
+	_btn(p, "X2Button").pressed.emit()
+	t.ok(await _wait_ms(func() -> bool: return _btn(p, "X2Button").disabled), "x2 xong")
+	t.eq(cashed.n, moves, "không báo thêm lượt")
+	t.eq(int(g.s.coins), 1000 + 2 * won, "x2 nhân đôi cả gold MOVES thừa")
+	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % (2 * won), "hiện gấp đôi")
+	await _tree().process_frame
+	t.ok(p.find_child("MoveGoldFx", true, false) == null, "hiệu ứng đã xoá")
+	p.free()
+	chip.free()
 
 
 func test_win_no_x2_without_ads(t: T) -> void:

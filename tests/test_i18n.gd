@@ -2,6 +2,8 @@ extends RefCounted
 ## Kiểm i18n/strings.csv đọc thẳng từ file (không phụ thuộc .translation đã import).
 const T := preload("res://tests/t.gd")
 const Config := preload("res://src/config.gd")
+const GameScript := preload("res://src/game/game.gd")
+const FONT := preload("res://assets/fonts/baloo.res")
 
 const CSV_PATH := "res://i18n/strings.csv"
 const GROUPS: Array[String] = [
@@ -23,7 +25,7 @@ const NOTIF_KINDS: Array[String] = ["daily_gift", "lives_full", "offer_open", "c
 const PACKS: Array[String] = ["starter_pack", "level_pack", "rescue_pack", "remove_ads"]
 
 
-## {rows: Array[PackedStringArray], keys: Dictionary key -> {en, vi}, dup: Array, bad_cols: Array}
+## {rows: Array[PackedStringArray], keys: Dictionary key -> {lang: text}, dup: Array, bad_cols: Array}
 func _load() -> Dictionary:
 	var out := {"rows": [], "keys": {}, "dup": [], "bad_cols": [], "header": PackedStringArray()}
 	var f := FileAccess.open(CSV_PATH, FileAccess.READ)
@@ -35,12 +37,15 @@ func _load() -> Dictionary:
 		if r.size() == 1 and r[0] == "":
 			continue
 		out.rows.append(r)
-		if r.size() != 3:
+		if r.size() != out.header.size():
 			out.bad_cols.append(r[0])
 			continue
 		if out.keys.has(r[0]):
 			out.dup.append(r[0])
-		out.keys[r[0]] = {"en": r[1], "vi": r[2]}
+		var row := {}
+		for i in range(1, r.size()):
+			row[out.header[i]] = r[i]
+		out.keys[r[0]] = row
 	return out
 
 
@@ -68,15 +73,63 @@ func _has_non_ascii(text: String) -> bool:
 
 func test_structure(t: T) -> void:
 	var d := _load()
-	t.eq(d.header, PackedStringArray(["keys", "en", "vi"]), "header keys,en,vi")
+	var header := PackedStringArray(["keys"])
+	header.append_array(PackedStringArray(GameScript.LANGS))
+	t.eq(d.header, header, "header keys + Game.LANGS")
 	t.ok(d.rows.size() > 100, "đủ số khoá (>100)")
-	t.eq(d.bad_cols, [], "mọi hàng đủ 3 cột")
+	t.eq(d.bad_cols, [], "mọi hàng đủ cột")
 	t.eq(d.dup, [], "không trùng khoá")
 	var empties: Array[String] = []
 	for k in d.keys:
-		if str(d.keys[k].en).strip_edges() == "" or str(d.keys[k].vi).strip_edges() == "":
-			empties.append(k)
+		for lang in GameScript.LANGS:
+			if str(d.keys[k][lang]).strip_edges() == "":
+				empties.append(k + "/" + lang)
 	t.eq(empties, [], "không ô rỗng")
+
+
+func test_project_translations(t: T) -> void:
+	var loaded: PackedStringArray = ProjectSettings.get_setting("internationalization/locale/translations", PackedStringArray())
+	for lang in GameScript.LANGS:
+		t.ok(loaded.has("res://i18n/strings.%s.translation" % lang), "project.godot nạp bản dịch " + lang)
+
+
+## Tên ngôn ngữ trong popup Language viết bằng chính ngôn ngữ đó, giống nhau ở mọi cột.
+func test_language_names(t: T) -> void:
+	var d := _load()
+	for lang: String in GameScript.LANGS:
+		var key := "settings_language_" + lang.to_lower()
+		t.ok(d.keys.has(key), "có " + key)
+		if not d.keys.has(key):
+			continue
+		var names := {}
+		for col in GameScript.LANGS:
+			names[d.keys[key][col]] = true
+		t.eq(names.size(), 1, key + " giống nhau ở mọi cột")
+
+
+## Mọi ký tự đều vẽ được: atlas Baloo hoặc một font fallback (Baloo 2, Jua, M PLUS Rounded).
+func test_font_coverage(t: T) -> void:
+	var d := _load()
+	var fonts: Array[Font] = [FONT]
+	for fb in FONT.fallbacks:
+		fonts.append(fb as Font)
+	t.eq(fonts.size(), 4, "Baloo có 3 font fallback")
+	var missing := {}
+	for k in d.keys:
+		for lang in GameScript.LANGS:
+			var text: String = d.keys[k][lang]
+			for i in text.length():
+				var c := text.unicode_at(i)
+				if c <= 32 or missing.has(c):
+					continue
+				var found := false
+				for f in fonts:
+					if f.has_char(c):
+						found = true
+						break
+				if not found:
+					missing[c] = "%s/%s U+%04X" % [k, lang, c]
+	t.eq(missing.values(), [], "font có đủ ký tự")
 
 
 func test_key_names(t: T) -> void:
@@ -121,9 +174,10 @@ func test_placeholders_match(t: T) -> void:
 	var d := _load()
 	var bad: Array[String] = []
 	for k in d.keys:
-		if _placeholders(d.keys[k].en) != _placeholders(d.keys[k].vi):
-			bad.append(k)
-	t.eq(bad, [], "placeholder en = vi (cùng thứ tự)")
+		for lang in GameScript.LANGS:
+			if _placeholders(d.keys[k].en) != _placeholders(d.keys[k][lang]):
+				bad.append(k + "/" + lang)
+	t.eq(bad, [], "placeholder mọi ngôn ngữ = en (cùng thứ tự)")
 	# áp tham số thật, không lỗi định dạng
 	for k in d.keys:
 		var ph := _placeholders(d.keys[k].en)
@@ -132,7 +186,7 @@ func test_placeholders_match(t: T) -> void:
 		var args: Array = []
 		for c in ph:
 			args.append(7 if c == "d" else "x")
-		for lang in ["en", "vi"]:
+		for lang in GameScript.LANGS:
 			var s: String = d.keys[k][lang]
 			t.ok((s % args) != "", "định dạng được " + k + "/" + lang)
 
@@ -150,6 +204,19 @@ func test_vietnamese_quality(t: T) -> void:
 	t.ok(accented > d.keys.size() / 2, "tiếng Việt có dấu ở đa số khoá")
 	t.ok(same < d.keys.size() / 3, "không sao chép en sang vi hàng loạt")
 	t.eq(d.keys.level_remaining.vi.begins_with("Còn"), true, "vi dùng 'Còn'")
+
+
+## Cột mới không chép tiếng Anh hàng loạt (APP_NAME, tên ngôn ngữ, "OK", "VIP", "x%d" giống nhau là bình thường).
+func test_translated(t: T) -> void:
+	var d := _load()
+	for lang in GameScript.LANGS:
+		if lang == "en":
+			continue
+		var same := 0
+		for k in d.keys:
+			if d.keys[k][lang] == d.keys[k].en:
+				same += 1
+		t.ok(same < d.keys.size() / 10, "%s: chỉ %d/%d hàng giống en" % [lang, same, d.keys.size()])
 
 
 func test_config_coverage(t: T) -> void:

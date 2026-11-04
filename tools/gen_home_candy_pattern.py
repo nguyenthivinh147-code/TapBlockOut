@@ -112,17 +112,13 @@ def _paste_clipped(tile: Image.Image, shp: Image.Image, x: int, y: int) -> None:
 
 def main() -> None:
 	tile = Image.new("RGBA", (TILE * SS, TILE * SS), CLEAR)
+	# Five shapes, at least 181 px apart across tile edges, so the watermark stays sparse.
 	layout = [
 		(wrapped_candy, 80, 70, 25, 1.0),
 		(star, 300, 50, -12, 0.75),
-		(lollipop, 440, 150, -20, 0.95),
-		(heart, 200, 180, 14, 0.8),
 		(mint, 60, 270, 0, 0.85),
 		(cane, 330, 290, 18, 0.9),
-		(wrapped_candy, 190, 400, -35, 0.85),
 		(heart, 470, 420, -18, 0.6),
-		(star, 60, 460, 20, 0.55),
-		(mint, 450, 30, 0, 0.5),
 	]
 	size = TILE * SS
 	for fn, cx, cy, angle, scale in layout:

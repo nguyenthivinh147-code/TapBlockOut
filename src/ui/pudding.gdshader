@@ -1,5 +1,6 @@
 shader_type canvas_item;
-// Thân khối kẹo: chất liệu chung từ `candy_body.gdshaderinc`, thêm lớp pudding, hộp giấy, nháy sáng và bóng đổ.
+// Thân khối kẹo: chất liệu chung từ `candy_body.gdshaderinc` (kẹo sọc hoặc crystal), thêm lớp pudding, hộp giấy,
+// nháy sáng và bóng đổ.
 
 #include "res://src/ui/candy_body.gdshaderinc"
 
@@ -100,7 +101,7 @@ vec4 jelly_layer(vec2 c, float dj) {
 void fragment() {
 	vec2 c = UV * dims;
 	float d = dist(c);
-	float a = clamp(d * cell_px + 0.5, 0.0, 1.0) * body_a * candy_a;
+	float a = max(clamp(d * cell_px + 0.5, 0.0, 1.0), crystal_fuzz(c, d)) * body_a * candy_a;
 
 	// bóng đổ mềm lệch xuống dưới, ám chàm
 	float ds = dist(c - vec2(0.0, SHADOW_DY)) + JELLY_OUT * jelly;
@@ -108,7 +109,7 @@ void fragment() {
 
 	vec3 col = vec3(0.0);
 	if (a > 0.0) {
-		col = paper > 0.5 ? paper_color(c, d) : candy_color(c, d);
+		col = paper > 0.5 ? paper_color(c, d) : body_color(c, d);
 		col = mix(col, overlay.rgb, overlay.a);
 		col = mix(col, vec3(1.0), flash * 0.28);
 	}

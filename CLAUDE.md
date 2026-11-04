@@ -30,7 +30,7 @@ tools/godot.sh --headless --path . --import                                # ch�
 
 ## Quy ước chính
 
-- **Bàn cờ cố định 14×19 ô, ô 42 px ở 720×1280, theo ảnh ref `art/concepts/ref_board_size.png` (`Config.BOARD_W`, `BOARD_H`, `BOARD_CELL`; `design.md` mục 3). Không đổi cỡ bàn hay cỡ ô theo số khối; khối xếp thành hình ở giữa bàn, có khoảng trống, không lát kín.**
+- **Khung bàn cố định theo màn, giữ tỉ lệ như ảnh ref `art/concepts/ref_board_scale.png` ở màn chuẩn 886×1920 (`Config.BOARD_SCREEN`, `BOARD_AREA`); lưới tối đa 14×18 ô (`BOARD_W`, `BOARD_H`). Cỡ ô đổi theo hình của level (hình cộng một ô lề vừa khung), to nhất `BOARD_CELL_MAX` (`design.md` mục 3). Khối xếp thành hình ở giữa bàn, có khoảng trống, không lát kín.**
 - GDScript, `snake_case`, type hint, tab. Không dùng `class_name` (dùng `preload`).
 - `src/core`, `src/meta`: logic thuần, `extends RefCounted`, không `Node`, không `Platform`, không đọc giờ hệ thống.
 - Mọi con số trong `src/config.gd`; mọi chữ hiển thị qua `tr("KEY")`.

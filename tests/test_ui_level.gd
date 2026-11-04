@@ -4,6 +4,7 @@ const MockIap := preload("res://src/platform/mock_iap.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const Config := preload("res://src/config.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
 
 const DIR := "user://test_ui_level"
 const NOW := 1800000000
@@ -161,11 +162,49 @@ func test_win_l1_then_next_level(t: T) -> void:
 	t.ok(lv.board.is_won(), "thắng")
 	t.ok(await _wait_until(_has_pop(lv, "ContinueButton")), "hiện thẻ thắng")
 	t.eq(int(g.s.level), 2, "lên level 2")
-	t.eq(int(g.s.coins), 1040, "+40 gold")
+	t.eq(int(g.s.coins), 1040 + int(lv.board.moves_left()), "+40 gold và 1 gold mỗi MOVES thừa")
 	_press(lv, "ContinueButton")
 	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and int(lv.attempt.level) == 2), "sang level 2")
 	t.eq(lv.title_label.text, lv.tr("level_title") % 2, "tên level 2")
 	t.eq(int(g.s.runs), 1, "một lượt xong")
+	lv.free()
+
+
+func test_win_move_gold_flies_from_moves_chip(t: T) -> void:
+	var g := _g(1)
+	var lv := _mount()
+	await _wait_until(_playing.bind(lv))
+	_solve(lv)
+	var left: int = lv.board.moves_left()
+	t.ok(left > 0, "dư MOVES")
+	t.ok(await _wait_until(_has_pop(lv, "ContinueButton")), "hiện thẻ thắng")
+	var reward := _pop(lv, "RewardLabel") as Label
+	t.eq(reward.text, lv.tr("win_reward") % 40, "ô gold bắt đầu ở thưởng gốc")
+	t.eq(lv.moves_label.text, str(left), "chip lượt chưa đổi")
+	t.ok(await _wait_until(_has_pop(lv, "MoveGoldFx")), "gold bay từ chip lượt")
+	t.ok(await _wait_until(func() -> bool: return reward.text == lv.tr("win_reward") % (40 + left)), "ô gold đếm lên đủ")
+	t.eq(lv.moves_label.text, "0", "chip lượt về 0")
+	t.eq(int(g.s.coins), 1040 + left, "ví chỉ cộng một lần")
+	_press(lv, "ContinueButton")
+	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and int(lv.attempt.level) == 2), "sang level 2")
+	t.eq(lv.moves_label.text, str(lv.board.moves_left()), "level 2 hiện đủ lượt")
+	lv.free()
+
+
+func test_win_move_gold_skipped_by_continue(t: T) -> void:
+	var g := _g(1)
+	var lv := _mount()
+	await _wait_until(_playing.bind(lv))
+	_solve(lv)
+	var left: int = lv.board.moves_left()
+	t.ok(await _wait_until(_has_pop(lv, "ContinueButton")), "hiện thẻ thắng")
+	var reward := _pop(lv, "RewardLabel") as Label
+	t.ok(_pop(lv, "MoveGoldFx") == null, "gold chưa bay")
+	_press(lv, "ContinueButton")
+	t.eq(reward.text, lv.tr("win_reward") % (40 + left), "Tiếp tục ngay thì ô gold hiện đủ")
+	t.eq(int(g.s.coins), 1040 + left, "ví chỉ cộng một lần")
+	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and int(lv.attempt.level) == 2), "sang level 2")
+	t.eq(lv.moves_label.text, str(lv.board.moves_left()), "level 2 hiện đủ lượt, không trừ lượt đã đổi")
 	lv.free()
 
 
@@ -265,7 +304,7 @@ func test_rescue_gold(t: T) -> void:
 	for i in prices.size():
 		_burn_moves(lv, bl[1])
 		t.ok(await _wait_until(_has_pop(lv, "BuyButton")), "popup lần %d" % (i + 2))
-		t.eq(_btn_text(_pop(lv, "BuyButton") as Button), lv.tr("rescue_buy") % prices[i], "giá lần %d" % (i + 2))
+		t.eq(_btn_text(_pop(lv, "BuyButton") as Button), str(prices[i]), "giá lần %d" % (i + 2))
 		var before: int = g.s.coins
 		_press(lv, "BuyButton")
 		t.ok(await _wait_until(_playing.bind(lv)), "chơi tiếp lần %d" % (i + 2))
@@ -335,6 +374,10 @@ func test_booster_buy_move(t: T) -> void:
 	var before: int = lv.board.moves_left()
 	lv.booster_buttons.move.pressed.emit()
 	t.ok(await _wait_until(_has_pop(lv, "BuyButton")), "hộp mua booster")
+	var buy := _pop(lv, "BuyButton") as Button
+	t.eq(_btn_text(buy), "1900", "nút mua chỉ ghi giá")
+	t.ok((UnityUI.image_of(buy).get("tex") as Texture2D).resource_path.ends_with("atlas_main.png"), "nút mua là pill vàng atlas_main")
+	t.eq(buy.modulate.a, 1.0, "đủ gold thì không làm mờ")
 	t.ok(_pop(lv, "VideoButton") == null, "đủ gold thì không mời video")
 	_press(lv, "BuyButton")
 	await _wait_until(func() -> bool: return int(g.s.coins) == 600)
@@ -352,6 +395,7 @@ func test_booster_free_video_once(t: T) -> void:
 	var before: int = lv.board.moves_left()
 	lv.booster_buttons.move.pressed.emit()
 	t.ok(await _wait_until(_has_pop(lv, "VideoButton")), "thiếu gold thì mời video")
+	t.ok((_pop(lv, "BuyButton") as Control).modulate.a < 1.0, "thiếu gold thì nút mua mờ")
 	_press(lv, "VideoButton")
 	t.ok(await _wait_until(func() -> bool: return lv.board.moves_left() == before + 3), "xem xong dùng luôn")
 	t.eq(int(g.s.coins), 0, "không tốn gold")
@@ -411,6 +455,92 @@ func test_hint_none_does_not_consume(t: T) -> void:
 	await _wait_until(func() -> bool: return lv.state != "playing")
 	lv.free()
 	t.eq(int(g.s.inv.hint), 1, "không dùng khi bàn xong")
+
+
+func _exit_count(lv: Control) -> int:
+	var n := 0
+	for id in lv.board.block_ids():
+		if lv.board.can_exit(id):
+			n += 1
+	return n
+
+
+func _idle_away(lv: Control) -> void:
+	lv.idle_start_ms -= int(Config.CONTENT.idle_hint_sec) * 1000 + 100
+
+
+## Treo máy: nút Gợi ý lắc, bóng đèn vàng phủ lên, bong bóng ghi số khối thoát được rồi tự tắt.
+func test_idle_hint_nudge(t: T) -> void:
+	_g(6)
+	Config.CONTENT.idle_hint_show_sec = 0.3
+	var lv := _mount()
+	await _wait_until(_playing.bind(lv))
+	var bulb := lv.get_node("%BoosterNudge_hint") as TextureRect
+	await _tree().process_frame
+	t.ok(not lv.idle_tip.visible and not bulb.visible, "chưa treo thì chưa nhắc")
+	_idle_away(lv)
+	t.ok(await _wait_until(func() -> bool: return bulb.visible), "treo đủ lâu thì bóng đèn vàng hiện")
+	t.ok(await _wait_until(func() -> bool: return lv.idle_tip.visible), "lắc xong hiện bong bóng")
+	t.eq((lv.get_node("%IdleTipLabel") as Label).text, lv.tr("level_idle_blocks"), "chữ bong bóng")
+	t.eq((lv.get_node("%IdleTipCount") as Label).text, str(_exit_count(lv)), "số khối thoát được")
+	var r: Rect2 = lv.booster_buttons.hint.get_global_rect()
+	t.ok(r.grow(8).has_point(lv.idle_tip.get_global_rect().position), "đuôi bong bóng chỉ vào nút Gợi ý")
+	t.ok(await _wait_until(func() -> bool: return not lv.idle_tip.visible, 3000), "tự tắt")
+	t.ok(not bulb.visible, "bóng đèn về như cũ")
+	t.eq(lv.booster_buttons.hint.rotation, 0.0, "nút hết lắc")
+	t.eq(lv.state, "playing", "vẫn đang chơi")
+	Config.reset()
+	lv.free()
+
+
+func test_idle_hint_touch_closes(t: T) -> void:
+	var g := _g(6)
+	g.s.inv.hint = 2
+	var lv := _mount()
+	await _wait_until(_playing.bind(lv))
+	_idle_away(lv)
+	t.ok(await _wait_until(func() -> bool: return lv.idle_tip.visible), "hiện bong bóng nhắc")
+	var ev := InputEventScreenTouch.new()
+	ev.pressed = true
+	lv._input(ev)
+	t.ok(not lv.idle_tip.visible, "chạm màn hình thì tắt ngay")
+	t.ok(not (lv.get_node("%BoosterNudge_hint") as TextureRect).visible, "bóng đèn về như cũ")
+	for i in 5:
+		await _tree().process_frame
+	t.ok(not lv.idle_tip.visible, "chạm tính lại thời gian treo")
+	# Lời nhắc không chặn chạm: chạm nút Gợi ý lúc đang nhắc vẫn dùng booster.
+	_idle_away(lv)
+	await _wait_until(func() -> bool: return lv.idle_tip.visible)
+	lv._input(ev)
+	lv.booster_buttons.hint.pressed.emit()
+	t.eq(int(g.s.inv.hint), 1, "chạm nút Gợi ý vẫn dùng booster")
+	lv.free()
+
+
+func test_idle_hint_not_when_locked_or_busy(t: T) -> void:
+	_g(3)
+	var lv := _mount()
+	await _wait_until(_playing.bind(lv))
+	_idle_away(lv)
+	for i in 10:
+		await _tree().process_frame
+	t.ok(not lv.idle_tip.visible, "Gợi ý chưa mở thì không nhắc")
+	lv.free()
+	_g(6)
+	lv = _mount()
+	await _wait_until(_playing.bind(lv))
+	lv.settings_button.pressed.emit()
+	await _wait_until(_has_pop(lv, "CloseX"))
+	_idle_away(lv)
+	for i in 10:
+		await _tree().process_frame
+	t.ok(not lv.idle_tip.visible, "có popup thì không nhắc")
+	(_pop(lv, "CloseX") as Button).pressed.emit()
+	await _wait_until(_playing.bind(lv))
+	for i in 10:
+		await _tree().process_frame
+	t.ok(not lv.idle_tip.visible, "đóng popup thì đếm lại từ đầu")
+	lv.free()
 
 
 func test_restart_free_before_l10(t: T) -> void:
@@ -686,8 +816,10 @@ func _check_fit(t: T, lv: Control, tag: String) -> void:
 	t.ok(Rect2(Vector2.ZERO, hs).grow(1.5).encloses(bv.frame_rect()), "%s: bàn cùng cổng nằm trọn holder (%s trong %s)" % [tag, str(br), str(hs)])
 	var off := (br.get_center() - hs * 0.5).abs()
 	t.ok(off.x <= 2.0 and off.y <= 2.0, "%s: căn giữa (lệch %s)" % [tag, str(off)])
-	t.near(br.size.x / float(lv.board.width()), br.size.y / float(lv.board.height()), 0.01, "%s: ô vuông" % tag)
-	t.near(br.size.x / float(lv.board.width()), bv.cell_size(), 0.01, "%s: cell_size khớp" % tag)
+	t.near(br.size.x / br.size.y, Config.BOARD_AREA.x / Config.BOARD_AREA.y, 0.01, "%s: khung giữ tỉ lệ ảnh ref" % tag)
+	t.ok(br.encloses(bv.content_rect()), "%s: hình nằm trong khung" % tag)
+	var coff: Vector2 = (bv.content_rect().get_center() - br.get_center()).abs()
+	t.ok(coff.x <= 1.0 and coff.y <= 1.0, "%s: hình ở giữa khung (lệch %s)" % [tag, str(coff)])
 	var ids: Array[String] = lv.board.block_ids()
 	if not ids.is_empty():
 		var n: Control = bv.block_node(ids[0])
@@ -697,21 +829,29 @@ func _check_fit(t: T, lv: Control, tag: String) -> void:
 func _fit_level(t: T, level: int) -> void:
 	_g(level)
 	var host := Control.new()
-	host.size = Vector2(720, 1280)
+	host.size = Config.BOARD_SCREEN
 	_tree().root.add_child(host)
 	var lv := (load("res://scenes/level.tscn") as PackedScene).instantiate() as Control
 	host.add_child(lv)
 	lv.setup({})
 	await _wait_until(_playing.bind(lv))
 	await _frames(4)
-	_check_fit(t, lv, "L%d 720x1280" % level)
-	t.near(lv.board_view.cell_size(), float(Config.BOARD_CELL), 0.001, "L%d 720x1280: ô đúng cỡ chuẩn" % level)
-	host.size = Vector2(360, 640)
-	await _frames(4)
-	_check_fit(t, lv, "L%d 360x640" % level)
+	var bv: Control = lv.board_view
+	var vp: Vector2 = bv.get_viewport_rect().size
+	var s := minf(vp.x / Config.BOARD_SCREEN.x, vp.y / Config.BOARD_SCREEN.y)
+	_check_fit(t, lv, "L%d 886x1920" % level)
+	t.ok(bv.board_rect().size.is_equal_approx(Config.BOARD_AREA * s), "L%d 886x1920: khung đúng cỡ chuẩn (%s)" % [level, str(bv.board_rect().size)])
+	t.ok(bv.cell_size() <= Config.BOARD_CELL_MAX * s, "L%d 886x1920: ô không quá cỡ khối trong ảnh ref" % level)
+	var cell: float = bv.cell_size()
+	# màn logic của game luôn từ 886x1920 trở lên (stretch expand); 720x1280 là vùng nhỏ hơn chuẩn mà HUD vẫn chừa chỗ cho bàn
 	host.size = Vector2(720, 1280)
 	await _frames(4)
-	_check_fit(t, lv, "L%d về 720x1280" % level)
+	_check_fit(t, lv, "L%d 720x1280" % level)
+	t.ok(bv.board_rect().size.x < Config.BOARD_AREA.x * s, "L%d 720x1280: khung co lại" % level)
+	host.size = Config.BOARD_SCREEN
+	await _frames(4)
+	_check_fit(t, lv, "L%d về 886x1920" % level)
+	t.near(bv.cell_size(), cell, 0.001, "L%d về 886x1920: ô như lúc đầu" % level)
 	host.free()
 
 

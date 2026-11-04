@@ -152,6 +152,19 @@ static func size_of(region: String) -> Vector2:
 	return (REGIONS[region] as Array)[1].size
 
 
+## Whole sheet of a sprite and its rect in it, for u_image.gd's set_texture (it draws a region of a whole texture).
+static func sheet_of(region: String) -> Texture2D:
+	if not REGIONS.has(region):
+		return null
+	return _sheet(str((REGIONS[region] as Array)[0]))
+
+
+static func rect_of(region: String) -> Rect2:
+	if not REGIONS.has(region):
+		return Rect2()
+	return (REGIONS[region] as Array)[1]
+
+
 ## 9-slice từ sprite. margin = (trái, trên, phải, dưới) tính theo pixel gốc của sprite; content = lề nội dung.
 static func box(region: String, margin: Vector4, content: Vector4 = Vector4(-1, -1, -1, -1)) -> StyleBoxTexture:
 	var s := StyleBoxTexture.new()

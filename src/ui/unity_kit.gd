@@ -6,6 +6,7 @@ extends RefCounted
 ## Use: var v := UnityKit.popup(self, tr("ads_notice_title"), Vector2(724, 820)); UnityKit.button(v.node("Panel/Content"), "green", ...).
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 
 const FRAME := "PopupOkLayer"
 ## Pill buttons in Resources_moved/Sprites/UI_Maincenter.png with the TMP material their prefabs use.
@@ -21,6 +22,11 @@ const BUTTONS := {
 ## Body text colour of PopupOkLayer's description (atlas material, no outline).
 const INK := "1c4a83ff"
 const WELL := "Resources_moved_UI_Maincenter:UI_Maincenter_68"
+## Every price paid in gold: atlas_main's yellow pill and coin (ui_atlas.gd), the coin + price row of PopupReviveLayer's
+## GoldBtn.
+const GOLD_PILL := "pill_yellow"
+const GOLD_COIN := "big_coin"
+const GOLD_ROW := ["PopupReviveLayer", "Bg/Panel/Content/GameObject/GoldBtn/Price"]
 
 
 ## Deep copy of a node spec from an exported layout ("" is the layer root).
@@ -100,6 +106,47 @@ static func button(parent: Control, color: String, label: String, rect: Rect2, o
 	if on_click.is_valid():
 		v.on_click("", on_click)
 	return v
+
+
+## Gold purchase button: atlas_main's yellow pill with only the coin and the price. Uses the button's Price row (as on
+## PopupReviveLayer's and PopupMoreHeartLayer's GoldBtn), or adds a copy of it once; the button's own labels are
+## hidden. Safe to call again to change the price. Returns the price label.
+static func gold_price(btn: Control, price: int) -> Label:
+	gold_pill(btn)
+	var row: Control = btn.get_node_or_null("Price")
+	if row == null:
+		row = add(btn, spec(GOLD_ROW[0], GOLD_ROW[1])).root
+	for c in btn.get_children():
+		if c is Label:
+			(c as Label).visible = false
+	row.visible = true
+	var price_label: Label = null
+	for c in row.get_children():
+		if c is Label:
+			price_label = c
+		elif UnityUI.image_of(c) != null:
+			gold_coin(c)
+	UnityUI.set_text(price_label, str(price))
+	UnityUI.relayout(row)
+	return price_label
+
+
+## atlas_main's yellow pill on a prefab button, sliced like the prefab's yellow pill (UI_Maincenter_50, same rect).
+static func gold_pill(btn: Control) -> void:
+	var img := UnityUI.image_of(btn)
+	var s := UnityUI.sprite_info(str(BUTTONS.yellow[0]))
+	if img == null or s.is_empty():
+		return
+	var ppu := float((btn.get_meta("u", {}) as Dictionary).get("img", {}).get("ppu", 1.0))
+	img.call("set_texture", UiAtlas.sheet_of(GOLD_PILL), UiAtlas.rect_of(GOLD_PILL), s.border,
+		float(s.scale) / maxf(ppu, 0.0001))
+
+
+## atlas_main's gold coin on an image node.
+static func gold_coin(c: Control) -> void:
+	var img := UnityUI.image_of(c)
+	if img != null:
+		img.call("set_texture", UiAtlas.sheet_of(GOLD_COIN), UiAtlas.rect_of(GOLD_COIN))
 
 
 ## Body text like PopupOkLayer's description (ink blue, atlas material, word wrap, auto size 18..size).

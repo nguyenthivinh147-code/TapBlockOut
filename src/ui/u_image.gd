@@ -83,13 +83,19 @@ func set_color(c: Color) -> void:
 	queue_redraw()
 
 
-func _draw() -> void:
+## Where the sprite is drawn, in own coords: the whole rect, or its sprite-aspect part with preserve_aspect.
+func drawn_rect() -> Rect2:
 	var rect := Rect2(Vector2.ZERO, size)
+	if tex != null and preserve_aspect and kind != SLICED and kind != TILED:
+		rect = _aspect(rect)
+	return rect
+
+
+func _draw() -> void:
+	var rect := drawn_rect()
 	if tex == null:
 		draw_rect(rect, color)
 		return
-	if preserve_aspect and kind != SLICED and kind != TILED:
-		rect = _aspect(rect)
 	match kind:
 		SLICED, TILED:
 			if border == Vector4.ZERO and kind == SLICED:

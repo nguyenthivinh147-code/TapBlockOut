@@ -68,19 +68,46 @@ func test_language(t: T) -> void:
 	t.eq(node.lang_buttons.size(), 0, "chưa mở popup Language")
 	node.language_button.pressed.emit()
 	t.ok(node.language_panel != null, "nút Language mở popup")
-	t.eq(node.lang_buttons.size(), 3, "3 lựa chọn ngôn ngữ")
+	t.eq(node.lang_buttons.keys(), g.LANGS, "14 ngôn ngữ theo thứ tự, không có ô theo thiết bị")
+	t.eq(g.LANGS.size(), 14, "đủ 14 ngôn ngữ")
+	var lit: Array = []
+	for code in node.lang_buttons:
+		if node.lang_buttons[code].button_pressed:
+			lit.append(code)
+	t.eq(lit, [g.current_lang()], "chưa chọn: sáng ô ngôn ngữ của máy")
+	t.eq(_label_text(node.lang_buttons["ja"]), "日本語", "tên ngôn ngữ viết bằng chính nó")
+	t.eq(_label_text(node.lang_buttons["pt_BR"]), "Português (Brasil)", "tên pt_BR")
 	node.lang_buttons["vi"].pressed.emit()
 	t.ok(node.language_panel != null, "đổi ngôn ngữ vẫn mở popup")
 	t.eq(_label_text(node.language_button), "Ngôn ngữ", "chữ đổi theo ngôn ngữ mới")
 	t.eq(str(g.s.settings.lang), "vi", "lưu lang vi")
 	t.eq(TranslationServer.get_locale().begins_with("vi"), true, "đổi locale")
+	node.lang_buttons["pt_BR"].pressed.emit()
+	t.eq(str(g.s.settings.lang), "pt_BR", "lưu lang pt_BR")
+	t.eq(TranslationServer.get_locale(), "pt_BR", "locale pt_BR")
+	t.eq(node.lang_buttons["pt_BR"].button_pressed, true, "ô vừa chọn sáng")
+	t.eq(node.lang_buttons["vi"].button_pressed, false, "ô cũ tắt")
 	node.lang_buttons["en"].pressed.emit()
 	t.eq(str(g.s.settings.lang), "en", "lưu lang en")
-	node.lang_buttons[""].pressed.emit()
-	t.eq(str(g.s.settings.lang), "", "theo thiết bị")
 	node.language_panel.find_child("LanguageOk", true, false).pressed.emit()
 	t.eq(node.language_panel, null, "OK đóng popup Language")
 	node.queue_free()
+	TranslationServer.set_locale("en")
+
+
+func test_device_language(t: T) -> void:
+	var g := _game()
+	t.eq(g.match_lang("vi_VN"), "vi", "vi_VN -> vi")
+	t.eq(g.match_lang("pt_BR"), "pt_BR", "pt_BR")
+	t.eq(g.match_lang("pt_PT"), "pt_BR", "tiếng Bồ khác vùng -> pt_BR")
+	t.eq(g.match_lang("in_ID"), "id", "mã cũ Android in -> id")
+	t.eq(g.match_lang("ja_JP"), "ja", "ja_JP -> ja")
+	t.eq(g.match_lang("es_MX"), "es", "es_MX -> es")
+	t.eq(g.match_lang("zh_CN"), "en", "ngôn ngữ chưa có -> en")
+	g.s.settings.lang = "ko"
+	t.eq(g.current_lang(), "ko", "mã đã chọn thắng ngôn ngữ máy")
+	g.s.settings.lang = "xx"
+	t.eq(g.current_lang(), g.match_lang(OS.get_locale()), "mã lạ trong bản lưu -> theo máy")
 	TranslationServer.set_locale("en")
 
 

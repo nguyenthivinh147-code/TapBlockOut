@@ -223,11 +223,13 @@ func test_level_hud_and_piece(t: T) -> void:
 	t.ok(lv.piece_chip.get_global_rect().end.y <= lv.board_view.get_global_rect().position.y, "chip mảnh ở trên bàn")
 	t.eq(lv.piece_label.text, "0/%d" % sp.size(), "chưa nhặt")
 	for id in sp:
-		t.ok(lv.board_view.is_special(str(id)), "khối %s có huy hiệu" % id)
+		t.ok(lv.board_view.is_special(str(id)), "khối %s là khối crystal" % id)
 	lv._do_smash(str(sp[0]))
 	t.eq(int(lv.attempt.pieces), 1, "phá khối đặc biệt được 1 mảnh")
-	t.eq(lv.piece_label.text, "1/%d" % sp.size(), "HUD cập nhật")
-	t.ok(await _wait_until(func() -> bool: return lv.find_child("FlyingPiece", true, false) != null), "búa gõ xong thì mảnh bay về chip")
+	t.eq(lv.piece_label.text, "0/%d" % sp.size(), "số trên chip đợi crystal bay tới")
+	t.ok(await _wait_until(func() -> bool: return lv.find_child("FlyingPiece", true, false) != null), "búa gõ xong thì crystal bay về chip")
+	t.ok(await _wait_until(func() -> bool: return lv.piece_label.text == "1/%d" % sp.size()), "crystal chạm chip thì số tăng")
+	t.ok(await _wait_until(func() -> bool: return lv.find_child("FlyingPiece", true, false) == null), "hiệu ứng tự xoá")
 	lv.free()
 	_g(5)
 	lv = (load("res://scenes/level.tscn") as PackedScene).instantiate() as Control

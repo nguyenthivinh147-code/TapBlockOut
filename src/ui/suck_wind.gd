@@ -1,28 +1,35 @@
 extends Control
-## Vệt gió hút vào thanh khi khối thoát sắp chạm thanh và lúc đang bị nghiền: vệt thon dài ngắn khác nhau hiện sát
-## mặt trong của thanh, chạy nhanh dần vào thanh, chụm dần về đoạn khối phủ như phễu, chạm thanh thì bị nuốt vào.
-## Không vẽ lên thanh; tự xoá khi vệt cuối hết.
-## Dùng: spawn(...) đặt vào lớp dưới các khối nên khối đang lao che phần vệt trùng làn của nó.
+## Vệt gió hút vào thanh khi khối thoát sắp chạm thanh và lúc đang bị nghiền: vệt mảnh có quầng mờ, dài ngắn khác nhau,
+## hiện sát mặt trong của thanh, chạy nhanh dần vào thanh, chạm thanh thì bị nuốt vào. Vệt rải trong đúng bề ngang
+## khối, chỗ miệng thanh trước khối sáng lên một quầng cùng bề ngang. Không vẽ lên thanh; tự xoá khi vệt cuối hết.
+## Dùng: spawn(...) đặt vào lớp trên các khối để vệt chạy đè lên khối đang bị hút.
 
-const STREAKS := 14
+const STREAKS_PER_CELL := 5.0  # số vệt mỗi ô bề ngang khối
+const STREAKS_MIN := 4
 const FROM_MIN := 0.1  # đầu vệt lúc hiện cách mặt trong của thanh, theo ô
 const FROM_MAX := 0.8
-const SPREAD := 0.9  # vệt toả ra ngoài hai đầu đoạn chừng này ô
 const LEN_MIN := 0.3  # dài vệt, theo ô
 const LEN_MAX := 1.4
 const LIFE_MIN := 0.16  # giây từ lúc hiện tới lúc bị nuốt hết
 const LIFE_MAX := 0.24
-const WIDTH := 0.07  # theo ô
-const ALPHA := 0.7
-const FUNNEL := 0.7  # sát thanh thì độ lệch ngang còn chừng này
-const FUNNEL_REACH := FROM_MAX + LEN_MAX  # xa thanh chừng này ô thì chưa chụm
-const POINTS := 5  # số điểm mỗi vệt, đủ cong theo phễu
+const WIDTH := 0.035  # lõi vệt, theo ô
+const ALPHA := 0.8
+const GLOW_WIDTH := 0.28  # quầng quanh vệt, theo ô; mờ dần ra hai mép
+const GLOW_ALPHA := 0.3
+const MOUTH_DEPTH := 0.6  # quầng ở miệng thanh lan vào bàn chừng này ô
+const MOUTH_SOFT := 0.2  # hai đầu quầng miệng mờ dần trong chừng này ô
+const MOUTH_ALPHA := 0.3
+const MOUTH_IN := 0.06  # giây quầng miệng sáng lên từ lúc vệt đầu hiện
+const MOUTH_OUT := 0.12  # giây quầng miệng tắt dần sau khi vệt cuối hết
 
 var _mouth := Vector2.ZERO  # tâm đoạn khối sắp phủ, trên mặt trong của thanh
 var _dir := Vector2.RIGHT  # hướng khối đi, cũng là hướng gió
+var _half := 21.0  # nửa bề ngang khối, px
 var _cell: float = 42.0
 var _color := Color.WHITE
 var _streaks: Array[Dictionary] = []  # {"u", "from", "len", "delay", "life"}, khoảng cách theo px
+var _first: float = 0.0  # giây vệt đầu hiện
+var _last: float = 0.0  # giây vệt cuối hết
 var _age: float = 0.0
 
 
@@ -31,35 +38,40 @@ static func spawn(parent: Node, mouth: Vector2, dir: Vector2, half_span: float, 
 	var w: Control = load("res://src/ui/suck_wind.gd").new()
 	w.name = "SuckWind"
 	w.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# cộng sáng để vệt và quầng rực lên cả trên nền bàn sáng lẫn trên khối cùng màu thanh
+	var mat := CanvasItemMaterial.new()
+	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	w.material = mat
 	w._mouth = mouth
 	w._dir = dir
+	w._half = half_span
 	w._cell = cell
 	w._color = color
-	var wide := half_span + SPREAD * cell
+	var n := maxi(STREAKS_MIN, roundi(2.0 * half_span / cell * STREAKS_PER_CELL))
 	# thứ tự hiện xáo trộn để vệt kề nhau không hiện liền nhau
-	var order: Array = range(STREAKS)
-	for i in range(STREAKS - 1, 0, -1):
+	var order: Array = range(n)
+	for i in range(n - 1, 0, -1):
 		var j := rng.randi_range(0, i)
 		var tmp: int = order[i]
 		order[i] = order[j]
 		order[j] = tmp
-	for i in STREAKS:
+	w._first = INF
+	for i in n:
 		# chia đều theo bề ngang và theo thời gian rồi xê dịch chút để không thành hàng
-		var u := lerpf(-wide, wide, (float(i) + rng.randf_range(0.2, 0.8)) / float(STREAKS))
-		var at := delay + window * (float(order[i]) + rng.randf()) / float(STREAKS)
+		var u := lerpf(-half_span, half_span, (float(i) + rng.randf_range(0.2, 0.8)) / float(n))
+		var at := delay + window * (float(order[i]) + rng.randf()) / float(n)
+		var life := rng.randf_range(LIFE_MIN, LIFE_MAX)
 		w._streaks.append({"u": u, "from": rng.randf_range(FROM_MIN, FROM_MAX) * cell, "len": rng.randf_range(LEN_MIN, LEN_MAX) * cell,
-			"delay": at, "life": rng.randf_range(LIFE_MIN, LIFE_MAX)})
+			"delay": at, "life": life})
+		w._first = minf(w._first, at)
+		w._last = maxf(w._last, at + life)
 	parent.add_child(w)
 	return w
 
 
 func _process(delta: float) -> void:
 	_age += delta
-	var done := true
-	for s in _streaks:
-		if _age < float(s["delay"]) + float(s["life"]):
-			done = false
-	if done:
+	if _age >= _last + MOUTH_OUT:
 		queue_free()
 		return
 	queue_redraw()
@@ -67,7 +79,13 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var perp := Vector2(-_dir.y, _dir.x)
-	var reach := FUNNEL_REACH * _cell
+	# quầng (miệng thanh, quanh từng vệt) vẽ trước trong một lô, lõi vệt vẽ đè lên
+	var verts := PackedVector2Array()
+	var cols := PackedColorArray()
+	var idx := PackedInt32Array()
+	_add_mouth(verts, cols, idx, perp)
+	var cores: Array[PackedVector2Array] = []
+	var core_cols: Array[PackedColorArray] = []
 	for s in _streaks:
 		var t := (_age - float(s["delay"])) / float(s["life"])
 		if t <= 0.0 or t >= 1.0:
@@ -80,14 +98,44 @@ func _draw() -> void:
 		if far <= near:
 			continue
 		var fade := minf(t / 0.2, 1.0)
-		var pts := PackedVector2Array()
-		var cols := PackedColorArray()
-		for k in POINTS:
-			var x := lerpf(far, near, float(k) / float(POINTS - 1))
-			var u := float(s["u"]) * lerpf(FUNNEL, 1.0, clampf(x / reach, 0.0, 1.0))
-			pts.append(_mouth - _dir * x + perp * u)
-			# đuôi trong suốt, đậm dần về đầu
-			var c := _color
-			c.a = ALPHA * fade * (float(k) / float(POINTS - 1))
-			cols.append(c)
-		draw_polyline_colors(pts, cols, WIDTH * _cell, true)
+		var side := perp * float(s["u"])
+		var tail_at := _mouth - _dir * far + side
+		var head_at := _mouth - _dir * near + side
+		_add_glow(verts, cols, idx, tail_at, head_at, perp, near, Color(_color, GLOW_ALPHA * fade))
+		# đuôi trong suốt, đậm dần về đầu
+		cores.append(PackedVector2Array([tail_at, head_at]))
+		core_cols.append(PackedColorArray([Color(_color, 0.0), Color(_color, ALPHA * fade)]))
+	if not idx.is_empty():
+		RenderingServer.canvas_item_add_triangle_array(get_canvas_item(), idx, verts, cols)
+	for i in cores.size():
+		draw_polyline_colors(cores[i], core_cols[i], WIDTH * _cell, true)
+
+
+## Quầng ở miệng thanh: rộng đúng bề ngang khối, đậm nhất sát mặt trong, mờ dần vào bàn và ra hai đầu.
+func _add_mouth(verts: PackedVector2Array, cols: PackedColorArray, idx: PackedInt32Array, perp: Vector2) -> void:
+	var k := clampf((_age - _first) / MOUTH_IN, 0.0, 1.0) * clampf(1.0 - (_age - _last) / MOUTH_OUT, 0.0, 1.0)
+	if k <= 0.0:
+		return
+	var soft := minf(MOUTH_SOFT * _cell, _half)
+	var c := Color(_color, MOUTH_ALPHA * k)
+	var b := verts.size()
+	for u: float in [-_half, soft - _half, _half - soft, _half]:
+		verts.append(_mouth + perp * u)
+		verts.append(_mouth + perp * u - _dir * MOUTH_DEPTH * _cell)
+	for a: float in [0.0, c.a, c.a, 0.0]:
+		cols.append(Color(c, a))
+		cols.append(Color(c, 0.0))
+	for q in 3:
+		var o := b + q * 2
+		idx.append_array(PackedInt32Array([o, o + 2, o + 1, o + 1, o + 2, o + 3]))
+
+
+## Quầng quanh một vệt từ `tail` tới `head`: mờ dần ra hai mép và về đuôi, đầu bo mờ dài tới `room` px.
+func _add_glow(verts: PackedVector2Array, cols: PackedColorArray, idx: PackedInt32Array, tail: Vector2, head: Vector2, perp: Vector2, room: float, c: Color) -> void:
+	var hw := perp * GLOW_WIDTH * 0.5 * _cell
+	var cap := minf(GLOW_WIDTH * 0.5 * _cell, room)
+	var clear := Color(c, 0.0)
+	var b := verts.size()
+	verts.append_array(PackedVector2Array([tail - hw, tail, tail + hw, head - hw, head, head + hw, head + _dir * cap]))
+	cols.append_array(PackedColorArray([clear, clear, clear, clear, c, clear, clear]))
+	idx.append_array(PackedInt32Array([b, b + 1, b + 4, b, b + 4, b + 3, b + 1, b + 2, b + 5, b + 1, b + 5, b + 4, b + 3, b + 4, b + 6, b + 4, b + 5, b + 6]))

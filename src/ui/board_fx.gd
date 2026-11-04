@@ -1,5 +1,5 @@
 extends RefCounted
-## Vẽ khối và hiệu ứng cho BoardView: hình khối bo góc, gỗ, xích, sương, hạt, rung.
+## Vẽ khối và hiệu ứng cho BoardView: hình khối bo góc, thùng sắt, xích, sương, hạt, rung.
 ## Hàm tĩnh, không giữ trạng thái.
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
@@ -16,11 +16,13 @@ const CHAIN_LINK := 0.21  # khoảng cách hai mắt xích (ô)
 const CHAIN_OUT := 0.08  # xích quấn ra ngoài mép khối chừng này (ô)
 const LOCK_GOLD := Color("FFC93C")
 const LOCK_GOLD_DARK := Color("C9781A")
-const WOOD_GROW := 0.06  # ảnh gỗ vẽ to hơn ô chừng này mỗi phía (ô), bù lề trong suốt của ảnh
-const WOOD := Color("A8662F")
-const WOOD_LIGHT := Color("D9964F")
-const WOOD_DARK := Color("5E3216")
-const WOOD_GRAIN := Color(0.33, 0.16, 0.05, 0.35)
+const CRATE_GROW := 0.06  # ảnh thùng sắt vẽ to hơn ô chừng này mỗi phía (ô), bù lề trong suốt của ảnh
+const CRATE_BOLTS := [Vector2(0.19, 0.18), Vector2(0.81, 0.18), Vector2(0.19, 0.79), Vector2(0.81, 0.79)]  # tâm 4 đinh trên nắp (phần ô), khớp ảnh
+const CRATE_BOLT_R := 0.07  # bán kính đinh (ô)
+const IRON := Color("718CA6")
+const IRON_LIGHT := Color("A3B8D0")
+const IRON_DARK := Color("3F546B")
+const BOLT := Color("E6EBF3")
 
 static var _real_icon: Dictionary = {}  # tên -> có file thật?
 static var _sparkle_tex: Texture2D = null
@@ -127,6 +129,27 @@ static func draw_gloss(ci: CanvasItem, cells: Array, cell: float, at: Vector2 = 
 		_ribbon(ci, ctrl, cell, at, feather)
 
 
+## Vệt bóng của khối crystal: lưỡi liềm trắng ôm góc lồi trên trái của mỗi mép hướng lên, dày ở góc, thon về hai đầu,
+## theo `art/concepts/concept_candy_board_v4_crystal_semi.png`. Đo theo ô; `at` là góc ô gốc.
+static func draw_crystal_gloss(ci: CanvasItem, cells: Array, cell: float, at: Vector2 = Vector2.ZERO) -> void:
+	var feather := maxf(0.8, cell * 0.022)
+	for r: Dictionary in top_runs(cells):
+		if bool(r["wall_left"]):
+			continue
+		var x0 := float(r["x0"])
+		var y := float(r["y"])
+		var ctrl: Array[Vector4] = [
+			Vector4(x0 + 0.13, y + 0.46, 0.004, 0.0),
+			Vector4(x0 + 0.12, y + 0.33, 0.028, 0.8),
+			Vector4(x0 + 0.135, y + 0.19, 0.046, 0.97),
+			Vector4(x0 + 0.19, y + 0.135, 0.054, 1.0),
+			Vector4(x0 + 0.33, y + 0.12, 0.042, 0.95),
+			Vector4(x0 + 0.5, y + 0.125, 0.02, 0.6),
+			Vector4(x0 + 0.64, y + 0.13, 0.004, 0.0),
+		]
+		_ribbon(ci, ctrl, cell, at, feather)
+
+
 ## Ô gần trọng tâm nhất: nơi đặt biểu tượng.
 static func anchor_cell(cells: Array) -> Vector2i:
 	var sum := Vector2.ZERO
@@ -154,12 +177,19 @@ static func block_ramp(view: Dictionary) -> Dictionary:
 	return ramp
 
 
-## Lớp vật cản do shader thân khối vẽ: {"jelly": pudding phủ khối, "paper": hộp giấy (khối hai lớp)}.
+## Lớp do shader thân khối vẽ: {"jelly": pudding phủ khối, "paper": hộp giấy (khối hai lớp), "crystal": chất liệu crystal}.
 static func block_layers(view: Dictionary) -> Dictionary:
 	return {
 		"jelly": 1.0 if int(view.get("ice", 0)) > 0 else 0.0,
 		"paper": 1.0 if str(view.get("inner_color", "")) != "" else 0.0,
+		"crystal": 1.0 if is_crystal(view) else 0.0,
 	}
+
+
+## Khối crystal (khối đặc biệt của leaderboard, rời bàn cho 1 mảnh): thân và mảnh vỡ tô chất liệu crystal.
+## Còn trong sương mù thì vẫn là kẹo xám để không lộ.
+static func is_crystal(view: Dictionary) -> bool:
+	return bool(view.get("special", false)) and not bool(view.get("is_fog_hidden", false))
 
 
 ## Tâm băng dán chữ thập của hộp giấy: giữa khung khối, theo toạ độ ô của khối.
@@ -172,15 +202,18 @@ static func tape_center(cells: Array) -> Vector2:
 	return (lo + hi) * 0.5
 
 
-## Vẽ phần nằm trên thân kẹo của một khối đa ô: vệt bóng, rồi sương, xích. Thân (mép gối, sọc, bóng đổ),
-## lớp pudding và hộp giấy do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
-## theo concept `art/concepts/concept_candy_board_v5_stripe.png`.
+## Vẽ phần nằm trên thân kẹo của một khối đa ô: vệt bóng, rồi sương, xích. Thân (mép gối, sọc, bóng đổ, hoặc
+## chất liệu crystal của khối đặc biệt), lớp pudding và hộp giấy do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
+## theo concept `art/concepts/concept_candy_board_v5_stripe.png` và `concept_candy_board_v3_crystal.png`.
 ## `cells` tính theo toạ độ ô gốc của chính CanvasItem này.
 static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictionary) -> void:
 	var fog_hidden: bool = view.get("is_fog_hidden", false)
 	var chained: bool = view.get("chained", false)
-	if str(view.get("inner_color", "")) == "":
-		draw_gloss(ci, cells, cell)  # hộp giấy mờ, không bóng
+	if str(view.get("inner_color", "")) == "":  # hộp giấy mờ, không bóng
+		if is_crystal(view):
+			draw_crystal_gloss(ci, cells, cell)
+		else:
+			draw_gloss(ci, cells, cell)
 	var anchor := anchor_cell(cells)
 	if fog_hidden:
 		draw_fog_cover(ci, cells, cell)
@@ -189,32 +222,6 @@ static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictiona
 		draw_lock(ci, chain_center(cells) * cell, cell)
 	if bool(view.get("is_key", false)):
 		draw_key(ci, Vector2(anchor) * cell + Vector2(cell * 0.24, cell * 0.24), cell)
-	if bool(view.get("special", false)) and not fog_hidden:
-		var spot := piece_cell(cells, anchor)
-		if spot == anchor:
-			draw_piece(ci, Vector2(anchor) * cell + Vector2(cell * 0.74, cell * 0.26), cell * 0.26, cell)
-		else:
-			draw_piece(ci, (Vector2(spot) + Vector2(0.5, 0.5)) * cell, cell * 0.34, cell)
-
-
-## Ô đặt huy hiệu mảnh: ô trên cùng (rồi phải nhất) khác ô trọng tâm; khối một ô thì chính ô đó.
-static func piece_cell(cells: Array, anchor: Vector2i) -> Vector2i:
-	var best := anchor
-	for c: Vector2i in cells:
-		if c == anchor:
-			continue
-		if best == anchor or c.y < best.y or (c.y == best.y and c.x > best.x):
-			best = c
-	return best
-
-
-## Khối đặc biệt của leaderboard: huy hiệu tròn trắng viền vàng có icon mảnh (`lb_piece`); `pos` là tâm, `rad` bán kính.
-static func draw_piece(ci: CanvasItem, pos: Vector2, rad: float, cell: float) -> void:
-	ci.draw_circle(pos + Vector2(0, cell * 0.04), rad, Color(0, 0, 0, 0.3))
-	ci.draw_circle(pos, rad, Color(1, 1, 1, 0.95))
-	ci.draw_arc(pos, rad, 0.0, TAU, 24, KEY_COLOR, maxf(1.5, cell * 0.05))
-	var r := rad * 0.86
-	ci.draw_texture_rect(ThemeKit.icon("lb_piece"), Rect2(pos - Vector2(r, r), Vector2(r, r) * 2.0), false)
 
 
 ## Ổ khoá vàng có quai thép; `center` là tâm thân khoá. `open` 0..1 nhấc quai lên (lúc xích đứt).
@@ -385,48 +392,89 @@ static func draw_fog_cover(ci: CanvasItem, cells: Array, cell: float) -> void:
 	ci.draw_string(font, center + Vector2(-cell * 0.5, fs * 0.35), "?", HORIZONTAL_ALIGNMENT_CENTER, cell, fs, Color(1, 1, 1, 0.75))
 
 
-## Gỗ: khối gỗ nâu phủ kín ô; `r` là hình chữ nhật của ô. `squash` co giãn quanh tâm ô (gỗ bị gõ nhún).
-## Ảnh `mech_stone` (khối gỗ) có lề trong suốt nên vẽ to hơn ô một chút.
-static func draw_wood(ci: CanvasItem, r: Rect2, cell: float, squash: Vector2 = Vector2.ONE) -> void:
-	var c := r.get_center()
-	r = Rect2(c - r.size * squash * 0.5, r.size * squash)
+## Thùng sắt: nắp thép xanh xám phủ kín ô, viền nổi, bốn đinh tán to ở bốn góc nắp; `r` là hình chữ nhật của ô.
+## `squash` co giãn quanh tâm ô (thùng bị gõ rung). Ảnh `mech_stone` (thùng sắt) có lề trong suốt nên vẽ to hơn ô một chút.
+static func draw_crate(ci: CanvasItem, r: Rect2, cell: float, squash: Vector2 = Vector2.ONE) -> void:
+	r = _squashed(r, squash)
 	var tex := mech_tex("mech_stone")
 	if tex != null:
-		ci.draw_texture_rect(tex, r.grow(cell * WOOD_GROW), false)
+		ci.draw_texture_rect(tex, r.grow(cell * CRATE_GROW), false)
 		return
 	var g := r.grow(-cell * 0.03)
 	var s := StyleBoxFlat.new()
 	s.anti_aliasing = true
-	s.set_corner_radius_all(int(cell * 0.16))
+	s.set_corner_radius_all(int(cell * 0.14))
 	s.bg_color = Color(0.09, 0.08, 0.26, 0.34)
 	ci.draw_style_box(s, Rect2(g.position + Vector2(0, cell * 0.07), g.size))
-	s.bg_color = WOOD_DARK
+	# viền thép nổi: mép trên sáng, mép dưới tối
+	s.bg_color = IRON_DARK
 	ci.draw_style_box(s, g)
-	s.bg_color = WOOD
-	var face := g.grow(-cell * 0.06).grow_side(SIDE_BOTTOM, -cell * 0.03)
-	s.set_corner_radius_all(int(cell * 0.11))
-	ci.draw_style_box(s, face)
-	s.bg_color = WOOD_LIGHT
-	ci.draw_style_box(s, Rect2(face.position, Vector2(face.size.x, face.size.y * 0.3)))
-	s.bg_color = WOOD
-	ci.draw_style_box(s, Rect2(face.position + Vector2(0, face.size.y * 0.12), Vector2(face.size.x, face.size.y * 0.88)))
-	# hai đường ghép ván và vân gỗ uốn nhẹ
-	var lw := maxf(1.0, cell * 0.03)
-	for k: float in [0.36, 0.68]:
-		var y := face.position.y + face.size.y * k
-		ci.draw_line(Vector2(face.position.x, y), Vector2(face.end.x, y), WOOD_DARK, lw * 1.2, true)
-		ci.draw_line(Vector2(face.position.x, y + lw), Vector2(face.end.x, y + lw), Color(1, 1, 1, 0.18), lw * 0.7, true)
-	for k: float in [0.2, 0.52, 0.84]:
-		var pts := PackedVector2Array()
-		for i in 7:
-			var x := face.position.x + face.size.x * (0.12 + 0.76 * i / 6.0)
-			pts.append(Vector2(x, face.position.y + face.size.y * k + sin(i * 1.3 + k * 9.0) * cell * 0.025))
-		ci.draw_polyline(pts, WOOD_GRAIN, lw * 0.8, true)
-	# đinh bốn góc
-	for corner: Vector2 in [Vector2(0.14, 0.14), Vector2(0.86, 0.14), Vector2(0.14, 0.86), Vector2(0.86, 0.86)]:
-		var at := face.position + face.size * corner
-		ci.draw_circle(at, cell * 0.045, WOOD_DARK)
-		ci.draw_circle(at - Vector2(cell * 0.01, cell * 0.01), cell * 0.03, Color("D7DCE6"))
+	s.bg_color = IRON_LIGHT
+	ci.draw_style_box(s, g.grow_side(SIDE_BOTTOM, -cell * 0.06))
+	s.bg_color = IRON
+	ci.draw_style_box(s, g.grow(-cell * 0.035))
+	# nắp phẳng lõm trong viền, một vệt sáng chéo
+	var lid := g.grow(-cell * 0.065)
+	s.set_corner_radius_all(int(cell * 0.05))
+	s.bg_color = IRON_DARK
+	ci.draw_style_box(s, lid.grow(maxf(1.0, cell * 0.02)))
+	s.bg_color = IRON
+	ci.draw_style_box(s, lid)
+	_draw_band(ci, lid, 0.38, cell * 0.16, Color(1, 1, 1, 0.12))
+	# bốn đinh tán to: viền tối, thân bạc, chỏm sáng, chấm bóng
+	for b: Vector2 in CRATE_BOLTS:
+		var at := r.position + r.size * b
+		var br := cell * CRATE_BOLT_R
+		ci.draw_circle(at + Vector2(br * 0.2, br * 0.35), br * 1.05, Color(0.09, 0.08, 0.26, 0.4))
+		ci.draw_circle(at, br, IRON_DARK)
+		ci.draw_circle(at, br * 0.82, IRON_LIGHT)
+		ci.draw_circle(at - Vector2(br, br) * 0.12, br * 0.6, BOLT)
+		ci.draw_circle(at - Vector2(br, br) * 0.32, br * 0.24, Color.WHITE)
+
+
+## Thùng sắt bị va: loé trắng cả nắp, vệt sáng quét chéo từ góc trên trái xuống, đinh loé sao khi vệt sáng đi qua.
+## `t` 0..1 theo thời gian rung; `r`, `squash` như draw_crate.
+static func draw_crate_glint(ci: CanvasItem, r: Rect2, cell: float, t: float, squash: Vector2 = Vector2.ONE) -> void:
+	r = _squashed(r, squash)
+	var face := r.grow(-cell * 0.05)
+	var hit := 1.0 - clampf(t / 0.3, 0.0, 1.0)
+	if hit > 0.0:
+		var s := StyleBoxFlat.new()
+		s.anti_aliasing = true
+		s.set_corner_radius_all(int(cell * 0.12))
+		s.bg_color = Color(1, 1, 1, 0.4 * hit * hit)
+		ci.draw_style_box(s, face)
+	var sweep := clampf(t / 0.65, 0.0, 1.0)
+	if sweep >= 1.0:
+		return
+	_draw_band(ci, face, sweep, cell * 0.24, Color(1, 1, 1, 0.5 * (1.0 - sweep * 0.6)))
+	var star := _sparkle_texture()
+	for b: Vector2 in CRATE_BOLTS:
+		var lit := clampf(1.0 - absf(sweep - (b.x + b.y) * 0.5) / 0.25, 0.0, 1.0)
+		if lit <= 0.0:
+			continue
+		var at := r.position + r.size * b
+		var sz := Vector2(cell, cell) * 0.8 * lit
+		ci.draw_circle(at, cell * CRATE_BOLT_R * 1.1, Color(1, 1, 1, 0.7 * lit))
+		ci.draw_texture_rect(star, Rect2(at - sz * 0.5, sz), false, Color(1, 1, 1, lit))
+
+
+static func _squashed(r: Rect2, squash: Vector2) -> Rect2:
+	var c := r.get_center()
+	return Rect2(c - r.size * squash * 0.5, r.size * squash)
+
+
+## Dải sáng chéo "/" cắt theo `r`: `at` 0..1 đưa tâm dải từ góc trên trái tới góc dưới phải, `w` bề rộng dải (px).
+static func _draw_band(ci: CanvasItem, r: Rect2, at: float, w: float, col: Color) -> void:
+	var far := r.size.x + r.size.y
+	var u := lerpf(-w * 0.5, far + w * 0.5, at)  # dải là các điểm có x + y (tính từ góc trên trái) trong u ± w/2
+	var a := u - w * 0.5
+	var b := u + w * 0.5
+	var band := Transform2D(0.0, r.position) * PackedVector2Array([
+		Vector2(a + far, -far), Vector2(a - far, far), Vector2(b - far, far), Vector2(b + far, -far)])
+	var box := PackedVector2Array([r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)])
+	for poly: PackedVector2Array in Geometry2D.intersect_polygons(band, box):
+		ci.draw_colored_polygon(poly, col)
 
 
 # --- hiệu ứng ---
