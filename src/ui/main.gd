@@ -89,6 +89,9 @@ func go(screen: String, args: Dictionary = {}) -> void:
 		current_screen = null
 	current_name = screen
 	Game.set_in_level(screen == "level" or screen == "challenge")
+	# The level starts its own music, also when the Daily Challenge screen hosts it; the loading screen has none.
+	if screen != "level" and screen != "splash":
+		Sfx.music(Sfx.MUSIC_HOME)
 	var node := (load(path) as PackedScene).instantiate()
 	add_child(node)
 	move_child(node, popup_layer.get_index())

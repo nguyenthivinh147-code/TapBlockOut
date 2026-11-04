@@ -282,8 +282,10 @@ func test_home_opens_challenge_screen_in_main(t: T) -> void:
 	g.s.level = 50
 	m.go("home")
 	t.eq(m.current_name, "home", "Home")
+	t.eq(_tree().root.get_node("Sfx").music_name, "bgm_home", "nhạc Home")
 	m.current_screen.challenge_btn.pressed.emit()
 	t.eq(m.current_name, "challenge", "mở màn challenge")
+	t.eq(_tree().root.get_node("Sfx").music_name, "bgm_home", "màn challenge vẫn nhạc Home")
 	var ch: Control = m.current_screen
 	t.eq(ch.title_label.text, "Daily Challenge", "tiêu đề")
 	t.ok(ch.play_button.visible and not ch.play_button.disabled, "nút Chơi")
@@ -342,6 +344,7 @@ func test_challenge_screen_full_win(t: T) -> void:
 	var lv := _level_of(ch)
 	t.ok(lv != null, "nhúng màn level")
 	t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "đang chơi")
+	t.eq(_tree().root.get_node("Sfx").music_name, "bgm_level", "level trong challenge phát nhạc màn chơi")
 	t.eq(lv.title_label.text, "Daily Challenge", "tiêu đề level là challenge")
 	t.eq(bool(lv.attempt.challenge), true, "attempt challenge")
 	t.eq(lv.tut_label.text, "", "challenge không có hướng dẫn cơ chế")

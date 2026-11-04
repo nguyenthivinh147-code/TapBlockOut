@@ -200,8 +200,7 @@ func test_difficulty_tiers(t: T) -> void:
 		h.queue_free()
 
 
-## Ba mốc nằm trên đường giữa ray kẹo, zigzag như ref: mốc hiện tại lệch trái, hai mốc kia lệch phải; mốc khoá là
-## lục giác xám ở mọi độ khó.
+## Ba mốc thẳng hàng trên đường giữa ray kẹo thẳng đứng; mốc khoá là lục giác xám ở mọi độ khó.
 func test_nodes_on_rail(t: T) -> void:
 	for level in [1, 7]:
 		_g(level)
@@ -209,14 +208,11 @@ func test_nodes_on_rail(t: T) -> void:
 		var rail := h.get_node("%Rail") as Control
 		var k := rail.size.y / HomeScript.RAIL_RECT.size.y
 		t.near(rail.size.x / HomeScript.RAIL_RECT.size.x, k, 0.001, "L%d: ray co đều hai chiều" % level)
-		var xs: Array[float] = []
+		var mid := rail.get_rect().get_center().x
 		for pn: Dictionary in h.path_nodes:
 			var c: Vector2 = (pn.root as Control).get_rect().get_center()
-			var want := rail.position.x + HomeScript.rail_x((c.y - rail.position.y) / k) * k
-			t.near(c.x, want, 1.0, "L%d: mốc %s nằm trên ray" % [level, (pn.num as Label).text])
-			xs.append(c.x)
-		# cả hai bố cục: mốc giữa nằm ở khúc cong trái, mốc trên và dưới lệch phải
-		t.ok(xs[0] - xs[1] > 100.0 * k and xs[2] - xs[1] > 100.0 * k, "L%d: zigzag" % level)
+			t.near(c.x, mid, 1.0, "L%d: mốc %s nằm trên ray" % [level, (pn.num as Label).text])
+			t.ok(c.y > rail.position.y and c.y < rail.get_rect().end.y, "L%d: mốc %s trong chiều dài ray" % [level, (pn.num as Label).text])
 		var cur := 2 if level == 1 else 1
 		var locked: Dictionary = h.path_nodes[0]
 		t.eq((locked.sprite as TextureRect).texture, UiAtlas.tex("hex_gray"), "L%d: mốc khoá là lục giác xám" % level)
@@ -226,8 +222,8 @@ func test_nodes_on_rail(t: T) -> void:
 		h.queue_free()
 
 
-## Nền Home giống nhau ở mọi độ khó: dải xanh của khung Hard, lớp TopShade, hoạ tiết kẹo mờ 7%.
+## Nền Home giống nhau ở mọi độ khó: dải xanh của khung Hard, lớp TopShade, hoạ tiết kẹo mờ 2,7% (7/255).
 func _check_background(t: T, h: Control, label: String) -> void:
 	t.ok(h.get_node("%Gradient").visible, "%s: dải nền xanh" % label)
 	t.ok(h.get_node("%TopShade").visible, "%s: lớp TopShade" % label)
-	t.near(h.get_node("%CandyPattern").modulate.a, 0.07, 0.0001, "%s: hoạ tiết kẹo mờ" % label)
+	t.near(h.get_node("%CandyPattern").modulate.a, 7.0 / 255.0, 0.0001, "%s: hoạ tiết kẹo mờ" % label)

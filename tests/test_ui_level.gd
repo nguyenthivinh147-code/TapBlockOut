@@ -133,6 +133,7 @@ func test_hud_level1(t: T) -> void:
 	var lv := _mount()
 	await _wait_until(_playing.bind(lv))
 	t.eq(lv.state, "playing", "vào chơi")
+	t.eq(_tree().root.get_node("Sfx").music_name, "bgm_level", "nhạc màn chơi")
 	t.eq(lv.title_label.text, lv.tr("level_title") % 1, "tên level")
 	t.eq(lv.moves_label.text, str(lv.board.moves_left()), "MOVES")
 	t.ok(not lv.hard_badge.visible, "không HARD")

@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import org.json.JSONArray
@@ -82,6 +83,7 @@ class NotifModule(private val host: Host) {
                 intent.putExtra("title", extras.optString("title"))
                 intent.putExtra("body", extras.optString("body"))
                 intent.putExtra("kind", extras.optString("kind"))
+                intent.putExtra("icon", extras.optString("icon"))
             }
             return PendingIntent.getBroadcast(
                 ctx, REQUEST_BASE + index, intent,
@@ -168,13 +170,23 @@ class NotifReceiver : BroadcastReceiver() {
             } else {
                 android.app.Notification.Builder(context)
             }
-            val n = builder
+            val body = intent.getStringExtra("body") ?: ""
+            builder
                 .setSmallIcon(icon)
                 .setContentTitle(intent.getStringExtra("title") ?: "")
-                .setContentText(intent.getStringExtra("body") ?: "")
+                .setContentText(body)
+                .setStyle(android.app.Notification.BigTextStyle().bigText(body))
                 .setContentIntent(content)
                 .setAutoCancel(true)
-                .build()
+            // Icon lon: file PNG do game chep vao bo nho trong (duong dan tuyet doi), thieu file thi bo qua.
+            val iconPath = intent.getStringExtra("icon") ?: ""
+            if (iconPath.isNotEmpty()) {
+                try {
+                    BitmapFactory.decodeFile(iconPath)?.let { builder.setLargeIcon(it) }
+                } catch (_: Throwable) {
+                }
+            }
+            val n = builder.build()
             nm.notify(NotifModule.REQUEST_BASE + (System.currentTimeMillis() % 1000).toInt(), n)
         } catch (t: Throwable) {
             Log.w(PlatformConfig.TAG, "Hien thong bao loi: ${t.javaClass.simpleName}")

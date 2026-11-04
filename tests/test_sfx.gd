@@ -2,6 +2,7 @@ extends RefCounted
 const T := preload("res://tests/t.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const SfxScript := preload("res://src/game/sfx.gd")
+const Config := preload("res://src/config.gd")
 
 
 func _make() -> Node:
@@ -100,6 +101,56 @@ func test_music_pause_resume(t: T) -> void:
 	t.ok(not s.is_music_playing(), "stop_music")
 	s.apply_settings({"music": true})
 	s.queue_free()
+
+
+## Silent 16-bit stream that really loops (1000 samples), so it is still playing after a wait.
+func _loop_tone() -> AudioStreamWAV:
+	var wav := AudioStreamWAV.new()
+	wav.format = AudioStreamWAV.FORMAT_16_BITS
+	var data := PackedByteArray()
+	data.resize(2000)
+	wav.data = data
+	wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	wav.loop_end = 1000
+	return wav
+
+
+func _wait(sec: float) -> void:
+	await (Engine.get_main_loop() as SceneTree).create_timer(sec).timeout
+
+
+func test_music_fades_on_track_change(t: T) -> void:
+	Config.CONTENT.music_fade_in_sec = 0.05
+	Config.CONTENT.music_fade_out_sec = 0.05
+	var s := _make()
+	var a := _loop_tone()
+	var b := _loop_tone()
+	s._cache["m:bgm_a"] = a
+	s._cache["m:bgm_b"] = b
+	var p: AudioStreamPlayer = s._music_player
+	s.music("bgm_a")
+	t.ok(p.playing and p.stream == a, "bài đầu chạy ngay")
+	t.near(p.volume_db, SfxScript.MUSIC_FADE_DB, 0.01, "bắt đầu nhỏ")
+	await _wait(0.2)
+	t.near(p.volume_db, 0.0, 0.01, "to dần tới 0 dB")
+	s.music("bgm_b")
+	t.ok(p.stream == a, "bài cũ nhỏ dần trước khi đổi")
+	await _wait(0.3)
+	t.ok(p.playing and p.stream == b, "đổi sang bài mới")
+	t.near(p.volume_db, 0.0, 0.01, "bài mới to dần tới 0 dB")
+	s.music("bgm_a")
+	s.music("bgm_b")
+	t.ok(p.stream == b, "gọi lại bài đang nhỏ dần thì giữ bài đó")
+	await _wait(0.2)
+	t.near(p.volume_db, 0.0, 0.01, "và to lại")
+	s.music("bgm_a")
+	s.pause_for_ad()
+	await _wait(0.2)
+	t.ok(not p.playing, "quảng cáo cắt nhạc, không đổi bài giữa chừng")
+	s.resume_after_ad()
+	t.ok(p.playing and p.stream == a, "hết quảng cáo vào thẳng bài mới")
+	s.queue_free()
+	Config.reset()
 
 
 func test_theme_palette_and_widgets(t: T) -> void:

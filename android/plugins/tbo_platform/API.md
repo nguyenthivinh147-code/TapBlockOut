@@ -104,10 +104,10 @@ Giải quyết xung đột lúc `cloud_load()`: chọn bản thắng theo thứ 
 | --- | --- | --- |
 | `notif_ask()` | void | Android 13+: xin quyền `POST_NOTIFICATIONS` (nếu chưa có), kết quả qua `notif_permission`. Dưới 13 hoặc đã có quyền: phát ngay `notif_permission(enabled)`. Người dùng đã từ chối hai lần thì hệ thống không hiện hộp, kết quả `false`. |
 | `notif_enabled()` | bool | Người dùng đang cho phép thông báo của app. |
-| `notif_schedule(json_items: String)` | void | **Thay toàn bộ** kế hoạch: huỷ lịch cũ, đặt lại. Mảng JSON `[{"at":<giây unix>,"kind":"daily_gift","title":"...","body":"..."}]`. Bỏ mục `at` đã qua, tối đa 60 mục. Lưu bền, tự đặt lại sau khi khởi động máy hoặc cập nhật app. |
+| `notif_schedule(json_items: String)` | void | **Thay toàn bộ** kế hoạch: huỷ lịch cũ, đặt lại. Mảng JSON `[{"at":<giây unix>,"kind":"daily_gift","title":"...","body":"...","icon":"/data/.../x.png"}]`; `icon` (không bắt buộc) là đường dẫn tuyệt đối tới file PNG làm icon lớn. Bỏ mục `at` đã qua, tối đa 60 mục. Lưu bền, tự đặt lại sau khi khởi động máy hoặc cập nhật app. |
 | `notif_cancel_all()` | void | Huỷ mọi thông báo đã hẹn. |
 
-Cài đặt: `AlarmManager.setAndAllowWhileIdle(RTC_WAKEUP)` (báo thức không chính xác, lệch có thể vài phút, không cần quyền `SCHEDULE_EXACT_ALARM`). Kênh thông báo `tbo_reminders`. Biểu tượng nhỏ lấy drawable `ic_stat_notify` của app nếu có, không thì icon app. Chạm vào thông báo mở app. Luật lịch (khung giờ 8:00 đến 22:00, tần suất) do GDScript (`notif_plan.gd`) lo, plugin chỉ đặt giờ. `kind` chỉ lưu kèm, chưa dùng.
+Cài đặt: `AlarmManager.setAndAllowWhileIdle(RTC_WAKEUP)` (báo thức không chính xác, lệch có thể vài phút, không cần quyền `SCHEDULE_EXACT_ALARM`). Kênh thông báo `tbo_reminders`. Biểu tượng nhỏ lấy drawable `ic_stat_notify` của app nếu có, không thì icon app. Icon lớn đọc từ file `icon` lúc báo thức nổ (game chép sẵn vào `user://notif_icons/`), thiếu file thì không có icon lớn. Nội dung hiện dạng BigText. Chạm vào thông báo mở app. Luật lịch (khung giờ 8:00 đến 22:00, tần suất) do GDScript (`notif_plan.gd`) lo, plugin chỉ đặt giờ. `kind` chỉ lưu kèm, chưa dùng.
 
 ## Signal
 

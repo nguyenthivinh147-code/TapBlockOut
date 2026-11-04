@@ -1,27 +1,25 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bat7jxayd5waq"]
 
-[ext_resource type="Script" path="res://src/ui/home.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/pill/pill_green_96.png" id="1_kc6b6"]
+[ext_resource type="Script" uid="uid://csm1gcgsbhwse" path="res://src/ui/home.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://d1wgurtib1mhj" path="res://assets/ui/figma/pill/pill_green_96.png" id="1_kc6b6"]
 [ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="2_jdxxw"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/home_candy_pattern.png" id="4_6k6s7"]
-[ext_resource type="Script" path="res://src/ui/home_sparkles.gd" id="5_rqor2"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/home_rail.png" id="6_qmde4"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/home_glow.png" id="7_wa7t7"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/atlas_main.png" id="8_vysw7"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_lock.png" id="9_miq5y"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_check.png" id="10_mg211"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_dailygift.png" id="11_sh163"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/home_banner.png" id="12_okf6m"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_clock.png" id="13_6k8sm"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/gold6.png" id="14_k665q"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_store.png" id="15_oku8d"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_gold.png" id="16_ri7o4"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_noads.png" id="17_ucx8p"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_star1.png" id="18_34np2"]
+[ext_resource type="Texture2D" uid="uid://mkrk7hf1y0x" path="res://assets/ui/figma/home_candy_pattern.png" id="4_6k6s7"]
+[ext_resource type="Script" uid="uid://di8ptlvehvuia" path="res://src/ui/home_sparkles.gd" id="5_rqor2"]
+[ext_resource type="Texture2D" uid="uid://dav2ggr0ew8d1" path="res://assets/ui/figma/home_rail_straight.png" id="6_qmde4"]
+[ext_resource type="Texture2D" uid="uid://cntqfprtwv10d" path="res://assets/ui/figma/home_glow.png" id="7_wa7t7"]
+[ext_resource type="Texture2D" uid="uid://riyef2q6fanv" path="res://assets/ui/figma/atlas_main.png" id="8_vysw7"]
+[ext_resource type="Texture2D" uid="uid://bxbymobwsk6bk" path="res://assets/ui/figma/ic_lock.png" id="9_miq5y"]
+[ext_resource type="Texture2D" uid="uid://b4o8yos867vo4" path="res://assets/ui/figma/ic_check.png" id="10_mg211"]
+[ext_resource type="Texture2D" uid="uid://ct5ekpb1gotpp" path="res://assets/ui/figma/ic_dailygift.png" id="11_sh163"]
+[ext_resource type="Texture2D" uid="uid://civ5cu7a7lhex" path="res://assets/ui/figma/home_banner.png" id="12_okf6m"]
+[ext_resource type="Texture2D" uid="uid://xtn215wanvms" path="res://assets/ui/figma/ic_clock.png" id="13_6k8sm"]
+[ext_resource type="Texture2D" uid="uid://8ofgy3rlnu7f" path="res://assets/ui/figma/gold6.png" id="14_k665q"]
+[ext_resource type="Texture2D" uid="uid://bbi3h0low8l1e" path="res://assets/ui/figma/ic_store.png" id="15_oku8d"]
+[ext_resource type="Texture2D" uid="uid://d3tqx4p13y3wb" path="res://assets/ui/figma/ic_gold.png" id="16_ri7o4"]
+[ext_resource type="Texture2D" uid="uid://d0xci88xvvuba" path="res://assets/ui/figma/ic_noads.png" id="17_ucx8p"]
+[ext_resource type="Texture2D" uid="uid://c8anbqhclfogx" path="res://assets/ui/figma/ic_star1.png" id="18_34np2"]
 [ext_resource type="PackedScene" path="res://scenes/hub_top.tscn" id="19_0ltf8"]
-[ext_resource type="Script" path="res://src/ui/hub_top.gd" id="20_g8n7j"]
 [ext_resource type="PackedScene" path="res://scenes/hub_nav.tscn" id="21_kvj23"]
-[ext_resource type="Script" path="res://src/ui/hub_nav.gd" id="22_dchyv"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e11fr"]
 content_margin_left = 30.0
@@ -305,7 +303,7 @@ modulate_color = Color(0.55, 0.55, 0.6, 0.9)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_er06r"]
 
 [node name="Home" type="Control" unique_id=1251164586]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -333,7 +331,7 @@ expand_mode = 1
 
 [node name="CandyPattern" type="Control" parent="Background" unique_id=89526835]
 unique_name_in_owner = true
-modulate = Color(1, 1, 1, 0.07)
+modulate = Color(1, 1, 1, 0.02745098)
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -361,9 +359,16 @@ expand_mode = 1
 stretch_mode = 1
 
 [node name="Sparkles" type="Control" parent="Background" unique_id=2061151031]
-anchors_preset = 0
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 62.0
+offset_top = -89.0
+offset_right = 62.0
+offset_bottom = -89.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("5_rqor2")
 
@@ -374,7 +379,7 @@ layout_mode = 0
 offset_left = 278.96976
 offset_top = 88.54382
 offset_right = 474.20795
-offset_bottom = 1369.7147
+offset_bottom = 1048.0
 mouse_filter = 2
 texture = ExtResource("6_qmde4")
 expand_mode = 1
@@ -1291,24 +1296,18 @@ metadata/fb_rect = Rect2(0, 1196, 886, 60)
 metadata/fb_bottom = true
 metadata/fb_font = [40.0, 3.0, 700.0]
 
-[node name="HubTop" type="Control" parent="." unique_id=727733372 instance=ExtResource("19_0ltf8")]
+[node name="HubTop" parent="." unique_id=727733372 instance=ExtResource("19_0ltf8")]
 unique_name_in_owner = true
-anchors_preset = 0
 offset_top = 28.442438
 offset_right = 720.0
 offset_bottom = 129.20993
-mouse_filter = 2
-script = ExtResource("20_g8n7j")
 metadata/fb_rect = Rect2(0, 35, 886, 124)
 
-[node name="NavBar" type="Control" parent="." unique_id=1051884145 instance=ExtResource("21_kvj23")]
+[node name="NavBar" parent="." unique_id=1051884145 instance=ExtResource("21_kvj23")]
 unique_name_in_owner = true
-anchors_preset = 0
 offset_top = 1078.465
 offset_right = 720.0
 offset_bottom = 1280.0
-mouse_filter = 2
-script = ExtResource("22_dchyv")
 metadata/fb_rect = Rect2(0, 1552, 886, 248)
 metadata/fb_bottom = true
 

@@ -39,6 +39,19 @@ const LEVEL_PATH := "res://data/levels/level_%04d.json"
 const FLUSH_SEC := 2.5
 ## Mã locale theo thứ tự cột của i18n/strings.csv và ô của popup Language.
 const LANGS := ["en", "vi", "pt_BR", "tr", "de", "fr", "id", "es", "ru", "ko", "ja", "hi", "uk", "it"]
+## Large icon of the evening notifications, one per text (notif_evening_NN_title / _body, NN = index + 1).
+const EVENING_ICONS: Array[String] = [
+	"res://assets/ui/figma/ic_clock.png",
+	"res://assets/ui/booster_smash.png",
+	"res://assets/ui/figma/ic_star1.png",
+	"res://assets/ui/figma/ic_leaderboard.png",
+	"res://assets/ui/figma/ic_superhard.png",
+	"res://assets/ui/figma/ic_booster1.png",
+	"res://assets/ui/lb_piece.png",
+	"res://assets/ui/figma/ic_giftbox1.png",
+	"res://assets/ui/figma/ic_gold.png",
+	"res://assets/ui/figma/ic_heart.png",
+]
 ## Daily Challenge không dùng level thấp hơn mức này (mở khoá ở L50).
 const CHALLENGE_MIN_ID := 50
 ## Level Daily Challenge sinh trong game: seed cơ sở = id * SEED_STRIDE, mỗi lần sinh lại cộng RESEED_STEP
@@ -1626,7 +1639,6 @@ func _notif_candidates() -> Array:
 	for o in Offers.open_offers(s, t):
 		out.append({"kind": "offer_open", "until": int(o.until)})
 		break
-	out.append("come_back")
 	return out
 
 
@@ -1634,11 +1646,17 @@ func _replan_notifications() -> void:
 	if not bool(s.settings.get("notif", true)) or not Platform.enabled():
 		Platform.cancel_all()
 		return
-	var plan := NotifPlan.plan(s, now(), _tz(), _notif_candidates())
+	var plan := NotifPlan.plan(s, now(), _tz(), _notif_candidates(), EVENING_ICONS.size())
 	var items: Array = []
 	for e in plan:
 		var kind := str(e.kind)
+		var key := "notif_%s" % kind
+		var icon := ""
+		if kind == "evening":
+			var pick := int(e.pick)
+			key = "notif_evening_%02d" % (pick + 1)
+			icon = EVENING_ICONS[pick]
 		items.append({"at": int(e.at), "kind": kind,
-			"title": tr("notif_%s_title" % kind), "body": tr("notif_%s_body" % kind)})
+			"title": tr(key + "_title"), "body": tr(key + "_body"), "icon": icon})
 	Platform.schedule(items)
 	_queue_save()

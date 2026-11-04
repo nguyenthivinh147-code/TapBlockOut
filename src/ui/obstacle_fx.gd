@@ -11,6 +11,7 @@ const SPARK_HOT := Color("FFE27A")
 const KRAFT := Color("C99A63")
 const TAPE := Color("FFF2D6")
 const LOCK_POP_TIME := 0.55
+const CRYSTAL_HIT_SIZE := 0.6  # cỡ và tầm bay hiệu ứng khối crystal va, so với mảnh kính lúc qua thanh hay bị búa gõ
 
 static var _tex: Dictionary = {}  # tên -> Texture2D dựng bằng code
 
@@ -33,20 +34,20 @@ static func iron_hit(parent: Node, pos: Vector2, out_dir: Vector2, cell: float, 
 ## Khối crystal va hoặc bị va (tiếng "ting" thuỷ tinh): mảnh kính lấp lánh toé ngược ra rồi rơi, loé trắng lạnh pha màu
 ## khối với vòng sóng rõ, sao lấp lánh. `ramp` là bốn tông của khối crystal.
 static func crystal_hit(parent: Node, pos: Vector2, out_dir: Vector2, cell: float, ramp: Dictionary, strength: float = 1.0) -> void:
-	crystal_glints(parent, pos, out_dir, cell, ramp, strength, 80.0)
+	crystal_glints(parent, pos, out_dir, cell, ramp, strength, 80.0, CRYSTAL_HIT_SIZE)
 	var icy: Color = (ramp["stripe"] as Color).lerp(Color.WHITE, 0.55)
-	BoardFx.impact_flash(parent, pos, icy, cell * 2.1 * strength, 0.3, 1.0)
-	BoardFx.sparkles(parent, pos, {"stripe": icy}, out_dir, cell / 100.0 * strength, int(round(6 * strength)))
+	BoardFx.impact_flash(parent, pos, icy, cell * 2.1 * CRYSTAL_HIT_SIZE * strength, 0.3, 1.0)
+	BoardFx.sparkles(parent, pos, {"stripe": icy}, out_dir, cell / 100.0 * CRYSTAL_HIT_SIZE * strength, int(round(6 * strength)))
 
 
 ## Mảnh kính crystal nhỏ hình thoi, cộng sáng, vừa bay vừa lật và loé theo màu khối; không loé quầng (dùng cả lúc
-## khối crystal thoát qua thanh, vốn không loé).
-static func crystal_glints(parent: Node, pos: Vector2, out_dir: Vector2, cell: float, ramp: Dictionary, strength: float = 1.0, spread: float = 80.0) -> void:
-	var k := cell / 42.0 * strength
+## khối crystal thoát qua thanh, vốn không loé). `size` thu cỡ mảnh và tầm bay, không đổi số mảnh.
+static func crystal_glints(parent: Node, pos: Vector2, out_dir: Vector2, cell: float, ramp: Dictionary, strength: float = 1.0, spread: float = 80.0, size: float = 1.0) -> void:
+	var k := cell / 42.0 * strength * size
 	var p := _emit(parent, pos, "gem", {"name": "CrystalGlints", "amount": int(round(10 * strength)), "lifetime": 0.5,
 		"dir": out_dir, "spread": spread, "v": Vector2(200, 560) * k, "gravity": 1100.0 * k, "damping": Vector2(120, 320),
 		"scale": Vector2(0.45, 1.0) * k, "add": true,
-		"ramp": [Color.WHITE, (ramp["stripe"] as Color).lerp(Color.WHITE, 0.3), Color(ramp["face"], 0.0)], "box": cell * 0.1})
+		"ramp": [Color.WHITE, (ramp["stripe"] as Color).lerp(Color.WHITE, 0.3), Color(ramp["face"], 0.0)], "box": cell * 0.1 * size})
 	p.angular_velocity_min = -900.0
 	p.angular_velocity_max = 900.0
 

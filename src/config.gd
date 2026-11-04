@@ -243,6 +243,9 @@ const _NOTIF := {
 	"latest_hour": 22,
 	"quiet_after_ignored": 9,
 	"ask_after_run": 2,
+	# Thông báo buổi tối mỗi ngày (notif_plan.gd): phút trong ngày (1200 = 20:00) và lập trước bao nhiêu ngày (0 = tắt)
+	"evening_minute": 1200,
+	"evening_days": 30,
 }
 
 const _CONTENT := {
@@ -276,6 +279,10 @@ const _CONTENT := {
 	"curtain_logo_sec": 0.4,
 	"curtain_hold_sec": 0.35,
 	"curtain_open_sec": 0.3,
+	# Background music (sfx.gd): a track fades in over music_fade_in_sec; on a track change the old one first fades out
+	# over music_fade_out_sec.
+	"music_fade_in_sec": 1.0,
+	"music_fade_out_sec": 0.5,
 	"build": "v1",
 	"support_email": "support@horusvn.com",
 	"ftue_steps": ["open", "first_tap", "first_win", "first_x2", "first_booster", "run_2", "run_5", "level_10"],

@@ -1,7 +1,7 @@
 extends Control
 ## Thanh dưới dùng chung Home, Shop, Leaderboard (Figma "main menu" > Frame 1893566628, component BottomBar): Shop · Home · Ranking.
-## Khung Figma 886x248 chia ba ô bằng nhau (295, như video ref chuyển tab), mỗi ô một nền tím cao 140. Ô của tab đang
-## mở có ô sáng vàng cao 182 (Highlight), icon 168 nhô lên trên và chữ dưới icon; hai tab còn lại chỉ có icon 96
+## Khung Figma 886x248 chia ba ô bằng nhau (295, như video ref chuyển tab), mỗi ô một nền tím (PANEL_H). Ô của tab đang
+## mở có ô sáng vàng (Highlight, HIGHLIGHT_H), icon 168 nhô lên trên và chữ dưới icon; hai tab còn lại chỉ có icon 96
 ## (tab khoá thêm chữ mở ở level nào).
 ## Bấm phát tab("shop" | "home" | "ranking"). Ranking mở từ Config.UNLOCK.leaderboard (Game.lb_open).
 ## Node nằm trong scenes/hub_nav.tscn (lưu với tab Home đang mở); script đặt cỡ, chữ từng tab theo tab đang mở
@@ -26,6 +26,12 @@ const TABS := [["shop", "ui_shop", "home_shop", "ShopButton", "ShopPanel"], ["ho
 	["ranking", "ui_leaderboard", "home_ranking", "RankingTab", "RankingPanel"]]
 const SLOT_W := DESIGN_W / 3.0
 const STAR_BORDER := Vector4(30, 30, 30, 24)
+## Inset of the purple slots and the highlight from each slot's sides (gap between slots: twice this); 0 = flush.
+const SLOT_INSET := 0.0
+## Purple slot and highlight heights: the textures end in 11 and 7 transparent rows, so both run past the bar's bottom
+## by that much and no background shows under them.
+const PANEL_H := 151.0
+const HIGHLIGHT_H := 189.0
 const CAPTION_STROKE := Color("8A201F")
 ## Caption font px and fit width: open tab, other tabs.
 const CAPTION_FONT_ON := Vector2(60, 265)
@@ -112,7 +118,7 @@ func _bind() -> void:
 		var t: Array = TABS[i]
 		var p: Panel = get_node(str(t[4]))
 		p.add_theme_stylebox_override("panel", UiAtlas.box("panel_purple_star", STAR_BORDER))
-		_fb.put(p, Rect2(i * SLOT_W + 6, 108, SLOT_W - 12, 140))
+		_fb.put(p, Rect2(i * SLOT_W + SLOT_INSET, 108, SLOT_W - SLOT_INSET * 2, PANEL_H))
 		_panels[str(t[0])] = p
 		var b: Button = get_node(str(t[3]))
 		_icons[str(t[0])] = b.get_node("Icon")
@@ -158,7 +164,7 @@ func _set_tab(b: Button, on: bool, icon_name: String, caption: String) -> void:
 	l.visible = on
 
 
-## Design rects with open_tab open: the highlight 182 high over that tab's slot, its button the full bar height with
+## Design rects with open_tab open: the highlight HIGHLIGHT_H high over that tab's slot, its button the full bar height with
 ## icon 168 above the caption; the other buttons 146 high with icon 96 (higher on a locked tab, to leave room for its
 ## caption). The purple slot panels never move.
 func _layout(open_tab: String) -> Dictionary:
@@ -168,7 +174,7 @@ func _layout(open_tab: String) -> Dictionary:
 		var b: Button = get_node(str(t[3]))
 		var x := i * SLOT_W
 		if str(t[0]) == open_tab:
-			out[_highlight] = Rect2(x + 6, 67, SLOT_W - 12, 182)
+			out[_highlight] = Rect2(x + SLOT_INSET, 67, SLOT_W - SLOT_INSET * 2, HIGHLIGHT_H)
 			out[b] = Rect2(x, 0, SLOT_W, DESIGN_H)
 			out[b.get_node("Icon")] = Rect2((SLOT_W - 168) * 0.5, -1, 168, 168)
 			out[b.get_node("Caption")] = Rect2(10, 167, SLOT_W - 20, 68)

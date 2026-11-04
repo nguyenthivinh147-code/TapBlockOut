@@ -56,13 +56,13 @@ Dành cho người duyệt bản thử. Không cần biết lập trình.
 | Icon gói gold `shop_<sku>` trong shop, `shop_mini`, `popup_offer` | Vẫn là vòng tròn placeholder vẽ bằng code |
 | Thẻ win, lose, no_lives | Chưa dùng ảnh `art_win`, `art_lose`, `art_no_lives` |
 | Hình `mech_*` (đá, băng, xích, chìa, sương mù) và 6 âm thanh cơ chế | Hoãn tới Phase 9, demo không dùng |
-| Nhạc nền `bgm_home`, `bgm_level` | Chưa ai nghe bằng tai, mới kiểm bằng số liệu. Cần người nghe duyệt |
+| Nhạc nền `bgm_home`, `bgm_level` | Bản theme kẹo 2026-11-04, đã phát trong game (Home và các màn hub: `bgm_home`; màn chơi: `bgm_level`). Đạt mọi tiêu chí đo trong `docs/AUDIO_MUSIC.md` nhưng chưa ai nghe bằng tai. Cần nghe duyệt trên máy thật, cả loa ngoài và tai nghe: chỗ nối vòng lặp, độ to so với hiệu ứng, cảm giác lặp sau 10 phút chơi |
 | `sfx_clap`, `sfx_smash` | Nhỏ hơn các tiếng khác khoảng 6 đến 10 dB, cần cân lại |
 | Layout Level 14 và 20 | Chuỗi chặn nông hơn mục tiêu thiết kế |
 | Layout Level 6 đến 8 | Bàn hẹp |
 | Icon app ở 48 px | Chưa xem trên máy thật |
 | Icon đơn sắc (themed icon Android 13) | Chưa có |
-| `booster_hint`, `booster_move`, `booster_smash` | Icon mới; Hint, Move vẽ lại 2026-11-04 thành khối 3D chất liệu kẹo (bóng đèn kẹo chanh, chữ "+3" kẹo dẻo xanh). Chưa xem trên máy thật |
+| `booster_hint`, `booster_move`, `booster_smash` | Icon mới; Hint, Move vẽ lại 2026-11-04 theo phong cách sticker phẳng viền đậm của Smash (bóng đèn kẹo chanh, chữ "+3" kẹo dẻo xanh). Chưa xem trên máy thật |
 
 ## 6. Lệch so với kế hoạch
 

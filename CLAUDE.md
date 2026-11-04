@@ -53,5 +53,6 @@ tools/godot.sh --headless --path . --import                                # ch�
 - UI theo Figma (Home, HUD, thanh trên/dưới), màn chưa nối logic, `Config.ui_preview`: `docs/UI_FIGMA.md`.
 - Bàn giao cho Horus, SKU, cấu hình SDK: `docs/HORUS_HANDOFF.md`.
 - Plugin Billing (phiên bản, sha256, cách cài lại): `docs/BILLING_NOTES.md`.
+- Nhạc nền (phân tích người chơi, tiêu chuẩn, tạo và kiểm vòng lặp bằng `tools/music_check.py`): `docs/AUDIO_MUSIC.md`.
 - Cài và duyệt bản demo: `docs/DEMO_NOTES.md`.
 - Việc thủ công của người dùng: kế hoạch mục 4.

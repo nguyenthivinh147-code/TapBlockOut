@@ -88,6 +88,22 @@ func test_shop_buy_gold_pack(t: T) -> void:
 	_free(shop)
 
 
+## The hearts' + opens a popup over the Shop (main.gd): the Shop must still leave by its tabs afterwards.
+func test_shop_lives_popup_keeps_tabs(t: T) -> void:
+	_g()
+	var shop := _open(ShopScene)
+	var closed_log: Array = []
+	shop.closed.connect(func(r: Variant) -> void: closed_log.append(r))
+	(shop.find_child("LivesPlus", true, false) as Button).pressed.emit()
+	t.eq(closed_log.size(), 1, "lives báo main")
+	t.eq(str(closed_log[0].get("action", "")), "lives", "action lives")
+	shop.close_button.pressed.emit()
+	t.eq(closed_log.size(), 2, "tab Home vẫn rời Shop sau popup mạng")
+	shop.close_button.pressed.emit()
+	t.eq(closed_log.size(), 2, "rời Shop một lần")
+	_free(shop)
+
+
 func test_shop_buy_cancel_and_invalid(t: T) -> void:
 	var g := _g()
 	var shop := _open(ShopScene)

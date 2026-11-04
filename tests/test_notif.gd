@@ -3,6 +3,7 @@ const T := preload("res://tests/t.gd")
 const SaveSchema := preload("res://src/meta/save_schema.gd")
 const NotifPlan := preload("res://src/meta/notif_plan.gd")
 const Clock := preload("res://src/meta/clock.gd")
+const Config := preload("res://src/config.gd")
 
 const TZ := 7 * 3600
 ## 2026-11-01 00:00 UTC; với TZ 7h là 07:00 địa phương ngày 20028.
@@ -201,3 +202,114 @@ func test_note_return_notifications_disabled(t: T) -> void:
 	NotifPlan.note_return(s, now, "", false)
 	t.eq(s.notify.ignored, 3, "thông báo tắt trên máy: không đếm bỏ qua")
 	t.eq(s.notify.plan, [], "vẫn xoá lịch")
+
+
+# --- thông báo buổi tối 20:00 ---
+
+const EVENING := 10
+
+
+func _evenings(p: Array) -> Array:
+	return p.filter(func(e: Dictionary) -> bool: return e.kind == "evening")
+
+
+func _others(p: Array) -> Array:
+	return p.filter(func(e: Dictionary) -> bool: return e.kind != "evening")
+
+
+func test_evening_every_day_at_20(t: T) -> void:
+	Config.reset()
+	var s := _save([])
+	var p := NotifPlan.plan(s, _midnight(), TZ, [], EVENING)
+	t.eq(p.size(), int(Config.NOTIF.evening_days), "không có gì chờ vẫn báo buổi tối, đủ evening_days ngày")
+	for i in p.size():
+		t.eq(_day(p[i]), i, "mỗi ngày một lần")
+		t.eq(_minute(p[i]), 20 * 60, "đúng 20:00 giờ địa phương")
+		t.ok(int(p[i].pick) >= 0 and int(p[i].pick) < EVENING, "pick trong khoảng")
+	t.eq(NotifPlan.plan(s, _midnight(), TZ, []).size(), 0, "không truyền số nội dung thì tắt")
+
+
+func test_evening_after_20_starts_tomorrow(t: T) -> void:
+	Config.reset()
+	var s := _save([])
+	var p := NotifPlan.plan(s, _midnight() + 20 * 3600 + 60, TZ, [], EVENING)
+	t.eq(_day(p[0]), 1, "qua 20:00 thì bắt đầu từ mai")
+
+
+func test_evening_not_limited_to_day_30(t: T) -> void:
+	Config.reset()
+	var s := _save([1140, 1140, 1140])
+	var now := _midnight() + 60 * Clock.DAY_SEC
+	var p := NotifPlan.plan(s, now, TZ, ALL, EVENING)
+	t.eq(_others(p).size(), 0, "quá ngày 30: hết lịch thường")
+	t.eq(_evenings(p).size(), int(Config.NOTIF.evening_days), "buổi tối vẫn báo mỗi ngày")
+
+
+func test_evening_counts_in_daily_cap(t: T) -> void:
+	Config.reset()
+	var s := _save([540, 545, 550, 720, 725, 730, 960, 965, 970])
+	var p := NotifPlan.plan(s, _midnight(), TZ, ALL, EVENING)
+	var d := _per_day(p)
+	var o := _per_day(_others(p))
+	for i in 7:
+		t.eq(d.get(i, 0), int(Config.NOTIF.first_week_per_day), "ngày %d: tổng không vượt mức tuần đầu" % i)
+		t.eq(o.get(i, 0), int(Config.NOTIF.first_week_per_day) - 1, "ngày %d: buổi tối chiếm một suất" % i)
+	for i in range(7, 30):
+		t.eq(d.get(i, 0), 1, "ngày %d: chỉ thông báo buổi tối" % i)
+
+
+func test_evening_keeps_gap(t: T) -> void:
+	Config.reset()
+	var s := _save([1140, 1145, 1150, 1260, 1265, 1270]) # mở quanh 19:00 và 21:00
+	var p := NotifPlan.plan(s, _midnight(), TZ, ALL, EVENING)
+	var o := _others(p)
+	t.ok(o.size() > 0, "vẫn có lịch thường")
+	for e in o:
+		t.ok(absi(_minute(e) - 20 * 60) >= NotifPlan.MIN_GAP_MIN, "cách 20:00 đủ xa: %d" % _minute(e))
+	t.eq(_minute(o[0]), 20 * 60 - NotifPlan.MIN_GAP_MIN, "giờ 18:50 dời về 18:00")
+	t.eq(_per_day(o).get(0, 0), 2, "giờ 20:50 dời ra 22:00")
+
+
+func test_evening_quiet(t: T) -> void:
+	Config.reset()
+	var s := _save([540, 540, 540, 720, 720, 720])
+	s.notify.ignored = 9
+	var p := NotifPlan.plan(s, _midnight(), TZ, ALL, EVENING)
+	t.eq(_others(p).size(), 0, "bị bỏ qua 9 lần: chỉ còn buổi tối")
+	t.eq(_per_day(p).get(0, 0), 1, "1 lần mỗi ngày")
+
+
+func test_evening_off_by_config(t: T) -> void:
+	Config.reset()
+	Config.NOTIF.evening_days = 0
+	var s := _save([1140, 1140, 1140])
+	var p := NotifPlan.plan(s, _midnight(), TZ, ALL, EVENING)
+	Config.reset()
+	t.eq(_evenings(p).size(), 0, "evening_days 0 thì tắt")
+	t.eq(_per_day(p).get(7, 0), 1, "lịch thường như cũ")
+
+
+func test_evening_pick_random_per_day(t: T) -> void:
+	var day0 := Clock.day_number(BASE, TZ)
+	var prev := -1
+	var seen := {}
+	var block0 := floori(float(day0) / EVENING) * EVENING
+	for d in range(block0, block0 + 300):
+		var k := NotifPlan.evening_pick(d, BASE, EVENING)
+		t.ok(k >= 0 and k < EVENING, "pick trong khoảng")
+		t.ok(k != prev, "ngày %d không trùng hôm trước" % d)
+		t.eq(NotifPlan.evening_pick(d, BASE, EVENING), k, "cố định theo ngày")
+		prev = k
+		seen[k] = true
+		if (d - block0) % EVENING == EVENING - 1:
+			t.eq(seen.size(), EVENING, "mỗi %d ngày đủ %d nội dung" % [EVENING, EVENING])
+			seen = {}
+	var same := 0
+	for d in range(day0, day0 + 30):
+		if NotifPlan.evening_pick(d, BASE, EVENING) == NotifPlan.evening_pick(d, BASE + 1, EVENING):
+			same += 1
+	t.ok(same < 30, "máy khác thứ tự khác")
+	var order: Array[int] = []
+	for d in range(day0, day0 + 10):
+		order.append(NotifPlan.evening_pick(d, BASE, EVENING))
+	t.ok(order != [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], "không theo thứ tự cố định")

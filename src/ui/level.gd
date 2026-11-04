@@ -202,6 +202,7 @@ var _nudge_tweens: Array[Tween] = []
 
 func setup(args: Dictionary) -> void:
 	_challenge = bool(args.get("challenge", false))
+	Sfx.music(Sfx.MUSIC_LEVEL)
 	_build()
 	_start_level()
 

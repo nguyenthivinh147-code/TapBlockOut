@@ -5,6 +5,10 @@ extends RefCounted
 ## Quy ước ngày: chỉ số ngày 0 = ngày cài (theo giờ địa phương). Config.NOTIF dùng thẳng chỉ số này:
 ## `idx < first_week_days` là tuần đầu, `idx <= daily_until_day` là mỗi ngày một lần, `sparse_days` là ngày thưa.
 ## `s.notify.hours` là danh sách phút trong ngày (0..1439) của các lần mở game, giữ tối đa HISTORY_MAX.
+##
+## Thông báo buổi tối (kind "evening"): mỗi ngày một lần lúc `Config.NOTIF.evening_minute` (20:00), từ hôm nay
+## tới `evening_days` ngày sau, không phụ thuộc ngày cài. Mỗi ngày một nội dung ngẫu nhiên (`pick`, xem
+## `evening_pick`). Thông báo này tính vào mức mỗi ngày, các thông báo khác tránh xa nó MIN_GAP_MIN phút.
 
 const Config := preload("res://src/config.gd")
 const Clock := preload("res://src/meta/clock.gd")
@@ -24,21 +28,32 @@ const DEFAULT_MINUTES: Array[int] = [750, 1110, 1230]
 
 ## Tính lịch từ `now` tới hết ngày 30 kể từ ngày cài, ghi vào `s.notify.plan` và trả về.
 ## `candidates`: phần tử là String (kind) hoặc {kind, at?, until?}: `at` = sớm nhất được báo, `until` = hạn.
-## Chỉ đưa vào thứ đang chờ thật; rỗng thì không có thông báo nào.
-static func plan(s: Dictionary, now: int, tz: int, candidates: Array) -> Array:
+## Chỉ đưa vào thứ đang chờ thật; rỗng thì không có thông báo nào ngoài thông báo buổi tối.
+## `evening_variants` > 0 (số nội dung buổi tối) bật thông báo buổi tối; phần tử của nó là
+## {at, kind: "evening", pick: 0..evening_variants-1}.
+static func plan(s: Dictionary, now: int, tz: int, candidates: Array, evening_variants: int = 0) -> Array:
 	var out: Array = []
 	var cands := _normalize(candidates)
 	var notify: Dictionary = s["notify"]
+	var cfg: Dictionary = Config.NOTIF
+	var today := Clock.day_number(now, tz)
+	var evening := int(cfg.evening_minute) if evening_variants > 0 and int(cfg.evening_days) > 0 else -1
+	if evening >= 0:
+		var salt := int(s.get("meta", {}).get("install_at", 0))
+		for day in range(today, today + int(cfg.evening_days)):
+			var at_e: int = day * Clock.DAY_SEC - tz + evening * 60
+			if at_e > now:
+				out.append({"at": at_e, "kind": "evening", "pick": evening_pick(day, salt, evening_variants)})
 	if not cands.is_empty():
-		var cfg: Dictionary = Config.NOTIF
-		var today := Clock.day_number(now, tz)
 		var install_day := _install_day(s, tz, today)
 		var last_idx := _last_idx(cfg)
 		var quiet: bool = int(notify.get("ignored", 0)) >= int(cfg.quiet_after_ignored)
-		var slots := _slots(notify.get("hours", []), cfg)
+		var slots := _slots(notify.get("hours", []), cfg, evening)
 		for day in range(today, install_day + last_idx + 1):
 			var idx := day - install_day
 			var cap := _cap_for(idx, cfg, quiet)
+			if evening >= 0:
+				cap -= 1
 			if cap <= 0 or slots.is_empty():
 				continue
 			var picked: Array = []
@@ -61,6 +76,35 @@ static func plan(s: Dictionary, now: int, tz: int, candidates: Array) -> Array:
 	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.at < b.at)
 	notify["plan"] = out.duplicate(true)
 	return out
+
+
+## Nội dung buổi tối của ngày `day` (số ngày địa phương), 0..n-1. Cố định theo ngày nên lập lại lịch trong ngày
+## không đổi nội dung. Mỗi khối n ngày là một hoán vị ngẫu nhiên theo `salt` (mỗi máy một thứ tự): đủ n nội
+## dung rồi mới lặp, hai ngày liền nhau không trùng.
+static func evening_pick(day: int, salt: int, n: int) -> int:
+	if n <= 1:
+		return 0
+	var block := floori(float(day) / float(n))
+	var perm := _evening_perm(block, salt, n)
+	if n > 2 and perm[0] == _evening_perm(block - 1, salt, n)[n - 1]:
+		var first: int = perm[0]
+		perm[0] = perm[1]
+		perm[1] = first
+	return perm[posmod(day, n)]
+
+
+static func _evening_perm(block: int, salt: int, n: int) -> Array[int]:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash([block, salt])
+	var perm: Array[int] = []
+	for i in n:
+		perm.append(i)
+	for i in range(n - 1, 0, -1):
+		var j := rng.randi_range(0, i)
+		var tmp := perm[i]
+		perm[i] = perm[j]
+		perm[j] = tmp
+	return perm
 
 
 ## Ghi giờ mở game (phút trong ngày theo giờ địa phương), giữ HISTORY_MAX lần gần nhất.
@@ -155,7 +199,9 @@ static func _cap_for(idx: int, cfg: Dictionary, quiet: bool) -> int:
 
 ## Các giờ báo trong ngày (phút), xếp theo độ hay mở giảm dần; phần tử đầu là giờ chính.
 ## Mỗi phần tử {m, n}. Đã trừ lead_min, kẹp vào [earliest_hour, latest_hour], cách nhau >= MIN_GAP_MIN.
-static func _slots(hours_raw: Variant, cfg: Dictionary) -> Array[Dictionary]:
+## `reserved` >= 0 (phút của thông báo buổi tối): giờ nào gần hơn MIN_GAP_MIN thì dời ra mép trước hoặc sau nó,
+## dời không được (vướng khung giờ) thì bỏ.
+static func _slots(hours_raw: Variant, cfg: Dictionary, reserved: int = -1) -> Array[Dictionary]:
 	var lo := int(cfg.earliest_hour) * 60
 	var hi := int(cfg.latest_hour) * 60
 	var lead := int(cfg.lead_min)
@@ -178,6 +224,15 @@ static func _slots(hours_raw: Variant, cfg: Dictionary) -> Array[Dictionary]:
 			var mid := hours[(start + end) / 2]
 			cands.append({"m": clampi(mid - lead, lo, hi), "n": end - start + 1})
 			start = end + 1
+	if reserved >= 0:
+		var kept: Array[Dictionary] = []
+		for c in cands:
+			if absi(int(c.m) - reserved) < MIN_GAP_MIN:
+				var away := reserved - MIN_GAP_MIN if int(c.m) <= reserved else reserved + MIN_GAP_MIN
+				c.m = clampi(away, lo, hi)
+			if absi(int(c.m) - reserved) >= MIN_GAP_MIN:
+				kept.append(c)
+		cands = kept
 	cands.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return a.n > b.n or (a.n == b.n and a.m < b.m))
 	var out: Array[Dictionary] = []

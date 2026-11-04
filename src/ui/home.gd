@@ -25,16 +25,11 @@ const DESIGN_W := 886.0
 const DESIGN_H := 1800.0
 ## Trục co của cụm mốc khi màn thấp.
 const PATH_X := 443.0
-## Ray kẹo (Figma "Progress line" 71:367, home_rail.png 306x2008) khi cụm mốc không co: khúc cong phải trên cùng
-## ở tâm mốc trên (y 259), khúc cong trái ở tâm mốc hiện tại (y 693), rồi chạy sau nút Chơi xuống thanh dưới.
-const RAIL_RECT := Rect2(316, 98, 306, 2008)
+## Ray kẹo thẳng đứng (home_rail_straight.png 64x2008, duỗi từ "Progress line" 71:367 bằng tools/gen_home_rail.py) khi
+## cụm mốc không co: tâm ở PATH_X, từ trên mốc trên cùng chạy sau nút Chơi xuống thanh dưới.
+const RAIL_RECT := Rect2(PATH_X - 32.0, 98, 64, 2008)
 ## Khoảng giữa mốc dưới cùng và nút Chơi (ref; Figma để 101).
 const PATH_GAP := 70.0
-## Đường giữa ray: x (px ảnh) ở các hàng 0, 50, 100... của home_rail.png (giữa vùng alpha > 0,5).
-const RAIL_STEP := 50.0
-const RAIL_MID: Array[float] = [199.0, 231.5, 257.5, 274.0, 278.0, 264.5, 233.5, 184.0, 125.5, 75.0, 43.5, 29.0,
-	27.0, 34.5, 51.0, 75.5, 105.5, 139.0, 172.5, 203.5, 229.5, 248.0, 258.0, 259.0, 249.5, 223.0, 180.0, 132.0, 95.0,
-	71.0, 57.0, 51.0, 50.0, 53.5, 62.0, 74.5, 91.0, 110.5, 134.5, 163.5, 194.0]
 ## fx 1 quanh mốc hiện tại: 518 quanh mốc 290 (khung Hard) ở mọi độ khó, như ref.
 const GLOW_K := 518.0 / 290.0
 ## Cột icon hai bên: x, đỉnh mục đầu, bước dọc, cỡ mục.
@@ -290,7 +285,7 @@ func _stack(items: Array[Control], x: float, limit: float) -> void:
 		_fb.move(shown[i], Vector2(x, COL_TOP + i * step))
 
 
-## Ba mốc nằm trên ray kẹo: y theo khung Figma, x theo đường giữa ray ở tâm mốc (zigzag như ref).
+## Ba mốc nằm trên ray kẹo: y theo khung Figma, tâm ở PATH_X (giữa ray).
 ## Màn thấp hơn khung thì co cả cụm (ray, cỡ và khoảng cách mốc) quanh (PATH_X, đỉnh cụm) nên mốc vẫn trên ray.
 ## first (level 1, khung thường): khoá 220 ở 211, khoá 220 ở 525, hiện tại 290 ở 868.
 ## mid (khung Hard, hạ hai mốc dưới như ref): khoá 220 ở 149, hiện tại 290 ở 548, vừa qua 220 ở 971.
@@ -306,8 +301,7 @@ func _layout_path(shift: float) -> void:
 	var cur_idx := 2 if _path_mode == "first" else 1
 	for i in 3:
 		var px: float = float(slots[i][1]) * f
-		var cy: float = float(slots[i][0]) + float(slots[i][1]) * 0.5 - RAIL_RECT.position.y
-		var c := rail_pos + Vector2(rail_x(cy), cy) * f
+		var c := origin + Vector2(0.0, float(slots[i][0]) + float(slots[i][1]) * 0.5 - top) * f
 		var pn: Dictionary = path_nodes[i]
 		_fb.put(pn.root, Rect2(c.x - px * 0.5, c.y - px * 0.5, px, px))
 		_layout_node(pn, px, i == cur_idx)
@@ -316,13 +310,6 @@ func _layout_path(shift: float) -> void:
 	var gs := cur.size.x * GLOW_K
 	var gy := cur.get_center().y + cur.size.x * (-16.0 / 290.0 if _tier != "" else 5.0 / 290.0)
 	_fb.put(_glow, Rect2(cur.get_center().x - gs * 0.5, gy - gs * 0.5, gs, gs))
-
-
-## Đường giữa ray (px ảnh home_rail.png) ở hàng y của ảnh, nội suy tuyến tính RAIL_MID.
-static func rail_x(y: float) -> float:
-	var t := clampf(y / RAIL_STEP, 0.0, RAIL_MID.size() - 1.0)
-	var i := mini(int(t), RAIL_MID.size() - 2)
-	return lerpf(RAIL_MID[i], RAIL_MID[i + 1], t - i)
 
 
 ## Vị trí con trong mốc theo cỡ px (thiết kế). Kim cương: sprite phủ cả mốc. Lục giác: sprite thụt 5/220.

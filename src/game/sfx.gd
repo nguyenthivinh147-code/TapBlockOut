@@ -2,14 +2,20 @@ extends Node
 ## Autoload Sfx: hiệu ứng, nhạc, bus riêng, rung nhẹ. Thiếu file hoặc không giải mã được thì im lặng.
 ## Tên: assets/sfx/<name>.wav (thêm tiền tố "sfx_" nếu thiếu), nhạc assets/music/<name>.ogg.
 ## Cài đặt truyền qua apply_settings(Game.s.settings): sfx, music, haptics.
+## Music (docs/AUDIO_MUSIC.md): MUSIC_LEVEL in the level, MUSIC_HOME on the other screens but loading. A track starts
+## from MUSIC_FADE_DB and fades in; a track change fades the old one out first (Config.CONTENT.music_fade_*).
 
+const Config := preload("res://src/config.gd")
 const BUS_SFX := "SFX"
 const BUS_MUSIC := "Music"
 const SFX_DIR := "res://assets/sfx/"
 const MUSIC_DIR := "res://assets/music/"
+const MUSIC_HOME := "bgm_home"
+const MUSIC_LEVEL := "bgm_level"
 const POOL_SIZE := 8
 const SFX_DB := 0.0
 const MUSIC_DB := -8.0
+const MUSIC_FADE_DB := -30.0
 ## Rung nhẹ (ms) theo tên hiệu ứng; không có trong bảng thì không rung.
 const HAPTIC_MS := {"tap": 10, "blocked": 25, "bump": 25, "shatter": 15, "smash": 30, "life_lost": 30}
 
@@ -22,6 +28,7 @@ var music_name: String = ""
 
 var _pool: Array[AudioStreamPlayer] = []
 var _music_player: AudioStreamPlayer = null
+var _music_fade: Tween = null
 var _cache: Dictionary = {}
 var _ad_paused: bool = false
 var _ready_done: bool = false
@@ -56,6 +63,7 @@ func release_all() -> void:
 		if is_instance_valid(p):
 			p.stop()
 			p.stream = null
+	_stop_music_fade()
 	if _music_player != null and is_instance_valid(_music_player):
 		_music_player.stop()
 		_music_player.stream = null
@@ -137,12 +145,14 @@ func music(music_track: String) -> void:
 
 func stop_music() -> void:
 	music_name = ""
+	_stop_music_fade()
 	if _music_player != null:
 		_music_player.stop()
 
 
 func pause_for_ad() -> void:
 	_ad_paused = true
+	_stop_music_fade()
 	if _music_player != null:
 		_music_player.stop()
 	for p in _pool:
@@ -161,17 +171,41 @@ func is_music_playing() -> bool:
 func _sync_music() -> void:
 	if _music_player == null:
 		return
-	if music_name == "" or not music_on or _ad_paused:
-		_music_player.stop()
-		return
-	var stream := _load_music(music_name)
+	_stop_music_fade()
+	var stream: AudioStream = null
+	if music_name != "" and music_on and not _ad_paused:
+		stream = _load_music(music_name)
 	if stream == null:
 		_music_player.stop()
 		return
-	if _music_player.stream != stream:
-		_music_player.stream = stream
-	if not _music_player.playing:
-		_music_player.play()
+	if not is_inside_tree():
+		_play_music(stream)
+		_music_player.volume_db = 0.0
+		return
+	var c: Dictionary = Config.CONTENT
+	_music_fade = create_tween()
+	if _music_player.playing and _music_player.stream != stream:
+		_music_fade.tween_property(_music_player, "volume_db", MUSIC_FADE_DB, float(c.music_fade_out_sec))
+		_music_fade.tween_callback(_play_music.bind(stream))
+	else:
+		_play_music(stream)
+	# Also brings a track back up when it is asked for again during its fade-out.
+	_music_fade.tween_property(_music_player, "volume_db", 0.0, float(c.music_fade_in_sec))
+
+
+## Starts stream from MUSIC_FADE_DB, unless it is the one already playing.
+func _play_music(stream: AudioStream) -> void:
+	if _music_player.playing and _music_player.stream == stream:
+		return
+	_music_player.stream = stream
+	_music_player.volume_db = MUSIC_FADE_DB
+	_music_player.play()
+
+
+func _stop_music_fade() -> void:
+	if _music_fade != null:
+		_music_fade.kill()
+		_music_fade = null
 
 
 func _free_player() -> AudioStreamPlayer:

@@ -1,6 +1,7 @@
 extends RefCounted
 const T := preload("res://tests/t.gd")
 const Config := preload("res://src/config.gd")
+const GameScript := preload("res://src/game/game.gd")
 const MockAds := preload("res://src/platform/mock_ads.gd")
 const MockIap := preload("res://src/platform/mock_iap.gd")
 
@@ -477,6 +478,11 @@ func test_notifications(t: T) -> void:
 	t.ok(_p().notif.scheduled.size() > 0, "có lịch")
 	var first: Dictionary = _p().notif.scheduled[0]
 	t.ok(str(first.title) != "" and not str(first.title).begins_with("notif_"), "có tiêu đề dịch")
+	var evening: Array = _p().notif.scheduled.filter(func(e: Dictionary) -> bool: return e.kind == "evening")
+	t.ok(evening.size() >= int(Config.NOTIF.evening_days) - 1, "thông báo 20:00 mỗi ngày (qua 20:00 thì từ mai)")
+	t.ok(GameScript.EVENING_ICONS.has(str(evening[0].icon)), "kèm icon")
+	t.ok(not str(evening[0].title).begins_with("notif_"), "tiêu đề buổi tối đã dịch")
+	t.ok(not str(evening[0].body).begins_with("notif_"), "nội dung buổi tối đã dịch")
 	g.set_setting("notif", false)
 	t.eq(_p().notif.scheduled.size(), 0, "tắt thì huỷ hết")
 	t.eq(bool(g.s.settings.notif), false, "ghi cài đặt")

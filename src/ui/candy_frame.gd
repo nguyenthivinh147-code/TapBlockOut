@@ -20,8 +20,8 @@ const ARROWS := {
 	"right": {"dir": Vector2(1, 0), "size": Vector2(0.50, 0.35), "shift": Vector2(0.03, -0.21)},
 	"down": {"dir": Vector2(0, 1), "size": Vector2(0.45, 0.34), "shift": Vector2(0.0, 0.02)},
 }
-const TUBE_R := 0.49  # bán kính tới đường giữa ống góc
-const TUBE_W := 0.44  # bề rộng ống góc
+const TUBE_R := 0.51  # bán kính tới đường giữa ống góc
+const TUBE_W := 0.45  # bề rộng ống góc
 const TUBE_RUN := 0.36  # phần ống thẳng chui dưới đầu thanh
 const PAD := 0.35  # lề vùng vẽ, chứa bóng đổ
 ## Vệt sáng trên ống ở mỗi góc, ánh sáng từ trên hơi lệch trái. peak: vị trí trên mặt cắt (-1 trong, 1 ngoài);
@@ -41,6 +41,9 @@ const BAR_RAMPS := {
 	"down": [[0.0, "B025AE"], [0.02, "C32BB5"], [0.06, "F468EA"], [0.1, "F68AE8"], [0.14, "FDD5F7"], [0.18, "FDBCF4"], [0.22, "FC96ED"], [0.27, "FA82E8"], [0.35, "F667DF"], [0.43, "F253D9"], [0.51, "ED43D3"], [0.59, "E636CD"], [0.63, "E12EC8"], [0.67, "D726C1"], [0.71, "C91BB6"], [0.76, "B811A8"], [0.8, "AF0CA0"], [0.84, "AA099C"], [0.88, "AD0B9D"], [0.92, "B50FA4"], [0.96, "8F0D7D"], [1.0, "8A0C78"]],
 }
 const END_COLORS := {"up": Color("EFA512"), "left": Color("33BD11"), "right": Color("0279EE"), "down": Color("C81CBA")}
+## Hạ sắc độ thanh cho bớt chói: nhân saturation và value (HSV) của mọi màu ở BAR_RAMPS, END_COLORS khi vẽ thanh.
+const BAR_SAT := 0.85
+const BAR_VAL := 0.98
 
 const HIT_TIME := 0.45  # giây, sóng sáng và nảy của thanh khi bị va
 const HIT_BUMP := 0.1  # thanh bật ra ngoài chừng này ô
@@ -141,12 +144,17 @@ static func ramp_texture(side: String) -> Texture2D:
 		g.offsets = PackedFloat32Array()
 		g.colors = PackedColorArray()
 		for stop: Array in BAR_RAMPS[side]:
-			g.add_point(float(stop[0]), Color(str(stop[1])))
+			g.add_point(float(stop[0]), tone(Color(str(stop[1]))))
 		var tex := GradientTexture1D.new()
 		tex.width = 128
 		tex.gradient = g
 		_ramp_cache[side] = tex
 	return _ramp_cache[side]
+
+
+## Màu thanh sau khi hạ sắc độ (BAR_SAT, BAR_VAL).
+static func tone(c: Color) -> Color:
+	return Color.from_hsv(c.h, c.s * BAR_SAT, c.v * BAR_VAL, c.a)
 
 
 ## Xếp lại toàn bộ theo vùng bàn và đơn vị khung `cell`. `board` tính theo toạ độ cục bộ của khung.
@@ -162,7 +170,7 @@ func layout(board: Rect2, cell: float) -> void:
 		var m: ShaderMaterial = part.material
 		var arrow: Dictionary = ARROWS[side]
 		m.set_shader_parameter("ramp", ramp_texture(side))
-		m.set_shader_parameter("end_col", END_COLORS[side])
+		m.set_shader_parameter("end_col", tone(END_COLORS[side]))
 		m.set_shader_parameter("quad_px", part.size)
 		m.set_shader_parameter("bar_px", r.size)
 		m.set_shader_parameter("vertical", side == "left" or side == "right")

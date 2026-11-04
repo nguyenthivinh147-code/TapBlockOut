@@ -47,6 +47,8 @@ const ITEM_GOLD := "/StarterPack/ItemContainer/Row(Clone)/ShopRewardItem(Clone)"
 const ITEM_BOOSTER := "/StarterPack/ItemContainer/Row(Clone)#2/ShopRewardItem(Clone)"
 const ITEM_HEART := "/StarterPack/ItemContainer/Row(Clone)/ShopRewardItem(Clone) (1)"
 const ITEM_PLUS := "/StarterPack/ItemContainer/Row(Clone)/Plus(Clone)"
+## Hub actions main.gd answers with a popup over the Shop: the Shop stays the current screen and keeps taking taps.
+const STAY_ACTIONS := ["lives", "settings"]
 
 var close_button: Button = null
 var video_button: Button = null
@@ -479,11 +481,11 @@ func _on_tab(tab_name: String) -> void:
 			_leave("ranking")
 
 
-## Rời Shop sang màn khác của hub.
+## Rời Shop sang màn khác của hub; action trong STAY_ACTIONS chỉ mở popup trên Shop nên không khoá Shop.
 func _leave(action: String) -> void:
 	if _closed:
 		return
-	_closed = true
+	_closed = not STAY_ACTIONS.has(action)
 	closed.emit({"bought": bought_any, "action": action})
 
 

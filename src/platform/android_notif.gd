@@ -2,11 +2,15 @@ extends RefCounted
 ## Thông báo local thật (AlarmManager) qua plugin TboPlatform. Cùng hàm với mock_notif.gd.
 
 const ASK_TIMEOUT := 120.0
+## Icon lớn của thông báo: ảnh `res://` chép thành PNG vuông cạnh ICON_PX ở đây, plugin đọc theo đường dẫn tuyệt đối
+## (receiver chạy cả khi game đã tắt nên không đọc được PCK).
+const ICON_DIR := "user://notif_icons"
+const ICON_PX := 192
 
 ## Nhân với mọi hạn chờ (test đặt nhỏ).
 var timeout_scale: float = 1.0
 var asked: bool = false
-## Bản sao kế hoạch vừa gửi cho plugin: [{at, kind, title, body}]
+## Bản sao kế hoạch vừa gửi cho plugin: [{at, kind, title, body, icon}]
 var scheduled: Array[Dictionary] = []
 ## Quyền thông báo hiện tại (giống `granted` của mock).
 var granted: bool:
@@ -45,9 +49,36 @@ func schedule(items: Array) -> void:
 			continue
 		scheduled.append(it.duplicate())
 		out.append({"at": int(it.get("at", 0)), "kind": str(it.get("kind", "")),
-			"title": str(it.get("title", "")), "body": str(it.get("body", ""))})
+			"title": str(it.get("title", "")), "body": str(it.get("body", "")),
+			"icon": icon_file(str(it.get("icon", "")))})
 	if _plugin != null and _plugin.has_method("notif_schedule"):
 		_plugin.notif_schedule(JSON.stringify(out))
+
+
+## Đường dẫn tuyệt đối của bản PNG cho ảnh `res_path` (chép lần đầu, lần sau dùng lại). Rỗng nếu không có ảnh.
+func icon_file(res_path: String) -> String:
+	if res_path == "":
+		return ""
+	var dst := "%s/%s.png" % [ICON_DIR, res_path.get_file().get_basename()]
+	if not FileAccess.file_exists(dst):
+		var tex := load(res_path) as Texture2D
+		if tex == null:
+			return ""
+		var img := tex.get_image()
+		if img == null or img.is_empty():
+			return ""
+		if img.is_compressed():
+			img.decompress()
+		img.convert(Image.FORMAT_RGBA8)
+		var k := float(ICON_PX) / float(maxi(img.get_width(), img.get_height()))
+		img.resize(maxi(roundi(img.get_width() * k), 1), maxi(roundi(img.get_height() * k), 1), Image.INTERPOLATE_LANCZOS)
+		var sq := Image.create_empty(ICON_PX, ICON_PX, false, Image.FORMAT_RGBA8)
+		@warning_ignore("integer_division")
+		sq.blit_rect(img, Rect2i(Vector2i.ZERO, img.get_size()), (Vector2i(ICON_PX, ICON_PX) - img.get_size()) / 2)
+		DirAccess.make_dir_recursive_absolute(ICON_DIR)
+		if sq.save_png(dst) != OK:
+			return ""
+	return ProjectSettings.globalize_path(dst)
 
 
 func cancel_all() -> void:

@@ -1022,365 +1022,277 @@
   {
     "name": "frame_00",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A simple thin round avatar frame: a clean white circular ring border with a subtle grey outer edge, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4000,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Default: redraw of the Figma Home avatar frame (assets/ui/figma/ava_frame.png), cream band 8/124",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "e84c26ba-b79a-4780-b4c7-ff2df9875ccb",
-    "source": "art/images/frame_00.png",
-    "source_sha256": "a76b56d5fc02c4be833e149baa4b1fc13d4efecae4d0dc17a43f8aca4b3a5a68",
+    "source": "art/images/frame_00_candy.png",
+    "source_sha256": "0cbba2a023b36c42cc9f83bd31f67fe74b8f0271a7a9c657b5cd37590607ac8f",
     "file": "assets/frames/frame_00.png",
-    "file_sha256": "7eacd223e5538775ba12f6ecbc2487125f8d987ddce395b800ed857d2ecf5970",
+    "file_sha256": "e675503fc3e120ccc75e28711469a75382b07a359f752e5b989d559df589976a",
     "file_size": [
       256,
       256
     ],
-    "note": "Vong ngoai = 82% khung, tam o giua, ruot trong suot (tools/resize_images.py)"
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_00.png)"
   },
   {
     "name": "frame_01",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick glossy green (#43B649) circular ring border with small leaf decorations, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4001,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Bubblegum: plain pink band",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "84f84144-0f8a-49e4-b601-29b07ed346b0",
-    "source": "art/images/frame_01.png",
-    "source_sha256": "09020516af84110168a9a4fae20fe6e55ecce5498154a9a20c57f015214c18c1",
+    "source": "art/images/frame_01_candy.png",
+    "source_sha256": "b74636d1ebb1de9b4c7c44b1e27a0edce53bd7d80d9ca70fec937bdf8622e2c9",
     "file": "assets/frames/frame_01.png",
-    "file_sha256": "8222a9b7223b279a9a6cd58f2083f1d8401ab34ad3a66a6ab51c73319496ef5b",
+    "file_sha256": "e77129c48bd9fe35991139140db09115dc6a4dbcddb8edcd3b95eae3f30db9cc",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_01.png)"
   },
   {
     "name": "frame_02",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick glossy blue (#2F80ED) circular ring border with small white bubbles along it, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4002,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Mint chocolate chip: mint band with brown chips",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "91791862-a45c-4ccb-aec4-22849b1c884f",
-    "source": "art/images/frame_02.png",
-    "source_sha256": "c94e40f14688b7774c9c380f8f8923836286771d29e6d4346f171eaf8642df91",
+    "source": "art/images/frame_02_candy.png",
+    "source_sha256": "b7e49331865594cb9192f247ef2780a9a5cd6994df3762a6d49c8601669129e8",
     "file": "assets/frames/frame_02.png",
-    "file_sha256": "845a58e931c1c9053e85095de2fcf5beac9f420277157761905ab46bf429724e",
+    "file_sha256": "a626ce1c147ba438b131ec4b867cb47fd01a789f3dd3ea61c54217e6678bb075",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_02.png)"
   },
   {
     "name": "frame_03",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick glossy purple (#9B51E0) circular ring border with small sparkling stars, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4003,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Blueberry sugar: blue band with white sparkles and sugar grains",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "14d862c0-2d5a-4d06-9ef3-859c122a042f",
-    "source": "art/images/frame_03.png",
-    "source_sha256": "e5a7a008a9ed03656ea9b9140202ecda08e1d5b6844a8ffcf1518014c5ecf497",
+    "source": "art/images/frame_03_candy.png",
+    "source_sha256": "0b7d8b60b2822b9a0c9789cc7d7546803f6fa4b2c5b0629517c1fd2afdcd9f2e",
     "file": "assets/frames/frame_03.png",
-    "file_sha256": "19a9f1c2c4aaaa508f49c4c00e48659c68d6d201905c46e1660c4c1f20c3c841",
+    "file_sha256": "1f6bde0286a4c959574e941cf182a307443b8b1c738067e8f32b071259e72122",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_03.png)"
   },
   {
     "name": "frame_04",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick glossy golden yellow (#F5C518) circular ring border with a beaded edge, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4004,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Candy cane: white band with slanted red stripes",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "00cb9aa9-94b0-4ba4-a7d3-ba959c63f618",
-    "source": "art/images/frame_04.png",
-    "source_sha256": "13bd02cd353a480c58c347d1a5d16d185271b806191518a1f0ae32f55f93922a",
+    "source": "art/images/frame_04_candy.png",
+    "source_sha256": "9f5e7cbbd86457a66668764156b9354a4e14476c2bddef252addd6bfd35b2854",
     "file": "assets/frames/frame_04.png",
-    "file_sha256": "cbee193f4d797db007a4a3f595d02ac3123de2ea1061436f45499457612d5e89",
+    "file_sha256": "d01dfaa31097a8bcb87b91f5d0ff5423b873e0402db4dc64254492f3e3d9efbb",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_04.png)"
   },
   {
     "name": "frame_05",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick glossy pink circular ring border decorated with little hearts, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4005,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Strawberry icing: pink band with rainbow sprinkles",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "61f1869e-4757-499f-a2f3-2e8487f18d7f",
-    "source": "art/images/frame_05.png",
-    "source_sha256": "09b11285797175b8b2fe04db1abaa288dc371b2ad906f01b2382586e61ae6db5",
+    "source": "art/images/frame_05_candy.png",
+    "source_sha256": "7e13f6f162522763653bf26914576b3526b9458fa8401d4507d24f0e4dc613e8",
     "file": "assets/frames/frame_05.png",
-    "file_sha256": "f6940760a17f4a4d7c45d5d134c4627a63b1ebbe87af59d142db0710b42fb301",
+    "file_sha256": "f855da1922660331e061ef641f1747c119a9f7f6f39d90354329dd076dcf21cc",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_05.png)"
   },
   {
     "name": "frame_06",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick rope-twisted wooden circular ring border in warm brown, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4006,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Grape: purple band with jelly beans in assorted colours",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "a697c47a-61dc-4658-9e19-e6cb4c201ba9",
-    "source": "art/images/frame_06.png",
-    "source_sha256": "b34509585e4e23ac62861fc1938419f61ff53ccee147146626e320e0c2780502",
+    "source": "art/images/frame_06_candy.png",
+    "source_sha256": "067dff1e772462e9b6f3792c3cf10c104fbec131dde400844a3a3c5973e20f41",
     "file": "assets/frames/frame_06.png",
-    "file_sha256": "eb55c47450097700a6cdda72c4611fb7baf21b33b0d59263d2dca786aebcedc9",
+    "file_sha256": "fe0fe00efccdc4dd9accddf9ba0adf6b5cf21bf7342a1ffa44487c45485a7b54",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_06.png)"
   },
   {
     "name": "frame_07",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick glossy silver circular ring border with small light-blue ice crystals, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4007,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Chocolate: brown band with caramel drizzle and white pearls",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "f9c9a59b-8ff0-4704-8458-b7edb697bfd3",
-    "source": "art/images/frame_07.png",
-    "source_sha256": "06dcf2b3b792f0ad2c7cf48fda76b30adcbcb2b6f6a27805660ba4c4e44db2db",
+    "source": "art/images/frame_07_candy.png",
+    "source_sha256": "bcc1ddaa37f9c124f0dfecee298d7841e1c4298c3181328a98bb5b23784ce975",
     "file": "assets/frames/frame_07.png",
-    "file_sha256": "6631c3b293662552609578b133bf5fc8014f346e50e79943a8faa0ae712c7662",
+    "file_sha256": "bd327dd93daadb57dc1e95c66535a5919a43598f87bf305fbb2cfeb6f5953d49",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_07.png)"
   },
   {
     "name": "frame_08",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick glossy orange circular ring border with stylized friendly flames around the outer edge, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4008,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Gumdrops: teal jelly band with sugar dots, sugared gumdrops at the corners",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "7f71634b-f3d6-4600-95d0-2253e7f9508a",
-    "source": "art/images/frame_08.png",
-    "source_sha256": "1f86f05cf68165eb98136383c333bea5f415e9a090285fd45303e32f4f4de4b9",
+    "source": "art/images/frame_08_candy.png",
+    "source_sha256": "a6e4605dcd9574ef504e07bf159aad1197de2b016ad94399306e420bc7d4346c",
     "file": "assets/frames/frame_08.png",
-    "file_sha256": "e1c099fcaaf89d6ce3cd21b152ed1ebc5b043b75dc8ab7c010e7dc6bad36d782",
+    "file_sha256": "f8e0142aa45f83b2eded9f9467d656af577dd3c9f96a4689fc011a06754e1a77",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_08.png)"
   },
   {
     "name": "frame_09",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick glossy circular ring border with a smooth rainbow gradient of red, orange, yellow, green, blue and purple, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4009,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Rainbow belt: band of hard-edged candy colour blocks",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "a5a804af-f550-4684-ab66-0973598dff11",
-    "source": "art/images/frame_09.png",
-    "source_sha256": "7262411c48bf9836a534bdcf22767eac1bb3a345b218ebcc5dc186e19ba13bf5",
+    "source": "art/images/frame_09_candy.png",
+    "source_sha256": "801339afec752e241709a57e355f458e21175c79d1a4df72848bb6d9ad6e59d1",
     "file": "assets/frames/frame_09.png",
-    "file_sha256": "344d3d1f1bc64c5a783c636191be3082402250b4f2b65c712740dbe6f1fdf1a3",
+    "file_sha256": "96594690ea238377d482df9e1b3033c48ccf5e1d98f94fb7aba8d6c98c3e0942",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_09.png)"
   },
   {
     "name": "frame_10",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick glossy teal circular ring border with a row of small colorful square blocks (yellow, green, blue, purple) around it, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4010,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Sweetheart: red band with white hearts, pink bow on top",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "83f7860d-f652-42cf-a5b0-e5945545784c",
-    "source": "art/images/frame_10.png",
-    "source_sha256": "a3b4223c749e27f80d1809467a3fbf5dd4be17873bb7ca26a9aea7b3063a2856",
+    "source": "art/images/frame_10_candy.png",
+    "source_sha256": "84f7ef1144fa763fd2b4db4193a7d161b80101c2e8e2fb19cdd252373e6444b5",
     "file": "assets/frames/frame_10.png",
-    "file_sha256": "a3fe8112767ae6b0391bf03a6e1265ce11be2dac8a2e8f7bb9937bdb6de20381",
+    "file_sha256": "9c34cbe28770e4c6758a7414103ce1cd08cfea44f9245f373a5277577e304d5c",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_10.png)"
   },
   {
     "name": "frame_11",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: a thick glossy dark purple circular ring border with golden wings spreading out left and right and a small gem on top, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4011,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Cream frosting: piped scalloped edge with pastel dots, cherry on top",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "8806daad-a525-401d-b375-6ddd9b75aee6",
-    "source": "art/images/frame_11.png",
-    "source_sha256": "92f2ea0d86d21031a57f0915eaee33bad9794dcaeeb18f1ebe36dfa8dbb58c58",
+    "source": "art/images/frame_11_candy.png",
+    "source_sha256": "6c6a824146b765616aab393f360366357df22a76ff3b8e8188265ae07bd1e1b0",
     "file": "assets/frames/frame_11.png",
-    "file_sha256": "8a10b1f521f27e5341ac281fe4d21878a1fcfdfafa29a54195d6455e55cdbe2a",
+    "file_sha256": "0e25ad8912cc1f030b3ebaf64002d3c4116d08b03afc721c6c7931ce0c923540",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_11.png)"
   },
   {
     "name": "frame_12",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=ui)",
-    "workflow": "image_qwen_image_2_1_t2i",
-    "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A round avatar frame: an ornate royal golden circular ring border with a small jeweled crown on top and red and blue gems set into the ring, the inside of the ring completely empty, perfectly circular, centered, front view",
-    "style_prompt": "Glossy casual mobile game avatar frame, circular ring border only with a completely empty hollow center, chunky rounded shapes, soft highlights, gentle drop shadow, no face, no picture inside, no text, no logo, no watermark",
-    "seed": 4012,
-    "steps": 25,
-    "cfg": 1,
-    "use_reprompt": false,
-    "transparent_background": true,
+    "tool": "tools/gen_frames.py (drawn in code, no AI)",
+    "prompt": "Golden caramel: gold band with studs, diamond gems at the corners, round pink gems on top and sides",
+    "reference": "assets/ui/figma/ava_frame.png",
     "generated_size": [
-      512,
-      512
+      1024,
+      1024
     ],
-    "prompt_id": "68d79dbe-75b7-427d-96a4-95f19d0cb3e2",
-    "source": "art/images/frame_12.png",
-    "source_sha256": "b99d849b61ccefea3512ec599bef6825d67212f32a0b8d2f5e06fc24812a9630",
+    "source": "art/images/frame_12_candy.png",
+    "source_sha256": "455593d07692767aee5e31c4ffcf8717adcd48ed2ccffca2d8f0e5b8c0c01bb5",
     "file": "assets/frames/frame_12.png",
-    "file_sha256": "27ca7b63d9f9b48aba45005bda65ce974d6bbf26809c43978c840d0ce885d4a3",
+    "file_sha256": "94255946ffe71a0d42a6d17bd89888d17c426b4d74d45b5079200f897227c49d",
     "file_size": [
       256,
       256
-    ]
+    ],
+    "note": "Rounded square like the reference: corner radius 24/124, band 10/124 (frame_00: 8), flat 3-tone bevel lit from above; replaces the round AI ring (old source art/images/frame_12.png)"
   },
   {
     "manifest": "images",
     "name": "booster_hint",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type icon, style_prompt ta khoi 3D chat lieu keo)",
-    "workflow": "image_qwen_image_2_1_t2i",
+    "tool": "mcp comfyui edit_game_image (anh 1 booster_smash lam mau phong cach, anh 2 ban keo 3D lam mau noi dung)",
+    "workflow": "image_qwen_image_2_1_image_edit",
     "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A single casual mobile game booster icon: a chunky 3D light bulb made of candy, slightly tilted. The round bulb is glossy translucent lemon-yellow hard candy glowing warmly from inside, the short screw base is pink ribbed gummy candy, and three short rounded yellow candy light rays fan out above it. Centered with generous padding on a plain light background. No text, no numbers, no letters, no extra objects, no drop shadow on the ground.",
-    "style_prompt": "Soft 3D rendered casual mobile game item made of candy: chunky simplified rounded shapes with soft bevelled edges and thick volume, three-quarter perspective view, no outlines. Candy materials: glossy translucent hard candy with inner glow, sugar-coated gummy jelly, swirled lollipop, candy-cane stripes. Soft diffuse studio lighting, gentle ambient occlusion, soft specular highlights, bright cheerful saturated colors.",
-    "seed": 5101,
+    "prompt": "Redraw the light bulb from <image2> in exactly the art style of the lollipop hammer in <image1>. Thick bold dark outline (same thickness as <image1>) around the bulb, the base and each ray. Cel shading like <image1>: lemon-yellow bulb with a flat darker golden-orange shadow band along the right and bottom edge, a large curved white glossy highlight on the upper left plus a small white dot highlight. Pink candy screw base with three ridges, each ridge shaded with flat darker pink below and a white highlight stripe on top, like the pink lollipop in <image1>. Three short rounded yellow rays above the bulb, each with a darker side and a white highlight. No gradients, no glow, no 3D render, no shadow under the object. Single centered game icon, plain white background.",
+    "negative_prompt": "3d render, realistic, photorealistic, gradient, soft glow, blurry, glass refraction, drop shadow, thin outline, text, watermark",
+    "input_paths": [
+      "assets/ui/booster_smash.png",
+      "art/images/booster_hint_candy_ai.png"
+    ],
+    "seed": 7454738487258806629,
     "steps": 25,
     "cfg": 1,
     "use_reprompt": false,
@@ -1389,28 +1301,32 @@
       1024,
       1024
     ],
-    "prompt_id": "c31a8545-6193-41ee-a681-cb1177028a88",
-    "source": "art/images/booster_hint_candy_ai.png",
-    "source_sha256": "e813060dbd465cb12fb81931f85a082a23e8a530211016fa53aa4b2b2e33c2b9",
-    "reference": "art/concepts/concept_booster_candy_v1.png (bang duyet concept: cot 1 ban cu, cot 2-4 phuong an 1-3; nguoi dung chon phuong an 1)",
+    "prompt_id": "a67be2f7-1fbb-439f-80e7-860bc71f0931",
+    "source": "art/images/booster_hint_flat_ai.png",
+    "source_sha256": "5e78958083e17789d164e8ba83b7751c53b228516c910b708f44853c730a71ad",
+    "reference": "assets/ui/booster_smash.png (phong cach), art/images/booster_hint_candy_ai.png (noi dung)",
     "file": "assets/ui/booster_hint.png",
-    "file_sha256": "194a62f37113b50257de889505a6113feff928c0e8d7b63000697daad9892025",
+    "file_sha256": "65ec09ab46965d2f1bbf4cf5b84613a98f4bc8d3762a03a5310c4b98f24f01c6",
     "file_size": [
       256,
       256
     ],
-    "note": "2026-11-04: ve lai theo phong cach 3D chat lieu keo (khoi tron day, goc 3/4, khong vien) do nguoi dung chon; bong keo chanh trong, de keo deo hong co ren, ba tia keo; hai phuong an bi loai: dua keo mut ngoi sao, kinh lup khung keo xoan; MCP tu noi them cau mo ta icon va 'Keep all desired foreground elements separate...' vao prompt; tools/fit_icon.gd --size=256 --solid=240; ban truoc: art/images/booster_hint_toy_ai.png (do choi nhua), art/images/booster_hint_ai.png (sticker)"
+    "note": "2026-11-04 (lan 3): ve lai phang theo phong cach booster_smash (sticker vien dam, to khoi phang 2-3 tong, mang sang trang); giu bo cuc bong keo chanh, de keo hong co ren, ba tia; lan thu dau (khong ta mang toi, vien day) ra vien mong, bong den tron tron nen bo; tools/fit_icon.gd --size=256 (khong can --solid); ban truoc: art/images/booster_hint_candy_ai.png (keo 3D), art/images/booster_hint_toy_ai.png (do choi nhua), art/images/booster_hint_ai.png (sticker)"
   },
   {
     "manifest": "images",
     "name": "booster_move",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type icon, style_prompt ta khoi 3D chat lieu keo)",
-    "workflow": "image_qwen_image_2_1_t2i",
+    "tool": "mcp comfyui edit_game_image (anh 1 booster_smash lam mau phong cach, anh 2 ban keo 3D lam mau noi dung)",
+    "workflow": "image_qwen_image_2_1_image_edit",
     "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A single casual mobile game booster icon: the chunky 3D symbol \"+3\" made of glossy translucent bright green gummy jelly candy with a light sparkling sugar coating, very thick puffy rounded shapes, the plus sign slightly smaller than the number 3 and placed to its left, three-quarter perspective so the thickness is visible. Centered with generous padding on a plain light background. Only the symbol +3, no other text, no other letters or numbers, no extra objects, no drop shadow on the ground.",
-    "style_prompt": "Soft 3D rendered casual mobile game item made of candy: chunky simplified rounded shapes with soft bevelled edges and thick volume, three-quarter perspective view, no outlines. Candy materials: glossy translucent hard candy with inner glow, sugar-coated gummy jelly, swirled lollipop, candy-cane stripes. Soft diffuse studio lighting, gentle ambient occlusion, soft specular highlights, bright cheerful saturated colors.",
-    "seed": 5202,
+    "prompt": "Redraw the subject of <image2> (the text \"+3\": a plus sign and the number 3 made of glossy lime-green gummy candy with lighter green swirl stripes) in exactly the art style of <image1>. Match <image1>'s style: flat cartoon sticker illustration, bold dark outline around every shape, simple cel shading with two or three flat tones per color, a few crisp white glossy highlight shapes, swirl stripes drawn as flat bands like the lollipop in <image1>, no gradients, no sugar grain texture, no realistic jelly or 3D render, no shadow under the object. Keep the same composition and colors as <image2>: a plus sign on the left and a big number 3 on the right, both lime green. Single centered game icon, plain white background.",
+    "negative_prompt": "3d render, realistic, photorealistic, gradient, soft glow, blurry, sugar texture, drop shadow, watermark, extra text",
+    "input_paths": [
+      "assets/ui/booster_smash.png",
+      "art/images/booster_move_candy_ai.png"
+    ],
+    "seed": 4283895233710543680,
     "steps": 25,
     "cfg": 1,
     "use_reprompt": false,
@@ -1419,17 +1335,17 @@
       1024,
       1024
     ],
-    "prompt_id": "944b236a-5a71-4cf3-9213-64a9876233f3",
-    "source": "art/images/booster_move_candy_ai.png",
-    "source_sha256": "860be30537cd2822e855561290ce265a288b2c755c5f938ee1907a3078510995",
-    "reference": "art/concepts/concept_booster_candy_v1.png (bang duyet concept: cot 1 ban cu, cot 2-4 phuong an 1-3; nguoi dung chon phuong an 2)",
+    "prompt_id": "2679effd-9d7a-434c-b53a-744805c279ae",
+    "source": "art/images/booster_move_flat_ai.png",
+    "source_sha256": "dbc3d0e5c26f4142fb0b8a19b4adf627ead184e5449e218e805f5872fc0e87b9",
+    "reference": "assets/ui/booster_smash.png (phong cach), art/images/booster_move_candy_ai.png (noi dung)",
     "file": "assets/ui/booster_move.png",
-    "file_sha256": "f2d21ef4110e19805927e9e2b65beb816d6f511b6ad85c1ccd0ffaca44bfec15",
+    "file_sha256": "7b567b99d1c0edb8ba2c4c65c06d1a59728e88b4565a6c646e6bf34fa20eb464",
     "file_size": [
       256,
       256
     ],
-    "note": "2026-11-04: ve lai theo phong cach 3D chat lieu keo (khoi tron day, goc 3/4, khong vien) do nguoi dung chon; chu +3 keo deo xanh la trong phu duong, so 3 co vet xoan xanh nhat; luc dau chon phuong an 1 (gay keo soc uon thanh mui ten vong cung, dau cong keo deo vang) roi doi sang +3; phuong an con lai bi loai: dau chan keo deo hong; model van ve vet bong mo duoi so 3 du prompt cam; than keo ra alpha 245-254 nen tools/fit_icon.gd --size=256 --solid=240; MCP tu noi them cau mo ta icon va 'Keep all desired foreground elements separate...' vao prompt; ban truoc: art/images/booster_move_toy_ai.png (do choi nhua), art/images/booster_move_ai.png (sticker)"
+    "note": "2026-11-04 (lan 3): ve lai phang theo phong cach booster_smash (sticker vien dam xanh la dam, to khoi phang, vet xoan thanh dai phang nhu keo mut); giu chu +3 keo deo xanh la; het vet bong mo duoi so 3 va hat duong; tools/fit_icon.gd --size=256 (khong can --solid); ban truoc: art/images/booster_move_candy_ai.png (keo 3D), art/images/booster_move_toy_ai.png (do choi nhua), art/images/booster_move_ai.png (sticker)"
   },
   {
     "manifest": "images",

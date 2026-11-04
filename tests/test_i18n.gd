@@ -21,7 +21,7 @@ const REQUIRED: Array[String] = [
 ]
 const MECHS: Array[String] = ["stone", "ice", "chain", "layer", "fog", "pulse"]
 const BOOSTERS: Array[String] = ["hint", "move", "smash"]
-const NOTIF_KINDS: Array[String] = ["daily_gift", "lives_full", "offer_open", "challenge", "come_back"]
+const NOTIF_KINDS: Array[String] = ["daily_gift", "lives_full", "offer_open", "challenge"]
 const PACKS: Array[String] = ["starter_pack", "level_pack", "rescue_pack", "remove_ads"]
 
 
@@ -116,6 +116,9 @@ func test_font_coverage(t: T) -> void:
 	t.eq(fonts.size(), 4, "Baloo có 3 font fallback")
 	var missing := {}
 	for k in d.keys:
+		# notif_ texts are shown by Android with the system font (the evening ones start with an emoji)
+		if str(k).begins_with("notif_"):
+			continue
 		for lang in GameScript.LANGS:
 			var text: String = d.keys[k][lang]
 			for i in text.length():
@@ -238,6 +241,11 @@ func test_config_coverage(t: T) -> void:
 	for kind in NOTIF_KINDS:
 		t.ok(d.keys.has("notif_%s_title" % kind), "notif_%s_title" % kind)
 		t.ok(d.keys.has("notif_%s_body" % kind), "notif_%s_body" % kind)
+	for i in GameScript.EVENING_ICONS.size():
+		t.ok(d.keys.has("notif_evening_%02d_title" % (i + 1)), "notif_evening_%02d_title" % (i + 1))
+		t.ok(d.keys.has("notif_evening_%02d_body" % (i + 1)), "notif_evening_%02d_body" % (i + 1))
+		t.ok(ResourceLoader.exists(GameScript.EVENING_ICONS[i]), "icon " + GameScript.EVENING_ICONS[i])
+	t.ok(not d.keys.has("notif_evening_%02d_title" % (GameScript.EVENING_ICONS.size() + 1)), "mỗi nội dung buổi tối có icon")
 	# khoá "Còn N khối" của popup hết MOVES có bản số ít
 	t.ok(d.keys.has("rescue_remaining_one"), "rescue_remaining_one")
 
