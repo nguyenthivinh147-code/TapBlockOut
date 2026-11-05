@@ -636,11 +636,40 @@
     "source": "art/images/art_lose.png",
     "source_sha256": "38f8319ea0f235f55d6dbbc42c0e029d59888b257d556519aeb3c9ae036f052e",
     "file": "assets/ui/art_lose.png",
-    "file_sha256": "94d458048539056ef20034ad078d5b271c4811c45fa5105684c18e15068977cd",
+    "file_sha256": "7c9bded6c0f3d4310b62460d717ec18762590696e6052cc1ab7938b921dfa1c5",
     "file_size": [
       512,
       512
-    ]
+    ],
+    "note": "Da bo giot nuoc mat (tach ra art_lose_tear): tools/split_tear.gd, chay sau resize_images.py art_lose"
+  },
+  {
+    "manifest": "images",
+    "name": "art_lose_tear",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (xoa giot nuoc mat cua art_lose) + tools/split_tear.gd",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Remove only the light-blue teardrop that hangs under the character's right eye (the one on the right side of the image, with a small drip below it). Where the tear was, show the complete dark navy eye with its rounded bottom edge, and the soft purple-blue blush patch on the cheek, exactly matching the surrounding colors. Keep everything else identical: same character, same pose, same position and size, same small sweat drop on the forehead, same broken puzzle piece, same lighting, same transparent background.",
+    "seed": 2024,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "f1799983-45ef-48f9-9fff-19c91c554736",
+    "source": "art/images/art_lose_notear.png",
+    "source_sha256": "8924e8a27de19b8cdc2d8a97fcfbcafb8f045b14e82f752d408012946d60f064",
+    "reference": "art/images/art_lose.png",
+    "file": "assets/ui/art_lose_tear.png",
+    "file_sha256": "a5f24354b6d7139170e31e1f73b7305e983e1dc73f888c2d45b97959496a73fe",
+    "file_size": [
+      32,
+      35
+    ],
+    "note": "Giot nuoc mat cat tu art_lose goc (mau khong doi); ban AI chi dung lam nen de va cho art_lose va tach alpha vien. Vi tri trong anh 512: (310, 291)"
   },
   {
     "manifest": "images",
@@ -2589,6 +2618,36 @@
       128
     ],
     "note": "2026-11-04 (lan 2): nguoi dung yeu cau icon dang khoi 3D, mau gradient loang, khong mot mau; thay ban khoi vuong xanh seed 7101 (nguon cu art/images/lb_piece_crystal.png). Chon seed 7201 trong 2 ban (7201, 7203): dai mau ro, vien duong mong, doc duoc o chip 40 px; ban 7203 duong cat day, mau loang duc, thu nho thanh lam tam. Upload ca ban ref 768x1344 loi HTTP/2 PROTOCOL_ERROR nhieu lan nen dung vung cat. custom_size 1024x1024; tools/fit_icon.gd --size=128 --margin=0.04"
+  },
+  {
+    "manifest": "images",
+    "name": "lb_banner",
+    "status": "used",
+    "tool": "mcp comfyui start_game_image (asset_type=background, style=3d_render)",
+    "workflow": "image_qwen_image_2_1_t2i",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Wide horizontal header banner background for a mobile puzzle game leaderboard. A candy award stage: pastel pink and blue striped candy curtains drawn open on the left and right edges, with lollipops, swirl candies and glossy jelly cubes piled at the bottom corners. The center is an empty softly lit podium glow with radiating light rays and sparkles, reserved for a trophy badge. Soft blue background. No text, no letters, no logos, no characters.",
+    "style_prompt": "glossy chunky 3D candy materials, soft studio lighting, casual mobile game art, pastel palette on a medium royal blue base, clean shapes, symmetric composition",
+    "negative_prompt": "text, letters, watermark, logo, people, faces, frame, border, blurry",
+    "seed": 5110614075794495000,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": false,
+    "generated_size": [
+      1536,
+      448
+    ],
+    "prompt_id": "269861b0-646c-4818-9e3d-06916968835f",
+    "source": "art/images/lb_banner_c.png",
+    "source_sha256": "96b216754807faa01d4b41a32fe7ba53a7d05ccfc323ecade6624ed7c594da7f",
+    "file": "assets/ui/lb_banner.png",
+    "file_sha256": "7e7f5a7e0262b01aeb94f0a909db27d6950e1415c1c43badfa6d67b3c2886b92",
+    "file_size": [
+      1536,
+      448
+    ],
+    "note": "2026-11-05: banner man Leaderboard theo wireframe. Ba phuong an cung luot: a (doi kem, may pastel, seed 6534401796708699771, art/images/lb_banner_a.png), b (vuong quoc keo ban dem, seed 1682564150483287921, art/images/lb_banner_b.png), c (san khau keo). Chon c vi nen xanh hop mau man va bac sang o giua cho huy hieu giai. Bo kenh alpha (ComfyUI tra alpha 249-255) bang Image.convert(FORMAT_RGB8)."
   },
   {
     "manifest": "audio",

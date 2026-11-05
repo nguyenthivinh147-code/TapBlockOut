@@ -17,6 +17,7 @@ static func defaults() -> Dictionary:
 		"daily": {"idx": 0, "claim_day": -1, "ad_day": -1},
 		"shop": {"day": -1, "videos": 0},
 		"cos": {"owned": ["avatar_00", "frame_00"], "avatar": "avatar_00", "frame": "frame_00"},
+		"profile": {"name": ""},
 		"ads": {"last_inter_run": -99, "last_inter_at": 0, "last_rv_at": 0, "inter_today": 0, "inter_day": -1},
 		"ad_pend": {}, "ad_credit": {},
 		"offers": {"last_run": -999, "items": {}},
@@ -30,6 +31,7 @@ static func defaults() -> Dictionary:
 			"shown": false, "rotation": 0,
 		},
 		"challenge": {"day": -1, "won": false},
+		"road_trip": {"level": 1, "boxes": 0, "guide": false},
 		"lb": {
 			"joined": false, "points": 0, "league": 0, "seed": 0, "day": -1, "seen_rank": 0,
 			"bots": [], "risen": [], "pending": [],

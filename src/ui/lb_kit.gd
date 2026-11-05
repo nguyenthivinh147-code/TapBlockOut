@@ -281,6 +281,18 @@ static func fmt_int(n: int) -> String:
 	return ("-" if neg else "") + digits + out
 
 
+## Player counts: 48000 -> "48K", 1600 -> "1.6K" ("1,6K" where the group separator is a dot), 400 -> "400".
+static func fmt_k(n: int) -> String:
+	if n < 1000:
+		return str(n)
+	var tenths := roundi(n / 100.0)
+	if tenths >= 100 or tenths % 10 == 0:
+		return "%dK" % roundi(n / 1000.0)
+	var dec := "," if ThemeKit.thousands_sep() == "." else "."
+	@warning_ignore("integer_division")
+	return "%d%s%dK" % [tenths / 10, dec, tenths % 10]
+
+
 ## 3725 -> "01:02:05".
 static func fmt_clock(sec: int) -> String:
 	sec = maxi(sec, 0)
@@ -362,8 +374,8 @@ static func card(parent: Control, row: Dictionary, rect: Rect2, sub: String = ""
 
 
 ## UILeaderboardUserCard.SetupCard on a built PlayerLeaderboardItem: rank (medal for 1-3), avatar and frame,
-## name (+ an optional second line), flag code, points; BG and point pill by rank, arrow and green BG on my row.
-## The Gift (weekly top-5 reward) is hidden: the game has no position rewards.
+## name (+ an optional second line), points; BG and point pill by rank, arrow and green BG on my row.
+## The Gift (weekly top-5 reward) is hidden: the game has no position rewards. No country (wireframe 2026-11-05).
 static func fill_card(root: Control, row: Dictionary, sub: String = "") -> void:
 	var rank := int(row.get("rank", 0))
 	var me := bool(row.get("me", false))
@@ -386,7 +398,6 @@ static func fill_card(root: Control, row: Dictionary, sub: String = "") -> void:
 	(UnityUI.image_of(root.get_node("PointPanel/RankPointIcon"))).call("set_texture", ThemeKit.icon(PIECE_ICON))
 	UnityUI.set_text(root.get_node("PointPanel/PointText") as Label, fmt_int(int(row.get("points", 0))))
 	_sub_line(root, name_l, sub)
-	_flag(root, str(row.get("flag", "")))
 
 
 ## Second line under the name (rank change, league): a copy of PlayerName at 30 units, the name moves up.
@@ -408,25 +419,8 @@ static func _sub_line(root: Control, name_l: Label, sub: String) -> void:
 	s.txt.fs = 30.0
 	s.txt.auto = [18.0, 30.0]
 	s.r = [0.5, 0.5, 0.5, 0.5, -181.4, -30.0, 295.4, 44.0, 0.0, 0.5]
-	UnityKit.add(root, s)
-
-
-## Country code next to the name, in the slot of the hidden Gift.
-static func _flag(root: Control, code: String) -> void:
-	var old := root.get_node_or_null("FlagText")
-	if old != null:
-		root.remove_child(old)
-		old.queue_free()
-	if code == "":
-		return
-	var s := UnityKit.spec(ITEM, "PlayerName")
-	s.n = "FlagText"
-	s.txt.s = code
-	s.txt.fs = 32.0
-	s.txt.auto = [18.0, 32.0]
-	s.txt.h = 2
-	s.r = [0.5, 0.5, 0.5, 0.5, 150.0, 0.0, 110.0, 50.0, 0.5, 0.5]
-	UnityKit.add(root, s)
+	# Data, not layout: never saved into a screen's scene (tools/bake_screen.gd).
+	UnityKit.add(root, s).root.set_meta("u_rt", true)
 
 
 ## Reward prefab items (icon + amount) for a game reward {coins, items, inf_min} into a layout parent:

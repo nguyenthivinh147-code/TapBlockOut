@@ -27,7 +27,9 @@ func test_defaults(t: T) -> void:
 	Config.reset()
 	t.eq(Config.ECON.start_coins, 1000, "start")
 	t.eq(Config.ECON.win_coins, 40, "win")
-	t.eq(Config.ECON.win_move_coins, 1, "gold mỗi MOVES thừa")
+	t.eq(Config.ECON.win_move_coins, 10, "gold mỗi MOVES thừa")
+	t.eq([Config.CONTENT.slack_easy, Config.CONTENT.slack_early, Config.CONTENT.slack_normal, Config.CONTENT.slack_hard],
+		[5, 3, 4, 3], "dư MOVES L1-3 / L4-13 / thường / HARD")
 	t.eq(Config.ECON.booster_price.hint, 900, "hint")
 	t.eq(Config.ECON.booster_price.move, 1900, "move")
 	t.eq(Config.ECON.booster_price.smash, 2900, "smash")

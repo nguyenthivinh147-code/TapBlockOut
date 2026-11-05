@@ -17,8 +17,9 @@ const TesterMenu := preload("res://src/ui/tester_menu.gd")
 const LevelCurtain := preload("res://src/ui/level_curtain.gd")
 const HubNav := preload("res://src/ui/hub_nav.gd")
 const HubTop := preload("res://src/ui/hub_top.gd")
+const TapFx := preload("res://src/ui/tap_fx.gd")
 ## Hub screens left to right, as on the bottom bar: going between two of them slides the screens (_slide_screens).
-const HUB_SCREENS := ["shop", "home", "leaderboard"]
+const HUB_SCREENS := ["shop", "home", "road_trip"]
 
 var current_screen: Node = null
 var current_name: String = ""
@@ -37,6 +38,9 @@ var _slide_block: Control = null
 
 func _ready() -> void:
 	theme = ThemeKit.make_theme()
+	var tap_fx := TapFx.new()
+	tap_fx.name = "TapFx"
+	add_child(tap_fx)
 	_boot()
 
 
@@ -72,7 +76,7 @@ func _chain_autoshow() -> void:
 		_popup_then(CHAIN_OFFER, {}, false)
 
 
-## screen: "home", "level", "no_lives", "profile", "shop", "challenge", "leaderboard".
+## screen: "home", "level", "no_lives", "profile", "shop", "challenge", "leaderboard", "road_trip".
 func go(screen: String, args: Dictionary = {}) -> void:
 	var path := "res://scenes/%s.tscn" % screen
 	if not ResourceLoader.exists(path):
@@ -88,6 +92,7 @@ func go(screen: String, args: Dictionary = {}) -> void:
 			current_screen.queue_free()
 		current_screen = null
 	current_name = screen
+	# The Road Trip screen sets it itself while its level is open.
 	Game.set_in_level(screen == "level" or screen == "challenge")
 	# The level starts its own music, also when the Daily Challenge screen hosts it; the loading screen has none.
 	if screen != "level" and screen != "splash":
@@ -265,7 +270,7 @@ func _on_screen_closed(result: Variant, screen: String, node: Node) -> void:
 				go_curtain("level")
 			else:
 				go("home")
-		"shop", "leaderboard":
+		"shop", "leaderboard", "road_trip":
 			if action == "" or action == "home":
 				go("home")
 			else:
@@ -295,6 +300,9 @@ func _home_action(action: String, res: Dictionary) -> void:
 		"ranking":
 			if Game.lb_open():
 				go("leaderboard")
+		"road_trip":
+			if bool(Game.road_trip_view().get("open", false)):
+				go("road_trip")
 		"settings":
 			_popup_then(SETTINGS, {}, true)
 		"preview":

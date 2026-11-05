@@ -13,7 +13,7 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
   - `_anims.json`: clip mặc định của Animator.
   - `_assets.json`: ScriptableObject nhỏ, ví dụ `RewardItemSO`, `VersionDataSO`.
 - Texture copy sang `assets/ui/cc/`. File `.import` mang `process/size_limit` bằng cỡ tối đa Android mà Unity đặt (ví dụ `light1.png` 256), nên trên máy thật ảnh có cùng độ phân giải với Unity.
-- Chạy lại: `node tools/unity_ui_export.mjs`, rồi để editor tự import (hoặc `--import` khi editor đóng). Không sửa tay file trong `data/ui_unity/` và `assets/ui/cc/`.
+- Chạy lại: `node tools/unity_ui_export.mjs`, rồi `tools/godot.sh --headless --path . -s res://tools/compress_textures.gd` (ảnh lớn sang WebP lossy, kế hoạch mục 1.3), rồi để editor tự import (hoặc `--import` khi editor đóng). Không sửa tay file trong `data/ui_unity/` và `assets/ui/cc/`.
 - Mỗi layout được bake thành scene node `scenes/unity/<Prefab>.tscn` (`tools/bake_unity_ui.gd`); game dựng từ scene này, không từ JSON. Bake lại sau mỗi lần xuất (ghi đè chỉnh sửa trong editor). Xem `docs/UI_NODES.md`.
 - Xem cây một prefab: `node tools/unity_ui_tree.mjs PopupOkLayer --all` in đường dẫn UView, anchor, kích thước, sprite, chữ, script và field.
 - Bảng sprite có nhãn: `tools/godot.sh --path . --resolution 1600x1600 -s res://tools/unity_sprite_sheet.gd -- --filter=Maincenter`, ảnh ra `tests/shots/sprites.png`.
@@ -27,7 +27,7 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
 ## Builder (`src/ui/unity_ui.gd`)
 
 - Image (`u_image.gd`): Simple, Sliced (viền theo ppu và `pixelsPerUnitMultiplier`, tự co khi rect nhỏ hơn viền), Tiled, Filled ngang/dọc, preserveAspect theo pivot. Image tắt component thì không vẽ, con vẫn hiện.
-- TextMeshPro: Label dùng `assets/fonts/baloo.res` với shader `tmp_text.gdshader`. Shader chép công thức face, outline, underlay của TMP Distance Field theo material trong `_materials.json`. Builder còn mô phỏng:
+- TextMeshPro: Label dùng `assets/fonts/baloo.res` (`tools/gen_baloo_font.gd`: atlas TMP chỉ giữ glyph dùng, fallback Baloo 2, Jua và M PLUS subset theo kế hoạch mục 1.3) với shader `tmp_text.gdshader`. Shader chép công thức face, outline, underlay của TMP Distance Field theo material trong `_materials.json`. Builder còn mô phỏng:
   - `normalSpacingOffset` -2, `characterSpacing`, `lineSpacing`;
   - auto size (`fit_text`), chữ hoa (`fontStyle` 16);
   - căn lề, margin, overflow tràn theo hướng căn.
@@ -61,6 +61,8 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
   - Anim thêm của game, không có trong prefab (`src/ui/ui_motion.gd`, node con `Motion` có meta `u_rt`). `adopt` tự gắn theo sprite node vẽ, không gắn khi bake:
     - Tia sáng, quầng sáng (`fx_1`, `light1`) phập phồng: scale 1 → 1.1 → 1, chu kỳ 1.4 s, sine. Vẫn xoay theo `SimpleUIRotator`.
     - Icon video ads (TV `Resources_moved_UI_Maincenter:UI_Maincenter_5`, clapper `Resources_UI_Maincenter:UI_Maincenter_7`) nhảy rung theo nhịp 2 s: nhún, bật lên 15% chiều cao, co giãn khi tiếp đất, lắc ±12° ba lần rồi đứng yên. Lần đầu sau 0.5 s, chờ popup hiện xong. `Resources_moved_UI_Maincenter:UI_Maincenter_7` là đồng hồ, không nhảy.
+    - Icon `art_lose` trong khung thẻ thua (`lose_card` thay tranh `Popup_Lose` của prefab, tự gắn `UiMotion.SOB`) nấc như đang khóc theo nhịp 1.8 s: 0.9 s đầu kéo dài lên trên 3 lần (cao thêm tới 6%, hẹp lại một nửa mức đó, mỗi lần yếu đi 15%), phần còn lại đứng yên. Chân (80% chiều cao icon, y 408 của ảnh 512) giữ nguyên chỗ nên icon không dời, không co xuống, không nghiêng. Lần đầu sau 0.3 s.
+    - Giọt nước mắt là node `Tear` riêng (ảnh `art_lose_tear`, con của icon nên nhấp nhô theo; `tools/split_tear.gd` tách nó khỏi `art_lose`), `UiMotion.TEAR` cùng nhịp với tiếng nấc: ứa ra dưới mi mắt (0.35 s, từ 30% cỡ, hiện dần), đọng tới 0.55 s, chảy xuống má 2.2 lần chiều cao giọt (nhanh dần, dài ra tới 18%), mờ dần từ 1.3 s, tắt hẳn ở 1.55 s, ẩn tới tiếng nấc sau. Motion này giữ alpha của node.
     - Motion cộng lên vị trí, scale, góc của chính node. Giá trị do nơi khác ghi (layout, xoay, reveal, nhún nút) thành gốc mới nên không trôi. Node ẩn thì dừng và trả về gốc.
   - Đóng popup thì ẩn ngay, như `HideLastStackLayer`.
 - SafeAreaUIAdjuster: anchor theo `DisplayServer.get_display_safe_area()`.

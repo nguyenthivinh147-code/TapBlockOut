@@ -14,3 +14,4 @@ android_config.json
 android/.build_version
 android_config.json.import
 reference/horus/
+tools/node/node_modules/

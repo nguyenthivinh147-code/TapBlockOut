@@ -45,6 +45,9 @@ Tạo ngày 2026-11-01, đối chiếu lại với thư mục thực tế cùng 
 - Sự kiện analytics và tham số: chữ thường, `snake_case`, giá trị phẳng.
 - Sub-agent **không chạy lệnh git ghi** (`add`, `commit`, `reset`, `checkout`, `stash`). Orchestrator giữ git.
 - Ranh giới file: chỉ sửa file trong Allowed Files. File `.uid` và `.import` do Godot sinh cho file của mình không tính là vi phạm. Thiếu API ở module khác thì báo lại, không sửa hộ.
+- Ảnh PNG trong `assets/` từ 256×256 điểm ảnh trở lên (tính sau `process/size_limit`) import dạng WebP lossy (`compress/mode=1`, `compress/lossy_quality=0.9`) để giảm dung lượng game, nếu lossy nhỏ hơn lossless ít nhất 25%. Icon nhỏ hơn và ảnh màu phẳng (pattern, khung trơn) giữ lossless cho nét sắc. Thêm hoặc xuất lại ảnh thì chạy `tools/godot.sh --headless --path . -s res://tools/compress_textures.gd` rồi import lại; thêm `-- --check` thì không sửa gì, thoát 1 nếu còn file chưa đặt.
+- Boot splash `assets/ui/boot_splash.png` phải là PNG: Godot nạp nó trước khi có bộ đọc WebP/JPG, sai định dạng thì hiện splash mặc định. File được đóng nguyên vào gói nên `.import` để `importer="skip"`. Đổi ảnh thì chạy `npm ci --prefix tools/node` rồi `node tools/node/png_shrink.mjs --drop-bits=2 assets/ui/boot_splash.png` (làm tròn mỗi kênh màu về bội số của 4, sai lệch tối đa ±2 mức, không thấy dải màu).
+- Font fallback Jua (tiếng Hàn) và M PLUS Rounded (tiếng Nhật) là bản subset trong `art/fonts/subset/`: chữ có trong `i18n/`, `scenes/`, `data/`, `src/`, cộng đủ kana, jamo, dấu câu CJK và các chữ Hán mà autohinter FreeType dùng để đo (thiếu chúng thì nét chữ Nhật lệch so với font đầy đủ). Thêm hoặc sửa text tiếng Hàn, Nhật thì chạy `node tools/node/subset_fonts.mjs` rồi `tools/godot.sh --headless --path . -s res://tools/gen_baloo_font.gd`; `tests/test_shipped_assets.gd` báo lỗi khi quên. Tên người chơi gõ chữ ngoài bộ subset thì dùng font hệ thống.
 
 ### 1.4 Lệnh dùng chung
 
@@ -78,12 +81,14 @@ src/config.gd
 src/core/      level_data.gd  board_state.gd  solver.gd  level_generator.gd  silhouette.gd  motifs.gd  difficulty_curve.gd
 src/meta/      save_schema.gd  save_store.gd  clock.gd  wallet.gd  lives.gd  unlocks.gd
                rescue_flow.gd  daily_calendar.gd  cosmetics.gd  shop_videos.gd
-               ad_pacing.gd  offers.gd  notif_plan.gd  leaderboard.gd
+               ad_pacing.gd  offers.gd  notif_plan.gd  leaderboard.gd  road_trip.gd
+               nickname.gd  name_filter.gd
 src/platform/  platform.gd (autoload Platform)  mock_*.gd  android_*.gd
 src/game/      game.gd (autoload Game)  sfx.gd (autoload Sfx)
 src/ui/        theme_kit.gd  ...script màn hình...
 scenes/        main.tscn  board_view.tscn  ...  unity/<Prefab>.tscn (layout Unity đã bake)
 data/levels/   level_0001.json ...
+data/road_trip/ rt_0001.json ... rt_0400.json (Road Trip, nhập bằng tools/import_road_trip.gd)
 i18n/strings.csv
 assets/        hình, âm thanh dùng trong game
 art/           bản gốc và manifest.json, có .gdignore
@@ -115,6 +120,7 @@ tests/  tools/  reference/horus/  plans/
 - Cạnh ứng với màu: `up`, `left`, `right`, `down`.
 - `ice`: 1 nghĩa là phải chạm 1 lần để nứt rồi mới đi được. `chained_by`: id khối chìa. `inner_color`: lớp trong. `fog`: chỉ làm mờ màu.
 - `moves = min_taps + dư`. Dư theo `design.md` mục 3, tính trên số khối.
+- Level nhiều cổng (Road Trip, `data/road_trip/rt_NNNN.json`, `design.md` mục 7 "Road Trip"): khối có thêm `"dir"` (`up` | `left` | `right` | `down`), khi đó `color` là màu cổng trong `LevelData.GATE_COLORS` (12 màu) và hướng theo `dir`; level có `"gates": {"up": [["red", 0, 7], ["teal", 7, 14]], ...}` (màu, từ ô, tới ô dọc cạnh, phủ hết cạnh, mỗi màu một cổng) để vẽ khung. `moves` lấy thẳng `StepLimit`, không tính lại theo dư.
 
 ### 1.7 Interface `BoardState` (`src/core/board_state.gd`)
 
@@ -155,11 +161,13 @@ Mọi `tap` hợp lệ giảm 1 MOVES, kể cả `crack`, `chained`, `blocked`, 
   "daily": {"idx": 0, "claim_day": -1, "ad_day": -1},
   "shop": {"day": -1, "videos": 0},
   "cos": {"owned": ["avatar_00", "frame_00"], "avatar": "avatar_00", "frame": "frame_00"},
+  "profile": {"name": ""},  # biệt danh, "" là chưa đặt (design.md mục 5 "Biệt danh"), src/meta/nickname.gd
   "ads": {"last_inter_run": -99, "last_inter_at": 0, "last_rv_at": 0, "inter_today": 0, "inter_day": -1},
   "ad_pend": {}, "ad_credit": {},
   "offers": {"last_run": -999, "items": {}},
   "buys": [], "no_ads": false,
   "challenge": {"day": -1, "won": false},
+  "road_trip": {"level": 1, "boxes": 0, "guide": false},  # Road Trip (design.md mục 7), src/meta/road_trip.gd
   "lb": {"joined": false, "points": 0, "league": 0, "seed": 0, "day": -1, "seen_rank": 0,
          "bots": [], "risen": [], "pending": []},  # Leaderboard (design.md mục 7), src/meta/leaderboard.gd
   "notify": {"ignored": 0, "plan": [], "asked": false, "hours": []},
@@ -251,6 +259,8 @@ func daily_claim_next() -> Dictionary
 func cos_buy(id: String) -> bool
 func cos_unlock_video(id: String) -> bool
 func cos_equip(id: String) -> bool
+func profile_name() -> String       # biệt danh, "" là chưa đặt
+func set_profile_name(raw: String) -> String  # "" là đã lưu, hoặc "length" | "chars" | "banned"
 func shop_watch_video() -> bool
 func shop_catalog() -> Array        # gói gold theo giá sale hôm nay
 func buy_sku(sku: String) -> Dictionary
@@ -260,9 +270,16 @@ func refill_gold() -> bool
 func refill_video() -> bool
 func challenge_view() -> Dictionary
 func start_challenge() -> Dictionary
+# Road Trip (design.md mục 7 "Road Trip"): attempt có road_trip = true, thắng/thua qua on_level_won / on_level_lost
+func road_trip_view() -> Dictionary  # {open, unlock_level, level, done, levels, progress, next_box, prev_box, boxes, guide, tier}
+func start_road_trip() -> Dictionary
+func road_trip_revive_view(attempt: Dictionary) -> Dictionary  # {available, moves, left}
+func road_trip_revive(attempt: Dictionary) -> bool  # coroutine: video rt_revive, +revive_moves bước
+func road_trip_mark_guide() -> void
+func road_trip_leave_win(rt_level: int) -> void  # coroutine: interstitial result_exit, cùng luật thẻ thắng
 func set_setting(key: String, value: Variant) -> void
 # menu tester, chỉ khi Config.account_tool() (bản debug); không log earn/spend
-func tester_edit(edits: Dictionary) -> bool  # {coins?, level?, inv?: {hint, move, smash}}
+func tester_edit(edits: Dictionary) -> bool  # {coins?, level?, inv?: {hint, move, smash}, rt_level?}
 func tester_wipe() -> bool          # coroutine: xoá file lưu, Platform.wipe(), boot lại như lần cài đầu
 ```
 
@@ -271,7 +288,7 @@ func tester_wipe() -> bool          # coroutine: xoá file lưu, Platform.wipe()
 `scenes/main.tscn` (`src/ui/main.gd`) giữ một màn hiện tại và một lớp popup:
 
 ```gdscript
-func go(screen: String, args: Dictionary = {}) -> void  # "home", "level", "no_lives", "profile", "shop", "challenge"
+func go(screen: String, args: Dictionary = {}) -> void  # "home", "level", "no_lives", "profile", "shop", "challenge", "leaderboard", "road_trip"
 func open_popup(scene_path: String, args: Dictionary = {}) -> Node
 ```
 
@@ -352,7 +369,7 @@ Phase 9–10 làm tiếp sau mốc demo, ẩn sau preset `Android Release`, nên
 
 - [x] **Task 0.3: Môi trường xuất Android**
   - **Allowed Files:** `export_presets.cfg`, `tools/export_apk.sh`; ngoài repo: `~/.local/share/godot/export_templates/4.7.2.stable/`, `~/.local/share/godot/keystores/debug.keystore`, editor settings của Godot, JDK trong `~/.local/` nếu cần.
-  - **Specs:** Chạy khi editor đóng (mục 1.12). Tải `https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz` (khoảng 1,3 GB), giải nén vào đúng thư mục templates. Đặt `export/android/java_sdk_path` thành `/usr/lib/jvm/java-21-openjdk-amd64`. Tạo debug keystore còn thiếu bằng `keytool -genkeypair` với alias `androiddebugkey`, mật khẩu `android`, RSA 2048, hạn 9999 ngày. Tạo preset `Android Demo` (custom feature `demo`, `use_gradle_build=false`, package tạm `com.tungcv2.tapblockout`, arm64-v8a và armeabi-v7a, portrait, quyền `permissions/vibrate=true` để rung chạy được, `exclude_filter="tests/*, addons/godot_ai/*"`) và `Android Release` (giống vậy nhưng không có feature `demo`). `tools/export_apk.sh <preset> <đường_dẫn>` tạo thư mục và export debug. Tài liệu Godot khuyến nghị JDK 17 còn máy có 21: thử trước, lỗi thì tải Temurin 17 vào `~/.local/jdk-17` không cần sudo và đặt `export/android/java_sdk_path`.
+  - **Specs:** Chạy khi editor đóng (mục 1.12). Tải `https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz` (khoảng 1,3 GB), giải nén vào đúng thư mục templates. Đặt `export/android/java_sdk_path` thành `/usr/lib/jvm/java-21-openjdk-amd64`. Tạo debug keystore còn thiếu bằng `keytool -genkeypair` với alias `androiddebugkey`, mật khẩu `android`, RSA 2048, hạn 9999 ngày. Tạo preset `Android Demo` (custom feature `demo`, `use_gradle_build=false`, package tạm `com.tungcv2.tapblockout`, arm64-v8a và armeabi-v7a, portrait, quyền `permissions/vibrate=true` để rung chạy được, `exclude_filter` loại `tests/*`, `build/*` (output export và ảnh tham chiếu Figma), `addons/godot_ai/*` và các script editor plugin `export_plugin.gd`, `plugin.gd`) và `Android Release` (giống vậy nhưng không có feature `demo`). `tools/export_apk.sh <preset> <đường_dẫn>` tạo thư mục và export debug. Tài liệu Godot khuyến nghị JDK 17 còn máy có 21: thử trước, lỗi thì tải Temurin 17 vào `~/.local/jdk-17` không cần sudo và đặt `export/android/java_sdk_path`.
   - **Verification:** `test -f ~/.local/share/godot/keystores/debug.keystore && tools/export_apk.sh "Android Demo" build/stub.apk && ~/Android/Sdk/build-tools/37.0.0/aapt2 dump badging build/stub.apk | head -3 && ! python3 -m zipfile -l build/stub.apk | grep -q 'addons/godot_ai/'`
 
 **Cổng Phase 0:** cổng mặc định, và `build/stub.apk` tồn tại. Orchestrator đóng editor trước Task 0.2, mở lại sau Task 0.3 (mục 1.12), rồi kiểm `editor_state` có session và tên project mới.
@@ -361,7 +378,7 @@ Phase 9–10 làm tiếp sau mốc demo, ẩn sau preset `Android Release`, nên
 
 - [x] **Task 1.1: Config**
   - **Allowed Files:** `src/config.gd`, `tests/test_config.gd`.
-  - **Specs:** Đọc `design.md` mục 3–7. `extends RefCounted`, các `static var` dạng Dictionary để Remote Config ghi đè được: `ECON` (start_coins, win_coins, booster_price hint/move/smash, refill_coins, refill_lives, shop_video_coins, shop_video_max, rescue_prices=[1900,2200,2500,2800], rescue_moves=3, rescue_video_max=4, challenge_coins=100), `LIVES` (max, regen_sec, from_level=10), `ADS` (inter_from_run=4, inter_every=2, inter_cooldown=120, session_warmup=90, rewarded_grace=45, first_session_block_until_level=10), `UNLOCK` (mục "Mở khoá": daily_gift=4, hint=5, shop=5, move=12, smash=17, lives=10, starter=10, review=10, challenge=50, stone=14, ice=30, chain=40, layer=55, fog=70, pulse=90), `DAILY` (28 ô đúng bảng trong `design.md`, mỗi ô `{coins:int, items:{...}}`), `COSMETICS` (avatar_01–12, frame_01–12, xoay giá 50/75/100), `SKUS` (mọi SKU và `_sale` trong mục 7, có usd, consumable, nội dung), `OFFERS`, `NOTIF`, `CONTENT` (`demo_max_level=20`, `release_pregen_level=100`, `loop_start_level=51`, `slack_easy=5`, `slack_easy_until=3`, `slack_hard=1`, `slack_min=2`, `slack_pct=10`, `think_clap_sec=8`, `build="v1"`, `support_email="support@horusvn.com"`, `ftue_steps=["open","first_tap","first_win","first_x2","first_booster","run_2","run_5","level_10"]`), `SALE_WEEKDAYS`. `static func is_demo() -> bool` trả `OS.has_feature("demo")`. `static func apply_remote(values: Dictionary) -> void` ghi đè theo khoá `<nhóm>_<khoá>`, giá trị là chuỗi, ép về đúng kiểu cũ, bỏ qua khoá lạ và giá trị hỏng.
+  - **Specs:** Đọc `design.md` mục 3–7. `extends RefCounted`, các `static var` dạng Dictionary để Remote Config ghi đè được: `ECON` (start_coins, win_coins, booster_price hint/move/smash, refill_coins, refill_lives, shop_video_coins, shop_video_max, rescue_prices=[1900,2200,2500,2800], rescue_moves=3, rescue_video_max=4, challenge_coins=100), `LIVES` (max, regen_sec, from_level=10), `ADS` (inter_from_run=4, inter_every=2, inter_cooldown=120, session_warmup=90, rewarded_grace=45, first_session_block_until_level=10), `UNLOCK` (mục "Mở khoá": daily_gift=4, hint=5, shop=5, move=12, smash=17, lives=10, starter=10, review=10, challenge=50, stone=14, ice=30, chain=40, layer=55, fog=70, pulse=90), `DAILY` (28 ô đúng bảng trong `design.md`, mỗi ô `{coins:int, items:{...}}`), `COSMETICS` (avatar_01–12, frame_01–12, xoay giá 50/75/100), `SKUS` (mọi SKU và `_sale` trong mục 7, có usd, consumable, nội dung), `OFFERS`, `NOTIF`, `CONTENT` (`demo_max_level=20`, `release_pregen_level=100`, `loop_start_level=51`, `slack_easy=5`, `slack_easy_until=3`, `slack_early=3`, `slack_early_until=13`, `slack_normal=4`, `slack_hard=3`, `think_clap_sec=8`, `build="v1"`, `support_email="support@horusvn.com"`, `ftue_steps=["open","first_tap","first_win","first_x2","first_booster","run_2","run_5","level_10"]`), `SALE_WEEKDAYS`. `static func is_demo() -> bool` trả `OS.has_feature("demo")`. `static func apply_remote(values: Dictionary) -> void` ghi đè theo khoá `<nhóm>_<khoá>`, giá trị là chuỗi, ép về đúng kiểu cũ, bỏ qua khoá lạ và giá trị hỏng.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_config` (test tổng quà 28 ô phải đúng 6.650 gold, 5 hint, 5 move, 4 smash; test `apply_remote`).
 
 - [x] **Task 1.2: Save schema và kho lưu**
@@ -375,7 +392,7 @@ Các module chỉ phụ thuộc `src/config.gd` và `save_schema.gd`. Test tự 
 
 - [x] **Task 2.1: Bàn cờ và solver**
   - **Allowed Files:** `src/core/level_data.gd`, `src/core/board_state.gd`, `src/core/solver.gd`, `tests/test_board.gd`, `tests/test_solver.gd`, `tests/fixtures/*.json`.
-  - **Specs:** Làm đúng mục 1.6–1.7, gồm cả 6 cơ chế để Phase 9 không phải viết lại. Khối trượt cứng theo hướng màu tới khi rời hẳn bàn; bị chặn thì `distance` là số ô trượt được trước vật cản. Sương mù: hết ẩn khi có ô kề (4 hướng) trống. `level_data.gd`: `validate(d) -> Array[String]` kiểm khung, ô trùng, ô ngoài bàn, khoá bắt buộc, `chained_by` tồn tại, không có chu trình xích. `solver.gd`: `solve(level) -> {ok, min_taps, order, wasted}`. Vì cơ chế đơn điệu nên đi tham lam: ưu tiên khối thoát được, rồi nứt băng, rồi lớp ngoài; chỉ cạnh nhịp mới có chạm chờ. `immediate_exit_exists(level)`. `compute_moves(level)`: dư theo `design.md`, level thường là `max(slack_min, ceil(slack_pct% × số khối))`; `design.md` không nói cách làm tròn nên làm tròn lên cho hợp tiêu chí thư giãn. Test đối chiếu solver với BFS vét cạn trên ít nhất 200 bàn ngẫu nhiên nhỏ (RNG có seed) và kiểm luật không có thế bí: mọi trạng thái đạt được đều còn lời giải khi đủ MOVES.
+  - **Specs:** Làm đúng mục 1.6–1.7, gồm cả 6 cơ chế để Phase 9 không phải viết lại. Khối trượt cứng theo hướng màu tới khi rời hẳn bàn; bị chặn thì `distance` là số ô trượt được trước vật cản. Sương mù: hết ẩn khi có ô kề (4 hướng) trống. `level_data.gd`: `validate(d) -> Array[String]` kiểm khung, ô trùng, ô ngoài bàn, khoá bắt buộc, `chained_by` tồn tại, không có chu trình xích. `solver.gd`: `solve(level) -> {ok, min_taps, order, wasted}`. Vì cơ chế đơn điệu nên đi tham lam: ưu tiên khối thoát được, rồi nứt băng, rồi lớp ngoài; chỉ cạnh nhịp mới có chạm chờ. `immediate_exit_exists(level)`. `compute_moves(level)` = `min_taps` + `slack_for(level)`; dư cố định theo bậc trong `design.md` mục 3 (L1–3, L4–13, level thường, HARD), không theo số khối. `Game` cộng lại dư lúc vào level từ `min_taps` trong file, nên Remote Config đổi `content_slack_*` có tác dụng cả với level ghi sẵn. Test đối chiếu solver với BFS vét cạn trên ít nhất 200 bàn ngẫu nhiên nhỏ (RNG có seed) và kiểm luật không có thế bí: mọi trạng thái đạt được đều còn lời giải khi đủ MOVES.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_board && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_solver`
 
 - [x] **Task 2.2: Ví, mạng, mở khoá**
@@ -429,7 +446,7 @@ Các module chỉ phụ thuộc `src/config.gd` và `save_schema.gd`. Test tự 
 
 - [x] **Task 3.3: 20 level demo**
   - **Allowed Files:** `data/levels/level_0001.json` … `level_0020.json`, `tools/validate_levels.gd`, `tests/test_levels_demo.gd`.
-  - **Specs:** Bảng trong `design.md` mục 4: đúng màu, số khối, HARD ở L8, 12, 16, 20, polyomino thanh, L, T, S, U, lưới 14×18 (`Config.BOARD_W`, `BOARD_H`), hình ở giữa bàn (đối xứng, vòng lồng nhau, hình vòm), không chép game gốc. Không dùng cơ chế mới. `moves` và `min_taps` do solver tính, không viết tay. `tools/validate_levels.gd` (chạy bằng `-s`) kiểm `validate`, solver, có khối thoát ngay, `moves` đúng công thức. Task này phụ thuộc đọc `src/core/*`, không sửa.
+  - **Specs:** Bảng trong `design.md` mục 4: đúng màu, số khối, HARD ở L8, 12, 16, 20, polyomino (từ Task 9.8 cỡ và hình bất kỳ), lưới 14×18 (`Config.BOARD_W`, `BOARD_H`), hình ở giữa bàn (đối xứng, vòng lồng nhau, hình vòm), không chép game gốc. Không dùng cơ chế mới. `moves` và `min_taps` do solver tính, không viết tay. `tools/validate_levels.gd` (chạy bằng `-s`) kiểm `validate`, solver, có khối thoát ngay, `moves` đúng công thức. Task này phụ thuộc đọc `src/core/*`, không sửa.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tools/validate_levels.gd && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_levels_demo` (`tools/` có `.gdignore` chỉ chặn import; đã kiểm trên 4.7.2 là script trong đó vẫn chạy được bằng `-s`).
 
 ### Phase 4: Điều phối
@@ -556,6 +573,16 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
   - **Allowed Files:** `src/core/difficulty_curve.gd`, `src/core/level_generator.gd`, `src/config.gd`, `tools/gen_levels.gd`, `data/levels/level_0001.json` … `level_0100.json`, `tests/test_motifs.gd`, `tests/test_levels_all.gd`, `tests/test_levels_demo.gd`, `design.md`.
   - **Specs:** `DifficultyCurve.block_count` nhân `COUNT_SCALE` = 2 ở bước cuối. Hình vẽ tay giữ cỡ, `MOTIF_FILL_MIN`, `MOTIF_FILL_MAX` giảm một nửa (1,15–1,8). Bảng EARLY làm lại với 4, 6, 8, 10 khối, giữ luật L1–4. `GATE_MAX_BLOCKS` 26 → 52; từ `GATE2_FROM` (L130, tới 2 cổng) trần `GATE2_MAX_BLOCKS` = 40 để mỗi level sinh dưới 200 ms. Sinh lại L1–100 bằng lệnh phát hành của Task 9.6.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tools/validate_levels.gd && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_motifs test_generator test_levels_all test_levels_demo`
+
+- [x] **Task 9.8: Không giới hạn hình dạng khối (2026-11-05)**
+  - **Allowed Files:** `src/core/level_generator.gd`, `data/levels/level_0005.json` … `level_0100.json`, `tests/test_motifs.gd`, `tests/test_generator.gd`, `design.md`.
+  - **Specs:** Bỏ `BLOCK_CAP` (trần 5 ô) ở `_tile` và `_tile_sym`; trọng số mỗi cách gộp là `_merge_weight(cỡ khối sau gộp)` = 1/cỡ. Khối vẫn phải liền 4 hướng (`LevelData.validate`). Số khối, `MOTIF_FILL_*`, cách cắt đối xứng giữ nguyên. Test: trong 300 level sinh (seed 0) có khối hơn 5 ô cả trước và từ `SHAPED_FROM`. Sinh lại L1–100 bằng lệnh phát hành của Task 9.6 (L1–4 không đổi).
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tools/validate_levels.gd && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_motifs test_generator test_levels_all test_levels_demo`
+
+- [x] **Task 9.9: Road Trip, Bảng xếp hạng thành icon ở Home (2026-11-05)**
+  - **Allowed Files:** `tools/import_road_trip.gd`, `data/road_trip/rt_0001.json` … `rt_0400.json`, `src/meta/road_trip.gd`, `src/meta/save_schema.gd`, `src/meta/unlocks.gd`, `src/config.gd`, `src/game/game.gd`, `src/ui/road_trip.gd`, `src/ui/road_trip_map.gd`, `src/ui/popup_road_trip_win.gd`, `scenes/road_trip.tscn`, `scenes/popup_road_trip_win.tscn`, `src/ui/level.gd`, `src/ui/board_view.gd`, `src/ui/candy_frame.gd`, `src/ui/frame_bar.gdshader`, `src/core/level_data.gd`, `src/core/board_state.gd`, `src/ui/tester_menu.gd`, `src/ui/profile.gd`, `src/ui/hub_nav.gd`, `scenes/hub_nav.tscn`, `src/ui/home.gd`, `scenes/home.tscn`, `src/ui/main.gd`, `src/ui/leaderboard.gd`, `src/ui/shop.gd`, `src/ui/win_card.gd`, `src/ui/theme_kit.gd`, `i18n/strings.csv`, `tests/test_road_trip.gd`, `tests/test_unlocks.gd`, `tests/test_i18n.gd`, `tests/test_ui_motion.gd`, `tests/test_ui_stubs.gd`, `tests/test_ui_leaderboard.gd`, `design.md`, `docs/`.
+  - **Specs:** `design.md` mục 7 "Road Trip". Nhập 400 level MoreColor bằng `tools/godot.sh --headless --path . -s res://tools/import_road_trip.gd -- <thư mục cfg>` (thư mục chứa `configs_base_tabledata` và `configs_morecolorlevels`). Thanh dưới Shop · Home · Road Trip; `HUB_SCREENS` = shop, home, road_trip. Màn Road Trip nhúng `scenes/level.tscn` với `setup({road_trip: true})` như Daily Challenge. Khung bàn nhận lưới cao hơn `BOARD_H`. Cổng màu: L1–200 2 cổng mỗi cạnh (8 màu), L201–400 3 cổng (12 màu); khối có `dir` riêng, khung chia đoạn màu theo `gates`. Interstitial `result_exit` khi đóng popup thắng (`Game.road_trip_leave_win`).
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_road_trip test_unlocks test_i18n test_ui_motion test_ui_stubs test_ui_leaderboard test_ui_level`
 
 **Cổng Phase 9:** cổng mặc định, gộp manifest của Task 9.5, thêm xem cơ chế qua MCP (mục 1.12): chạy level dạy 14, 30, 40, 55, 70, 90 và chụp từng màn. Không có session MCP thì ghi vào báo cáo, không chặn.
 

@@ -1,6 +1,9 @@
 extends Control
 ## Màn level: HUD, bàn cờ, booster, luồng hết MOVES, thắng, thua, restart.
 ## setup({challenge: true}) chạy Daily Challenge (Game.start_challenge) thay vì level kế tiếp; thắng thì về Home.
+## setup({road_trip: true}) chạy level Road Trip đang chơi (Game.start_road_trip): không mất mạng, không hướng dẫn L1,
+## booster mở theo level chính; hết bước thì xem quảng cáo hồi sinh, thắng thì popup Road Trip rồi closed("home")
+## (màn Road Trip đưa về bản đồ).
 ## closed({"action": "home" | "no_lives"}). Popup mở qua Main.open_popup (hoặc lớp riêng khi chạy lẻ).
 ## HUD theo wireframe 3.4: lượt, tên level, restart, bánh răng (Home và Retry nằm trong popup cài đặt); chip mảnh dưới chip lượt.
 ## Hàng booster luôn đủ 3 ô; ô chưa mở tối đi, có ổ khoá và ghi level mở. Treo máy thì nhắc Gợi ý (bong bóng IdleTip).
@@ -28,6 +31,7 @@ const LOSE_CARD := "res://scenes/lose_card.tscn"
 const SHOP_MINI := "res://scenes/shop_mini.tscn"
 const INGAME_SETTINGS := "res://scenes/popup_ingame_settings.tscn"
 const POPUP_LB_RESULT := "res://scenes/popup_lb_result.tscn"
+const POPUP_RT_WIN := "res://scenes/popup_road_trip_win.tscn"
 const BOOSTERS := ["hint", "move", "smash"]
 const FREE_PLACEMENT := "booster_free"
 const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
@@ -181,6 +185,7 @@ var idle_tip: Control = null
 
 var _built: bool = false
 var _challenge: bool = false
+var _road_trip: bool = false
 var _level: int = 0
 var _smash_mode: bool = false
 var _offer_id: String = ""
@@ -202,6 +207,7 @@ var _nudge_tweens: Array[Tween] = []
 
 func setup(args: Dictionary) -> void:
 	_challenge = bool(args.get("challenge", false))
+	_road_trip = bool(args.get("road_trip", false)) and not _challenge
 	Sfx.music(Sfx.MUSIC_LEVEL)
 	_build()
 	_start_level()
@@ -364,7 +370,12 @@ func _leave(action: String) -> void:
 
 
 func _can_play() -> bool:
-	return bool(Game.lives_view().get("can_play", true))
+	return _road_trip or bool(Game.lives_view().get("can_play", true))
+
+
+## Level that boosters unlock by: the main level in Road Trip, whose level numbers are its own.
+func _unlock_ref() -> int:
+	return int(Game.s.level) if _road_trip else _level
 
 
 ## Back của Android khi không có popup: như bấm Home.
@@ -390,7 +401,10 @@ func _start_level(warn: bool = true) -> void:
 		await get_tree().process_frame
 		if _left:
 			return
-	attempt = Game.start_challenge() if _challenge else Game.start_attempt()
+	if _road_trip:
+		attempt = Game.start_road_trip()
+	else:
+		attempt = Game.start_challenge() if _challenge else Game.start_attempt()
 	if attempt.is_empty():
 		_leave("home")
 		return
@@ -398,7 +412,11 @@ func _start_level(warn: bool = true) -> void:
 	_level = int(attempt.level)
 	title_label.text = tr("challenge_title") if _challenge else tr("level_title") % _level
 	var is_hard := bool(attempt.get("hard", false))
-	var very_hard := is_hard and not _challenge and Game.difficulty_of(_level) == "very_hard"
+	var very_hard := false
+	if _road_trip:
+		very_hard = int(attempt.get("difficulty", 1)) >= 3
+	elif not _challenge:
+		very_hard = is_hard and Game.difficulty_of(_level) == "very_hard"
 	hard_badge.visible = is_hard
 	(hard_badge as Label).text = tr("level_very_hard") if very_hard else tr("level_hard")
 	tut_label.text = _mech_hint()
@@ -422,7 +440,7 @@ func _start_level(warn: bool = true) -> void:
 			return
 	_set_state("playing")
 	_reset_think()
-	if _level == 1:
+	if _level == 1 and not _road_trip:
 		tut_label.text = tr("tut_tap")
 		board_view.highlight(board.hint())
 
@@ -507,7 +525,7 @@ func _fly_skull(root: Control, skull: Control, fallback: Control) -> void:
 
 ## Level dạy cơ chế (14, 30, 40, 55, 70, 90): một dòng "Tên: luật" ở đầu level. Challenge không có.
 func _mech_hint() -> String:
-	if _challenge:
+	if _challenge or _road_trip:
 		return ""
 	for m in MECHS:
 		if _level == int(Config.UNLOCK.get(m, -1)):
@@ -530,7 +548,7 @@ func _refresh_hud() -> void:
 	piece_chip.visible = total > 0
 	piece_label.text = "%d/%d" % [int(attempt.get("pieces", 0)) - _pieces_pending, total]
 	for kind in BOOSTERS:
-		var open := Unlocks.is_open(kind, _level)
+		var open := Unlocks.is_open(kind, _unlock_ref())
 		(booster_buttons[kind] as Button).self_modulate = Color.WHITE if open else LOCKED_TINT
 		(booster_locks[kind] as Control).visible = not open
 		(booster_caps[kind] as Label).text = tr("booster_" + kind) if open else tr("level_title") % _unlock_level(kind)
@@ -631,7 +649,7 @@ func _on_block_tapped(id: String) -> void:
 
 
 func _tutorial_after(kind: String) -> void:
-	if _level != 1:
+	if _level != 1 or _road_trip:
 		return
 	var taps := int(attempt.taps)
 	if kind == "blocked" or kind == "gate_closed":
@@ -671,6 +689,9 @@ func _resolve() -> void:
 # --- hết MOVES ---
 
 func _rescue_flow() -> void:
+	if _road_trip:
+		await _revive_flow()
+		return
 	for i in 12:
 		# duplicate: dict của RescueFlow giữ chính nó trong _cur, gắn attempt vào sẽ tạo vòng tham chiếu.
 		var o: Dictionary = Game.rescue_offer(attempt).duplicate()
@@ -706,6 +727,45 @@ func _rescue_flow() -> void:
 	await _lose_flow()
 
 
+## Road Trip out of moves: watch an ad for +revive_moves (up to revive_max a level) or give up. No life is at stake.
+func _revive_flow() -> void:
+	while true:
+		var v: Dictionary = Game.road_trip_revive_view(attempt)
+		if not bool(v.available):
+			break
+		_set_state("dialog")
+		var dlg := Dialog.new(tr("rescue_title"), tr("rt_revive_body") % int(v.moves), [
+			{"id": "video", "text": tr("rt_revive_video") % int(v.moves), "kind": "video", "name": "ReviveButton", "close": false},
+			{"id": "give_up", "text": tr("rescue_give_up"), "kind": "ghost", "name": "GiveUpButton"}],
+			tr("rescue_remaining") % board.remaining_count() if board.remaining_count() != 1 else tr("rescue_remaining_one"))
+		_show_node(dlg)
+		var picked: Array = [""]
+		dlg.chosen.connect(func(id: String) -> void:
+			if id != "video" or picked[0] != "":
+				return
+			picked[0] = "video"
+			var ok: bool = await Game.road_trip_revive(attempt)
+			if is_instance_valid(dlg):
+				if ok:
+					dlg.closed.emit("revived")
+				else:
+					picked[0] = ""
+					_toast(tr("ads_not_available")))
+		var r: Variant = await _wait_closed(dlg)
+		if _left:
+			return
+		if str(r) == "revived":
+			board_view.refresh()
+			Sfx.play("moves")
+			_fly_moves(int(v.moves))
+			_refresh_hud()
+			_set_state("playing")
+			_reset_think()
+			return
+		break
+	await _lose_flow()
+
+
 func _lose_flow() -> void:
 	_set_state("over")
 	_offer_id = ""
@@ -729,6 +789,15 @@ func _win_flow() -> void:
 	_set_state("over")
 	var res: Dictionary = Game.on_level_won(attempt)
 	_refresh_hud()
+	if _road_trip:
+		await _popup_scene(POPUP_RT_WIN, res)
+		if _left:
+			return
+		# Interstitial result_exit under the same pacing as the main win card.
+		await Game.road_trip_leave_win(_level)
+		if not _left:
+			_leave("home")
+		return
 	# Gold MOVES thừa bay từ chip lượt vào ô gold của thẻ; mỗi đồng rời chip thì số lượt giảm.
 	var card := res.duplicate()
 	card["moves_chip"] = moves_chip
@@ -779,7 +848,7 @@ func _win_flow() -> void:
 # --- Home và restart ---
 
 func _confirm_life_loss() -> bool:
-	return _level >= int(Config.LIVES.from_level) and _touched() and not bool(Game.lives_view().get("infinite", false))
+	return not _road_trip and _level >= int(Config.LIVES.from_level) and _touched() and not bool(Game.lives_view().get("infinite", false))
 
 
 func _on_home_pressed() -> void:
@@ -825,7 +894,7 @@ func _on_restart_pressed() -> void:
 		return
 	Sfx.play("button")
 	_set_state("dialog")
-	if _level >= int(Config.LIVES.from_level):
+	if not _road_trip and _level >= int(Config.LIVES.from_level):
 		var body := tr("level_restart_confirm_life") if _touched() else tr("level_restart_confirm_free")
 		var dlg := Dialog.new(tr("level_restart_confirm_title"), body, [
 			{"id": "yes", "text": tr("level_restart_yes"), "kind": "danger", "name": "ConfirmButton"},
@@ -851,7 +920,7 @@ func _on_booster_pressed(kind: String) -> void:
 	if state != "playing":
 		return
 	Sfx.play("button")
-	if not Unlocks.is_open(kind, _level):
+	if not Unlocks.is_open(kind, _unlock_ref()):
 		_toast(tr("booster_locked") % _unlock_level(kind))
 		return
 	if kind == "hint" and is_instance_valid(_hint_fx):

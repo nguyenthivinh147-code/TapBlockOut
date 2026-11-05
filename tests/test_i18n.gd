@@ -10,7 +10,7 @@ const GROUPS: Array[String] = [
 	"common_", "home_", "level_", "rescue_", "win_", "lose_", "no_lives_",
 	"shop_", "daily_", "profile_", "settings_", "offer_", "ads_", "tut_", "mech_",
 	"notif_", "booster_", "challenge_", "feature_", "weekly_", "chain_",
-	"boot_", "hearts_", "lb_", "streak_",
+	"boot_", "hearts_", "lb_", "streak_", "rt_",
 ]
 const REQUIRED: Array[String] = [
 	"APP_NAME", "home_play", "home_challenge_locked", "home_coming_soon",

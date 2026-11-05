@@ -10,6 +10,15 @@ const BLOCK_COLORS := {
 	"green": Color("6DED1E"),
 	"blue": Color("0C9CFD"),
 	"purple": Color("E644F4"),
+	# Màu cổng thêm của level nhiều cổng (Road Trip, LevelData.GATE_COLORS).
+	"red": Color("F23A3A"),
+	"orange": Color("FF8A1F"),
+	"teal": Color("18D8B4"),
+	"brown": Color("A0643A"),
+	"pink": Color("FF9AC9"),
+	"indigo": Color("5B4FE0"),
+	"cream": Color("F4EEDF"),
+	"licorice": Color("3D3546"),
 }
 ## Bốn tông của khối kẹo; `face` trùng BLOCK_COLORS. Đổi sắc theo tông (vàng về cam, tím về tím đậm) nên không suy ra từ một màu.
 const BLOCK_RAMPS := {
@@ -17,6 +26,14 @@ const BLOCK_RAMPS := {
 	"green": {"deep": Color("20A208"), "side": Color("41C412"), "face": Color("6DED1E"), "stripe": Color("84F437")},
 	"blue": {"deep": Color("0260E6"), "side": Color("148FF8"), "face": Color("0C9CFD"), "stripe": Color("41C1FD")},
 	"purple": {"deep": Color("B113CC"), "side": Color("C622DC"), "face": Color("E644F4"), "stripe": Color("EC5FF6")},
+	"red": {"deep": Color("B8121C"), "side": Color("D9252E"), "face": Color("F23A3A"), "stripe": Color("FF6B62")},
+	"orange": {"deep": Color("D45A06"), "side": Color("EE7310"), "face": Color("FF8A1F"), "stripe": Color("FFAA4F")},
+	"teal": {"deep": Color("049C82"), "side": Color("0DBA99"), "face": Color("18D8B4"), "stripe": Color("52EACD")},
+	"brown": {"deep": Color("643818"), "side": Color("824E29"), "face": Color("A0643A"), "stripe": Color("BC8156")},
+	"pink": {"deep": Color("DD4F96"), "side": Color("EF72AE"), "face": Color("FF9AC9"), "stripe": Color("FFBCDB")},
+	"indigo": {"deep": Color("3527A8"), "side": Color("4739C6"), "face": Color("5B4FE0"), "stripe": Color("7F76EF")},
+	"cream": {"deep": Color("C4B192"), "side": Color("DACCB2"), "face": Color("F4EEDF"), "stripe": Color("FFFFF8")},
+	"licorice": {"deep": Color("1B1521"), "side": Color("2A2332"), "face": Color("3D3546"), "stripe": Color("595066")},
 }
 
 # Brand / Menu
@@ -135,6 +152,7 @@ const FIGMA_ICON := {
 	"ui_music": "ic_music_on",
 	"ui_smash": "ic_bomb",
 	"ui_leaderboard": "ic_leaderboard",
+	"ui_road_trip": "ic_giftbox1",
 	"ui_noads": "ic_noads",
 	"ui_plus": "ic_plus",
 	"ui_close": "ic_close",
@@ -596,7 +614,8 @@ static func clear_cache() -> void:
 
 ## Hình tròn bo màu theo tên, có vòng sáng và chấm giữa. Cùng tên cho cùng hình.
 static func _placeholder(icon_name: String) -> Texture2D:
-	var keys := BLOCK_COLORS.keys()
+	# Only the four main colours, so placeholders do not change with the gate colours of Road Trip.
+	var keys := BLOCK_COLORS.keys().slice(0, 4)
 	var base: Color = BLOCK_COLORS[keys[absi(icon_name.hash()) % keys.size()]]
 	var n := ICON_SIZE
 	var img := Image.create(n, n, false, Image.FORMAT_RGBA8)

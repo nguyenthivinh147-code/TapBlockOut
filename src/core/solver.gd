@@ -41,17 +41,18 @@ static func immediate_exit_exists(level: Dictionary) -> bool:
 	return BoardState.new(level).hint() != ""
 
 
-## Dư MOVES theo design.md mục 3: HARD, L1-5, còn lại max(slack_min, ceil(slack_pct% x số khối)).
+## Spare MOVES per design.md section 3: HARD (VeryHard too) 3, L1-3 5, L4-13 3, later levels 4.
+## Fixed per tier, not scaled by block count; numbers live in Config.CONTENT (slack_*).
 static func slack_for(level: Dictionary) -> int:
 	var c: Dictionary = Config.CONTENT
 	if bool(level.get("hard", false)):
 		return int(c["slack_hard"])
-	if int(level.get("id", 0)) <= int(c["slack_easy_until"]):
+	var id := int(level.get("id", 0))
+	if id <= int(c["slack_easy_until"]):
 		return int(c["slack_easy"])
-	var n: int = level.get("blocks", []).size()
-	var pct: int = int(c["slack_pct"])
-	@warning_ignore("integer_division")
-	return maxi(int(c["slack_min"]), (pct * n + 99) / 100)
+	if id <= int(c["slack_early_until"]):
+		return int(c["slack_early"])
+	return int(c["slack_normal"])
 
 
 ## min_taps + dư; -1 nếu level không giải được.

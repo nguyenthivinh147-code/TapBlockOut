@@ -2,10 +2,12 @@ extends SceneTree
 ## Builds an MSDF FontFile from the TextMeshPro font asset "Baloo Bhaijaan Regular 400 SDF" (color-cube-match-puzzle);
 ## that project lacks the source TTF, only the baked SDF atlas and glyph table remain.
 ## Only Latin, Vietnamese and Cyrillic glyphs are kept: the atlas also holds stray Devanagari, kana, kanji and Hangul
-## glyphs from Unity's dynamic atlas, which would mix with the fallbacks inside one word and skip Hindi shaping.
+## glyphs from Unity's dynamic atlas, which would mix with the fallbacks inside one word and skip Hindi shaping. The
+## kept glyphs (about a fifth of the 1024x2048 TMP atlas) are copied into a smaller packed atlas.
 ## Those scripts come from FALLBACKS, also written here: MSDF FontFiles that embed the OFL TTFs of art/fonts/ (not
 ## imported), with the atlas' pixel range and size so tmp_text.gdshader draws them alike, and with Baloo's ascent and
 ## descent, because Font.get_height() takes the tallest font of the chain and UnityUI lays text out at Baloo's height.
+## Jua and M PLUS Rounded come from art/fonts/subset/ (tools/node/subset_fonts.mjs, run it first when texts change).
 ## Run: tools/godot.sh --headless --path . -s res://tools/gen_baloo_font.gd [-- --src=<path to .asset>]
 
 const SRC := "E:/PROJECT HORUS/color-cube-match-puzzle/Assets/_Game/Resources_moved/Fonts/Baloo Bhaijaan Regular 400 SDF.asset"
@@ -13,12 +15,16 @@ const OUT := "res://assets/fonts/baloo.res"
 ## TMP atlas: single-channel SDF, padding 6, GradientScale 7 -> values 0..1 span 14 texels.
 const PIXEL_RANGE := 14
 const PADDING := 6
+## Packed atlas width, and empty texels between glyphs: the TMP underlay samples up to 1.3 texels (plus half a texel
+## of filtering) outside a glyph, which must land on empty space, not on a neighbour.
+const ATLAS_WIDTH := 1024
+const GAP := 2
 ## Baloo 2 (same design; Devanagari and missing punctuation), Jua (Hangul), M PLUS Rounded 1c (kana, kanji).
 ## lang: language the TextServer prefers the font for when several fallbacks have the glyph.
 const FALLBACKS: Array[Dictionary] = [
 	{"src": "res://art/fonts/Baloo2.ttf", "out": "res://assets/fonts/baloo2.res", "lang": "hi"},
-	{"src": "res://art/fonts/Jua-Regular.ttf", "out": "res://assets/fonts/jua.res", "lang": "ko"},
-	{"src": "res://art/fonts/MPLUSRounded1c-Bold.ttf", "out": "res://assets/fonts/mplus_rounded.res", "lang": "ja"},
+	{"src": "res://art/fonts/subset/Jua-Regular.ttf", "out": "res://assets/fonts/jua.res", "lang": "ko"},
+	{"src": "res://art/fonts/subset/MPLUSRounded1c-Bold.ttf", "out": "res://assets/fonts/mplus_rounded.res", "lang": "ja"},
 ]
 
 
@@ -95,14 +101,12 @@ func _initialize() -> void:
 func _build(atlas: Image, face: Dictionary, glyphs: Dictionary, chars: Dictionary) -> FontFile:
 	var size := int(face.get("m_PointSize", "32"))
 	var key := Vector2i(size, 0)
-	var h := float(atlas.get_height())
-	var p := float(PADDING)
+	var h := atlas.get_height()
 	var font := FontFile.new()
 	font.font_name = "Baloo"
 	font.multichannel_signed_distance_field = true
 	font.msdf_pixel_range = PIXEL_RANGE
 	font.msdf_size = size
-	font.set_texture_image(0, key, 0, atlas)
 	font.set_cache_ascent(0, size, float(face.get("m_AscentLine", size)))
 	font.set_cache_descent(0, size, -float(face.get("m_DescentLine", -12)))
 	font.set_cache_underline_position(0, size, -float(face.get("m_UnderlineOffset", -8)))
@@ -113,21 +117,57 @@ func _build(atlas: Image, face: Dictionary, glyphs: Dictionary, chars: Dictionar
 		if fb != null:
 			fallbacks.append(fb)
 	font.fallbacks = fallbacks
+	# TMP glyph index -> its rect in the TMP atlas, padding included; character -> glyph index.
+	var src := {}
+	var kept := {}
 	for uc in chars:
 		var g: Dictionary = glyphs.get(chars[uc], {})
 		if uc < 32 or g.is_empty() or _fallback_script(uc):
 			continue
 		font.set_glyph_advance(0, size, uc, Vector2(g["m_Metrics.m_HorizontalAdvance"], 0.0))
-		var w: float = g["m_GlyphRect.m_Width"]
-		var gh: float = g["m_GlyphRect.m_Height"]
 		if g["m_Metrics.m_Width"] <= 0.0:
 			continue
-		var top: float = h - g["m_GlyphRect.m_Y"] - gh
-		font.set_glyph_offset(0, key, uc, Vector2(g["m_Metrics.m_HorizontalBearingX"] - p, -g["m_Metrics.m_HorizontalBearingY"] - p))
-		font.set_glyph_size(0, key, uc, Vector2(w + 2.0 * p, gh + 2.0 * p))
-		font.set_glyph_uv_rect(0, key, uc, Rect2(g["m_GlyphRect.m_X"] - p, top - p, w + 2.0 * p, gh + 2.0 * p))
+		var w := int(g["m_GlyphRect.m_Width"])
+		var gh := int(g["m_GlyphRect.m_Height"])
+		var top := h - int(g["m_GlyphRect.m_Y"]) - gh
+		src[chars[uc]] = Rect2i(int(g["m_GlyphRect.m_X"]) - PADDING, top - PADDING, w + 2 * PADDING, gh + 2 * PADDING)
+		kept[uc] = chars[uc]
+		font.set_glyph_offset(0, key, uc, Vector2(g["m_Metrics.m_HorizontalBearingX"] - PADDING, -g["m_Metrics.m_HorizontalBearingY"] - PADDING))
+		font.set_glyph_size(0, key, uc, Vector2(w + 2 * PADDING, gh + 2 * PADDING))
 		font.set_glyph_texture_idx(0, key, uc, 0)
+	var packing := _pack(src)
+	var pos: Dictionary = packing[0]
+	var packed := Image.create_empty(ATLAS_WIDTH, packing[1], false, Image.FORMAT_L8)
+	for gi in src:
+		packed.blit_rect(atlas, src[gi], pos[gi])
+	font.set_texture_image(0, key, 0, packed)
+	for uc in kept:
+		font.set_glyph_uv_rect(0, key, uc, Rect2(Vector2(pos[kept[uc]]), Vector2(src[kept[uc]].size)))
+	print("baloo atlas: %dx%d -> %dx%d, %d glyphs" % [atlas.get_width(), h, ATLAS_WIDTH, packing[1], src.size()])
 	return font
+
+
+## Shelf packing, tallest first, GAP texels apart: [glyph index -> top-left in the packed atlas, atlas height].
+static func _pack(rects: Dictionary) -> Array:
+	var order: Array = rects.keys()
+	order.sort_custom(func(a: int, b: int) -> bool:
+		var ha: int = rects[a].size.y
+		var hb: int = rects[b].size.y
+		return ha > hb or (ha == hb and a < b))
+	var pos := {}
+	var x := GAP
+	var y := GAP
+	var shelf := 0
+	for gi in order:
+		var s: Vector2i = rects[gi].size
+		if x + s.x + GAP > ATLAS_WIDTH:
+			x = GAP
+			y += shelf + GAP
+			shelf = 0
+		pos[gi] = Vector2i(x, y)
+		x += s.x + GAP
+		shelf = maxi(shelf, s.y)
+	return [pos, y + shelf + GAP]
 
 
 ## Saves def.src as an MSDF FontFile at def.out (so baloo.res links it) with the given line metrics at msdf size.

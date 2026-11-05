@@ -5,6 +5,8 @@ extends Control
 ## Mọi số hình học tính theo đơn vị khung (`Config.BOARD_FRAME_UNIT` ở màn chuẩn, không theo cỡ ô khối), đo từ
 ## `art/concepts/ref_board_size.png`; màu lấy từ `art/concepts/concept_candy_board_v5_stripe.png`.
 
+const ThemeKit := preload("res://src/ui/theme_kit.gd")
+
 const SIDES := ["up", "left", "right", "down"]
 ## axis: từ mép bàn tới đường giữa thanh; thick: bề dày; inset: từ mép ngoài khung tới đầu thanh.
 const BARS := {
@@ -41,6 +43,10 @@ const BAR_RAMPS := {
 	"down": [[0.0, "B025AE"], [0.02, "C32BB5"], [0.06, "F468EA"], [0.1, "F68AE8"], [0.14, "FDD5F7"], [0.18, "FDBCF4"], [0.22, "FC96ED"], [0.27, "FA82E8"], [0.35, "F667DF"], [0.43, "F253D9"], [0.51, "ED43D3"], [0.59, "E636CD"], [0.63, "E12EC8"], [0.67, "D726C1"], [0.71, "C91BB6"], [0.76, "B811A8"], [0.8, "AF0CA0"], [0.84, "AA099C"], [0.88, "AD0B9D"], [0.92, "B50FA4"], [0.96, "8F0D7D"], [1.0, "8A0C78"]],
 }
 const END_COLORS := {"up": Color("EFA512"), "left": Color("33BD11"), "right": Color("0279EE"), "down": Color("C81CBA")}
+## Level nhiều cổng (Road Trip): mỗi thanh chia 2-3 cổng màu (set_segments). Bốn màu gốc dùng mặt cắt của cạnh mang
+## màu đó; màu khác suy từ mặt cắt vàng ("up") theo sắc độ của màu khối (ThemeKit.BLOCK_COLORS).
+const COLOR_SIDE := {"yellow": "up", "green": "left", "blue": "right", "purple": "down"}
+const DERIVE_FROM := "up"
 ## Hạ sắc độ thanh cho bớt chói: nhân saturation và value (HSV) của mọi màu ở BAR_RAMPS, END_COLORS khi vẽ thanh.
 const BAR_SAT := 0.85
 const BAR_VAL := 0.98
@@ -51,7 +57,7 @@ const HIT_POP := 0.42  # mũi tên phồng thêm chừng này
 ## Đoạn thanh khối phủ lên nổi thành lăng trụ lục giác, lăn theo hướng khối đi rồi chậm dần và nhập lại vào thanh.
 const SPIN_FACE := PI / 3.0  # góc một mặt lục giác
 const SPIN_TIME := 0.6  # giây chậm dần tới khi dừng, sau khi khối đã qua hết
-const SPIN_EXIT := 3  # khối thoát qua: lăn chừng này mặt trong lúc chậm dần
+const SPIN_EXIT := 2  # khối thoát qua: lăn chừng này mặt trong lúc chậm dần
 const SPIN_BUMP := 1  # khối dội vào cổng đóng
 const SPIN_RISE := 0.05  # giây để đoạn nổi lên
 const SPIN_SINK := 0.7  # từ phần này của SPIN_TIME đoạn chìm dần vào thanh
@@ -65,6 +71,9 @@ var _bar_home: Dictionary = {}  # cạnh -> vị trí khi chưa bị va
 var _hit_tws: Dictionary = {}  # cạnh -> Tween
 var _spin: Dictionary = {}  # cạnh -> góc quay hiện tại của đoạn bị va
 var _cell: float = 64.0
+## cạnh -> [[màu, từ, tới], ...] theo px của khung dọc trục thanh (x với up/down, y với left/right); rỗng: một màu.
+var _segs: Dictionary = {}
+var _bar_rects: Dictionary = {}  # cạnh -> Rect2 thân thanh (không tính lề vẽ)
 
 
 func _ready() -> void:
@@ -157,6 +166,36 @@ static func tone(c: Color) -> Color:
 	return Color.from_hsv(c.h, c.s * BAR_SAT, c.v * BAR_VAL, c.a)
 
 
+## Mặt cắt thanh của một cổng màu `color_name` (GATE_COLORS); bốn màu gốc là mặt cắt của cạnh mang màu đó.
+static func color_ramp(color_name: String) -> Texture2D:
+	if COLOR_SIDE.has(color_name):
+		return ramp_texture(str(COLOR_SIDE[color_name]))
+	var key := "c:" + color_name
+	if not _ramp_cache.has(key):
+		var target: Color = ThemeKit.block_color(color_name)
+		var base := Color("FCD026")  # thân mặt cắt vàng
+		var g := Gradient.new()
+		g.offsets = PackedFloat32Array()
+		g.colors = PackedColorArray()
+		for stop: Array in BAR_RAMPS[DERIVE_FROM]:
+			var c := Color(str(stop[1]))
+			var s := clampf(target.s * c.s / base.s, 0.0, 1.0)
+			var v := clampf(target.v * c.v / base.v, 0.0, 1.0)
+			g.add_point(float(stop[0]), tone(Color.from_hsv(target.h, s, v)))
+		var tex := GradientTexture1D.new()
+		tex.width = 128
+		tex.gradient = g
+		_ramp_cache[key] = tex
+	return _ramp_cache[key]
+
+
+## Màu vành đầu thanh, bóng mũi tên của một cổng màu.
+static func color_end(color_name: String) -> Color:
+	if COLOR_SIDE.has(color_name):
+		return tone(END_COLORS[COLOR_SIDE[color_name]])
+	return tone(ThemeKit.block_ramp(color_name)["deep"])
+
+
 ## Xếp lại toàn bộ theo vùng bàn và đơn vị khung `cell`. `board` tính theo toạ độ cục bộ của khung.
 func layout(board: Rect2, cell: float) -> void:
 	_cell = cell
@@ -179,6 +218,8 @@ func layout(board: Rect2, cell: float) -> void:
 		m.set_shader_parameter("arrow_size", (arrow["size"] as Vector2) * cell)
 		m.set_shader_parameter("cell_px", cell)
 		m.set_shader_parameter("open", _open[side])
+		_bar_rects[side] = r
+		_apply_segments(side)
 	var centers := corner_centers(board, cell)
 	var tube_r := TUBE_R * cell
 	var tube_hw := TUBE_W * 0.5 * cell
@@ -205,6 +246,60 @@ func layout(board: Rect2, cell: float) -> void:
 		m.set_shader_parameter("gloss_arc", c["gloss_arc"])
 		m.set_shader_parameter("spread", c["spread"])
 		m.set_shader_parameter("cell_px", cell)
+
+
+## Cổng màu của một cạnh (level nhiều cổng): [[màu, từ, tới], ...] theo px của khung dọc trục thanh, thứ tự từ trái
+## hoặc từ trên. Hai đầu thanh thuộc cổng đầu và cổng cuối dù `từ`, `tới` của chúng nằm trong thanh. Rỗng: một màu.
+func set_segments(side: String, segs: Array) -> void:
+	_segs[side] = segs.duplicate(true)
+	if _bar_rects.has(side):
+		_apply_segments(side)
+
+
+## Cổng chứa điểm `pos` (px của khung dọc trục thanh); "" khi cạnh chỉ một màu.
+func gate_color_at(side: String, pos: float) -> String:
+	var segs: Array = _segs.get(side, [])
+	for i in segs.size():
+		if i == segs.size() - 1 or pos < float(segs[i][2]):
+			return str(segs[i][0])
+	return ""
+
+
+## Màu vành của thanh tại điểm `pos` (px của khung dọc trục thanh): màu cổng ở đó, hoặc màu của cạnh.
+func end_color_at(side: String, pos: float) -> Color:
+	var c := gate_color_at(side, pos)
+	return color_end(c) if c != "" else tone(END_COLORS[side])
+
+
+func _apply_segments(side: String) -> void:
+	var m: ShaderMaterial = (_bars[side] as ColorRect).material
+	var segs: Array = _segs.get(side, [])
+	var n := mini(segs.size(), 3)
+	if n < 2:
+		m.set_shader_parameter("seg_count", 1)
+		var only := str(segs[0][0]) if n == 1 else ""
+		m.set_shader_parameter("ramp", color_ramp(only) if only != "" else ramp_texture(side))
+		m.set_shader_parameter("end_col", color_end(only) if only != "" else tone(END_COLORS[side]))
+		return
+	var r: Rect2 = _bar_rects[side]
+	var vertical := side == "left" or side == "right"
+	var center := r.get_center().y if vertical else r.get_center().x
+	var half := (r.size.y if vertical else r.size.x) * 0.5
+	var shift_along: float = (ARROWS[side]["shift"] as Vector2).y * _cell if vertical else 0.0
+	var ramps := ["ramp", "ramp_b", "ramp_c"]
+	var ends := ["end_col", "end_col_b", "end_col_c"]
+	var arrows := Vector3.ZERO
+	for i in n:
+		var col := str(segs[i][0])
+		m.set_shader_parameter(ramps[i], color_ramp(col))
+		m.set_shader_parameter(ends[i], color_end(col))
+		var lo := -half if i == 0 else float(segs[i][1]) - center
+		var hi := half if i == n - 1 else float(segs[i][2]) - center
+		arrows[i] = clampf((lo + hi) * 0.5 + shift_along, -half, half)
+	m.set_shader_parameter("seg_count", n)
+	m.set_shader_parameter("cut_a", float(segs[0][2]) - center)
+	m.set_shader_parameter("cut_b", float(segs[1][2]) - center if n > 2 else half)
+	m.set_shader_parameter("arrows_along", arrows)
 
 
 ## Độ mở của cổng ở một cạnh: 0 đóng, 1 mở.

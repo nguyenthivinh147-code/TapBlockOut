@@ -60,20 +60,21 @@ func test_win_gives_gold_level_and_free_x2(t: T) -> void:
 	var left: int = a.board.moves_left()
 	t.ok(left > 0, "L1 dư MOVES")
 	var r: Dictionary = g.on_level_won(a)
-	t.eq(r.move_coins, left, "1 gold mỗi MOVES thừa")
-	t.eq(r.coins, 40 + left, "gold thắng + MOVES thừa")
+	var mc := 10 * left
+	t.eq(r.move_coins, mc, "10 gold mỗi MOVES thừa")
+	t.eq(r.coins, 40 + mc, "gold thắng + MOVES thừa")
 	t.eq(r.x2_free, true, "L1 x2 miễn phí")
 	t.eq(r.x2_available, true, "x2 có")
-	t.eq(int(g.s.coins), 1040 + left, "ví")
+	t.eq(int(g.s.coins), 1040 + mc, "ví")
 	t.eq(int(g.s.level), 2, "lên level 2")
 	t.eq(int(g.s.runs), 1, "runs")
 	t.eq(await g.claim_x2(), true, "nhận x2 free")
-	t.eq(int(g.s.coins), 1080 + 2 * left, "ví sau x2 (nhân đôi cả MOVES thừa)")
+	t.eq(int(g.s.coins), 1080 + 2 * mc, "ví sau x2 (nhân đôi cả MOVES thừa)")
 	t.eq(_p().ads.calls.size(), 0, "x2 free không gọi quảng cáo")
 	t.eq(await g.claim_x2(), false, "x2 không nhận hai lần")
 	t.eq(g.on_level_won(a).coins, 0, "thắng hai lần không cộng")
-	t.eq(int(g.s.coins), 1080 + 2 * left, "ví giữ nguyên")
-	t.eq(int(_p().an.named("level_end")[0].params.coins), 40 + left, "level_end ghi tổng gold")
+	t.eq(int(g.s.coins), 1080 + 2 * mc, "ví giữ nguyên")
+	t.eq(int(_p().an.named("level_end")[0].params.coins), 40 + mc, "level_end ghi tổng gold")
 	var earns: Array = _p().an.named("earn")
 	t.eq(earns.size(), 2, "ghi earn gold")
 	t.ok(_p().an.named("level_end").size() == 1 and _p().an.named("level_end")[0].params.has("build"), "level_end có build")
@@ -92,6 +93,20 @@ func test_win_move_coins_from_remote_config(t: T) -> void:
 	t.eq(r.move_coins, 3 * left, "3 gold mỗi MOVES thừa")
 	t.eq(r.coins, 40 + 3 * left, "cộng vào thưởng thắng")
 	t.eq(int(g.s.coins), 1040 + 3 * left, "ví")
+
+
+## MOVES lúc vào level = min_taps trong file + dư theo Config hiện tại, nên Remote Config đổi được dư của level đã ghi sẵn.
+func test_moves_follow_slack_config(t: T) -> void:
+	var g := _g()
+	g.s.level = 20
+	var a: Dictionary = g.start_attempt()
+	var d: Dictionary = g.current_level_data()
+	t.eq(int(a.moves0), int(d.min_taps) + 4, "L20 dư 4 theo mặc định")
+	t.eq(int(a.moves0), int(d.moves), "khớp số ghi trong file")
+	Config.apply_remote({"content_slack_normal": "7"})
+	var b: Dictionary = g.start_attempt()
+	Config.reset()
+	t.eq(int(b.moves0), int(d.min_taps) + 7, "Remote Config đổi dư thì MOVES đổi theo")
 
 
 func test_lose_l9_free_l10_costs_life(t: T) -> void:

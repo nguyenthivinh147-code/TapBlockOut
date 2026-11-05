@@ -35,7 +35,7 @@ func _run() -> void:
 	var names: Array = ALL.duplicate()
 	names.append_array(["lives_hub", "lives_full", "home_l1", "home_hard", "home_very_hard", "weekly_pass", "chain_offer", "challenge", "ingame_settings", "ingame_settings_life",
 		"settings_language", "profile_frames",
-		"leaderboard", "leaderboard_world", "lb_result", "lb_leagues", "level_lb", "win_lb", "level_booster_all"])
+		"leaderboard", "leaderboard_world", "leaderboard_world_rewards", "lb_result", "lb_leagues", "level_lb", "win_lb", "level_booster_all"])
 	for s in Gallery.SCREENS:
 		names.append(s[1])
 	for name in names:
@@ -250,13 +250,17 @@ func _shot(name: String) -> void:
 			await _settle(0.2)
 			_main.current_screen.call("select", "frame_01")
 			await _settle()
-		"leaderboard", "leaderboard_world":
+		"leaderboard", "leaderboard_world", "leaderboard_world_rewards":
 			await _fresh(30)
 			g.lb_refresh()
 			g.lb_claim()
 			Leaderboard.add_points(g.s, 14)
-			_main.go("leaderboard", {"tab": "world" if name == "leaderboard_world" else "league"})
+			_main.go("leaderboard", {"tab": "league" if name == "leaderboard" else "world"})
 			await _settle()
+			if name == "leaderboard_world_rewards":
+				# World ladder in its Rewards mode (the banner switch).
+				_main.current_screen.call("_toggle_rewards")
+				await _settle()
 		"lb_result":
 			await _fresh(30)
 			g.lb_refresh()

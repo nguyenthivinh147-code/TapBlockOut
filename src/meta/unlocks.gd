@@ -9,7 +9,8 @@ const ALWAYS_OPEN := ["rescue", "avatar", "frame"]
 const GIFT_ORDER := ["hint", "move", "smash"]
 ## Không hiện như một "tính năng mới" trên thanh tiến trình của thẻ thắng.
 const SILENT := ["starter", "review"]
-## Mở màn/nút mới ở Home: thắng xong dẫn người chơi về Home để thấy.
+## Mở màn/nút mới ở Home: thắng xong dẫn người chơi về Home để thấy. Road Trip (mở ngay sau L1) không có ở đây để
+## L1 -> L2 liền mạch; hướng dẫn Road Trip hiện lần đầu người chơi về Home.
 const HOME_FEATURES := ["daily_gift", "shop", "challenge", "lives", "leaderboard"]
 
 

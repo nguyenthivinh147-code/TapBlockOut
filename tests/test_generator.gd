@@ -106,8 +106,12 @@ func test_blocks_form_varied_silhouettes_in_the_fixed_board(t: T) -> void:
 	var layouts := {}
 	var gappy := 0
 	var total := 300
+	var biggest := {false: 0, true: 0}  # cỡ khối lớn nhất trước / từ SHAPED_FROM
 	for id in range(FIRST_ID, FIRST_ID + total):
 		var d := Gen.generate(id, 0)
+		var shaped := id >= DifficultyCurve.SHAPED_FROM
+		for b in d["blocks"]:
+			biggest[shaped] = maxi(int(biggest[shaped]), b["cells"].size())
 		var occ := _occupied(d)
 		var box := _bbox(occ)
 		t.ok(occ.size() < Config.BOARD_W * Config.BOARD_H, "id %d còn khoảng trống trên bàn" % id)
@@ -131,6 +135,9 @@ func test_blocks_form_varied_silhouettes_in_the_fixed_board(t: T) -> void:
 	t.ok(gappy >= total * 0.95, "hầu hết level không kín khung hình (%d/%d)" % [gappy, total])
 	t.ok(shapes.size() >= 40, "nhiều hình dạng khác nhau (%d/%d)" % [shapes.size(), total])
 	t.ok(layouts.size() >= total * 0.95, "cách cắt khối khác nhau (%d/%d)" % [layouts.size(), total])
+	# Không giới hạn cỡ khối (trước đây trần 5 ô): cả hình sinh tự do lẫn hình vẽ tay đều ra được khối to hơn.
+	t.ok(int(biggest[false]) > 5, "L5-13 có khối hơn 5 ô (%d)" % int(biggest[false]))
+	t.ok(int(biggest[true]) > 5, "từ L14 có khối hơn 5 ô (%d)" % int(biggest[true]))
 
 
 ## Mọi khối sương mù đều ẩn lúc đầu, dù ở rìa hình có ô trống kề.

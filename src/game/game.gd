@@ -18,6 +18,7 @@ const Unlocks := preload("res://src/meta/unlocks.gd")
 const RescueFlow := preload("res://src/meta/rescue_flow.gd")
 const DailyCalendar := preload("res://src/meta/daily_calendar.gd")
 const Cosmetics := preload("res://src/meta/cosmetics.gd")
+const Nickname := preload("res://src/meta/nickname.gd")
 const ShopVideos := preload("res://src/meta/shop_videos.gd")
 const AdPacing := preload("res://src/meta/ad_pacing.gd")
 const Offers := preload("res://src/meta/offers.gd")
@@ -26,6 +27,7 @@ const ChainOffer := preload("res://src/meta/chain_offer.gd")
 const PackConditions := preload("res://src/meta/pack_conditions.gd")
 const NotifPlan := preload("res://src/meta/notif_plan.gd")
 const Leaderboard := preload("res://src/meta/leaderboard.gd")
+const RoadTrip := preload("res://src/meta/road_trip.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const LevelLoop := preload("res://src/core/level_loop.gd")
@@ -90,6 +92,8 @@ var _cloud_applied: String = ""
 var _cloud_late: String = ""
 ## Cache level sinh trong game (khoá: "C<ngày>:<id>").
 var _gen_cache: Dictionary = {}
+## Road Trip level number -> parsed file (road_trip_data).
+var _rt_cache: Dictionary = {}
 
 
 func _ready() -> void:
@@ -459,16 +463,26 @@ func start_attempt() -> Dictionary:
 	return _begin_attempt(data, int(s.level), false)
 
 
-func _begin_attempt(data: Dictionary, level: int, challenge: bool) -> Dictionary:
+## road_trip: a Road Trip level (start_road_trip): MOVES = the file's StepLimit, no leaderboard pieces, not the
+## main level's replay.
+func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bool = false) -> Dictionary:
+	# MOVES follow the current slack config (Remote Config can change it), not the number baked into the file.
+	if not road_trip and int(data.get("min_taps", 0)) > 0:
+		data["moves"] = int(data["min_taps"]) + Solver.slack_for(data)
 	var board := BoardState.new(data)
+	var side := challenge or road_trip
 	var attempt := {
 		"board": board, "rescue": RescueFlow.new(), "level": level,
 		"taps": 0, "moves0": board.moves_left(), "count0": board.remaining_count(),
 		"start_ms": Time.get_ticks_msec(), "free_used": {}, "ended": false,
 		"life_charged": false, "challenge": challenge, "hard": bool(data.get("hard", false)),
-		"day": today(), "replay": not challenge and level == _last_attempt_level,
+		"road_trip": road_trip, "revives": 0, "difficulty": int(data.get("difficulty", 1)),
+		"day": today(), "replay": not side and level == _last_attempt_level,
 		"specials": [] as Array[String], "special_left": [] as Array[String], "pieces": 0,
 	}
+	if road_trip:
+		log_event("rt_start", {"level": level, "runs": int(s.runs), "moves": board.moves_left()})
+		return attempt
 	if not challenge and lb_open():
 		lb_refresh()
 		var sp := Leaderboard.pick_specials(board.block_ids(), Leaderboard.pieces_for(difficulty_of(level)), level)
@@ -524,7 +538,12 @@ func _finish_attempt(attempt: Dictionary, won: bool, coins: int) -> void:
 	s["play_ms"] = int(s.play_ms) + ms
 	s["runs"] = int(s.runs) + 1
 	_ftue_runs()
-	log_event("challenge_end" if bool(attempt.get("challenge", false)) else "level_end",
+	var ev := "level_end"
+	if bool(attempt.get("road_trip", false)):
+		ev = "rt_end"
+	elif bool(attempt.get("challenge", false)):
+		ev = "challenge_end"
+	log_event(ev,
 		{"level": int(attempt.level), "won": 1 if won else 0,
 		"taps": int(attempt.taps), "moves_left": (attempt.board as BoardState).moves_left(),
 		"ms": ms, "coins": coins, "runs": int(s.runs),
@@ -539,6 +558,8 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 	if bool(attempt.get("ended", false)):
 		return {"coins": 0, "move_coins": 0, "x2_available": false, "x2_free": false, "rate_prompt": false,
 			"progress": {}, "unlocked": [] as Array[String]}
+	if bool(attempt.get("road_trip", false)):
+		return _road_trip_won(attempt)
 	var level := int(attempt.level)
 	var is_challenge := bool(attempt.get("challenge", false))
 	var base := int(Config.ECON.win_coins)
@@ -618,6 +639,11 @@ func restart_cost_life(attempt: Dictionary) -> bool:
 func _end_lost(attempt: Dictionary, show_offer: bool) -> bool:
 	if bool(attempt.get("ended", false)):
 		return false
+	if bool(attempt.get("road_trip", false)):
+		# Road Trip never costs a life and shows no offer.
+		_finish_attempt(attempt, false, 0)
+		save_now()
+		return false
 	var level := int(attempt.level)
 	_finish_attempt(attempt, false, 0)
 	if not bool(attempt.get("challenge", false)):
@@ -654,20 +680,37 @@ func claim_x2() -> bool:
 
 ## Rời thẻ thắng: chạy luật interstitial (result_exit), rồi offer, rồi xin quyền thông báo.
 func leave_win_card(x2_offered: bool, x2_taken: bool) -> void:
-	var t := now()
-	var ctx := {
-		"now": t, "session_start": _session_start, "first_session": _first_session,
-		"level": _last_win_level, "x2_offered": x2_offered, "x2_taken": x2_taken, "day": today(),
-	}
 	_x2_pending = 0
-	if AdPacing.inter_due(s, ctx) and Platform.ready_inter():
-		var shown := await _show_inter("result_exit")
-		if shown:
-			AdPacing.note_inter(s, now(), today())
-			log_event("inter_show", {"pl": "result_exit", "level": _last_win_level, "runs": int(s.runs)})
-			save_now()
+	await _result_exit_inter(_last_win_level, x2_offered, x2_taken, {"level": _last_win_level})
 	check_offer(false)
 	await _maybe_ask_notifications()
+
+
+## Rời popup thắng Road Trip: cùng luật interstitial result_exit như thẻ thắng (không có x2 nên coi như đã bỏ qua
+## x2; level Road Trip là một lượt trong s.runs). Cổng phiên đầu tính theo level chính đã qua, không theo số level
+## Road Trip. Không offer, không xin quyền thông báo.
+func road_trip_leave_win(rt_level: int) -> void:
+	var main_done := int(s.level) - 1
+	await _result_exit_inter(main_done, true, false, {"level": main_done, "mode": "road_trip", "rt_level": rt_level})
+
+
+## Hiện interstitial result_exit nếu AdPacing cho phép (level: level chính dùng cho cổng phiên đầu); log inter_show
+## kèm params và runs.
+func _result_exit_inter(level: int, x2_offered: bool, x2_taken: bool, params: Dictionary) -> void:
+	var ctx := {
+		"now": now(), "session_start": _session_start, "first_session": _first_session,
+		"level": level, "x2_offered": x2_offered, "x2_taken": x2_taken, "day": today(),
+	}
+	if not (AdPacing.inter_due(s, ctx) and Platform.ready_inter()):
+		return
+	var shown := await _show_inter("result_exit")
+	if shown:
+		AdPacing.note_inter(s, now(), today())
+		var p := {"pl": "result_exit"}
+		p.merge(params)
+		p["runs"] = int(s.runs)
+		log_event("inter_show", p)
+		save_now()
 
 
 func _show_inter(placement: String) -> bool:
@@ -985,6 +1028,22 @@ func cos_equip(id: String) -> bool:
 	cos_changed.emit()
 	_queue_save()
 	return true
+
+
+# --- nickname ---
+
+## The player's nickname, "" until one is set (design.md mục 5 "Biệt danh").
+func profile_name() -> String:
+	return Nickname.current(s)
+
+
+## Checks and saves a nickname: "" when saved, else Nickname.ERR_LENGTH, ERR_CHARS or ERR_BANNED. Free, any number of
+## times.
+func set_profile_name(raw: String) -> String:
+	var err := Nickname.change(s, raw)
+	if err == "":
+		_queue_save()
+	return err
 
 
 # --- shop và mua hàng ---
@@ -1563,6 +1622,106 @@ func challenge_needs_generation() -> bool:
 	return not _gen_cache.has("C%d:%d" % [today(), challenge_level_id()])
 
 
+# --- Road Trip (design.md mục 7 "Road Trip") ---
+
+## {open, unlock_level, level (đang chơi), done, levels, progress (Vector2i: đã qua, khoảng tới hộp kế), next_box,
+## prev_box, boxes (đã nhận), guide (cần hiện hướng dẫn mở khoá), tier ("" | "hard" | "very_hard" của level đang chơi)}.
+func road_trip_view() -> Dictionary:
+	var open := Unlocks.is_open("road_trip", int(s.level))
+	var cur := RoadTrip.current(s)
+	var done := RoadTrip.is_done(s)
+	return {"open": open, "unlock_level": int(Config.UNLOCK.get("road_trip", 0)), "level": cur, "done": done,
+		"levels": RoadTrip.levels(), "progress": RoadTrip.progress(cur), "next_box": RoadTrip.next_box(cur),
+		"prev_box": RoadTrip.prev_box(cur), "boxes": int(s.road_trip.get("boxes", 0)),
+		"guide": open and not bool(s.road_trip.get("guide", false)),
+		"tier": "" if done else road_trip_tier(cur)}
+
+
+## Level `lv` của Road Trip (data/road_trip/rt_NNNN.json), {} nếu ngoài 1..levels hoặc thiếu file.
+func road_trip_data(lv: int) -> Dictionary:
+	if lv < 1 or lv > RoadTrip.levels():
+		return {}
+	if not _rt_cache.has(lv):
+		var path := RoadTrip.LEVEL_PATH % lv
+		if not FileAccess.file_exists(path):
+			return {}
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+		if not (parsed is Dictionary):
+			return {}
+		if _rt_cache.size() > 4:
+			_rt_cache.clear()
+		_rt_cache[lv] = parsed
+	return (_rt_cache[lv] as Dictionary).duplicate(true)
+
+
+## "" | "hard" | "very_hard" theo Difficulty 1..3 của file level.
+func road_trip_tier(lv: int) -> String:
+	match int(road_trip_data(lv).get("difficulty", 1)):
+		2:
+			return "hard"
+		3:
+			return "very_hard"
+	return ""
+
+
+## Attempt của level Road Trip đang chơi ({} khi khoá, đã đi hết hoặc thiếu file). Cùng dạng start_attempt, thêm
+## road_trip = true; thắng/thua đi qua on_level_won / on_level_lost (không mất mạng, không gold).
+func start_road_trip() -> Dictionary:
+	var v := road_trip_view()
+	if not bool(v.open) or bool(v.done):
+		return {}
+	var data := road_trip_data(int(v.level))
+	if data.is_empty():
+		return {}
+	return _begin_attempt(data, int(v.level), false, true)
+
+
+## Thắng level Road Trip: tiến một level, hộp ở level đó thì cộng vật phẩm vào kho. Không gold, không x2, không
+## Weekly Pass hay leaderboard; interstitial chạy khi rời popup thắng (road_trip_leave_win). Trả {road_trip, level, box, reward, before, after, done, coins: 0, ...} (khoá của
+## on_level_won để màn level đọc chung).
+func _road_trip_won(attempt: Dictionary) -> Dictionary:
+	var level := int(attempt.level)
+	_finish_attempt(attempt, true, 0)
+	var r := RoadTrip.win(s, level)
+	var reward: Dictionary = r.reward
+	for k in reward:
+		Wallet.inv_add(s, str(k), int(reward[k]))
+	if not reward.is_empty():
+		inv_changed.emit()
+		log_event("rt_box", {"level": level, "box": int(r.box) + 1})
+	ftue("first_win")
+	save_now()
+	return {"road_trip": true, "level": level, "box": int(r.box), "reward": reward, "before": r.before,
+		"after": r.after, "done": RoadTrip.is_done(s), "coins": 0, "move_coins": 0, "x2_available": false,
+		"x2_free": false, "rate_prompt": false, "progress": {}, "unlocked": [] as Array[String]}
+
+
+## Hồi sinh Road Trip khi hết bước: {available, moves, left}.
+func road_trip_revive_view(attempt: Dictionary) -> Dictionary:
+	var mx := int(Config.ROAD_TRIP.revive_max)
+	var used := int(attempt.get("revives", 0))
+	return {"available": used < mx and not bool(attempt.get("ended", false)),
+		"moves": int(Config.ROAD_TRIP.revive_moves), "left": maxi(mx - used, 0)}
+
+
+## Xem quảng cáo `rt_revive`; xem hết thì bàn +revive_moves bước. Trả true khi đã cộng.
+func road_trip_revive(attempt: Dictionary) -> bool:
+	if not bool(road_trip_revive_view(attempt).available):
+		return false
+	if not await watch("rt_revive"):
+		return false
+	attempt["revives"] = int(attempt.get("revives", 0)) + 1
+	(attempt.board as BoardState).add_moves(int(Config.ROAD_TRIP.revive_moves))
+	log_event("rt_revive", {"level": int(attempt.level), "n": int(attempt.revives)})
+	return true
+
+
+## Đã hiện hướng dẫn mở khoá Road Trip (một lần).
+func road_trip_mark_guide() -> void:
+	s.road_trip["guide"] = true
+	save_now()
+
+
 # --- cài đặt, rung, thông báo ---
 
 func set_setting(key: String, value: Variant) -> void:
@@ -1604,6 +1763,10 @@ func tester_edit(edits: Dictionary) -> bool:
 		# Weekly Pass hearts and the leaderboard depend on the level.
 		weekly_refresh()
 		lb_refresh()
+	if edits.has("rt_level"):
+		s.road_trip["level"] = clampi(int(edits.rt_level), 1, RoadTrip.levels() + 1)
+		# Boxes before the new level count as claimed; none are granted.
+		s.road_trip["boxes"] = RoadTrip.boxes().filter(func(b: int) -> bool: return b < int(s.road_trip.level)).size()
 	save_now()
 	coins_changed.emit(int(s.coins))
 	inv_changed.emit()

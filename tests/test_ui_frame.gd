@@ -127,7 +127,7 @@ func test_hit_spins_segment_under_block(t: T) -> void:
 	t.ok(float(_part_param(v, "left", "spin")) > 0.0, "khối đi sang trái thì đoạn lăn chiều dương")
 	t.ok(float(_part_param(v, "left", "seg")) > 0.9, "đang lăn thì đoạn nổi hẳn lên")
 	(frame._hit_tws["left"] as Tween).custom_step(CandyFrame.SPIN_TIME)
-	t.near(float(_part_param(v, "left", "spin")), CandyFrame.SPIN_EXIT * PI / 3.0, 0.001, "dừng đúng sau 3 mặt lục giác")
+	t.near(float(_part_param(v, "left", "spin")), CandyFrame.SPIN_EXIT * PI / 3.0, 0.001, "dừng đúng sau SPIN_EXIT mặt lục giác")
 	t.near(float(_part_param(v, "left", "seg")), 0.0, 0.001, "dừng rồi thì đoạn chìm lại vào thanh")
 	# cổng đóng: chỉ các ô mép trước chạm thanh, lăn ngược chiều với cạnh phải
 	v._hit_bar("right", v._nodes["b1"], Vector2(1, 0), true, 0.7, CandyFrame.SPIN_BUMP)

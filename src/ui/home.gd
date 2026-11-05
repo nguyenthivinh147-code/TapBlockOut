@@ -3,8 +3,10 @@ extends Control
 ## Mọi node đặt theo toạ độ Figma, co theo rộng màn (s = rộng / 886). Phần trên neo đỉnh, nút Chơi và thanh dưới neo đáy;
 ## đường level co lại khi màn thấp hơn khung Figma.
 ## Chỉ đọc Game; không tự mở popup. Điều hướng qua closed({"action": ...}):
-## play, no_lives, lives, profile, gift, shop, ranking, settings, challenge, offer (kèm "id"),
-## preview (kèm "scene": màn đã dựng UI, chưa nối logic; chỉ hiện khi Config.ui_preview).
+## play, no_lives, lives, profile, gift, shop, ranking (icon Bảng xếp hạng ở cột trái), road_trip (tab dưới), settings,
+## challenge, offer (kèm "id"), preview (kèm "scene": màn đã dựng UI, chưa nối logic; chỉ hiện khi Config.ui_preview).
+## Road Trip vừa mở (Game.road_trip_view().guide): lớp hướng dẫn RoadTripGuide phủ tối Home trừ thanh dưới, bàn tay
+## chỉ vào tab Road Trip; chạm đâu cũng tắt và không hiện lại.
 ## Mọi node tĩnh nằm trong scenes/home.tscn (toạ độ Figma trong meta fb_rect, fb_font của FigmaBox; thanh trên, thanh dưới
 ## là instance scenes/hub_top.tscn, scenes/hub_nav.tscn); script chỉ tìm node, điền chữ, dữ liệu và nối nút.
 
@@ -74,6 +76,10 @@ var sale_btn: Button = null
 var settings_btn: Button = null
 var challenge_btn: Button = null
 var challenge_caption: Label = null
+var leaderboard_btn: Button = null
+var leaderboard_caption: Label = null
+## Lớp hướng dẫn Road Trip vừa mở (null khi không hiện).
+var road_trip_guide: Control = null
 var offer_chip: Button = null
 var offer_caption: Label = null
 var coming_soon_label: Label = null
@@ -101,6 +107,7 @@ var _sparkles: Control = null
 var _rail: TextureRect = null
 var _glow: TextureRect = null
 var _challenge_lock: TextureRect = null
+var _leaderboard_lock: TextureRect = null
 var _offer_icon: TextureRect = null
 var _gift_col: Control = null
 var _challenge_col: Control = null
@@ -204,6 +211,9 @@ func _build() -> void:
 	_challenge_col = %ChallengeItem
 	challenge_caption = _challenge_col.get_node("Caption")
 	_challenge_lock = %ChallengeLock
+	leaderboard_btn = _side_item(%LeaderboardButton, tr("home_ranking"), false, _on_leaderboard)
+	leaderboard_caption = (%LeaderboardItem as Control).get_node("Caption")
+	_leaderboard_lock = %LeaderboardLock
 
 	# cột phải: ưu đãi có hạn, Special Pack, Weekend Sale, Weekly Pass, Chain Offer (ẩn khi chưa đủ điều kiện)
 	offer_chip = _side_item(%OfferChip, "", true, _on_offer)
@@ -270,6 +280,7 @@ func _layout() -> void:
 	_stack(_left_items, LEFT_X, side_limit)
 	_stack(_right_items, RIGHT_X, side_limit)
 	_fb.apply(s, shift)
+	_layout_guide()
 
 
 ## Xếp các mục đang hiện từ COL_TOP xuống; không đủ chỗ thì rút bước dọc.
@@ -428,7 +439,15 @@ func refresh() -> void:
 	_challenge_lock.visible = not ch_open
 	challenge_caption.text = tr("home_challenge") if ch_open else tr("home_play_level") % int(ch.get("unlock_level", Config.UNLOCK.challenge))
 
+	# bảng xếp hạng: khoá như challenge
+	var lb_open: bool = Game.lb_open()
+	leaderboard_btn.disabled = not lb_open
+	leaderboard_btn.modulate = Color.WHITE if lb_open else Color(0.75, 0.75, 0.82)
+	_leaderboard_lock.visible = not lb_open
+	leaderboard_caption.text = tr("home_ranking") if lb_open else tr("home_play_level") % int(Config.UNLOCK.get("leaderboard", 0))
+
 	_refresh_timers()
+	_refresh_guide()
 
 
 ## Weekly Pass, Chain Offer, Special Pack: hiện/ẩn theo điều kiện. Gọi cả mỗi giây vì hết hạn theo giờ.
@@ -484,8 +503,101 @@ func _on_tab(tab_name: String) -> void:
 	match tab_name:
 		"shop":
 			_emit("shop")
-		"ranking":
-			_emit("ranking")
+		"road_trip":
+			if road_trip_guide != null:
+				_close_guide()
+			_emit("road_trip")
+
+
+func _on_leaderboard() -> void:
+	if not Game.lb_open():
+		return
+	_emit("ranking")
+
+
+# --- hướng dẫn Road Trip vừa mở (wireframe Road Trip S6) ---
+
+## Hiện lớp hướng dẫn một lần khi Road Trip vừa mở; tắt khi Road Trip khoá lại (tester hạ level).
+func _refresh_guide() -> void:
+	var want := bool(Game.road_trip_view().get("guide", false)) and not UnityUI.baking
+	if want and road_trip_guide == null:
+		_open_guide()
+	elif not want and road_trip_guide != null:
+		road_trip_guide.queue_free()
+		road_trip_guide = null
+
+
+## Phủ tối Home dưới thanh dưới (thanh vẫn sáng và bấm được), bong bóng chữ trên tab Road Trip, bàn tay nhún chỉ
+## vào tab. Chạm vùng tối thì tắt.
+func _open_guide() -> void:
+	var g := Control.new()
+	g.name = "RoadTripGuide"
+	g.set_anchors_preset(Control.PRESET_FULL_RECT)
+	g.mouse_filter = Control.MOUSE_FILTER_STOP
+	var dim := ColorRect.new()
+	dim.name = "Dim"
+	dim.color = ThemeKit.SCRIM
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	g.add_child(dim)
+	var bubble := Label.new()
+	bubble.name = "Bubble"
+	bubble.text = tr("rt_guide")
+	bubble.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	bubble.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	bubble.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	bubble.add_theme_color_override("font_color", ThemeKit.INK)
+	bubble.add_theme_stylebox_override("normal", UiAtlas.box("bubble_cream", Vector4(40, 40, 40, 40)))
+	bubble.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	g.add_child(bubble)
+	# The holder is placed by _layout_guide; the hand bobs inside it. Drawn over the bottom bar, which sits above
+	# this layer.
+	var holder := Control.new()
+	holder.name = "HandHolder"
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.z_index = 5
+	g.add_child(holder)
+	var hand := TextureRect.new()
+	hand.name = "Hand"
+	hand.texture = UiAtlas.tex("hand_tap")
+	hand.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	hand.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	hand.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hand.set_anchors_preset(Control.PRESET_FULL_RECT)
+	holder.add_child(hand)
+	g.gui_input.connect(func(ev: InputEvent) -> void:
+		if ev is InputEventMouseButton and (ev as InputEventMouseButton).pressed:
+			_close_guide())
+	add_child(g)
+	move_child(g, _nav.get_index())
+	road_trip_guide = g
+	_layout_guide()
+	var tw := hand.create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(hand, "position:y", -24.0, 0.45)
+	tw.tween_property(hand, "position:y", 0.0, 0.45)
+
+
+## Bong bóng và bàn tay theo tab Road Trip (ô phải của thanh dưới, toạ độ Figma theo đáy khung).
+func _layout_guide() -> void:
+	if road_trip_guide == null or size.x <= 0.0:
+		return
+	var s := size.x / DESIGN_W
+	var nav_top := size.y - HubNav.DESIGN_H * s
+	var bubble := road_trip_guide.get_node("Bubble") as Label
+	bubble.add_theme_font_size_override("font_size", roundi(40.0 * s))
+	bubble.size = Vector2(520, 170) * s
+	bubble.position = Vector2(DESIGN_W - 540.0, 0) * s + Vector2(0, nav_top - 330.0 * s)
+	var holder := road_trip_guide.get_node("HandHolder") as Control
+	holder.size = Vector2(150, 150) * s
+	holder.position = Vector2(DESIGN_W - HubNav.SLOT_W * 0.5 - 30.0, 0) * s + Vector2(0, nav_top - 110.0 * s)
+
+
+func _close_guide() -> void:
+	if road_trip_guide == null:
+		return
+	road_trip_guide.queue_free()
+	road_trip_guide = null
+	Game.road_trip_mark_guide()
 
 
 func _on_play() -> void:

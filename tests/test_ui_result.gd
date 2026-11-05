@@ -2,6 +2,7 @@ extends RefCounted
 const T := preload("res://tests/t.gd")
 const MockIap := preload("res://src/platform/mock_iap.gd")
 const NoLives := preload("res://src/ui/no_lives.gd")
+const UiMotion := preload("res://src/ui/ui_motion.gd")
 
 const DIR := "user://test_ui_result"
 const NOW := 1800000000
@@ -137,7 +138,7 @@ func test_win_move_gold_then_x2_mid_flight(t: T) -> void:
 	var moves: int = attempt.board.moves_left()
 	var won := int(res.coins)
 	var base := won - int(res.move_coins)
-	t.ok(moves > 1 and int(res.move_coins) == moves, "1 gold mỗi MOVES thừa")
+	t.ok(moves > 1 and int(res.move_coins) == 10 * moves, "10 gold mỗi MOVES thừa")
 	var chip := Control.new()
 	chip.size = Vector2(120, 100)
 	_tree().root.add_child(chip)
@@ -211,6 +212,24 @@ func test_lose_retry_home(t: T) -> void:
 	_btn(p2, "HomeButton").pressed.emit()
 	t.eq(st2.get("r"), "home", "về Home")
 	p2.free()
+
+
+func test_lose_art_is_the_crying_icon(t: T) -> void:
+	_g()
+	var p := _mount("lose_card", {"offer": "", "life_charged": false})
+	var art: Control = p.get("ui").node("Panel/LossPanel/BG/Image")
+	t.eq((art.get("tex") as Texture2D).resource_path, "res://assets/ui/art_lose.png", "icon art_lose thay tranh prefab")
+	t.ok(bool(art.get("preserve_aspect")), "giữ tỉ lệ icon")
+	var m := art.get_node_or_null(UiMotion.NODE_NAME)
+	t.ok(m != null and int(m.get("kind")) == UiMotion.SOB, "icon nấc như đang khóc")
+	var tear := art.get_node_or_null("Tear") as TextureRect
+	t.ok(tear != null, "giọt lệ là node riêng trên icon")
+	if tear != null:
+		t.eq(tear.texture.resource_path, "res://assets/ui/art_lose_tear.png", "ảnh giọt lệ tách khỏi icon")
+		var tm := tear.get_node_or_null(UiMotion.NODE_NAME)
+		t.ok(tm != null and int(tm.get("kind")) == UiMotion.TEAR, "giọt lệ chảy")
+		t.near(tear.modulate.a, 0.0, 0.0001, "giọt lệ chờ ứa ra")
+	p.free()
 
 
 func test_lose_rescue_pack_buy(t: T) -> void:

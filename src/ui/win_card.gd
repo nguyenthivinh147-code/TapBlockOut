@@ -1,8 +1,8 @@
 extends Control
 ## Thẻ thắng: +gold, x2 (L1 miễn phí), Tiếp tục. Bố cục WinPanel của EndGameUILayer (color-cube-match-puzzle):
 ## cúp và kèn, ribbon tiêu đề, thẻ người chơi trên bảng xếp hạng, thanh tính năng kế tiếp, dải phần thưởng, hàng nút.
-## Ô thưởng gold và dòng thông báo là node trong scenes/win_card.tscn; ô điểm xếp hạng và dòng gợi ý x2 thêm lúc chạy
-## khi có.
+## Ô thưởng gold và dòng thông báo là node trong scenes/win_card.tscn; dòng gợi ý x2 thêm lúc chạy khi có. Dải phần
+## thưởng chỉ có gold: điểm xếp hạng chỉ hiện ở thẻ người chơi (tổng điểm đếm dần), không có ô "+N điểm xếp hạng".
 ## setup(args): kết quả Game.on_level_won ({coins, move_coins, x2_available, x2_free, rate_prompt, progress, lb});
 ## ô gold hiện coins (đã gồm gold MOVES thừa). Màn level thêm moves_chip (chip lượt), moves_left và
 ## on_move_cashed(lượt): khi đó ô gold bắt đầu từ coins - move_coins, đồng gold bay từ chip vào ô (CoinFx), mỗi đồng
@@ -31,15 +31,13 @@ const CARD := "Panel/WinPanel/WinPanel/PlayerLeaderboardItem"
 const FEATURE := "Panel/WinPanel/WinPanel/NewFeatureUnlock"
 const REWARDS := "Panel/WinPanel/BG/RewardGroup/Rewards"
 const ROW := "Panel/WinPanel/BG/GameObject"
-## RewardItemSO icon of rank points (RewardType.RankPoint); the gold one is saved in the scene.
-const RANK_POINT_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_2"
 ## UILeaderboardUserCard image states of the player's own card: medal for rank 1..3, none from rank 4.
 ## (Its own-card background UI_Leaderboard_Atlas_29 is not in _sprites.json, so the prefab background stays.)
 const MEDALS := ["UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_14", "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_15",
 	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_24"]
 ## Feature (Unlocks) -> game icon shown in the next-feature frame; hidden when the icon has no file.
 const FEATURE_ICONS := {"daily_gift": "ui_gift", "hint": "booster_hint", "shop": "ui_shop", "move": "booster_move",
-	"smash": "booster_smash", "lives": "ui_heart", "leaderboard": "ui_leaderboard"}
+	"smash": "booster_smash", "lives": "ui_heart", "leaderboard": "ui_leaderboard", "road_trip": "ui_road_trip"}
 
 var ui: RefCounted = null
 var _args: Dictionary = {}
@@ -64,7 +62,6 @@ var _prog_before: float = 0.0
 var _prog_after: float = 0.0
 var _prog_unlocked: bool = false
 var _feature_names: String = ""
-var _lb_points: Label = null
 var _lb_rank: Label = null
 var _lb_total: Label = null
 var _lb_name: Label = null
@@ -115,32 +112,16 @@ func _build() -> void:
 # --- rewards (VictoryPanel.InitRewards: one Reward.prefab per item) ---
 
 func _build_rewards() -> void:
-	# The gold Reward.prefab (CoinIcon, RewardLabel) is a node of the scene; the rank point one shows only with the
-	# leaderboard.
+	# The gold Reward.prefab (CoinIcon, RewardLabel) is a node of the scene. VictoryPanel's RankPoint reward is left
+	# out: rank points show only on the player's leaderboard card.
 	_reward = %GoldReward.get_node("RewardLabel")
 	UnityUI.set_text(_reward, tr("win_reward") % _shown)
-	var lb: Dictionary = _args.get("lb", {})
-	if not lb.is_empty():
-		# VictoryPanel adds a RankPoint reward when the leaderboard is open.
-		var rp := _reward_item(RANK_POINT_ICON, tr("lb_win_points") % 0)
-		rp.root.name = "LbPointReward"
-		rp.node("RewardIcon").name = "LbPointIcon"
-		_lb_points = rp.label("RewardText")
-		_lb_points.name = "LbPointsLabel"
 	ui.relayout(REWARDS)
-
-
-func _reward_item(icon: String, text: String) -> RefCounted:
-	var v: RefCounted = UnityKit.add(ui.node(REWARDS), UnityKit.spec("Reward", ""))
-	v.root.visible = true
-	v.sprite("RewardIcon", icon)
-	v.text("RewardText", text)
-	return v
 
 
 # --- leaderboard card (UILeaderboardUserCard of the player) ---
 
-## args.lb = Game.on_level_won().lb: points count up, old rank counts to the new one; a promotion shows the new
+## args.lb = Game.on_level_won().lb: total points count up, old rank counts to the new one; a promotion shows the new
 ## league in the name slot. Hidden when the level had no pieces.
 func _build_lb() -> void:
 	var lb: Dictionary = _args.get("lb", {})
@@ -168,21 +149,15 @@ func _build_lb() -> void:
 
 func _animate_lb() -> void:
 	var lb: Dictionary = _args.get("lb", {})
-	if lb.is_empty() or _lb_points == null:
+	if lb.is_empty() or _lb_total == null:
 		return
 	var tw := create_tween().set_parallel(true)
-	tw.tween_method(_set_lb_points, 0.0, float(lb.get("added", 0)), 0.6)
 	tw.tween_method(_set_lb_total, float(lb.get("before", 0)), float(lb.get("after", 0)), 0.6)
 	tw.tween_method(_set_lb_rank, float(lb.get("rank_before", 0)), float(lb.get("rank_after", 0)), 0.9).set_trans(Tween.TRANS_SINE)
 	if not (lb.get("promoted", []) as Array).is_empty():
 		_lb_name.scale = Vector2(0.3, 0.3)
 		ui.text(CARD + "/PlayerName", tr("lb_league") % LbKit.league_name(str(lb.get("league_id", ""))))
 		tw.tween_property(_lb_name, "scale", Vector2.ONE, 0.4).set_delay(0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-
-
-func _set_lb_points(v: float) -> void:
-	if is_instance_valid(_lb_points):
-		UnityUI.set_text(_lb_points, tr("lb_win_points") % roundi(v))
 
 
 func _set_lb_total(v: float) -> void:

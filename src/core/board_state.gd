@@ -19,6 +19,7 @@ var _stones: Array[Vector2i] = []
 var _occ: Dictionary = {}  # Vector2i -> id khối, hoặc STONE
 var _vacated: Dictionary = {}  # ô từng có khối, nay đã trống
 var _gates: Dictionary = {}  # cạnh -> đang mở?
+var _gate_segs: Dictionary = {}  # level nhiều cổng: cạnh -> [[màu, từ, tới), ...] (chỉ để vẽ khung)
 
 
 func _init(level: Dictionary) -> void:
@@ -39,6 +40,7 @@ func _init(level: Dictionary) -> void:
 		var fog := bool(bd.get("fog", false))
 		_blocks[id] = {
 			"color": str(bd.get("color", "")),
+			"dir": str(bd.get("dir", "")),
 			"cells": cells,
 			"ice": int(bd.get("ice", 0)),
 			"chained_by": str(bd.get("chained_by", "")),
@@ -51,6 +53,13 @@ func _init(level: Dictionary) -> void:
 			_occ[c] = id
 	for p in level.get("pulse_sides", []):
 		_gates[str(p.get("side", ""))] = bool(p.get("open", false))
+	var segs: Variant = level.get("gates", {})
+	if segs is Dictionary:
+		for side in segs:
+			var list: Array = []
+			for s in segs[side]:
+				list.append([str(s[0]), int(s[1]), int(s[2])])
+			_gate_segs[str(side)] = list
 	_update_reveal()
 	_won = _blocks.is_empty()
 
@@ -68,6 +77,7 @@ func clone() -> BoardState:
 	c._occ = _occ.duplicate()
 	c._vacated = _vacated.duplicate()
 	c._gates = _gates.duplicate()
+	c._gate_segs = _gate_segs
 	return c
 
 
@@ -90,6 +100,12 @@ func gates() -> Dictionary:
 
 func gate_open(side: String) -> bool:
 	return not _gates.has(side) or bool(_gates[side])
+
+
+## Level nhiều cổng (Road Trip): cạnh -> [[màu, từ, tới), ...] theo ô dọc cạnh; rỗng với level thường (một màu
+## mỗi cạnh). Chỉ để vẽ khung, luật chạm dùng `dir` của khối.
+func gate_segments() -> Dictionary:
+	return _gate_segs
 
 
 func moves_left() -> int:
@@ -124,6 +140,7 @@ func block_view(block_id: String) -> Dictionary:
 	return {
 		"id": block_id,
 		"color": b["color"],
+		"dir": LevelData.block_side(b),
 		"cells": b["cells"].duplicate(),
 		"ice": b["ice"],
 		"chained": chained,
@@ -228,7 +245,8 @@ func _evaluate(id: String) -> Dictionary:
 		return {"kind": "chained", "distance": 0, "blocker": key}
 	if int(b["ice"]) > 0:
 		return {"kind": "crack", "distance": 0, "blocker": ""}
-	var d := LevelData.dir_of(b["color"])
+	var side := LevelData.block_side(b)
+	var d := LevelData.side_dir(side)
 	var cells: Array = b["cells"]
 	var k := 0
 	while k < STEP_CAP:
@@ -245,7 +263,6 @@ func _evaluate(id: String) -> Dictionary:
 		if not any_in:
 			break
 	# Đường thông. Cổng nhịp đóng thì trượt tới mép rồi bật về.
-	var side := LevelData.side_of(b["color"])
 	if not gate_open(side):
 		var inside := 0
 		while true:

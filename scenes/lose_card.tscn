@@ -14,7 +14,8 @@
 [ext_resource type="Texture2D" path="res://assets/ui/cc/ic_MysteryContainer.png" id="13_viohq"]
 [ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="14_w6vi2"]
 [ext_resource type="Texture2D" path="res://assets/ui/cc/Popup5.png" id="15_k688l"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup_Lose.png" id="16_vjolj"]
+[ext_resource type="Texture2D" uid="uid://dr4ycalbiaqiw" path="res://assets/ui/art_lose.png" id="16_artlose"]
+[ext_resource type="Texture2D" uid="uid://dl5g6jmmog6dp" path="res://assets/ui/art_lose_tear.png" id="17_tear"]
 [ext_resource type="PackedScene" path="res://scenes/unity/EndGameUILayer.tscn" id="u0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fphxa"]
@@ -5371,17 +5372,20 @@ metadata/u_rect = {
 
 [node name="Image" parent="Canvas/EndGameUILayer/Panel/LossPanel/BG" index="1" unique_id=378181024]
 anchors_preset = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 30.0
-offset_top = 30.0
-offset_right = -30.0
-offset_bottom = -30.0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -290.0
+offset_top = -247.3
+offset_right = 290.0
+offset_bottom = 332.7
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
 script = ExtResource("3_7lhuv")
-tex = ExtResource("16_vjolj")
-region = Rect2(0, 0, 740, 603)
+tex = ExtResource("16_artlose")
+region = Rect2(0, 0, 512, 512)
+preserve_aspect = true
 fill_method = 4
 metadata/u = {
 "a": true,
@@ -5394,22 +5398,34 @@ metadata/u = {
 "fm": 4.0,
 "fo": 0.0,
 "on": true,
-"pa": false,
+"pa": true,
 "ppu": 1.0,
 "rt": true,
-"sp": "Popup_Lose",
+"sp": null,
 "t": 0.0
 },
 "n": "Image",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -60.0, -60.0, 0.5, 0.5]
+"r": [0.5, 0.5, 0.5, 0.5, 0.0, -42.7, 580.0, 580.0, 0.5, 0.5]
 }
 metadata/u_rect = {
-"amax": Vector2(1, 1),
-"amin": Vector2(0, 0),
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 0),
-"size": Vector2(-60, -60)
+"pos": Vector2(0, -42.7),
+"size": Vector2(580, 580)
 }
+
+[node name="Tear" type="TextureRect" parent="Canvas/EndGameUILayer/Panel/LossPanel/BG/Image" unique_id=1736154920]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.60546875
+anchor_top = 0.568359375
+anchor_right = 0.66796875
+anchor_bottom = 0.63671875
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+texture = ExtResource("17_tear")
+expand_mode = 1
 
 [node name="@Control@6" parent="Canvas/EndGameUILayer/Panel/LossPanel/BG" index="2" unique_id=1113028491]
 visible = false

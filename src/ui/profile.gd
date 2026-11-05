@@ -1,5 +1,6 @@
 extends Control
-## Profile (wireframe 10.1) on ProfileLayer of color-cube-match-puzzle: worn avatar and frame, nickname, Avatar | Frame
+## Profile (wireframe 10.1) on ProfileLayer of color-cube-match-puzzle: worn avatar and frame, nickname (the saved one or
+## the default "Player"; the pencil opens popup_change_name), Avatar | Frame
 ## tabs (ToggleAnimator swaps the grid and its button group), 3-column grids of Profile_AvtCells / Profile_FrameCells
 ## clones with the game's avatar and frame pictures. The button under the grid follows ProfileUICoreLayer: Used (worn),
 ## OK = equip (owned), Buy with the gold price (not owned); the game's video unlock is a copy of SaveButton on the blue
@@ -88,7 +89,7 @@ static func make_avatar(avatar_id: String, frame_id: String, px: int) -> Control
 		var sb := StyleBoxFlat.new()
 		sb.bg_color = Color(0, 0, 0, 0)
 		sb.set_corner_radius_all(px)
-		var keys := ThemeKit.BLOCK_COLORS.keys()
+		var keys := ThemeKit.BLOCK_COLORS.keys().slice(0, 4)
 		var col: Color = ThemeKit.TEXT_DIM
 		if not frame_id.ends_with("_00"):
 			col = ThemeKit.BLOCK_COLORS[keys[absi(frame_id.hash()) % keys.size()]]
@@ -175,12 +176,7 @@ func _wire_info() -> void:
 	ui.text(INFO + "/Label", tr("profile_nickname"))
 	name_label = ui.text(INFO + "/PlayerName/Placeholder", tr("profile_name_default"))
 	name_label.name = "NameLabel"
-	var edit := ui.on_click(INFO + "/Editname", _on_edit_name)
-	edit.name = "EditNameButton"
-	# Changing the name is not wired yet (popup_change_name is a stub): only in UI preview builds.
-	if not Config.ui_preview():
-		edit.get_parent().remove_child(edit)
-		edit.queue_free()
+	ui.on_click(INFO + "/Editname", _on_edit_name).name = "EditNameButton"
 	ui.text(UID, "")
 	gold_label = ui.label(UID + "/DeviceID")
 	gold_label.name = "GoldLabel"
@@ -246,6 +242,8 @@ func refresh() -> void:
 	var fr_id := str(cosm.get("frame", "frame_00"))
 	var owned: Array = cosm.owned
 	gold_label.text = str(int(Game.s.coins))
+	var nick := Game.profile_name()
+	UnityUI.set_text(name_label, nick if nick != "" else tr("profile_name_default"))
 	ui.texture(INFO + "/CurrentAvt", ThemeKit.icon(av_id))
 	ui.texture(INFO + "/CurrentFrame", ThemeKit.icon(fr_id))
 	for id in cells:
@@ -313,11 +311,17 @@ func _on_tab(kind: String) -> void:
 	refresh()
 
 
+## popup_change_name over the Profile; a saved name shows in the name box.
 func _on_edit_name() -> void:
+	if get_node_or_null("ChangeName") != null:
+		return
 	var node := (load(CHANGE_NAME) as PackedScene).instantiate()
+	node.name = "ChangeName"
 	add_child(node)
 	node.call("setup", {})
-	node.connect("closed", func(_r: Variant) -> void: node.queue_free())
+	node.connect("closed", func(_r: Variant) -> void:
+		node.queue_free()
+		refresh())
 
 
 func _say(text: String) -> void:

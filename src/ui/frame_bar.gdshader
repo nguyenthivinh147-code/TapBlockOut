@@ -20,6 +20,16 @@ uniform float seg = 0.0;       // đoạn bị va: 0 nằm trong thanh, 1 nổi 
 uniform float seg_at = 0.0;    // tâm đoạn, tính từ tâm thanh dọc theo thanh
 uniform float seg_half = 0.0;  // nửa chiều dài đoạn
 uniform float spin = 0.0;      // góc quay của đoạn quanh trục thanh, radian; mỗi mặt lục giác 60°
+// Level nhiều cổng (Road Trip): thanh chia seg_count cổng (1..3) tại cut_a, cut_b (along, px từ tâm thanh); cổng 2, 3
+// tô theo ramp_b, ramp_c và end_col_b, end_col_c; mỗi cổng một mũi tên ở arrows_along (along). seg_count 1: như cũ.
+uniform int seg_count = 1;
+uniform float cut_a = 0.0;
+uniform float cut_b = 0.0;
+uniform sampler2D ramp_b : filter_linear, repeat_disable;
+uniform sampler2D ramp_c : filter_linear, repeat_disable;
+uniform vec4 end_col_b : source_color = vec4(1.0);
+uniform vec4 end_col_c : source_color = vec4(1.0);
+uniform vec3 arrows_along = vec3(0.0);
 
 const float END_RIM = 0.3;          // vành ở hai đầu, theo bán kính đầu thanh
 const float CAP_GLOSS_AT = 0.32;    // vòng sáng ở đầu trên thanh dọc, theo bán kính
@@ -44,6 +54,30 @@ const float SHADOW_A = 0.32;
 const vec3 SHADOW_COL = vec3(0.14, 0.03, 0.16);
 const vec3 ARROW_COL = vec3(0.992, 0.984, 0.98);
 const vec3 ARROW_EDGE = vec3(0.945, 0.76, 0.83);
+const float GATE_SEAM = 0.07;       // khe giữa hai cổng, theo ô
+const float GATE_SEAM_A = 0.85;
+
+// Cổng chứa điểm `along` (0, 1, 2).
+int gate_at(float along) {
+	if (seg_count < 2 || along < cut_a) {
+		return 0;
+	}
+	return (seg_count < 3 || along < cut_b) ? 1 : 2;
+}
+
+vec3 ramp_of(int g, float u) {
+	if (g == 1) {
+		return texture(ramp_b, vec2(u, 0.5)).rgb;
+	}
+	if (g == 2) {
+		return texture(ramp_c, vec2(u, 0.5)).rgb;
+	}
+	return texture(ramp, vec2(u, 0.5)).rgb;
+}
+
+vec3 end_of(int g) {
+	return g == 1 ? end_col_b.rgb : (g == 2 ? end_col_c.rgb : end_col.rgb);
+}
 
 // Khoảng cách tới mép capsule, dương là bên trong.
 float capsule(vec2 p) {
@@ -61,13 +95,29 @@ float triangle(vec2 p, vec2 q) {
 	return -sqrt(d.x) * sign(d.y);
 }
 
-// Khoảng cách tới mép mũi tên, âm là bên trong; ô chứa mũi tên giữ đúng arrow_size sau khi bo góc.
-float arrow(vec2 p) {
-	vec2 rel = (p - arrow_at) / (1.0 + pop);
+// Khoảng cách tới mép một mũi tên có tâm `at`, âm là bên trong; ô chứa mũi tên giữ đúng arrow_size sau khi bo góc.
+float arrow_one(vec2 p, vec2 at) {
+	vec2 rel = (p - at) / (1.0 + pop);
 	vec2 lp = vec2(dot(rel, vec2(-arrow_dir.y, arrow_dir.x)), -dot(rel, arrow_dir));
 	float rr = ARROW_ROUND * cell_px;
 	vec2 q = vec2(arrow_size.x * 0.5 - rr, arrow_size.y - 2.0 * rr);
 	return triangle(lp + vec2(0.0, q.y * 0.5), q) - rr;
+}
+
+// Mũi tên gần nhất. Nhiều cổng: mỗi cổng một mũi tên, dời dọc thanh tới arrows_along.
+float arrow(vec2 p) {
+	if (seg_count < 2) {
+		return arrow_one(p, arrow_at);
+	}
+	float d = 1e6;
+	for (int i = 0; i < 3; i++) {
+		if (i >= seg_count) {
+			break;
+		}
+		vec2 at = vertical ? vec2(arrow_at.x, arrows_along[i]) : vec2(arrows_along[i], arrow_at.y);
+		d = min(d, arrow_one(p, at));
+	}
+	return d;
 }
 
 // Đoạn bị va: lăng trụ lục giác quay quanh trục thanh, nhìn thẳng từ trên xuống; spin = 0 thì một mặt hướng lên
@@ -102,7 +152,7 @@ vec4 segment(float along, float across, float r, float half_len) {
 			continue;
 		}
 		float u = mix((cos(phi) + 1.0) * 0.5, clamp((across + r) / (2.0 * r), 0.0, 1.0), 0.3);
-		col = texture(ramp, vec2(u, 0.5)).rgb * mix(SEG_SHADE, 1.0, facing);
+		col = ramp_of(gate_at(seg_at), u) * mix(SEG_SHADE, 1.0, facing);
 		// cạnh giữa hai mặt cùng thấy được thì sáng lên, mép bóng thì không
 		float inner = min(abs(x0) < w - 0.5 ? abs(x - x0) : 1e4, abs(x1) < w - 0.5 ? abs(x - x1) : 1e4);
 		col = mix(col, vec3(1.0), SEG_EDGE_A * (1.0 - smoothstep(0.5, 2.0, inner)));
@@ -131,17 +181,29 @@ void fragment() {
 
 	if (a > 0.0) {
 		float thick = r * 2.0;
-		vec3 body = texture(ramp, vec2((across + r) / thick, 0.5)).rgb;
+		int gi = gate_at(along);
+		vec3 gate_end = end_of(gi);
+		vec3 body = ramp_of(gi, (across + r) / thick);
 
 		// hai đầu thanh: vành đậm ôm theo đầu tròn
 		float in_cap = smoothstep(0.0, r * 0.6, abs(along) - (half_len - r));
-		body = mix(body, mix(end_col.rgb, body, smoothstep(0.0, r * END_RIM, d)), in_cap);
+		body = mix(body, mix(gate_end, body, smoothstep(0.0, r * END_RIM, d)), in_cap);
 		if (vertical) {
 			// đầu trên có vòng sáng, đầu dưới đậm dần
 			float top = smoothstep(0.0, r * 0.45, -along - (half_len - r));
 			float g = (d - r * CAP_GLOSS_AT) / (r * CAP_GLOSS_W);
 			body = mix(body, vec3(1.0), CAP_GLOSS_A * top * exp(-g * g));
-			body = mix(body, end_col.rgb, 1.0 - smoothstep(r * CAP_BAND_TO, r * CAP_BAND_FROM, half_len - along));
+			body = mix(body, gate_end, 1.0 - smoothstep(r * CAP_BAND_TO, r * CAP_BAND_FROM, half_len - along));
+		}
+
+		// khe giữa hai cổng: vạch đậm ngang thanh, màu đậm của cổng bên này
+		if (seg_count > 1) {
+			float to_cut = abs(along - cut_a);
+			if (seg_count > 2) {
+				to_cut = min(to_cut, abs(along - cut_b));
+			}
+			float hw = GATE_SEAM * cell_px * 0.5;
+			body = mix(body, gate_end * 0.7, GATE_SEAM_A * (1.0 - smoothstep(hw, hw + 1.0, to_cut)));
 		}
 
 		body = mix(body, body * (1.0 - CLOSED_DIM), closed);
@@ -165,7 +227,7 @@ void fragment() {
 		// mũi tên: viền mờ màu đậm của thanh, lệch nhẹ xuống; thân trắng, mép dưới ám hồng
 		float ad = arrow(p);
 		float as = 1.0 - smoothstep(0.0, 0.075 * cell_px, arrow(p - vec2(0.0, 0.03 * cell_px)));
-		body = mix(body, end_col.rgb * 0.92, as * 0.85 * open);
+		body = mix(body, gate_end * 0.92, as * 0.85 * open);
 		float edge = smoothstep(-0.035 * cell_px, 0.0, arrow(p + vec2(0.0, 0.035 * cell_px)));
 		vec3 ac = mix(ARROW_COL, ARROW_EDGE, edge * 0.45);
 		body = mix(body, ac, clamp(0.5 - ad, 0.0, 1.0) * mix(0.25, 1.0, open));
@@ -177,7 +239,7 @@ void fragment() {
 			float out_end = max(lo - along, along - hi);
 			float pin = clamp(PIN_LEN * cell_px - out_end + 0.5, 0.0, 1.0) * step(0.0, out_end);
 			pin *= clamp(r * PIN_W - abs(across) + 0.5, 0.0, 1.0) * smoothstep(0.0, 0.3, seg);
-			body = mix(body, end_col.rgb * 0.8, pin);
+			body = mix(body, end_of(gate_at(seg_at)) * 0.8, pin);
 		}
 
 		col = mix(body, vec3(1.0), flash * 0.55);

@@ -66,9 +66,15 @@ func test_gift_skipped_levels(t: T) -> void:
 
 func test_feature_progress(t: T) -> void:
 	var p := Unlocks.feature_progress(1)
-	t.ok(p.has_next and p.start == 1 and p.end == 4, "L1: mốc 1 -> 4")
+	t.ok(p.has_next and p.start == 1 and p.end == 2, "L1: mốc 1 -> 2 (Road Trip)")
 	t.near(p.before, 0.0, 0.001, "L1 trước")
-	t.near(p.after, 1.0 / 3.0, 0.001, "L1 sau")
+	t.near(p.after, 1.0, 0.001, "L1 sau: chạm mốc")
+	t.eq(p.features, ["road_trip"] as Array[String], "mốc 2 là Road Trip")
+	t.eq(p.unlocked, ["road_trip"] as Array[String], "thắng L1 mở Road Trip")
+	t.ok(not Unlocks.opens_home(["road_trip"]), "Road Trip không kéo về Home: hướng dẫn hiện khi về Home")
+	p = Unlocks.feature_progress(2)
+	t.ok(p.start == 2 and p.end == 4, "L2: mốc 2 -> 4")
+	t.near(p.after, 0.5, 0.001, "L2 sau")
 	t.eq(p.features, ["daily_gift"] as Array[String], "mốc 4 là quà ngày")
 	p = Unlocks.feature_progress(3)
 	t.near(p.after, 1.0, 0.001, "L3 chạm mốc")

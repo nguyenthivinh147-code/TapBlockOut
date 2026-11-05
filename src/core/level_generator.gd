@@ -1,7 +1,7 @@
 extends RefCounted
 ## Bộ sinh level (design.md mục 3-4, kế hoạch Task 9.1). Thuần: chỉ dùng RandomNumberGenerator có seed,
 ## cùng (id, seed) cho cùng level. Cách làm: chọn một hình (`Silhouette`) trong khung cục bộ, lát hình đó thành
-## polyomino (tự do hoặc đối xứng), rồi mô phỏng ván chơi tiến: mỗi bước chọn một khối còn có đường thoát và gán
+## polyomino cỡ và hình bất kỳ (tự do hoặc đối xứng), rồi mô phỏng ván chơi tiến: mỗi bước chọn một khối còn có đường thoát và gán
 ## luôn màu (hướng) của nó theo đường đó, nên level luôn giải được. Sau đó rải cơ chế theo `Config.UNLOCK`, dịch
 ## hình vào giữa bàn cố định (ngoài hình là ô trống nên đường thoát không đổi), cuối cùng qua validate và Solver.
 ## Từ DifficultyCurve.SHAPED_FROM hình lấy từ bản vẽ tay (`Motifs`), không khoét rìa, và khối cắt đối xứng theo trục của
@@ -28,7 +28,6 @@ const MAX_TRIES := 60
 const GATE_MAX_BLOCKS := 52
 const GATE2_MAX_BLOCKS := 40
 const GATE2_FROM := 130
-const BLOCK_CAP := 5
 ## Bước nhảy trong Motifs.KINDS giữa hai level liền nhau (nguyên tố cùng nhau với số hình), để hình kế tiếp khác nhóm.
 const MOTIF_STRIDE := 8
 const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
@@ -396,7 +395,8 @@ static func _shuffle(a: Array, rng: RandomNumberGenerator) -> void:
 		a[j] = t
 
 
-## Lát các ô của hình (trừ đá) thành đúng `n` polyomino bằng cách gộp dần các ô đơn, ưu tiên gộp mảnh nhỏ.
+## Lát các ô của hình (trừ đá) thành đúng `n` polyomino bằng cách gộp dần các ô đơn. Không giới hạn cỡ hay hình khối;
+## mỗi cách gộp có trọng số 1 / cỡ khối sau gộp (`_merge_weight`) nên khối to vẫn ra nhưng hiếm khi thành mảng khổng lồ.
 ## Trả mảng các `Array[Vector2i]`, hoặc [] nếu kẹt.
 static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i], n: int, mirror: String,
 		rng: RandomNumberGenerator) -> Array:
@@ -427,11 +427,8 @@ static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i]
 					var gj: int = owner[nb]
 					if gj <= gi:
 						continue
-					var sum: int = groups[gi].size() + groups[gj].size()
-					if sum > BLOCK_CAP:
-						continue
 					pairs.append([gi, gj])
-					weights.append(float((BLOCK_CAP + 1 - sum) * (BLOCK_CAP + 1 - sum)))
+					weights.append(_merge_weight(groups[gi].size() + groups[gj].size()))
 		if pairs.is_empty():
 			return []
 		var pick: Array = pairs[_pick_weighted(weights, rng)]
@@ -455,6 +452,11 @@ static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i]
 				m.append(_mirror_cell(c, w, h, mirror))
 			out.append(m)
 	return out
+
+
+## Trọng số của một cách gộp ra khối `size` ô: nghịch đảo cỡ, không có trần.
+static func _merge_weight(size: int) -> float:
+	return 1.0 / float(size)
 
 
 static func _pick_weighted(weights: Array[float], rng: RandomNumberGenerator) -> int:
@@ -543,7 +545,7 @@ static func _expand(cells: Array, joined_h: bool, joined_v: bool, w: int, h: int
 
 ## Lát hình đối xứng thành khoảng `n` khối: chỉ lát phần cơ sở rồi lật ra, nên cách cắt khối cũng đối xứng. Nhóm chạm
 ## trục có thể nối với ảnh lật của nó thành một khối nằm vắt qua trục (cạnh lẻ thì ô trên trục bắt buộc nối). Gộp dần
-## như `_tile`, ưu tiên mảnh nhỏ, khối tối đa BLOCK_CAP ô. Mỗi lần gộp bớt 1, 2 hoặc 4 khối nên số khối ra trong
+## như `_tile` (không giới hạn cỡ khối, trọng số `_merge_weight`). Mỗi lần gộp bớt 1, 2 hoặc 4 khối nên số khối ra trong
 ## n-2..n+2. Trả mảng các `Array[Vector2i]` trên cả hình, hoặc [] nếu kẹt.
 static func _tile_sym(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i], n: int, sym_h: bool,
 		sym_v: bool, rng: RandomNumberGenerator) -> Array:
@@ -629,20 +631,17 @@ static func _tile_sym(area: Array[Vector2i], w: int, h: int, stones: Array[Vecto
 	return out
 
 
-## Ghi một cách gộp vào `opts` (kèm trọng số, ưu tiên khối nhỏ) nếu khối không quá BLOCK_CAP ô và không làm số khối
-## xuống dưới `n`; xuống dưới `n` thì ghi vào `under`. `opt`: [gi, gj, nối dọc, nối ngang]; `before`: số khối trước gộp.
+## Ghi một cách gộp vào `opts` (kèm trọng số `_merge_weight` theo cỡ khối đầy đủ) nếu không làm số khối xuống dưới
+## `n`; xuống dưới `n` thì ghi vào `under`. `opt`: [gi, gj, nối dọc, nối ngang]; `before`: số khối trước gộp.
 static func _merge_option(opt: Array, cells: Array, before: int, total: int, n: int, w: int, h: int, sym_h: bool,
 		sym_v: bool, opts: Array, weights: Array[float], under: Array) -> void:
-	var size := _expand(cells, opt[2], opt[3], w, h).size()
-	if size > BLOCK_CAP:
-		return
 	var cut := before - _copies([cells, opt[2], opt[3]], sym_h, sym_v)
 	if cut <= 0:
 		return
 	var full: Array = opt + [cut]
 	if total - cut >= n:
 		opts.append(full)
-		weights.append(float((BLOCK_CAP + 1 - size) * (BLOCK_CAP + 1 - size)))
+		weights.append(_merge_weight(_expand(cells, opt[2], opt[3], w, h).size()))
 	else:
 		under.append(full)
 

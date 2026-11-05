@@ -13,6 +13,11 @@ const DIR := {
 const SIDE_OF := {"yellow": "up", "green": "left", "blue": "right", "purple": "down"}
 const HEX := {"yellow": "#F5C518", "green": "#43B649", "blue": "#2F80ED", "purple": "#9B51E0"}
 const STONE := "stone"
+## Màu cổng của level nhiều cổng (Road Trip, design.md mục 7 "Road Trip"): mỗi cạnh chia 2-3 cổng, mỗi cổng một màu,
+## khối mang màu cổng nó thoát qua và có hướng riêng ở khoá `dir`. 8 màu đầu dùng cho level 8 cổng.
+const GATE_COLORS := ["yellow", "green", "blue", "purple", "red", "orange", "teal", "brown",
+	"pink", "indigo", "cream", "licorice"]
+const SIDE_DIR := {"up": Vector2i(0, -1), "left": Vector2i(-1, 0), "right": Vector2i(1, 0), "down": Vector2i(0, 1)}
 
 
 static func dir_of(color: String) -> Vector2i:
@@ -21,6 +26,16 @@ static func dir_of(color: String) -> Vector2i:
 
 static func side_of(color: String) -> String:
 	return SIDE_OF.get(color, "")
+
+
+## Cạnh khối thoát ra: khoá `dir` nếu có (level nhiều cổng), không thì theo màu.
+static func block_side(b: Dictionary) -> String:
+	var d := str(b.get("dir", ""))
+	return d if d != "" else side_of(str(b.get("color", "")))
+
+
+static func side_dir(side: String) -> Vector2i:
+	return SIDE_DIR.get(side, Vector2i.ZERO)
 
 
 ## `[x, y]` (từ JSON có thể là float) thành Vector2i.
@@ -102,6 +117,8 @@ static func validate(d: Dictionary) -> Array[String]:
 				seen_sides[p["side"]] = true
 				if p.has("open") and typeof(p["open"]) != TYPE_BOOL:
 					errs.append("pulse_sides: open phải là bool")
+	if d.has("gates"):
+		errs.append_array(_validate_gates(d["gates"], w, h))
 	var ids := {}
 	var parent := {}
 	for b in d["blocks"]:
@@ -116,7 +133,11 @@ static func validate(d: Dictionary) -> Array[String]:
 			errs.append("id khối trùng: %s" % id)
 			continue
 		ids[id] = b
-		if not COLORS.has(str(b.get("color", ""))):
+		var bdir := str(b.get("dir", ""))
+		if bdir != "" and not SIDES.has(bdir):
+			errs.append("khối %s: dir sai" % id)
+		var palette: Array = GATE_COLORS if bdir != "" else COLORS
+		if not palette.has(str(b.get("color", ""))):
 			errs.append("khối %s: màu sai" % id)
 		var inner := str(b.get("inner_color", ""))
 		if inner != "" and not COLORS.has(inner):
@@ -166,6 +187,33 @@ static func validate(d: Dictionary) -> Array[String]:
 			if cur == id:
 				errs.append("chu trình xích qua khối %s" % id)
 				break
+	return errs
+
+
+## `gates`: cạnh -> [[màu, từ, tới), ...] theo ô dọc cạnh (x với up/down, y với left/right), nối liền từ 0 tới hết
+## cạnh, màu trong GATE_COLORS, mỗi màu một cổng.
+static func _validate_gates(g: Variant, w: int, h: int) -> Array[String]:
+	var errs: Array[String] = []
+	if not (g is Dictionary):
+		errs.append("gates phải là dict")
+		return errs
+	var seen := {}
+	for side in g:
+		if not SIDES.has(str(side)) or not (g[side] is Array) or (g[side] as Array).is_empty():
+			errs.append("gates: cạnh sai %s" % str(side))
+			continue
+		var at := 0
+		for seg in g[side]:
+			if not (seg is Array) or seg.size() != 3 or not GATE_COLORS.has(str(seg[0])) or not _is_int(seg[1]) \
+					or not _is_int(seg[2]) or int(seg[1]) != at or int(seg[2]) <= at:
+				errs.append("gates: cổng sai ở cạnh %s" % str(side))
+				break
+			if seen.has(str(seg[0])):
+				errs.append("gates: màu trùng %s" % str(seg[0]))
+			seen[str(seg[0])] = true
+			at = int(seg[2])
+		if at != (w if str(side) == "up" or str(side) == "down" else h):
+			errs.append("gates: cạnh %s không phủ hết" % str(side))
 	return errs
 
 

@@ -34,6 +34,7 @@ ICON_NAMES = [
     "ui_settings", "ui_lock", "ui_restart", "ui_video", "ui_gift",
     "ui_profile", "ui_sound", "ui_music", "ui_home",
 ]
+# Sau art_lose chay tools/split_tear.gd: no bo giot nuoc mat khoi art_lose va xuat art_lose_tear.
 ART_NAMES = ["art_win", "art_lose", "art_no_lives"]
 AVATARS = ["avatar_%02d" % i for i in range(13)]
 FRAMES = ["frame_%02d" % i for i in range(13)]

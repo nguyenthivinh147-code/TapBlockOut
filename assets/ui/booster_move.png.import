@@ -15,9 +15,9 @@ dest_files=["res://.godot/imported/booster_move.png-9bdeb18eb1baa14f919dcbe5da81
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.9
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

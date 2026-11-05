@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://c8anbqhclfogx" path="res://assets/ui/figma/ic_star1.png" id="18_34np2"]
 [ext_resource type="PackedScene" path="res://scenes/hub_top.tscn" id="19_0ltf8"]
 [ext_resource type="PackedScene" path="res://scenes/hub_nav.tscn" id="21_kvj23"]
+[ext_resource type="Texture2D" uid="uid://cnu06olp5o52p" path="res://assets/ui/figma/ic_leaderboard.png" id="22_lbico"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e11fr"]
 content_margin_left = 30.0
@@ -743,6 +744,84 @@ theme_override_constants/outline_size = 5
 theme_override_constants/shadow_outline_size = 5
 theme_override_font_sizes/font_size = 29
 text = "Level 50"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/fb_rect = Rect2(0, 118, 194, 50)
+metadata/fb_font = [36.0, 3.0, 166.0]
+
+[node name="LeaderboardItem" type="Control" parent="." unique_id=1739284651]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 9.751693
+offset_top = 525.77877
+offset_right = 167.40407
+offset_bottom = 668.80361
+mouse_filter = 2
+metadata/fb_rect = Rect2(12, 647, 194, 176)
+
+[node name="LeaderboardButton" type="Button" parent="LeaderboardItem" unique_id=902837465]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 0
+offset_left = 17.065462
+offset_right = 140.58691
+offset_bottom = 123.52145
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lddsn")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_117fy")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_nhww4")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_8gsen")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cjbpy")
+metadata/fb_rect = Rect2(21, 0, 152, 152)
+
+[node name="Icon" type="TextureRect" parent="LeaderboardItem/LeaderboardButton" unique_id=1647382910]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("22_lbico")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LeaderboardLock" type="TextureRect" parent="LeaderboardItem/LeaderboardButton" unique_id=1928374655]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -56.0
+offset_top = -64.0
+mouse_filter = 2
+texture = ExtResource("9_miq5y")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Ribbon" type="TextureRect" parent="LeaderboardItem" unique_id=556473829]
+layout_mode = 0
+offset_top = 97.51693
+offset_right = 157.65237
+offset_bottom = 143.02483
+mouse_filter = 2
+texture = ExtResource("12_okf6m")
+expand_mode = 1
+metadata/fb_rect = Rect2(0, 120, 194, 56)
+
+[node name="Caption" type="Label" parent="LeaderboardItem" unique_id=1837465921]
+layout_mode = 0
+offset_top = 95.89165
+offset_right = 157.65237
+offset_bottom = 136.5237
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 5
+theme_override_font_sizes/font_size = 29
+text = "Ranking"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/fb_rect = Rect2(0, 118, 194, 50)

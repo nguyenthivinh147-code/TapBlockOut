@@ -13,12 +13,12 @@ Nguồn: file Figma `Tapblock`. Layout lấy từ page **Overview** (wireframe 1
 - Icon `ic_*` tìm thấy trực tiếp theo tên. Tên cũ ánh xạ sang icon Figma qua `ThemeKit.FIGMA_ICON`, bảng này ưu tiên hơn file trong `assets/ui/`.
 - Popup dựng bằng `src/ui/popup_kit.gd`: nền mờ, khung kem, ribbon tiêu đề, nút X. Chữ trên thân kem dùng `ThemeKit.ink_label` hoặc `PopupKit.text`, số vàng dùng `ThemeKit.gold_label`.
 - Màn có khung hi-fi (frame 886×1920, như node `47:3486`: Setting, Ingame Setting, Language, Profile) dựng bằng `PopupKit.make_fig`: số trong code là px đọc thẳng từ Figma, gốc là góc trên trái popup, cả khối thu theo `PopupKit.FIG_SCALE` (720/886). Đặt phần tử bằng `fig_box`, `fig_text`, `fig_icon`, `fig_button`, `fig_toggle`, `fig_link`. `fig_button` co sprite atlas về đúng cao nút (`UiAtlas.fit_box`) nên đầu tròn không méo, và nới vùng chạm lên 96 px màn hình mà hình nút vẫn đúng cỡ Figma. Chữ dài (tiếng Việt) tự thu cỡ cho vừa.
-- Home, Shop, Leaderboard dùng chung `src/ui/hub_top.gd` (avatar, mạng, vàng, settings) và `src/ui/hub_nav.gd` (Shop, Home, Ranking). Shop và Leaderboard ẩn avatar và settings (`hide_side_buttons()`), chỉ còn mạng và vàng.
-- Thanh dưới chia ba ô bằng nhau (886/3, khác Figma 338/274, theo video ref chuyển tab). Mỗi ô có nền tím đứng yên (`ShopPanel`, `HomePanel`, `RankingPanel`, nằm ngoài nút), sát mép ô, không khe giữa các ô (`SLOT_INSET` 0), cao 151 (`PANEL_H`). Tab đang mở có một ô sáng vàng cao 189 (`HIGHLIGHT_H`, `Highlight`). Ảnh nền tím và vàng có 11 và 7 hàng trong suốt ở đáy nên hai nền chạy quá đáy thanh (248) đúng chừng đó, không lộ nền màn bên dưới, vẽ trên nền tím, dưới icon; icon 168 nhô lên, chữ dưới icon. Hai tab còn lại icon 96.
+- Home, Shop, Road Trip, Leaderboard dùng chung `src/ui/hub_top.gd` (avatar, mạng, vàng, settings) và `src/ui/hub_nav.gd` (Shop, Home, Road Trip; từ 2026-11-05 Bảng xếp hạng là icon ở cột trái Home, màn Leaderboard mở thanh dưới với `active` không khớp tab nào nên không tab nào sáng). Shop và Leaderboard ẩn avatar và settings (`hide_side_buttons()`), chỉ còn mạng và vàng.
+- Thanh dưới chia ba ô bằng nhau (886/3, khác Figma 338/274, theo video ref chuyển tab). Mỗi ô có nền tím đứng yên (`ShopPanel`, `HomePanel`, `RoadTripPanel`, nằm ngoài nút), sát mép ô, không khe giữa các ô (`SLOT_INSET` 0), cao 151 (`PANEL_H`). Tab đang mở có một ô sáng vàng cao 189 (`HIGHLIGHT_H`, `Highlight`). Ảnh nền tím và vàng có 11 và 7 hàng trong suốt ở đáy nên hai nền chạy quá đáy thanh (248) đúng chừng đó, không lộ nền màn bên dưới, vẽ trên nền tím, dưới icon; icon 168 nhô lên, chữ dưới icon. Hai tab còn lại icon 96.
 - Chuyển tab (nhịp đo từ video ref): mỗi màn dựng thanh dưới mới, thanh nhớ tab mở trước (`HubNav.last_tab`).
   - Khác tab thì ô sáng trượt ngang 0.33 s (quart ease-out) từ ô cũ sang ô mới, đi qua ô ở giữa nếu cách hai ô.
   - Từ 0.12 s, trong 0.2 s, icon cũ co về 96 và hạ xuống; icon mới to lên 168, nhô lên, hơi vượt (`TRANS_BACK`); chữ hiện dần.
-  - Cùng lúc `main.gd` trượt màn: màn mới vào từ phía tab của nó, màn cũ ra phía kia, cùng 0.33 s quart ease-out. Thanh trên và thanh dưới của màn mới đứng yên (ghim ngược lại độ dời của màn), thanh của màn cũ ẩn. Chạm và Back chờ tới khi trượt xong; một lần `go()` mới kết thúc ngay lần trượt đang chạy. Chỉ trượt giữa Shop, Home, Leaderboard.
+  - Cùng lúc `main.gd` trượt màn: màn mới vào từ phía tab của nó, màn cũ ra phía kia, cùng 0.33 s quart ease-out. Thanh trên và thanh dưới của màn mới đứng yên (ghim ngược lại độ dời của màn), thanh của màn cũ ẩn. Chạm và Back chờ tới khi trượt xong; một lần `go()` mới kết thúc ngay lần trượt đang chạy. Chỉ trượt giữa Shop, Home, Road Trip (`main.gd` `HUB_SCREENS`).
   - Bấm tab thì nút lún 0.92 trong 0.1 s, thả ra bật lại.
 - Glow sau mốc level hiện tại ở Home phập phồng như tia sáng trong popup (`src/ui/ui_motion.gd`, xem `docs/UI_UNITY.md`).
 
@@ -43,7 +43,7 @@ Nguồn: file Figma `Tapblock`. Layout lấy từ page **Overview** (wireframe 1
 - Script `extends "res://src/ui/stub_ui.gd"`, scene cùng tên trong `scenes/`. Nhận `setup({"view": ...})`; không truyền thì lấy dữ liệu mẫu trong `src/ui/sample_data.gd`.
 - Nút chỉ phát `closed({"action": ...})`, không gọi `Game`, không mua hàng, không chạy quảng cáo. Tiền, giá, tên người chơi trên các màn này là số mẫu từ wireframe.
 - `Config.ui_preview()` chặn lối vào ở bản phát hành: chỉ bật khi `OS.is_debug_build()`, gồm cả APK xuất bằng `tools/export_apk.sh` (`--export-debug`). Bản `tools/export_release.sh` ẩn hết. `tests/test_ui_stubs.gd` kiểm điều này.
-- Lối vào khi xem trước: icon Remove Ads, Win Streak trên Home, các mục Hearts, Helper Packs, Bundles trong Shop, nút bút chì ở Profile, nút Help trong cài đặt ở level, và **Settings > Xem trước UI** liệt kê toàn bộ màn theo số wireframe.
+- Lối vào khi xem trước: icon Remove Ads, Win Streak trên Home, các mục Hearts, Helper Packs, Bundles trong Shop, nút Help trong cài đặt ở level, và **Settings > Xem trước UI** liệt kê toàn bộ màn theo số wireframe.
 
 Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, truyền `view` thật, đổi nút từ `closed({"action"})` sang hành động thật, bỏ khoá mẫu và điều kiện `ui_preview` của lối vào, sửa `design.md`.
 
@@ -62,7 +62,7 @@ Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, tru
 | 7.1, 7.2 | `popup_offer` | Xong, có logic |
 | 7.3, 7.4 | `chain_offer` | Xong, có logic. Dạng danh sách bước thay vì lưới 2 cột |
 | 7.6 | `weekly_pass`, `popup_weekly_tutorial` | Xong, có logic. Dạng card, chưa toàn màn hình |
-| 10.1, 10.3 | `profile`, `settings` | Xong, có logic, theo hi-fi node `47:3486`. Settings thêm icon thông báo (Figma có 3 icon), Restore và Privacy là chữ gạch chân; nút Language mở popup Language riêng trong `settings.gd` (14 ngôn ngữ của `Game.LANGS`, đúng 14 ô của prefab, ô sáng là `Game.current_lang()`), không dùng stub 10.4. Profile: ô tên hiện "Người chơi", dòng UID hiện gold; món chưa có hiện khoá trên ô, nút giá kèm nút video |
+| 10.1, 10.3 | `profile`, `settings` | Xong, có logic, theo hi-fi node `47:3486`. Settings thêm icon thông báo (Figma có 3 icon), Restore và Privacy là chữ gạch chân; nút Language mở popup Language riêng trong `settings.gd` (14 ngôn ngữ của `Game.LANGS`, đúng 14 ô của prefab, ô sáng là `Game.current_lang()`), không dùng stub 10.4. Profile: ô tên hiện biệt danh đã đặt (chưa đặt thì "Người chơi"), bút chì mở 10.2, dòng UID hiện gold; món chưa có hiện khoá trên ô, nút giá kèm nút video |
 | Ngoài wireframe | `challenge` | Xong, có logic |
 | 1.1 | `splash` | Xong, có logic: màn loading khi mở game, `main.gd` chạy thanh tải trong lúc `Game.boot()` (design.md mục 2) |
 | 1.2 đến 1.6 | `popup_update`, `download_data`, `select_account`, `tutorial_intro`, `popup_no_internet` | Chỉ UI |
@@ -72,9 +72,10 @@ Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, tru
 | 4.2, 4.3, 4.6, 4.7 | `popup_bonus`, `popup_rate`, `popup_keep_playing`, `popup_helper_pack` | Chỉ UI |
 | 5.2, 5.3 | `popup_heart_bundle`, `popup_heart_support` | Chỉ UI |
 | 7.5 | `popup_weekly_upsell` | Chỉ UI |
-| 8.1 đến 8.4 | `leaderboard`, `popup_lb_howto`, `popup_leagues`, `popup_lb_result` | Xong, có logic (design.md mục 7, Leaderboard). Hai tab League và World thay cho giải tuần; thêm `popup_lb_player` cho World. Phần dùng chung ở `src/ui/lb_kit.gd` |
+| 8.1 đến 8.4 | `leaderboard`, `popup_lb_howto`, `popup_leagues`, `popup_lb_result` | Xong, có logic (design.md mục 7, Leaderboard). Hai tab League và World thay cho giải tuần. Từ 2026-11-05 màn `leaderboard` theo wireframe Leaderboard: banner, thanh tab ở dưới, World là thang 7 giải; `popup_leagues` và `popup_lb_player` không còn mở từ màn này. Phần dùng chung ở `src/ui/lb_kit.gd` |
 | 9.1 đến 9.5 | `popup_streak_intro`, `streak_main`, `popup_streak_rewards`, `popup_streak_end`, `popup_streak_keep` | Chỉ UI |
-| 10.2, 10.4, 10.5 | `popup_change_name`, `popup_language`, `popup_help` | Chỉ UI |
+| 10.2 | `popup_change_name` | Xong, có logic (design.md mục 5 "Biệt danh"). Lưu qua `Game.set_profile_name`; tên sai luật hoặc có từ cấm thì hiện toast PopupFeedBack, popup giữ nguyên. Không kiểm trùng tên, nút Buy giữ ẩn |
+| 10.4, 10.5 | `popup_language`, `popup_help` | Chỉ UI |
 | 11.1 đến 11.3, 6.3 | `ad_loading`, `popup_notice`, `popup_reward` | Chỉ UI |
 
 Một số wireframe 3.8, 3.9, 3.11, 4.4 mô tả băng chuyền và ô chứa của game gốc; game này không có cơ chế đó nên các màn trên giữ chữ theo wireframe để duyệt bố cục, cần sửa nội dung khi nối logic.

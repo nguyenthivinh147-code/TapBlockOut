@@ -47,7 +47,7 @@ Giao hàng: game cộng hàng và lưu trước, rồi mới consume (consumable
 
 Tên placement gửi vào MAX (chữ thường, không dấu):
 
-- Rewarded: `x2_coins`, `booster_free`, `continue_moves`, `refill_life`, `shop_coins`, `daily_next`, `cosmetic_unlock`, `chain_offer`.
+- Rewarded: `x2_coins`, `booster_free`, `continue_moves`, `refill_life`, `shop_coins`, `daily_next`, `cosmetic_unlock`, `chain_offer`, `rt_revive` (hồi sinh Road Trip).
 - Interstitial: `result_exit`.
 
 Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rewarded và một interstitial. Có luồng đồng ý GDPR (UMP, cần `privacy_policy_url`), nút "Privacy settings" trong Settings và Mediation Debugger. Plugin chưa gắn adapter mạng mediation nào (chỉ AppLovin); Horus gửi danh sách adapter thì thêm vào `DEPENDENCIES` của `addons/tbo_platform/export_plugin.gd` (và `build.gradle.kts` của plugin).
@@ -60,7 +60,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | --- | --- |
 | `econ_start_coins` | 1000 |
 | `econ_win_coins` | 40 |
-| `econ_win_move_coins` (gold mỗi MOVES thừa lúc thắng) | 1 |
+| `econ_win_move_coins` (gold mỗi MOVES thừa lúc thắng) | 10 |
 | `econ_booster_price_hint` / `_move` / `_smash` | 900 / 1900 / 2900 |
 | `econ_refill_coins` | 900 |
 | `econ_refill_lives` | 5 |
@@ -90,7 +90,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `notif_sparse_days` | 16,18,21,24,27,30 |
 | `notif_earliest_hour`, `_latest_hour`, `_quiet_after_ignored`, `_ask_after_run` | 8, 22, 9, 2 |
 | `content_demo_max_level`, `content_release_pregen_level` (level cuối có file), `content_loop_start_level` (sau level cuối lặp lại từ đây) | 20, 100, 51 |
-| `content_slack_easy`, `_slack_easy_until`, `_slack_hard`, `_slack_min`, `_slack_pct` | 3, 5, 1, 2, 10 |
+| `content_slack_easy`, `_slack_easy_until`, `_slack_early`, `_slack_early_until`, `_slack_normal`, `_slack_hard` (dư MOVES; có tác dụng cả với L1–100 ghi sẵn) | 5, 3, 3, 13, 4, 3 |
 | `content_think_clap_sec` | 8 |
 | `content_build`, `content_support_email` | v1, support@horusvn.com |
 | `content_ftue_steps` | open,first_tap,first_win,first_x2,first_booster,run_2,run_5,level_10 |

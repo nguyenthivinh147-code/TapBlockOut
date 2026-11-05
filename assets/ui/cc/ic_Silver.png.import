@@ -15,9 +15,9 @@ dest_files=["res://.godot/imported/ic_Silver.png-813ba20e02d3ed72b5959cfb8a9c7ae
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.9
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

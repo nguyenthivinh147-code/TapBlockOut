@@ -1,0 +1,10 @@
+{
+  "name": "tbo-asset-tools",
+  "private": true,
+  "description": "Asset tools for Candy Away (font subsetting, lossless PNG recompression). Install: npm ci --prefix tools/node",
+  "type": "module",
+  "dependencies": {
+    "sharp": "0.35.5",
+    "subset-font": "2.9.0"
+  }
+}

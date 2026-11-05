@@ -54,7 +54,7 @@ Dành cho người duyệt bản thử. Không cần biết lập trình.
 | Phần | Tình trạng |
 | --- | --- |
 | Icon gói gold `shop_<sku>` trong shop, `shop_mini`, `popup_offer` | Vẫn là vòng tròn placeholder vẽ bằng code |
-| Thẻ win, lose, no_lives | Chưa dùng ảnh `art_win`, `art_lose`, `art_no_lives` |
+| Thẻ win, no_lives | Chưa dùng ảnh `art_win`, `art_no_lives` (thẻ lose đã dùng `art_lose`) |
 | Hình `mech_*` (đá, băng, xích, chìa, sương mù) và 6 âm thanh cơ chế | Hoãn tới Phase 9, demo không dùng |
 | Nhạc nền `bgm_home`, `bgm_level` | Bản theme kẹo 2026-11-04, đã phát trong game (Home và các màn hub: `bgm_home`; màn chơi: `bgm_level`). Đạt mọi tiêu chí đo trong `docs/AUDIO_MUSIC.md` nhưng chưa ai nghe bằng tai. Cần nghe duyệt trên máy thật, cả loa ngoài và tai nghe: chỗ nối vòng lặp, độ to so với hiệu ứng, cảm giác lặp sau 10 phút chơi |
 | `sfx_clap`, `sfx_smash` | Nhỏ hơn các tiếng khác khoảng 6 đến 10 dB, cần cân lại |

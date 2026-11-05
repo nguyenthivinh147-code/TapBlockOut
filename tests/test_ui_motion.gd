@@ -62,6 +62,90 @@ func test_hop_pose_is_continuous_and_rests(t: T) -> void:
 	t.ok(float(apex[1]) < 0.0, "trên không thì giãn dọc")
 
 
+func test_sob_stretch_is_gentle_upward_and_rests(t: T) -> void:
+	t.eq(UiMotion.sob_stretch(0.0), 0.0, "bắt đầu đứng yên")
+	t.near(UiMotion.sob_stretch(UiMotion.SOB_PERIOD - 0.0001), 0.0, 0.0001, "cuối chu kỳ đứng yên")
+	t.eq(UiMotion.sob_stretch((UiMotion.SOB_BURST + UiMotion.SOB_PERIOD) * 0.5), 0.0, "sau tiếng nấc thì nghỉ, không co xuống")
+	for b in range(1, int(UiMotion.SOB_BOBS) + 1):
+		var edge := UiMotion.SOB_BURST * b / UiMotion.SOB_BOBS
+		t.near(UiMotion.sob_stretch(edge - 0.0001), UiMotion.sob_stretch(edge + 0.0001), 0.001, "liền mạch ở %.2f" % edge)
+	t.near(UiMotion.sob_stretch(UiMotion.SOB_BURST / UiMotion.SOB_BOBS * 0.5), UiMotion.SOB_STRETCH, 0.0001, "nấc đầu dài nhất")
+	var low := 1.0
+	var high := 0.0
+	for i in 200:
+		var st := UiMotion.sob_stretch(UiMotion.SOB_PERIOD * i / 200.0)
+		low = minf(low, st)
+		high = maxf(high, st)
+	t.ok(low >= 0.0, "chỉ kéo dài, không co")
+	t.ok(high <= UiMotion.SOB_STRETCH + 0.0001, "kéo dài nhẹ")
+
+
+func test_sob_keeps_its_feet_and_grows_up(t: T) -> void:
+	var c := _box(Vector2(100, 200))
+	var m := UiMotion.attach(c, UiMotion.SOB)
+	m.call("_process", UiMotion.SOB_DELAY * 0.5)
+	t.eq(c.position, Vector2(100, 200), "chờ SOB_DELAY trước nấc đầu")
+	m.call("_process", UiMotion.SOB_DELAY * 0.5 + UiMotion.SOB_BURST / UiMotion.SOB_BOBS * 0.5)
+	t.ok(c.scale.y > 1.0 and c.scale.x < 1.0, "kéo dài lên")
+	# Box 80 px, pivot at its centre: feet line at SOB_FOOT * 80 below the top.
+	var feet := c.position.y + 40.0 + (UiMotion.SOB_FOOT * 80.0 - 40.0) * c.scale.y
+	t.near(feet, 200.0 + UiMotion.SOB_FOOT * 80.0, 0.0001, "chân đứng yên")
+	t.ok(c.position.y + 40.0 - 40.0 * c.scale.y < 200.0, "đỉnh cao lên")
+	t.near(c.position.x, 100.0, 0.0001, "không dời ngang")
+	t.eq(c.rotation, 0.0, "không nghiêng")
+	m.call("_process", UiMotion.SOB_PERIOD - UiMotion.SOB_BURST / UiMotion.SOB_BOBS * 0.5)
+	t.ok(c.position.is_equal_approx(Vector2(100, 200)), "hết chu kỳ về chỗ")
+	t.ok(c.scale.is_equal_approx(Vector2.ONE), "hết co giãn")
+	c.free()
+
+
+func test_tear_pose_wells_runs_and_fades(t: T) -> void:
+	t.eq(UiMotion.TEAR_PERIOD, UiMotion.SOB_PERIOD, "mỗi tiếng nấc một giọt lệ")
+	var start: Array = UiMotion.tear_pose(0.0)
+	t.near(float(start[3]), 0.0, 0.0001, "chưa ứa thì ẩn")
+	t.near(float(start[1]), UiMotion.TEAR_START, 0.0001, "ứa ra từ nhỏ")
+	var full: Array = UiMotion.tear_pose((UiMotion.TEAR_WELL + UiMotion.TEAR_CLING) * 0.5)
+	t.eq(full, [0.0, 1.0, 1.0, 1.0], "đọng đủ cỡ dưới mắt, đúng chỗ vẽ")
+	var run: Array = UiMotion.tear_pose((UiMotion.TEAR_CLING + UiMotion.TEAR_RUN) * 0.5)
+	t.ok(float(run[0]) > 0.0 and float(run[0]) < UiMotion.TEAR_DROP, "đang chảy xuống má")
+	t.ok(float(run[2]) > 1.0 and float(run[1]) < 1.0, "chảy thì dài ra")
+	t.near(float(run[3]), 1.0, 0.0001, "chưa mờ khi đang chảy")
+	var late: Array = UiMotion.tear_pose((UiMotion.TEAR_RUN + UiMotion.TEAR_FADE) * 0.5)
+	t.ok(float(late[0]) > float(run[0]) and float(late[3]) < 1.0 and float(late[3]) > 0.0, "chảy tiếp và mờ dần")
+	t.near(float(UiMotion.tear_pose(UiMotion.TEAR_FADE + 0.01)[3]), 0.0, 0.0001, "hết giọt thì ẩn tới chu kỳ sau")
+	# Continuous while it shows: wells, clings, runs (alpha, down, scale).
+	for edge in [UiMotion.TEAR_WELL, UiMotion.TEAR_CLING, UiMotion.TEAR_RUN]:
+		var a: Array = UiMotion.tear_pose(edge - 0.0001)
+		var b: Array = UiMotion.tear_pose(edge + 0.0001)
+		for i in 4:
+			t.near(float(a[i]), float(b[i]), 0.01, "liền mạch ở %.2f [%d]" % [edge, i])
+	var last := 0.0
+	var falls := true
+	for i in 101:
+		var d := float(UiMotion.tear_pose(lerpf(UiMotion.TEAR_CLING, UiMotion.TEAR_FADE - 0.0001, i / 100.0))[0])
+		falls = falls and d >= last
+		last = d
+	t.ok(falls, "chỉ chảy xuống, không ngược lên")
+
+
+func test_tear_runs_down_from_its_place_and_hides(t: T) -> void:
+	var c := _box(Vector2(40, 50))
+	var m := UiMotion.attach(c, UiMotion.TEAR)
+	t.near(c.modulate.a, 0.0, 0.0001, "ẩn ngay khi gắn")
+	m.call("_process", UiMotion.TEAR_DELAY + (UiMotion.TEAR_WELL + UiMotion.TEAR_CLING) * 0.5)
+	t.near(c.modulate.a, 1.0, 0.0001, "đọng dưới mắt")
+	t.ok(c.position.is_equal_approx(Vector2(40, 50)), "đọng đúng chỗ vẽ")
+	m.call("_process", UiMotion.TEAR_RUN - (UiMotion.TEAR_WELL + UiMotion.TEAR_CLING) * 0.5)
+	t.ok(c.position.y > 50.0, "chảy xuống")
+	t.near(c.position.x, 40.0, 0.0001, "chảy thẳng xuống")
+	# Past the fade, before the next tear wells up.
+	m.call("_process", (UiMotion.TEAR_FADE + UiMotion.TEAR_PERIOD) * 0.5 - UiMotion.TEAR_RUN)
+	t.near(c.modulate.a, 0.0, 0.0001, "hết giọt thì ẩn")
+	t.ok(c.position.is_equal_approx(Vector2(40, 50)), "về chỗ cũ cho giọt sau")
+	t.ok(c.scale.is_equal_approx(Vector2.ONE), "về cỡ cũ")
+	c.free()
+
+
 func test_ad_hop_moves_then_returns_to_its_layout(t: T) -> void:
 	var c := _box(Vector2(100, 200))
 	var m := UiMotion.attach(c, UiMotion.AD_HOP)
@@ -120,24 +204,24 @@ func test_layers_attach_by_sprite(t: T) -> void:
 
 
 func test_nav_slides_the_highlight_then_trades_icons(t: T) -> void:
-	HubNav.last_tab = "ranking"
+	HubNav.last_tab = "road_trip"
 	var nav: Control = HubNav.create("shop")
 	_tree().root.add_child(nav)
 	nav.size = Vector2(HubNav.DESIGN_W, HubNav.DESIGN_H)
 	t.eq(HubNav.last_tab, "shop", "nhớ tab vừa mở")
-	t.eq(nav.get("_morph_from"), "ranking", "trượt từ tab Ranking")
+	t.eq(nav.get("_morph_from"), "road_trip", "trượt từ tab Road Trip")
 	var hl: Control = nav.get_node("Highlight")
 	var shop: Button = nav.get("shop_btn")
-	var rank: Button = nav.get("ranking_btn")
+	var rank: Button = nav.get("road_trip_btn")
 	var shop_icon: Control = shop.get_node("Icon")
 	var rank_icon: Control = rank.get_node("Icon")
-	var panels: Array = ["ShopPanel", "HomePanel", "RankingPanel"].map(func(n: String) -> Rect2: return (nav.get_node(n) as Control).get_rect())
+	var panels: Array = ["ShopPanel", "HomePanel", "RoadTripPanel"].map(func(n: String) -> Rect2: return (nav.get_node(n) as Control).get_rect())
 	# The deferred call from _ready() finds the switch already started and does nothing.
 	nav.call("_morph")
-	t.near(hl.position.x, HubNav.SLOT_W * 2 + HubNav.SLOT_INSET, 0.01, "khung đầu: ô sáng ở Ranking")
-	t.near(rank_icon.size.x, 168.0, 0.01, "khung đầu: icon Ranking còn to")
+	t.near(hl.position.x, HubNav.SLOT_W * 2 + HubNav.SLOT_INSET, 0.01, "khung đầu: ô sáng ở Road Trip")
+	t.near(rank_icon.size.x, 168.0, 0.01, "khung đầu: icon Road Trip còn to")
 	t.near(shop_icon.size.x, 96.0, 0.01, "khung đầu: icon Shop còn nhỏ")
-	var from: Dictionary = nav.call("_layout", "ranking")
+	var from: Dictionary = nav.call("_layout", "road_trip")
 	var to: Dictionary = nav.call("_layout", "shop")
 	nav.call("_morph_step", HubNav.ICON_DELAY * 0.5, from, to)
 	t.ok(hl.position.x < HubNav.SLOT_W * 1.5 and hl.position.x > HubNav.SLOT_INSET, "ô sáng đang lướt qua ô giữa")
@@ -147,13 +231,13 @@ func test_nav_slides_the_highlight_then_trades_icons(t: T) -> void:
 	t.near(hl.position.x, HubNav.SLOT_INSET, 0.01, "ô sáng tới Shop")
 	t.near(hl.size.x, HubNav.SLOT_W - HubNav.SLOT_INSET * 2, 0.01, "ô sáng giữ bề rộng")
 	t.near(shop.position.y, 0.0, 0.01, "Shop nhô lên")
-	t.near(rank.position.y, 102.0, 0.01, "Ranking hạ xuống")
+	t.near(rank.position.y, 102.0, 0.01, "Road Trip hạ xuống")
 	t.near(rank.position.x, HubNav.SLOT_W * 2, 0.01, "các ô không đổi chỗ")
 	t.near(shop_icon.size.x, 168.0, 0.01, "icon Shop to hẳn")
-	t.near(rank_icon.size.x, 96.0, 0.01, "icon Ranking nhỏ lại")
+	t.near(rank_icon.size.x, 96.0, 0.01, "icon Road Trip nhỏ lại")
 	t.near((shop.get_node("Caption") as Control).modulate.a, 1.0, 0.001, "chữ Shop hiện hẳn")
 	for i in 3:
-		t.eq((nav.get_node(["ShopPanel", "HomePanel", "RankingPanel"][i]) as Control).get_rect(), panels[i], "nền tím đứng yên %d" % i)
+		t.eq((nav.get_node(["ShopPanel", "HomePanel", "RoadTripPanel"][i]) as Control).get_rect(), panels[i], "nền tím đứng yên %d" % i)
 	nav.free()
 	HubNav.last_tab = ""
 
@@ -181,8 +265,9 @@ func test_nav_same_tab_does_not_slide_and_press_dips(t: T) -> void:
 
 func test_main_slides_hub_screens(t: T) -> void:
 	t.eq(Main.slide_dir("home", "shop"), -1, "Shop vào từ trái")
-	t.eq(Main.slide_dir("home", "leaderboard"), 1, "Ranking vào từ phải")
-	t.eq(Main.slide_dir("leaderboard", "shop"), -1, "Ranking sang Shop")
+	t.eq(Main.slide_dir("home", "road_trip"), 1, "Road Trip vào từ phải")
+	t.eq(Main.slide_dir("road_trip", "shop"), -1, "Road Trip sang Shop")
+	t.eq(Main.slide_dir("home", "leaderboard"), 0, "Bảng xếp hạng (icon ở Home) không trượt")
 	t.eq(Main.slide_dir("level", "home"), 0, "từ level không trượt")
 	t.eq(Main.slide_dir("home", "home"), 0, "dựng lại Home không trượt")
 	var g: Node = _tree().root.get_node("Game")
@@ -209,12 +294,12 @@ func test_main_slides_hub_screens(t: T) -> void:
 	t.near(nav.get_global_rect().end.y, m.size.y, 0.5, "thanh dưới của Shop ở đáy")
 	t.ok(not (home.find_child("NavBar", true, false) as Control).visible, "thanh dưới của Home ẩn")
 	# A switch during the slide ends it at once.
-	m.go("leaderboard")
+	m.go("road_trip")
 	t.ok(not is_instance_valid(home) or home.is_queued_for_deletion(), "Home bỏ khi có lần chuyển mới")
 	t.near(shop.position.x, 0.0, 0.5, "Shop về chỗ trước khi trượt ra")
 	var lb: Control = m.current_screen
 	await _tree().create_timer(HubNav.SLIDE_SEC + 0.15).timeout
-	t.near(lb.position.x, 0.0, 0.01, "Ranking vào hẳn")
+	t.near(lb.position.x, 0.0, 0.01, "Road Trip vào hẳn")
 	t.ok(not is_instance_valid(shop) or shop.is_queued_for_deletion(), "Shop bỏ sau khi trượt")
 	t.ok(m.get_node_or_null("SlideBlock") == null, "hết chặn chạm")
 	var lb_nav: Control = lb.find_child("NavBar", true, false)

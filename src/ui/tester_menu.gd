@@ -12,13 +12,14 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const Config := preload("res://src/config.gd")
 
 const GROUP := "tester_menu"
-## [field key, label key]; hint, move and smash are booster kinds (Game.s.inv).
+## [field key, label key]; hint, move and smash are booster kinds (Game.s.inv); rt_level is the Road Trip level.
 const FIELDS: Array[Array] = [
 	["coins", "common_gold"],
 	["level", "settings_tester_level"],
 	["hint", "booster_hint"],
 	["move", "booster_move"],
 	["smash", "booster_smash"],
+	["rt_level", "rt_title"],
 ]
 const INPUT_LAYER := "PopupEditNameLayer"
 const INPUT := "Panel/ProfileMenu/PlayerInfo/InputField (TMP)"
@@ -27,15 +28,15 @@ const BAD_INK := Color("c31f1f")
 ## Canvas units from the panel's top-left (the 130-unit header strip on top). Debugger only: the old tester menu.
 const SIZE_SMALL := Vector2(724, 360)
 const DEBUG_BTN_SMALL := Rect2(222, 172, 280, 120)
-const SIZE_FULL := Vector2(724, 1088)
-const WELL_RECT := Rect2(40, 150, 644, 580)
+const SIZE_FULL := Vector2(724, 1198)
+const WELL_RECT := Rect2(40, 150, 644, 690)
 const ROW_Y := 170.0
 const ROW_H := 110.0
 const LABEL_RECT := Rect2(76, 0, 250, 94)
 const FIELD_RECT := Rect2(334, 0, 320, 94)
-const SAVE_BTN := Rect2(64, 760, 280, 120)
-const WIPE_BTN := Rect2(380, 760, 280, 120)
-const DEBUG_BTN := Rect2(222, 900, 280, 120)
+const SAVE_BTN := Rect2(64, 870, 280, 120)
+const WIPE_BTN := Rect2(380, 870, 280, 120)
+const DEBUG_BTN := Rect2(222, 1010, 280, 120)
 
 var ui: RefCounted = null
 ## Field key -> LineEdit.
@@ -113,7 +114,7 @@ func _build_account(content: Control) -> void:
 func current_values() -> Dictionary:
 	var s: Dictionary = Game.s
 	return {"coins": int(s.coins), "level": int(s.level), "hint": int(s.inv.get("hint", 0)),
-		"move": int(s.inv.get("move", 0)), "smash": int(s.inv.get("smash", 0))}
+		"move": int(s.inv.get("move", 0)), "smash": int(s.inv.get("smash", 0)), "rt_level": int(s.road_trip.get("level", 1))}
 
 
 ## Writes every field through Game.tester_edit and closes with "changed". A field that is not a whole number
@@ -125,7 +126,7 @@ func save() -> void:
 	var ok := true
 	for key in fields:
 		var t := (fields[key] as LineEdit).text.strip_edges()
-		var good := t.is_valid_int() and t.to_int() >= (1 if key == "level" else 0)
+		var good := t.is_valid_int() and t.to_int() >= (1 if key == "level" or key == "rt_level" else 0)
 		_mark(key, good)
 		ok = ok and good
 		if good:
@@ -133,7 +134,7 @@ func save() -> void:
 	if not ok:
 		return
 	Game.tester_edit({"coins": vals.coins, "level": vals.level,
-		"inv": {"hint": vals.hint, "move": vals.move, "smash": vals.smash}})
+		"inv": {"hint": vals.hint, "move": vals.move, "smash": vals.smash}, "rt_level": vals.rt_level})
 	closed.emit({"action": "changed"})
 
 

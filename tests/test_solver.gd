@@ -242,28 +242,29 @@ func test_solve_state_ignores_moves(t: T) -> void:
 
 func test_slack_and_compute_moves(t: T) -> void:
 	Config.reset()
-	var five := [_b("a", "yellow", [[0, 0]])]
-	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 1})), 5, "L1 dư 5")
-	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 3})), 5, "L3 dư 5")
-	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 4})), 2, "L4 hết dư dễ")
-	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 8, "hard": true})), 1, "HARD dư 1")
-	t.eq(Solver.slack_for(_lv(5, 5, five, {"id": 6})), 2, "ít khối: tối thiểu 2")
-	# 25 khối: ceil(10% x 25) = 3. 21 khối: ceil(2.1) = 3. 20 khối: 2.
-	for pair in [[20, 2], [21, 3], [25, 3], [30, 3], [31, 4], [45, 5]]:
-		var bl: Array = []
-		for i in range(pair[0]):
-			bl.append(_b("b%d" % i, "yellow", [[0, 0]]))
-		t.eq(Solver.slack_for(_lv(5, 5, bl, {"id": 30})), pair[1], "%d khối" % pair[0])
+	var one := [_b("a", "yellow", [[0, 0]])]
+	for pair in [[1, 5], [3, 5], [4, 3], [13, 3], [14, 4], [60, 4], [300, 4]]:
+		t.eq(Solver.slack_for(_lv(5, 5, one, {"id": pair[0]})), pair[1], "L%d dư %d" % pair)
+	for id in [24, 29, 99, 150]:
+		t.eq(Solver.slack_for(_lv(5, 5, one, {"id": id, "hard": true})), 3, "HARD L%d dư 3" % id)
+	# Dư không theo số khối.
+	var many: Array = []
+	for i in range(80):
+		many.append(_b("b%d" % i, "yellow", [[0, 0]]))
+	t.eq(Solver.slack_for(_lv(5, 5, many, {"id": 60})), 4, "80 khối vẫn dư 4")
 	var lv := _load("basic")  # id 2, 3 chạm
 	t.eq(Solver.compute_moves(lv), 3 + 5, "L2 dư 5")
+	lv["id"] = 8
+	t.eq(Solver.compute_moves(lv), 3 + 3, "L8 dư 3")
 	lv["id"] = 22
-	t.eq(Solver.compute_moves(lv), 3 + 2, "level thường dư 2")
+	t.eq(Solver.compute_moves(lv), 3 + 4, "level thường dư 4")
 	lv["hard"] = true
-	t.eq(Solver.compute_moves(lv), 3 + 1, "HARD dư 1")
+	t.eq(Solver.compute_moves(lv), 3 + 3, "HARD dư 3")
 	# Remote Config đổi dư thì theo.
-	Config.CONTENT["slack_min"] = 4
+	Config.apply_remote({"content_slack_normal": "6", "content_slack_hard": "2"})
+	t.eq(Solver.compute_moves(lv), 3 + 2, "slack_hard từ Config")
 	lv["hard"] = false
-	t.eq(Solver.compute_moves(lv), 3 + 4, "slack_min từ Config")
+	t.eq(Solver.compute_moves(lv), 3 + 6, "slack_normal từ Config")
 	Config.reset()
 
 

@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" path="res://assets/ui/figma/atlas_main.png" id="2_y4n43"]
 [ext_resource type="Texture2D" path="res://assets/ui/figma/ic_store.png" id="3_a7cjq"]
 [ext_resource type="Texture2D" path="res://assets/ui/figma/ic_home.png" id="4_7vi2r"]
-[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_leaderboard.png" id="5_k7h5s"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_giftbox1.png" id="5_k7h5s"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oki0t"]
 
@@ -79,7 +79,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_55qdw")
 metadata/fb_rect = Rect2(295.3333, 108, 295.3333, 151)
 
-[node name="RankingPanel" type="Panel" parent="." unique_id=1849457611]
+[node name="RoadTripPanel" type="Panel" parent="." unique_id=1849457611]
 layout_mode = 0
 offset_left = 590.6667
 offset_top = 108.0
@@ -193,7 +193,7 @@ uppercase = true
 metadata/fb_rect = Rect2(10, 167, 275.3333, 68)
 metadata/fb_font = [60.0, 3.0, 265.0]
 
-[node name="RankingTab" type="Button" parent="." unique_id=378428721]
+[node name="RoadTripTab" type="Button" parent="." unique_id=378428721]
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 0
 offset_left = 590.6667
@@ -208,7 +208,7 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_wdwd0")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_da214")
 metadata/fb_rect = Rect2(590.6667, 102, 295.3333, 146)
 
-[node name="Icon" type="TextureRect" parent="RankingTab" unique_id=1019677145]
+[node name="Icon" type="TextureRect" parent="RoadTripTab" unique_id=1019677145]
 layout_mode = 0
 offset_left = 99.6667
 offset_top = 32.0
@@ -220,7 +220,7 @@ expand_mode = 1
 stretch_mode = 5
 metadata/fb_rect = Rect2(99.6667, 32, 96, 96)
 
-[node name="Caption" type="Label" parent="RankingTab" unique_id=1465772715]
+[node name="Caption" type="Label" parent="RoadTripTab" unique_id=1465772715]
 visible = false
 layout_mode = 0
 offset_left = 10.0
@@ -235,7 +235,7 @@ theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 6
 theme_override_constants/shadow_outline_size = 6
 theme_override_font_sizes/font_size = 26
-text = "Ranking"
+text = "Road Trip"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/fb_rect = Rect2(10, 98, 275.3333, 40)

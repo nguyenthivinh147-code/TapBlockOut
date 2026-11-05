@@ -477,8 +477,8 @@ func _on_tab(tab_name: String) -> void:
 	match tab_name:
 		"home":
 			close()
-		"ranking":
-			_leave("ranking")
+		"road_trip":
+			_leave("road_trip")
 
 
 ## Rời Shop sang màn khác của hub; action trong STAY_ACTIONS chỉ mở popup trên Shop nên không khoá Shop.

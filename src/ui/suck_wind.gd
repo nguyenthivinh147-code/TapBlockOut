@@ -1,7 +1,8 @@
 extends Control
 ## Vệt gió hút vào thanh khi khối thoát sắp chạm thanh và lúc đang bị nghiền: vệt mảnh có quầng mờ, dài ngắn khác nhau,
 ## hiện sát mặt trong của thanh, chạy nhanh dần vào thanh, chạm thanh thì bị nuốt vào. Vệt rải trong đúng bề ngang
-## khối, chỗ miệng thanh trước khối sáng lên một quầng cùng bề ngang. Không vẽ lên thanh; tự xoá khi vệt cuối hết.
+## khối, chỗ miệng thanh trước khối sáng lên một quầng cùng bề ngang. Cả cụm gió rõ dần từ trong suốt trong FADE_IN
+## giây đầu, mỗi vệt cũng rõ dần lúc mới hiện. Không vẽ lên thanh; tự xoá khi vệt cuối hết.
 ## Dùng: spawn(...) đặt vào lớp trên các khối để vệt chạy đè lên khối đang bị hút.
 
 const STREAKS_PER_CELL := 5.0  # số vệt mỗi ô bề ngang khối
@@ -19,7 +20,8 @@ const GLOW_ALPHA := 0.3
 const MOUTH_DEPTH := 0.6  # quầng ở miệng thanh lan vào bàn chừng này ô
 const MOUTH_SOFT := 0.2  # hai đầu quầng miệng mờ dần trong chừng này ô
 const MOUTH_ALPHA := 0.3
-const MOUTH_IN := 0.06  # giây quầng miệng sáng lên từ lúc vệt đầu hiện
+const FADE_IN := 0.18  # giây từ lúc vệt đầu hiện: cả cụm gió (vệt, quầng vệt, quầng miệng) rõ dần từ trong suốt tới đậm đủ
+const STREAK_IN := 0.4  # mỗi vệt rõ dần trong phần đầu này của đời vệt
 const MOUTH_OUT := 0.12  # giây quầng miệng tắt dần sau khi vệt cuối hết
 
 var _mouth := Vector2.ZERO  # tâm đoạn khối sắp phủ, trên mặt trong của thanh
@@ -79,11 +81,12 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var perp := Vector2(-_dir.y, _dir.x)
+	var ramp := _ramp_in()
 	# quầng (miệng thanh, quanh từng vệt) vẽ trước trong một lô, lõi vệt vẽ đè lên
 	var verts := PackedVector2Array()
 	var cols := PackedColorArray()
 	var idx := PackedInt32Array()
-	_add_mouth(verts, cols, idx, perp)
+	_add_mouth(verts, cols, idx, perp, ramp)
 	var cores: Array[PackedVector2Array] = []
 	var core_cols: Array[PackedColorArray] = []
 	for s in _streaks:
@@ -97,7 +100,7 @@ func _draw() -> void:
 		var far := head + length
 		if far <= near:
 			continue
-		var fade := minf(t / 0.2, 1.0)
+		var fade := smoothstep(0.0, STREAK_IN, t) * ramp
 		var side := perp * float(s["u"])
 		var tail_at := _mouth - _dir * far + side
 		var head_at := _mouth - _dir * near + side
@@ -111,9 +114,14 @@ func _draw() -> void:
 		draw_polyline_colors(cores[i], core_cols[i], WIDTH * _cell, true)
 
 
+## Độ rõ của cả cụm gió: 0 lúc vệt đầu hiện, lên 1 sau FADE_IN giây, êm ở hai đầu.
+func _ramp_in() -> float:
+	return smoothstep(0.0, FADE_IN, _age - _first)
+
+
 ## Quầng ở miệng thanh: rộng đúng bề ngang khối, đậm nhất sát mặt trong, mờ dần vào bàn và ra hai đầu.
-func _add_mouth(verts: PackedVector2Array, cols: PackedColorArray, idx: PackedInt32Array, perp: Vector2) -> void:
-	var k := clampf((_age - _first) / MOUTH_IN, 0.0, 1.0) * clampf(1.0 - (_age - _last) / MOUTH_OUT, 0.0, 1.0)
+func _add_mouth(verts: PackedVector2Array, cols: PackedColorArray, idx: PackedInt32Array, perp: Vector2, ramp: float) -> void:
+	var k := ramp * clampf(1.0 - (_age - _last) / MOUTH_OUT, 0.0, 1.0)
 	if k <= 0.0:
 		return
 	var soft := minf(MOUTH_SOFT * _cell, _half)

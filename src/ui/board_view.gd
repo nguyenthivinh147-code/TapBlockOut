@@ -21,13 +21,13 @@ signal block_tapped(id: String)
 ## Mọi hoạt ảnh đang chạy đã xong.
 signal animation_done
 
-const SLIDE_TIME := 0.30  # lâu nhất của một lần khối lao tới thanh
-const SLIDE_MIN := 0.14  # đường ngắn nhất vẫn đủ thấy khối lấy đà
-const SLIDE_PER_CELL := 0.022
+const SLIDE_TIME := 0.35  # lâu nhất của một lần khối lao tới thanh
+const SLIDE_MIN := 0.20  # đường ngắn nhất vẫn đủ thấy khối lấy đà
+const SLIDE_PER_CELL := 0.026
 const SLIDE_STRETCH := 0.09  # khối dài ra theo hướng lao, hẹp lại phía ngang
-const EXIT_BRAKE := 0.1  # giây cuối trước khi chạm thanh: khối thoát chậm dần đều về GRIND_SPEED để trôi êm vào thanh; khối cuối trên bàn không hãm
+const EXIT_BRAKE := 0.3  # giây cuối trước khi chạm thanh: khối thoát chậm dần đều về GRIND_SPEED để trôi êm vào thanh; khối cuối trên bàn không hãm
 const SUCK_WHITE := 0.6  # vệt gió hút: màu thanh pha trắng chừng này
-const SUCK_LEAD := 0.08  # vệt gió hút bắt đầu chừng này giây trước khi khối chạm thanh, kéo dài tới lúc nghiền xong
+const SUCK_LEAD := 0.2  # vệt gió hút bắt đầu chừng này giây trước khi khối chạm thanh, kéo dài tới lúc nghiền xong
 const BOUNCE_BACK := 0.24
 const WOBBLE_TIME := 0.46
 const WOBBLE_SELF := 0.15  # độ nhún của khối đi va
@@ -56,7 +56,7 @@ const CRYSTAL_SMASH_GLINTS := 1.6  # mảnh kính toả tròn lúc khối crysta
 const GATE_TIME := 0.22
 const CRATE_KNOCK := 0.42  # giây thùng sắt rung và loé khi bị gõ
 const JELLY_JOLT := 2.2  # khối phủ pudding bị va nhún mạnh gấp chừng này khối thường
-const BOX_FLY_MIN := 0.16  # giây ngắn nhất hộp giấy bay tới thanh
+const BOX_FLY_MIN := 0.22  # giây ngắn nhất hộp giấy bay tới thanh
 const HINT_POP := 1.22  # khối được Gợi ý nảy to chừng này lúc sao chạm
 const HINT_POP_GLOW := 3.0  # độ loé trắng lúc chạm, tắt dần về mức nhấp nháy (1)
 const GHOST_NAME := "Ghost"
@@ -444,8 +444,10 @@ func _layout() -> void:
 	_unit = Config.BOARD_FRAME_UNIT * s
 	var area := Config.BOARD_AREA * s
 	_area = Rect2(((avail - area) * 0.5).floor(), area)
-	# Hình của level cộng một ô lề mỗi phía (tối đa cả lưới chuẩn) vừa vùng khung, to nhất BOARD_CELL_MAX.
-	var need := Vector2(mini(_box.size.x + 2, Config.BOARD_W), mini(_box.size.y + 2, Config.BOARD_H))
+	# Hình của level cộng một ô lề mỗi phía (tối đa cả lưới của level, ít nhất lưới chuẩn) vừa vùng khung, to nhất
+	# BOARD_CELL_MAX. Level Road Trip có lưới cao hơn BOARD_H.
+	var need := Vector2(mini(_box.size.x + 2, maxi(_board.width(), Config.BOARD_W)),
+		mini(_box.size.y + 2, maxi(_board.height(), Config.BOARD_H)))
 	var fit_cell := minf(area.x / need.x, area.y / need.y)
 	# Làm tròn xuống số nguyên để các ô trong cùng khối khớp pixel, không lộ đường nối.
 	_cell = floorf(clampf(fit_cell, 8.0, Config.BOARD_CELL_MAX * s))
@@ -463,8 +465,22 @@ func _layout() -> void:
 		n.pivot_offset = n.size * 0.5
 		n.queue_redraw()
 	_frame.layout(_area, _unit)
+	_layout_gate_segments()
 	queue_redraw()
 	_links.queue_redraw()
+
+
+## Level nhiều cổng (Road Trip): cổng của mỗi cạnh từ ô sang px của khung (cùng toạ độ với node này), để thanh chia
+## đoạn màu đúng hàng/cột khối đi qua. Level thường: mỗi cạnh một màu.
+func _layout_gate_segments() -> void:
+	var gs: Dictionary = _board.gate_segments()
+	for side in CandyFrame.SIDES:
+		var out: Array = []
+		var vertical: bool = side == "left" or side == "right"
+		var base: float = _origin.y if vertical else _origin.x
+		for s in gs.get(side, []):
+			out.append([str(s[0]), base + float(s[1]) * _cell, base + float(s[2]) * _cell])
+		_frame.set_segments(side, out)
 
 
 # --- vẽ ---
@@ -597,7 +613,7 @@ func apply_result(result: Dictionary) -> void:
 		_check_done.call_deferred()
 		return
 	var node: BlockNode = _nodes[id]
-	var dir: Vector2 = Vector2(LevelData.dir_of(str(node.view.get("color", ""))))
+	var dir: Vector2 = Vector2(LevelData.side_dir(LevelData.block_side(node.view)))
 	var dist := int(result.get("distance", 0))
 	match kind:
 		"exit":
@@ -605,7 +621,7 @@ func apply_result(result: Dictionary) -> void:
 		"blocked":
 			_anim_bounce(node, dir, float(dist), dist, str(result.get("blocker", "")), "")
 		"gate_closed":
-			var gate_side := LevelData.side_of(str(node.view.get("color", "")))
+			var gate_side := LevelData.block_side(node.view)
 			_anim_bounce(node, dir, _cells_to_bar(node, dir), dist, "", gate_side)
 		"chained":
 			Sfx.play("chain")
@@ -633,7 +649,7 @@ func _anim_exit(node: BlockNode, dir: Vector2) -> void:
 	_nodes.erase(node.id)
 	node.busy = true
 	_begin()
-	var side := LevelData.side_of(str(node.view.get("color", "")))
+	var side := LevelData.block_side(node.view)
 	var steps := _cells_to_bar(node, dir)
 	var travel := steps * _cell
 	# khối cuối trên bàn không hãm: lao thẳng vào thanh như cú chốt ván
@@ -691,7 +707,11 @@ func _suck_wind(node: BlockNode, dir: Vector2, side: String, time: float) -> voi
 	var inner := _bar_face(dir)
 	var perp := Vector2(-dir.y, dir.x)
 	var mouth := dir * inner + perp * (seg[0] as Vector2).dot(perp)
-	var col: Color = (CandyFrame.END_COLORS[side] as Color).lerp(Color.WHITE, SUCK_WHITE)
+	# Level nhiều cổng: màu của cổng khối sắp vào, không phải màu cạnh.
+	var at: Vector2 = seg[0]
+	var gate := _frame.gate_color_at(side, at.y if side == "left" or side == "right" else at.x)
+	var bar_col: Color = CandyFrame.color_end(gate) if gate != "" else CandyFrame.END_COLORS[side]
+	var col: Color = bar_col.lerp(Color.WHITE, SUCK_WHITE)
 	SuckWind.spawn(_fx_root, mouth, dir, float(seg[1]) * 0.5, _cell, col, time - lead, lead + (hi - lo) / GRIND_SPEED, _rng)
 
 

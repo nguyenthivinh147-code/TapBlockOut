@@ -141,9 +141,9 @@ func test_solver_and_moves(t: T) -> void:
 		if id <= 3:
 			t.eq(slack, 5, "L%d dư 5" % id)
 		elif DifficultyCurve.is_hard(id):
-			t.eq(slack, 1, "L%d HARD dư 1" % id)
+			t.eq(slack, 3, "L%d HARD dư 3" % id)
 		else:
-			t.ok(slack >= 2, "L%d dư >= 2" % id)
+			t.eq(slack, 3 if id <= 13 else 4, "L%d dư 3 (L4-13) hoặc 4 (từ L14)" % id)
 		t.ok(Solver.immediate_exit_exists(d), "L%d có khối thoát ngay" % id)
 
 

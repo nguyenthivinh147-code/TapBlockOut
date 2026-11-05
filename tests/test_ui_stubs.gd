@@ -86,7 +86,7 @@ func test_hidden_in_release(t: T) -> void:
 	_g()
 	Config.ui_preview_override = 0
 	var home := _open("home")
-	t.ok(not home.find_child("RankingTab", true, false).disabled, "Ranking đã nối logic: mở theo level, không theo bản build")
+	t.ok(not home.find_child("LeaderboardButton", true, false).disabled, "Bảng xếp hạng đã nối logic: mở theo level, không theo bản build")
 	var got: Array = []
 	home.closed.connect(func(r: Variant) -> void: got.append(r))
 	var labels: Array = []
@@ -102,9 +102,6 @@ func test_hidden_in_release(t: T) -> void:
 	_walk_labels(shop, shop_labels)
 	t.ok(not shop_labels.has(shop.tr("shop_section_bundles")), "Shop không bán gói chưa có logic")
 	shop.free()
-	var profile := _open("profile")
-	t.ok(profile.find_child("EditNameButton", true, false) == null, "không đổi tên")
-	profile.free()
 	Config.ui_preview_override = -1
 
 
@@ -112,11 +109,11 @@ func test_entry_points_in_preview(t: T) -> void:
 	_g()
 	Config.ui_preview_override = 1
 	var home := _open("home")
-	t.ok(not home.find_child("RankingTab", true, false).disabled, "Ranking mở")
+	t.ok(not home.find_child("LeaderboardButton", true, false).disabled, "Bảng xếp hạng mở")
 	var got: Array = []
 	home.closed.connect(func(r: Variant) -> void: got.append(r))
-	home.find_child("RankingTab", true, false).pressed.emit()
-	t.eq(got[0], {"action": "ranking"}, "tab Ranking")
+	home.find_child("LeaderboardButton", true, false).pressed.emit()
+	t.eq(got[0], {"action": "ranking"}, "icon Bảng xếp hạng")
 	var labels: Array = []
 	_walk_labels(home, labels)
 	t.ok(not labels.has(home.tr("home_ads_daily")), "ADS Daily nằm trong Shop, không có trên Home")

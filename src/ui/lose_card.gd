@@ -1,6 +1,8 @@
 extends Control
 ## Thẻ thua: Thử lại, Về Home, và Gói Cứu Nguy nếu Game báo. Bố cục LossPanel của EndGameUILayer
-## (color-cube-match-puzzle): khung bạc có tranh, ribbon xanh, hàng nút Home / Replay. Dòng chữ dưới khung là bản sao
+## (color-cube-match-puzzle): khung bạc có icon art_lose (thay tranh Popup_Lose của prefab, nấc nhấp nhô như đang khóc:
+## UiMotion.SOB; giọt lệ là node Tear riêng, chảy xuống má: UiMotion.TEAR), ribbon xanh, hàng nút Home / Replay.
+## Dòng chữ dưới khung là bản sao
 ## chữ "Still Wanna Play?" của prefab; Gói Cứu Nguy là bản sao HelperPack của PopupReviveLayer, đặt dưới hàng nút như
 ## prefab đó (khung đẩy lên cho vừa). Dòng chữ và dòng thông báo là node trong scenes/lose_card.tscn; dòng mất mạng và
 ## Gói Cứu Nguy chỉ thêm lúc chạy khi có.
@@ -16,8 +18,11 @@ const Config := preload("res://src/config.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const UButton := preload("res://src/ui/u_button.gd")
+const UiMotion := preload("res://src/ui/ui_motion.gd")
 
 const LOSS := "Panel/LossPanel"
+## The art_lose icon inside the frame (scenes/lose_card.tscn); its child %Tear is the tear tools/split_tear.gd took off.
+const ART := "Panel/LossPanel/BG/Image"
 const ROW := "Panel/LossPanel/GameObject"
 ## Heights in canvas units under the frame (frame bottom at y -232.1 in the prefab): body line, life line, button
 ## row (prefab GameObject, so the row lands on its prefab place when only the body shows), message line, pack.
@@ -100,6 +105,9 @@ func _build() -> void:
 	retry.connect("clicked", _on_retry_pressed)
 
 	Sfx.play("sfx_lose")
+	if not UnityUI.baking:
+		UiMotion.attach(ui.node(ART), UiMotion.SOB)
+		UiMotion.attach(%Tear, UiMotion.TEAR)
 	_animate_in.call_deferred()
 
 

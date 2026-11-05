@@ -1,0 +1,238 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/road_trip.gd" id="1_rt"]
+[ext_resource type="Texture2D" uid="uid://mkrk7hf1y0x" path="res://assets/ui/figma/home_candy_pattern.png" id="2_pat"]
+[ext_resource type="PackedScene" path="res://scenes/hub_top.tscn" id="3_top"]
+[ext_resource type="PackedScene" path="res://scenes/hub_nav.tscn" id="4_nav"]
+[ext_resource type="Texture2D" uid="uid://47hfoq738bip" path="res://assets/ui/figma/ic_giftbox2.png" id="5_box"]
+
+[sub_resource type="Gradient" id="Gradient_rt"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(0.3529412, 0.4392157, 0.8784314, 1, 0.6627451, 0.5372549, 0.9254902, 1, 1, 0.8, 0.8784314, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rt"]
+gradient = SubResource("Gradient_rt")
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rt1"]
+
+[node name="RoadTrip" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rt")
+
+[node name="Background" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.3529412, 0.4392157, 0.8784314, 1)
+
+[node name="Gradient" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_rt")
+expand_mode = 1
+
+[node name="CandyPattern" type="TextureRect" parent="Background"]
+modulate = Color(1, 1, 1, 0.06)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_pat")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Content" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="MapScroll" type="ScrollContainer" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 268.0
+offset_right = 720.0
+offset_bottom = 1110.0
+
+[node name="Banner" type="TextureRect" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 144.6
+offset_top = 121.9
+offset_right = 575.3
+offset_bottom = 284.4
+mouse_filter = 2
+expand_mode = 1
+metadata/fb_rect = Rect2(178, 150, 530, 200)
+
+[node name="Title" type="Label" parent="Content/Banner"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 32.5
+offset_top = 27.6
+offset_right = 398.2
+offset_bottom = 108.9
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.6, 0.11764706, 0.38431373, 1)
+theme_override_colors/font_outline_color = Color(0.6, 0.11764706, 0.38431373, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 7
+theme_override_constants/shadow_outline_size = 7
+theme_override_font_sizes/font_size = 52
+text = "Road Trip"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/fb_rect = Rect2(40, 34, 450, 100)
+metadata/fb_font = [64.0, 4.0, 420.0]
+
+[node name="Chip" type="Panel" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 568.8
+offset_top = 284.4
+offset_right = 720.0
+offset_bottom = 422.5
+mouse_filter = 2
+metadata/fb_rect = Rect2(700, 350, 186, 170)
+
+[node name="ChipIcon" type="TextureRect" parent="Content/Chip"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 35.0
+offset_top = 3.3
+offset_right = 116.2
+offset_bottom = 84.5
+mouse_filter = 2
+texture = ExtResource("5_box")
+expand_mode = 1
+stretch_mode = 5
+metadata/fb_rect = Rect2(43, 4, 100, 100)
+
+[node name="ChipTrack" type="Panel" parent="Content/Chip"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 11.4
+offset_top = 87.8
+offset_right = 139.7
+offset_bottom = 123.5
+mouse_filter = 2
+metadata/fb_rect = Rect2(14, 108, 158, 44)
+
+[node name="ChipFill" type="Panel" parent="Content/Chip/ChipTrack"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 35.7
+mouse_filter = 2
+
+[node name="ChipLabel" type="Label" parent="Content/Chip"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 11.4
+offset_top = 84.5
+offset_right = 139.7
+offset_bottom = 125.1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.2901961, 0.17254902, 0.47843137, 1)
+theme_override_colors/font_outline_color = Color(0.2901961, 0.17254902, 0.47843137, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 5
+theme_override_font_sizes/font_size = 26
+text = "0/15"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/fb_rect = Rect2(14, 104, 158, 50)
+metadata/fb_font = [32.0, 3.0, 150.0]
+
+[node name="PlayButton" type="Button" parent="Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 0
+offset_left = 208.0
+offset_top = 1122.9
+offset_right = 511.8
+offset_bottom = 1252.9
+focus_mode = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rt1")
+metadata/fb_rect = Rect2(256, 1382, 374, 160)
+metadata/fb_bottom = true
+
+[node name="PlayLabel" type="Label" parent="Content/PlayButton"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 14.6
+offset_right = 303.8
+offset_bottom = 108.9
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.3529412, 0.5647059, 0.08627451, 1)
+theme_override_colors/font_outline_color = Color(0.3529412, 0.5647059, 0.08627451, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 7
+theme_override_constants/shadow_outline_size = 7
+theme_override_font_sizes/font_size = 65
+text = "Level 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/fb_rect = Rect2(0, 18, 374, 116)
+metadata/fb_font = [80.0, 4.0, 320.0]
+
+[node name="DoneLabel" type="Label" parent="Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 32.5
+offset_top = 1129.4
+offset_right = 687.5
+offset_bottom = 1243.2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.29803923, 0.043137256, 0.47058824, 1)
+theme_override_colors/font_outline_color = Color(0.29803923, 0.043137256, 0.47058824, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 5
+theme_override_font_sizes/font_size = 36
+text = "You finished the Road Trip!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/fb_rect = Rect2(40, 1390, 806, 140)
+metadata/fb_bottom = true
+metadata/fb_font = [44.0, 3.0, 0.0]
+
+[node name="HubTop" parent="Content" instance=ExtResource("3_top")]
+unique_name_in_owner = true
+offset_top = 28.442438
+offset_right = 720.0
+offset_bottom = 129.20993
+metadata/fb_rect = Rect2(0, 35, 886, 124)
+
+[node name="NavBar" parent="Content" instance=ExtResource("4_nav")]
+unique_name_in_owner = true
+offset_top = 1078.465
+offset_right = 720.0
+offset_bottom = 1280.0
+active = "road_trip"
+metadata/fb_rect = Rect2(0, 1552, 886, 248)
+metadata/fb_bottom = true

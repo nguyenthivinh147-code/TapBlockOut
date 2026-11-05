@@ -613,11 +613,39 @@
     "source": "art/images/art_lose.png",
     "source_sha256": "38f8319ea0f235f55d6dbbc42c0e029d59888b257d556519aeb3c9ae036f052e",
     "file": "assets/ui/art_lose.png",
-    "file_sha256": "94d458048539056ef20034ad078d5b271c4811c45fa5105684c18e15068977cd",
+    "file_sha256": "7c9bded6c0f3d4310b62460d717ec18762590696e6052cc1ab7938b921dfa1c5",
     "file_size": [
       512,
       512
-    ]
+    ],
+    "note": "Da bo giot nuoc mat (tach ra art_lose_tear): tools/split_tear.gd, chay sau resize_images.py art_lose"
+  },
+  {
+    "name": "art_lose_tear",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (xoa giot nuoc mat cua art_lose) + tools/split_tear.gd",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Remove only the light-blue teardrop that hangs under the character's right eye (the one on the right side of the image, with a small drip below it). Where the tear was, show the complete dark navy eye with its rounded bottom edge, and the soft purple-blue blush patch on the cheek, exactly matching the surrounding colors. Keep everything else identical: same character, same pose, same position and size, same small sweat drop on the forehead, same broken puzzle piece, same lighting, same transparent background.",
+    "seed": 2024,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "f1799983-45ef-48f9-9fff-19c91c554736",
+    "source": "art/images/art_lose_notear.png",
+    "source_sha256": "8924e8a27de19b8cdc2d8a97fcfbcafb8f045b14e82f752d408012946d60f064",
+    "reference": "art/images/art_lose.png",
+    "file": "assets/ui/art_lose_tear.png",
+    "file_sha256": "a5f24354b6d7139170e31e1f73b7305e983e1dc73f888c2d45b97959496a73fe",
+    "file_size": [
+      32,
+      35
+    ],
+    "note": "Giot nuoc mat cat tu art_lose goc (mau khong doi); ban AI chi dung lam nen de va cho art_lose va tach alpha vien. Vi tri trong anh 512: (310, 291)"
   },
   {
     "name": "art_no_lives",

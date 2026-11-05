@@ -7,7 +7,7 @@ const _ECON := {
 	"start_coins": 1000,
 	"win_coins": 40,
 	## Gold per MOVES left on the board at a win, added to the win reward (x2 doubles it too).
-	"win_move_coins": 1,
+	"win_move_coins": 10,
 	"booster_price": {"hint": 900, "move": 1900, "smash": 2900},
 	"refill_coins": 900,
 	"refill_lives": 5,
@@ -36,7 +36,7 @@ const _ADS := {
 
 const _UNLOCK := {
 	"daily_gift": 4, "hint": 5, "shop": 5, "move": 12, "smash": 17,
-	"lives": 10, "starter": 10, "review": 10, "challenge": 50, "leaderboard": 8,
+	"lives": 10, "starter": 10, "review": 10, "challenge": 50, "leaderboard": 8, "road_trip": 2,
 	"stone": 14, "ice": 30, "chain": 40, "layer": 55, "fog": 70, "pulse": 90,
 }
 
@@ -248,17 +248,39 @@ const _NOTIF := {
 	"evening_days": 30,
 }
 
+## Road Trip (design.md mục 7 "Road Trip"): đường 400 level riêng (data/road_trip, bộ MoreColor), mở từ UNLOCK.road_trip.
+## Chơi không tốn mạng, thắng không cộng gold; thưởng là hộp quà ở level trong `boxes` (hộp thứ i cho
+## ROAD_TRIP_REWARDS[i]). Hết bước: xem quảng cáo +revive_moves, tối đa revive_max lần mỗi lượt chơi.
+const _ROAD_TRIP := {
+	"levels": 400,
+	"boxes": [15, 35, 69, 89, 123, 143, 163, 197, 217, 251, 271, 291, 325, 345, 379, 400],
+	"revive_moves": 5,
+	"revive_max": 3,
+}
+
+## Thưởng 16 hộp Road Trip theo tb_roadtripreward_config (Hint = hint, Hammer = smash, StepCount = move).
+## Tổng 12 hint, 10 smash, 8 move. Mảng dict nên Remote Config không ghi đè được.
+const ROAD_TRIP_REWARDS := [
+	{"hint": 1}, {"smash": 1}, {"move": 1}, {"hint": 1, "move": 1},
+	{"hint": 1, "smash": 1}, {"smash": 1, "move": 1}, {"hint": 2}, {"hint": 1, "move": 1},
+	{"hint": 1, "smash": 1}, {"smash": 1, "move": 1}, {"hint": 1, "smash": 1}, {"hint": 1, "move": 1},
+	{"hint": 1, "smash": 1}, {"smash": 1, "move": 1}, {"hint": 1, "smash": 1}, {"hint": 1, "smash": 1, "move": 1},
+]
+
 const _CONTENT := {
 	"demo_max_level": 20,
 	"release_pregen_level": 100,
 	"loop_start_level": 51,
+	# Spare MOVES on top of the solver's min taps (Solver.slack_for): levels up to slack_easy_until get slack_easy,
+	# up to slack_early_until slack_early, after that slack_normal; HARD levels (VeryHard too) get slack_hard.
 	"slack_easy": 5,
 	"slack_easy_until": 3,
-	"slack_hard": 1,
+	"slack_early": 3,
+	"slack_early_until": 13,
+	"slack_normal": 4,
+	"slack_hard": 3,
 	"very_hard_from_level": 100,
 	"hard_banner_sec": 1.2,
-	"slack_min": 2,
-	"slack_pct": 10,
 	"think_clap_sec": 8,
 	# Nhắc Gợi ý (level.gd): đang chơi mà không chạm màn hình idle_hint_sec giây thì nút Gợi ý lắc, bóng đèn sáng
 	# vàng và bong bóng "Available Block : N" hiện idle_hint_show_sec giây (chạm là tắt).
@@ -279,6 +301,12 @@ const _CONTENT := {
 	"curtain_logo_sec": 0.4,
 	"curtain_hold_sec": 0.35,
 	"curtain_open_sec": 0.3,
+	# Chạm màn hình (tap_fx.gd): ở điểm chạm một vòng tròn nở tới bán kính tap_fx_ring_px và tap_fx_stars sao nhỏ
+	# toả ra chừng tap_fx_star_px, mờ dần trong tap_fx_sec giây. Số px tính ở màn chuẩn 886×1920.
+	"tap_fx_sec": 0.4,
+	"tap_fx_ring_px": 25,
+	"tap_fx_star_px": 40,
+	"tap_fx_stars": 5,
 	# Background music (sfx.gd): a track fades in over music_fade_in_sec; on a track change the old one first fades out
 	# over music_fade_out_sec.
 	"music_fade_in_sec": 1.0,
@@ -311,6 +339,11 @@ const SHAPE_ROUGHEN := 0.06
 const MOTIF_FILL_MIN := 1.15
 const MOTIF_FILL_MAX := 1.8
 
+## Player nickname length (design.md mục 5 "Biệt danh"), counted after trimming spaces at both ends. NAME_MAX matches the
+## characterLimit of the input field in PopupEditNameLayer.
+const NAME_MIN := 3
+const NAME_MAX := 14
+
 ## Ngày sale theo Time.get_datetime_dict_from_unix_time().weekday (0 = Chủ nhật, 6 = thứ Bảy).
 const _SALE_WEEKDAYS := [5, 6, 0]
 ## Weekend sale cho ai: 1 = mọi người chơi, 2 = chỉ người chưa mua gói nào, 3 = tắt.
@@ -332,6 +365,7 @@ static var PACKS: Dictionary = _PACKS.duplicate(true)
 static var WEEKLY: Dictionary = _WEEKLY.duplicate(true)
 static var CHAIN: Dictionary = _CHAIN.duplicate(true)
 static var LEADERBOARD: Dictionary = _LEADERBOARD.duplicate(true)
+static var ROAD_TRIP: Dictionary = _ROAD_TRIP.duplicate(true)
 static var CONTENT: Dictionary = _CONTENT.duplicate(true)
 static var SALE_WEEKDAYS: Array = _SALE_WEEKDAYS.duplicate(true)
 static var SALE_MODE: int = _SALE_MODE
@@ -389,6 +423,7 @@ static func reset() -> void:
 	WEEKLY = _WEEKLY.duplicate(true)
 	CHAIN = _CHAIN.duplicate(true)
 	LEADERBOARD = _LEADERBOARD.duplicate(true)
+	ROAD_TRIP = _ROAD_TRIP.duplicate(true)
 	CONTENT = _CONTENT.duplicate(true)
 	SALE_WEEKDAYS = _SALE_WEEKDAYS.duplicate(true)
 	SALE_MODE = _SALE_MODE
@@ -425,7 +460,7 @@ static func apply_remote(values: Dictionary) -> void:
 		"econ": ECON, "lives": LIVES, "ads": ADS, "unlock": UNLOCK,
 		"cosmetics": COSMETICS, "skus": SKUS, "offers": OFFERS,
 		"notif": NOTIF, "content": CONTENT, "weekly": WEEKLY, "chain": CHAIN,
-		"leaderboard": LEADERBOARD,
+		"leaderboard": LEADERBOARD, "road_trip": ROAD_TRIP,
 	}
 	for raw_key in values:
 		var key := str(raw_key).to_lower()

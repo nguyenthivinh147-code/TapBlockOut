@@ -114,11 +114,11 @@ func test_symmetric_tiling(t: T) -> void:
 			for s in stones:
 				t.ok(not sym_h or stone_set.has(Vector2i(w - 1 - s.x, s.y)), "%s: đá đối xứng trái phải" % tag)
 				t.ok(not sym_v or stone_set.has(Vector2i(s.x, h - 1 - s.y)), "%s: đá đối xứng trên dưới" % tag)
-			# Khối phủ đúng các ô của hình trừ đá, không chồng nhau, liền mảng, tối đa BLOCK_CAP ô.
+			# Khối phủ đúng các ô của hình trừ đá, không chồng nhau, liền mảng; cỡ khối không giới hạn.
 			var covered := {}
 			var sigs := {}
 			for g in groups:
-				t.ok(g.size() >= 1 and g.size() <= Gen.BLOCK_CAP, "%s: khối %d ô" % [tag, g.size()])
+				t.ok(g.size() >= 1, "%s: khối %d ô" % [tag, g.size()])
 				t.ok(LevelData.connected(_set_of(g)), "%s: khối liền mảng" % tag)
 				var sorted: Array = g.duplicate()
 				sorted.sort()

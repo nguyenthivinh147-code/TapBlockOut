@@ -1,68 +1,31 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/ui/leaderboard.gd" id="1"]
-[ext_resource type="Script" path="res://src/ui/u_image.gd" id="3_gg3ww"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Leaderboard_Atlas.png" id="4_puido"]
-[ext_resource type="Script" path="res://src/ui/u_button.gd" id="5_lsys8"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="6_5a5ft"]
-[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="7_jq1dx"]
-[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="8_uwmvx"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_Bronze.png" id="9_bbyyb"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="10_7ognb"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/Av_02.png" id="11_lps3l"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/light1.png" id="12_047x0"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_Silver.png" id="13_epfd2"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/arrow_notify.png" id="14_jt3wr"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_slot_triangle.png" id="15_3bdeo"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_badge3.png" id="16_3sw0i"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/blocked.png" id="17_88ijg"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_badge2.png" id="18_14kf3"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_badge1.png" id="19_cp67a"]
-[ext_resource type="PackedScene" path="res://scenes/unity/LeaderboardLayer.tscn" id="u0"]
+[ext_resource type="PackedScene" path="res://scenes/unity/LeaderboardLayer.tscn" id="2_uwmvx"]
+[ext_resource type="Script" path="res://src/ui/u_image.gd" id="3_bbyyb"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Leaderboard_Atlas.png" id="4_7ognb"]
+[ext_resource type="Script" path="res://src/ui/u_button.gd" id="5_lps3l"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="6_047x0"]
+[ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="7_epfd2"]
+[ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="8_jt3wr"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_Silver.png" id="9_3bdeo"]
+[ext_resource type="Texture2D" path="res://assets/ui/figma/ic_leaderboard.png" id="10_3sw0i"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_Bronze.png" id="11_88ijg"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="12_14kf3"]
+[ext_resource type="Texture2D" path="res://assets/avatars/avatar_00.png" id="13_cp67a"]
+[ext_resource type="Texture2D" path="res://assets/frames/frame_00.png" id="14_wxq48"]
+[ext_resource type="Texture2D" path="res://assets/ui/lb_piece.png" id="15_l15xp"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/light1.png" id="16_whcxy"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/arrow_notify.png" id="17_273ip"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_slot_triangle.png" id="18_krrij"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Av_02.png" id="19_e0fa7"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_badge3.png" id="20_yrrp2"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/blocked.png" id="21_cy8ru"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_badge2.png" id="22_4x63x"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/ic_badge1.png" id="23_agyby"]
+[ext_resource type="Texture2D" path="res://assets/ui/lb_banner.png" id="24_h8rjh"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wxq48"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l15xp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_whcxy"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_273ip"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_krrij"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e0fa7"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yrrp2"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cy8ru"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4x63x"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_agyby"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h8rjh"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
-shader = ExtResource("7_jq1dx")
-shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
-shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
-shader_parameter/face_edge = 0.446428570625
-shader_parameter/outline_half = 0.085714287
-shader_parameter/underlay_on = true
-shader_parameter/underlay_edge = 0.491428570625
-shader_parameter/underlay_offset = Vector2(0, -1.26)
-shader_parameter/px_range = 14.0
-
-[sub_resource type="FontVariation" id="FontVariation_1l57u"]
-base_font = ExtResource("8_uwmvx")
-spacing_glyph = -1
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tnopf"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1l57u"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b8su8"]
 
@@ -84,37 +47,23 @@ content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vdknl"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o363j"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6lkoe"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
-shader = ExtResource("7_jq1dx")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
+shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
-shader_parameter/underlay_color = Color(0, 0, 0, 1)
-shader_parameter/face_edge = 0.510714285875
-shader_parameter/outline_half = 0.0
-shader_parameter/underlay_on = false
-shader_parameter/underlay_edge = 0.29107142087500004
-shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.085714287
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.491428570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
-base_font = ExtResource("8_uwmvx")
+[sub_resource type="FontVariation" id="FontVariation_o363j"]
+base_font = ExtResource("8_jt3wr")
 spacing_glyph = -1
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ax5uo"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3n4ge"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tnopf"]
 content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
@@ -142,8 +91,14 @@ content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xvuml"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6lkoe"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uvgey"]
-shader = ExtResource("7_jq1dx")
+shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
 shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
 shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
@@ -160,35 +115,37 @@ content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_acy68"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
+shader = ExtResource("7_epfd2")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.510714285875
+shader_parameter/outline_half = 0.0
+shader_parameter/underlay_on = false
+shader_parameter/underlay_edge = 0.29107142087500004
+shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="FontVariation" id="FontVariation_2c3ba"]
+base_font = ExtResource("8_jt3wr")
+spacing_glyph = -1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ax5uo"]
 content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3n4ge"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_acy68"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t362u"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ryp5"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1s4t5"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_beqsn"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_26qyp"]
 
@@ -208,30 +165,27 @@ content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6rl8e"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cj2sa"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sxghh"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_qejyp"]
-shader = ExtResource("7_jq1dx")
-shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0, 0, 0, 1)
-shader_parameter/underlay_color = Color(0, 0, 0, 1)
-shader_parameter/face_edge = 0.446428570625
-shader_parameter/outline_half = 0.1285714305
-shader_parameter/underlay_on = true
-shader_parameter/underlay_edge = 0.277678570625
-shader_parameter/underlay_offset = Vector2(0, -1.26)
-shader_parameter/px_range = 14.0
-
-[sub_resource type="FontVariation" id="FontVariation_2d730"]
-base_font = ExtResource("8_uwmvx")
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ubnfj"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ryp5"]
 content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1s4t5"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_beqsn"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cj2sa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sxghh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v5ijv"]
 
@@ -251,15 +205,30 @@ content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pl2ai"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r8q7f"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qejyp"]
+shader = ExtResource("7_epfd2")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_du5i8"]
+[sub_resource type="FontVariation" id="FontVariation_2d730"]
+base_font = ExtResource("8_jt3wr")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_71if0"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ubnfj"]
 content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r8q7f"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_du5i8"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rkbs3"]
 
@@ -279,12 +248,72 @@ content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8tw5f"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u1ro1"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_71if0"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c7li3"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u1ro1"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c7li3"]
+shader = ExtResource("7_epfd2")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.085714287
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.491428570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0rpub"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cv0vp"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hipou"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oscpg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r4xe5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3s6nb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ih07e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pphya"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tfcxi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gx6bh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gkk6q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tfs0w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2wxqa"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4unwx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1ng31"]
-shader = ExtResource("7_jq1dx")
+shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
 shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
 shader_parameter/underlay_color = Color(0, 0, 0, 1)
@@ -313,27 +342,27 @@ content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0rpub"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y0o8q"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cv0vp"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6hei1"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hipou"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_is4lx"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oscpg"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yegq8"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r4xe5"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qnrl7"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3s6nb"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_duxwn"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ih07e"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4glu7"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pphya"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cq1gn"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tfcxi"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n274i"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gx6bh"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mnn51"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gkk6q"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_um7uo"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8a2oi"]
 content_margin_left = 0.0
@@ -353,27 +382,27 @@ content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tfs0w"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_061pf"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2wxqa"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hdx7r"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4unwx"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k13ca"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y0o8q"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dflbr"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6hei1"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6eb7u"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_is4lx"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3i12i"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yegq8"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_phk5u"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qnrl7"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2lerg"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_duxwn"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3544"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4glu7"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p53xx"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cq1gn"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rerq4"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_djxsc"]
 content_margin_left = 0.0
@@ -393,27 +422,27 @@ content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n274i"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xjgce"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mnn51"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_orkpp"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_um7uo"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8mu7y"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_061pf"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xw4yl"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hdx7r"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sre76"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k13ca"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ywrl8"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dflbr"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ogofr"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6eb7u"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dtuxf"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3i12i"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_excgb"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_phk5u"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_udbet"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2lerg"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y604k"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iqe11"]
 content_margin_left = 0.0
@@ -451,40 +480,6 @@ content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3544"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p53xx"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rerq4"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xjgce"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_orkpp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8mu7y"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xw4yl"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sre76"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ywrl8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ogofr"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dtuxf"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u6rfd"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_excgb"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_udbet"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y604k"]
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f0vq7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mhmk3"]
@@ -501,8 +496,119 @@ content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5hykp"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qpewf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1nqgs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_miccr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u6rfd"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sjcov"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="FontVariation" id="FontVariation_wpogu"]
+base_font = ExtResource("8_jt3wr")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nk6ti"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r6xay"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rfqa6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oem4y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ffo36"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_egwda"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_80cou"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sscjn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cf3p2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vycyx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mamsi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k1tff"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f073f"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ylufk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0l70d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkodb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hjtg8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n2np8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ax0jc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yqr5k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b82mu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e3r1e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qy3jy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rcxs4"]
+shader = ExtResource("7_epfd2")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.003921569, 0.28235295, 0.44705883, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.27450982, 0.4117647, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u34ji"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cj3xr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_50uo4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rbmju"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_818ck"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dbuc1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gj0p4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ykl0e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qq43q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rp4wj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y6kkr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ekle7"]
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lenqp"]
-shader = ExtResource("7_jq1dx")
+shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
 shader_parameter/outline_color = Color(0.7764706, 0.72156864, 0.5647059, 1)
 shader_parameter/underlay_color = Color(0.5921569, 0.5921569, 0.5921569, 1)
@@ -514,7 +620,7 @@ shader_parameter/underlay_offset = Vector2(0, 0)
 shader_parameter/px_range = 14.0
 
 [sub_resource type="FontVariation" id="FontVariation_51gwy"]
-base_font = ExtResource("8_uwmvx")
+base_font = ExtResource("8_jt3wr")
 spacing_glyph = -2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_epg34"]
@@ -524,7 +630,7 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o1wlb"]
-shader = ExtResource("7_jq1dx")
+shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
 shader_parameter/outline_color = Color(1, 1, 1, 1)
 shader_parameter/underlay_color = Color(0.5921569, 0.5921569, 0.5921569, 1)
@@ -542,7 +648,7 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b1ri6"]
-shader = ExtResource("7_jq1dx")
+shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
 shader_parameter/outline_color = Color(0.22352941, 0.06666667, 0.003921569, 1)
 shader_parameter/underlay_color = Color(0.22352941, 0.06666667, 0.003921569, 1)
@@ -560,7 +666,7 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
-shader = ExtResource("7_jq1dx")
+shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
 shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
 shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
@@ -595,27 +701,27 @@ content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qpewf"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6aa84"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1nqgs"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2qy4r"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_miccr"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3qhvy"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sjcov"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ort3p"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wpogu"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_otjyg"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nk6ti"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7adno"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r6xay"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qgrb1"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rfqa6"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r7voh"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oem4y"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ys4na"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ffo36"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oavem"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_egwda"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3qgqd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j412w"]
 content_margin_left = 0.0
@@ -630,7 +736,7 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j5nr6"]
-shader = ExtResource("7_jq1dx")
+shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
 shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
 shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
@@ -653,47 +759,7 @@ content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_80cou"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sscjn"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cf3p2"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vycyx"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mamsi"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k1tff"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f073f"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ylufk"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0l70d"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkodb"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hjtg8"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_n2np8"]
-shader = ExtResource("7_jq1dx")
-shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
-shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
-shader_parameter/face_edge = 0.446428570625
-shader_parameter/outline_half = 0.1285714305
-shader_parameter/underlay_on = true
-shader_parameter/underlay_edge = 0.277678570625
-shader_parameter/underlay_offset = Vector2(0, -1.26)
-shader_parameter/px_range = 14.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ax0jc"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[node name="Leaderboard" type="Control" unique_id=1357835605]
+[node name="Leaderboard" type="Control" unique_id=1576782603]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -702,7 +768,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 
-[node name="Canvas" parent="." unique_id=1058033417 instance=ExtResource("u0")]
+[node name="Canvas" parent="." unique_id=627116267 instance=ExtResource("2_uwmvx")]
 anchors_preset = 0
 offset_right = 1080.0
 offset_bottom = 1920.0
@@ -781,7 +847,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 color = Color(0.21176471, 0.34509805, 0.627451, 1)
 fill_method = 4
 metadata/u = {
@@ -818,7 +884,7 @@ anchor_right = 1.0
 offset_top = -480.16
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 color = Color(0.20784314, 0.34509805, 0.627451, 1)
 pivot = Vector2(0.5, 0)
 fill_method = 4
@@ -851,14 +917,15 @@ metadata/u_rect = {
 }
 
 [node name="Line" parent="Canvas/LeaderboardLayer/BG" index="1" unique_id=213516621]
+visible = false
 anchors_preset = 0
 anchor_right = 1.0
-offset_top = 312.47488
-offset_bottom = 344.47488
+offset_top = 226.0
+offset_bottom = 258.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(0, 128, 32, 32)
 fill_method = 4
 metadata/u = {
@@ -885,7 +952,7 @@ metadata/u_rect = {
 "amax": Vector2(1, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, -328.47488),
+"pos": Vector2(0, -242),
 "size": Vector2(0, 32)
 }
 
@@ -893,10 +960,10 @@ metadata/u_rect = {
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 348.8149
+offset_top = 453.8149
 pivot_offset_ratio = Vector2(0.5, 0)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 kind = 1
 color = Color(0.12156863, 0.24313726, 0.49411765, 1)
 pivot = Vector2(0.5, 1)
@@ -925,11 +992,43 @@ metadata/u_rect = {
 "amax": Vector2(1, 1),
 "amin": Vector2(0, 0),
 "pivot": Vector2(0.5, 1),
-"pos": Vector2(0, -348.8149),
-"size": Vector2(0, -348.8149)
+"pos": Vector2(0, -453.8149),
+"size": Vector2(0, -453.8149)
 }
 
-[node name="ToggleGroup" parent="Canvas/LeaderboardLayer/BG/Panel" index="0" unique_id=415888282]
+[node name="TabStrip" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel" index="0" unique_id=913626910]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -305.96838
+offset_bottom = -177.9684
+pivot_offset_ratio = Vector2(0.5, 1)
+mouse_filter = 2
+script = ExtResource("3_bbyyb")
+color = Color(0.11372549, 0.16470589, 0.29803923, 1)
+pivot = Vector2(0.5, 0)
+metadata/u = {
+"a": true,
+"img": {
+"c": "1d2a4cff",
+"sp": null,
+"t": 0
+},
+"n": "TabStrip",
+"r": [0, 0, 1, 0, 0, 0, 0, 128.0, 0.5, 0]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 177.9684),
+"size": Vector2(0, 128)
+}
+metadata/u_sub = true
+
+[node name="ToggleGroup" parent="Canvas/LeaderboardLayer/BG/Panel" index="1" unique_id=415888282]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -953,30 +1052,31 @@ metadata/u_rect = {
 }
 
 [node name="Leagues" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup" index="0" unique_id=925794213]
-layout_mode = 1
 anchor_left = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
+anchor_bottom = 1.0
 offset_left = -367.0
-offset_top = -139.0
+offset_top = -295.96838
 offset_right = 2.0
-offset_bottom = -31.0
+offset_bottom = -187.9684
 pivot_offset_ratio = Vector2(1, 1)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_wxq48")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_l15xp")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_whcxy")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_273ip")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_krrij")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_e0fa7")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_yrrp2")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_cy8ru")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_4x63x")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_agyby")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_h8rjh")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_b8su8")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_07mmp")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_25yt2")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_fl4rm")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_myeq8")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_uihbe")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_4bvpw")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_k8ess")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_hvc2p")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_vdknl")
 toggle_mode = true
 button_pressed = true
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)])
 transition = 0
 sound = true
@@ -1102,10 +1202,10 @@ metadata/u = {
 "vib": true
 }
 metadata/u_rect = {
-"amax": Vector2(0.5, 1),
-"amin": Vector2(0.5, 1),
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
 "pivot": Vector2(1, 0),
-"pos": Vector2(2, 31),
+"pos": Vector2(2, 187.9684),
 "size": Vector2(369, 108)
 }
 
@@ -1115,8 +1215,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(0, 0, 200, 60)
 border = Vector4(20, 20, 20, 0)
 fill_method = 4
@@ -1158,8 +1258,8 @@ offset_right = 11.799999
 offset_bottom = 69.6
 pivot_offset_ratio = Vector2(0.1, 0.9)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("6_5a5ft")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("6_047x0")
 region = Rect2(448, 1363, 128, 128)
 color = Color(1, 1, 1, 0)
 pivot = Vector2(0.1, 0.1)
@@ -1221,14 +1321,13 @@ metadata/u_rect = {
 
 [node name="Text (TMP)" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/Leagues" index="2" unique_id=745365805]
 material = SubResource("ShaderMaterial_jm0a0")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -135.0
+offset_left = -85.0
 offset_top = -30.0
-offset_right = 135.0
+offset_right = 165.0
 offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -1239,10 +1338,10 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -6
 theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_1l57u")
+theme_override_fonts/font = SubResource("FontVariation_o363j")
 theme_override_font_sizes/font_size = 51
 theme_override_styles/normal = SubResource("StyleBoxEmpty_tnopf")
-text = "League"
+text = "Silver"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
@@ -1277,8 +1376,8 @@ metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
 "amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, -5),
-"size": Vector2(270, 70)
+"pos": Vector2(40, -5),
+"size": Vector2(250, 70)
 }
 metadata/u_txt = {
 "auto": [18.0, 60.0],
@@ -1301,30 +1400,67 @@ metadata/u_txt = {
 "ws": 0.0
 }
 
+[node name="TabLeagueIcon" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/Leagues" index="3" unique_id=1099170109]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 20.0
+offset_top = -44.0
+offset_right = 108.0
+offset_bottom = 44.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_bbyyb")
+tex = ExtResource("9_3bdeo")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+preserve_aspect = true
+metadata/u = {
+"a": true,
+"img": {
+"c": "ffffffff",
+"pa": true,
+"sp": "ic_Silver",
+"t": 0
+},
+"n": "TabLeagueIcon",
+"r": [0, 0.5, 0, 0.5, 64, 0, 88, 88, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(64, 0),
+"size": Vector2(88, 88)
+}
+metadata/u_sub = true
+
 [node name="Ranking" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup" index="1" unique_id=476412161]
-layout_mode = 1
 anchor_left = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
+anchor_bottom = 1.0
 offset_left = -2.0
-offset_top = -139.0
+offset_top = -295.96838
 offset_right = 367.0
-offset_bottom = -31.0
+offset_bottom = -187.9684
 pivot_offset_ratio = Vector2(0, 1)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_b8su8")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_07mmp")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_25yt2")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_fl4rm")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_myeq8")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_uihbe")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_4bvpw")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_k8ess")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_hvc2p")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_vdknl")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_o363j")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3eq2r")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ocgn1")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_6gvoq")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_4pufc")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_nfvqn")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_sxlju")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_y1x82")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_softt")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_qtcrb")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_sok7y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_xvuml")
 toggle_mode = true
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)])
 transition = 0
 sound = true
@@ -1450,10 +1586,10 @@ metadata/u = {
 "vib": true
 }
 metadata/u_rect = {
-"amax": Vector2(0.5, 1),
-"amin": Vector2(0.5, 1),
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
 "pivot": Vector2(0, 0),
-"pos": Vector2(-2, 31),
+"pos": Vector2(-2, 187.9684),
 "size": Vector2(369, 108)
 }
 
@@ -1463,8 +1599,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(0, 64, 200, 60)
 border = Vector4(20, 20, 20, 0)
 fill_method = 4
@@ -1506,8 +1642,8 @@ offset_right = 6.699997
 offset_bottom = 69.5999
 pivot_offset_ratio = Vector2(0.1, 0.9)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("6_5a5ft")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("6_047x0")
 region = Rect2(448, 1363, 128, 128)
 color = Color(1, 1, 1, 0)
 pivot = Vector2(0.1, 0.1)
@@ -1569,14 +1705,13 @@ metadata/u_rect = {
 
 [node name="Text (TMP)" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/Ranking" index="2" unique_id=1279278730]
 material = SubResource("ShaderMaterial_jm0a0")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -135.0
+offset_left = -85.0
 offset_top = -30.0
-offset_right = 135.0
+offset_right = 165.0
 offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -1587,7 +1722,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -6
 theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_1l57u")
+theme_override_fonts/font = SubResource("FontVariation_o363j")
 theme_override_font_sizes/font_size = 51
 theme_override_styles/normal = SubResource("StyleBoxEmpty_6lkoe")
 text = "World"
@@ -1625,8 +1760,8 @@ metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
 "amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, -5),
-"size": Vector2(270, 70)
+"pos": Vector2(40, -5),
+"size": Vector2(250, 70)
 }
 metadata/u_txt = {
 "auto": [18.0, 60.0],
@@ -1648,6 +1783,38 @@ metadata/u_txt = {
 "w": true,
 "ws": 0.0
 }
+
+[node name="TabWorldIcon" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/Ranking" index="3" unique_id=1130873476]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 20.0
+offset_top = -44.0
+offset_right = 108.0
+offset_bottom = 44.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_bbyyb")
+tex = ExtResource("10_3sw0i")
+region = Rect2(0, 0, 216, 219)
+metadata/u = {
+"a": true,
+"n": "TabWorldIcon",
+"r": [0, 0.5, 0, 0.5, 64, 0, 88, 88, 0.5, 0.5],
+"raw": {
+"c": "ffffffff",
+"tex": "res://assets/ui/figma/ic_leaderboard.png"
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(64, 0),
+"size": Vector2(88, 88)
+}
+metadata/u_sub = true
 
 [node name="LeaguesContent" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup" index="2" unique_id=494321079]
 anchors_preset = 0
@@ -1732,14 +1899,186 @@ metadata/u_rect = {
 "size": Vector2(0, 0)
 }
 
-[node name="Line (1)" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent" index="0" unique_id=1901787159]
+[node name="PromoBox" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent" index="0" unique_id=1083845617]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 14.0
+offset_right = 400.0
+offset_bottom = 224.0
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"n": "PromoBox",
+"r": [0.5, 1, 0.5, 1, 0, -14.0, 800.0, 210.0, 0.5, 1]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -14),
+"size": Vector2(800, 210)
+}
+metadata/u_sub = true
+
+[node name="BoxBg" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PromoBox" unique_id=1495741618]
 anchors_preset = 0
 anchor_right = 1.0
-offset_top = 361.75
-offset_bottom = 378.45
+anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
+region = Rect2(204, 0, 72, 60)
+border = Vector4(20, 20, 20, 20)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7070929727044980854",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_10",
+"t": 1.0
+},
+"n": "BoxBg",
+"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_sub = true
+
+[node name="PromoTitle" type="Label" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PromoBox" unique_id=239526467]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_uvgey")
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -370.0
+offset_top = 12.0
+offset_right = 370.0
+offset_bottom = 62.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_o363j")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_r0hf8")
+text = "Promotion reward: Gold League"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "709436973652917155",
+"n": "Text",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -291.6797, -199.2643, 201.8012, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 36.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Promotion reward",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -12),
+"size": Vector2(740, 50)
+}
+metadata/u_txt = {
+"auto": [18.0, 36.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 36.0,
+"h": 2,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Promotion reward",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+metadata/u_sub = true
+
+[node name="PromoRewards" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PromoBox" unique_id=640360411]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -370.0
+offset_top = 66.0
+offset_right = 370.0
+offset_bottom = 200.0
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"n": "PromoRewards",
+"r": [0.5, 1, 0.5, 1, 0, -66, 740, 134, 0.5, 1]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -66),
+"size": Vector2(740, 134)
+}
+metadata/u_sub = true
+
+[node name="Line (1)" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent" index="1" unique_id=1901787159]
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+offset_top = 261.7501
+offset_bottom = 278.4501
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_bbyyb")
 color = Color(0.11372549, 0.16470589, 0.29803923, 1)
 fill_method = 4
 metadata/u = {
@@ -1766,18 +2105,19 @@ metadata/u_rect = {
 "amax": Vector2(1, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, -370.1),
+"pos": Vector2(0, -270.1001),
 "size": Vector2(0, 16.700012)
 }
 
-[node name="TimeRemainBG" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent" index="1" unique_id=1597374270]
+[node name="TimeRemainBG" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent" index="2" unique_id=1597374270]
+visible = false
 anchors_preset = 0
 anchor_right = 1.0
 offset_top = 125.0
 offset_bottom = 261.0
 pivot_offset_ratio = Vector2(0.5, 0)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 color = Color(0.13333334, 0.19607843, 0.3764706, 1)
 pivot = Vector2(0.5, 1)
 fill_method = 4
@@ -1821,8 +2161,8 @@ offset_right = 305.0
 offset_bottom = 46.5
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(204, 0, 72, 60)
 border = Vector4(20, 20, 20, 20)
 kind = 1
@@ -1865,8 +2205,8 @@ offset_right = 117.2
 offset_bottom = 55.56
 pivot_offset_ratio = Vector2(0, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("9_bbyyb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("11_88ijg")
 region = Rect2(0, 0, 256, 256)
 border_scale = 2.0
 pivot = Vector2(0, 0.5)
@@ -1901,7 +2241,6 @@ metadata/u_rect = {
 
 [node name="RankName" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/TimeRemainBG/TimeRemain" index="1" unique_id=67176071]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1990,8 +2329,8 @@ offset_right = -12.82
 offset_bottom = 22.0
 pivot_offset_ratio = Vector2(1, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(204, 64, 72, 60)
 border = Vector4(36, 0, 36, 0)
 kind = 1
@@ -2027,7 +2366,6 @@ metadata/u_rect = {
 
 [node name="TimeText" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/TimeRemainBG/TimeRemain/Image" index="0" unique_id=1279263159]
 material = SubResource("ShaderMaterial_jm0a0")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -2116,8 +2454,8 @@ offset_right = 34.68
 offset_bottom = 30.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(1828, 16, 220, 220)
 fill_method = 4
 metadata/u = {
@@ -2149,7 +2487,6 @@ metadata/u_rect = {
 }
 
 [node name="DescButton" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/TimeRemainBG" index="1" unique_id=1893594709]
-layout_mode = 1
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
@@ -2160,19 +2497,19 @@ offset_right = -38.0
 offset_bottom = 26.0
 pivot_offset_ratio = Vector2(1, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_3eq2r")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ocgn1")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_6gvoq")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_4pufc")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_nfvqn")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_sxlju")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_y1x82")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_softt")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_qtcrb")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_sok7y")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_xvuml")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_acy68")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_t362u")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_26qyp")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_g7ykj")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_2oeeh")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_sj5xd")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_cvq6t")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_b176i")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_n8jyh")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_csyr0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_6rl8e")
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 sound = true
 metadata/u = {
@@ -2221,503 +2558,18 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(0, 164, 52, 52)
 pivot = Vector2(1, 0.5)
 fill_method = 4
-
-[node name="LeagueProgress" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent" index="2" unique_id=1850742168]
-unique_name_in_owner = true
-anchors_preset = 0
-anchor_right = 1.0
-offset_top = 261.0
-offset_bottom = 361.0
-pivot_offset_ratio = Vector2(0.5, 0)
-mouse_filter = 1
-script = ExtResource("3_gg3ww")
-color = Color(0.13333334, 0.19607843, 0.3764706, 1)
-pivot = Vector2(0.5, 1)
-fill_method = 4
-metadata/u = {
-"a": true,
-"id": "5695659035961455233",
-"img": {
-"c": "223260ff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
-"ppu": 1.0,
-"rt": true,
-"sp": null,
-"t": 0.0
-},
-"n": "LeagueProgress",
-"r": [0, 1, 1, 1, 0, -261.0, 0, 100.0, 0.5, 1]
-}
-metadata/u_rect = {
-"amax": Vector2(1, 1),
-"amin": Vector2(0, 1),
-"pivot": Vector2(0.5, 1),
-"pos": Vector2(0, -261),
-"size": Vector2(0, 100)
-}
-metadata/u_sub = true
-
-[node name="LeagueBar" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/LeagueProgress" unique_id=202212424]
-anchors_preset = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -305.0
-offset_top = 12.0
-offset_right = 305.0
-offset_bottom = 52.0
-pivot_offset_ratio = Vector2(0.5, 0)
-mouse_filter = 2
-metadata/u = {
-"a": true,
-"id": "6109928512297137465",
-"n": "LeagueBar",
-"r": [0.5, 1, 0.5, 1, 0, -12, 610, 40, 0.5, 1],
-"slider": {
-"dir": 0.0,
-"fill": "1055796078134408685",
-"handle": "2997341410301354593",
-"inter": false,
-"max": 1.0,
-"min": 0.0,
-"value": 0.11,
-"whole": false
-}
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 1),
-"amin": Vector2(0.5, 1),
-"pivot": Vector2(0.5, 1),
-"pos": Vector2(0, -12),
-"size": Vector2(610, 40)
-}
-metadata/u_sub = true
-
-[node name="Background" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/LeagueProgress/LeagueBar" unique_id=681071708]
-anchors_preset = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("6_5a5ft")
-region = Rect2(1453, 1666, 128, 92)
-border = Vector4(43, 0, 41, 0)
-border_scale = 0.9090909090909091
-kind = 1
-fill_method = 4
-metadata/u = {
-"a": true,
-"id": "6159021087723854739",
-"img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
-"ppu": 1.1,
-"rt": false,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_60",
-"t": 1.0
-},
-"n": "Background",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
-}
-metadata/u_rect = {
-"amax": Vector2(1, 1),
-"amin": Vector2(0, 0),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 0),
-"size": Vector2(0, 0)
-}
-
-[node name="Fill Area" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/LeagueProgress/LeagueBar" unique_id=999722731]
-anchors_preset = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 3.64005
-offset_top = 4.4
-offset_right = -4.12005
-offset_bottom = -6.36
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-metadata/u = {
-"a": true,
-"id": "8806500678376450195",
-"n": "Fill Area",
-"r": [0.0, 0.0, 1.0, 1.0, -0.24, 0.98, -7.7601, -10.76, 0.5, 0.5]
-}
-metadata/u_rect = {
-"amax": Vector2(1, 1),
-"amin": Vector2(0, 0),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(-0.24000001, 0.98),
-"size": Vector2(-7.7601, -10.76)
-}
-
-[node name="Fill" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/LeagueProgress/LeagueBar/Fill Area" unique_id=1308209458]
-anchors_preset = 0
-anchor_top = 1.0
-anchor_bottom = 1.0
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("6_5a5ft")
-region = Rect2(1486, 1783, 92, 68)
-border = Vector4(41, 0, 41, 0)
-border_scale = 0.9090909090909091
-kind = 1
-metadata/u = {
-"a": true,
-"id": "1055796078134408685",
-"img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 0.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
-"ppu": 1.1,
-"rt": false,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_61",
-"t": 1.0
-},
-"n": "Fill",
-"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
-}
-metadata/u_rect = {
-"amax": Vector2(0, 0),
-"amin": Vector2(0, 0),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 0),
-"size": Vector2(0, 0)
-}
-
-[node name="Handle Slide Area" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/LeagueProgress/LeagueBar" unique_id=865701287]
-visible = false
-anchors_preset = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-metadata/u = {
-"a": true,
-"id": "511653947599562809",
-"n": "Handle Slide Area",
-"r": [0.0, 0.0, 1.0, 1.0, 5.0, 0.0, -10.0, 0.0, 0.5, 0.5]
-}
-metadata/u_rect = {
-"amax": Vector2(1, 1),
-"amin": Vector2(0, 0),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(5, 0),
-"size": Vector2(-10, 0)
-}
-
-[node name="Handle" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/LeagueProgress/LeagueBar/Handle Slide Area" unique_id=1858557688]
-anchors_preset = 0
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = -76.5
-offset_top = -2.0
-offset_right = 3.5
-offset_bottom = -2.0
-pivot_offset_ratio = Vector2(1, 0.5)
-mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("6_5a5ft")
-region = Rect2(82, 1445, 128, 128)
-pivot = Vector2(1, 0.5)
-fill_method = 4
-metadata/u = {
-"a": true,
-"id": "2997341410301354593",
-"img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
-"ppu": 1.0,
-"rt": false,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_62",
-"t": 0.0
-},
-"n": "Handle",
-"r": [0.0, 0.0, 0.0, 0.0, 3.5, 2.0, 80.0, 0.0, 1.0, 0.5]
-}
-metadata/u_rect = {
-"amax": Vector2(0, 0),
-"amin": Vector2(0, 0),
-"pivot": Vector2(1, 0.5),
-"pos": Vector2(3.5, 2),
-"size": Vector2(80, 0)
-}
-
-[node name="PointsText" type="Label" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/LeagueProgress/LeagueBar" unique_id=356428991]
-material = SubResource("ShaderMaterial_uvgey")
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -23.0
-offset_right = 200.0
-offset_bottom = 23.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 1
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/line_spacing = -4
-theme_override_constants/outline_size = 0
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_1l57u")
-theme_override_font_sizes/font_size = 36
-theme_override_styles/normal = SubResource("StyleBoxEmpty_r0hf8")
-text = "3d 18h 20m"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-metadata/u = {
-"a": true,
-"id": "541336199798106768",
-"n": "PointsText",
-"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 400, 46, 0.5, 0.5],
-"txt": {
-"auto": [18.0, 36.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 36.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Blue 1",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "3d 18h 20m",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
-}
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 0.5),
-"amin": Vector2(0.5, 0.5),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 0),
-"size": Vector2(400, 46)
-}
-metadata/u_txt = {
-"auto": [18.0, 36.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 36.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Blue 1",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "3d 18h 20m",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
-}
-metadata/u_sub = true
-
-[node name="GoalLabel" type="Label" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/LeagueProgress" unique_id=1750230259]
-material = SubResource("ShaderMaterial_uvgey")
-layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -305.0
-offset_top = 58.0
-offset_right = 95.0
-offset_bottom = 98.0
-grow_vertical = 2
-mouse_filter = 1
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/line_spacing = -4
-theme_override_constants/outline_size = 0
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_1l57u")
-theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxEmpty_acy68")
-text = "3d 18h 20m"
-vertical_alignment = 1
-autowrap_mode = 3
-metadata/u = {
-"a": true,
-"id": "541336199798106768",
-"n": "GoalLabel",
-"r": [0.5, 1, 0.5, 1, -305.0, -58, 400.0, 40, 0.0, 1],
-"txt": {
-"auto": [18.0, 32.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 32.0,
-"h": 1,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Blue 1",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "3d 18h 20m",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
-}
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 1),
-"amin": Vector2(0.5, 1),
-"pivot": Vector2(0, 1),
-"pos": Vector2(-305, -58),
-"size": Vector2(400, 40)
-}
-metadata/u_txt = {
-"auto": [18.0, 32.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 32.0,
-"h": 1,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Blue 1",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "3d 18h 20m",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
-}
-metadata/u_sub = true
-
-[node name="TopPercentLabel" type="Label" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/LeagueProgress" unique_id=1504905982]
-material = SubResource("ShaderMaterial_uvgey")
-layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 105.0
-offset_top = 58.0
-offset_right = 305.0
-offset_bottom = 98.0
-grow_horizontal = 0
-grow_vertical = 2
-pivot_offset_ratio = Vector2(1, 0)
-mouse_filter = 1
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/line_spacing = -4
-theme_override_constants/outline_size = 0
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_1l57u")
-theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxEmpty_t362u")
-text = "3d 18h 20m"
-horizontal_alignment = 2
-vertical_alignment = 1
-autowrap_mode = 3
-metadata/u = {
-"a": true,
-"id": "541336199798106768",
-"n": "TopPercentLabel",
-"r": [0.5, 1, 0.5, 1, 305.0, -58, 200.0, 40, 1.0, 1],
-"txt": {
-"auto": [18.0, 32.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 32.0,
-"h": 4,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Blue 1",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "3d 18h 20m",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
-}
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 1),
-"amin": Vector2(0.5, 1),
-"pivot": Vector2(1, 1),
-"pos": Vector2(305, -58),
-"size": Vector2(200, 40)
-}
-metadata/u_txt = {
-"auto": [18.0, 32.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 32.0,
-"h": 4,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Blue 1",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "3d 18h 20m",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
-}
-metadata/u_sub = true
 
 [node name="PlayerScrollParent" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent" index="3" unique_id=962758179]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 376.2
-offset_bottom = -462.3025
+offset_top = 238.0
+offset_bottom = -319.96838
 pivot_offset_ratio = Vector2(0.5, 0)
 mouse_filter = 2
 metadata/u = {
@@ -2751,8 +2603,8 @@ metadata/u_rect = {
 "amax": Vector2(1, 1),
 "amin": Vector2(0, 0),
 "pivot": Vector2(0.5, 1),
-"pos": Vector2(0, -376.2),
-"size": Vector2(0, -838.5025)
+"pos": Vector2(0, -238),
+"size": Vector2(0, -557.9684)
 }
 
 [node name="Viewport" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PlayerScrollParent" index="0" unique_id=1867704830]
@@ -2761,7 +2613,7 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 kind = 1
 pivot = Vector2(0, 1)
 fill_method = 4
@@ -2798,10 +2650,8 @@ metadata/u_rect = {
 
 [node name="Content" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PlayerScrollParent/Viewport" index="0" unique_id=18249152]
 anchors_preset = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -400.0
-offset_right = 400.0
+anchor_right = 1.0
+offset_bottom = 7970.0
 pivot_offset_ratio = Vector2(0.5, 0)
 mouse_filter = 2
 metadata/u = {
@@ -2836,20 +2686,24 @@ metadata/u = {
 "r": [0.5, 1.0, 0.5, 1.0, 0.0, 0.0, 800.0, 0.0, 0.5, 1.0]
 }
 metadata/u_rect = {
-"amax": Vector2(0.5, 1),
-"amin": Vector2(0.5, 1),
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 1),
 "pos": Vector2(0, 0),
-"size": Vector2(800, 0)
+"size": Vector2(0, 7970)
 }
 
 [node name="PlayerLeaderboardItem" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PlayerScrollParent/Viewport" index="1" unique_id=732817483]
-visible = false
 anchors_preset = 0
-offset_left = 43.0
-offset_right = 843.0
-offset_bottom = 150.0
-pivot_offset_ratio = Vector2(0.5, 0)
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -143.0
+offset_right = 400.0
+offset_bottom = 7.0
+pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 2
 metadata/u = {
 "a": false,
@@ -2926,10 +2780,10 @@ metadata/u = {
 "r": [0.0, 1.0, 0.0, 1.0, 443.0, 0.0, 800.0, 150.0, 0.5, 1.0]
 }
 metadata/u_rect = {
-"amax": Vector2(0, 1),
-"amin": Vector2(0, 1),
-"pivot": Vector2(0.5, 1),
-"pos": Vector2(443, 0),
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, -7),
 "size": Vector2(800, 150)
 }
 
@@ -2939,9 +2793,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
-region = Rect2(524, 636, 500, 94)
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
+region = Rect2(524, 539, 500, 94)
 border = Vector4(30, 30, 30, 30)
 fill_method = 4
 metadata/u = {
@@ -2981,7 +2835,6 @@ metadata/u_rect = {
 
 [node name="RankNumberTxt" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PlayerScrollParent/Viewport/PlayerLeaderboardItem" index="1" unique_id=1724800718]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 29.1
@@ -2997,10 +2850,10 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -6
 theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_fonts/font = SubResource("FontVariation_o363j")
 theme_override_font_sizes/font_size = 50
 theme_override_styles/normal = SubResource("StyleBoxEmpty_5ryp5")
-text = "4"
+text = "97"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
@@ -3037,7 +2890,7 @@ metadata/u_rect = {
 "size": Vector2(88.5, 115.11)
 }
 metadata/u_txt = {
-"auto": null,
+"auto": [18.0, 50.0],
 "c": "000000ff",
 "cs": 0.0,
 "font": "Baloo Bhaijaan Regular 400 SDF",
@@ -3058,6 +2911,7 @@ metadata/u_txt = {
 }
 
 [node name="Image" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PlayerScrollParent/Viewport/PlayerLeaderboardItem/RankNumberTxt" index="0" unique_id=991021619]
+visible = false
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -3069,8 +2923,8 @@ offset_right = 32.5
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(620, 0, 60, 60)
 fill_method = 4
 metadata/u = {
@@ -3111,8 +2965,8 @@ offset_right = 38.02
 offset_bottom = 25.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(54, 164, 40, 52)
 fill_method = 4
 metadata/u = {
@@ -3153,8 +3007,8 @@ offset_right = 204.1
 offset_bottom = 40.0
 pivot_offset_ratio = Vector2(0, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("11_lps3l")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("13_cp67a")
 region = Rect2(0, 0, 512, 512)
 pivot = Vector2(0, 0.5)
 fill_method = 4
@@ -3198,9 +3052,9 @@ offset_right = 45.0
 offset_bottom = 45.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
-region = Rect2(756, 816, 168, 168)
+script = ExtResource("3_bbyyb")
+tex = ExtResource("14_wxq48")
+region = Rect2(0, 0, 256, 256)
 fill_method = 4
 metadata/u = {
 "a": true,
@@ -3232,15 +3086,14 @@ metadata/u_rect = {
 
 [node name="PlayerName" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PlayerScrollParent/Viewport/PlayerLeaderboardItem" index="4" unique_id=1445203960]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -181.4
-offset_top = -45.6
+offset_top = -48.0
 offset_right = 114.0
-offset_bottom = 45.6
+offset_bottom = 12.0
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0, 0.5)
 mouse_filter = 1
@@ -3249,10 +3102,10 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -5
 theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_2c3ba")
-theme_override_font_sizes/font_size = 45
+theme_override_fonts/font = SubResource("FontVariation_o363j")
+theme_override_font_sizes/font_size = 44
 theme_override_styles/normal = SubResource("StyleBoxEmpty_1s4t5")
-text = "Playera5cd46"
+text = "You"
 vertical_alignment = 1
 autowrap_mode = 3
 metadata/u = {
@@ -3285,8 +3138,8 @@ metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
 "amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0, 0.5),
-"pos": Vector2(-181.4, 0),
-"size": Vector2(295.4, 91.2)
+"pos": Vector2(-181.4, 18),
+"size": Vector2(295.4, 60)
 }
 metadata/u_txt = {
 "auto": [18.0, 45.0],
@@ -3321,8 +3174,8 @@ offset_right = -30.0
 offset_bottom = 25.0
 pivot_offset_ratio = Vector2(1, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(860, 64, 76, 60)
 border = Vector4(30, 0, 30, 0)
 kind = 1
@@ -3366,9 +3219,9 @@ offset_right = 44.9
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
-region = Rect2(517, 0, 256, 256)
+script = ExtResource("3_bbyyb")
+tex = ExtResource("15_l15xp")
+region = Rect2(0, 0, 128, 128)
 fill_method = 4
 metadata/u = {
 "a": true,
@@ -3400,7 +3253,6 @@ metadata/u_rect = {
 
 [node name="PointText" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PlayerScrollParent/Viewport/PlayerLeaderboardItem/PointPanel" index="1" unique_id=314851930]
 material = SubResource("ShaderMaterial_jm0a0")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -3418,10 +3270,10 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -4
 theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_2c3ba")
+theme_override_fonts/font = SubResource("FontVariation_o363j")
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxEmpty_beqsn")
-text = "24"
+text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
@@ -3480,7 +3332,7 @@ metadata/u_txt = {
 }
 
 [node name="Gift" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PlayerScrollParent/Viewport/PlayerLeaderboardItem" index="6" unique_id=640088887]
-layout_mode = 1
+visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -3491,19 +3343,19 @@ offset_right = 185.0
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_26qyp")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_g7ykj")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_2oeeh")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_sj5xd")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_cvq6t")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_b176i")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_n8jyh")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_csyr0")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_6rl8e")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_cj2sa")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_sxghh")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cj2sa")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_sxghh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v5ijv")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_leoy4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_28vv3")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_ggvg3")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_oqfda")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_6sul1")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_0drvs")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ei351")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_pl2ai")
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 sound = true
 metadata/u = {
@@ -3574,8 +3426,8 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(0, 219, 52, 52)
 fill_method = 4
 
@@ -3634,8 +3486,8 @@ offset_right = 45.0
 offset_bottom = 95.45
 pivot_offset_ratio = Vector2(0.5, 0)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(279, 0, 168, 124)
 pivot = Vector2(0.5, 1)
 fill_method = 4
@@ -3718,8 +3570,8 @@ offset_right = -5.0
 offset_bottom = -5.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(780, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -3752,7 +3604,6 @@ metadata/u_rect = {
 
 [node name="Quantity" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PlayerScrollParent/Viewport/PlayerLeaderboardItem/Gift/RewardsParent/ItemReward4" index="1" unique_id=1258357405]
 material = SubResource("ShaderMaterial_qejyp")
-layout_mode = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -3875,6 +3726,7 @@ metadata/u_rect = {
 }
 
 [node name="RankProgressBG" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent" index="4" unique_id=376785343]
+visible = false
 anchors_preset = 0
 anchor_right = 1.0
 offset_top = 4.2
@@ -3901,9 +3753,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -336.0
+offset_left = -340.375
 offset_top = -60.0
-offset_right = 336.0
+offset_right = 340.375
 offset_bottom = 60.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
@@ -3931,31 +3783,29 @@ metadata/u_rect = {
 "amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0.5, 0.5),
 "pos": Vector2(0, 0),
-"size": Vector2(672, 120)
+"size": Vector2(680.75, 120)
 }
 
 [node name="RankBadge" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/RankProgressBG/RankProgress" index="0" unique_id=316969663]
-visible = false
-layout_mode = 1
 offset_left = 273.175
 offset_top = -8.649994
 offset_right = 407.575
 offset_bottom = 128.65
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_v5ijv")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_leoy4")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_28vv3")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_ggvg3")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_oqfda")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_6sul1")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_0drvs")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_ei351")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_pl2ai")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_r8q7f")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_du5i8")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_r8q7f")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_du5i8")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rkbs3")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_xc8t4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_lvrxb")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_oeofj")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_5nmj5")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_qo7gt")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_681i0")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_u3q83")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8tw5f")
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 sound = true
 metadata/u = {
@@ -4021,8 +3871,8 @@ offset_right = 27.28
 offset_bottom = 50.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("12_047x0")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("16_whcxy")
 region = Rect2(0, 0, 237, 255.73953)
 border_scale = 3.628691983122363
 fill_method = 4
@@ -4066,8 +3916,8 @@ offset_right = 34.85
 offset_bottom = 60.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("13_epfd2")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("9_3bdeo")
 region = Rect2(0, 0, 256, 256)
 border_scale = 2.0
 fill_method = 4
@@ -4109,8 +3959,8 @@ offset_left = -50.0
 offset_top = -50.0
 pivot_offset_ratio = Vector2(1, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(0, 219, 52, 52)
 pivot = Vector2(1, 0)
 fill_method = 4
@@ -4215,8 +4065,8 @@ anchor_bottom = 1.0
 offset_top = -80.0
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(525, 515, 116, 72)
 border = Vector4(31, 27, 23, 23)
 kind = 1
@@ -4267,8 +4117,8 @@ offset_bottom = -16.9003
 scale = Vector2(1, -1)
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("14_jt3wr")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("17_273ip")
 region = Rect2(0, 0, 256, 186.49007)
 border_scale = 1.1796875
 pivot = Vector2(0.5, 0)
@@ -4353,8 +4203,8 @@ offset_right = -5.0
 offset_bottom = -5.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(780, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -4387,7 +4237,6 @@ metadata/u_rect = {
 
 [node name="Quantity" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/RankProgressBG/RankProgress/RankBadge/RankImage/RewardImage/RewardsParent/ItemReward6" index="1" unique_id=1109529961]
 material = SubResource("ShaderMaterial_qejyp")
-layout_mode = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -4471,8 +4320,8 @@ offset_bottom = 30.0
 rotation = 1.5707964
 pivot_offset_ratio = Vector2(0.5, 0)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("15_3bdeo")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("18_krrij")
 region = Rect2(0, 0, 128, 128)
 pivot = Vector2(0.5, 1)
 fill_method = 4
@@ -4569,7 +4418,675 @@ metadata/u_rect = {
 "size": Vector2(0, 0)
 }
 
-[node name="LastWeekLeaders" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent" index="0" unique_id=1621556438]
+[node name="PlayerCard" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent" index="0" unique_id=1280549804]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 14.0
+offset_right = 400.0
+offset_bottom = 224.0
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"n": "PlayerCard",
+"r": [0.5, 1, 0.5, 1, 0, -14.0, 800.0, 210.0, 0.5, 1]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -14),
+"size": Vector2(800, 210)
+}
+metadata/u_sub = true
+
+[node name="BoxBg" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/PlayerCard" unique_id=1476759005]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
+region = Rect2(204, 0, 72, 60)
+border = Vector4(20, 20, 20, 20)
+kind = 1
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7070929727044980854",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_10",
+"t": 1.0
+},
+"n": "BoxBg",
+"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
+}
+metadata/u_sub = true
+
+[node name="CardLeagueIcon" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/PlayerCard" unique_id=1989039332]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 21.0
+offset_top = -75.0
+offset_right = 171.0
+offset_bottom = 75.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_bbyyb")
+tex = ExtResource("9_3bdeo")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+preserve_aspect = true
+metadata/u = {
+"a": true,
+"img": {
+"c": "ffffffff",
+"pa": true,
+"sp": "ic_Silver",
+"t": 0
+},
+"n": "CardLeagueIcon",
+"r": [0, 0.5, 0, 0.5, 96, 0, 150, 150, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(96, 0),
+"size": Vector2(150, 150)
+}
+metadata/u_sub = true
+
+[node name="CardAvatar" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/PlayerCard" unique_id=1513267231]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 197.0
+offset_top = -55.0
+offset_right = 307.0
+offset_bottom = 55.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_bbyyb")
+tex = ExtResource("19_e0fa7")
+region = Rect2(0, 0, 512, 512)
+fill_method = 4
+metadata/u = {
+"a": true,
+"ch": [{
+"a": true,
+"id": "7004884631244999187",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
+"t": 0.0
+},
+"n": "Frame",
+"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 124, 124, 0.5, 0.5]
+}],
+"id": "4705843628370379277",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Av_02",
+"t": 0.0
+},
+"n": "CardAvatar",
+"r": [0, 0.5, 0, 0.5, 252, 0, 110, 110, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(252, 0),
+"size": Vector2(110, 110)
+}
+metadata/u_sub = true
+
+[node name="Frame" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/PlayerCard/CardAvatar" unique_id=1646431344]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -62.0
+offset_top = -62.0
+offset_right = 62.0
+offset_bottom = 62.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
+region = Rect2(756, 816, 168, 168)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "7004884631244999187",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
+"t": 0.0
+},
+"n": "Frame",
+"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 124, 124, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 0),
+"size": Vector2(124, 124)
+}
+
+[node name="CardName" type="Label" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/PlayerCard" unique_id=1028398772]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_uvgey")
+layout_mode = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 330.0
+offset_top = -67.0
+offset_right = 560.0
+offset_bottom = -5.0
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -6
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_o363j")
+theme_override_font_sizes/font_size = 46
+theme_override_styles/normal = SubResource("StyleBoxEmpty_u1ro1")
+text = "You"
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "709436973652917155",
+"n": "Text",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -291.6797, -199.2643, 201.8012, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 46.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 46.0,
+"h": 1,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "You",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(330, 36),
+"size": Vector2(230, 62)
+}
+metadata/u_txt = {
+"auto": [18.0, 46.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 46.0,
+"h": 1,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "You",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+metadata/u_sub = true
+
+[node name="CardPoints" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/PlayerCard" unique_id=663548956]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 330.0
+offset_top = 7.0
+offset_right = 520.0
+offset_bottom = 65.0
+pivot_offset_ratio = Vector2(0, 0.5)
+mouse_filter = 1
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
+region = Rect2(860, 64, 76, 60)
+border = Vector4(30, 0, 30, 0)
+kind = 1
+pivot = Vector2(0, 0.5)
+fill_method = 4
+metadata/u = {
+"a": true,
+"ch": [{
+"a": true,
+"id": "2257392839777353362",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_2",
+"t": 0.0
+},
+"n": "RankPointIcon",
+"r": [0.0, 0.5, 0.0, 0.5, 9.9, 0.0, 70.0, 70.0, 0.5, 0.5]
+}, {
+"a": true,
+"id": "400795580441615286",
+"n": "PointText",
+"r": [0.5, 0.5, 0.5, 0.5, 12.4, 0.0, 88.5, 43.4, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 31.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "24",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}],
+"id": "6778570638023060819",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_19",
+"t": 1.0
+},
+"n": "CardPoints",
+"r": [0, 0.5, 0, 0.5, 330, -36, 190, 58, 0, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0, 0.5),
+"pos": Vector2(330, -36),
+"size": Vector2(190, 58)
+}
+metadata/u_sub = true
+
+[node name="RankPointIcon" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/PlayerCard/CardPoints" unique_id=979453348]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -25.1
+offset_top = -35.0
+offset_right = 44.9
+offset_bottom = 35.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
+region = Rect2(517, 0, 256, 256)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2257392839777353362",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_2",
+"t": 0.0
+},
+"n": "RankPointIcon",
+"r": [0.0, 0.5, 0.0, 0.5, 9.9, 0.0, 70.0, 70.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(9.9, 0),
+"size": Vector2(70, 70)
+}
+
+[node name="PointText" type="Label" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/PlayerCard/CardPoints" unique_id=1784784002]
+material = SubResource("ShaderMaterial_c7li3")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.85
+offset_top = -21.7
+offset_right = 56.65
+offset_bottom = 21.7
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_o363j")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0rpub")
+text = "24"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "400795580441615286",
+"n": "PointText",
+"r": [0.5, 0.5, 0.5, 0.5, 12.4, 0.0, 88.5, 43.4, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 31.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "24",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(12.4, 0),
+"size": Vector2(88.5, 43.4)
+}
+metadata/u_txt = {
+"auto": [18.0, 72.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 31.6,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "24",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="CardTop" type="Label" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/PlayerCard" unique_id=929474058]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_uvgey")
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -67.0
+offset_right = -20.0
+offset_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(1, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -7
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_o363j")
+theme_override_font_sizes/font_size = 58
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cv0vp")
+text = "Top 100%"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "709436973652917155",
+"n": "Text",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -291.6797, -199.2643, 201.8012, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 58.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 58.0,
+"h": 2,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Top 100%",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(1, 0.5),
+"pivot": Vector2(1, 0.5),
+"pos": Vector2(-20, 30),
+"size": Vector2(230, 74)
+}
+metadata/u_txt = {
+"auto": [18.0, 58.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 58.0,
+"h": 2,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Top 100%",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+metadata/u_sub = true
+
+[node name="CardRank" type="Label" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/PlayerCard" unique_id=1263466060]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_uvgey")
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = 17.0
+offset_right = -20.0
+offset_bottom = 63.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(1, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -4
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_o363j")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxEmpty_hipou")
+text = "World rank"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "709436973652917155",
+"n": "Text",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -291.6797, -199.2643, 201.8012, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 30.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 30.0,
+"h": 2,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "World rank",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0.5),
+"amin": Vector2(1, 0.5),
+"pivot": Vector2(1, 0.5),
+"pos": Vector2(-20, -40),
+"size": Vector2(230, 46)
+}
+metadata/u_txt = {
+"auto": [18.0, 30.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 30.0,
+"h": 2,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "World rank",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+metadata/u_sub = true
+
+[node name="LastWeekLeaders" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent" index="1" unique_id=1621556438]
+visible = false
 anchors_preset = 0
 anchor_right = 1.0
 offset_bottom = 622.2
@@ -4615,7 +5132,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 color = Color(0.3137255, 0.1882353, 0.5019608, 1)
 fill_method = 4
 metadata/u = {
@@ -4647,7 +5164,6 @@ metadata/u_rect = {
 }
 
 [node name="DescButton" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Title" index="1" unique_id=2095200256]
-layout_mode = 1
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
@@ -4658,19 +5174,19 @@ offset_right = -32.1999
 offset_bottom = 33.0
 pivot_offset_ratio = Vector2(1, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_rkbs3")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_xc8t4")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_lvrxb")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_oeofj")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_5nmj5")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_qo7gt")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_681i0")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_u3q83")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_8tw5f")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_u1ro1")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_c7li3")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_oscpg")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_r4xe5")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_3s6nb")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_ih07e")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pphya")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_tfcxi")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_gx6bh")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_gkk6q")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_tfs0w")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_2wxqa")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4unwx")
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 sound = true
 metadata/u = {
@@ -4719,15 +5235,14 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(0, 164, 52, 52)
 pivot = Vector2(1, 0.5)
 fill_method = 4
 
 [node name="Text (TMP)" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Title" index="2" unique_id=460668713]
 material = SubResource("ShaderMaterial_1ng31")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -4834,7 +5349,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 color = Color(0.22745098, 0.14901961, 0.34901962, 1)
 fill_method = 4
 metadata/u = {
@@ -4876,8 +5391,8 @@ offset_top = -290.71
 offset_right = 444.49002
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("16_3sw0i")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("20_yrrp2")
 region = Rect2(0, 0, 232, 255.3557)
 border_scale = 1.2844827586206895
 pivot = Vector2(0.5, 0)
@@ -4946,7 +5461,6 @@ metadata/u_rect = {
 
 [node name="PlayerName" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top3" index="0" unique_id=120250180]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -5037,8 +5551,8 @@ offset_right = 75.7
 offset_bottom = 28.6
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(780, 64, 76, 60)
 border = Vector4(30, 0, 30, 0)
 kind = 1
@@ -5081,8 +5595,8 @@ offset_right = 33.1
 offset_bottom = 26.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(517, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -5115,7 +5629,6 @@ metadata/u_rect = {
 
 [node name="PointText" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top3/PointPanel" index="1" unique_id=235079670]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -5204,8 +5717,8 @@ offset_right = 70.0
 offset_bottom = 70.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("11_lps3l")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("19_e0fa7")
 region = Rect2(0, 0, 512, 512)
 fill_method = 4
 metadata/u = {
@@ -5248,8 +5761,8 @@ offset_right = 75.0
 offset_bottom = 75.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(756, 816, 168, 168)
 fill_method = 4
 metadata/u = {
@@ -5282,7 +5795,6 @@ metadata/u_rect = {
 
 [node name="Gift" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top3/Avatar" index="1" unique_id=474727528]
 visible = false
-layout_mode = 1
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -5293,19 +5805,19 @@ offset_right = 35.0
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_0rpub")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_cv0vp")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_hipou")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_oscpg")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_r4xe5")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_3s6nb")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ih07e")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_pphya")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_tfcxi")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_gx6bh")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_gkk6q")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_y0o8q")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_6hei1")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_is4lx")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_yegq8")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_qnrl7")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_duxwn")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_4glu7")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_cq1gn")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_n274i")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_mnn51")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_um7uo")
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 metadata/u = {
 "a": false,
@@ -5364,8 +5876,8 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("17_88ijg")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("21_cy8ru")
 region = Rect2(0, 0, 512, 512)
 fill_method = 4
 
@@ -5419,8 +5931,8 @@ anchor_bottom = 1.0
 offset_top = -80.0
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(525, 515, 116, 72)
 border = Vector4(31, 27, 23, 23)
 kind = 1
@@ -5506,8 +6018,8 @@ offset_right = -5.0
 offset_bottom = -5.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(780, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -5540,7 +6052,6 @@ metadata/u_rect = {
 
 [node name="Quantity" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top3/Avatar/Gift/RewardsParent/ItemReward7" index="1" unique_id=17203728]
 material = SubResource("ShaderMaterial_qejyp")
-layout_mode = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -5622,8 +6133,8 @@ offset_right = 15.0
 scale = Vector2(1, -1)
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("14_jt3wr")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("17_273ip")
 region = Rect2(0, 0, 256, 186.49007)
 border_scale = 1.1796875
 color = Color(0.10980392, 0.050980393, 0.3019608, 1)
@@ -5676,8 +6187,8 @@ offset_right = 40.0
 offset_bottom = 112.0601
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(748, 0, 60, 60)
 fill_method = 4
 metadata/u = {
@@ -5719,8 +6230,8 @@ offset_top = -321.8
 offset_right = -152.75
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("18_14kf3")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("22_4x63x")
 region = Rect2(0, 0, 224, 255.11111)
 border_scale = 1.2857142857142856
 pivot = Vector2(0.5, 0)
@@ -5789,7 +6300,6 @@ metadata/u_rect = {
 
 [node name="PlayerName" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top2" index="0" unique_id=1660909213]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -5880,8 +6390,8 @@ offset_right = 70.25
 offset_bottom = 18.47
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(620, 64, 76, 60)
 border = Vector4(30, 0, 30, 0)
 kind = 1
@@ -5924,8 +6434,8 @@ offset_right = 34.989998
 offset_bottom = 25.5
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(517, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -5958,7 +6468,6 @@ metadata/u_rect = {
 
 [node name="PointText" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top2/PointPanel" index="1" unique_id=173653537]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -6047,8 +6556,8 @@ offset_right = 75.0
 offset_bottom = 75.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("11_lps3l")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("19_e0fa7")
 region = Rect2(0, 0, 512, 512)
 fill_method = 4
 metadata/u = {
@@ -6091,8 +6600,8 @@ offset_right = 80.0
 offset_bottom = 80.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(756, 816, 168, 168)
 fill_method = 4
 metadata/u = {
@@ -6125,7 +6634,6 @@ metadata/u_rect = {
 
 [node name="Gift" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top2/Avatar" index="1" unique_id=2004323796]
 visible = false
-layout_mode = 1
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -6136,19 +6644,19 @@ offset_right = 35.0
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_tfs0w")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_2wxqa")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_4unwx")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_y0o8q")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_6hei1")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_is4lx")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_yegq8")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_qnrl7")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_duxwn")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_4glu7")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_cq1gn")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_061pf")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_hdx7r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k13ca")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_dflbr")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_6eb7u")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_3i12i")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_phk5u")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_2lerg")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_i3544")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_p53xx")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rerq4")
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 metadata/u = {
 "a": false,
@@ -6207,8 +6715,8 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("17_88ijg")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("21_cy8ru")
 region = Rect2(0, 0, 512, 512)
 fill_method = 4
 
@@ -6262,8 +6770,8 @@ anchor_bottom = 1.0
 offset_top = -80.0
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(525, 515, 116, 72)
 border = Vector4(31, 27, 23, 23)
 kind = 1
@@ -6349,8 +6857,8 @@ offset_right = -5.0
 offset_bottom = -5.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(780, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -6383,7 +6891,6 @@ metadata/u_rect = {
 
 [node name="Quantity" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top2/Avatar/Gift/RewardsParent/ItemReward8" index="1" unique_id=112955810]
 material = SubResource("ShaderMaterial_qejyp")
-layout_mode = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -6465,8 +6972,8 @@ offset_right = 15.0
 scale = Vector2(1, -1)
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("14_jt3wr")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("17_273ip")
 region = Rect2(0, 0, 256, 186.49007)
 border_scale = 1.1796875
 color = Color(0.10980392, 0.050980393, 0.3019608, 1)
@@ -6519,8 +7026,8 @@ offset_right = 36.7
 offset_bottom = 129.06
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(684, 0, 60, 60)
 fill_method = 4
 metadata/u = {
@@ -6562,8 +7069,8 @@ offset_top = -409.1
 offset_right = 194.5
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("19_cp67a")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("23_agyby")
 region = Rect2(0, 0, 256, 252.91566)
 border_scale = 1.296875
 pivot = Vector2(0.5, 0)
@@ -6632,7 +7139,6 @@ metadata/u_rect = {
 
 [node name="PlayerName" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top1" index="0" unique_id=1801657708]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -6723,8 +7229,8 @@ offset_right = 76.1
 offset_bottom = 44.2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(700, 64, 76, 60)
 border = Vector4(30, 0, 30, 0)
 kind = 1
@@ -6767,8 +7273,8 @@ offset_right = 31.9
 offset_bottom = 26.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(517, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -6801,7 +7307,6 @@ metadata/u_rect = {
 
 [node name="PointText" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top1/PointPanel" index="1" unique_id=760153474]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -6890,8 +7395,8 @@ offset_right = 97.5
 offset_bottom = 149.85
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("11_lps3l")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("19_e0fa7")
 region = Rect2(0, 0, 512, 512)
 fill_method = 4
 metadata/u = {
@@ -6934,8 +7439,8 @@ offset_right = 101.5
 offset_bottom = 101.5
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(756, 816, 168, 168)
 fill_method = 4
 metadata/u = {
@@ -6968,7 +7473,6 @@ metadata/u_rect = {
 
 [node name="Gift" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top1/Avatar" index="1" unique_id=784905331]
 visible = false
-layout_mode = 1
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -6979,19 +7483,19 @@ offset_right = 35.0
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_n274i")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_mnn51")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_um7uo")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_061pf")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_hdx7r")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_k13ca")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_dflbr")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_6eb7u")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_3i12i")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_phk5u")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2lerg")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xjgce")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_orkpp")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_8mu7y")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_xw4yl")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_sre76")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_ywrl8")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ogofr")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_dtuxf")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_excgb")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_udbet")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_y604k")
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 metadata/u = {
 "a": false,
@@ -7050,8 +7554,8 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("17_88ijg")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("21_cy8ru")
 region = Rect2(0, 0, 512, 512)
 fill_method = 4
 
@@ -7105,8 +7609,8 @@ anchor_bottom = 1.0
 offset_top = -80.0
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(525, 515, 116, 72)
 border = Vector4(31, 27, 23, 23)
 kind = 1
@@ -7192,8 +7696,8 @@ offset_right = -5.0
 offset_bottom = -5.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(780, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -7226,7 +7730,6 @@ metadata/u_rect = {
 
 [node name="Quantity" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/LastWeekLeaders/Leaders/Top1/Avatar/Gift/RewardsParent/ItemReward9" index="1" unique_id=2083844061]
 material = SubResource("ShaderMaterial_qejyp")
-layout_mode = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -7308,8 +7811,8 @@ offset_right = 15.0
 scale = Vector2(1, -1)
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("14_jt3wr")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("17_273ip")
 region = Rect2(0, 0, 256, 186.49007)
 border_scale = 1.1796875
 color = Color(0.10980392, 0.050980393, 0.3019608, 1)
@@ -7362,8 +7865,8 @@ offset_right = 38.63
 offset_bottom = 159.1
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(620, 0, 60, 60)
 fill_method = 4
 metadata/u = {
@@ -7394,12 +7897,12 @@ metadata/u_rect = {
 "size": Vector2(80, 80.00001)
 }
 
-[node name="WeekResults" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent" index="1" unique_id=447758420]
+[node name="WeekResults" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent" index="2" unique_id=447758420]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 546.4
-offset_bottom = -462.30243
+offset_top = 238.0
+offset_bottom = -319.96838
 pivot_offset_ratio = Vector2(0.5, 0)
 mouse_filter = 2
 metadata/u = {
@@ -7412,11 +7915,12 @@ metadata/u_rect = {
 "amax": Vector2(1, 1),
 "amin": Vector2(0, 0),
 "pivot": Vector2(0.5, 1),
-"pos": Vector2(0, -546.4),
-"size": Vector2(0, -1008.70245)
+"pos": Vector2(0, -238),
+"size": Vector2(0, -557.9684)
 }
 
 [node name="Title" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/WeekResults" index="0" unique_id=1967434299]
+visible = false
 anchors_preset = 0
 anchor_right = 1.0
 offset_bottom = 157.3083
@@ -7442,7 +7946,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 color = Color(0.3137255, 0.1882353, 0.5019608, 1)
 fill_method = 4
 metadata/u = {
@@ -7475,7 +7979,6 @@ metadata/u_rect = {
 
 [node name="Text (TMP)" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/WeekResults/Title" index="1" unique_id=651426335]
 material = SubResource("ShaderMaterial_jm0a0")
-layout_mode = 1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -388.65
@@ -7563,8 +8066,8 @@ offset_right = 159.0
 offset_bottom = 62.25
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(649, 595, 112, 64)
 border = Vector4(36, 20, 36, 20)
 kind = 1
@@ -7599,11 +8102,10 @@ metadata/u_rect = {
 
 [node name="Text (TMP) (1)" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/WeekResults/Title/RemainTime" index="0" unique_id=1268287405]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -115.45
-offset_right = 115.45
+offset_left = -90.649994
+offset_right = 140.25
 offset_bottom = 68.9
 grow_horizontal = 2
 grow_vertical = 2
@@ -7651,7 +8153,7 @@ metadata/u_rect = {
 "amax": Vector2(0.5, 1),
 "amin": Vector2(0.5, 1),
 "pivot": Vector2(0.5, 1),
-"pos": Vector2(0, 0),
+"pos": Vector2(24.800003, 0),
 "size": Vector2(230.9, 68.9)
 }
 metadata/u_txt = {
@@ -7676,7 +8178,6 @@ metadata/u_txt = {
 }
 
 [node name="Image" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/WeekResults/Title/RemainTime" index="1" unique_id=2022921320]
-visible = false
 anchors_preset = 0
 anchor_top = 0.5
 anchor_bottom = 0.5
@@ -7686,8 +8187,8 @@ offset_right = 69.1
 offset_bottom = 50.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(1828, 16, 220, 220)
 fill_method = 4
 metadata/u = {
@@ -7722,7 +8223,6 @@ metadata/u_rect = {
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 156.9
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
@@ -7746,8 +8246,8 @@ metadata/u_rect = {
 "amax": Vector2(1, 1),
 "amin": Vector2(0, 0),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, -78.45),
-"size": Vector2(0, -156.9)
+"pos": Vector2(0, 0),
+"size": Vector2(0, 0)
 }
 
 [node name="Viewport" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/WeekResults/RankingScrollParent" index="0" unique_id=201524689]
@@ -7756,7 +8256,7 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 kind = 1
 pivot = Vector2(0, 1)
 fill_method = 4
@@ -7945,8 +8445,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(524, 636, 500, 94)
 border = Vector4(30, 30, 30, 30)
 fill_method = 4
@@ -7987,7 +8487,6 @@ metadata/u_rect = {
 
 [node name="RankNumberTxt" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/WeekResults/RankingScrollParent/Viewport/PlayerLeaderboardItem" index="1" unique_id=1590554908]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 29.1
@@ -8075,8 +8574,8 @@ offset_right = 32.5
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(620, 0, 60, 60)
 fill_method = 4
 metadata/u = {
@@ -8117,8 +8616,8 @@ offset_right = 38.02
 offset_bottom = 25.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(54, 164, 40, 52)
 fill_method = 4
 metadata/u = {
@@ -8159,8 +8658,8 @@ offset_right = 204.1
 offset_bottom = 40.0
 pivot_offset_ratio = Vector2(0, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("11_lps3l")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("19_e0fa7")
 region = Rect2(0, 0, 512, 512)
 pivot = Vector2(0, 0.5)
 fill_method = 4
@@ -8204,8 +8703,8 @@ offset_right = 45.0
 offset_bottom = 45.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(756, 816, 168, 168)
 fill_method = 4
 metadata/u = {
@@ -8238,7 +8737,6 @@ metadata/u_rect = {
 
 [node name="PlayerName" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/WeekResults/RankingScrollParent/Viewport/PlayerLeaderboardItem" index="4" unique_id=1659769681]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -8327,8 +8825,8 @@ offset_right = -30.0
 offset_bottom = 25.0
 pivot_offset_ratio = Vector2(1, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(860, 64, 76, 60)
 border = Vector4(30, 0, 30, 0)
 kind = 1
@@ -8372,8 +8870,8 @@ offset_right = 44.9
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(517, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -8406,7 +8904,6 @@ metadata/u_rect = {
 
 [node name="PointText" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/WeekResults/RankingScrollParent/Viewport/PlayerLeaderboardItem/PointPanel" index="1" unique_id=1732483846]
 material = SubResource("ShaderMaterial_jm0a0")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -8486,7 +8983,6 @@ metadata/u_txt = {
 }
 
 [node name="Gift" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/WeekResults/RankingScrollParent/Viewport/PlayerLeaderboardItem" index="6" unique_id=424199872]
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -8497,19 +8993,19 @@ offset_right = 185.0
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_i3544")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_p53xx")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_rerq4")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_xjgce")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_orkpp")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_8mu7y")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_xw4yl")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_sre76")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_ywrl8")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ogofr")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_dtuxf")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_f0vq7")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_mhmk3")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_jmdix")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_o4wil")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_m7g18")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_v86bi")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_m6l4k")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_5hykp")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_qpewf")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_1nqgs")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_miccr")
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 sound = true
 metadata/u = {
@@ -8578,8 +9074,8 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(0, 219, 52, 52)
 fill_method = 4
 
@@ -8638,8 +9134,8 @@ offset_right = 45.0
 offset_bottom = 95.45
 pivot_offset_ratio = Vector2(0.5, 0)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("4_puido")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
 region = Rect2(279, 0, 168, 124)
 pivot = Vector2(0.5, 1)
 fill_method = 4
@@ -8722,8 +9218,8 @@ offset_right = -5.0
 offset_bottom = -5.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(780, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -8756,7 +9252,6 @@ metadata/u_rect = {
 
 [node name="Quantity" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/RankingContent/WeekResults/RankingScrollParent/Viewport/PlayerLeaderboardItem/Gift/RewardsParent/ItemReward4" index="1" unique_id=1186025033]
 material = SubResource("ShaderMaterial_qejyp")
-layout_mode = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -8878,6 +9373,679 @@ metadata/u_rect = {
 "size": Vector2(800, 150)
 }
 
+[node name="Banner" type="Control" parent="Canvas/LeaderboardLayer/BG" index="3" unique_id=600126185]
+unique_name_in_owner = true
+clip_contents = true
+anchors_preset = 0
+anchor_right = 1.0
+offset_top = 193.8149
+offset_bottom = 453.81488
+pivot_offset_ratio = Vector2(0.5, 0)
+mouse_filter = 2
+metadata/u = {
+"a": true,
+"n": "Banner",
+"r": [0, 1, 1, 1, 0, -200, 0, 260.0, 0.5, 1]
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0.5, 1),
+"pos": Vector2(0, -193.8149),
+"size": Vector2(0, 260)
+}
+metadata/u_sub = true
+
+[node name="BannerArt" type="TextureRect" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=1983281394]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("24_h8rjh")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BannerGlow" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=2099927563]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -135.0
+offset_top = -43.0
+offset_right = 135.0
+offset_bottom = 227.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_bbyyb")
+tex = ExtResource("16_whcxy")
+region = Rect2(0, 0, 237, 255.73953)
+border_scale = 3.628691983122363
+preserve_aspect = true
+metadata/u = {
+"a": true,
+"img": {
+"c": "ffffffff",
+"pa": true,
+"sp": "light1",
+"t": 0
+},
+"n": "BannerGlow",
+"r": [0.5, 1, 0.5, 1, 0, -92, 270, 270, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -92),
+"size": Vector2(270, 270)
+}
+metadata/u_sub = true
+
+[node name="BannerIcon" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=94678787]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -75.0
+offset_top = 17.0
+offset_right = 75.0
+offset_bottom = 167.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+script = ExtResource("3_bbyyb")
+tex = ExtResource("9_3bdeo")
+region = Rect2(0, 0, 256, 256)
+border_scale = 2.0
+preserve_aspect = true
+metadata/u = {
+"a": true,
+"img": {
+"c": "ffffffff",
+"pa": true,
+"sp": "ic_Silver",
+"t": 0
+},
+"n": "BannerIcon",
+"r": [0.5, 1, 0.5, 1, 0, -92, 150, 150, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 1),
+"amin": Vector2(0.5, 1),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, -92),
+"size": Vector2(150, 150)
+}
+metadata/u_sub = true
+
+[node name="BannerLeague" type="Label" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=1223144065]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_uvgey")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -84.0
+offset_right = 180.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -6
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_o363j")
+theme_override_font_sizes/font_size = 52
+theme_override_styles/normal = SubResource("StyleBoxEmpty_sjcov")
+text = "Silver"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "709436973652917155",
+"n": "Text",
+"r": [0.0, 1.0, 1.0, 1.0, 0.0, -291.6797, -199.2643, 201.8012, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Silver",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0),
+"amin": Vector2(0.5, 0),
+"pivot": Vector2(0.5, 0),
+"pos": Vector2(0, 12),
+"size": Vector2(360, 72)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Silver",
+"st": 1.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+metadata/u_sub = true
+
+[node name="CountdownPill" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=152831927]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = -82.0
+offset_right = 304.0
+offset_bottom = -18.0
+pivot_offset_ratio = Vector2(0, 1)
+mouse_filter = 1
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
+region = Rect2(204, 64, 72, 60)
+border = Vector4(36, 0, 36, 0)
+kind = 1
+pivot = Vector2(0, 0)
+fill_method = 4
+metadata/u = {
+"a": true,
+"ch": [{
+"a": true,
+"id": "541336199798106768",
+"n": "TimeText",
+"r": [0.5, 0.5, 0.5, 0.5, 18, 0, 200, 62, 0.5, 0.5],
+"txt": {
+"auto": [16.0, 30.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 30.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "3d 18h 20m",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}, {
+"a": true,
+"id": "2533931720250760637",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7",
+"t": 0.0
+},
+"n": "ClockIcon",
+"r": [0.0, 0.5, 0.0, 0.5, 4.68, 0.0, 60.0, 60.0, 0.5, 0.5]
+}],
+"id": "1708403531920476882",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_11",
+"t": 1.0
+},
+"n": "CountdownPill",
+"r": [0, 0, 0, 0, 44, 18, 260, 64, 0, 0]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 0),
+"pos": Vector2(44, 18),
+"size": Vector2(260, 64)
+}
+metadata/u_sub = true
+
+[node name="CountdownLabel" type="Label" parent="Canvas/LeaderboardLayer/BG/Banner/CountdownPill" unique_id=1830209077]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_c7li3")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -82.0
+offset_top = -31.0
+offset_right = 118.0
+offset_bottom = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -3
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_wpogu")
+theme_override_font_sizes/font_size = 23
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nk6ti")
+text = "Updates in 16:00:00"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"a": true,
+"id": "541336199798106768",
+"n": "TimeText",
+"r": [0.5, 0.5, 0.5, 0.5, 18, 0, 200, 62, 0.5, 0.5],
+"txt": {
+"auto": [16.0, 30.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 30.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "3d 18h 20m",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(18, 0),
+"size": Vector2(200, 62)
+}
+metadata/u_txt = {
+"auto": [16.0, 30.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 30.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue 1",
+"on": true,
+"ov": 0.0,
+"rich": true,
+"rt": true,
+"s": "3d 18h 20m",
+"st": 0.0,
+"v": 512.0,
+"w": true,
+"ws": 0.0
+}
+
+[node name="ClockIcon" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner/CountdownPill" unique_id=1621988186]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -25.32
+offset_top = -30.0
+offset_right = 34.68
+offset_bottom = 30.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
+region = Rect2(1828, 16, 220, 220)
+fill_method = 4
+metadata/u = {
+"a": true,
+"id": "2533931720250760637",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7",
+"t": 0.0
+},
+"n": "ClockIcon",
+"r": [0.0, 0.5, 0.0, 0.5, 4.68, 0.0, 60.0, 60.0, 0.5, 0.5]
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(4.6800003, 0),
+"size": Vector2(60, 60)
+}
+
+[node name="InfoButton" type="Button" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=1440621942]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -86.0
+offset_top = -82.0
+offset_right = -26.0
+offset_bottom = -22.0
+pivot_offset_ratio = Vector2(1, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_r6xay")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_rfqa6")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_oem4y")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_ffo36")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_egwda")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_80cou")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_sscjn")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_cf3p2")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_vycyx")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_mamsi")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_k1tff")
+flat = true
+script = ExtResource("5_lps3l")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "7402373560209848535",
+"tr": 1.0
+},
+"id": "7402373560209848535",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": false,
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_6",
+"t": 0.0
+},
+"n": "InfoButton",
+"r": [1, 0, 1, 0, -26, 22, 60, 60, 1, 0],
+"snd": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(1, 0),
+"pos": Vector2(-26, 22),
+"size": Vector2(60, 60)
+}
+metadata/u_sub = true
+
+[node name="image" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner/InfoButton" unique_id=109791287]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
+region = Rect2(0, 164, 52, 52)
+pivot = Vector2(1, 0)
+fill_method = 4
+
+[node name="RewardToggle" type="Button" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=1288754615]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -230.0
+offset_top = -104.0
+offset_right = -20.0
+offset_bottom = -14.0
+pivot_offset_ratio = Vector2(1, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_f073f")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ylufk")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_0l70d")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_hkodb")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_hjtg8")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_n2np8")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ax0jc")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_yqr5k")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_b82mu")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_e3r1e")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qy3jy")
+flat = true
+script = ExtResource("5_lps3l")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+vibrate = true
+metadata/u = {
+"a": true,
+"btn": {
+"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
+"dur": 0.1,
+"inter": true,
+"mult": 1.0,
+"sprites": {
+"disabled": null,
+"pressed": null
+},
+"target": "2976045016534427140",
+"tr": 1.0
+},
+"ch": [{
+"a": true,
+"id": "5028444773256912849",
+"n": "Out",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, 0.0, -8.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Rewards",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}],
+"id": "2976045016534427140",
+"img": {
+"c": "ffffffff",
+"cw": true,
+"fa": 1.0,
+"fc": true,
+"fm": 4.0,
+"fo": 0.0,
+"on": true,
+"pa": true,
+"ppu": 2.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_51",
+"t": 0.0
+},
+"n": "Button_blue",
+"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 280.0, 120.0, 0.5, 1.0],
+"snd": true,
+"vib": true
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(1, 0),
+"pos": Vector2(-20, 14),
+"size": Vector2(210, 90)
+}
+metadata/u_sub = true
+
+[node name="image" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner/RewardToggle" unique_id=1297520750]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
+region = Rect2(0, 1332, 380, 168)
+border = Vector4(80, 84, 80, 84)
+border_scale = 0.5
+preserve_aspect = true
+pivot = Vector2(0.5, 1)
+fill_method = 4
+
+[node name="RewardToggleLabel" type="Label" parent="Canvas/LeaderboardLayer/BG/Banner/RewardToggle" unique_id=1633280816]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_rcxs4")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -7
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_o363j")
+theme_override_font_sizes/font_size = 56
+theme_override_styles/normal = SubResource("StyleBoxEmpty_u34ji")
+text = "Rewards"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+metadata/u = {
+"a": true,
+"id": "5028444773256912849",
+"n": "Out",
+"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, 0.0, -8.0, 0.5, 0.5],
+"txt": {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Rewards",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+}
+metadata/u_rect = {
+"amax": Vector2(1, 1),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(0, 4),
+"size": Vector2(0, -8)
+}
+metadata/u_txt = {
+"auto": [18.0, 56.0],
+"c": "ffffffff",
+"cs": 0.0,
+"font": "Baloo Bhaijaan Regular 400 SDF",
+"fs": 56.0,
+"h": 2.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"mat": "Baloo Outline - Blue",
+"on": true,
+"ov": 0.0,
+"rich": false,
+"rt": false,
+"s": "Rewards",
+"st": 16.0,
+"v": 512.0,
+"w": false,
+"ws": 0.0
+}
+
 [node name="WeekResultPanel" parent="Canvas/LeaderboardLayer" index="1" unique_id=1749930254]
 visible = false
 anchors_preset = 0
@@ -8903,24 +10071,23 @@ metadata/u_rect = {
 }
 
 [node name="Dim" parent="Canvas/LeaderboardLayer/WeekResultPanel" index="0" unique_id=1814488011]
-layout_mode = 1
 anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_excgb")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_udbet")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_y604k")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_f0vq7")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_mhmk3")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_jmdix")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_o4wil")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_m7g18")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_v86bi")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_m6l4k")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_5hykp")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cj3xr")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_50uo4")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rbmju")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_818ck")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_dbuc1")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_gj0p4")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ykl0e")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_qq43q")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_rp4wj")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_y6kkr")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ekle7")
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 metadata/u = {
 "a": true,
@@ -8967,7 +10134,7 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 color = Color(0, 0, 0, 0.85)
 fill_method = 4
 
@@ -8997,7 +10164,6 @@ metadata/u_rect = {
 
 [node name="txtHeader BG2" parent="Canvas/LeaderboardLayer/WeekResultPanel/Image" index="0" unique_id=2031662531]
 material = SubResource("ShaderMaterial_lenqp")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -9079,7 +10245,6 @@ metadata/u_txt = {
 
 [node name="txtHeader BG1" parent="Canvas/LeaderboardLayer/WeekResultPanel/Image" index="1" unique_id=64598077]
 material = SubResource("ShaderMaterial_o1wlb")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -9161,7 +10326,6 @@ metadata/u_txt = {
 
 [node name="txtHeader" parent="Canvas/LeaderboardLayer/WeekResultPanel/Image" index="2" unique_id=587853635]
 material = SubResource("ShaderMaterial_b1ri6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -9243,7 +10407,6 @@ metadata/u_txt = {
 
 [node name="YourRankTxt" parent="Canvas/LeaderboardLayer/WeekResultPanel" index="2" unique_id=258771262]
 material = SubResource("ShaderMaterial_3wugu")
-layout_mode = 1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -245.9
@@ -9410,7 +10573,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 fill_method = 4
 metadata/u = {
 "a": true,
@@ -9446,7 +10609,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 color = Color(0, 1, 0, 1)
 fill_method = 4
 metadata/u = {
@@ -9479,7 +10642,6 @@ metadata/u_rect = {
 
 [node name="RankNumberTxt" parent="Canvas/LeaderboardLayer/WeekResultPanel/PlayerLeagueItem" index="2" unique_id=509784199]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = -0.7
@@ -9565,8 +10727,8 @@ offset_right = 206.88
 offset_bottom = 50.0
 pivot_offset_ratio = Vector2(0, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("11_lps3l")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("19_e0fa7")
 region = Rect2(0, 0, 512, 512)
 pivot = Vector2(0, 0.5)
 fill_method = 4
@@ -9610,8 +10772,8 @@ offset_right = 55.0
 offset_bottom = 55.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(756, 816, 168, 168)
 fill_method = 4
 metadata/u = {
@@ -9644,7 +10806,6 @@ metadata/u_rect = {
 
 [node name="PlayerName" parent="Canvas/LeaderboardLayer/WeekResultPanel/PlayerLeagueItem" index="4" unique_id=1890347647]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -9733,8 +10894,8 @@ offset_right = -36.1
 offset_bottom = 25.0
 pivot_offset_ratio = Vector2(1, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(525, 515, 116, 72)
 border = Vector4(31, 27, 23, 23)
 kind = 1
@@ -9778,8 +10939,8 @@ offset_right = 35.0
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(0, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -9812,7 +10973,6 @@ metadata/u_rect = {
 
 [node name="PointText" parent="Canvas/LeaderboardLayer/WeekResultPanel/PlayerLeagueItem/PointPanel" index="1" unique_id=1967435822]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -9893,7 +11053,6 @@ metadata/u_txt = {
 
 [node name="Gift" parent="Canvas/LeaderboardLayer/WeekResultPanel/PlayerLeagueItem" index="6" unique_id=1959700981]
 visible = false
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -9904,19 +11063,19 @@ offset_right = 199.8
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_qpewf")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_1nqgs")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_miccr")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_sjcov")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_wpogu")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_nk6ti")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_r6xay")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_rfqa6")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_oem4y")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ffo36")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_egwda")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_6aa84")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_2qy4r")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_3qhvy")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_ort3p")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_otjyg")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_7adno")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_qgrb1")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_r7voh")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_ys4na")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_oavem")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3qgqd")
 flat = true
-script = ExtResource("5_lsys8")
+script = ExtResource("5_lps3l")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 metadata/u = {
 "a": false,
@@ -9985,8 +11144,8 @@ anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("17_88ijg")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("21_cy8ru")
 region = Rect2(0, 0, 512, 512)
 fill_method = 4
 
@@ -10046,8 +11205,8 @@ anchor_bottom = 1.0
 offset_top = -80.0
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(525, 515, 116, 72)
 border = Vector4(31, 27, 23, 23)
 kind = 1
@@ -10099,8 +11258,8 @@ offset_bottom = -16.9
 scale = Vector2(1, -1)
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
-tex = ExtResource("14_jt3wr")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("17_273ip")
 region = Rect2(0, 0, 256, 186.49007)
 border_scale = 1.1796875
 color = Color(0.10980392, 0.050980393, 0.3019608, 1)
@@ -10186,8 +11345,8 @@ offset_right = -5.0
 offset_bottom = -5.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(780, 0, 256, 256)
 fill_method = 4
 metadata/u = {
@@ -10220,7 +11379,6 @@ metadata/u_rect = {
 
 [node name="Quantity" parent="Canvas/LeaderboardLayer/WeekResultPanel/PlayerLeagueItem/Gift/RewardsParent/ItemReward12" index="1" unique_id=745398689]
 material = SubResource("ShaderMaterial_qejyp")
-layout_mode = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -10294,7 +11452,6 @@ metadata/u_txt = {
 
 [node name="NextLeagueTxt" parent="Canvas/LeaderboardLayer/WeekResultPanel" index="4" unique_id=1873461528]
 material = SubResource("ShaderMaterial_3wugu")
-layout_mode = 1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -245.9
@@ -10381,7 +11538,7 @@ offset_right = 150.0
 offset_bottom = 1098.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-script = ExtResource("3_gg3ww")
+script = ExtResource("3_bbyyb")
 fill_method = 4
 metadata/u = {
 "a": true,
@@ -10421,8 +11578,8 @@ offset_right = 443.0
 offset_bottom = 1553.6
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
 region = Rect2(384, 1877, 380, 171)
 border = Vector4(191, 72, 189, 72)
 border_scale = 0.8
@@ -10457,7 +11614,6 @@ metadata/u_rect = {
 
 [node name="RewardsText" parent="Canvas/LeaderboardLayer/WeekResultPanel/RewardGroup" index="0" unique_id=815999237]
 material = SubResource("ShaderMaterial_j5nr6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -10570,7 +11726,6 @@ metadata/u_rect = {
 
 [node name="TapToContinueTxt" parent="Canvas/LeaderboardLayer/WeekResultPanel" index="7" unique_id=892235193]
 material = SubResource("ShaderMaterial_iqna6")
-layout_mode = 1
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -245.9
@@ -10646,168 +11801,7 @@ metadata/u_txt = {
 "ws": 0.0
 }
 
-[node name="PlayButton" type="Button" parent="Canvas/LeaderboardLayer" index="2" unique_id=1740211899]
-unique_name_in_owner = true
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -442.3025
-offset_right = 200.0
-offset_bottom = -322.3025
-pivot_offset_ratio = Vector2(0.5, 1)
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_80cou")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_sscjn")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_cf3p2")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_vycyx")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_mamsi")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_k1tff")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_f073f")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_ylufk")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_0l70d")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_hkodb")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_hjtg8")
-flat = true
-script = ExtResource("5_lsys8")
-tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
-sound = true
-vibrate = true
-metadata/u = {
-"a": true,
-"btn": {
-"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
-"dur": 0.1,
-"inter": true,
-"mult": 1.0,
-"sprites": {
-"disabled": null,
-"pressed": null
-},
-"target": "2976045016534427140",
-"tr": 1.0
-},
-"id": "2976045016534427140",
-"img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": true,
-"ppu": 2.0,
-"rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
-"t": 0.0
-},
-"n": "Button_green",
-"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 280.0, 120.0, 0.5, 1.0],
-"snd": true,
-"vib": true
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 0),
-"amin": Vector2(0.5, 0),
-"pivot": Vector2(0.5, 0),
-"pos": Vector2(0, 322.3025),
-"size": Vector2(400, 120)
-}
-metadata/u_sub = true
-
-[node name="image" type="Control" parent="Canvas/LeaderboardLayer/PlayButton" unique_id=1443395440]
-anchors_preset = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-script = ExtResource("3_gg3ww")
-tex = ExtResource("10_7ognb")
-region = Rect2(0, 816, 380, 168)
-border = Vector4(80, 84, 80, 84)
-border_scale = 0.5
-preserve_aspect = true
-pivot = Vector2(0.5, 1)
-fill_method = 4
-
-[node name="Out" type="Label" parent="Canvas/LeaderboardLayer/PlayButton" unique_id=231610260]
-material = SubResource("ShaderMaterial_n2np8")
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_bottom = -8.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/line_spacing = -7
-theme_override_constants/outline_size = 0
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_1l57u")
-theme_override_font_sizes/font_size = 56
-theme_override_styles/normal = SubResource("StyleBoxEmpty_ax0jc")
-text = "Play"
-horizontal_alignment = 1
-vertical_alignment = 1
-uppercase = true
-metadata/u = {
-"a": true,
-"id": "5028444773256912849",
-"n": "Out",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 4.0, 0.0, -8.0, 0.5, 0.5],
-"txt": {
-"auto": [18.0, 56.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 56.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Green",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "Play",
-"st": 16.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
-}
-}
-metadata/u_rect = {
-"amax": Vector2(1, 1),
-"amin": Vector2(0, 0),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 4),
-"size": Vector2(0, -8)
-}
-metadata/u_txt = {
-"auto": [18.0, 56.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 56.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Green",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "Play",
-"st": 16.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
-}
-
-[node name="Tick" type="Timer" parent="." unique_id=1473862904]
+[node name="Tick" type="Timer" parent="." unique_id=1315257932]
 unique_name_in_owner = true
 
 [editable path="Canvas"]

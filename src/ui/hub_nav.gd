@@ -1,9 +1,10 @@
 extends Control
-## Thanh dưới dùng chung Home, Shop, Leaderboard (Figma "main menu" > Frame 1893566628, component BottomBar): Shop · Home · Ranking.
+## Thanh dưới dùng chung Home, Shop, Road Trip, Leaderboard (Figma "main menu" > Frame 1893566628, component BottomBar):
+## Shop · Home · Road Trip.
 ## Khung Figma 886x248 chia ba ô bằng nhau (295, như video ref chuyển tab), mỗi ô một nền tím (PANEL_H). Ô của tab đang
 ## mở có ô sáng vàng (Highlight, HIGHLIGHT_H), icon 168 nhô lên trên và chữ dưới icon; hai tab còn lại chỉ có icon 96
-## (tab khoá thêm chữ mở ở level nào).
-## Bấm phát tab("shop" | "home" | "ranking"). Ranking mở từ Config.UNLOCK.leaderboard (Game.lb_open).
+## (tab khoá thêm chữ mở ở level nào). active "" (màn Leaderboard, mở từ icon ở Home): không tab nào sáng.
+## Bấm phát tab("shop" | "home" | "road_trip"). Road Trip mở từ Config.UNLOCK.road_trip.
 ## Node nằm trong scenes/hub_nav.tscn (lưu với tab Home đang mở); script đặt cỡ, chữ từng tab theo tab đang mở
 ## (active), khoá tab, nối nút. Tạo bằng HubNav.create(active).
 ## Switching tabs: on the new screen's bar the highlight slides over from the previous tab and the icons trade sizes
@@ -23,7 +24,7 @@ const DESIGN_W := 886.0
 const DESIGN_H := 248.0
 ## [tab, icon, chữ, nút trong scene, nền tím trong scene], trái sang phải
 const TABS := [["shop", "ui_shop", "home_shop", "ShopButton", "ShopPanel"], ["home", "ui_home", "home_home", "HomeTab", "HomePanel"],
-	["ranking", "ui_leaderboard", "home_ranking", "RankingTab", "RankingPanel"]]
+	["road_trip", "ui_road_trip", "home_road_trip", "RoadTripTab", "RoadTripPanel"]]
 const SLOT_W := DESIGN_W / 3.0
 const STAR_BORDER := Vector4(30, 30, 30, 24)
 ## Inset of the purple slots and the highlight from each slot's sides (gap between slots: twice this); 0 = flush.
@@ -49,7 +50,7 @@ const PRESS_SEC := 0.1
 ## Tab of the bar shown last, on any screen: the next bar slides from its layout.
 static var last_tab := ""
 
-## Tab đang mở: "shop" | "home" | "ranking". Đọc một lần khi nối node.
+## Tab đang mở: "shop" | "home" | "road_trip" | "" (không tab nào). Đọc một lần khi nối node.
 @export var active: String = "home"
 
 # Getters bind the scene's nodes on first use (callers read them before adding the bar to the tree).
@@ -65,14 +66,14 @@ var home_btn: Button = null:
 	get:
 		_bind()
 		return home_btn
-var ranking_btn: Button = null:
+var road_trip_btn: Button = null:
 	get:
 		_bind()
-		return ranking_btn
-var ranking_caption: Label = null:
+		return road_trip_btn
+var road_trip_caption: Label = null:
 	get:
 		_bind()
-		return ranking_caption
+		return road_trip_caption
 
 var _fb := FigmaBox.new()
 var _icons: Dictionary = {}
@@ -109,8 +110,8 @@ func _bind() -> void:
 	shop_btn = $ShopButton
 	shop_caption = $ShopButton/Caption
 	home_btn = $HomeTab
-	ranking_btn = $RankingTab
-	ranking_caption = $RankingTab/Caption
+	road_trip_btn = $RoadTripTab
+	road_trip_caption = $RoadTripTab/Caption
 	_highlight = $Highlight
 	_fb.adopt(self)
 	_highlight.add_theme_stylebox_override("panel", UiAtlas.box("panel_yellow_star", STAR_BORDER))
@@ -128,11 +129,16 @@ func _bind() -> void:
 		b.button_down.connect(_press.bind(b, true))
 		b.button_up.connect(_press.bind(b, false))
 	_place(_layout(active), 1.0)
-	if last_tab != active and TABS.any(func(t: Array) -> bool: return str(t[0]) == last_tab):
+	_highlight.visible = _is_tab(active)
+	if last_tab != active and _is_tab(active) and _is_tab(last_tab):
 		_morph_from = last_tab
 	last_tab = active
 	if size.x > 0.0:
 		_apply()
+
+
+static func _is_tab(tab_name: String) -> bool:
+	return TABS.any(func(t: Array) -> bool: return str(t[0]) == tab_name)
 
 
 func _ready() -> void:
@@ -253,9 +259,9 @@ func refresh() -> void:
 	var open := Unlocks.is_open("shop", int(Game.s.level))
 	_set_open(shop_btn, "shop", "ui_shop", open)
 	shop_caption.text = tr("home_shop") if open else tr("home_shop_locked") % int(Config.UNLOCK.shop)
-	var ranking_open: bool = Game.lb_open()
-	_set_open(ranking_btn, "ranking", "ui_leaderboard", ranking_open)
-	ranking_caption.text = tr("home_ranking") if ranking_open else tr("common_locked_level") % int(Config.UNLOCK.get("leaderboard", 0))
+	var rt_open := Unlocks.is_open("road_trip", int(Game.s.level))
+	_set_open(road_trip_btn, "road_trip", "ui_road_trip", rt_open)
+	road_trip_caption.text = tr("home_road_trip") if rt_open else tr("common_locked_level") % int(Config.UNLOCK.get("road_trip", 0))
 	if size.x > 0.0:
 		_fb.apply(size.x / DESIGN_W)
 
@@ -268,7 +274,7 @@ func _set_open(b: Button, tab_name: String, icon_name: String, open: bool) -> vo
 	(_panels[tab_name] as Control).modulate = b.modulate
 	var ic := _icons[tab_name] as TextureRect
 	ic.texture = ThemeKit.icon(icon_name if open else "ui_lock")
-	var cap := (shop_caption if tab_name == "shop" else ranking_caption)
+	var cap := (shop_caption if tab_name == "shop" else road_trip_caption)
 	cap.visible = tab_name == active or not open
 	if tab_name != active:
 		_fb.move(ic, _idle_icon_pos(tab_name))
