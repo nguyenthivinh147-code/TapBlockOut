@@ -1,22 +1,22 @@
 {
 	"id": 6, "w": 14, "h": 18, "hard": false,
-	"min_taps": 14, "moves": 16, "seed": 20261101,
+	"min_taps": 14, "moves": 17, "seed": 20261101,
 	"stones": [],
 	"pulse_sides": [],
 	"blocks": [
 		{"id":"b1","color":"purple","cells":[[5,4],[5,5]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b2","color":"yellow","cells":[[6,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b3","color":"yellow","cells":[[7,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b4","color":"blue","cells":[[6,5],[7,5],[6,6],[7,6]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b5","color":"blue","cells":[[5,7],[6,7],[7,7],[7,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b6","color":"blue","cells":[[3,8],[4,8],[5,8],[6,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b7","color":"yellow","cells":[[8,8],[9,8],[10,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b8","color":"green","cells":[[3,9],[4,9],[5,9],[6,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b9","color":"blue","cells":[[7,9],[5,10],[6,10],[7,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b10","color":"blue","cells":[[8,9],[9,9],[10,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b11","color":"blue","cells":[[6,11],[7,11],[6,12],[7,12]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b12","color":"green","cells":[[5,12],[5,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b13","color":"yellow","cells":[[6,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b14","color":"yellow","cells":[[7,13]],"ice":0,"chained_by":"","inner_color":"","fog":false}
+		{"id":"b2","color":"purple","cells":[[6,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b3","color":"blue","cells":[[7,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b4","color":"purple","cells":[[6,5],[7,5],[6,6]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b5","color":"blue","cells":[[7,6],[5,7],[6,7],[7,7]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b6","color":"blue","cells":[[3,8],[4,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b7","color":"blue","cells":[[5,8],[6,8],[7,8],[8,8],[9,8],[10,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b8","color":"yellow","cells":[[3,9],[4,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b9","color":"blue","cells":[[5,9],[6,9],[7,9],[8,9],[9,9],[10,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b10","color":"blue","cells":[[5,10],[6,10],[7,10],[7,11]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b11","color":"blue","cells":[[6,11],[6,12],[7,12]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b12","color":"purple","cells":[[5,12],[5,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b13","color":"green","cells":[[6,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b14","color":"purple","cells":[[7,13]],"ice":0,"chained_by":"","inner_color":"","fog":false}
 	]
 }
