@@ -413,12 +413,15 @@ func test_spend_and_booster(t: T) -> void:
 	t.eq(_p().an.named("spend")[0].params.currency, "gold", "đơn vị gold")
 
 
-func test_booster_video_once_per_attempt(t: T) -> void:
+func test_booster_video_repeatable(t: T) -> void:
 	var g := _g()
-	var a: Dictionary = g.start_attempt()
-	t.eq(await g.booster_video(a, "hint"), true, "video booster")
+	g.start_attempt()
+	t.eq(await g.booster_video("hint"), true, "video booster")
 	t.eq(int(g.s.inv.hint), 1, "+1")
-	t.eq(await g.booster_video(a, "move"), false, "một lần mỗi lượt")
+	t.eq(await g.booster_video("move"), true, "xem tiếp trong cùng lượt")
+	t.eq(await g.booster_video("move"), true, "xem lần ba")
+	t.eq(int(g.s.inv.move), 2, "mỗi video +1")
+	t.eq(await g.booster_video("nope"), false, "loại booster lạ")
 
 
 func test_daily_gift_and_next(t: T) -> void:

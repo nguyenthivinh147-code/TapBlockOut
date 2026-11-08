@@ -2,11 +2,16 @@ extends RefCounted
 ## Bộ sinh level (design.md mục 3-4, kế hoạch Task 9.1). Thuần: chỉ dùng RandomNumberGenerator có seed,
 ## cùng (id, seed) cho cùng level. Cách làm: chọn một hình (`Silhouette`) trong khung cục bộ, lát hình đó thành
 ## polyomino cỡ và hình bất kỳ (tự do hoặc đối xứng), rồi mô phỏng ván chơi tiến: mỗi bước chọn một khối còn có đường thoát và gán
-## luôn màu (hướng) của nó theo đường đó, nên level luôn giải được. Sau đó rải cơ chế theo `Config.UNLOCK`, dịch
+## luôn màu (hướng) của nó theo đường đó, nên level luôn giải được; lúc gán, độ sâu chuỗi chặn được lái về số lượt
+## dọn bàn của đường cong (`DifficultyCurve.wave_count`, đo bằng `Solver.clear_rounds` sau khi rải cơ chế). Sau đó
+## rải cơ chế theo `mech_plan` (tối đa Config.LEVEL_MECH_MAX loại, có level nghỉ không cơ chế), dịch
 ## hình vào giữa bàn cố định (ngoài hình là ô trống nên đường thoát không đổi), cuối cùng qua validate và Solver.
-## Từ DifficultyCurve.SHAPED_FROM hình lấy từ bản vẽ tay (`Motifs`), không khoét rìa, và khối cắt đối xứng theo trục của
-## hình (màu vẫn gán tự do); level dạy cơ chế (id = Config.UNLOCK) cũng sinh to như vậy, chỉ bật đúng cơ chế mới.
-## Trường `seed` trong kết quả là seed thật đã dùng (sau khi sinh lại), generate(id, level.seed) cho đúng level đó.
+## Từ DifficultyCurve.MOTIF_FROM hình lấy từ bản vẽ tay (`Motifs`), không khoét rìa, và khối cắt đối xứng theo trục của
+## hình (màu vẫn gán tự do), mỗi khối tối đa Config.BLOCK_MAX_CELLS ô, theo một trong ba kiểu (`cut_style`): đối xứng tự
+## do, hình học (dải, vòng, đan, gạch) hoặc theo vùng vẽ trong bản vẽ. Level dạy cơ chế (id = Config.UNLOCK) cũng sinh
+## như vậy, chỉ bật đúng cơ chế mới.
+## Trường `seed` trong kết quả là seed thật đã dùng (sau khi sinh lại). generate(id, level.seed) cho đúng level đó nếu
+## level sinh được trước lần thử thứ COUNT_RELAX_EVERY; từ lần đó bộ sinh bớt khối mục tiêu nên lần chạy lại khác đi.
 
 const LevelData := preload("res://src/core/level_data.gd")
 const Solver := preload("res://src/core/solver.gd")
@@ -17,33 +22,67 @@ const Motifs := preload("res://src/core/motifs.gd")
 const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 ## Cắt khối đối xứng có thể lệch số khối mục tiêu tới 2.
-const MAX_BLOCKS := DifficultyCurve.BOOST_MAX * DifficultyCurve.COUNT_SCALE + 2
+const MAX_BLOCKS := DifficultyCurve.BLOCK_CAP + 3
 ## Khung lớn nhất của hình: 12x17, chừa một ô mỗi phía theo chiều ngang; chiều dọc giữ 17 hàng như khi lưới còn 19 hàng
 ## nên level sinh ra không đổi (BoardView co ô để hình cộng lề vừa lưới chuẩn).
 const MAX_W := Config.BOARD_W - 2
 const MAX_H := Config.BOARD_H - 1
 const MAX_TRIES := 60
-## Bàn có cổng nhịp: giữ ít khối để tìm được trạng thái cổng ban đầu không bắt chạm chờ. Từ GATE2_FROM bàn có tới 2
-## cổng, khó tìm hơn nên trần thấp hơn (GATE2_MAX_BLOCKS) để sinh trong game vẫn nhanh.
+## Cứ mỗi COUNT_RELAX_EVERY lần thử hỏng thì bớt 1 khối mục tiêu (`_target_count`).
+const COUNT_RELAX_EVERY := 20
+## Bàn có cổng nhịp: giữ ít khối để tìm được trạng thái cổng ban đầu không bắt chạm chờ, nên `mech_plan` chỉ cho cổng
+## nhịp vào level có số khối mục tiêu tới GATE_MAX_BLOCKS. Từ GATE2_FROM bàn tới GATE2_MAX_BLOCKS khối có 2 cổng.
 const GATE_MAX_BLOCKS := 52
 const GATE2_MAX_BLOCKS := 40
 const GATE2_FROM := 130
+## Lần thử từ MECH_DROP_AT bỏ mọi cơ chế, từ GATE_DROP_AT bỏ cổng nhịp (trừ level dạy).
+const MECH_DROP_AT := 40
+const GATE_DROP_AT := 24
+## Seed riêng của `mech_plan` (chỉ theo id, không theo seed của lần sinh).
+const PLAN_SEED := 977
+## `_finish`: gán hướng lại tối đa ASSIGN_TRIES lần để số lượt dọn bàn vào khoảng của đường cong, bỏ cách cắt khi
+## ROUNDS_STALL lần liền không sâu thêm; cứ ROUNDS_RELAX_EVERY lần thử hỏng thì nới khoảng đó thêm 1.
+const ASSIGN_TRIES := 8
+## Chế độ sinh trong game (`strict_rounds` false) chỉ gán FAST_ASSIGN_TRIES lần (bàn có cổng nhịp một lần, vì mỗi lần
+## còn phải dò trạng thái cổng) rồi giữ bàn gần nhất.
+const FAST_ASSIGN_TRIES := 3
+const ROUNDS_STALL := 2
+const ROUNDS_RELAX_EVERY := 5
+## `_assign`: khi chuỗi chặn sâu nhất còn nông hơn mục tiêu, trọng số mỗi cách gán nhân DEPTH_PUSH ^ (độ sâu của nó trừ
+## độ sâu lớn nhất) nên khối nằm sâu được ưu tiên, còn khối thoát được ngay từ đầu nhân DEPTH_FREE để vẫn còn vài khối đi
+## được lúc đầu; khi đã đủ sâu thì cách gán làm chuỗi sâu thêm nhân DEPTH_HOLD.
+const DEPTH_PUSH := 2.0
+const DEPTH_HOLD := 0.05
+const DEPTH_FREE := 0.3
+## `_fix_gates` thử tối đa GATE_SIDE_TRIES bộ cạnh đặt cổng (kể cả bộ `_mechanics` chọn).
+const GATE_SIDE_TRIES := 2
+## `_attempt_motif`: đặt lại thùng sắt và cắt lại tối đa STONE_TRIES lần khi có khối bị thùng chắn cả bốn hướng.
+const STONE_TRIES := 3
 ## Bước nhảy trong Motifs.KINDS giữa hai level liền nhau (nguyên tố cùng nhau với số hình), để hình kế tiếp khác nhóm.
 const MOTIF_STRIDE := 8
 const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
 const NEIGHBORS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
+## Kiểu cắt khối theo hình học (`cut_style`): "rows" dải ngang, "cols" dải dọc, "rings" vòng theo viền hình,
+## "weave" đan rổ (ô WEAVE_TILE x WEAVE_TILE, dải ngang và dọc xen kẽ), "bricks" gạch xây so le dài BRICK_LEN.
+const GEO_STYLES := ["rows", "rings", "weave", "cols", "bricks"]
+const WEAVE_TILE := 4
+## `_tile_sym`: mỗi lần quét các cách gộp chọn tới 1/TILE_BATCH số lần gộp còn lại.
+const TILE_BATCH := 4
+const BRICK_LEN := 4
 
 
 ## Level hợp lệ cho (id, seed), hoặc {} nếu mọi lần thử đều hỏng (không xảy ra trong thực tế).
-static func generate(id: int, seed_value: int) -> Dictionary:
+## `strict_rounds` false (Daily Challenge, sinh trong game): vẫn gán hướng lại để số lượt gần đường cong, nhưng giữ bàn
+## gần nhất thay vì cắt lại hay sinh lại, nên nhanh gần như khi chưa có mục tiêu số lượt.
+static func generate(id: int, seed_value: int, strict_rounds: bool = true) -> Dictionary:
 	for attempt in MAX_TRIES:
-		var lvl := _attempt(id, seed_value + attempt, attempt)
+		var lvl := _attempt(id, seed_value + attempt, attempt, strict_rounds)
 		if not lvl.is_empty():
 			return lvl
 	return {}
 
 
-## Cơ chế nào bật ở level này (theo Config.UNLOCK). Dùng cho test và công cụ.
+## Cơ chế đã mở ở level này (theo Config.UNLOCK). Dùng cho test và công cụ.
 static func mechanics_for(id: int) -> Array[String]:
 	var out: Array[String] = []
 	for m in MECHS:
@@ -64,6 +103,79 @@ static func is_hard(id: int) -> bool:
 	return DifficultyCurve.is_hard(id)
 
 
+## Level nghỉ: từ level mở cơ chế đầu tiên, cứ Config.LEVEL_REST_EVERY level có một level không cơ chế nào (level dạy
+## vẫn có cơ chế của nó).
+static func is_rest(id: int) -> bool:
+	return posmod(id, Config.LEVEL_REST_EVERY) == Config.LEVEL_REST_AT and teach_mech(id) == ""
+
+
+## Cơ chế của level `id`, theo id (không theo seed): level dạy chỉ có cơ chế mới; chưa mở cơ chế nào hoặc level nghỉ thì
+## không có; level khác rút 1..Config.LEVEL_MECH_MAX loại trong các cơ chế đã mở theo Config.LEVEL_MECH_WEIGHTS, và cơ
+## chế vừa mở (trong Config.LEVEL_MECH_FRESH level sau level dạy) luôn có mặt. Cổng nhịp chỉ ở level có số khối mục tiêu
+## tới GATE_MAX_BLOCKS.
+static func mech_plan(id: int) -> Array[String]:
+	var out: Array[String] = []
+	var teach := teach_mech(id)
+	if teach != "":
+		out.append(teach)
+		return out
+	var open := mechanics_for(id)
+	if open.is_empty() or is_rest(id):
+		return out
+	var rng := _rng(id, PLAN_SEED)
+	var weights: Array[float] = []
+	weights.assign(Config.LEVEL_MECH_WEIGHTS)
+	var want := _pick_weighted(weights, rng) + 1
+	var pool: Array[String] = []
+	var fresh := ""
+	var fresh_at := -1
+	for m in open:
+		if m == "pulse" and DifficultyCurve.block_count(id) > GATE_MAX_BLOCKS:
+			continue
+		pool.append(m)
+		var u := int(Config.UNLOCK[m])
+		if id <= u + Config.LEVEL_MECH_FRESH and u > fresh_at:
+			fresh = m
+			fresh_at = u
+	_shuffle(pool, rng)
+	if fresh != "":
+		pool.erase(fresh)
+		pool.push_front(fresh)
+	for m in pool.slice(0, mini(want, Config.LEVEL_MECH_MAX)):
+		out.append(m)
+	return out
+
+
+## Cơ chế bật ở lần thử `attempt`: theo `mech_plan`, bỏ hết từ lần MECH_DROP_AT và bỏ cổng nhịp từ lần GATE_DROP_AT;
+## level dạy luôn giữ cơ chế của nó.
+static func _features(id: int, attempt: int) -> Dictionary:
+	var plan := mech_plan(id)
+	var teach := teach_mech(id)
+	var feats := {}
+	for m in MECHS:
+		var keep: bool = attempt < MECH_DROP_AT and (m != "pulse" or attempt < GATE_DROP_AT)
+		feats[m] = plan.has(m) and (keep or m == teach)
+	return feats
+
+
+## Khoảng lệch cho phép của số lượt dọn bàn so với `want`, nới dần theo số lần thử hỏng.
+static func _rounds_tol(want: int, attempt: int) -> int:
+	@warning_ignore("integer_division")
+	return maxi(Config.LEVEL_ROUNDS_TOL_MIN, roundi(want * Config.LEVEL_ROUNDS_TOL)) + attempt / ROUNDS_RELAX_EVERY
+
+
+## Kiểu cắt khối của level `id` (từ DifficultyCurve.MOTIF_FROM), xen kẽ theo id: "sym" (gộp tự do, đối xứng theo trục của
+## hình), một kiểu hình học trong GEO_STYLES, hoặc "template" (chỉ gộp ô cùng vùng vẽ trong bản vẽ).
+static func cut_style(id: int) -> String:
+	match posmod(id, 3):
+		0:
+			return "sym"
+		1:
+			@warning_ignore("integer_division")
+			return GEO_STYLES[posmod(id / 3, GEO_STYLES.size())]
+	return "template"
+
+
 static func _mix(v: int) -> int:
 	v = (v ^ (v >> 30)) * -4658895280553007687
 	v = (v ^ (v >> 27)) * -7723592293110705685
@@ -79,42 +191,21 @@ static func _rng(id: int, s: int) -> RandomNumberGenerator:
 ## Số khối mục tiêu theo đường cong độ khó (difficulty_curve.gd); `attempt` lớn thì giảm dần để lần sinh lại dễ đạt hơn.
 static func _target_count(id: int, _rng: RandomNumberGenerator, attempt: int) -> int:
 	@warning_ignore("integer_division")
-	return maxi(2, DifficultyCurve.block_count(id) - attempt / 20)
-
-
-## Trần số khối của bàn có cổng nhịp ở level `id`.
-static func _gate_max(id: int) -> int:
-	return GATE2_MAX_BLOCKS if id >= GATE2_FROM else GATE_MAX_BLOCKS
-
-
-static func _enabled(id: int, mech: String, rng: RandomNumberGenerator, attempt: int) -> bool:
-	var unlock: int = int(Config.UNLOCK.get(mech, 1 << 30))
-	if id < unlock:
-		return false
-	var roll := rng.randf()  # luôn rút để chuỗi ngẫu nhiên không lệch theo attempt
-	if attempt >= 40:
-		return false
-	if mech == "pulse" and attempt >= 24:
-		return false
-	if id < unlock + 10:
-		return true
-	return roll < 0.7
+	return maxi(2, DifficultyCurve.block_count(id) - attempt / COUNT_RELAX_EVERY)
 
 
 static func _ramp(id: int, unlock: int, lo: float, hi: float, over: int) -> float:
 	return lerpf(lo, hi, clampf(float(id - unlock) / float(over), 0.0, 1.0))
 
 
-static func _attempt(id: int, s: int, attempt: int) -> Dictionary:
-	if id >= DifficultyCurve.SHAPED_FROM:
-		return _attempt_motif(id, s, attempt)
+static func _attempt(id: int, s: int, attempt: int, strict: bool = true) -> Dictionary:
+	if id >= DifficultyCurve.MOTIF_FROM:
+		return _attempt_motif(id, s, attempt, strict)
 	var rng := _rng(id, s)
-	var feats := {}
-	for m in MECHS:
-		feats[m] = _enabled(id, m, rng, attempt)
+	var feats := _features(id, attempt)
 	var n := _target_count(id, rng, attempt)
 	if feats["pulse"]:
-		n = mini(n, _gate_max(id))
+		n = mini(n, GATE_MAX_BLOCKS)
 	var mirror := ""
 	if n >= 8 and n % 2 == 0 and rng.randf() < 0.35:
 		mirror = "h" if rng.randf() < 0.5 else "v"
@@ -135,21 +226,18 @@ static func _attempt(id: int, s: int, attempt: int) -> Dictionary:
 	var groups := _tile(area, w, h, stones, n, mirror, rng)
 	if groups.is_empty():
 		return {}
-	return _finish(id, s, rng, feats, w, h, stones, groups, "")
+	return _finish(id, s, rng, feats, w, h, stones, groups, "", attempt, strict)
 
 
-## Từ DifficultyCurve.SHAPED_FROM: hình vẽ tay, đá và khối đối xứng theo trục của hình; level dạy chỉ bật cơ chế mới.
-static func _attempt_motif(id: int, s: int, attempt: int) -> Dictionary:
+## Từ DifficultyCurve.MOTIF_FROM: hình vẽ tay, đá và khối đối xứng theo trục của hình, cắt theo `cut_style(id)`; level
+## dạy chỉ bật cơ chế mới.
+static func _attempt_motif(id: int, s: int, attempt: int, strict: bool = true) -> Dictionary:
 	var rng := _rng(id, s)
 	var teach := teach_mech(id)
-	var feats := {}
-	for m in MECHS:
-		feats[m] = _enabled(id, m, rng, attempt)
-		if teach != "":
-			feats[m] = m == teach
+	var feats := _features(id, attempt)
 	var n := _target_count(id, rng, attempt)
 	if feats["pulse"]:
-		n = mini(n, _gate_max(id))
+		n = mini(n, GATE_MAX_BLOCKS)
 	var n_stones := 0
 	if feats["stone"]:
 		@warning_ignore("integer_division")
@@ -161,25 +249,94 @@ static func _attempt_motif(id: int, s: int, attempt: int) -> Dictionary:
 	var h: int = shape["h"]
 	var sym_h: bool = shape["sym_h"]
 	var sym_v: bool = shape["sym_v"]
-	var stones := _place_stones_sym(shape["cells"], w, h, n_stones, sym_h, sym_v, rng)
-	var groups := _tile_sym(shape["cells"], w, h, stones, n, sym_h, sym_v, rng)
+	# Thùng sắt chắn cả bốn hướng của một khối thì khối đó không bao giờ ra được: đặt lại thùng và cắt lại (rẻ hơn hỏng
+	# cả lần thử ở bước gán hướng).
+	var stones: Array[Vector2i] = []
+	var groups: Array = []
+	for _try in STONE_TRIES:
+		stones = _place_stones_sym(shape["cells"], w, h, n_stones, sym_h, sym_v, rng)
+		groups = _tile_sym(shape["cells"], w, h, stones, n, sym_h, sym_v, rng, cut_style(id), shape["regions"])
+		if not groups.is_empty() and (stones.is_empty() or not _stone_dead(groups, stones, w, h)):
+			break
 	if groups.is_empty():
 		return {}
-	return _finish(id, s, rng, feats, w, h, stones, groups, teach)
+	return _finish(id, s, rng, feats, w, h, stones, groups, teach, attempt, strict)
+
+
+## Có khối nào mà đường ra theo cả bốn hướng đều gặp thùng sắt không (khối đó không bao giờ ra được).
+static func _stone_dead(groups: Array, stones: Array[Vector2i], w: int, h: int) -> bool:
+	var stone_set := {}
+	for c in stones:
+		stone_set[c] = true
+	for g in groups:
+		var own := {}
+		for c in g:
+			own[c] = true
+		var blocked := 0
+		for d in NEIGHBORS:
+			var hit := false
+			for c: Vector2i in g:
+				var q: Vector2i = c + d
+				while not hit and q.x >= 0 and q.y >= 0 and q.x < w and q.y < h:
+					hit = stone_set.has(q)
+					q += d
+				if hit:
+					break
+			blocked += int(hit)
+		if blocked == 4:
+			return true
+	return false
 
 
 ## Gán hướng, rải cơ chế, dịch vào giữa bàn, chọn trạng thái cổng, rồi qua validate và Solver. {} nếu hỏng.
+## Số lượt dọn bàn (`Solver.clear_rounds`) phải lệch đường cong tối đa `_rounds_tol`: lệch thì gán hướng lại với độ sâu
+## mục tiêu bù phần lệch, tối đa ASSIGN_TRIES lần; ROUNDS_STALL lần liền không sâu thêm thì bỏ cách cắt này. Bàn chỉ có
+## thùng sắt, sương mù thì số lượt bằng độ sâu lúc gán hướng nên không cần mô phỏng; pudding, xích, hộp giấy chỉ làm
+## chuỗi dài thêm nên độ sâu đã quá mục tiêu thì gán lại luôn.
 ## `teach`: cơ chế level này dạy ("" nếu không), level phải cho chạm thử cơ chế đó ngay lúc đầu.
 static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictionary, w: int, h: int,
-		stones: Array[Vector2i], groups: Array, teach: String) -> Dictionary:
+		stones: Array[Vector2i], groups: Array, teach: String, attempt: int, strict: bool = true) -> Dictionary:
 	var hard := is_hard(id)
-	var asg := _assign(w, h, stones, groups, _allowed_colors(id), DifficultyCurve.blocked_power(id), rng)
-	if asg.is_empty():
-		return {}
-	var mech := _mechanics(id, feats, groups.size(), asg, rng)
+	var want := DifficultyCurve.wave_count(id)
+	var tol := _rounds_tol(want, attempt)
+	var aim := want
 	var shift := _centering(groups, stones)
-	var level := _build(id, s, hard, _shifted(stones, shift), _shifted_groups(groups, shift), asg, mech)
-	if not mech["pulse"].is_empty() and not _fix_gates(level, rng, teach):
+	var plain: bool = not (feats["ice"] or feats["chain"] or feats["layer"] or feats["pulse"])
+	var level := {}
+	var near := {}  # bàn có số lượt gần nhất (giữ khi không `strict`)
+	var near_err := 1 << 20
+	var low := -1
+	var stall := 0
+	var tries := ASSIGN_TRIES if strict else (1 if feats["pulse"] else FAST_ASSIGN_TRIES)
+	for _k in tries:
+		var asg := _assign(w, h, stones, groups, _allowed_colors(id), DifficultyCurve.blocked_power(id), rng, aim)
+		if asg.is_empty():
+			return {}
+		var rounds: int = asg["depth"]
+		if not strict or absi(rounds - want) <= tol or (not plain and (feats["pulse"] or rounds < want)):
+			var mech := _mechanics(id, feats, groups.size(), asg, rng)
+			var cand := _build(id, s, hard, _shifted(stones, shift), _shifted_groups(groups, shift), asg, mech)
+			if not mech["pulse"].is_empty() and not _fix_gates(cand, rng, teach):
+				continue
+			if not plain:
+				rounds = Solver.clear_rounds(cand)
+				if rounds < 0:
+					continue
+			if absi(rounds - want) <= tol:
+				level = cand
+				break
+			if absi(rounds - want) < near_err:
+				near = cand
+				near_err = absi(rounds - want)
+		if rounds < want:
+			stall = stall + 1 if rounds <= low else 0
+			low = maxi(low, rounds)
+			if stall >= ROUNDS_STALL:
+				break
+		aim = clampi(aim + want - rounds, 1, groups.size())
+	if level.is_empty() and not strict:
+		level = near
+	if level.is_empty():
 		return {}
 	var errs := LevelData.validate(level)
 	if not errs.is_empty():
@@ -196,20 +353,55 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 	return level
 
 
-## Thử các tổ hợp mở/đóng ban đầu của cổng, giữ tổ hợp đầu tiên mà không phải chạm chờ (solver chỉ tốn
-## thời gian tìm chính xác khi phải chờ). false nếu không có tổ hợp nào như vậy. Level dạy cổng nhịp còn cần
-## cổng đóng lúc đầu và có khối đang chờ cổng (`_teach_ok`).
+## Thử các cạnh đặt cổng (bắt đầu từ cạnh `_mechanics` chọn, rồi các cạnh khác có khối thoát qua) và mọi tổ hợp
+## mở/đóng ban đầu, giữ tổ hợp đầu tiên mà không phải chạm chờ (solver chỉ tốn thời gian tìm chính xác khi phải chờ).
+## Hướng thoát của khối không đổi nên mỗi lần thử chỉ tốn một ván tham lam, rẻ hơn sinh lại cả bàn. false nếu không có
+## tổ hợp nào như vậy (bàn 2 cổng thì thử lại với 1 cổng trước). Level dạy cổng nhịp còn cần cổng đóng lúc đầu và có
+## khối đang chờ cổng (`_teach_ok`).
 static func _fix_gates(level: Dictionary, rng: RandomNumberGenerator, teach: String = "") -> bool:
 	var sides: Array = level["pulse_sides"]
 	var combos := 1 << sides.size()
 	var start := rng.randi_range(0, combos - 1)
-	for k in combos:
-		var m := (start + k) % combos
+	var present: Array = []
+	for b in level["blocks"]:
+		var side := LevelData.block_side(b)
+		if not present.has(side):
+			present.append(side)
+	present.sort()
+	var current: Array = []
+	for p in sides:
+		current.append(str(p["side"]))
+	current.sort()
+	var sets := _side_sets(present, sides.size())
+	_shuffle(sets, rng)
+	sets.erase(current)
+	sets.push_front(current)
+	for set: Array in sets.slice(0, GATE_SIDE_TRIES):
 		for i in sides.size():
-			sides[i]["open"] = (m >> i) & 1 == 1
-		if _no_wait(level) and (teach != "pulse" or _teach_ok(level, teach)):
-			return true
+			sides[i]["side"] = set[i]
+		for k in combos:
+			var m := (start + k) % combos
+			for i in sides.size():
+				sides[i]["open"] = (m >> i) & 1 == 1
+			if _no_wait(level) and (teach != "pulse" or _teach_ok(level, teach)):
+				return true
+	# Bàn "có tới 2 cổng": hai cổng không chơi được mà không chờ thì bỏ bớt một cổng rồi thử lại.
+	if sides.size() > 1:
+		sides.resize(1)
+		return _fix_gates(level, rng, teach)
 	return false
+
+
+## Mọi cách chọn `k` (1 hoặc 2) cạnh khác nhau trong `present`, theo thứ tự của `present`.
+static func _side_sets(present: Array, k: int) -> Array:
+	var out: Array = []
+	for i in present.size():
+		if k == 1:
+			out.append([present[i]])
+			continue
+		for j in range(i + 1, present.size()):
+			out.append([present[i], present[j]])
+	return out
 
 
 ## Level dạy có cho chạm thử cơ chế `mech` ngay lúc đầu không: Đá có ít nhất 2 viên; Băng có khối nứt được; Xích có khối
@@ -250,24 +442,50 @@ static func _teach_ok(level: Dictionary, mech: String) -> bool:
 	return false
 
 
-## Tham lam (thoát > nứt > bóc) có đi hết mà không phải chạm chờ cổng không; đồng thời có khối thoát ngay.
+## Tham lam (thoát qua cổng đang mở > thoát cạnh không cổng > nứt > bóc) có đi hết mà không phải chạm chờ cổng không;
+## đồng thời có khối thoát ngay. Dùng cổng lúc nó mở và để dành khối cạnh không cổng cho lúc cổng đóng, nên cuối ván
+## không còn dồn vài khối cùng chờ một cổng.
 static func _no_wait(level: Dictionary) -> bool:
 	var b := BoardState.new(level)
 	if b.hint() == "":
 		return false
 	b.add_moves(Solver.BIG_MOVES)
+	var gated := b.gates()
+	# Khối thoát qua cạnh có cổng: theo màu ngoài, sau khi bóc thì theo màu trong.
+	var via_gate := {}
+	var inner_gate := {}
+	for blk in level["blocks"]:
+		via_gate[blk["id"]] = gated.has(LevelData.block_side(blk))
+		if str(blk["inner_color"]) != "":
+			inner_gate[blk["id"]] = gated.has(LevelData.side_of(str(blk["inner_color"])))
+	# Kết quả chạm của từng khối, chỉ tính lại khi có thể đổi: khối bị chặn hay bị xích chỉ đổi khi vật chặn (hoặc chìa)
+	# rời bàn, khối qua cổng đổi khi cổng đảo, khối vừa nứt hay vừa bóc đổi chính nó. Cho cùng kết quả với tính lại
+	# mọi khối mỗi bước (như Solver._greedy) nhưng rẻ hơn nhiều.
+	var kind := {}
+	var waiting := {}  # khối chặn -> các khối đang chờ nó
+	var ids: Array = b.block_ids()  # khối còn trên bàn, cùng thứ tự với block_ids()
+	var dirty: Array = ids.duplicate()
 	while not b.is_won():
+		for id: String in dirty:
+			if not kind.has(id) and not via_gate.has(id):
+				continue
+			var ev := b.inspect(id)
+			kind[id] = ev["kind"]
+			if ev["kind"] == "blocked" or ev["kind"] == "chained":
+				if not waiting.has(ev["blocker"]):
+					waiting[ev["blocker"]] = []
+				waiting[ev["blocker"]].append(id)
 		var pick := ""
 		var rank := 9
-		for id in b.block_ids():
-			var k := b.peek(id)
+		for id in ids:
+			var k: String = kind[id]
 			var r := 9
 			if k == "exit":
-				r = 0
+				r = 0 if via_gate[id] else 1
 			elif k == "crack":
-				r = 1
-			elif k == "peel":
 				r = 2
+			elif k == "peel":
+				r = 3
 			if r < rank:
 				rank = r
 				pick = id
@@ -276,6 +494,21 @@ static func _no_wait(level: Dictionary) -> bool:
 		if pick == "":
 			return false
 		b.tap(pick)
+		dirty = []
+		if rank <= 1:
+			kind.erase(pick)
+			via_gate.erase(pick)
+			ids.erase(pick)
+			dirty.append_array(waiting.get(pick, []))
+		else:
+			if rank == 3:
+				via_gate[pick] = inner_gate[pick]
+			dirty.append(pick)
+		if not gated.is_empty():
+			for id in ids:
+				var k: String = kind[id]
+				if via_gate[id] and (k == "exit" or k == "peel" or k == "gate_closed"):
+					dirty.append(id)
 	return true
 
 
@@ -395,8 +628,8 @@ static func _shuffle(a: Array, rng: RandomNumberGenerator) -> void:
 		a[j] = t
 
 
-## Lát các ô của hình (trừ đá) thành đúng `n` polyomino bằng cách gộp dần các ô đơn. Không giới hạn cỡ hay hình khối;
-## mỗi cách gộp có trọng số 1 / cỡ khối sau gộp (`_merge_weight`) nên khối to vẫn ra nhưng hiếm khi thành mảng khổng lồ.
+## Lát các ô của hình (trừ đá) thành đúng `n` polyomino bằng cách gộp dần các ô đơn, mỗi khối tối đa
+## Config.BLOCK_MAX_CELLS ô; trọng số mỗi cách gộp theo `_merge_weight` (ưu tiên gộp khối 1 ô).
 ## Trả mảng các `Array[Vector2i]`, hoặc [] nếu kẹt.
 static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i], n: int, mirror: String,
 		rng: RandomNumberGenerator) -> Array:
@@ -427,8 +660,12 @@ static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i]
 					var gj: int = owner[nb]
 					if gj <= gi:
 						continue
+					var na: int = groups[gi].size()
+					var nb_size: int = groups[gj].size()
+					if na + nb_size > Config.BLOCK_MAX_CELLS:
+						continue
 					pairs.append([gi, gj])
-					weights.append(_merge_weight(groups[gi].size() + groups[gj].size()))
+					weights.append(_merge_weight(na + nb_size, int(na == 1) + int(nb_size == 1)))
 		if pairs.is_empty():
 			return []
 		var pick: Array = pairs[_pick_weighted(weights, rng)]
@@ -454,9 +691,10 @@ static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i]
 	return out
 
 
-## Trọng số của một cách gộp ra khối `size` ô: nghịch đảo cỡ, không có trần.
-static func _merge_weight(size: int) -> float:
-	return 1.0 / float(size)
+## Trọng số của một cách gộp ra khối `size` ô, trong đó `singles` (0-2) khối gộp vào là khối 1 ô:
+## Config.TILE_SINGLE_BIAS ^ singles / size. Hệ số làm khối 1 ô được gộp trước nên còn ít khối 1 ô.
+static func _merge_weight(size: int, singles: int) -> float:
+	return pow(Config.TILE_SINGLE_BIAS, singles) / float(size * size)
 
 
 static func _pick_weighted(weights: Array[float], rng: RandomNumberGenerator) -> int:
@@ -545,10 +783,12 @@ static func _expand(cells: Array, joined_h: bool, joined_v: bool, w: int, h: int
 
 ## Lát hình đối xứng thành khoảng `n` khối: chỉ lát phần cơ sở rồi lật ra, nên cách cắt khối cũng đối xứng. Nhóm chạm
 ## trục có thể nối với ảnh lật của nó thành một khối nằm vắt qua trục (cạnh lẻ thì ô trên trục bắt buộc nối). Gộp dần
-## như `_tile` (không giới hạn cỡ khối, trọng số `_merge_weight`). Mỗi lần gộp bớt 1, 2 hoặc 4 khối nên số khối ra trong
+## như `_tile`: mỗi khối tối đa Config.BLOCK_MAX_CELLS ô, trọng số `_merge_weight`. `style` (`cut_style`) chỉ cho gộp qua
+## những cạnh hợp kiểu (`_edge_ok`); khi không còn cách gộp hợp kiểu mà số khối còn nhiều hơn `n` thì gộp tự do.
+## `regions`: ô -> tên vùng trong bản vẽ (kiểu "template"). Mỗi lần gộp bớt 1, 2 hoặc 4 khối nên số khối ra trong
 ## n-2..n+2. Trả mảng các `Array[Vector2i]` trên cả hình, hoặc [] nếu kẹt.
 static func _tile_sym(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i], n: int, sym_h: bool,
-		sym_v: bool, rng: RandomNumberGenerator) -> Array:
+		sym_v: bool, rng: RandomNumberGenerator, style: String = "sym", regions: Dictionary = {}) -> Array:
 	var stone_set := {}
 	for c in stones:
 		stone_set[c] = true
@@ -556,6 +796,9 @@ static func _tile_sym(area: Array[Vector2i], w: int, h: int, stones: Array[Vecto
 	var ax := (w - 1) / 2
 	@warning_ignore("integer_division")
 	var ay := (h - 1) / 2
+	var ctx := {"style": style, "w": w, "h": h, "sym_h": sym_h, "sym_v": sym_v, "regions": regions}
+	if style == "rings":
+		ctx["layer"] = _layers(area)
 	var owner := {}
 	var groups := {}  # id -> [cells, nối trục dọc, nối trục ngang]
 	var total := 0
@@ -564,56 +807,44 @@ static func _tile_sym(area: Array[Vector2i], w: int, h: int, stones: Array[Vecto
 			continue
 		var gi := groups.size()
 		owner[c] = gi
-		groups[gi] = [[c], sym_h and w % 2 == 1 and c.x == ax, sym_v and h % 2 == 1 and c.y == ay]
+		var on_x := sym_h and w % 2 == 1 and c.x == ax
+		var on_y := sym_v and h % 2 == 1 and c.y == ay
+		var kinds := [0, 0, 0, 0]
+		kinds[(1 if on_x else 0) + (2 if on_y else 0)] = 1
+		groups[gi] = [[c], on_x, on_y, kinds]
 		total += _copies(groups[gi], sym_h, sym_v)
 	while total > n:
-		var opts: Array = []  # [gi, gj (-1: nối với ảnh lật), nối dọc, nối ngang, số khối bớt]
-		var weights: Array[float] = []
-		var under: Array = []  # các lần gộp làm số khối xuống dưới n
-		for gi in groups:
-			var g: Array = groups[gi]
-			var at_x := false
-			var at_y := false
-			for c: Vector2i in g[0]:
-				at_x = at_x or c.x == ax
-				at_y = at_y or c.y == ay
-				for dv in NEIGHBORS:
-					var nb: Vector2i = c + dv
-					if not owner.has(nb):
-						continue
-					var gj: int = owner[nb]
-					if gj <= gi:
-						continue
-					var o: Array = groups[gj]
-					_merge_option([gi, gj, bool(g[1]) or bool(o[1]), bool(g[2]) or bool(o[2])], g[0] + o[0],
-						_copies(g, sym_h, sym_v) + _copies(o, sym_h, sym_v), total, n, w, h, sym_h, sym_v,
-						opts, weights, under)
-			var own := _copies(g, sym_h, sym_v)
-			if sym_h and w % 2 == 0 and not bool(g[1]) and at_x:
-				_merge_option([gi, -1, true, g[2]], g[0], own, total, n, w, h, sym_h, sym_v, opts, weights, under)
-			if sym_v and h % 2 == 0 and not bool(g[2]) and at_y:
-				_merge_option([gi, -1, g[1], true], g[0], own, total, n, w, h, sym_h, sym_v, opts, weights, under)
-		var pick: Array = []
-		if not opts.is_empty():
-			pick = opts[_pick_weighted(weights, rng)]
-		else:
+		var found := _merge_options(groups, owner, total, n, ax, ay, ctx, true)
+		if (found[0] as Array).is_empty() and style != "sym":
+			found = _merge_options(groups, owner, total, n, ax, ay, ctx, false)
+		var opts: Array = found[0]
+		var weights: Array[float] = found[1]
+		var under: Array = found[2]
+		if opts.is_empty():
+			var pick: Array = []
 			for u in under:
 				if total - int(u[4]) >= n - 2 and (pick.is_empty() or int(u[4]) < int(pick[4])):
 					pick = u
-			if pick.is_empty():
-				break
-		var a: int = pick[0]
-		var b: int = pick[1]
-		if b >= 0:
-			for c in groups[b][0]:
-				owner[c] = a
-				groups[a][0].append(c)
-			groups.erase(b)
-		groups[a][1] = pick[2]
-		groups[a][2] = pick[3]
-		total -= int(pick[4])
-		if opts.is_empty():
+			if not pick.is_empty():
+				total = _apply_merge(groups, owner, pick, total)
 			break
+		# Một lần quét chọn tới 1/TILE_BATCH số lần gộp còn lại, các lần gộp không chung nhóm nào nên trọng số của những
+		# cách gộp còn lại vẫn đúng; nhóm vừa gộp chờ lần quét sau.
+		var used := {}
+		@warning_ignore("integer_division")
+		for _k in maxi(1, (total - n) / TILE_BATCH):
+			var sum := 0.0
+			for i in opts.size():
+				var o: Array = opts[i]
+				if weights[i] > 0.0 and (used.has(o[0]) or used.has(o[1]) or total - int(o[4]) < n):
+					weights[i] = 0.0
+				sum += weights[i]
+			if sum <= 0.0:
+				break
+			var pick: Array = opts[_pick_weighted(weights, rng)]
+			used[pick[0]] = true
+			used[pick[1]] = true
+			total = _apply_merge(groups, owner, pick, total)
 	if absi(total - n) > 2:
 		return []
 	var out: Array = []
@@ -631,19 +862,174 @@ static func _tile_sym(area: Array[Vector2i], w: int, h: int, stones: Array[Vecto
 	return out
 
 
-## Ghi một cách gộp vào `opts` (kèm trọng số `_merge_weight` theo cỡ khối đầy đủ) nếu không làm số khối xuống dưới
-## `n`; xuống dưới `n` thì ghi vào `under`. `opt`: [gi, gj, nối dọc, nối ngang]; `before`: số khối trước gộp.
-static func _merge_option(opt: Array, cells: Array, before: int, total: int, n: int, w: int, h: int, sym_h: bool,
-		sym_v: bool, opts: Array, weights: Array[float], under: Array) -> void:
-	var cut := before - _copies([cells, opt[2], opt[3]], sym_h, sym_v)
+## Gộp theo `pick` = [gi, gj (-1: nối với ảnh lật), nối dọc, nối ngang, số khối bớt]; trả số khối còn lại.
+static func _apply_merge(groups: Dictionary, owner: Dictionary, pick: Array, total: int) -> int:
+	var a: int = pick[0]
+	var b: int = pick[1]
+	if b >= 0:
+		for c in groups[b][0]:
+			owner[c] = a
+			groups[a][0].append(c)
+		groups[a][3] = _sum4(groups[a][3], groups[b][3])
+		groups.erase(b)
+	groups[a][1] = pick[2]
+	groups[a][2] = pick[3]
+	return total - int(pick[4])
+
+
+## Mọi cách gộp của `_tile_sym` ở bước này: [opts, weights, under] (xem `_merge_option`). `constrained`: chỉ gộp qua cạnh
+## hợp kiểu cắt trong `ctx` (`_edge_ok`), kể cả cạnh nối một nhóm với ảnh lật của nó.
+static func _merge_options(groups: Dictionary, owner: Dictionary, total: int, n: int, ax: int, ay: int, ctx: Dictionary,
+		constrained: bool) -> Array:
+	var w: int = ctx["w"]
+	var h: int = ctx["h"]
+	var sym_h: bool = ctx["sym_h"]
+	var sym_v: bool = ctx["sym_v"]
+	var opts: Array = []  # [gi, gj (-1: nối với ảnh lật), nối dọc, nối ngang, số khối bớt]
+	var weights: Array[float] = []
+	var under: Array = []  # các lần gộp làm số khối xuống dưới n
+	var none := [0, 0, 0, 0]
+	for gi in groups:
+		var g: Array = groups[gi]
+		var g_single := _full_size(g[3], g[1], g[2]) == 1
+		var self_x := false
+		var self_y := false
+		for c: Vector2i in g[0]:
+			if sym_h and w % 2 == 0 and c.x == ax and (not constrained or _edge_ok(c, Vector2i(w - 1 - c.x, c.y), ctx)):
+				self_x = true
+			if sym_v and h % 2 == 0 and c.y == ay and (not constrained or _edge_ok(c, Vector2i(c.x, h - 1 - c.y), ctx)):
+				self_y = true
+			for dv in NEIGHBORS:
+				var nb: Vector2i = c + dv
+				if not owner.has(nb):
+					continue
+				var gj: int = owner[nb]
+				if gj <= gi or (constrained and not _edge_ok(c, nb, ctx)):
+					continue
+				var o: Array = groups[gj]
+				var singles := int(g_single) + int(_full_size(o[3], o[1], o[2]) == 1)
+				_merge_option([gi, gj, bool(g[1]) or bool(o[1]), bool(g[2]) or bool(o[2])], g[3], o[3],
+					_copies(g, sym_h, sym_v) + _copies(o, sym_h, sym_v), singles, total, n, sym_h, sym_v,
+					opts, weights, under)
+		var own := _copies(g, sym_h, sym_v)
+		# Nối với ảnh lật của chính nó: hai bản của nhóm thành một khối, nên khối 1 ô tính là hai khối 1 ô gộp lại.
+		var self_singles := 2 if g_single else 0
+		if self_x and not bool(g[1]):
+			_merge_option([gi, -1, true, g[2]], g[3], none, own, self_singles, total, n, sym_h, sym_v, opts,
+				weights, under)
+		if self_y and not bool(g[2]):
+			_merge_option([gi, -1, g[1], true], g[3], none, own, self_singles, total, n, sym_h, sym_v, opts,
+				weights, under)
+	return [opts, weights, under]
+
+
+## Ghi một cách gộp hai nhóm (đếm ô `a`, `b` theo `_sum4`; b toàn 0: nối với ảnh lật) vào `opts` kèm trọng số
+## `_merge_weight` nếu khối đầy đủ không quá Config.BLOCK_MAX_CELLS ô và không làm số khối xuống dưới `n`; xuống dưới
+## `n` thì ghi vào `under`. `opt`: [gi, gj, nối dọc, nối ngang]; `before`: số khối trước gộp; `singles`: số khối 1 ô được
+## gộp (0-2).
+static func _merge_option(opt: Array, a: Array, b: Array, before: int, singles: int, total: int, n: int,
+		sym_h: bool, sym_v: bool, opts: Array, weights: Array[float], under: Array) -> void:
+	var cut := before - _copies([null, opt[2], opt[3]], sym_h, sym_v)
 	if cut <= 0:
+		return
+	var size := _full_size(_sum4(a, b), opt[2], opt[3])
+	if size > Config.BLOCK_MAX_CELLS:
 		return
 	var full: Array = opt + [cut]
 	if total - cut >= n:
 		opts.append(full)
-		weights.append(_merge_weight(_expand(cells, opt[2], opt[3], w, h).size()))
+		weights.append(_merge_weight(size, singles))
 	else:
 		under.append(full)
+
+
+## Số ô của khối đầy đủ khi nối qua trục dọc (`joined_h`) và trục ngang (`joined_v`), từ số ô của nhóm trong phần cơ sở
+## chia theo vị trí (`kinds`): [ngoài cả hai trục lẻ, trên cột giữa lẻ, trên hàng giữa lẻ, trên cả hai]. Ô nằm đúng trên
+## trục lẻ là ảnh của chính nó. Bằng `_expand(...).size()` nhưng không dựng mảng.
+static func _full_size(kinds: Array, joined_h: bool, joined_v: bool) -> int:
+	var mh := 2 if joined_h else 1
+	var mv := 2 if joined_v else 1
+	return int(kinds[0]) * mh * mv + int(kinds[1]) * mv + int(kinds[2]) * mh + int(kinds[3])
+
+
+static func _sum4(a: Array, b: Array) -> Array:
+	return [int(a[0]) + int(b[0]), int(a[1]) + int(b[1]), int(a[2]) + int(b[2]), int(a[3]) + int(b[3])]
+
+
+## Cạnh giữa hai ô kề nhau `a`, `b` (hoặc một ô và ảnh lật của nó) có được gộp theo kiểu cắt `ctx.style` không:
+## "rows" chỉ cạnh ngang, "cols" chỉ cạnh dọc, "rings" hai ô cùng vòng (`_layers`), "weave" cùng ô đan và đúng hướng
+## của ô đó, "bricks" cạnh ngang trừ chỗ nối gạch, "template" hai ô cùng vùng vẽ. "sym" gộp tự do. Mọi kiểu đều đối xứng
+## qua trục của hình nên cách cắt vẫn đối xứng.
+static func _edge_ok(a: Vector2i, b: Vector2i, ctx: Dictionary) -> bool:
+	match str(ctx["style"]):
+		"rows":
+			return a.y == b.y
+		"cols":
+			return a.x == b.x
+		"rings":
+			return int(ctx["layer"].get(a, -1)) == int(ctx["layer"].get(b, -2))
+		"template":
+			return str(ctx["regions"].get(a, "")) == str(ctx["regions"].get(b, "?"))
+		"weave":
+			var xa := _axis(a.x, ctx["w"], ctx["sym_h"])
+			var xb := _axis(b.x, ctx["w"], ctx["sym_h"])
+			var ya := _axis(a.y, ctx["h"], ctx["sym_v"])
+			var yb := _axis(b.y, ctx["h"], ctx["sym_v"])
+			@warning_ignore("integer_division")
+			var tile := Vector2i(xa.y / WEAVE_TILE, ya.y / WEAVE_TILE)
+			@warning_ignore("integer_division")
+			if xa.x != xb.x or ya.x != yb.x or tile != Vector2i(xb.y / WEAVE_TILE, yb.y / WEAVE_TILE):
+				return false
+			return a.y == b.y if (tile.x + tile.y) % 2 == 0 else a.x == b.x
+		"bricks":
+			if a.y != b.y:
+				return false
+			@warning_ignore("integer_division")
+			var shift := (_axis(a.y, ctx["h"], ctx["sym_v"]).y % 2) * (BRICK_LEN / 2)
+			var xa := _axis(a.x, ctx["w"], ctx["sym_h"])
+			var xb := _axis(b.x, ctx["w"], ctx["sym_h"])
+			if xa.x != xb.x:
+				return shift != 0  # qua trục: hàng so le thì có viên gạch vắt qua trục
+			return (maxi(xa.y, xb.y) + shift) % BRICK_LEN != 0
+	return true
+
+
+## Toạ độ `v` (cột hoặc hàng) tính từ trục đối xứng ra ngoài: (phía, khoảng cách tới trục). Hai ô đối xứng qua trục cùng
+## khoảng cách, khác phía; không đối xứng thì phía 0, khoảng cách là chính `v`.
+static func _axis(v: int, size: int, sym: bool) -> Vector2i:
+	if not sym:
+		return Vector2i(0, v)
+	@warning_ignore("integer_division")
+	var half := size / 2
+	if size % 2 == 0:
+		return Vector2i(0, half - 1 - v) if v < half else Vector2i(1, v - half)
+	return Vector2i(signi(v - half) + 1, absi(v - half))
+
+
+## Vòng của mỗi ô trong hình: 0 nếu một trong 8 ô quanh nó nằm ngoài hình, rồi tăng dần vào trong.
+static func _layers(area: Array[Vector2i]) -> Dictionary:
+	var inside := {}
+	for c in area:
+		inside[c] = true
+	var layer := {}
+	var queue: Array[Vector2i] = []
+	for c in area:
+		for dy in range(-1, 2):
+			for dx in range(-1, 2):
+				if not layer.has(c) and not inside.has(c + Vector2i(dx, dy)):
+					layer[c] = 0
+					queue.append(c)
+	var head := 0
+	while head < queue.size():
+		var c := queue[head]
+		head += 1
+		for dy in range(-1, 2):
+			for dx in range(-1, 2):
+				var nb := c + Vector2i(dx, dy)
+				if inside.has(nb) and not layer.has(nb):
+					layer[nb] = int(layer[c]) + 1
+					queue.append(nb)
+	return layer
 
 
 static func _flipped(cells: Array[Vector2i], w: int, h: int, horizontal: bool) -> Array[Vector2i]:
@@ -654,10 +1040,13 @@ static func _flipped(cells: Array[Vector2i], w: int, h: int, horizontal: bool) -
 
 
 ## Mô phỏng ván tiến. Trả {order: Array[int], color: Array[int] (theo chỉ số nhóm),
-## clear: Array (mỗi nhóm: các màu thoát được lúc nó bị chọn)}; {} nếu kẹt.
+## clear: Array (mỗi nhóm: các màu thoát được lúc nó bị chọn), depth: chuỗi chặn sâu nhất}; {} nếu kẹt.
 ## `power`: số mũ của trọng số (1 + số khối chắn đường lúc đầu); càng lớn càng nhiều khối phải chờ lúc đầu.
+## Độ sâu của một khối là lượt nó rời bàn khi mỗi lượt cho mọi khối đang thông đường đi: 1 nếu đường ra không có khối
+## nào lúc đầu, không thì 1 + độ sâu lớn nhất của các khối chắn đường đó (chúng đã đi trước). `aim` > 0: lái chuỗi
+## sâu nhất về `aim` (DEPTH_PUSH, DEPTH_FREE khi còn nông, DEPTH_HOLD khi đã đủ sâu).
 static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allowed: Array[int],
-		power: int, rng: RandomNumberGenerator) -> Dictionary:
+		power: int, rng: RandomNumberGenerator, aim: int = 0) -> Dictionary:
 	var n := groups.size()
 	var grid := PackedInt32Array()
 	grid.resize(w * h)
@@ -674,11 +1063,13 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 	dead.resize(n * 4)
 	var blockers := PackedInt32Array()
 	blockers.resize(n * 4)
+	var hit: Array = []  # hit[i*4+col]: các khối nằm trên đường ra lúc đầu
 	for i in n:
 		for col in 4:
 			var p := PackedInt32Array()
 			var d: Vector2i = dirs[col]
 			var seen := {}
+			var on_way := {}
 			for c in groups[i]:
 				var q: Vector2i = c + d
 				while q.x >= 0 and q.y >= 0 and q.x < w and q.y < h:
@@ -690,8 +1081,10 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 							dead[i * 4 + col] = 1
 						elif grid[gi] >= 0:
 							blockers[i * 4 + col] += 1
+							on_way[grid[gi]] = true
 					q += d
 			path.append(p)
+			hit.append(PackedInt32Array(on_way.keys()))
 	var alive := PackedByteArray()
 	alive.resize(n)
 	alive.fill(1)
@@ -701,10 +1094,14 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 	color.resize(n)
 	var clear: Array = []
 	clear.resize(n)
+	var depth := PackedInt32Array()
+	depth.resize(n)
+	var deepest := 0
 	for step in n:
-		var cand: Array = []  # [i, col]
+		var cand: Array = []  # [i, col, độ sâu]
 		var weights: Array[float] = []
 		var per_block := {}
+		var behind := deepest < aim
 		for i in n:
 			if alive[i] == 0:
 				continue
@@ -723,7 +1120,15 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 				for _p in power - 1:
 					wt *= base
 				wt *= 3.0 / (3.0 + float(used[col]))
-				cand.append([i, col])
+				var dp := 1
+				for j in hit[i * 4 + col]:
+					dp = maxi(dp, depth[j] + 1)
+				if aim > 0:
+					if dp > deepest and deepest >= aim:
+						wt *= DEPTH_HOLD
+					elif behind:
+						wt *= pow(DEPTH_PUSH, dp - deepest) if dp > 1 else DEPTH_FREE
+				cand.append([i, col, dp])
 				weights.append(wt)
 				if not per_block.has(i):
 					per_block[i] = []
@@ -736,11 +1141,13 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 		order.append(bi)
 		color[bi] = bc
 		clear[bi] = per_block[bi]
+		depth[bi] = pick[2]
+		deepest = maxi(deepest, pick[2])
 		used[bc] += 1
 		alive[bi] = 0
 		for c in groups[bi]:
 			grid[c.y * w + c.x] = -1
-	return {"order": order, "color": color, "clear": clear}
+	return {"order": order, "color": color, "clear": clear, "depth": deepest}
 
 
 ## Rải cơ chế lên các khối. Trả {ice, chain (idx -> idx khoá), layer (idx -> màu trong), fog, pulse}.
@@ -761,6 +1168,11 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 		if i != first:
 			pool.append(i)
 	_shuffle(pool, rng)
+	# Level dạy xích: khối thứ hai trong thứ tự giải bị xích vào khối thứ nhất, nên chìa thoát được ngay và bỏ chìa thì
+	# khối bị xích đi được (`_teach_ok`).
+	if teach_mech(id) == "chain" and order.size() > 1:
+		pool.erase(order[1])
+		pool.push_front(order[1])
 	if feats["ice"]:
 		var cnt := maxi(1, roundi(n * _ramp(id, int(Config.UNLOCK["ice"]), 0.10, 0.28, 60)))
 		for i in pool:
@@ -819,7 +1231,7 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 		var cols: Array = sides.keys()
 		cols.sort()
 		_shuffle(cols, rng)
-		var want := 1 if id < GATE2_FROM or cols.size() < 2 else 2
+		var want := 2 if id >= GATE2_FROM and cols.size() >= 2 and n <= GATE2_MAX_BLOCKS else 1
 		for k in mini(want, cols.size()):
 			var col: int = cols[k]
 			var open := rng.randf() < 0.5

@@ -326,6 +326,7 @@ func test_game_lost_keeps_no_pieces(t: T) -> void:
 func test_game_challenge_has_no_specials(t: T) -> void:
 	var g := _game(60)
 	Config.demo_override = 0
+	Config.FEATURES.challenge = true
 	var a: Dictionary = g.start_challenge()
 	if not a.is_empty():
 		t.eq((a.specials as Array).size(), 0, "Daily Challenge không có khối đặc biệt")

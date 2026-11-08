@@ -21,6 +21,8 @@ const RoadTrip := preload("res://src/meta/road_trip.gd")
 const RoadTripMap := preload("res://src/ui/road_trip_map.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 const LevelScene := preload("res://scenes/level.tscn")
+## Màn chuyển cảnh nắp hộp quà khi vào level và về bản đồ (main.gd curtain_swap).
+const GiftCurtain := preload("res://src/ui/gift_curtain.gd")
 
 const DESIGN_W := 886.0
 const DESIGN_H := 1800.0
@@ -174,8 +176,7 @@ func refresh() -> void:
 	chip.visible = not done and p.y > 0
 	if chip.visible:
 		chip_label.text = "%d/%d" % [p.x, p.y]
-		var bi := maxi(RoadTrip.box_index(int(_view.next_box)), 0)
-		chip_icon.texture = ThemeKit.icon(str(RoadTripMap.BOX_ICONS[bi % RoadTripMap.BOX_ICONS.size()]))
+		chip_icon.texture = RoadTripMap.box_tex(RoadTrip.box_index(int(_view.next_box)))
 	_layout()
 
 
@@ -295,7 +296,7 @@ func _on_play() -> void:
 	_from_level = int(v.level)
 	var h := _host()
 	if h != null and h.has_method("curtain_swap"):
-		h.call("curtain_swap", _open_level)
+		h.call("curtain_swap", _open_level, GiftCurtain)
 	else:
 		_open_level()
 
@@ -325,7 +326,7 @@ func _open_level() -> void:
 func _on_level_closed(_result: Variant) -> void:
 	var h := _host()
 	if h != null and h.has_method("curtain_swap"):
-		h.call("curtain_swap", _close_level)
+		h.call("curtain_swap", _close_level, GiftCurtain)
 	else:
 		_close_level()
 

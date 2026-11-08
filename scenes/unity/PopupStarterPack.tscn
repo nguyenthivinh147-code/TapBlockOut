@@ -17,26 +17,6 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pualc"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_db3b5"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w8upn"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lvdsg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yk70m"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ymck6"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1j1da"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6f6sy"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8t43d"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a8h2r"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1d30u"]
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lenqp"]
 shader = ExtResource("6_76cdv")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -71,12 +51,6 @@ shader_parameter/underlay_edge = 0.33516482812500004
 shader_parameter/underlay_offset = Vector2(0, 0)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wjcyp"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b1ri6"]
 shader = ExtResource("6_76cdv")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -89,34 +63,6 @@ shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.1445)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i03ts"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cc2el"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q68ld"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xvaxg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8qx3k"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3xucf"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hwdiv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_up73v"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oanqv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pbu5j"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1dybp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rtl1i"]
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
 shader = ExtResource("6_76cdv")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -128,12 +74,6 @@ shader_parameter/underlay_on = false
 shader_parameter/underlay_edge = 0.29107142087500004
 shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
 shader_parameter/px_range = 14.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pjvf6"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
 
 [sub_resource type="FontVariation" id="FontVariation_2c3ba"]
 base_font = ExtResource("7_jm10c")
@@ -151,20 +91,8 @@ shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dsyy4"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
 [sub_resource type="FontVariation" id="FontVariation_2d730"]
 base_font = ExtResource("7_jm10c")
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ijt5c"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
 shader = ExtResource("6_76cdv")
@@ -178,58 +106,6 @@ shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_srwst"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_anjsr"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qo2df"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5u6bl"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wyx7f"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jlei4"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wojt8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ukbfe"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p465k"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_umh0b"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r3g6v"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c6ndv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lgbcp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_783o6"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ookn8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nfax5"]
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
 shader = ExtResource("6_76cdv")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -241,24 +117,6 @@ shader_parameter/underlay_on = true
 shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1g1uh"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dbu4d"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bymko"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
 
 [node name="Canvas" type="Control" unique_id=239632430]
 layout_mode = 3
@@ -277,17 +135,6 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"canvas": {
-"order": 0.0,
-"override_sort": true
-},
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
-},
 "cs": [{
 "OnDisplayLayout": [],
 "OnHideLayer": [],
@@ -335,8 +182,7 @@ metadata/u = {
 }
 }],
 "id": "7219197735921211012",
-"n": "PopupStarterPack",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "PopupStarterPack"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -353,57 +199,32 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_pualc")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_db3b5")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_w8upn")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_lvdsg")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_yk70m")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_ymck6")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_1j1da")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_6f6sy")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_8t43d")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_a8h2r")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_1d30u")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_pualc")
 flat = true
 script = ExtResource("1_v6i0f")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 transition = 0
 metadata/u = {
-"a": true,
 "btn": {
-"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
-"dur": 0.1,
 "inter": true,
-"mult": 1.0,
-"sprites": {
-"disabled": null,
-"pressed": null
-},
-"target": "3406546784345224705",
-"tr": 0.0
-},
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
+"target": "3406546784345224705"
 },
 "id": "3406546784345224705",
 "img": {
-"c": "000000bf",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": null,
-"t": 0.0
+"sp": null
 },
-"n": "Bg",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Bg"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -435,10 +256,8 @@ offset_bottom = 605.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "5505950304007009561",
-"n": "Panel",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 802.0, 1210.0, 0.5, 0.5]
+"n": "Panel"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -466,24 +285,13 @@ region = Rect2(0, 0, 237, 255.73953)
 border_scale = 3.628691983122363
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "3340745314399686738",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "light1",
-"t": 0.0
+"sp": "light1"
 },
-"n": "Bg (2)",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 433.1, 824.0, 1020.0, 0.5, 0.5]
+"n": "Bg (2)"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -504,24 +312,13 @@ tex = ExtResource("4_srl7n")
 region = Rect2(0, 0, 512, 760)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "8264433027405069733",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Popup_StarterPack",
-"t": 0.0
+"sp": "Popup_StarterPack"
 },
-"n": "Bg (1)",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Bg (1)"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -548,24 +345,13 @@ border_scale = 1.0234375
 preserve_aspect = true
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "8513809667308969529",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": true,
 "ppu": 1.0,
 "rt": true,
-"sp": "Popup_StarterPack_Title",
-"t": 0.0
+"sp": "Popup_StarterPack_Title"
 },
-"n": "Image",
-"r": [0.5, 1.0, 0.5, 1.0, 8.0, 20.0, 874.98, 533.2, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 1),
@@ -601,32 +387,13 @@ horizontal_alignment = 1
 autowrap_mode = 3
 uppercase = true
 metadata/u = {
-"a": true,
 "cs": [{
 "name": "CurvedTextMeshPro"
 }],
 "id": "3704983106524595560",
 "n": "txtHeader BG2",
-"r": [0.5, 0.5, 0.5, 0.5, -5.0, 2.0, 548.2466, 244.1369, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 120.0,
-"h": 2.0,
-"ls": -41.05,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - PackTextBG2",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "STARTER PACK",
-"st": 16.0,
-"v": 256.0,
-"w": true,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -638,22 +405,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 120.0,
-"h": 2.0,
 "ls": -41.05,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - PackTextBG2",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "STARTER PACK",
 "st": 16.0,
-"v": 256.0,
-"w": true,
 "ws": 0.0
 }
 
@@ -670,7 +426,7 @@ offset_right = 269.1233
 offset_bottom = 123.53406
 grow_horizontal = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_wjcyp")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -64
 theme_override_fonts/font = SubResource("FontVariation_51gwy")
 theme_override_font_sizes/font_size = 120
@@ -683,32 +439,13 @@ horizontal_alignment = 1
 autowrap_mode = 3
 uppercase = true
 metadata/u = {
-"a": true,
 "cs": [{
 "name": "CurvedTextMeshPro"
 }],
 "id": "7834444198198324139",
 "n": "txtHeader BG1",
-"r": [0.5, 0.5, 0.5, 0.5, -5.0, 5.2672, 548.2466, 257.6025, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 120.0,
-"h": 2.0,
-"ls": -41.05,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - PackTextBG",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "STARTER PACK",
-"st": 16.0,
-"v": 256.0,
-"w": true,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -720,22 +457,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 120.0,
-"h": 2.0,
 "ls": -41.05,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - PackTextBG",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "STARTER PACK",
 "st": 16.0,
-"v": 256.0,
-"w": true,
 "ws": 0.0
 }
 
@@ -752,7 +478,7 @@ offset_right = 269.1233
 offset_bottom = 101.06845
 grow_horizontal = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_i03ts")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -64
 theme_override_fonts/font = SubResource("FontVariation_51gwy")
 theme_override_font_sizes/font_size = 120
@@ -765,32 +491,13 @@ horizontal_alignment = 1
 autowrap_mode = 3
 uppercase = true
 metadata/u = {
-"a": true,
 "cs": [{
 "name": "CurvedTextMeshPro"
 }],
 "id": "2809704552690345925",
 "n": "txtHeader",
-"r": [0.5, 0.5, 0.5, 0.5, -5.0, 21.0, 548.2466, 244.1369, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 120.0,
-"h": 2.0,
-"ls": -41.05,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - StarterPack",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "STARTER PACK",
-"st": 16.0,
-"v": 256.0,
-"w": true,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -802,22 +509,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 120.0,
-"h": 2.0,
 "ls": -41.05,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - StarterPack",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "STARTER PACK",
 "st": 16.0,
-"v": 256.0,
-"w": true,
 "ws": 0.0
 }
 
@@ -830,55 +526,34 @@ offset_right = -12.0
 offset_bottom = 50.0
 pivot_offset_ratio = Vector2(1, 0)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_cc2el")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_q68ld")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_xvaxg")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_8qx3k")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_3xucf")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_hwdiv")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_up73v")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_oanqv")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_pbu5j")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_1dybp")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_rtl1i")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_pualc")
 flat = true
 script = ExtResource("1_v6i0f")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 sound = true
 vibrate = true
 metadata/u = {
-"a": true,
 "btn": {
-"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
-"dur": 0.1,
 "inter": true,
-"mult": 1.0,
-"sprites": {
-"disabled": null,
-"pressed": null
-},
-"target": "4811059741127286920",
-"tr": 1.0
+"target": "4811059741127286920"
 },
 "id": "4811059741127286920",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_9",
-"t": 0.0
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_9"
 },
-"n": "btnTurnOff",
-"r": [1.0, 1.0, 1.0, 1.0, -12.0, 0.0, 50.0, 50.0, 1.0, 1.0],
-"snd": true,
-"vib": true
+"n": "btnTurnOff"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -907,10 +582,8 @@ offset_bottom = 65.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "960523223670233931",
-"n": "Top",
-"r": [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 130.0, 0.5, 0.5]
+"n": "Top"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -927,10 +600,8 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "5267989572481793134",
-"n": "Content",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Content"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -953,10 +624,8 @@ offset_bottom = 571.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "4487537127718328958",
-"n": "Preview",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, -80.0, 704.0, 982.0, 0.5, 0.5]
+"n": "Preview"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -977,10 +646,8 @@ offset_bottom = 31.04
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "6827516525641077591",
-"n": "Platform",
-"r": [0.5, 1.0, 0.5, 1.0, 0.0, -31.04, 630.0, 224.0, 0.5, 0.0]
+"n": "Platform"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 1),
@@ -1009,7 +676,6 @@ border = Vector4(58, 35, 58, 37)
 kind = 1
 fill_method = 4
 metadata/u = {
-"a": true,
 "cs": [{
 "canvasGroup": {
 "node": "7219197735921211012"
@@ -1022,21 +688,11 @@ metadata/u = {
 }],
 "id": "4625296428681908418",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_21",
-"t": 1.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_21"
 },
-"n": "Time",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 238.0, 68.0, 0.5, 0.5]
+"n": "Time"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1061,24 +717,13 @@ tex = ExtResource("9_dueeq")
 region = Rect2(1828, 16, 220, 220)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "2560461129848747563",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7"
 },
-"n": "Icon clock",
-"r": [0.0, 0.5, 0.0, 0.5, 28.9, 7.5, 83.0, 83.0, 0.5, 0.5]
+"n": "Icon clock"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 0.5),
@@ -1102,7 +747,7 @@ offset_bottom = 26.6
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_pjvf6")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -5
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 39
@@ -1115,30 +760,10 @@ text = "19:30:00
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
-"a": true,
 "id": "6354292504849692510",
 "n": "Text (TMP)",
-"r": [0.5, 0.5, 0.5, 0.5, 28.8, 0.0, 154.6, 53.2, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 50.0],
-"c": "ec304fff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 38.75,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "19:30:00
-",
-"st": 0.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -1150,23 +775,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 50.0],
-"c": "ec304fff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 38.75,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "19:30:00
-",
 "st": 0.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -1183,10 +796,8 @@ offset_bottom = -183.3
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "1202159839655760811",
-"n": "Bottom",
-"r": [0.5, 0.0, 0.5, 0.0, 0.0, 183.3, 649.0, 179.0, 0.5, 0.0]
+"n": "Bottom"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0),
@@ -1209,24 +820,13 @@ border = Vector4(40, 40, 40, 40)
 kind = 1
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "2447047123480709366",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_7",
-"t": 1.0
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_7"
 },
-"n": "BG",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "BG"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -1252,24 +852,13 @@ tex = ExtResource("9_dueeq")
 region = Rect2(1100, 912, 96, 96)
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "8490178610227789038",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_78",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_78"
 },
-"n": "tag_sale",
-"r": [1.0, 1.0, 1.0, 1.0, -18.71, -54.12, 124.0, 120.0, 0.5, 0.5]
+"n": "tag_sale"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -1294,7 +883,7 @@ grow_horizontal = 2
 grow_vertical = 2
 rotation = -0.34906584
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_dsyy4")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -3
 theme_override_fonts/font = SubResource("FontVariation_2d730")
 theme_override_font_sizes/font_size = 24
@@ -1308,31 +897,11 @@ vertical_alignment = 1
 autowrap_mode = 3
 uppercase = true
 metadata/u = {
-"a": true,
 "id": "7295251134990445621",
 "n": "off",
-"r": [0.5, 0.5, 0.5, 0.5, 3.6, 0.9, 83.0, 66.8, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 35.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 23.85,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Red",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "BEST VALUE",
-"st": 16.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
-},
-"z": 20.0
+"rt": false
+}
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1343,22 +912,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 35.0],
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 23.85,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Red",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "BEST VALUE",
 "st": 16.0,
-"v": 512.0,
-"w": true,
 "ws": 0.0
 }
 
@@ -1378,7 +936,7 @@ grow_horizontal = 2
 grow_vertical = 2
 rotation = -0.34906584
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_ijt5c")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -5
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 44
@@ -1391,31 +949,11 @@ horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true
 metadata/u = {
-"a": false,
 "id": "7451070946642162147",
 "n": "%",
-"r": [0.5, 0.5, 0.5, 0.5, -2.5, 13.7, 90.9945, 50.0, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffe013ff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 44.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Red",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "60%",
-"st": 16.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
-},
-"z": 20.0
+"rt": false
+}
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1426,22 +964,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffe013ff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 44.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Red",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "60%",
 "st": 16.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -1452,10 +979,8 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "9199938624934076444",
-"n": "Group",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Group"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -1483,21 +1008,11 @@ region = Rect2(0, 0, 256, 256)
 border_scale = 2.0
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "5441299596495518446",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Gold3",
-"t": 0.0
+"sp": "Gold3"
 },
 "le": {
 "flex": [-1.0, -1.0],
@@ -1505,8 +1020,7 @@ metadata/u = {
 "min": [-1.0, -1.0],
 "pref": [-1.0, -1.0]
 },
-"n": "Image",
-"r": [0.5, 0.5, 0.5, 0.5, -231.45, 25.5, 120.0, 120.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1530,7 +1044,7 @@ offset_bottom = 42.1
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_srwst")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -5
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 45
@@ -1542,29 +1056,10 @@ text = "1,500"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
-"a": true,
 "id": "1113214601140912076",
 "n": "Text (TMP)",
-"r": [0.5, 0.0, 0.5, 0.0, 0.0, -17.1, 181.0, 50.0, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 45.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - DarkBlue",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "1,500",
-"st": 0.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -1576,22 +1071,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 45.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - DarkBlue",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "1,500",
 "st": 0.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -1613,24 +1097,13 @@ region = Rect2(542, 663, 72, 72)
 color = Color(1, 1, 1, 0)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "8232824386618282276",
 "img": {
-"c": "ffffff00",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_37",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_37"
 },
-"n": "Image (1)",
-"r": [0.5, 0.5, 0.5, 0.5, 27.4, 20.0, 85.0, 85.0, 0.5, 0.5]
+"n": "Image (1)"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1658,28 +1131,17 @@ region = Rect2(0, 0, 256, 256)
 border_scale = 2.0
 fill_method = 4
 metadata/u = {
-"a": true,
 "anim": {
 "controller": "ImgBoosterMagnet",
 "on": true
 },
 "id": "1892605600333396667",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "ic_booster1",
-"t": 0.0
+"sp": "ic_booster1"
 },
-"n": "ImgBoosterMagnet",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+"n": "ImgBoosterMagnet"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1703,7 +1165,7 @@ offset_bottom = 50.2
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_anjsr")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -5
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 45
@@ -1716,30 +1178,10 @@ text = "x2
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
-"a": true,
 "id": "1503805984541699261",
 "n": "Text (TMP)",
-"r": [0.5, 0.0, 0.5, 0.0, 0.0, -25.2, 121.0, 50.0, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 45.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - DarkBlue",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "x2
-",
-"st": 0.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -1751,23 +1193,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 45.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - DarkBlue",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "x2
-",
 "st": 0.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -1789,24 +1219,13 @@ region = Rect2(614, 663, 72, 72)
 color = Color(1, 1, 1, 0)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "5926153026979915920",
 "img": {
-"c": "ffffff00",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_38",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_38"
 },
-"n": "Image (2)",
-"r": [0.5, 0.5, 0.5, 0.5, 151.9, 20.0, 85.0, 85.0, 0.5, 0.5]
+"n": "Image (2)"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1834,28 +1253,17 @@ region = Rect2(0, 0, 256, 256)
 border_scale = 4.0
 fill_method = 4
 metadata/u = {
-"a": true,
 "anim": {
 "controller": "ImgBoosterStorage",
 "on": true
 },
 "id": "6139975719160522543",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "ic_booster2_1",
-"t": 0.0
+"sp": "ic_booster2_1"
 },
-"n": "ImgBoosterStorage",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+"n": "ImgBoosterStorage"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1879,7 +1287,7 @@ offset_bottom = 45.6
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_qo2df")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -5
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 45
@@ -1891,29 +1299,10 @@ text = "x1"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
-"a": true,
 "id": "183792717975703657",
 "n": "Text (TMP)",
-"r": [0.5, 0.0, 0.5, 0.0, 0.0, -20.6, 121.0, 50.0, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 45.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - DarkBlue",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "x1",
-"st": 0.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -1925,22 +1314,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 45.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - DarkBlue",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "x1",
 "st": 0.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -1963,24 +1341,13 @@ border_scale = 2.0
 color = Color(1, 1, 1, 0)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "5086703388919739973",
 "img": {
-"c": "ffffff00",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "ic_booster3_1",
-"t": 0.0
+"sp": "ic_booster3_1"
 },
-"n": "Image (4)",
-"r": [0.5, 0.5, 0.5, 0.5, 266.7, 20.0, 85.0, 85.0, 0.5, 0.5]
+"n": "Image (4)"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -2008,28 +1375,17 @@ region = Rect2(0, 0, 256, 256)
 border_scale = 2.0
 fill_method = 4
 metadata/u = {
-"a": true,
 "anim": {
 "controller": "ImgBoosterCapacity",
 "on": true
 },
 "id": "5440364791988435311",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "ic_booster3_1",
-"t": 0.0
+"sp": "ic_booster3_1"
 },
-"n": "ImgBoosterCapacity",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+"n": "ImgBoosterCapacity"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -2053,7 +1409,7 @@ offset_bottom = 45.6
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_5u6bl")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -5
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 45
@@ -2065,29 +1421,10 @@ text = "x1"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
-"a": true,
 "id": "3051571358238539465",
 "n": "Text (TMP)",
-"r": [0.5, 0.0, 0.5, 0.0, 0.0, -20.6, 121.0, 50.0, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 45.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - DarkBlue",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "x1",
-"st": 0.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -2099,22 +1436,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 45.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - DarkBlue",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "x1",
 "st": 0.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -2136,24 +1462,13 @@ region = Rect2(0, 259, 256, 256)
 color = Color(1, 1, 1, 0)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "2081747058421005208",
 "img": {
-"c": "ffffff00",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16"
 },
-"n": "Image (3)",
-"r": [0.5, 0.5, 0.5, 0.5, -100.2, 20.0, 85.0, 85.0, 0.5, 0.5]
+"n": "Image (3)"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -2180,28 +1495,17 @@ tex = ExtResource("9_dueeq")
 region = Rect2(0, 259, 256, 256)
 fill_method = 4
 metadata/u = {
-"a": true,
 "anim": {
 "controller": "ImgBoosterMagnet 1",
 "on": true
 },
 "id": "8286583912527253163",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_16"
 },
-"n": "ImgVoHanTim",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+"n": "ImgVoHanTim"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -2225,7 +1529,7 @@ offset_bottom = 52.9
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_wyx7f")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -5
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 45
@@ -2237,29 +1541,10 @@ text = "30m"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
-"a": true,
 "id": "4096591986636687567",
 "n": "Text (TMP)",
-"r": [0.5, 0.0, 0.5, 0.0, 2.0, -27.9, 121.0, 50.0, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 45.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - DarkBlue",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "30m",
-"st": 0.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -2271,22 +1556,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 45.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - DarkBlue",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "30m",
 "st": 0.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -2309,24 +1583,13 @@ region = Rect2(976, 969, 48, 4)
 kind = 2
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "4100751223865270323",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_5",
-"t": 2.0
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_5"
 },
-"n": "Line",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 195.8, 336.58, 4.0, 0.5, 0.5]
+"n": "Line"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -2336,7 +1599,7 @@ metadata/u_rect = {
 "size": Vector2(336.58, 4)
 }
 
-[node name="@Control@31" type="Control" parent="PopupStarterPack/Panel/Content/Preview/Bottom/Group" unique_id=1657802103]
+[node name="Control_31" type="Control" parent="PopupStarterPack/Panel/Content/Preview/Bottom/Group" unique_id=1657802103]
 visible = false
 anchors_preset = 0
 anchor_left = 0.5
@@ -2355,24 +1618,13 @@ region = Rect2(0, 0, 237, 255.73953)
 border_scale = 3.628691983122363
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "1432134797977131624",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "light1",
-"t": 0.0
+"sp": "light1"
 },
-"n": "Image",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 332.6, 400.0, 400.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -2382,7 +1634,7 @@ metadata/u_rect = {
 "size": Vector2(400, 400)
 }
 
-[node name="Image (5)" type="Control" parent="PopupStarterPack/Panel/Content/Preview/Bottom/Group/@Control@31" unique_id=115980904]
+[node name="Image (5)" type="Control" parent="PopupStarterPack/Panel/Content/Preview/Bottom/Group/Control_31" unique_id=115980904]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -2400,24 +1652,13 @@ region = Rect2(0, 0, 256, 256)
 border_scale = 2.0
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "6240282644672429381",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "StarterPack",
-"t": 0.0
+"sp": "StarterPack"
 },
-"n": "Image (5)",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 300.0, 300.0, 0.5, 0.5]
+"n": "Image (5)"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -2440,10 +1681,8 @@ offset_bottom = -50.5
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "1293563584350354942",
-"n": "GameObject",
-"r": [0.5, 0.0, 0.5, 0.0, 0.0, 119.0, 606.6, 137.0, 0.5, 0.5]
+"n": "GameObject"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0),
@@ -2461,55 +1700,34 @@ offset_right = 463.3
 offset_bottom = 155.0
 pivot_offset_ratio = Vector2(0.5, 1)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_jlei4")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_wojt8")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_ukbfe")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_p465k")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_umh0b")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_r3g6v")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_c6ndv")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_lgbcp")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_783o6")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ookn8")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_nfax5")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_pualc")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_pualc")
 flat = true
 script = ExtResource("1_v6i0f")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 sound = true
 vibrate = true
 metadata/u = {
-"a": true,
 "btn": {
-"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
-"dur": 0.1,
 "inter": true,
-"mult": 1.0,
-"sprites": {
-"disabled": null,
-"pressed": null
-},
-"target": "1339644751495733574",
-"tr": 1.0
+"target": "1339644751495733574"
 },
 "id": "1339644751495733574",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": true,
 "ppu": 2.0,
 "rt": true,
-"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_8",
-"t": 0.0
+"sp": "UI_Shop_Popup_Atlas:UI_Shop_Popup_Atlas_8"
 },
-"n": "FreeBtn",
-"r": [0.0, 1.0, 0.0, 1.0, 303.3, -155.0, 320.0, 140.0, 0.5, 0.0],
-"snd": true,
-"vib": true
+"n": "FreeBtn"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 1),
@@ -2545,7 +1763,7 @@ offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_1g1uh")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -7
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 56
@@ -2558,29 +1776,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true
 metadata/u = {
-"a": true,
 "id": "7459961522659636903",
 "n": "Out",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 5.0, -40.0, -30.0, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 56.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 56.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Green",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": false,
-"s": "$4.99",
-"st": 16.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -2592,22 +1791,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 56.0],
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 56.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Green",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": false,
-"s": "$4.99",
 "st": 16.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -2628,25 +1816,13 @@ kind = 1
 color = Color(1, 0, 0, 1)
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "6983109948562808350",
 "img": {
-"c": "ff0000ff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": null,
-"t": 1.0
+"sp": null
 },
-"n": "DiscountLine",
-"r": [0.5, 1.0, 0.5, 1.0, 0.0, -33.0, 100.0, 5.0, 0.5, 0.5],
-"z": 9.98
+"n": "DiscountLine"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 1),
@@ -2671,25 +1847,13 @@ tex = ExtResource("9_dueeq")
 region = Rect2(1100, 912, 96, 96)
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "1333608583234027782",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_78",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_78"
 },
-"n": "SellBadge",
-"r": [0.0, 1.0, 0.0, 1.0, 82.0, -119.0, 230.0, 230.0, 0.5, 0.5],
-"z": 11.99
+"n": "SellBadge"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 1),
@@ -2714,7 +1878,7 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-theme_override_styles/normal = SubResource("StyleBoxEmpty_dbu4d")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -10
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 80
@@ -2727,29 +1891,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 metadata/u = {
-"a": true,
 "id": "4878374134016729254",
 "n": "SellBadgeTxt",
-"r": [0.5, 0.5, 0.5, 0.5, 4.0, 27.0, 170.64, 144.3245, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 80.0],
-"c": "ffffffff",
-"cs": 1.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 80.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Red",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "60%",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
+"rt": true
 }
 }
 metadata/u_rect = {
@@ -2761,22 +1906,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 80.0],
-"c": "ffffffff",
 "cs": 1.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 80.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Red",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "60%",
 "st": 0.0,
-"v": 512.0,
-"w": true,
 "ws": 0.0
 }
 
@@ -2795,7 +1929,7 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-theme_override_styles/normal = SubResource("StyleBoxEmpty_bymko")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2d8e4")
 theme_override_constants/line_spacing = -8
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 62
@@ -2808,29 +1942,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 metadata/u = {
-"a": true,
 "id": "1600306114037405904",
 "n": "OffTxt",
-"r": [0.5, 0.5, 0.5, 0.5, 3.0, -31.0, 118.88, 118.8616, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 62.0],
-"c": "ffffffff",
-"cs": 1.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 62.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Red",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "OFF",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
+"rt": true
 }
 }
 metadata/u_rect = {
@@ -2842,21 +1957,10 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 62.0],
-"c": "ffffffff",
 "cs": 1.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 62.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Red",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "OFF",
 "st": 0.0,
-"v": 512.0,
-"w": true,
 "ws": 0.0
 }

@@ -1,8 +1,8 @@
 extends Control
 ## Shop mini: chỉ gói gold, mở ở mọi level khi người chơi thiếu gold và bấm mua.
-## Không có prefab: khung PopupOkLayer cỡ 866x1110 + số gold (GoldQuantityTxt của Shop_GoldBigPack) + lưới gold
-## của ShopCashLayer (SmallPack#2, ô Shop_GoldPack) cho 6 gói. Khung, số gold, lưới, toast là node trong
-## scenes/shop_mini.tscn; các ô gold theo catalog dựng lúc chạy.
+## Không có prefab: khung PopupOkLayer cỡ 866x1110 (tiêu đề thu vào trong dải tím) + khung gold hiện có giống
+## GoldPanel của HubTop (không có dấu cộng) + lưới gold của ShopCashLayer (SmallPack#2, ô Shop_GoldPack) cho 6 gói.
+## Khung, khung gold, lưới, toast là node trong scenes/shop_mini.tscn; các ô gold theo catalog dựng lúc chạy.
 ## setup({source}); signal closed({bought: bool}). Đóng thì popup gọi quay lại.
 
 signal closed(result: Variant)
@@ -10,6 +10,7 @@ signal closed(result: Variant)
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Shop := preload("res://src/ui/shop.gd")
+const PopupKit := preload("res://src/ui/popup_kit.gd")
 
 const LAYER := "ShopCashLayer"
 const C := "GameObject/GameObject/Scroll View/Viewport/Content"
@@ -26,6 +27,8 @@ var ui: RefCounted = null
 var _busy: bool = false
 var _closed: bool = false
 var _toast_tween: Tween = null
+## Font size of %Coins saved in the scene; a long balance shrinks from it.
+var _coins_font: int = 0
 
 
 func setup(args: Dictionary) -> void:
@@ -42,9 +45,10 @@ func _build() -> void:
 		if (b as Control).name != "Bg":
 			close_button = b
 
-	# Gold balance: the big pack's amount text with its coin icon.
+	# Gold balance in a chip like HubTop's GoldPanel.
 	coins_label = %Coins
-	UnityUI.set_text(coins_label, Shop.fmt_n0(int(Game.s.coins)))
+	_coins_font = coins_label.get_theme_font_size("font_size")
+	_show_coins(int(Game.s.coins))
 
 	var grid: Control = %GoldGrid
 	var i := 0
@@ -119,7 +123,13 @@ func toast(text: String) -> void:
 
 func _on_coins_changed(v: int) -> void:
 	if is_instance_valid(coins_label):
-		UnityUI.set_text(coins_label, Shop.fmt_n0(v))
+		_show_coins(v)
+
+
+func _show_coins(v: int) -> void:
+	coins_label.text = Shop.fmt_n0(v)
+	coins_label.add_theme_font_size_override("font_size", _coins_font)
+	PopupKit.fit_font(coins_label, coins_label.size.x)
 
 
 func close() -> void:

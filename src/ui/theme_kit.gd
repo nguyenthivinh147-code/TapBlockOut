@@ -35,6 +35,10 @@ const BLOCK_RAMPS := {
 	"cream": {"deep": Color("C4B192"), "side": Color("DACCB2"), "face": Color("F4EEDF"), "stripe": Color("FFFFF8")},
 	"licorice": {"deep": Color("1B1521"), "side": Color("2A2332"), "face": Color("3D3546"), "stripe": Color("595066")},
 }
+## Hạ sắc độ khối cho bớt chói: block_color, block_ramp nhân saturation và value (HSV) của BLOCK_COLORS, BLOCK_RAMPS.
+## Hai bảng trên giữ màu gốc; khung cổng (CandyFrame) suy từ màu gốc rồi hạ theo BAR_SAT, BAR_VAL của nó.
+const BLOCK_SAT := 0.83
+const BLOCK_VAL := 0.96
 
 # Brand / Menu
 const BG := Color("3967BF")
@@ -176,16 +180,28 @@ const FIGMA_ICON := {
 }
 
 static var _icon_cache: Dictionary = {}
+static var _block_ramp_cache: Dictionary = {}
+
+
+## Màu khối sau khi hạ sắc độ (BLOCK_SAT, BLOCK_VAL).
+static func block_tone(c: Color) -> Color:
+	return Color.from_hsv(c.h, c.s * BLOCK_SAT, c.v * BLOCK_VAL, c.a)
 
 
 static func block_color(color_name: String) -> Color:
-	return BLOCK_COLORS.get(color_name, TEXT_DIM)
+	return block_tone(BLOCK_COLORS[color_name]) if BLOCK_COLORS.has(color_name) else TEXT_DIM
 
 
-## Bốn tông của khối theo tên màu; màu lạ thì suy từ `base`.
+## Bốn tông của khối theo tên màu, đã hạ sắc độ; màu lạ thì suy từ `base` (giữ nguyên).
 static func block_ramp(color_name: String, base: Color = TEXT_DIM) -> Dictionary:
 	if BLOCK_RAMPS.has(color_name):
-		return BLOCK_RAMPS[color_name]
+		if not _block_ramp_cache.has(color_name):
+			var toned := {}
+			for tone_name: String in BLOCK_RAMPS[color_name]:
+				toned[tone_name] = block_tone(BLOCK_RAMPS[color_name][tone_name])
+			toned.make_read_only()
+			_block_ramp_cache[color_name] = toned
+		return _block_ramp_cache[color_name]
 	return {"deep": base.darkened(0.38), "side": base.darkened(0.2), "face": base, "stripe": base.lightened(0.14)}
 
 

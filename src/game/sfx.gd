@@ -17,7 +17,7 @@ const SFX_DB := 0.0
 const MUSIC_DB := -8.0
 const MUSIC_FADE_DB := -30.0
 ## Rung nhẹ (ms) theo tên hiệu ứng; không có trong bảng thì không rung.
-const HAPTIC_MS := {"tap": 10, "blocked": 25, "bump": 25, "shatter": 15, "smash": 30, "life_lost": 30}
+const HAPTIC_MS := {"tap": 10, "blocked": 25, "bump": 25, "shatter": 15, "box_tear": 15, "smash": 30, "life_lost": 30}
 
 var sfx_on: bool = true
 var music_on: bool = true

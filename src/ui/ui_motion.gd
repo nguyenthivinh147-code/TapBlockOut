@@ -5,12 +5,17 @@ extends Node
 ## it neither moves nor tilts.
 ## TEAR: a tear (art_lose_tear, a child of that icon) wells up under the eye, runs down the cheek and fades, in time
 ## with SOB; it owns its host's modulate alpha.
+## FLOAT: an icon (the Shop's gold tiles) floats up from its place and settles back, slowly and without end.
+## WOBBLE: a badge (the Shop's -50% sale badges) rocks side to side and swells for a moment, then rests.
+## SHINE: a light band sweeps across the host's drawing (shine.gdshader, set as its material), then rests; a host that
+## is, or whose parent is, a disabled button (owned, busy, no videos left, no level to play) does not shine.
 ## The motion is added on top of the control's own position, scale and rotation: a value written by someone else
 ## (layout, a SimpleUIRotator spin, a press pulse) becomes the new base, so it never drifts. While the control is
 ## hidden the motion pauses with the base restored. UnityUI adds PULSE and AD_HOP by sprite (kind_for_sprite), screens
-## add the others themselves; never while baking.
+## add the others themselves; never while baking. attach's delay (s) offsets the first cycle, so neighbours that share
+## a kind move in a ripple instead of together.
 
-enum { PULSE, AD_HOP, SOB, TEAR }
+enum { PULSE, AD_HOP, SOB, TEAR, FLOAT, WOBBLE, SHINE }
 
 const SCRIPT_PATH := "res://src/ui/ui_motion.gd"
 const NODE_NAME := "Motion"
@@ -61,6 +66,20 @@ const TEAR_FADE := 1.55
 const TEAR_START := 0.3
 const TEAR_DROP := 2.2
 const TEAR_STRETCH := 0.18
+## FLOAT: lift 0 -> FLOAT_LIFT of the icon's height -> 0 over FLOAT_SEC (sine); it never sinks below its place.
+const FLOAT_LIFT := 0.05
+const FLOAT_SEC := 2.4
+## WOBBLE: one wobble every WOBBLE_PERIOD s. For WOBBLE_BURST s it tilts WOBBLE_SWINGS times (up to WOBBLE_DEG, dying
+## out) about its pivot and swells by up to WOBBLE_POP, then rests for the rest of the period.
+const WOBBLE_PERIOD := 2.6
+const WOBBLE_BURST := 0.6
+const WOBBLE_DEG := 12.0
+const WOBBLE_SWINGS := 2.5
+const WOBBLE_POP := 0.1
+## SHINE: one sweep every SHINE_PERIOD s, crossing the host in SHINE_SWEEP s (eased in and out).
+const SHINE_PERIOD := 3.2
+const SHINE_SWEEP := 0.65
+const SHINE_SHADER := "res://src/ui/shine.gdshader"
 
 var kind := PULSE
 var time := 0.0
@@ -74,15 +93,21 @@ var _set_pos := Vector2.INF
 var _set_scale := Vector2.INF
 var _set_rot := INF
 var _moved := false
+# SHINE: band and size last written to the material.
+var _shine_at := INF
+var _shine_box := Vector2.INF
 
 
-## Adds a motion of kind to c, unless c already has one; returns c's motion.
-static func attach(c: Control, k: int) -> Node:
+## Adds a motion of kind to c, unless c already has one; returns c's motion. delay >= 0: the first cycle starts that
+## many seconds from now (instead of the kind's own delay).
+static func attach(c: Control, k: int, delay: float = -1.0) -> Node:
 	var m := c.get_node_or_null(NODE_NAME)
 	if m != null:
 		return m
 	m = (load(SCRIPT_PATH) as GDScript).new()
 	m.setup(c, k)
+	if delay >= 0.0:
+		m.time = -delay
 	return m
 
 
@@ -111,6 +136,14 @@ func setup(c: Control, k: int) -> void:
 			time = -TEAR_DELAY
 			# Hidden until it wells up, also on the frame before the first _process.
 			c.modulate.a = 0.0
+		SHINE:
+			time = 0.0
+			# A host with a material of its own keeps it and does not shine.
+			if c.material == null:
+				var mat := ShaderMaterial.new()
+				mat.shader = load(SHINE_SHADER)
+				mat.set_shader_parameter("progress", -1.0)
+				c.material = mat
 		_:
 			time = 0.0
 	c.add_child(self)
@@ -123,6 +156,12 @@ func _process(delta: float) -> void:
 		_rest()
 		return
 	time += delta
+	if kind == SHINE:
+		var btn: Node = _host if _host is BaseButton else _host.get_parent()
+		var off := btn is BaseButton and (btn as BaseButton).disabled
+		_shine(-1.0 if off else shine_progress(maxf(time, 0.0)))
+		_moved = true
+		return
 	_sync()
 	if kind == PULSE:
 		_host.scale = _base_scale * (1.0 + PULSE_SCALE * (0.5 - 0.5 * cos(TAU * time / PULSE_SEC)))
@@ -140,6 +179,17 @@ func _process(delta: float) -> void:
 		# Scaling is about the pivot; shift back so the feet line keeps its place and only the top grows.
 		var pivot_y := _host.pivot_offset.y + _host.pivot_offset_ratio.y * _host.size.y
 		_host.position = _base_pos + Vector2(0.0, (SOB_FOOT * _host.size.y - pivot_y) * _base_scale.y * (1.0 - s.y))
+		_set_pos = _host.position
+		_set_rot = _host.rotation
+	elif kind == FLOAT:
+		var h := _host.size.y * absf(_base_scale.y)
+		_host.position = _base_pos + Vector2(0.0, -float_lift(maxf(time, 0.0)) * h)
+		_set_pos = _host.position
+		_set_rot = _host.rotation
+	elif kind == WOBBLE:
+		var w := wobble_pose(maxf(time, 0.0))
+		_host.scale = _base_scale * (1.0 + float(w[1]))
+		_host.rotation = _base_rot + deg_to_rad(float(w[0]))
 		_set_pos = _host.position
 		_set_rot = _host.rotation
 	else:
@@ -201,6 +251,42 @@ static func tear_pose(t: float) -> Array:
 	return [0.0, 1.0, 1.0, 0.0]
 
 
+## Lift (share of the height, 0 .. FLOAT_LIFT) at t s from the start.
+static func float_lift(t: float) -> float:
+	return FLOAT_LIFT * (0.5 - 0.5 * cos(TAU * t / FLOAT_SEC))
+
+
+## [tilt (deg), swell (scale + q)] at t s from the first wobble.
+static func wobble_pose(t: float) -> Array:
+	var p := fposmod(t, WOBBLE_PERIOD)
+	if p >= WOBBLE_BURST:
+		return [0.0, 0.0]
+	var u := p / WOBBLE_BURST
+	return [WOBBLE_DEG * sin(TAU * WOBBLE_SWINGS * u) * (1.0 - u), WOBBLE_POP * sin(PI * u)]
+
+
+## Band position across the host (0 -> 1) at t s from the first sweep; -1 while resting.
+static func shine_progress(t: float) -> float:
+	var p := fposmod(t, SHINE_PERIOD)
+	if p >= SHINE_SWEEP:
+		return -1.0
+	var u := p / SHINE_SWEEP
+	return u * u * (3.0 - 2.0 * u)
+
+
+## Writes the band only when it changes (resting hosts cost nothing per frame).
+func _shine(progress: float) -> void:
+	var mat := _host.material as ShaderMaterial
+	if mat == null or mat.shader == null or mat.shader.resource_path != SHINE_SHADER:
+		return
+	if progress == _shine_at and _host.size == _shine_box:
+		return
+	_shine_at = progress
+	_shine_box = _host.size
+	mat.set_shader_parameter("progress", progress)
+	mat.set_shader_parameter("box_size", _host.size)
+
+
 ## Takes as base any value someone else wrote since the last frame.
 func _sync() -> void:
 	if not _host.scale.is_equal_approx(_set_scale):
@@ -217,6 +303,9 @@ func _rest() -> void:
 	if not _moved:
 		return
 	_moved = false
+	if kind == SHINE:
+		_shine(-1.0)
+		return
 	_sync()
 	_host.scale = _base_scale
 	_set_scale = _host.scale

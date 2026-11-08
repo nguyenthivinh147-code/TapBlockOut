@@ -14,6 +14,8 @@ const SPEED := 5.0
 var main: Control = null
 var offers_seen: int = 0
 var gifts_seen: int = 0
+## Popup cơ chế mới (cùng scene booster_unlocked) ở level dạy cơ chế.
+var mechs_seen: int = 0
 
 
 func tree() -> SceneTree:
@@ -46,6 +48,7 @@ func begin(dir: String, level: int = 1, coins: int = -1, gifted: bool = false, d
 	Engine.time_scale = SPEED
 	offers_seen = 0
 	gifts_seen = 0
+	mechs_seen = 0
 	main = (load("res://scenes/main.tscn") as PackedScene).instantiate() as Control
 	tree().root.add_child(main)
 	await wait_until(func() -> bool: return main.is_booted)
@@ -109,7 +112,7 @@ func wait_popup(node_name: String, ms: int = 15000) -> bool:
 		return popup(node_name) != null, ms)
 
 
-## Đóng popup không liên quan tới kịch bản: hộp tặng booster, offer. `keep` là nút đang đợi.
+## Đóng popup không liên quan tới kịch bản: popup booster mới (quà booster, cơ chế mới), offer. `keep` là nút đang đợi.
 func dismiss_strays(keep: String = "") -> void:
 	if main == null or main.popup_layer == null:
 		return
@@ -118,10 +121,17 @@ func dismiss_strays(keep: String = "") -> void:
 			continue
 		if keep != "" and c.find_child(keep, true, false) != null:
 			continue
-		var gift := c.find_child("GotItButton", true, false) as Button
-		if gift != null:
-			gifts_seen += 1
-			gift.pressed.emit()
+		var script := c.get_script() as Script
+		if script != null and script.resource_path.ends_with("booster_unlocked.gd"):
+			# Popup booster mới hoặc cơ chế mới: chạm đâu cũng đóng ("Chạm để tiếp tục").
+			if (c.get("view") as Dictionary).has("mech"):
+				mechs_seen += 1
+			else:
+				gifts_seen += 1
+			var tap := InputEventMouseButton.new()
+			tap.pressed = true
+			tap.button_index = MOUSE_BUTTON_LEFT
+			c.call("_gui_input", tap)
 		elif "later_button" in c:
 			offers_seen += 1
 			(c.later_button as Button).pressed.emit()
@@ -188,6 +198,17 @@ func win_level() -> bool:
 func continue_to(next: int) -> bool:
 	if not press("ContinueButton"):
 		return false
+	return await _after_win_card(next)
+
+
+## Vừa lấy x2: thẻ thắng tự đóng sau khi gold bay lên thanh trên; đợi thẻ đóng rồi đợi level kế như continue_to.
+func x2_to(next: int) -> bool:
+	if not await wait_until(func() -> bool: return popup("ContinueButton") == null, 6000):
+		return false
+	return await _after_win_card(next)
+
+
+func _after_win_card(next: int) -> bool:
 	if await wait_playing(next, 600 + int(Config.CONTENT.hard_banner_sec * 1000.0)):
 		return true
 	# Vừa mở tính năng ở Home thì level đưa người chơi về Home (Game.next_after_win).

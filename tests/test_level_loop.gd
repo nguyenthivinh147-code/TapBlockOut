@@ -61,37 +61,42 @@ func test_content_level_mapping(t: T) -> void:
 
 
 func test_game_loops_content_keeps_display(t: T) -> void:
-	var g := _g(100)
-	t.eq(int(g.current_level_data().get("id", 0)), 100, "L100 đọc file 100")
-	for pair in [[101, 51], [102, 52], [150, 100], [151, 51], [1234, 51 + (1234 - 51) % 50]]:
+	var last := int(Config.CONTENT.release_pregen_level)
+	var span := last - 51 + 1
+	var g := _g(last)
+	t.eq(int(g.current_level_data().get("id", 0)), last, "L%d đọc file %d" % [last, last])
+	for pair in [[last + 1, 51], [last + 2, 52], [last + span, last], [last + span + 1, 51],
+			[last + 1234, 51 + (last + 1234 - 51) % span]]:
 		g.s.level = pair[0]
 		t.eq(g.level_exists(pair[0]), true, "L%d tồn tại" % pair[0])
 		t.eq(int(g.current_level_data().get("id", 0)), pair[1], "L%d chơi nội dung L%d" % [pair[0], pair[1]])
-	g.s.level = 101
+	g.s.level = last + 1
 	var a: Dictionary = g.start_attempt()
-	t.eq(int(a.level), 101, "attempt giữ số hiển thị")
+	t.eq(int(a.level), last + 1, "attempt giữ số hiển thị")
 	t.eq(g._gen_cache.size(), 0, "không sinh gì")
 
 
 func test_loop_start_configurable(t: T) -> void:
-	var g := _g(101)
+	var last := int(Config.CONTENT.release_pregen_level)
+	var g := _g(last + 1)
 	var old: int = int(Config.CONTENT.loop_start_level)
 	t.eq(int(old), 51, "mặc định lặp từ L51")
 	Config.CONTENT["loop_start_level"] = 71
 	t.eq(int(g.current_level_data().get("id", 0)), 71, "loop_start 71")
-	g.s.level = 103
-	t.eq(int(g.current_level_data().get("id", 0)), 73, "L103 -> 73")
+	g.s.level = last + 3
+	t.eq(int(g.current_level_data().get("id", 0)), 73, "L%d -> 73" % (last + 3))
 	Config.CONTENT["loop_start_level"] = old
 	Config.demo_override = -1
 
 
 func test_win_advances_display_level_past_last(t: T) -> void:
-	var g := _g(100)
+	var last := int(Config.CONTENT.release_pregen_level)
+	var g := _g(last)
 	var a: Dictionary = g.start_attempt()
 	var res: Dictionary = g.on_level_won(a)
-	t.eq(int(g.s.level), 101, "thắng L100 lên L101")
+	t.eq(int(g.s.level), last + 1, "thắng L%d lên L%d" % [last, last + 1])
 	var a2: Dictionary = g.start_attempt()
-	t.eq(int(a2.level), 101, "attempt kế là L101")
+	t.eq(int(a2.level), last + 1, "attempt kế là L%d" % (last + 1))
 	t.eq(int(a2.board.moves_left()), int(g.current_level_data().moves), "bàn là nội dung vòng lặp")
 	Config.demo_override = -1
 
@@ -102,12 +107,13 @@ func test_old_save_upgrade_gets_loop_content(t: T) -> void:
 	var path := DIR + "/old_save.json"
 	g.reset_for_test(path)
 	var f := FileAccess.open(path, FileAccess.WRITE)
-	f.store_string(JSON.stringify({"version": 1, "level": 457, "runs": 900, "coins": 123}))
+	f.store_string(JSON.stringify({"version": 1, "level": 957, "runs": 900, "coins": 123}))
 	f.close()
 	Config.demo_override = 0
 	g.s = g.store.load_state("")
-	t.eq(int(g.s.level), 457, "giữ số level hiển thị")
-	t.eq(int(g.current_level_data().get("id", 0)), 51 + (457 - 51) % 50, "nội dung theo vòng lặp")
+	t.eq(int(g.s.level), 957, "giữ số level hiển thị")
+	var span := int(Config.CONTENT.release_pregen_level) - 51 + 1
+	t.eq(int(g.current_level_data().get("id", 0)), 51 + (957 - 51) % span, "nội dung theo vòng lặp")
 	Config.demo_override = -1
 
 

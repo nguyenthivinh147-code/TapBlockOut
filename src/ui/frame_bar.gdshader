@@ -1,6 +1,7 @@
 shader_type canvas_item;
 // Thanh viền khung: capsule tô theo mặt cắt đo từ art/concepts/concept_candy_board_v5_stripe.png,
-// có mũi tên trắng bo góc. Cổng nhịp đóng thì thanh tối đi, mũi tên mờ và hiện thanh chắn. Đơn vị là px.
+// có mũi tên trắng bo góc. Cổng nhịp đóng thì thân ngả về màu đậm của cổng, phủ sọc kẹo gậy trắng chéo và mũi tên
+// đổi thành ổ khoá trắng. Đơn vị là px.
 
 uniform sampler2D ramp : filter_linear, repeat_disable;  // mặt cắt ngang thanh, tính từ mép trên hoặc mép trái
 uniform vec4 end_col : source_color = vec4(1.0);  // vành hai đầu thanh
@@ -47,7 +48,35 @@ const float SEG_EDGE_A = 0.4;       // vệt sáng ở cạnh giữa hai mặt
 const float SEG_SEAM = 0.08;        // khe tối ở hai đầu đoạn, theo ô
 const float PIN_LEN = 0.09;         // chốt trục ló ra hai đầu đoạn, theo ô
 const float PIN_W = 0.32;           // nửa bề rộng chốt, theo bán kính thanh
-const float CLOSED_DIM = 0.55;
+// cổng nhịp đóng
+const float CLOSED_DEEP = 0.5;      // thân ngả chừng này về màu đậm của cổng
+const float CLOSED_DEEP_VAL = 0.86; // màu đậm đó tối thêm chừng này
+const float STRIPE_PERIOD = 0.9;    // chu kỳ sọc theo bề dày thanh; sọc chéo 45° theo hướng "/"
+const float STRIPE_DUTY = 0.42;     // phần sọc trắng trong một chu kỳ
+const float STRIPE_MIX = 0.8;       // sọc trắng pha chừng này với thân (giữ chút khối của thân)
+const float STRIPE_RIM = 0.24;      // sọc nhạt dần sát mép thanh, theo bán kính: chừa viền màu cổng
+const float STRIPE_SHADE = 0.16;    // mép dưới của sọc tối đi chừng này cho sọc nổi lên
+const vec3 STRIPE_COL = vec3(1.0, 0.988, 0.965);
+// ổ khoá, theo ô; gốc ở tâm cả ổ, y hướng xuống
+const float LOCK_W = 0.3;           // thân
+const float LOCK_H = 0.21;
+const float LOCK_ROUND = 0.055;
+const float LOCK_BODY_Y = 0.0625;   // tâm thân
+const float LOCK_ARC_Y = -0.0675;   // tâm cung quai
+const float LOCK_ARC_R = 0.075;     // bán kính tới đường giữa quai
+const float LOCK_ARC_W = 0.052;     // bề dày quai
+const float LOCK_HOLE_R = 0.034;    // lỗ khoá
+const float LOCK_HOLE_Y = 0.048;
+const float LOCK_SLOT = 0.055;      // khe dưới lỗ khoá
+const float LOCK_SLOT_W = 0.026;
+const float BADGE_R = 0.33;         // huy hiệu tròn màu đậm của cổng dưới ổ khoá, theo ô; to hơn bề dày thanh chút
+const float BADGE_RIM = 0.045;      // viền sáng của huy hiệu
+const float BADGE_LOCK_Y = 0.008;   // ổ khoá lệch xuống trong huy hiệu cho cân mắt
+const float BADGE_TOP = 1.15;       // huy hiệu: màu đậm của cổng sáng lên ở trên, tối đi ở dưới
+const float BADGE_BOTTOM = 0.72;
+const float BADGE_SHADOW_ON_BAR = 0.72;  // bóng huy hiệu đổ lên thân thanh tối còn chừng này
+const vec2 SHADOW_OFF = vec2(0.0, 0.03);  // bóng mũi tên, ổ khoá lệch xuống, theo ô
+const vec2 EDGE_OFF = vec2(0.0, 0.035);   // mép dưới ám hồng của mũi tên, ổ khoá, theo ô
 const float SHADOW_DY = 0.11;       // bóng đổ, theo ô
 const float SHADOW_BLUR = 0.14;
 const float SHADOW_A = 0.32;
@@ -95,35 +124,108 @@ float triangle(vec2 p, vec2 q) {
 	return -sqrt(d.x) * sign(d.y);
 }
 
-// Khoảng cách tới mép một mũi tên có tâm `at`, âm là bên trong; ô chứa mũi tên giữ đúng arrow_size sau khi bo góc.
-float arrow_one(vec2 p, vec2 at) {
-	vec2 rel = (p - at) / (1.0 + pop);
-	vec2 lp = vec2(dot(rel, vec2(-arrow_dir.y, arrow_dir.x)), -dot(rel, arrow_dir));
-	float rr = ARROW_ROUND * cell_px;
-	vec2 q = vec2(arrow_size.x * 0.5 - rr, arrow_size.y - 2.0 * rr);
-	return triangle(lp + vec2(0.0, q.y * 0.5), q) - rr;
+// Hộp bo góc tâm ở gốc, nửa cỡ h, bán kính bo rr. Âm là bên trong.
+float round_box(vec2 p, vec2 h, float rr) {
+	vec2 e = abs(p) - (h - vec2(rr));
+	return length(max(e, vec2(0.0))) + min(max(e.x, e.y), 0.0) - rr;
 }
 
-// Mũi tên gần nhất. Nhiều cổng: mỗi cổng một mũi tên, dời dọc thanh tới arrows_along.
-float arrow(vec2 p) {
+// Mũi tên tâm ở gốc (q đã trừ tâm và chia cỡ), âm là bên trong; ô chứa mũi tên giữ đúng arrow_size sau khi bo góc.
+float arrow_shape(vec2 q) {
+	vec2 lp = vec2(dot(q, vec2(-arrow_dir.y, arrow_dir.x)), -dot(q, arrow_dir));
+	float rr = ARROW_ROUND * cell_px;
+	vec2 t = vec2(arrow_size.x * 0.5 - rr, arrow_size.y - 2.0 * rr);
+	return triangle(lp + vec2(0.0, t.y * 0.5), t) - rr;
+}
+
+// Ổ khoá đứng thẳng trên màn: thân hộp bo góc, quai nửa vòng cắm hai chân xuống thân. Âm là bên trong.
+float lock_shape(vec2 q) {
+	float u = cell_px;
+	float body = round_box(q - vec2(0.0, LOCK_BODY_Y * u), vec2(LOCK_W, LOCK_H) * 0.5 * u, LOCK_ROUND * u);
+	vec2 a = q - vec2(0.0, LOCK_ARC_Y * u);
+	float rc = LOCK_ARC_R * u;
+	float legs = (LOCK_BODY_Y - LOCK_ARC_Y) * u;
+	float arc = a.y < 0.0 ? abs(length(a) - rc) : length(vec2(abs(a.x) - rc, max(a.y - legs, 0.0)));
+	return min(body, arc - LOCK_ARC_W * 0.5 * u);
+}
+
+// Lỗ khoá trên thân ổ: chấm tròn và khe hẹp bên dưới. Âm là bên trong.
+float lock_hole(vec2 q) {
+	float u = cell_px;
+	vec2 c = q - vec2(0.0, LOCK_HOLE_Y * u);
+	float dot_d = length(c) - LOCK_HOLE_R * u;
+	vec2 sp = c - vec2(0.0, clamp(c.y, 0.0, LOCK_SLOT * u));
+	return min(dot_d, length(sp) - LOCK_SLOT_W * 0.5 * u);
+}
+
+// Tâm mũi tên (cũng là chỗ ổ khoá) thứ i. Nhiều cổng: dời dọc thanh tới arrows_along.
+vec2 glyph_at(int i) {
 	if (seg_count < 2) {
-		return arrow_one(p, arrow_at);
+		return arrow_at;
 	}
-	float d = 1e6;
+	return vertical ? vec2(arrow_at.x, arrows_along[i]) : vec2(arrows_along[i], arrow_at.y);
+}
+
+// Chỉ số mũi tên gần `p` nhất (0 khi thanh một cổng).
+int nearest_glyph(vec2 p) {
+	int best = 0;
+	float bd = 1e9;
 	for (int i = 0; i < 3; i++) {
-		if (i >= seg_count) {
+		if (i >= max(seg_count, 1)) {
 			break;
 		}
-		vec2 at = vertical ? vec2(arrow_at.x, arrows_along[i]) : vec2(arrows_along[i], arrow_at.y);
-		d = min(d, arrow_one(p, at));
+		float dd = length(p - glyph_at(i));
+		if (dd < bd) {
+			bd = dd;
+			best = i;
+		}
 	}
-	return d;
+	return best;
+}
+
+// Mũi tên (kind 0), ổ khoá (1) hoặc lỗ khoá (2) gần nhất, phóng theo `s` và phồng theo `pop`. Âm là bên trong.
+float glyph(vec2 p, int kind, float s) {
+	float k = max(s * (1.0 + pop), 0.001);
+	float d = 1e6;
+	for (int i = 0; i < 3; i++) {
+		if (i >= max(seg_count, 1)) {
+			break;
+		}
+		vec2 q = (p - glyph_at(i)) / k;
+		vec2 ql = q - vec2(0.0, BADGE_LOCK_Y * cell_px);  // ổ khoá trong huy hiệu
+		d = min(d, kind == 0 ? arrow_shape(q) : (kind == 1 ? lock_shape(ql) : lock_hole(ql)));
+	}
+	return d * k;
+}
+
+// Mũi tên và ổ khoá nảy nhẹ khi hiện ra: 0 → 1, vượt quá khoảng 2,5% rồi về.
+float pop_in(float x) {
+	return x + 0.45 * sin(PI * x) * x;
+}
+
+// Cổng đóng: thân ngả về màu đậm của cổng, phủ sọc kẹo gậy trắng chéo 45°; sọc dày dần theo `closed`.
+// surf: toạ độ ngang thanh trên mặt thanh (thân thanh: across); rim: 0 sát mép, 1 vào trong.
+vec3 closed_look(vec3 base, vec3 deep, float along, float surf, float thick, float rim, float closed) {
+	if (closed <= 0.001) {
+		return base;
+	}
+	vec3 c = mix(base, deep * CLOSED_DEEP_VAL, CLOSED_DEEP * closed);
+	float period = thick * STRIPE_PERIOD;
+	float t = along + surf;
+	float ph = mod(t, period) - period * 0.5;  // tâm sọc ở ph = 0
+	float hw = period * STRIPE_DUTY * 0.5 * closed;
+	float m = (1.0 - smoothstep(hw - 0.9, hw + 0.9, abs(ph))) * smoothstep(0.0, 0.25, closed) * rim;
+	// mép sau của sọc (phía dưới phải) tối dần như bóng của dải nổi
+	float sh = smoothstep(hw + 0.9, hw + thick * 0.12, ph) * (1.0 - smoothstep(hw + thick * 0.12, hw + thick * 0.2, ph));
+	c *= 1.0 - STRIPE_SHADE * sh * closed * rim;
+	vec3 sc = mix(base, STRIPE_COL, STRIPE_MIX);
+	return mix(c, sc, m);
 }
 
 // Đoạn bị va: lăng trụ lục giác quay quanh trục thanh, nhìn thẳng từ trên xuống; spin = 0 thì một mặt hướng lên
 // người nhìn. Mỗi mặt tô một màu của mặt cắt tại hướng pháp tuyến của nó nên vẫn khớp ánh sáng với thân thanh.
 // Trả về màu và độ phủ.
-vec4 segment(float along, float across, float r, float half_len) {
+vec4 segment(float along, float across, float r, float half_len, float closed) {
 	float lo = max(seg_at - seg_half, -half_len + r);
 	float hi = min(seg_at + seg_half, half_len - r);
 	float to_end = min(along - lo, hi - along);
@@ -152,7 +254,13 @@ vec4 segment(float along, float across, float r, float half_len) {
 			continue;
 		}
 		float u = mix((cos(phi) + 1.0) * 0.5, clamp((across + r) / (2.0 * r), 0.0, 1.0), 0.3);
-		col = ramp_of(gate_at(seg_at), u) * mix(SEG_SHADE, 1.0, facing);
+		col = ramp_of(gate_at(seg_at), u);
+		if (closed > 0.001) {
+			// sọc vẽ trên từng mặt nên lăn theo mặt; mặt nào quay ra trước cũng khớp sọc của thân thanh
+			float s = clamp((x - x0) / (x1 - x0), 0.0, 1.0);
+			col = closed_look(col, end_of(gate_at(seg_at)), along, k * (0.5 - s), 2.0 * r, 1.0, closed);
+		}
+		col *= mix(SEG_SHADE, 1.0, facing);
 		// cạnh giữa hai mặt cùng thấy được thì sáng lên, mép bóng thì không
 		float inner = min(abs(x0) < w - 0.5 ? abs(x - x0) : 1e4, abs(x1) < w - 0.5 ? abs(x - x1) : 1e4);
 		col = mix(col, vec3(1.0), SEG_EDGE_A * (1.0 - smoothstep(0.5, 2.0, inner)));
@@ -176,7 +284,7 @@ void fragment() {
 	float across = vertical ? p.x : p.y;
 	float along = vertical ? p.y : p.x;
 	float half_len = (vertical ? bar_px.y : bar_px.x) * 0.5;
-	vec4 sg = seg > 0.001 ? segment(along, across, r, half_len) : vec4(0.0);
+	vec4 sg = seg > 0.001 ? segment(along, across, r, half_len, closed) : vec4(0.0);
 	float sa = sg.a * smoothstep(0.0, 0.3, seg);
 
 	if (a > 0.0) {
@@ -206,7 +314,7 @@ void fragment() {
 			body = mix(body, gate_end * 0.7, GATE_SEAM_A * (1.0 - smoothstep(hw, hw + 1.0, to_cut)));
 		}
 
-		body = mix(body, body * (1.0 - CLOSED_DIM), closed);
+		body = closed_look(body, gate_end, along, across, thick, smoothstep(0.0, r * STRIPE_RIM, d), closed);
 
 		// sóng sáng chạy dọc thanh từ điểm bị va
 		if (hit_t < 1.0) {
@@ -215,22 +323,17 @@ void fragment() {
 			body = mix(body, vec3(1.0), HIT_A * (1.0 - hit_t) * exp(-h * h));
 		}
 
-		// thanh chắn khi đóng: các vạch ngang thanh
-		if (closed > 0.01) {
-			float period = thick * 0.95;
-			float tick = abs(mod(along + period * 0.5, period) - period * 0.5);
-			float mark = (1.0 - smoothstep(thick * 0.07, thick * 0.07 + 1.0, tick));
-			mark *= 1.0 - smoothstep(r * 0.72 * closed, r * 0.72 * closed + 1.0, abs(across));
-			body = mix(body, vec3(1.0), mark * 0.6 * closed);
+		// mũi tên: viền mờ màu đậm của thanh, lệch nhẹ xuống; thân trắng, mép dưới ám hồng. Cổng đóng thì thu lại
+		// nhường chỗ cho ổ khoá.
+		if (open > 0.001) {
+			float gs = pop_in(open);
+			float ad = glyph(p, 0, gs);
+			float as = 1.0 - smoothstep(0.0, 0.075 * cell_px, glyph(p - SHADOW_OFF * cell_px, 0, gs));
+			body = mix(body, gate_end * 0.92, as * 0.85 * open);
+			float edge = smoothstep(-0.035 * cell_px, 0.0, glyph(p + EDGE_OFF * cell_px, 0, gs));
+			vec3 ac = mix(ARROW_COL, ARROW_EDGE, edge * 0.45);
+			body = mix(body, ac, clamp(0.5 - ad, 0.0, 1.0) * smoothstep(0.0, 0.35, open));
 		}
-
-		// mũi tên: viền mờ màu đậm của thanh, lệch nhẹ xuống; thân trắng, mép dưới ám hồng
-		float ad = arrow(p);
-		float as = 1.0 - smoothstep(0.0, 0.075 * cell_px, arrow(p - vec2(0.0, 0.03 * cell_px)));
-		body = mix(body, gate_end * 0.92, as * 0.85 * open);
-		float edge = smoothstep(-0.035 * cell_px, 0.0, arrow(p + vec2(0.0, 0.035 * cell_px)));
-		vec3 ac = mix(ARROW_COL, ARROW_EDGE, edge * 0.45);
-		body = mix(body, ac, clamp(0.5 - ad, 0.0, 1.0) * mix(0.25, 1.0, open));
 
 		// chốt trục ló ra hai đầu đoạn đang quay
 		if (seg > 0.001) {
@@ -247,10 +350,47 @@ void fragment() {
 
 	// đoạn bị va đè lên thân thanh, phần lăng trụ to hơn thanh vẽ ra ngoài
 	if (sa > 0.0) {
-		vec3 sc = mix(sg.rgb, sg.rgb * (1.0 - CLOSED_DIM), closed);
-		sc = mix(sc, vec3(1.0), flash * 0.55);
+		vec3 sc = mix(sg.rgb, vec3(1.0), flash * 0.55);
 		col = a > 0.0 ? mix(col, sc, sa) : sc;
 		a = max(a, sa);
+	}
+
+	// cổng đóng: huy hiệu tròn màu đậm của cổng nổi trên thanh (lấn ra ngoài thanh), ổ khoá trắng ở giữa;
+	// nảy ra chỗ mũi tên khi cổng đóng, thu lại khi mở
+	if (closed > 0.001) {
+		float gs = pop_in(closed);
+		float k = max(gs * (1.0 + pop), 0.001);
+		float bw = smoothstep(0.0, 0.35, closed);
+		vec2 bc = glyph_at(nearest_glyph(p));
+		vec3 deep = end_of(gate_at(vertical ? bc.y : bc.x));
+		float R = BADGE_R * cell_px;
+		vec2 q = (p - bc) / k;
+		float bd = (length(q) - R) * k;
+		float ba = clamp(0.5 - bd, 0.0, 1.0) * bw;
+		// bóng đổ: trên thanh thì tối thân thanh, ngoài thanh thì nhập vào bóng của thanh
+		float bsd = (length(q - vec2(0.0, SHADOW_DY * cell_px) / k) - R) * k;
+		float bsh = smoothstep(-SHADOW_BLUR * cell_px, 0.02 * cell_px, -bsd) * bw;
+		col = mix(col, col * BADGE_SHADOW_ON_BAR, bsh * a * (1.0 - ba));
+		shadow = max(shadow, bsh * SHADOW_A);
+		if (ba > 0.0) {
+			float yy = clamp(q.y / R, -1.0, 1.0);
+			vec3 bcol = mix(min(deep * BADGE_TOP, vec3(1.0)), deep * BADGE_BOTTOM, smoothstep(-0.9, 0.9, yy));
+			// viền sáng, phía trên sáng hơn phía dưới
+			float rim_w = BADGE_RIM * cell_px;
+			float rim = smoothstep(-rim_w - 0.8, -rim_w + 0.8, length(q) - R);
+			bcol = mix(bcol, mix(deep, vec3(1.0), mix(0.6, 0.25, smoothstep(-1.0, 1.0, yy))), rim);
+			// ổ khoá: bóng lệch xuống màu đậm, thân trắng mép dưới ám hồng, lỗ khoá màu đậm
+			float ld = glyph(p, 1, gs);
+			float lsd = 1.0 - smoothstep(0.0, 0.06 * cell_px, glyph(p - SHADOW_OFF * cell_px, 1, gs));
+			bcol = mix(bcol, deep * 0.5, lsd * 0.55 * (1.0 - rim));
+			float edge = smoothstep(-0.035 * cell_px, 0.0, glyph(p + EDGE_OFF * cell_px, 1, gs));
+			vec3 lc = mix(ARROW_COL, ARROW_EDGE, edge * 0.45);
+			lc = mix(lc, deep * 0.75, clamp(0.5 - glyph(p, 2, gs), 0.0, 1.0));
+			bcol = mix(bcol, lc, clamp(0.5 - ld, 0.0, 1.0));
+			bcol = mix(bcol, vec3(1.0), flash * 0.55);
+			col = a > 0.0 ? mix(col, bcol, ba) : bcol;
+			a = max(a, ba);
+		}
 	}
 
 	float alpha = a + shadow * (1.0 - a);

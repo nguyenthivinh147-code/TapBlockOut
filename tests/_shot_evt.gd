@@ -4,6 +4,7 @@ extends SceneTree
 const MAIN := "res://scenes/main.tscn"
 const OUT := "res://tests/shots/"
 const NOW := 1800000000
+const Config := preload("res://src/config.gd")
 
 var lang := "en"
 var tag := "evt720"
@@ -93,6 +94,7 @@ func _shot(name: String) -> void:
 			await _settle()
 		"challenge_done":
 			await _fresh(60)
+			Config.FEATURES.challenge = true
 			g.s.challenge = {"day": g.today(), "won": true}
 			_main.go("challenge")
 			await _settle()

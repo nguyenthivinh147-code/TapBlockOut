@@ -17,12 +17,33 @@ func test_thresholds(t: T) -> void:
 		"starter": 10, "review": 10, "challenge": 50, "stone": 14, "ice": 30,
 		"chain": 40, "layer": 55, "fog": 70, "pulse": 90, "leaderboard": 8,
 	}
+	Config.reset()
+	Config.FEATURES.challenge = true
 	for f in table:
 		var lv: int = table[f]
 		t.ok(not Unlocks.is_open(f, lv - 1), "%s đóng ở L%d" % [f, lv - 1])
 		t.ok(Unlocks.is_open(f, lv), "%s mở ở L%d" % [f, lv])
 		t.ok(Unlocks.is_open(f, lv + 500), "%s mở ở level cao" % f)
 	t.ok(not Unlocks.is_open("khong_co", 999), "tính năng lạ đóng")
+	Config.reset()
+
+
+## Config.FEATURES: a switched-off feature stays closed at every level and is left off the win-card progress bar.
+func test_switched_off_feature(t: T) -> void:
+	Config.reset()
+	t.ok(not Unlocks.enabled("challenge"), "Daily Challenge tắt mặc định")
+	t.ok(Unlocks.enabled("shop"), "không có trong FEATURES thì bật")
+	t.ok(not Unlocks.is_open("challenge", 50), "tắt: L50 đóng")
+	t.ok(not Unlocks.is_open("challenge", 999), "tắt: level cao vẫn đóng")
+	t.eq(Unlocks.features_at(50), [] as Array[String], "tắt: L50 không báo mở")
+	var p := Unlocks.feature_progress(49)
+	t.eq(p.unlocked, [] as Array[String], "thắng L49 không báo mở")
+	t.eq(p.start, 40, "mốc trước là L40 (Chain)")
+	t.eq(p.end, 55, "bỏ mốc L50, mốc kế L55 (Layer)")
+	Config.FEATURES.shop = false
+	t.ok(not Unlocks.is_open("shop", 5), "tắt shop qua FEATURES")
+	t.eq(Unlocks.features_at(5), ["hint"] as Array[String], "L5 chỉ còn hint")
+	Config.reset()
 
 
 func test_gifts(t: T) -> void:
@@ -62,6 +83,28 @@ func test_gift_skipped_levels(t: T) -> void:
 	t.eq(Wallet.inv_count(s, "smash"), 1, "vào kho")
 	Unlocks.mark_gifted(s, "bogus")
 	t.ok(not s.gifted.has("bogus"), "loại lạ bị bỏ qua")
+
+
+## Popup cơ chế mới: đúng level dạy, mỗi cơ chế một lần.
+func test_mech_intro(t: T) -> void:
+	var s := SaveSchema.defaults()
+	t.eq(s.mech_seen, [], "bản lưu mới chưa xem cơ chế nào")
+	var table := {14: "stone", 30: "ice", 40: "chain", 55: "layer", 70: "fog", 90: "pulse"}
+	for lv in table:
+		t.eq(Unlocks.pending_mech(s, lv), table[lv], "L%d giới thiệu %s" % [lv, table[lv]])
+		t.eq(int(Config.UNLOCK[table[lv]]), lv, "khớp Config.UNLOCK.%s" % table[lv])
+	for lv in [1, 13, 15, 29, 31, 89, 91, 200]:
+		t.eq(Unlocks.pending_mech(s, lv), "", "L%d không phải level dạy" % lv)
+	Unlocks.mark_mech_seen(s, "stone")
+	t.eq(Unlocks.pending_mech(s, 14), "", "đã xem thì không hiện lại")
+	Unlocks.mark_mech_seen(s, "stone")
+	t.eq(s.mech_seen, ["stone"], "đánh dấu hai lần vẫn một mục")
+	Unlocks.mark_mech_seen(s, "bogus")
+	t.eq(s.mech_seen, ["stone"], "cơ chế lạ bị bỏ qua")
+	t.eq(Unlocks.pending_mech({}, 30), "ice", "bản lưu thiếu khoá vẫn đọc được")
+	var old := {}
+	Unlocks.mark_mech_seen(old, "ice")
+	t.eq(old.mech_seen, ["ice"], "bản lưu thiếu khoá thì tạo khi đánh dấu")
 
 
 func test_feature_progress(t: T) -> void:

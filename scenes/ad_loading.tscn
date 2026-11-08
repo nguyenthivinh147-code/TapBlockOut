@@ -54,15 +54,8 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"cg": {
-"alpha": 0,
-"block": false,
-"inter": false
-},
 "id": "panel",
-"n": "LoadingAds",
-"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5]
+"n": "LoadingAds"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -83,23 +76,13 @@ script = ExtResource("2_5860t")
 color = Color(0, 0, 0, 0.85)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "dim",
 "img": {
-"c": "000000f2",
-"fa": 1,
-"fc": true,
-"fm": 4,
-"fo": 0,
-"on": true,
-"pa": false,
 "ppu": 1,
 "rt": true,
-"sp": null,
-"t": 0
+"sp": null
 },
-"n": "Image",
-"r": [0, 0, 1, 1, 0, 0, 0, 0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -136,27 +119,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true
 metadata/u = {
-"a": true,
 "id": "text",
 "n": "Text (TMP)",
-"r": [0.5, 0.5, 0.5, 0.5, 0, 0, 500, 100, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0,
-"fs": 60,
-"h": 2,
-"ls": 0,
-"m": [0, 0, 0, 0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0,
-"rt": false,
-"s": "Loading video...",
-"st": 16,
-"v": 512,
-"w": false,
-"ws": 0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -168,20 +134,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0,
 "fs": 60,
-"h": 2,
 "ls": 0,
 "m": [0, 0, 0, 0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0,
-"rt": false,
-"s": "Loading video...",
 "st": 16,
-"v": 512,
-"w": false,
 "ws": 0
 }
 
@@ -201,23 +158,13 @@ mouse_filter = 2
 script = ExtResource("2_5860t")
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "sign",
 "img": {
-"c": "ffffffff",
-"fa": 1,
-"fc": true,
-"fm": 4,
-"fo": 0,
-"on": true,
-"pa": false,
 "ppu": 1,
 "rt": true,
-"sp": null,
-"t": 0
+"sp": null
 },
-"n": "LoadingSign",
-"r": [0.5, 0.5, 0.5, 0.5, 0, -111.4, 100, 100, 0.5, 0.5]
+"n": "LoadingSign"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -245,23 +192,13 @@ region = Rect2(1828, 16, 220, 220)
 preserve_aspect = true
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "picture",
 "img": {
-"c": "ffffffff",
-"fa": 1,
-"fc": true,
-"fm": 4,
-"fo": 0,
-"on": true,
-"pa": true,
 "ppu": 1,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7",
-"t": 0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7"
 },
-"n": "Picture",
-"r": [0.5, 0.5, 0.5, 0.5, 0, 270, 400, 400, 0.5, 0.5]
+"n": "Picture"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),

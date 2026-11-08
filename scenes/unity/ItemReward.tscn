@@ -46,7 +46,6 @@ offset_bottom = 52.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "cs": [{
 "ThisItemType": "0",
 "iconImg": {
@@ -61,8 +60,7 @@ metadata/u = {
 }
 }],
 "id": "1479545780954254558",
-"n": "ItemReward",
-"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 104.0, 104.0, 0.5, 0.5]
+"n": "ItemReward"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 0),
@@ -87,24 +85,13 @@ mouse_filter = 2
 script = ExtResource("1_qfmua")
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "7399567881976943431",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": null,
-"t": 0.0
+"sp": null
 },
-"n": "Icon Item",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 15.203, 117.595, 117.595, 0.5, 0.5]
+"n": "Icon Item"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -136,29 +123,10 @@ text = "10,000"
 horizontal_alignment = 1
 autowrap_mode = 3
 metadata/u = {
-"a": true,
 "id": "6614512229648676933",
 "n": "Quantity",
-"r": [0.0, 0.0, 1.0, 0.0, 0.0, 8.1, 0.0, 74.728, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 48.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 18.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Blue",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": false,
-"s": "10,000",
-"st": 0.0,
-"v": 256.0,
-"w": true,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -170,21 +138,10 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 48.0],
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 18.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Blue",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": false,
-"s": "10,000",
 "st": 0.0,
-"v": 256.0,
-"w": true,
 "ws": 0.0
 }

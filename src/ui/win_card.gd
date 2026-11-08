@@ -8,6 +8,8 @@ extends Control
 ## on_move_cashed(lượt): khi đó ô gold bắt đầu từ coins - move_coins, đồng gold bay từ chip vào ô (CoinFx), mỗi đồng
 ## rời chip thì gọi on_move_cashed, chạm ô thì số gold (cả số trên nút x2) tăng dần. Bấm x2 hay Tiếp tục thì cộng nốt.
 ## x2: popup tự gọi Game.claim_x2 (xem video, hoặc miễn phí ở L1). Nút x2 là FreeBtn (miễn phí) hoặc ClaimBtn (video).
+## x2 xong thì thanh trên (HubTop, chỉ mạng và gold) trượt xuống, gold của thẻ bay từ ô gold lên chip gold của thanh
+## (CoinFx), số trên chip đếm từ ví trước lúc thắng tới ví hiện tại, rồi thẻ tự đóng như Tiếp tục (nút khoá suốt lúc bay).
 ## closed(result): {x2_offered, x2_taken, rate_prompt, coins}. Bên gọi (level) gọi
 ## Game.leave_win_card(result.x2_offered, result.x2_taken) rồi mới sang level kế.
 
@@ -21,9 +23,15 @@ const UnityKit := preload("res://src/ui/unity_kit.gd")
 const UButton := preload("res://src/ui/u_button.gd")
 const UAnim := preload("res://src/ui/u_anim.gd")
 const CoinFx := preload("res://src/ui/coin_fx.gd")
+const HubTop := preload("res://src/ui/hub_top.gd")
 const X2_PLACEMENT := "x2_coins"
 ## Gold MOVES thừa bắt đầu bay khi thẻ đã hiện chừng này giây.
 const MOVE_GOLD_DELAY := 0.45
+## x2 xong: thanh trên trượt xuống trong chừng này giây rồi gold mới bay; đồng cuối chạm chip thì đợi thêm X2_HOLD
+## giây (loé và vòng sóng của CoinFx) rồi đóng thẻ. X2_TOP_Y: mép trên của thanh như ở Home (px thiết kế).
+const X2_TOP_IN := 0.3
+const X2_HOLD := 0.6
+const X2_TOP_Y := 35.0
 
 const WIN := "Panel/WinPanel"
 const TOP := "Panel/WinPanel/WinPanel"
@@ -56,6 +64,10 @@ var _move_gold_left: bool = false
 var _moves_sent: int = 0
 var _coin_fx: Control = null
 var _reward_tw: Tween = null
+## Thanh trên hiện lúc gold x2 bay lên; số gold đang hiện trên chip của nó; đã phát closed.
+var _top: Control = null
+var _top_gold: int = 0
+var _closed: bool = false
 var _bar: Control = null
 var _pct: Label = null
 var _prog_before: float = 0.0
@@ -75,6 +87,7 @@ func setup(args: Dictionary) -> void:
 	_args = args
 	_busy = false
 	_x2_taken = false
+	_closed = false
 	_moves_sent = 0
 	_move_gold_left = _move_coins() > 0 and _moves() > 0 and is_instance_valid(_args.get("moves_chip"))
 	_shown = _coins() - _move_coins() if _move_gold_left else _coins()
@@ -393,6 +406,56 @@ func _punch_reward(k: float) -> void:
 		_reward_tw.tween_property(n, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
+# --- gold x2 bay lên thanh trên (CoinFx từ ô gold của thẻ vào chip gold của HubTop) ---
+
+func _fly_x2_gold() -> void:
+	var total := _coins() * 2
+	if total <= 0 or not is_inside_tree():
+		_close()
+		return
+	_top = HubTop.create()
+	_top.set_meta("u_rt", true)
+	_top.hide_side_buttons()
+	add_child(_top)
+	# Gold of this win is already in the wallet: the chip starts from the balance before the win and counts up to it.
+	_top_gold = maxi(int(Game.s.coins) - total, 0)
+	_top.gold_shown = _top_gold
+	var s := size.x / HubTop.DESIGN_W
+	_top.size = Vector2(size.x, HubTop.DESIGN_H * s)
+	_top.position = Vector2(0, -HubTop.DESIGN_H * s)
+	_top.modulate.a = 0.0
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(_top, "position:y", X2_TOP_Y * s, X2_TOP_IN).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(_top, "modulate:a", 1.0, X2_TOP_IN * 0.6)
+	tw.chain().tween_callback(_start_x2_fx)
+
+
+func _start_x2_fx() -> void:
+	if not is_instance_valid(_top) or not is_inside_tree():
+		_close()
+		return
+	var icon: Control = %GoldReward.get_node("CoinIcon")
+	var fx: Control = CoinFx.new()
+	fx.name = "X2GoldFx"
+	add_child(fx)
+	fx.start(icon, _top.gold_icon, _coin_texture(icon), CoinFx.MAX_COINS, _coins() * 2, Callable(), _on_x2_coin_land)
+
+
+func _on_x2_coin_land(gold: int, last: bool) -> void:
+	if not is_instance_valid(_top):
+		return
+	_top_gold += gold
+	_top.gold_shown = -1 if last else _top_gold
+	var icon: Control = _top.gold_icon
+	var k := 1.35 if last else 1.15
+	icon.pivot_offset = icon.size * 0.5
+	icon.scale = Vector2(k, k)
+	create_tween().tween_property(icon, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	Sfx.play("sfx_coin")
+	if last:
+		create_tween().tween_callback(_close).set_delay(X2_HOLD)
+
+
 ## CurveDrivenImageScaler (not in unity_ui.gd): scale x/y from AnimationCurves, loopCount cycles from startOffset.
 func _curve_scale(c: Control, cs: Dictionary) -> void:
 	var kx := _curve_keys(cs.get("scaleXCurve", {}))
@@ -467,15 +530,17 @@ func _on_x2_pressed() -> void:
 		UnityUI.set_text(_x2_label, tr("win_x2_done"))
 		_msg.visible = false
 		Sfx.play("sfx_coin")
-	else:
-		match Game.last_ad_reason:
-			"not_ready":
-				UnityUI.set_text(_msg, tr("ads_not_available"))
-			"closed":
-				UnityUI.set_text(_msg, tr("ads_closed_early"))
-			_:
-				UnityUI.set_text(_msg, tr("ads_failed"))
-		_msg.visible = true
+		# Buttons stay locked: the gold flies up to the top bar, then the card closes by itself.
+		_fly_x2_gold()
+		return
+	match Game.last_ad_reason:
+		"not_ready":
+			UnityUI.set_text(_msg, tr("ads_not_available"))
+		"closed":
+			UnityUI.set_text(_msg, tr("ads_closed_early"))
+		_:
+			UnityUI.set_text(_msg, tr("ads_failed"))
+	_msg.visible = true
 	_set_busy(false)
 
 
@@ -483,6 +548,13 @@ func _on_continue_pressed() -> void:
 	if _busy:
 		return
 	_finish_move_gold()
+	_close()
+
+
+func _close() -> void:
+	if _closed:
+		return
+	_closed = true
 	closed.emit({
 		"x2_offered": bool(_args.get("x2_available", false)),
 		"x2_taken": _x2_taken,

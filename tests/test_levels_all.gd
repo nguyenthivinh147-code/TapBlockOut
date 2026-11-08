@@ -1,6 +1,7 @@
 extends RefCounted
-## 100 level đóng gói sẵn: L1-4 làm tay (bảng EARLY), còn lại do tools/gen_levels.gd sinh. Từ L14 (kể cả 6 level dạy
-## cơ chế) khối xếp theo hình vẽ tay, đối xứng, nhiều khối hơn.
+## 500 level đóng gói sẵn: L1-4 làm tay (bảng EARLY), còn lại do tools/gen_levels.gd sinh theo đường cong
+## (DifficultyCurve: số khối, số lượt dọn bàn, tag Hard / VeryHard). Từ L5 (kể cả 6 level dạy cơ chế) khối xếp theo hình
+## vẽ tay, đối xứng; mỗi level tối đa Config.LEVEL_MECH_MAX cơ chế, có level nghỉ không cơ chế.
 const T := preload("res://tests/t.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
@@ -10,7 +11,7 @@ const GenTool := preload("res://tools/gen_levels.gd")
 const Config := preload("res://src/config.gd")
 const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
-const TOTAL := 100
+const TOTAL := 500
 const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
 
 var _cache: Dictionary = {}  # id -> level
@@ -83,11 +84,11 @@ func test_levels_form_shapes_with_gaps(t: T) -> void:
 	t.ok(shapes.size() >= 30, "nhiều hình dạng khác nhau (%d)" % shapes.size())
 
 
-## Từ DifficultyCurve.SHAPED_FROM: khối và đá xếp thành hình đối xứng (trái phải hoặc trên dưới), cách cắt khối cũng
+## Từ DifficultyCurve.MOTIF_FROM: khối và đá xếp thành hình đối xứng (trái phải hoặc trên dưới), cách cắt khối cũng
 ## đối xứng, hình nằm đúng giữa bàn theo chiều ngang, và các level dùng nhiều hình khác nhau.
 func test_shaped_levels_are_symmetric(t: T) -> void:
 	var outlines := {}
-	for id in range(DifficultyCurve.SHAPED_FROM, TOTAL + 1):
+	for id in range(DifficultyCurve.MOTIF_FROM, TOTAL + 1):
 		var d := _level(id)
 		if d.is_empty():
 			continue
@@ -124,29 +125,78 @@ func test_shaped_levels_are_symmetric(t: T) -> void:
 			norm.append(c - box.position)
 		norm.sort()
 		outlines[str(norm)] = true
-	t.ok(outlines.size() >= 40, "L%d-%d dùng nhiều hình (%d dạng)" % [DifficultyCurve.SHAPED_FROM, TOTAL, outlines.size()])
+	t.ok(outlines.size() >= 40, "L%d-%d dùng nhiều hình (%d dạng)" % [DifficultyCurve.MOTIF_FROM, TOTAL, outlines.size()])
 
 
-## Từ DifficultyCurve.SHAPED_FROM khó hơn bản cũ: nhiều khối hơn và ít khối thoát được ngay lúc đầu.
-func test_shaped_levels_are_harder(t: T) -> void:
-	var blocks := 0
+## Từ L5 số khối lệch đường cong tối đa 2 (cắt đối xứng), số lượt dọn bàn (Solver.clear_rounds) hầu hết trong khoảng
+## lệch của bộ sinh (Config.LEVEL_ROUNDS_TOL*) và mọi level trong 25%; level VeryHard > Hard > thường cả về khối và lượt.
+func test_levels_follow_curve(t: T) -> void:
 	var free0 := 0
+	var blocks := 0
+	var inside := 0
 	var count := 0
-	for id in range(DifficultyCurve.SHAPED_FROM, TOTAL + 1):
+	var by_tag := {0: [0, 0, 0], 1: [0, 0, 0], 2: [0, 0, 0]}  # tag -> [level, khối, lượt]
+	for id in range(DifficultyCurve.MOTIF_FROM, TOTAL + 1):
 		var d := _level(id)
 		if d.is_empty():
 			continue
 		var n: int = d["blocks"].size()
-		t.ok(absi(n - DifficultyCurve.block_count(id)) <= 2 or (d["pulse_sides"].size() > 0 and n <= Gen.GATE_MAX_BLOCKS + 2),
-			"L%d số khối %d ~ đường cong %d" % [id, n, DifficultyCurve.block_count(id)])
+		t.ok(absi(n - DifficultyCurve.block_count(id)) <= 2, "L%d số khối %d ~ đường cong %d" % [id, n,
+			DifficultyCurve.block_count(id)])
+		var want := DifficultyCurve.wave_count(id)
+		var rounds := Solver.clear_rounds(d)
+		var tol := maxi(Config.LEVEL_ROUNDS_TOL_MIN, roundi(want * Config.LEVEL_ROUNDS_TOL))
+		if absi(rounds - want) <= tol:
+			inside += 1
+		t.ok(absi(rounds - want) <= maxi(2, ceili(want * 0.25)), "L%d %d lượt dọn bàn ~ đường cong %d" % [id, rounds, want])
+		var tag := 2 if DifficultyCurve.is_very_hard(id) else (1 if DifficultyCurve.is_hard(id) else 0)
+		if id > 20:
+			by_tag[tag][0] += 1
+			by_tag[tag][1] += n
+			by_tag[tag][2] += rounds
 		var b := BoardState.new(d)
 		for bid in b.block_ids():
 			if b.peek(bid) == "exit":
 				free0 += 1
 		blocks += n
 		count += 1
-	t.ok(float(blocks) / count >= 27.0 * DifficultyCurve.COUNT_SCALE, "trung bình %.1f khối mỗi level" % (float(blocks) / count))
+	t.ok(inside >= count * 0.95, "%d/%d level đúng khoảng lệch số lượt" % [inside, count])
 	t.ok(float(free0) / blocks <= 0.3, "chỉ %.0f%% khối thoát được ngay lúc đầu" % (100.0 * free0 / blocks))
+	for k in [1, 2]:
+		for f in [1, 2]:
+			var lo: Array = by_tag[k - 1]
+			var hi: Array = by_tag[k]
+			t.ok(float(hi[f]) / hi[0] > float(lo[f]) / lo[0], "tag %d %s hơn tag %d (%.1f > %.1f)" % [k,
+				"khối" if f == 1 else "lượt", k - 1, float(hi[f]) / hi[0], float(lo[f]) / lo[0]])
+
+
+## Tag khớp đường cong: level Hard / VeryHard là đỉnh, nhiều khối và nhiều lượt hơn các level thường quanh nó.
+func test_tags_are_curve_peaks(t: T) -> void:
+	for id in range(DifficultyCurve.MOTIF_FROM, TOTAL + 1):
+		if not DifficultyCurve.is_hard(id):
+			continue
+		var nb: Array[int] = []
+		var nw: Array[int] = []
+		for j in range(maxi(DifficultyCurve.MOTIF_FROM, id - DifficultyCurve.PEAK_SPAN), mini(TOTAL, id + DifficultyCurve.PEAK_SPAN) + 1):
+			if not DifficultyCurve.is_hard(j):
+				nb.append(DifficultyCurve.block_count(j))
+				nw.append(DifficultyCurve.wave_count(j))
+		if nb.is_empty():
+			continue
+		var mb := _median(nb)
+		var mw := _median(nw)
+		t.ok(DifficultyCurve.block_count(id) > mb or DifficultyCurve.block_count(id) == DifficultyCurve.BLOCK_CAP,
+			"L%d tag: %d khối > trung vị %.1f" % [id, DifficultyCurve.block_count(id), mb])
+		var cap := ceili(DifficultyCurve.block_count(id) * DifficultyCurve.WAVE_SHARE_MAX)
+		t.ok(DifficultyCurve.wave_count(id) > mw or DifficultyCurve.wave_count(id) == cap,
+			"L%d tag: %d lượt > trung vị %.1f" % [id, DifficultyCurve.wave_count(id), mw])
+
+
+func _median(v: Array[int]) -> float:
+	v.sort()
+	@warning_ignore("integer_division")
+	var mid := v.size() / 2
+	return float(v[mid]) if v.size() % 2 == 1 else 0.5 * float(v[mid - 1] + v[mid])
 
 
 func _early_range(id: int) -> Array:
@@ -253,7 +303,8 @@ func test_early_levels_follow_curve(t: T) -> void:
 		if d.is_empty():
 			continue
 		var n: int = d["blocks"].size()
-		t.ok(absi(n - DifficultyCurve.block_count(id)) <= 1 or Gen.mechanics_for(id).size() > 0, "L%d số khối %d ~ đường cong %d" % [id, n, DifficultyCurve.block_count(id)])
+		# Từ MOTIF_FROM cắt đối xứng nên lệch tối đa 2 khối.
+		t.ok(absi(n - DifficultyCurve.block_count(id)) <= 2 or Gen.mechanics_for(id).size() > 0, "L%d số khối %d ~ đường cong %d" % [id, n, DifficultyCurve.block_count(id)])
 	# Độ khó tăng dần: trung bình số khối mỗi 10 level (bỏ level dạy cơ chế, bàn nhỏ) không giảm trong 30 level đầu (đường cong tự trũng nhẹ ở L31-40).
 	var prev := 0.0
 	for start in [1, 11, 21]:
@@ -280,8 +331,9 @@ func test_hard_follows_curve(t: T) -> void:
 			t.eq(Solver.slack_for(d), 3, "L%d HARD dư 3" % id)
 		elif id >= 4:
 			t.eq(Solver.slack_for(d), 3 if id <= 13 else 4, "L%d dư theo bậc" % id)
-	t.eq(hard, DifficultyCurve.HARD.size() + DifficultyCurve.VERY_HARD.size(), "26 level HARD/VeryHard trong L1-100")
-	t.eq(hard, 26, "26 level HARD")
+	t.eq(hard, DifficultyCurve.HARD.size() + DifficultyCurve.VERY_HARD.size(), "level HARD/VeryHard theo đường cong")
+	t.eq(DifficultyCurve.HARD.size(), 149, "149 level Hard trong L1-500")
+	t.eq(DifficultyCurve.VERY_HARD.size(), 69, "69 level VeryHard trong L1-500")
 
 
 func test_mechanics_follow_unlock_table(t: T) -> void:
@@ -299,15 +351,42 @@ func test_mechanics_follow_unlock_table(t: T) -> void:
 	for m in MECHS:
 		var u := int(Config.UNLOCK[m])
 		t.eq(int(first.get(m, 0)), u, "%s xuất hiện đầu tiên ở level mở khoá %d" % [m, u])
-		t.ok(int(count.get(m, 0)) >= (TOTAL - u) * 0.5, "%s dùng đủ nhiều (%d level)" % [m, int(count.get(m, 0))])
-	# Cơ chế mới không biến mất sau level dạy: 10 level sau mỗi level dạy đều còn cơ chế đó.
+		# Cổng nhịp chỉ ở bàn tới Gen.GATE_MAX_BLOCKS khối nên ít hơn.
+		var share := float(count.get(m, 0)) / float(TOTAL - u + 1)
+		t.ok(share >= (0.08 if m == "pulse" else 0.2), "%s dùng đủ nhiều (%d level)" % [m, int(count.get(m, 0))])
+	# Cơ chế mới không biến mất sau level dạy: trong Config.LEVEL_MECH_FRESH level sau level dạy, mọi level không nghỉ
+	# (trừ level dạy khác, và bàn quá to cho cổng nhịp) đều có cơ chế đó.
 	for m in MECHS:
 		var u := int(Config.UNLOCK[m])
-		var hit := 0
-		for id in range(u + 1, u + 11):
-			if _mechs(_level(id)).has(m):
-				hit += 1
-		t.ok(hit >= 8, "%s có mặt trong 10 level sau level dạy (%d)" % [m, hit])
+		for id in range(u + 1, u + Config.LEVEL_MECH_FRESH + 1):
+			if Gen.is_rest(id) or Gen.teach_mech(id) != "":
+				continue
+			if m == "pulse" and DifficultyCurve.block_count(id) > Gen.GATE_MAX_BLOCKS:
+				continue
+			t.ok(_mechs(_level(id)).has(m), "L%d có %s (vừa mở ở L%d)" % [id, m, u])
+
+
+## Mỗi level tối đa Config.LEVEL_MECH_MAX loại cơ chế, đúng `mech_plan`; level nghỉ không có cơ chế nào và từ L15 cứ
+## vài level lại có một level nghỉ.
+func test_mechanics_per_level(t: T) -> void:
+	var gap := 0
+	for id in range(1, TOTAL + 1):
+		var d := _level(id)
+		if d.is_empty():
+			continue
+		var mech := _mechs(d)
+		t.ok(mech.size() <= Config.LEVEL_MECH_MAX, "L%d có %d cơ chế" % [id, mech.size()])
+		var keys: Array = mech.keys()
+		keys.sort()
+		var plan: Array = Gen.mech_plan(id)
+		plan.sort()
+		t.eq(keys, plan, "L%d cơ chế theo mech_plan" % id)
+		if Gen.is_rest(id):
+			t.eq(mech.size(), 0, "L%d nghỉ: không cơ chế" % id)
+		if id <= int(Config.UNLOCK["stone"]):
+			continue
+		gap = 0 if mech.is_empty() else gap + 1
+		t.ok(gap < 2 * Config.LEVEL_REST_EVERY, "L%d: %d level liền có cơ chế" % [id, gap])
 
 
 func test_teaching_levels(t: T) -> void:
@@ -324,7 +403,7 @@ func test_teaching_levels(t: T) -> void:
 		t.ok(not bool(d["hard"]), "L%d không HARD" % id)
 		# Level dạy sinh to như level thường (từ L14 xếp theo hình), không còn bảng làm tay nhỏ.
 		var n: int = d["blocks"].size()
-		t.ok(n >= 15, "L%d level to (%d khối)" % [id, n])
+		t.ok(n >= DifficultyCurve.MOTIF_MIN_BLOCKS, "L%d level to (%d khối)" % [id, n])
 		var b := BoardState.new(d)
 		t.ok(b.hint() != "", "L%d có khối thoát ngay" % id)
 		var exits := 0
@@ -408,8 +487,8 @@ func test_teaching_levels(t: T) -> void:
 
 
 func test_generator_reproduces_files(t: T) -> void:
-	# Level sinh ra khớp file đóng gói khi dùng seed gốc (mẫu vài level, không đủ thời gian cho cả 100).
-	for id in [22, 41, 77, 100]:
+	# Level sinh ra khớp file đóng gói khi dùng seed gốc (mẫu vài level, không đủ thời gian cho cả 500).
+	for id in [22, 41, 77, 100, 233, 377, 500]:
 		var d := _level(id)
 		if d.is_empty():
 			continue

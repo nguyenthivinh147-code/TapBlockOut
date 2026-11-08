@@ -11,18 +11,16 @@ const DRAG := 3.0  # mỗi giây
 const CHIP_SPEED := Vector2(2.0, 5.0)  # ô/giây
 const CHIP_LIFE := Vector2(0.3, 0.5)
 const CHIP_SIZE := Vector2(0.06, 0.13)  # bán kính vụn, theo ô
-const BIT_SIZE := Vector2(0.11, 0.17)  # nửa đường chéo khối vuông nhỏ bị nghiền (trước khi bo góc), theo ô
-const BIT_SMALL := 1  # mỗi khối vuông nhỏ kèm chừng này mảnh nhỏ hơn, bay riêng
-const BIT_SMALL_SIZE := Vector2(0.05, 0.09)  # nửa đường chéo mảnh nhỏ hơn, theo ô
-const BIT_SMALL_JITTER := 0.25  # mảnh nhỏ hơn ra lệch ngang khỏi khối vuông đi kèm tối đa chừng này, theo ô
+const BIT_SIZE := Vector2(0.165, 0.255)  # nửa đường chéo mảnh to (khối vuông) bị nghiền (trước khi bo góc), theo ô
+const BIT_SMALL_SIZE := Vector2(0.075, 0.135)  # nửa đường chéo mảnh nhỏ bị nghiền, theo ô
 const BIT_ROUND := 0.45  # bán kính bo góc khối vuông nhỏ, theo nửa cạnh
 const BIT_ARC := 2  # số đỉnh trên mỗi góc bo
 const BIT_RIM := 0.5  # viền mặt gãy của khối vuông nhỏ hẹp còn chừng này lần viền mảnh thường
-const BIT_SPEED := Vector2(2.2, 5.5)  # ô/giây, phun ra khỏi thanh
-const BIT_SPREAD := 0.5  # tốc độ ngang tối đa, theo tốc độ phun
+const BIT_SPEED := Vector2(3.0, 7.5)  # ô/giây, phun ra khỏi thanh
+const BIT_SPREAD := 0.8  # tốc độ ngang tối đa, theo tốc độ phun
 const BIT_LIFE := Vector2(1.1, 1.6)
 const BIT_FADE := 0.45  # bắt đầu mờ từ phần đời này, sớm hơn FADE nên mờ chậm, dịu hơn
-const BIT_DRAG := 1.8  # mỗi giây, hãm nhẹ hơn vụn va chạm để bay xa khoảng 1–3 ô
+const BIT_DRAG := 1.2  # mỗi giây, hãm nhẹ hơn vụn va chạm để bay xa khoảng 2–5 ô
 const BIT_GRAVITY := 3.0  # ô/giây², trôi nhẹ chứ không rơi
 const BIT_DEPTH := 0.8  # bề dày theo bán kính, gần như khối lập phương
 const BIT_SPIN := Vector2(3.0, 9.0)  # rad/giây
@@ -96,25 +94,23 @@ static func grinder(parent: Node, cells: Array, cell: float, ramp: Dictionary, c
 	return node
 
 
-## Một khối vuông nhỏ bo góc phun ra ở `pos` (toạ độ canvas) theo hướng `dir`, kèm BIT_SMALL mảnh nhỏ hơn ra cạnh đó;
-## màu lấy ở điểm `at` (toạ độ ô của khối).
-func bit(at: Vector2, pos: Vector2, dir: Vector2, rng: RandomNumberGenerator) -> void:
-	_add_bit(at, pos, dir, rng.randf_range(BIT_SIZE.x, BIT_SIZE.y), rng)
-	var perp := Vector2(-dir.y, dir.x)
-	for i in BIT_SMALL:
-		var side := perp * rng.randf_range(-BIT_SMALL_JITTER, BIT_SMALL_JITTER) * _cell
-		_add_bit(at, pos + side, dir, rng.randf_range(BIT_SMALL_SIZE.x, BIT_SMALL_SIZE.y), rng)
+## Một mảnh nghiền bo góc phun ra ở `pos` (toạ độ canvas) theo hướng `dir`: mảnh to (BIT_SIZE), hoặc mảnh nhỏ
+## (BIT_SMALL_SIZE) khi `small`; màu lấy ở điểm `at` (toạ độ ô của khối).
+func bit(at: Vector2, pos: Vector2, dir: Vector2, rng: RandomNumberGenerator, small: bool = false) -> void:
+	var size := BIT_SMALL_SIZE if small else BIT_SIZE
+	_add_bit(at, pos, dir, rng.randf_range(size.x, size.y), rng)
 	_step(0.0)
 	queue_redraw()
 
 
-## Một khối vuông bo góc nửa đường chéo `r` (theo ô) ở `pos`, phun theo `dir` và toả sang hai bên.
+## Một khối vuông bo góc nửa đường chéo `r` (theo ô) hiện ngay ngoài `pos`: tâm lùi theo `dir` đúng `r` nên mảnh to
+## không đè lên thanh lúc mới ra. Phun theo `dir` và toả sang hai bên.
 func _add_bit(at: Vector2, pos: Vector2, dir: Vector2, r: float, rng: RandomNumberGenerator) -> void:
 	var poly := _rounded_square(at, r, rng.randf() * TAU)
 	var perp := Vector2(-dir.y, dir.x)
 	var speed := rng.randf_range(BIT_SPEED.x, BIT_SPEED.y) * _cell
 	var vel := dir * speed + perp * speed * rng.randf_range(-BIT_SPREAD, BIT_SPREAD)
-	var xf := Transform2D(0.0, pos - _centroid(poly) * _cell)
+	var xf := Transform2D(0.0, pos + dir * r * _cell - _centroid(poly) * _cell)
 	_add_shard(poly, _cell, xf, vel, rng.randf_range(BIT_LIFE.x, BIT_LIFE.y), rng)
 	var s := _shards[-1]
 	s.depth = r * _cell * BIT_DEPTH

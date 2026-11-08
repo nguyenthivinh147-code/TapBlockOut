@@ -41,6 +41,8 @@ func test_play_shows_level(t: T) -> void:
 	var h := _home()
 	t.eq(h.path_nodes[1].num.text, "7", "mốc hiện tại ghi số level")
 	t.eq(h.play_label.text, "PLAY", "nút Chơi ghi PLAY")
+	var shine: Node = h.play_btn.get_node_or_null("Motion")
+	t.ok(shine != null and int(shine.get("kind")) == HomeScript.UiMotion.SHINE, "nút Chơi có dải sáng quét dọc")
 	t.ok(not h.hard_tag.visible, "level thường không ghi độ khó")
 	t.eq(h.gold_label.text, "1234", "gold")
 	t.ok(not h.play_btn.disabled, "nút Chơi bấm được")
@@ -56,9 +58,14 @@ func test_early_levels_hide_lives_gift_shop(t: T) -> void:
 	t.ok(not h.gift_btn.get_parent().visible, "L1 ẩn quà")
 	t.ok(h.shop_btn.disabled, "L1 shop khoá")
 	t.ok(h.shop_caption.text.contains("5"), "shop khoá ghi Level 5")
+	t.ok(not h.challenge_btn.get_parent().visible, "Daily Challenge tắt (Config.FEATURES) thì ẩn icon")
+	t.ok(h.leaderboard_btn.get_parent().visible, "Bảng xếp hạng vẫn hiện")
+	t.ok(not h.offer_chip.get_parent().visible, "không có offer thì không hiện icon offer")
+	h.queue_free()
+	Config.FEATURES.challenge = true
+	h = _home()
 	t.ok(h.challenge_btn.disabled, "challenge khoá")
 	t.eq(h.challenge_caption.text, "Level 50", "challenge ghi Level 50")
-	t.ok(not h.offer_chip.get_parent().visible, "không có offer thì không hiện icon offer")
 	h.queue_free()
 
 
@@ -163,11 +170,13 @@ func test_equipped_avatar_shown(t: T) -> void:
 
 func test_challenge_button_emits_action(t: T) -> void:
 	var g := _g(60)
+	Config.FEATURES.challenge = true
 	var h := _home()
 	t.ok(not h.challenge_btn.disabled, "challenge mở ở L60")
 	t.eq(_press(h, h.challenge_btn).get("action", ""), "challenge", "Home chỉ phát closed(challenge)")
 	h.queue_free()
 	g.reset_for_test(DIR + "/save.json")
+	Config.FEATURES.challenge = true
 	Config.demo_override = 1
 	h = _home()
 	t.ok(h.challenge_btn.disabled, "demo khoá challenge")

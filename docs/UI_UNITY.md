@@ -36,6 +36,7 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
   - `UIHoldAnim_Pulse` (phóng khi giữ), `PressEffect`.
   - Âm thanh `Sfx.play("button")` khi prefab có `AudioUIController`; rung `Game.haptic(20)` khi có `ClickVibrationEffect`.
   - Hình nút đúng cỡ prefab, vùng chạm nới tới 96 px viewport (`hit_size()`).
+  - Nút X đóng popup (tên prefab trong `UnityUI.CLOSE_NAMES`, đọc từ meta `u` nên code đổi tên node vẫn khớp): lúc nối (`_wire`, không chạy khi bake), `_grow_close` phóng nút và hình prefab bên trong `Config.CLOSE_ART_SCALE` lần quanh tâm nút. Vùng chạm là `CLOSE_HIT_SCALE` lần vùng chạm cũ (`UButton.art_scale`, `hit_scale`). Meta `u_close` đánh dấu nút đã phóng (bản chép giữ meta, nên không phóng hai lần). Sau khi popup xếp xong, `_keep_on_canvas` dịch X vào trong canvas, cách mép `CLOSE_EDGE_GAP`. Scene vẫn lưu cỡ prefab.
   - Code màn nghe tín hiệu `clicked`. Test vẫn dùng `pressed.emit()`; `clicked` bỏ qua cú bấm đã bị ScrollRect kéo.
   - Toggle có `ToggleGroup` (ButtonGroup) và `ToggleAnimator`.
 - Layout: `HorizontalLayoutGroup`, `VerticalLayoutGroup`, `GridLayoutGroup`, `LayoutElement`, `ContentSizeFitter` chạy như Unity khi `build()` và khi gọi `relayout()`. Con của layout group lưu ở 0,0 trong prefab, Unity xếp lúc chạy.
@@ -63,6 +64,11 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
     - Icon video ads (TV `Resources_moved_UI_Maincenter:UI_Maincenter_5`, clapper `Resources_UI_Maincenter:UI_Maincenter_7`) nhảy rung theo nhịp 2 s: nhún, bật lên 15% chiều cao, co giãn khi tiếp đất, lắc ±12° ba lần rồi đứng yên. Lần đầu sau 0.5 s, chờ popup hiện xong. `Resources_moved_UI_Maincenter:UI_Maincenter_7` là đồng hồ, không nhảy.
     - Icon `art_lose` trong khung thẻ thua (`lose_card` thay tranh `Popup_Lose` của prefab, tự gắn `UiMotion.SOB`) nấc như đang khóc theo nhịp 1.8 s: 0.9 s đầu kéo dài lên trên 3 lần (cao thêm tới 6%, hẹp lại một nửa mức đó, mỗi lần yếu đi 15%), phần còn lại đứng yên. Chân (80% chiều cao icon, y 408 của ảnh 512) giữ nguyên chỗ nên icon không dời, không co xuống, không nghiêng. Lần đầu sau 0.3 s.
     - Giọt nước mắt là node `Tear` riêng (ảnh `art_lose_tear`, con của icon nên nhấp nhô theo; `tools/split_tear.gd` tách nó khỏi `art_lose`), `UiMotion.TEAR` cùng nhịp với tiếng nấc: ứa ra dưới mi mắt (0.35 s, từ 30% cỡ, hiện dần), đọng tới 0.55 s, chảy xuống má 2.2 lần chiều cao giọt (nhanh dần, dài ra tới 18%), mờ dần từ 1.3 s, tắt hẳn ở 1.55 s, ẩn tới tiếng nấc sau. Motion này giữ alpha của node.
+    - Shop (`src/ui/shop_fx.gd`, node `ShopFx` con cuối của màn, gắn thêm ba kiểu motion dưới đây). `attach(c, kind, delay)` lùi vòng đầu `delay` giây nên các node cùng kiểu chạy lệch nhau, lan từ trên xuống:
+      - `FLOAT`: icon gold của các ô (`BG/Icon`, cả ô ADS Daily) nổi lên 5% chiều cao rồi về chỗ cũ, chu kỳ 2.4 s, không chìm dưới chỗ cũ. Ô sau trễ 0.3 s.
+      - `WOBBLE`: nhãn `SellBadge` (-50%) lắc mỗi 2.6 s: 0.6 s đầu nghiêng 2.5 lượt (tới 12°, nhỏ dần) và phồng tới 10%, rồi đứng yên. Nhãn sau trễ 0.15 s.
+      - `SHINE`: vệt sáng xiên (`src/ui/shine.gdshader`, gắn làm material của node) quét qua nút mua (`Button_Purchase`, `Button_Ads`, phần `image`) và nền gói gold lớn trong 0.65 s, mỗi 3.2 s. Node đã có material riêng thì giữ nguyên, không loé. Nút đang khoá (đã sở hữu, đang mua, hết video) không loé; host là chính nút (nút Chơi ở Home) thì xét nút đó. Nút sau trễ 0.12 s.
+      - Vòng đầu của cả ba bắt đầu sau 0.7 s, lúc các thẻ đã hiện xong.
     - Motion cộng lên vị trí, scale, góc của chính node. Giá trị do nơi khác ghi (layout, xoay, reveal, nhún nút) thành gốc mới nên không trôi. Node ẩn thì dừng và trả về gốc.
   - Đóng popup thì ẩn ngay, như `HideLastStackLayer`.
 - SafeAreaUIAdjuster: anchor theo `DisplayServer.get_display_safe_area()`.
@@ -131,7 +137,7 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `popup_notice` | `PopupOkLayer` |
 | `popup_reward` | `PopupRewardLayer` |
 | `popup_update` | `CheckUpdateLayer` |
-| `download_data`, `splash` | `DownloadDataLayer`; `Loadingscreen` và `CandySort_logo` thay bằng `assets/ui/loading_bg.png` (9:16, phủ kín màn) và `assets/ui/loading_logo.png` (tên game có sẵn trong logo) |
+| `download_data`, `splash` | `DownloadDataLayer`; `Loadingscreen` và `CandySort_logo` thay bằng `assets/ui/loading_bg.png` (9:16) và `assets/ui/loading_logo.png` (tên game có sẵn trong logo); cả hai đặt theo khung boot splash (`Splash.boot_rect`, logo ở `Splash.LOGO_RECT` của ảnh), không theo rect prefab của `LogoGame` |
 | `select_account` | `SelectAccountLayer` |
 | `popup_no_internet` | `MaintainInternetLayer` |
 | `tutorial_intro` | `MainTutorialLayer` |
@@ -150,12 +156,12 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `settings` | `SettingMainMenuLayer` |
 | `popup_language` | `SettingLanguage` |
 | `profile` | `ProfileLayer` |
-| `shop` | `ShopCashLayer`; nền `BG (2)` ẩn, thay bằng node `Background` ở gốc màn với `assets/ui/figma/bg_shop.png` (Figma node `22:16980`, dải `#3454AC` → `#CED3EB`, đã khử hạt nhiễu: mỗi hàng lấy màu trung bình, làm mượt theo chiều dọc; kéo giãn phủ kín màn) |
+| `shop` | `ShopCashLayer`; nền `BG (2)` ẩn, thay bằng node `Background` ở gốc màn với `assets/bg/bg_shop.png` (theme kẹo, 2026-11-08: sọc kẹo chéo hồng và tím nhạt như giấy gói quà, rắc cốm thưa, giữa sáng `#FEE8FD`, viền tối dần về tím `#E1B4E9`; chọn phương án 4 trong 5 phương án `art/concepts/bg_shop_v2/`; vẽ đủ màu, không phủ `self_modulate`; kéo giãn phủ kín màn). Nền cũ là dải xanh Figma node `22:16980` (`assets/ui/figma/bg_shop.png`, không còn dùng) |
 | `no_lives` | `PopupMoreHeartLayer` |
 | `popup_heart_bundle` | `PopupBundleHeart` |
 | `popup_helper_pack`, `popup_heart_support` | `SupportPackLayer` |
 | `popup_offer` | `PopupOfferLayer`, `PopupStarterPack`, `PopupSpecialPack`, `PopupFlashPack` |
-| `chain_offer` | `PopupChainOffer` |
+| `chain_offer` | `PopupChainOffer`; mũi tên `UIRay` xoay 180° lúc dựng: prefab cho chúng chỉ ngược về `ChainOfferPack` (chiều các ô trượt), còn ở đây chuỗi đi xuôi từ `ChainOfferPack` (đã nhận → nhận được → khoá) nên mũi tên chỉ sang bước kế. Prefab luôn để bước hiện tại ở `ChainOfferPack (1)` (nền vàng `UI_Shop_Packs_Atlas_9`); ở đây cửa sổ đứng yên nên nền vàng đi theo ô nhận được, các ô khác nền hồng `UI_Shop_Packs_Atlas_8`. Ảnh tiêu đề `Panel/Top/Image` đổi lúc dựng từ `ic_EndlessTreasure` sang `assets/ui/art_chain_offer.png`: cùng rương vàng, ba booster của game Unity (nam châm, mũi tên, thẻ khối) thay bằng hint, move, smash của game (`tools/compose_chain_offer_art.py`, chạy lại khi đổi icon booster; file trong `assets/ui/cc/` giữ nguyên) |
 | `popup_remove_ads` | `PopupRemoveAds` |
 | `popup_ads_daily` | `DailyRewardAdLayer` |
 | `leaderboard` | `LeaderboardLayer` |

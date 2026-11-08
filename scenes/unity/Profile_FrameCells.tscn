@@ -7,26 +7,6 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_52no0"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ioicx"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rg562"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0l2jf"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_glnd4"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_07cs2"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4sqgj"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4eqem"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bh12g"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tn56i"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mqsyu"]
-
 [node name="Canvas" type="Control" unique_id=9706181]
 layout_mode = 3
 anchors_preset = 0
@@ -46,23 +26,22 @@ offset_bottom = 204.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_52no0")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ioicx")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_rg562")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_0l2jf")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_glnd4")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_07cs2")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_4sqgj")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_4eqem")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_bh12g")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_tn56i")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_mqsyu")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_52no0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_52no0")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_52no0")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_52no0")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_52no0")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_52no0")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_52no0")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_52no0")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_52no0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_52no0")
 toggle_mode = true
 flat = true
 script = ExtResource("1_8jhqd")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 transition = 0
 metadata/u = {
-"a": true,
 "cs": [{
 "OnValueChange": [],
 "changeColor": "0",
@@ -211,21 +190,11 @@ metadata/u = {
 }],
 "id": "1732982201131741401",
 "n": "Profile_FrameCells",
-"r": [0.0, 1.0, 0.0, 1.0, 110.0, -118.0, 172.0, 172.0, 0.5, 0.5],
 "tog": {
-"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
-"dur": 0.1,
 "graphic": null,
 "group": null,
 "inter": true,
-"mult": 1.0,
-"on": false,
-"sprites": {
-"disabled": null,
-"pressed": null
-},
-"target": null,
-"tr": 0.0
+"target": null
 }
 }
 metadata/u_rect = {
@@ -251,24 +220,13 @@ tex = ExtResource("3_gmo2h")
 region = Rect2(928, 988, 168, 168)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "7221706750059985616",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_66",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_66"
 },
-"n": "Select",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 31.7051, 31.7051, 0.5, 0.5]
+"n": "Select"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -293,24 +251,13 @@ tex = ExtResource("3_gmo2h")
 region = Rect2(928, 1160, 168, 168)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "631910623184760602",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_76",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_76"
 },
-"n": "Image",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, -10.0, -10.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -331,24 +278,13 @@ tex = ExtResource("3_gmo2h")
 region = Rect2(756, 816, 168, 168)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "4321367096935644994",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_64"
 },
-"n": "FrameImage",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "FrameImage"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -373,24 +309,13 @@ kind = 1
 color = Color(0.76862746, 0.76862746, 0.76862746, 0)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "4129303435138865636",
 "img": {
-"c": "c4c4c4ff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": false,
-"pa": false,
 "ppu": 0.85,
 "rt": true,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_23",
-"t": 1.0
+"sp": "Resources_UI_Maincenter:UI_Maincenter_23"
 },
-"n": "Lock",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Lock"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -412,24 +337,13 @@ region = Rect2(756, 1160, 168, 168)
 color = Color(0, 0, 0, 0.4)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "9053159022957177274",
 "img": {
-"c": "00000066",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_75",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_75"
 },
-"n": "Image",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -456,24 +370,13 @@ tex = ExtResource("3_gmo2h")
 region = Rect2(98, 515, 96, 96)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "3205580977354719160",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_18",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_18"
 },
-"n": "Image (1)",
-"r": [0.5, 0.5, 0.5, 0.5, 41.0432, -37.0432, 56.8779, 56.8779, 0.5, 0.5]
+"n": "Image (1)"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -495,10 +398,8 @@ offset_bottom = -3.1956
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": false,
 "id": "8134117388489207808",
-"n": "Equipped",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 1.0978, -2.0, -4.1956, 0.5, 0.5]
+"n": "Equipped"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -525,24 +426,13 @@ tex = ExtResource("3_gmo2h")
 region = Rect2(0, 516, 96, 96)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "4670076871419325284",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_17",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_17"
 },
-"n": "Equipped (1)",
-"r": [1.0, 0.0, 1.0, 0.0, -35.7, 40.6044, 76.7078, 76.7078, 0.5, 0.5]
+"n": "Equipped (1)"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 0),

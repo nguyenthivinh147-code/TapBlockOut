@@ -1,6 +1,6 @@
 shader_type canvas_item;
 // Thân khối kẹo: chất liệu chung từ `candy_body.gdshaderinc` (kẹo sọc hoặc crystal), thêm lớp pudding, hộp giấy,
-// nháy sáng và bóng đổ.
+// lớp sương mù, nháy sáng và bóng đổ.
 
 #include "res://src/ui/candy_body.gdshaderinc"
 
@@ -12,6 +12,8 @@ uniform float candy_a = 1.0;       // 0: bỏ thân kẹo, chỉ còn lớp pudd
 uniform float jelly = 0.0;         // lớp pudding gần trong suốt phủ trọn khối (vật cản 2 lần chạm)
 uniform float paper = 0.0;         // hộp giấy thay cho thân kẹo (khối hai lớp)
 uniform vec2 tape = vec2(-9.0);    // tâm băng dán của hộp, toạ độ ô của khối; âm là không có
+uniform float fog = 0.0;           // lớp sương phủ trên cùng (khối còn trong sương mù), 0..1
+uniform vec2 fog_origin = vec2(0.0);  // ô gốc của khối trên bàn: các khối sương cạnh nhau chung một đám sương
 
 const float SHADOW_DY = 0.09;
 const float SHADOW_BLUR = 0.13;
@@ -30,6 +32,18 @@ const float PAPER_TINT = 0.55;    // giấy nhuộm màu khối chừng này, ph
 const float PAPER_EDGE = 0.1;     // mép gấp của hộp (ô)
 const float TAPE_W = 0.11;        // nửa bề rộng băng dán (ô)
 const vec3 TAPE_COL = vec3(1.0, 0.95, 0.84);
+
+// Sương mù: lớp mờ loang phủ chồng lên khối, trôi chậm, viền mờ dần và lấn ra ngoài mép (BoardView vẽ khối sương sau
+// các khối khác nên phần lấn phủ lên mép khối bên cạnh). Phần lấn phải nằm trong lề texture SDF (Pudding.PAD, 0,31 ô).
+const float FOG_SPILL = 0.24;     // sương lấn ra ngoài mép khối chừng này (ô) rồi tắt hẳn (cộng nửa FOG_WISP < 0,30)
+const float FOG_FULL = 0.1;       // vào trong mép chừng này (ô) thì sương đủ dày
+const float FOG_WISP = 0.12;      // mép sương xô lệch theo nhiễu chừng này (ô), viền không thẳng
+const float FOG_THIN = 0.34;      // độ đục chỗ sương mỏng
+const float FOG_THICK = 0.74;     // độ đục chỗ sương dày
+const float FOG_SCALE = 0.8;      // cụm sương mỗi ô
+const vec2 FOG_DRIFT = vec2(0.07, 0.03);  // sương trôi (ô/giây)
+const vec3 FOG_LIGHT = vec3(0.97, 0.97, 1.0);
+const vec3 FOG_SHADE = vec3(0.76, 0.78, 0.9);
 
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -98,6 +112,15 @@ vec4 jelly_layer(vec2 c, float dj) {
 	return vec4(col, a);
 }
 
+// Lớp sương tại c: rgb và độ đục; d = dist(c). Nhiễu theo toạ độ ô trên bàn nên sương liền qua các khối sương kề nhau.
+vec4 fog_layer(vec2 c, float d) {
+	vec2 q = (c - vec2(pad) + fog_origin) * FOG_SCALE + TIME * FOG_DRIFT;
+	float n = crystal_noise(q) * 0.55 + crystal_noise(q * 2.3 + 7.1) * 0.3 + crystal_noise(q * 5.1 + 2.9) * 0.15;
+	float edge = smoothstep(-FOG_SPILL, FOG_FULL, d + (n - 0.5) * FOG_WISP);
+	vec3 col = mix(FOG_SHADE, FOG_LIGHT, smoothstep(0.25, 0.8, n));
+	return vec4(col, edge * mix(FOG_THIN, FOG_THICK, n));
+}
+
 void fragment() {
 	vec2 c = UV * dims;
 	float d = dist(c);
@@ -126,6 +149,14 @@ void fragment() {
 			pm = jl.rgb * ja + pm * (1.0 - ja);
 			pa = ja + pa * (1.0 - ja);
 		}
+	}
+	// sương trên cùng, cả trên lớp pudding; lấn ra ngoài mép khối nên không nhân độ phủ của thân
+	if (fog > 0.0 && body_a > 0.0) {
+		vec4 fl = fog_layer(c, d);
+		fl.rgb = mix(fl.rgb, vec3(1.0), flash * 0.3);
+		float fa = fl.a * fog;
+		pm = fl.rgb * fa + pm * (1.0 - fa);
+		pa = fa + pa * (1.0 - fa);
 	}
 	pm += SHADOW_COL * shadow * (1.0 - pa);
 	pa += shadow * (1.0 - pa);

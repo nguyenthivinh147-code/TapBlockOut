@@ -1,5 +1,7 @@
 extends RefCounted
-## Bộ sinh level (Task 9.1): 500 level (L5-504) hợp lệ, xác định, đúng cơ chế theo Config.UNLOCK, dưới 200 ms mỗi level.
+## Bộ sinh level (Task 9.1): 500 level (L5-504) hợp lệ, xác định, đúng cơ chế theo Config.UNLOCK, dưới 200 ms mỗi level
+## ở chế độ sinh trong game (`strict_rounds` false, Daily Challenge). Chế độ đóng gói (mặc định) bám số lượt dọn bàn
+## của đường cong nên chậm hơn; test_levels_all kiểm kết quả của nó.
 const T := preload("res://tests/t.gd")
 const Gen := preload("res://src/core/level_generator.gd")
 const LevelData := preload("res://src/core/level_data.gd")
@@ -42,7 +44,7 @@ func test_valid_solvable_fast(t: T) -> void:
 	for i in COUNT:
 		var id := FIRST_ID + i
 		var t0 := Time.get_ticks_usec()
-		var d := Gen.generate(id, 0)
+		var d := Gen.generate(id, 0, false)
 		var ms := float(Time.get_ticks_usec() - t0) / 1000.0
 		total_ms += ms
 		if ms > max_ms:
@@ -70,10 +72,13 @@ func test_valid_solvable_fast(t: T) -> void:
 		t.ok(BoardState.new(d).hint() != "", "id %d hint" % id)
 		t.ok(ms < MAX_MSEC, "id %d mất %.0f ms" % [id, ms])
 		var u := _uses(d)
+		var kinds := 0
 		for m in u:
 			if u[m]:
 				seen[m] += 1
+				kinds += 1
 				t.ok(id >= int(Config.UNLOCK[m]), "id %d dùng %s trước khi mở khoá" % [id, m])
+		t.ok(kinds <= Config.LEVEL_MECH_MAX, "id %d có %d cơ chế" % [id, kinds])
 	for m in seen:
 		t.ok(seen[m] > 0, "cơ chế %s không xuất hiện" % m)
 	t.ok(hards > 0, "có level HARD")
@@ -107,11 +112,20 @@ func test_blocks_form_varied_silhouettes_in_the_fixed_board(t: T) -> void:
 	var gappy := 0
 	var total := 300
 	var biggest := {false: 0, true: 0}  # cỡ khối lớn nhất trước / từ SHAPED_FROM
+	var blocks := {false: 0, true: 0}
+	var singles := {false: 0, true: 0}  # khối 1 ô
+	var forced := {false: 0, true: 0}  # khối 1 ô không tránh được: max(0, 2 * số khối - số ô) mỗi level
 	for id in range(FIRST_ID, FIRST_ID + total):
-		var d := Gen.generate(id, 0)
+		var d := Gen.generate(id, 0, false)
 		var shaped := id >= DifficultyCurve.SHAPED_FROM
+		var n_cells := 0
 		for b in d["blocks"]:
 			biggest[shaped] = maxi(int(biggest[shaped]), b["cells"].size())
+			n_cells += b["cells"].size()
+			if b["cells"].size() == 1:
+				singles[shaped] += 1
+		blocks[shaped] += d["blocks"].size()
+		forced[shaped] += maxi(0, 2 * d["blocks"].size() - n_cells)
 		var occ := _occupied(d)
 		var box := _bbox(occ)
 		t.ok(occ.size() < Config.BOARD_W * Config.BOARD_H, "id %d còn khoảng trống trên bàn" % id)
@@ -135,16 +149,23 @@ func test_blocks_form_varied_silhouettes_in_the_fixed_board(t: T) -> void:
 	t.ok(gappy >= total * 0.95, "hầu hết level không kín khung hình (%d/%d)" % [gappy, total])
 	t.ok(shapes.size() >= 40, "nhiều hình dạng khác nhau (%d/%d)" % [shapes.size(), total])
 	t.ok(layouts.size() >= total * 0.95, "cách cắt khối khác nhau (%d/%d)" % [layouts.size(), total])
-	# Không giới hạn cỡ khối (trước đây trần 5 ô): cả hình sinh tự do lẫn hình vẽ tay đều ra được khối to hơn.
-	t.ok(int(biggest[false]) > 5, "L5-13 có khối hơn 5 ô (%d)" % int(biggest[false]))
-	t.ok(int(biggest[true]) > 5, "từ L14 có khối hơn 5 ô (%d)" % int(biggest[true]))
+	# Khối tối đa Config.BLOCK_MAX_CELLS ô (trước 2026-11-05 trần 5 ô, rồi không giới hạn tới 2026-11-08).
+	for shaped in [false, true]:
+		t.ok(int(biggest[shaped]) > 5 and int(biggest[shaped]) <= Config.BLOCK_MAX_CELLS,
+			"%s khối lớn nhất %d ô" % ["L5-13" if not shaped else "từ L14", int(biggest[shaped])])
+	# Hình khoảng 3 ô mỗi khối nên không có khối 1 ô bắt buộc (max(0, 2 * số khối - số ô) = 0). Config.TILE_SINGLE_BIAS
+	# 1,5 (từ bản 500 level; trước đó 5) gộp khối 1 ô trước ít hơn nên còn khoảng 11% khối 1 ô (trước khoảng 5%).
+	for shaped in [false, true]:
+		var share := float(singles[shaped]) / float(blocks[shaped])
+		t.ok(share >= (0.05 if shaped else 0.0) and share <= 0.18 and forced[shaped] == 0, "%s khối 1 ô %.1f%% (bắt buộc %d)" % [
+			"L5-13" if not shaped else "từ L14", 100.0 * share, int(forced[shaped])])
 
 
 ## Mọi khối sương mù đều ẩn lúc đầu, dù ở rìa hình có ô trống kề.
 func test_fog_blocks_start_hidden(t: T) -> void:
 	var fogged := 0
 	for id in range(int(Config.UNLOCK["fog"]), FIRST_ID + COUNT):
-		var d := Gen.generate(id, 0)
+		var d := Gen.generate(id, 0, false)
 		var board := BoardState.new(d)
 		for b in d["blocks"]:
 			if bool(b["fog"]):
@@ -164,6 +185,16 @@ func test_every_shape_kind_is_used(t: T) -> void:
 		t.ok(seen.has(kind), "có dùng hình %s" % kind)
 
 
+## Kiểu cắt khối xen kẽ theo level: đối xứng tự do, hình học (đủ các kiểu trong GEO_STYLES), theo vùng vẽ.
+func test_cut_styles_alternate(t: T) -> void:
+	var seen := {}
+	for id in range(DifficultyCurve.MOTIF_FROM, DifficultyCurve.MOTIF_FROM + 15):
+		seen[Gen.cut_style(id)] = true
+		t.ok(Gen.cut_style(id) != Gen.cut_style(id + 1), "L%d và L%d khác kiểu cắt" % [id, id + 1])
+	for style in ["sym", "template"] + Gen.GEO_STYLES:
+		t.ok(seen.has(style), "15 level liền nhau có kiểu %s" % style)
+
+
 func test_deterministic(t: T) -> void:
 	for id in [14, 30, 40, 55, 70, 90, 100, 150, 301, 777]:
 		for sd in [0, 5, 12345]:
@@ -171,9 +202,11 @@ func test_deterministic(t: T) -> void:
 			var b := Gen.generate(id, sd)
 			t.ok(not a.is_empty(), "id %d seed %d" % [id, sd])
 			t.eq(JSON.stringify(a), JSON.stringify(b), "id %d seed %d lặp lại" % [id, sd])
-			# seed ghi trong level tái tạo đúng level đó
-			var c := Gen.generate(id, int(a["seed"]))
-			t.eq(JSON.stringify(a), JSON.stringify(c), "id %d seed ghi lại" % id)
+			# seed ghi trong level tái tạo đúng level đó khi level sinh được trước lần thử Gen.COUNT_RELAX_EVERY
+			# (từ đó bộ sinh bớt khối mục tiêu, như L55 seed 12345).
+			if int(a["seed"]) - sd < Gen.COUNT_RELAX_EVERY:
+				var c := Gen.generate(id, int(a["seed"]))
+				t.eq(JSON.stringify(a), JSON.stringify(c), "id %d seed ghi lại" % id)
 
 
 func test_seeds_differ(t: T) -> void:
@@ -199,6 +232,31 @@ func test_mechanics_for(t: T) -> void:
 	t.eq(Gen.mechanics_for(13).size(), 0, "L13 chưa cơ chế")
 	t.eq(Gen.mechanics_for(14), ["stone"] as Array[String], "L14")
 	t.eq(Gen.mechanics_for(90).size(), 6, "L90 đủ 6")
+
+
+## mech_plan: level dạy chỉ cơ chế mới; trước L14 và level nghỉ không có; còn lại 1..LEVEL_MECH_MAX cơ chế đã mở,
+## cơ chế vừa mở luôn có, cổng nhịp chỉ ở bàn tới GATE_MAX_BLOCKS khối; cùng id cùng kết quả.
+func test_mech_plan(t: T) -> void:
+	var sizes := {}
+	for id in range(1, 601):
+		var plan := Gen.mech_plan(id)
+		t.eq(plan, Gen.mech_plan(id), "L%d xác định" % id)
+		var teach := Gen.teach_mech(id)
+		if teach != "":
+			t.eq(plan, [teach] as Array[String], "L%d dạy %s" % [id, teach])
+			continue
+		if id < int(Config.UNLOCK["stone"]) or Gen.is_rest(id):
+			t.eq(plan.size(), 0, "L%d không cơ chế" % id)
+			continue
+		t.ok(plan.size() >= 1 and plan.size() <= Config.LEVEL_MECH_MAX, "L%d có %d cơ chế" % [id, plan.size()])
+		sizes[plan.size()] = true
+		for m in plan:
+			t.ok(Gen.mechanics_for(id).has(m), "L%d: %s đã mở" % [id, m])
+		if plan.has("pulse"):
+			t.ok(DifficultyCurve.block_count(id) <= Gen.GATE_MAX_BLOCKS, "L%d: cổng nhịp trên bàn nhỏ" % id)
+	t.eq(sizes.size(), Config.LEVEL_MECH_MAX, "có level 1, 2 và 3 cơ chế")
+	t.ok(Gen.is_rest(15) and not Gen.is_rest(16), "L15 nghỉ, L16 không")
+	t.ok(not Gen.is_rest(55), "L55 là level dạy, không nghỉ")
 
 
 func test_gen_tool_roundtrip(t: T) -> void:

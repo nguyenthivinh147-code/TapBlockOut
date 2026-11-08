@@ -1,6 +1,7 @@
 extends "res://src/ui/stub_ui.gd"
 ## Wireframe 7.5 Weekly Pass Upsell: giới thiệu Weekly Pass. Chưa nối logic.
-## No Unity prefab: PopupOkLayer frame (UnityKit) with the time pill of PopupWinStreakMain, the light1 glow of
+## No Unity prefab: PopupOkLayer frame (UnityKit) dressed in PopupFlashPack's art (Popup_FlashPack as a 9-sliced
+## panel, Popup_FlashPack_Title as the header with the title tilted on its ribbon), the time pill of PopupWinStreakMain, the light1 glow of
 ## PopupWinStreakInstruction's pack preview (the game's pack art instead of StarterPack), the perks as
 ## DailyRewardAdLayer description rows (tick icon, text 40) on the cream well and a green purchase pill.
 

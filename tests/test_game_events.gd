@@ -37,11 +37,11 @@ func _win(g: Node, attempt: Dictionary) -> void:
 
 func test_unlock_level(t: T) -> void:
 	var g := _g()
-	t.eq(g.weekly_unlock_level(), 28, "level HARD thứ hai là L28")
-	g.s.level = 28
-	t.eq(g.weekly_state(), "locked", "chưa qua L28")
-	g.s.level = 29
-	t.eq(g.weekly_state(), "active", "qua L28, thứ Tư")
+	t.eq(g.weekly_unlock_level(), 26, "level HARD thứ hai là L26 (Hard: L23, L26)")
+	g.s.level = 26
+	t.eq(g.weekly_state(), "locked", "chưa qua L26")
+	g.s.level = 27
+	t.eq(g.weekly_state(), "active", "qua L26, thứ Tư")
 	g.test_now = MON + 3 * 3600
 	t.eq(g.weekly_state(), "waiting", "thứ Hai 03:00")
 

@@ -71,14 +71,15 @@ static func save(screen: Control, path: String) -> int:
 		for m in UnityUI.RUNTIME_METAS:
 			if n.has_meta(m):
 				n.remove_meta(m)
-		# Pieces built from a spec carry their children's specs; the scene holds the children.
-		if n.owner == null and n.has_meta("u") and (n.get_meta("u") as Dictionary).has("ch"):
-			var spec: Dictionary = (n.get_meta("u") as Dictionary).duplicate()
-			spec.erase("ch")
-			n.set_meta("u", spec)
 		# Nodes the script added; nodes of an instanced layer keep that scene as owner.
 		if n.owner == null:
 			n.owner = screen
+	# Only the spec keys runtime reads (pieces built from a spec carry their children's, which the scene holds), one
+	# box per margins. Run tools/slim_scenes.gd on the layers first, or slimmed metas of their nodes become overrides.
+	UnityUI.slim(screen)
+	# Nodes the script added unnamed or under a sibling's name are auto-named "@Class@N"; a saved name like that
+	# crashes later runs (UnityUI.readable_names).
+	UnityUI.readable_names(screen, screen)
 	# Changes to an instanced scene's nodes and nodes added under it are saved only when its children are
 	# editable. A Unity layer Canvas always is (the screen hides, resizes and fills prefab nodes); another screen's
 	# scene (board_view in level) only when nodes were added under it, so its children are not copied in.

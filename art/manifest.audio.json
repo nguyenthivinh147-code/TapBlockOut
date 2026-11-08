@@ -350,5 +350,36 @@
       "lufs": -20.0,
       "true_peak_db": -2.57
     }
+  },
+  {
+    "id": "sfx_shatter",
+    "tool": "comfyui MCP start_game_audio/collect_game_audio",
+    "workflow": "audio_stable_audio_3_medium_base (Stable Audio 3 Medium Base)",
+    "category": "SFX",
+    "seconds_generated": 2,
+    "seed": 7307,
+    "steps": 50,
+    "use_reprompt": false,
+    "prompt": "satisfying ASMR crunch of a hard candy being crushed and ground, crisp crackly sugar crumble then small candy bits softly pattering down, dry close microphone, short, no music, no reverb",
+    "negative_prompt": "harsh, loud, distorted, clipping, music, speech, explosion, glass shatter, ringing tone, whistle, hum, beep, sine tone, metal, machine, motor, drill, footsteps, long tail",
+    "prompt_id": "34c96c0a-f87e-4def-afd0-afa08cecd493",
+    "source": "art/audio/sfx_shatter.mp3",
+    "source_format": "mp3",
+    "source_sha256": "4d5ddfd28d0c890315f610832fcca64ff0d834fcdf0939d60f5661ec501fe1f5",
+    "output": "assets/sfx/sfx_shatter.wav",
+    "output_sha256": "7bb3fba2e3cca8594045b6d9d78b04829ed5742b5ca323d739c14551ff6165f4",
+    "output_bytes": 61782,
+    "processing": {
+      "format": "wav mono 44.1kHz 16-bit",
+      "seconds": 0.7,
+      "max_seconds": 0.7,
+      "start_seconds": 0.25,
+      "lowpass_hz": 3000,
+      "soften_ms": 3,
+      "peak_db": -3.0,
+      "rms_db": -22.61,
+      "steps": "tools/process_sfx.gd --start=0.25 --max=0.7 --lowpass=3000 --soften=3: drop the stray click and gap before 0.3 s, low-pass 3 kHz 12 dB/octave, soften each crackle's attack over 3 ms, trim silence, cap length, fade, normalize peak -3 dBFS"
+    },
+    "note": "2026-11-08: khoi bi nghien qua thanh. Vun keo cung gion, day trong 0,4 giay dau roi lach tach thua dan; dinh 100 ms -15,1 LUFS (sfx_exit -14,3). Chon seed 7307 trong 8 ban: 7301, 7302 (prompt 'quick crunchy grinding ... tinkling candy bits') co vach rit 2,5 kHz noi 23-28 dB va cat dinh 150-230 mau; 7303, 7304 qua choi (trong tam pho 11-12 kHz); 7305, 7306 (prompt 'crunchy sugar candy crumbling ... rock candy') xi nhu snack, nang >8 kHz, cat dinh 280-400 mau; 7308 thua va mong. Ban 7307 doan 0,30-1,00 giay: khong vach rit trong 0,6-8 kHz, 300 Hz-2 kHz / 2-6 kHz / >8 kHz = -5,0 / -4,5 / -6,4 dB, hut 1,1 dB qua loa dien thoai, 24 mau cat dinh. Cung ngay, nguoi dung nghe thay gion qua nen lam em tu cung ban goc bang --lowpass=3000 --soften=3: tam pho 5,0 -> 1,8 kHz, nang luong tren 4 kHz khoang 40% -> 3,5%, do vot dinh trong tung doan 5 ms 10,2 -> 8,0 dB (sfx_exit 7,4); dinh 100 ms -15,4 -> -17,4 LUFS (sfx_exit -14,8, cung cach do), hut them 0,1 dB qua loa dien thoai"
   }
 ]

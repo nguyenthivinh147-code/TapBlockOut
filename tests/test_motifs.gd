@@ -63,35 +63,66 @@ func test_every_drawing_fits_and_is_symmetric(t: T) -> void:
 				xs[c.x] = true
 				ys[c.y] = true
 			t.ok(xs.has(0) and xs.has(w - 1) and ys.has(0) and ys.has(h - 1), "%s bản vẽ không thừa hàng hay cột trống" % tag)
+			# Vùng vẽ (kiểu cắt "template"): lật qua trục đối xứng thì vùng thành vùng (cùng tên hoặc một cặp tên), mỗi
+			# mảnh vùng ít nhất 2 ô để không ép ra khối 1 ô.
+			var regions: Dictionary = v["regions"]
+			for axis in ["h", "v"]:
+				if not bool(v["sym_" + axis]):
+					continue
+				var fwd := {}
+				var back := {}
+				var ok := true
+				for c: Vector2i in regions:
+					var m := Vector2i(w - 1 - c.x, c.y) if axis == "h" else Vector2i(c.x, h - 1 - c.y)
+					var r: String = regions[c]
+					var rm: String = regions[m]
+					ok = ok and str(fwd.get(r, rm)) == rm and str(back.get(rm, r)) == r
+					fwd[r] = rm
+					back[rm] = r
+				t.ok(ok, "%s vùng vẽ đối xứng qua trục %s" % [tag, axis])
+			var by_region := {}
+			for c: Vector2i in regions:
+				if not by_region.has(regions[c]):
+					by_region[regions[c]] = []
+				by_region[regions[c]].append(c)
+			for r in by_region:
+				for size in _components(by_region[r]):
+					t.ok(size >= 2, "%s vùng '%s' không có mảnh 1 ô" % [tag, r])
 
 
 func test_arrows_point_four_ways(t: T) -> void:
 	# Mũi tên lên và lật xuống; mũi tên ngang sang phải và lật sang trái.
 	var up := Motifs.variants("arrow")
-	t.eq(up.size(), 6, "mũi tên dọc: 3 cỡ x (lên, xuống)")
+	t.eq(up.size(), Motifs.MOTIFS["arrow"]["sizes"].size() * 2, "mũi tên dọc: mỗi cỡ hai bản (lên, xuống)")
 	var top: Array = up[0]["cells"]
 	var down: Array = up[1]["cells"]
 	t.ok(top.has(Vector2i(3, 0)) and down.has(Vector2i(3, int(up[1]["h"]) - 1)), "mũi nhọn ở đầu tương ứng")
 	var side := Motifs.variants("arrow_side")
-	t.eq(side.size(), 4, "mũi tên ngang: 2 cỡ x (phải, trái)")
+	t.eq(side.size(), Motifs.MOTIFS["arrow_side"]["sizes"].size() * 2, "mũi tên ngang: mỗi cỡ hai bản (phải, trái)")
 	t.ok(bool(side[0]["sym_v"]) and not bool(side[0]["sym_h"]), "mũi tên ngang đối xứng trên dưới")
 
 
 func test_every_size_band_has_choices(t: T) -> void:
-	# Mỗi số khối mục tiêu từ 15 tới 40 (nhân COUNT_SCALE) có ít nhất 8 hình vừa (không tính đá).
-	var k := DifficultyCurve.COUNT_SCALE
-	for n in range(15 * k, 40 * k + 1):
+	# Mọi số khối mục tiêu của level dùng hình vẽ tay (L5-500, gồm Daily Challenge) có ít nhất 8 hình vừa (không tính đá);
+	# dưới 20 khối (L5-13) ít nhất 4 hình.
+	var lo := 1 << 20
+	var hi := 0
+	for id in range(DifficultyCurve.MOTIF_FROM, DifficultyCurve.last_level() + 1):
+		lo = mini(lo, DifficultyCurve.block_count(id))
+		hi = maxi(hi, DifficultyCurve.block_count(id))
+	for n in range(lo, hi + 1):
 		var kinds := {}
 		for kind in Motifs.KINDS:
 			for v in Motifs.variants(kind):
 				var per := float(v["cells"].size()) / float(n)
 				if per >= Config.MOTIF_FILL_MIN and per <= Config.MOTIF_FILL_MAX:
 					kinds[kind] = true
-		t.ok(kinds.size() >= 8, "%d khối: %d hình vừa" % [n, kinds.size()])
+		t.ok(kinds.size() >= (4 if n < 20 else 8), "%d khối: %d hình vừa" % [n, kinds.size()])
 
 
 func test_symmetric_tiling(t: T) -> void:
 	var tried := 0
+	var styles: Array = ["sym", "template"] + Gen.GEO_STYLES
 	for kind in Motifs.KINDS:
 		for v in Motifs.variants(kind):
 			var w: int = v["w"]
@@ -103,9 +134,10 @@ func test_symmetric_tiling(t: T) -> void:
 			var n := roundi(cells.size() / ((Config.MOTIF_FILL_MIN + Config.MOTIF_FILL_MAX) / 2.0))
 			var rng := Gen._rng(n, tried)
 			var stones := Gen._place_stones_sym(cells, w, h, 2, sym_h, sym_v, rng)
-			var groups := Gen._tile_sym(cells, w, h, stones, n, sym_h, sym_v, rng)
+			var style: String = styles[tried % styles.size()]
+			var groups := Gen._tile_sym(cells, w, h, stones, n, sym_h, sym_v, rng, style, v["regions"])
 			tried += 1
-			var tag := "%s %dx%d" % [kind, w, h]
+			var tag := "%s %dx%d %s" % [kind, w, h, style]
 			if groups.is_empty():
 				t.fail("%s: không lát được %d khối" % [tag, n])
 				continue
@@ -118,7 +150,7 @@ func test_symmetric_tiling(t: T) -> void:
 			var covered := {}
 			var sigs := {}
 			for g in groups:
-				t.ok(g.size() >= 1, "%s: khối %d ô" % [tag, g.size()])
+				t.ok(g.size() >= 1 and g.size() <= Config.BLOCK_MAX_CELLS, "%s: khối %d ô" % [tag, g.size()])
 				t.ok(LevelData.connected(_set_of(g)), "%s: khối liền mảng" % tag)
 				var sorted: Array = g.duplicate()
 				sorted.sort()
@@ -140,11 +172,42 @@ func test_symmetric_tiling(t: T) -> void:
 	t.ok(tried >= 50, "đã thử %d biến thể" % tried)
 
 
+## Mỗi kiểu cắt có chủ đích (hình học, theo vùng vẽ) đi đúng quy luật của nó: hầu hết khối chỉ nối qua cạnh hợp kiểu
+## (`Gen._edge_ok`); bộ sinh chỉ gộp tự do khi kẹt.
+func test_cut_styles_follow_their_rule(t: T) -> void:
+	var styles: Array = ["template"] + Gen.GEO_STYLES
+	for style: String in styles:
+		var blocks := 0
+		var follow := 0
+		for kind in Motifs.KINDS:
+			var v: Dictionary = Motifs.variants(kind)[-1]
+			var w: int = v["w"]
+			var h: int = v["h"]
+			var cells: Array[Vector2i] = []
+			cells.assign(v["cells"])
+			var n := roundi(cells.size() / 3.0)
+			var none: Array[Vector2i] = []
+			var groups := Gen._tile_sym(cells, w, h, none, n, v["sym_h"], v["sym_v"], Gen._rng(n, kind.length()), style,
+				v["regions"])
+			t.ok(not groups.is_empty(), "%s %s: lát được %d khối" % [style, kind, n])
+			var ctx := {"style": style, "w": w, "h": h, "sym_h": v["sym_h"], "sym_v": v["sym_v"], "regions": v["regions"],
+				"layer": Gen._layers(cells)}
+			for g in groups:
+				var set := _set_of(g)
+				var ok := true
+				for c: Vector2i in g:
+					for dv in Gen.NEIGHBORS:
+						if set.has(c + dv) and not Gen._edge_ok(c, c + dv, ctx):
+							ok = false
+				blocks += 1
+				follow += int(ok)
+		t.ok(float(follow) >= 0.9 * blocks, "kiểu %s: %d/%d khối đúng quy luật" % [style, follow, blocks])
+
+
 func test_picker_uses_every_kind(t: T) -> void:
 	var seen := {}
 	for id in range(14, 14 + Motifs.KINDS.size() * 4):
-		for base in [18, 26, 34]:
-			var n: int = base * DifficultyCurve.COUNT_SCALE
+		for n in [16, 30, 42, 56]:
 			var v := Gen._pick_motif(id, 0, n, 0, Gen._rng(id, n))
 			t.ok(not v.is_empty(), "L%d %d khối có hình" % [id, n])
 			if not v.is_empty():
@@ -155,7 +218,7 @@ func test_picker_uses_every_kind(t: T) -> void:
 	var prev := ""
 	var same := 0
 	for id in range(14, 101):
-		var kind: String = Gen._pick_motif(id, 0, 26 * DifficultyCurve.COUNT_SCALE, 0, Gen._rng(id, 0)).get("kind", "")
+		var kind: String = Gen._pick_motif(id, 0, 45, 0, Gen._rng(id, 0)).get("kind", "")
 		if kind == prev:
 			same += 1
 		prev = kind

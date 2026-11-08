@@ -17,26 +17,6 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yhtj2"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q6pfi"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uu7ug"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m1vxv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ag3v"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dsqoc"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bovvi"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_odi54"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fl02h"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_50eqn"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_38dlq"]
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
 shader = ExtResource("9_h520e")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -59,56 +39,6 @@ content_margin_bottom = 0.0
 base_font = ExtResource("10_wq8ny")
 spacing_glyph = -1
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r28gb"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2l32g"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b3syo"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p6wvt"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qq8cv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ugqu3"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mjusg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_067vc"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nkwrf"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yv7px"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_elet0"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o36b8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xuedo"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v5h40"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8cpt4"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n2qxg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ewta2"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xv6uu"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ccuhd"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sqnlb"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4nuuv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u6ex7"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rib0q"]
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
 shader = ExtResource("9_h520e")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -120,12 +50,6 @@ shader_parameter/underlay_on = true
 shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_18dki"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b1ri6"]
 shader = ExtResource("9_h520e")
@@ -139,12 +63,6 @@ shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.1445)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a2nub"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qejyp"]
 shader = ExtResource("9_h520e")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -156,12 +74,6 @@ shader_parameter/underlay_on = true
 shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eq2vm"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_138nv"]
 shader = ExtResource("9_h520e")
@@ -175,77 +87,9 @@ shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c2id3"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_edfox"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
 [sub_resource type="FontVariation" id="FontVariation_51gwy"]
 base_font = ExtResource("10_wq8ny")
 spacing_glyph = -2
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l84tv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3faah"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hvc04"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tahdt"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yykgi"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_deyoh"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uvdjc"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uiv1d"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2mufo"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b0r4t"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v0xtf"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_adgcx"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6wy8y"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xg12a"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_41olk"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6mjj5"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_40gay"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ropu8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4f4pd"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mwgjt"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3s4pm"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_syhhu"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tm82s"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2vopr"]
 
 [node name="Canvas" type="Control" unique_id=1119063744]
 layout_mode = 3
@@ -264,17 +108,6 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0, 1)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"canvas": {
-"order": 0.0,
-"override_sort": true
-},
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
-},
 "cs": [{
 "OnDisplayLayout": [],
 "OnHideLayer": [],
@@ -327,8 +160,7 @@ metadata/u = {
 }
 }],
 "id": "5285358848544919789",
-"n": "PopupWinStreakMain",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+"n": "PopupWinStreakMain"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -345,57 +177,32 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_yhtj2")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_q6pfi")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_uu7ug")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_m1vxv")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_6ag3v")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_dsqoc")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_bovvi")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_odi54")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_fl02h")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_50eqn")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_38dlq")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yhtj2")
 flat = true
 script = ExtResource("1_3e7g6")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 transition = 0
 metadata/u = {
-"a": true,
 "btn": {
-"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
-"dur": 0.1,
 "inter": true,
-"mult": 1.0,
-"sprites": {
-"disabled": null,
-"pressed": null
-},
-"target": "952441160893885085",
-"tr": 0.0
-},
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
+"target": "952441160893885085"
 },
 "id": "952441160893885085",
 "img": {
-"c": "000000bf",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": null,
-"t": 0.0
+"sp": null
 },
-"n": "Dim",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Dim"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -427,16 +234,8 @@ offset_bottom = 625.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
-},
 "id": "2681610850870226952",
-"n": "Panel",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 700.0, 1250.0, 0.5, 0.5]
+"n": "Panel"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -464,24 +263,13 @@ region = Rect2(0, 0, 342, 511.35577)
 border_scale = 2.432748538011696
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "2636479496068723340",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "popup8",
-"t": 0.0
+"sp": "popup8"
 },
-"n": "BG",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 832.0001, 1245.5674, 0.5, 0.5]
+"n": "BG"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -504,24 +292,13 @@ mouse_filter = 1
 script = ExtResource("2_m667a")
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "351594077734893626",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": null,
-"t": 0.0
+"sp": null
 },
-"n": "Image",
-"r": [0.0, 1.0, 1.0, 1.0, 0.0, 20.3, 80.0, 300.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -531,7 +308,7 @@ metadata/u_rect = {
 "size": Vector2(80, 300)
 }
 
-[node name="@Control@36" type="Control" parent="PopupWinStreakMain/Panel" unique_id=282844012]
+[node name="Control_36" type="Control" parent="PopupWinStreakMain/Panel" unique_id=282844012]
 visible = false
 anchors_preset = 0
 anchor_left = 0.5
@@ -549,24 +326,13 @@ tex = ExtResource("4_t3pqn")
 region = Rect2(929, 733, 575, 344)
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "8137302764936663154",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_46",
-"t": 0.0
+"sp": "Resources_UI_Maincenter:UI_Maincenter_46"
 },
-"n": "Image",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 666.0, 270.0, 130.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -576,7 +342,7 @@ metadata/u_rect = {
 "size": Vector2(270, 130)
 }
 
-[node name="@Control@37" type="Control" parent="PopupWinStreakMain/Panel" unique_id=426959914]
+[node name="Control_37" type="Control" parent="PopupWinStreakMain/Panel" unique_id=426959914]
 clip_children = 2
 anchors_preset = 0
 anchor_left = 0.5
@@ -595,27 +361,16 @@ kind = 1
 color = Color(0.9411765, 0.9098039, 0.8352941, 1)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "8221614064405430947",
 "img": {
-"c": "f0e8d5ff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_10",
-"t": 1.0
+"sp": "Resources_UI_Maincenter:UI_Maincenter_10"
 },
 "mask": {
 "show": true
 },
-"n": "Image",
-"r": [0.5, 1.0, 0.5, 1.0, 5.0, -616.0408, 690.0, 1076.2668, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 1),
@@ -625,7 +380,7 @@ metadata/u_rect = {
 "size": Vector2(690, 1076.2668)
 }
 
-[node name="Scroll View" type="Control" parent="PopupWinStreakMain/Panel/@Control@37" unique_id=944881681]
+[node name="Scroll View" type="Control" parent="PopupWinStreakMain/Panel/Control_37" unique_id=944881681]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -637,24 +392,13 @@ region = Rect2(0, 0, 128, 128)
 color = Color(1, 1, 1, 0)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "8407515432535116444",
 "img": {
-"c": "ffffff00",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "shadowBlock",
-"t": 0.0
+"sp": "shadowBlock"
 },
 "n": "Scroll View",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
 "scroll": {
 "content": "5099846837702054559",
 "decel": 0.135,
@@ -675,7 +419,7 @@ metadata/u_rect = {
 "size": Vector2(0, 0)
 }
 
-[node name="Viewport" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View" unique_id=463598315]
+[node name="Viewport" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View" unique_id=463598315]
 clip_children = 2
 anchors_preset = 0
 anchor_right = 1.0
@@ -687,27 +431,16 @@ region = Rect2(0, 0, 512, 512)
 pivot = Vector2(0, 1)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "2416113641410221205",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "BG_Winstreak",
-"t": 0.0
+"sp": "BG_Winstreak"
 },
 "mask": {
 "show": true
 },
-"n": "Viewport",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+"n": "Viewport"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -717,7 +450,7 @@ metadata/u_rect = {
 "size": Vector2(0, 0)
 }
 
-[node name="bg" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport" unique_id=1077923241]
+[node name="bg" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport" unique_id=1077923241]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -731,24 +464,13 @@ region = Rect2(0, 0, 1024, 1024)
 border_scale = 1.953125
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "8316071394931100785",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "BG1",
-"t": 0.0
+"sp": "BG1"
 },
-"n": "bg",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, -206.1635, 0.0, -412.3272, 0.5, 0.5]
+"n": "bg"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -758,13 +480,12 @@ metadata/u_rect = {
 "size": Vector2(0, -412.3272)
 }
 
-[node name="Content" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport" unique_id=1072861816]
+[node name="Content" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport" unique_id=1072861816]
 anchors_preset = 0
 anchor_right = 1.0
 offset_bottom = 1143.0
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "cs": [{
 "catIdleStateGO": {
 "node": "3375096528106478902"
@@ -798,8 +519,7 @@ metadata/u = {
 }
 }],
 "id": "5099846837702054559",
-"n": "Content",
-"r": [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1143.0, 0.0, 1.0]
+"n": "Content"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -809,7 +529,7 @@ metadata/u_rect = {
 "size": Vector2(0, 1143)
 }
 
-[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content" unique_id=668940480]
+[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content" unique_id=668940480]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_right = 0.5
@@ -825,24 +545,13 @@ border_scale = 0.6802721088435374
 kind = 2
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "8548084925431246575",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.47,
 "rt": true,
-"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_1",
-"t": 2.0
+"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_1"
 },
-"n": "Image",
-"r": [0.5, 0.0, 0.5, 1.0, -289.6049, 0.0, 179.5098, 0.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 1),
@@ -852,7 +561,7 @@ metadata/u_rect = {
 "size": Vector2(179.5098, 0)
 }
 
-[node name="Progress" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content" unique_id=1543002594]
+[node name="Progress" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content" unique_id=1543002594]
 anchors_preset = 0
 anchor_bottom = 1.0
 offset_left = 39.0
@@ -867,7 +576,6 @@ region = Rect2(305, 0, 44, 44)
 fill_method = 4
 fill_amount = 0.62
 metadata/u = {
-"a": true,
 "cs": [{
 "_progress": "0.62",
 "filterImg": {
@@ -877,21 +585,11 @@ metadata/u = {
 }],
 "id": "7478424364979103204",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 0.62,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_8",
-"t": 0.0
+"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_8"
 },
-"n": "Progress",
-"r": [0.0, 0.0, 0.0, 1.0, 54.0, -194.4689, 30.0, -411.0623, 0.5, 0.5]
+"n": "Progress"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 1),
@@ -901,7 +599,7 @@ metadata/u_rect = {
 "size": Vector2(30, -411.0623)
 }
 
-[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress" unique_id=1161740821]
+[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress" unique_id=1161740821]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -914,24 +612,13 @@ kind = 3
 fill_method = 1
 fill_amount = 0.62
 metadata/u = {
-"a": true,
 "id": "8409237157970949196",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 0.62,
-"fc": true,
-"fm": 1.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_9",
-"t": 3.0
+"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_9"
 },
-"n": "Image",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -941,17 +628,15 @@ metadata/u_rect = {
 "size": Vector2(0, 0)
 }
 
-[node name="MilestoneContainer" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress" unique_id=785783769]
+[node name="MilestoneContainer" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress" unique_id=785783769]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "242888638488309708",
-"n": "MilestoneContainer",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "MilestoneContainer"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -961,7 +646,7 @@ metadata/u_rect = {
 "size": Vector2(0, 0)
 }
 
-[node name="Milestone" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer" unique_id=1099076353]
+[node name="Milestone" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer" unique_id=1099076353]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -972,7 +657,6 @@ offset_bottom = 40.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "cs": [{
 "checkImage": {
 "node": "6765572874422650382"
@@ -1006,8 +690,7 @@ metadata/u = {
 }
 }],
 "id": "4331931503122245632",
-"n": "Milestone",
-"r": [0.0, 0.0, 0.0, 0.0, 15.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+"n": "Milestone"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 0),
@@ -1017,7 +700,7 @@ metadata/u_rect = {
 "size": Vector2(80, 80)
 }
 
-[node name="Level" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone" unique_id=1797390574]
+[node name="Level" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone" unique_id=1797390574]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1034,24 +717,13 @@ tex = ExtResource("8_5gb7i")
 region = Rect2(353, 0, 76, 80)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "7121401709857832491",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_14",
-"t": 0.0
+"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_14"
 },
-"n": "Level",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+"n": "Level"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1061,7 +733,7 @@ metadata/u_rect = {
 "size": Vector2(80, 80)
 }
 
-[node name="Text (TMP)" type="Label" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/Level" unique_id=255383508]
+[node name="Text (TMP)" type="Label" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/Level" unique_id=255383508]
 material = SubResource("ShaderMaterial_iqna6")
 layout_mode = 0
 anchor_right = 1.0
@@ -1083,29 +755,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 metadata/u = {
-"a": true,
 "id": "7718377172895371605",
 "n": "Text (TMP)",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 36.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "0",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
+"rt": true
 }
 }
 metadata/u_rect = {
@@ -1117,26 +770,15 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 36.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "0",
 "st": 0.0,
-"v": 512.0,
-"w": true,
 "ws": 0.0
 }
 
-[node name="Text (TMP) (1)" type="Label" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/Level" unique_id=1712481278]
+[node name="Text (TMP) (1)" type="Label" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/Level" unique_id=1712481278]
 visible = false
 material = SubResource("ShaderMaterial_iqna6")
 layout_mode = 0
@@ -1150,7 +792,7 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-theme_override_styles/normal = SubResource("StyleBoxEmpty_r28gb")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xxvq2")
 theme_override_constants/line_spacing = -5
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 40
@@ -1163,29 +805,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 metadata/u = {
-"a": false,
 "id": "7071280505427781117",
 "n": "Text (TMP) (1)",
-"r": [0.0, 0.0, 1.0, 1.0, -3.0, 50.0, 0.0, 0.0, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 40.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "1",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
+"rt": true
 }
 }
 metadata/u_rect = {
@@ -1197,26 +820,15 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 40.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "1",
 "st": 0.0,
-"v": 512.0,
-"w": true,
 "ws": 0.0
 }
 
-[node name="Balcony" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone" unique_id=244416523]
+[node name="Balcony" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone" unique_id=244416523]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1233,24 +845,13 @@ tex = ExtResource("8_5gb7i")
 region = Rect2(1, 712, 424, 108)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "5227970552105415136",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_3",
-"t": 0.0
+"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_3"
 },
-"n": "Balcony",
-"r": [0.5, 0.5, 0.5, 0.5, 303.0, 0.0, 525.8177, 80.0, 0.5, 0.5]
+"n": "Balcony"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1260,7 +861,7 @@ metadata/u_rect = {
 "size": Vector2(525.8177, 80)
 }
 
-[node name=" Info" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone" unique_id=1505907575]
+[node name=" Info" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone" unique_id=1505907575]
 visible = false
 anchors_preset = 0
 anchor_left = 0.5
@@ -1274,10 +875,8 @@ offset_bottom = 40.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": false,
 "id": "6823616139621111629",
-"n": " Info",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 80.0, 80.0, 0.5, 0.5]
+"n": " Info"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1287,7 +886,7 @@ metadata/u_rect = {
 "size": Vector2(80, 80)
 }
 
-[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info" unique_id=856310151]
+[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info" unique_id=856310151]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1297,24 +896,13 @@ script = ExtResource("2_m667a")
 color = Color(1, 1, 1, 0)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "8149731856680734688",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": false,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": null,
-"t": 0.0
+"sp": null
 },
-"n": "Image",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -1324,7 +912,7 @@ metadata/u_rect = {
 "size": Vector2(0, 0)
 }
 
-[node name="ChestIcon" type="Button" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info" unique_id=34942002]
+[node name="ChestIcon" type="Button" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info" unique_id=34942002]
 layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1336,39 +924,28 @@ offset_right = 250.5
 offset_bottom = -43.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2l32g")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_b3syo")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_p6wvt")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_qq8cv")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_ugqu3")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_mjusg")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_067vc")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_nkwrf")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_yv7px")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_elet0")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_o36b8")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yhtj2")
 flat = true
 script = ExtResource("1_3e7g6")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 vibrate = true
 metadata/u = {
-"a": true,
 "btn": {
-"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
-"dur": 0.1,
 "inter": true,
-"mult": 1.0,
-"sprites": {
-"disabled": null,
-"pressed": null
-},
-"target": "4909017024506277685",
-"tr": 1.0
+"target": "4909017024506277685"
 },
 "id": "2205492881369585853",
-"n": "ChestIcon",
-"r": [0.5, 0.5, 0.5, 0.5, 182.7, 103.0, 135.6, 120.0, 0.5, 0.5],
-"vib": true
+"n": "ChestIcon"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1378,7 +955,7 @@ metadata/u_rect = {
 "size": Vector2(135.6, 120)
 }
 
-[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info/ChestIcon" unique_id=64737449]
+[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info/ChestIcon" unique_id=64737449]
 visible = false
 anchors_preset = 0
 anchor_left = 0.5
@@ -1394,24 +971,13 @@ mouse_filter = 1
 script = ExtResource("2_m667a")
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "2366497411968940910",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": null,
-"t": 0.0
+"sp": null
 },
-"n": "Image",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, -54.8, 180.0, 100.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1421,7 +987,7 @@ metadata/u_rect = {
 "size": Vector2(180, 100)
 }
 
-[node name="@Control@38" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info/ChestIcon" unique_id=734094865]
+[node name="Control_38" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info/ChestIcon" unique_id=734094865]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1438,24 +1004,13 @@ tex = ExtResource("8_5gb7i")
 region = Rect2(410, 824, 200, 200)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "4909017024506277685",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_6",
-"t": 0.0
+"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_6"
 },
-"n": "Image",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 200.0, 200.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1465,7 +1020,7 @@ metadata/u_rect = {
 "size": Vector2(200, 200)
 }
 
-[node name="@Control@39" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info/ChestIcon" unique_id=1482473105]
+[node name="Control_39" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info/ChestIcon" unique_id=1482473105]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1482,24 +1037,13 @@ tex = ExtResource("11_am384")
 region = Rect2(0, 516, 96, 96)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "6765572874422650382",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_17",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_17"
 },
-"n": "Image",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, -9.0, 96.0, 96.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1509,7 +1053,7 @@ metadata/u_rect = {
 "size": Vector2(96, 96)
 }
 
-[node name="ClaimBtn" type="Button" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info" unique_id=1259078227]
+[node name="ClaimBtn" type="Button" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info" unique_id=1259078227]
 layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1521,51 +1065,32 @@ offset_right = 263.27002
 offset_bottom = 22.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_xuedo")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_v5h40")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_8cpt4")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_n2qxg")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_ewta2")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_xv6uu")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ccuhd")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_sqnlb")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_4nuuv")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_u6ex7")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_rib0q")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yhtj2")
 flat = true
 script = ExtResource("1_3e7g6")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 metadata/u = {
-"a": true,
 "btn": {
-"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
-"dur": 0.1,
 "inter": true,
-"mult": 1.0,
-"sprites": {
-"disabled": null,
-"pressed": null
-},
-"target": "7793993560523634320",
-"tr": 1.0
+"target": "7793993560523634320"
 },
 "id": "7793993560523634320",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 4.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48",
-"t": 1.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_48"
 },
-"n": "ClaimBtn",
-"r": [0.5, 0.5, 0.5, 0.5, 183.27, 8.0, 160.0, 60.0, 0.5, 0.5]
+"n": "ClaimBtn"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1575,7 +1100,7 @@ metadata/u_rect = {
 "size": Vector2(160, 60)
 }
 
-[node name="image" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info/ClaimBtn" unique_id=1004736989]
+[node name="image" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info/ClaimBtn" unique_id=1004736989]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1588,7 +1113,7 @@ border_scale = 0.25
 kind = 1
 fill_method = 4
 
-[node name="Text (TMP)" type="Label" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info/ClaimBtn" unique_id=755117896]
+[node name="Text (TMP)" type="Label" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/MilestoneContainer/Milestone/ Info/ClaimBtn" unique_id=755117896]
 material = SubResource("ShaderMaterial_ahonq")
 layout_mode = 0
 anchor_right = 1.0
@@ -1597,7 +1122,7 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-theme_override_styles/normal = SubResource("StyleBoxEmpty_18dki")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xxvq2")
 theme_override_constants/line_spacing = -4
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 36
@@ -1610,29 +1135,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 metadata/u = {
-"a": true,
 "id": "7805564475207926732",
 "n": "Text (TMP)",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 36.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Green",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "Claim",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
+"rt": true
 }
 }
 metadata/u_rect = {
@@ -1644,26 +1150,15 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 36.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Green",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "Claim",
 "st": 0.0,
-"v": 512.0,
-"w": true,
 "ws": 0.0
 }
 
-[node name="FlyCat" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress" unique_id=1413279740]
+[node name="FlyCat" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress" unique_id=1413279740]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 1.0
@@ -1681,7 +1176,6 @@ region = Rect2(0, 0, 512, 512)
 pivot = Vector2(0.5, 0)
 fill_method = 4
 metadata/u = {
-"a": true,
 "anim": {
 "controller": "WinStreakAnimator",
 "on": true
@@ -1696,21 +1190,11 @@ metadata/u = {
 }],
 "id": "712432428237249768",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Winstreak_Cat2",
-"t": 0.0
+"sp": "Winstreak_Cat2"
 },
-"n": "FlyCat",
-"r": [0.5, 0.0, 0.5, 0.0, 445.0, 40.0, 400.0, 400.0, 0.5, 0.0]
+"n": "FlyCat"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0),
@@ -1720,7 +1204,7 @@ metadata/u_rect = {
 "size": Vector2(400, 400)
 }
 
-[node name="ProgressTxt" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/FlyCat" unique_id=1760620547]
+[node name="ProgressTxt" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/FlyCat" unique_id=1760620547]
 visible = false
 anchors_preset = 0
 anchor_left = 0.5
@@ -1734,10 +1218,8 @@ offset_bottom = -207.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": false,
 "id": "3375096528106478902",
-"n": "ProgressTxt",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 257.0, 100.0, 100.0, 0.5, 0.5]
+"n": "ProgressTxt"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1747,7 +1229,7 @@ metadata/u_rect = {
 "size": Vector2(100, 100)
 }
 
-[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/FlyCat/ProgressTxt" unique_id=891860308]
+[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/FlyCat/ProgressTxt" unique_id=891860308]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1764,24 +1246,13 @@ tex = ExtResource("13_1qjq0")
 region = Rect2(279, 0, 168, 124)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "7504980156292850415",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12",
-"t": 0.0
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12"
 },
-"n": "Image",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 250.0, 185.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1791,7 +1262,7 @@ metadata/u_rect = {
 "size": Vector2(250, 185)
 }
 
-[node name="txt" type="Label" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/Progress/FlyCat/ProgressTxt" unique_id=723071008]
+[node name="txt" type="Label" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/Progress/FlyCat/ProgressTxt" unique_id=723071008]
 material = SubResource("ShaderMaterial_b1ri6")
 layout_mode = 0
 anchor_left = 0.5
@@ -1806,7 +1277,7 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-theme_override_styles/normal = SubResource("StyleBoxEmpty_a2nub")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xxvq2")
 theme_override_constants/line_spacing = -5
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 45
@@ -1819,29 +1290,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 metadata/u = {
-"a": true,
 "id": "7283066363538355535",
 "n": "txt",
-"r": [0.5, 0.5, 0.5, 0.5, -2.2249, 14.199, 225.2152, 128.4, 0.5, 0.5],
 "txt": {
-"auto": [20.0, 45.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 45.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - StarterPack",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "0/3",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
+"rt": true
 }
 }
 metadata/u_rect = {
@@ -1853,26 +1305,15 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [20.0, 45.0],
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 45.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - StarterPack",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "0/3",
 "st": 0.0,
-"v": 512.0,
-"w": true,
 "ws": 0.0
 }
 
-[node name="RewardInfo" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content" unique_id=1115864648]
+[node name="RewardInfo" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content" unique_id=1115864648]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1885,13 +1326,6 @@ offset_bottom = 721.0
 pivot_offset_ratio = Vector2(0.2719, 0)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
-},
 "cs": [{
 "canvasGroup": {
 "node": "7085739814131784207"
@@ -1905,8 +1339,7 @@ metadata/u = {
 "name": "EWStreakRewardInfo"
 }],
 "id": "7085739814131784207",
-"n": "RewardInfo",
-"r": [0.5, 0.5, 0.5, 0.5, -173.0, -521.0, 300.0, 200.0, 0.2719, 1.0]
+"n": "RewardInfo"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1916,7 +1349,7 @@ metadata/u_rect = {
 "size": Vector2(300, 200)
 }
 
-[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/RewardInfo" unique_id=1964727360]
+[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/RewardInfo" unique_id=1964727360]
 visible = false
 anchors_preset = 0
 anchor_left = 0.5
@@ -1934,24 +1367,13 @@ tex = ExtResource("13_1qjq0")
 region = Rect2(279, 0, 168, 124)
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "6922209077530999507",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12",
-"t": 0.0
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12"
 },
-"n": "Image",
-"r": [0.5, 0.5, 0.5, 0.5, -0.0004, -2.9038, 300.0, 155.4754, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -1961,7 +1383,7 @@ metadata/u_rect = {
 "size": Vector2(300, 155.4754)
 }
 
-[node name="GameObject" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/RewardInfo" unique_id=130270419]
+[node name="GameObject" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/RewardInfo" unique_id=130270419]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1974,7 +1396,6 @@ offset_bottom = 80.6382
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "fit": {
 "h": 1.0,
 "v": 0.0
@@ -1993,8 +1414,7 @@ metadata/u = {
 "sw": false,
 "t": "h"
 },
-"n": "GameObject",
-"r": [0.5, 0.5, 0.5, 0.5, -0.0003, -2.9032, 0.0, 155.47, 0.5, 0.5]
+"n": "GameObject"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -2004,7 +1424,7 @@ metadata/u_rect = {
 "size": Vector2(0, 155.47)
 }
 
-[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/RewardInfo/GameObject" unique_id=1163192908]
+[node name="Image" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/RewardInfo/GameObject" unique_id=1163192908]
 anchors_preset = 0
 anchor_top = 0.5
 anchor_right = 1.0
@@ -2020,21 +1440,11 @@ tex = ExtResource("13_1qjq0")
 region = Rect2(279, 0, 168, 124)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "3848349505859393789",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12",
-"t": 0.0
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_12"
 },
 "le": {
 "flex": [-1.0, -1.0],
@@ -2042,8 +1452,7 @@ metadata/u = {
 "min": [-1.0, -1.0],
 "pref": [-1.0, -1.0]
 },
-"n": "Image",
-"r": [0.0, 0.5, 1.0, 0.5, 0.0, -10.2037, 36.0, 144.2923, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 0.5),
@@ -2053,7 +1462,7 @@ metadata/u_rect = {
 "size": Vector2(36, 144.2923)
 }
 
-[node name="RewardItem" type="Control" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/RewardInfo/GameObject" unique_id=1965322523]
+[node name="RewardItem" type="Control" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/RewardInfo/GameObject" unique_id=1965322523]
 visible = false
 anchors_preset = 0
 offset_top = 40.235
@@ -2066,7 +1475,6 @@ tex = ExtResource("11_am384")
 region = Rect2(542, 663, 72, 72)
 fill_method = 4
 metadata/u = {
-"a": false,
 "cs": [{
 "ThisItemType": "0",
 "iconImg": {
@@ -2082,21 +1490,11 @@ metadata/u = {
 }],
 "id": "3529994904942828894",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_37",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_37"
 },
-"n": "RewardItem",
-"r": [0.0, 1.0, 0.0, 1.0, 37.5, -77.735, 75.0, 75.0, 0.5, 0.5]
+"n": "RewardItem"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 1),
@@ -2106,7 +1504,7 @@ metadata/u_rect = {
 "size": Vector2(75, 75)
 }
 
-[node name="Text (TMP)" type="Label" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/RewardInfo/GameObject/RewardItem" unique_id=574149733]
+[node name="Text (TMP)" type="Label" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/RewardInfo/GameObject/RewardItem" unique_id=574149733]
 material = SubResource("ShaderMaterial_qejyp")
 layout_mode = 0
 anchor_left = 0.5
@@ -2121,7 +1519,7 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-theme_override_styles/normal = SubResource("StyleBoxEmpty_eq2vm")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xxvq2")
 theme_override_constants/line_spacing = -4
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 36
@@ -2133,29 +1531,10 @@ text = "x1"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
-"a": true,
 "id": "1907982549150105584",
 "n": "Text (TMP)",
-"r": [0.5, 0.5, 0.5, 0.5, 12.3, -22.9, 57.1, 31.3, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 36.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Black",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "x1",
-"st": 0.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": true
 }
 }
 metadata/u_rect = {
@@ -2167,26 +1546,15 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 36.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Black",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "x1",
 "st": 0.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
-[node name="Text (TMP)" type="Label" parent="PopupWinStreakMain/Panel/@Control@37/Scroll View/Viewport/Content/RewardInfo" unique_id=272558192]
+[node name="Text (TMP)" type="Label" parent="PopupWinStreakMain/Panel/Control_37/Scroll View/Viewport/Content/RewardInfo" unique_id=272558192]
 visible = false
 material = SubResource("ShaderMaterial_138nv")
 layout_mode = 0
@@ -2201,7 +1569,7 @@ offset_bottom = -14.099998
 grow_horizontal = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
-theme_override_styles/normal = SubResource("StyleBoxEmpty_c2id3")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xxvq2")
 theme_override_constants/line_spacing = -3
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 26
@@ -2213,29 +1581,10 @@ text = "Will get these Rewards:"
 horizontal_alignment = 1
 autowrap_mode = 3
 metadata/u = {
-"a": false,
 "id": "8820590523756885822",
 "n": "Text (TMP)",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 39.1, 241.64, 50.0, 0.5, 0.5],
 "txt": {
-"auto": null,
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 26.1,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Brown",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "Will get these Rewards:",
-"st": 0.0,
-"v": 256.0,
-"w": true,
-"ws": 0.0
+"rt": true
 }
 }
 metadata/u_rect = {
@@ -2247,22 +1596,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": null,
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 26.1,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Brown",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "Will get these Rewards:",
 "st": 0.0,
-"v": 256.0,
-"w": true,
 "ws": 0.0
 }
 
@@ -2282,24 +1620,13 @@ region = Rect2(0, 0, 512, 281.83487)
 border_scale = 1.703125
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "8715634635629105307",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Popup_Winstreak_Title",
-"t": 0.0
+"sp": "Popup_Winstreak_Title"
 },
-"n": "Header",
-"r": [0.5, 1.0, 0.5, 1.0, 0.0, 79.0, 872.0, 480.2813, 0.5, 0.5]
+"n": "Header"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 1),
@@ -2323,7 +1650,7 @@ offset_bottom = 150.43625
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_edfox")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xxvq2")
 theme_override_constants/line_spacing = -43
 theme_override_fonts/font = SubResource("FontVariation_51gwy")
 theme_override_font_sizes/font_size = 80
@@ -2337,32 +1664,13 @@ vertical_alignment = 1
 autowrap_mode = 3
 uppercase = true
 metadata/u = {
-"a": true,
 "cs": [{
 "name": "CurvedTextMeshPro"
 }],
 "id": "4590639980143552085",
 "n": "txtHeader",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, -81.0, 548.2466, 138.8725, 0.5, 0.5],
 "txt": {
-"auto": [65.0, 80.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 80.0,
-"h": 2.0,
-"ls": -41.05,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - StarterPack",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "Win Streak",
-"st": 16.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -2374,22 +1682,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [65.0, 80.0],
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 80.0,
-"h": 2.0,
 "ls": -41.05,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - StarterPack",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "Win Streak",
 "st": 16.0,
-"v": 512.0,
-"w": true,
 "ws": 0.0
 }
 
@@ -2403,51 +1700,32 @@ offset_right = -25.0
 offset_bottom = 58.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_l84tv")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_3faah")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_hvc04")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_tahdt")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_yykgi")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_deyoh")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_uvdjc")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_uiv1d")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_2mufo")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_b0r4t")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_v0xtf")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yhtj2")
 flat = true
 script = ExtResource("1_3e7g6")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 metadata/u = {
-"a": true,
 "btn": {
-"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
-"dur": 0.1,
 "inter": true,
-"mult": 1.0,
-"sprites": {
-"disabled": null,
-"pressed": null
-},
-"target": "8096404594323658497",
-"tr": 1.0
+"target": "8096404594323658497"
 },
 "id": "8096404594323658497",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_12",
-"t": 0.0
+"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_12"
 },
-"n": "ExitButton",
-"r": [1.0, 1.0, 1.0, 1.0, -55.0, -28.0, 60.0, 60.0, 0.5, 0.5]
+"n": "ExitButton"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -2486,24 +1764,13 @@ border = Vector4(58, 35, 58, 37)
 kind = 1
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "7610551868074100443",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_21",
-"t": 1.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_21"
 },
-"n": "Time",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 512.0, 260.0, 68.0, 0.5, 0.5]
+"n": "Time"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -2528,24 +1795,13 @@ tex = ExtResource("11_am384")
 region = Rect2(1828, 16, 220, 220)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "2439756033985099862",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7"
 },
-"n": "Icon clock",
-"r": [0.0, 0.5, 0.0, 0.5, 28.9, 7.5, 83.0, 83.0, 0.5, 0.5]
+"n": "Icon clock"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 0.5),
@@ -2569,7 +1825,7 @@ offset_bottom = 26.6
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_adgcx")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xxvq2")
 theme_override_constants/line_spacing = -5
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 39
@@ -2582,30 +1838,10 @@ text = "19:30:00
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
-"a": true,
 "id": "3527498601702738766",
 "n": "Text (TMP)",
-"r": [0.5, 0.5, 0.5, 0.5, 28.8, 0.0, 154.6, 53.2, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 50.0],
-"c": "ec304fff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 38.75,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "19:30:00
-",
-"st": 0.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -2617,23 +1853,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 50.0],
-"c": "ec304fff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 38.75,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "19:30:00
-",
 "st": 0.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -2652,7 +1876,7 @@ offset_bottom = 26.6
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_6wy8y")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_xxvq2")
 theme_override_constants/line_spacing = -3
 theme_override_fonts/font = SubResource("FontVariation_2c3ba")
 theme_override_font_sizes/font_size = 27
@@ -2664,29 +1888,10 @@ text = "Kết thúc sự kiện"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
-"a": false,
 "id": "6053735000249868790",
 "n": "txtEnd",
-"r": [0.5, 0.5, 0.5, 0.5, 30.3698, 0.0, 187.8356, 53.2, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 50.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 26.5,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Black",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "Kết thúc sự kiện",
-"st": 0.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -2698,22 +1903,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 50.0],
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 26.5,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Black",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "Kết thúc sự kiện",
 "st": 0.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -2725,51 +1919,32 @@ offset_right = 113.0
 offset_bottom = 58.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_xg12a")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_41olk")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_6mjj5")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_40gay")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_ropu8")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_4f4pd")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_mwgjt")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_3s4pm")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_syhhu")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_tm82s")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_2vopr")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_yhtj2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yhtj2")
 flat = true
 script = ExtResource("1_3e7g6")
 tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
 metadata/u = {
-"a": true,
 "btn": {
-"c": ["ffffffff", "f5f5f5ff", "c8c8c8ff", "c8c8c880"],
-"dur": 0.1,
 "inter": true,
-"mult": 1.0,
-"sprites": {
-"disabled": null,
-"pressed": null
-},
-"target": "4171437509482861346",
-"tr": 1.0
+"target": "4171437509482861346"
 },
 "id": "4171437509482861346",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_11",
-"t": 0.0
+"sp": "UI_Winstreak_Atlas:UI_Winstreak_Atlas_11"
 },
-"n": "Button",
-"r": [0.0, 1.0, 0.0, 1.0, 83.0, -28.0, 60.0, 60.0, 0.5, 0.5]
+"n": "Button"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 1),

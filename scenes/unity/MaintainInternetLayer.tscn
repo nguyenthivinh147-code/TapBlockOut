@@ -20,17 +20,6 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"canvas": {
-"order": 0.0,
-"override_sort": true
-},
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
-},
 "cs": [{
 "debugLog": "0",
 "name": "SafeAreaUIAdjuster",
@@ -49,8 +38,7 @@ metadata/u = {
 "timeDelay": "1"
 }],
 "id": "2892910836850213101",
-"n": "MaintainInternetLayer",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "MaintainInternetLayer"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -67,16 +55,8 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
-},
 "id": "8718739380559382350",
-"n": "Panel",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Panel"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -100,24 +80,13 @@ region = Rect2(1138, 1920, 128, 128)
 pivot = Vector2(0.5, 1)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "1214669272444203256",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_91",
-"t": 0.0
+"sp": "Resources_UI_Maincenter:UI_Maincenter_91"
 },
-"n": "Image",
-"r": [0.0, 1.0, 0.0, 1.0, 82.0, -220.0, 80.0, 80.0, 0.5, 1.0]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 1),

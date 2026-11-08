@@ -50,7 +50,6 @@ offset_bottom = 100.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": false,
 "cs": [{
 "ThisItemType": "0",
 "iconImg": {
@@ -65,8 +64,7 @@ metadata/u = {
 }
 }],
 "id": "4512535724702028030",
-"n": "Reward",
-"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 150.0, 200.0, 0.5, 0.5]
+"n": "Reward"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 0),
@@ -95,24 +93,13 @@ region = Rect2(0, 0, 237, 255.73953)
 border_scale = 3.628691983122363
 fill_method = 4
 metadata/u = {
-"a": false,
 "id": "8829504371774186574",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "light1",
-"t": 0.0
+"sp": "light1"
 },
-"n": "Light",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 500.0, 500.0, 0.5, 0.5]
+"n": "Light"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -140,24 +127,13 @@ region = Rect2(0, 0, 256, 256)
 border_scale = 2.0
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "4039771552444027267",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "Gold3",
-"t": 0.0
+"sp": "Gold3"
 },
-"n": "RewardIcon",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 150.0, 150.0, 0.5, 0.5]
+"n": "RewardIcon"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -193,29 +169,10 @@ text = "1000"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/u = {
-"a": true,
 "id": "3462445052729394669",
 "n": "RewardText",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, -146.5, 212.6, 128.0, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 60.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 60.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Blue 1",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": false,
-"s": "1000",
-"st": 0.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -227,21 +184,10 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 60.0],
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 60.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Outline - Blue 1",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": false,
-"s": "1000",
 "st": 0.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }

@@ -15,9 +15,12 @@ const NO_LIVES := "res://scenes/no_lives.tscn"
 const TESTER := "res://scenes/tester_menu.tscn"
 const TesterMenu := preload("res://src/ui/tester_menu.gd")
 const LevelCurtain := preload("res://src/ui/level_curtain.gd")
+const CandyCurtain := preload("res://src/ui/candy_curtain.gd")
 const HubNav := preload("res://src/ui/hub_nav.gd")
 const HubTop := preload("res://src/ui/hub_top.gd")
 const TapFx := preload("res://src/ui/tap_fx.gd")
+const Pudding := preload("res://src/ui/pudding.gd")
+const SceneCache := preload("res://src/ui/scene_cache.gd")
 ## Hub screens left to right, as on the bottom bar: going between two of them slides the screens (_slide_screens).
 const HUB_SCREENS := ["shop", "home", "road_trip"]
 
@@ -46,6 +49,8 @@ func _ready() -> void:
 
 func _boot() -> void:
 	go("splash", {"view": {"percent": 0, "version": _version()}})
+	# Baked block body SDFs: read on a loader thread while the splash shows.
+	Pudding.load_bank_async()
 	var splash := current_screen
 	var c: Dictionary = Config.CONTENT
 	var hold := float(c.splash_hold)
@@ -58,10 +63,19 @@ func _boot() -> void:
 	var fill := create_tween()
 	fill.tween_method(Callable(splash, "set_progress"), hold, 1.0, float(c.splash_fill_sec))
 	await fill.finished
-	go("home")
+	# The bank finished loading on its thread long ago: take it now, the level does not wait on it.
+	Pudding.ensure_bank()
+	# The game opens straight into the level, without the curtain of Play on Home; Home when it cannot start.
+	go("level" if boot_to_level() else "home")
 	is_booted = true
 	booted.emit()
 	_chain_autoshow()
+
+
+## After loading, the game opens on the level when the player can start it: lives (as Play on Home) and a level
+## to play (the demo ends at demo_max_level). Otherwise Home.
+func boot_to_level() -> bool:
+	return bool(Game.lives_view().get("can_play", true)) and Game.level_exists(int(Game.s.level))
 
 
 ## "v0.1.0" theo application/config/version; trống thì Splash ẩn dòng version.
@@ -97,7 +111,7 @@ func go(screen: String, args: Dictionary = {}) -> void:
 	# The level starts its own music, also when the Daily Challenge screen hosts it; the loading screen has none.
 	if screen != "level" and screen != "splash":
 		Sfx.music(Sfx.MUSIC_HOME)
-	var node := (load(path) as PackedScene).instantiate()
+	var node := SceneCache.instantiate(path)
 	add_child(node)
 	move_child(node, popup_layer.get_index())
 	current_screen = node
@@ -191,18 +205,19 @@ func _bars(screen: Node) -> Array:
 	return out
 
 
-## Như go(), có màn chuyển cảnh vào màn chơi.
+## Như go(), có màn chuyển cảnh kẹo rơi (candy_curtain.gd): Home bấm Chơi, nạp mạng xong ở màn hết mạng.
 func go_curtain(screen: String, args: Dictionary = {}) -> void:
-	await curtain_swap(go.bind(screen, args))
+	await curtain_swap(go.bind(screen, args), CandyCurtain)
 
 
-## Màn chuyển cảnh: hai cánh kẹo khép lại kèm logo, gọi swap (dựng màn chơi bên dưới) rồi mở ra.
+## Màn chuyển cảnh `kind` phủ kín màn, gọi swap (dựng màn chơi bên dưới) rồi mở ra. Mặc định level_curtain.gd (hai
+## cánh kẹo khép lại kèm logo), dùng ở Daily Challenge; Road Trip truyền gift_curtain.gd (nắp hộp quà).
 ## Chạm và Back bị chặn suốt lúc chạy; đang có một màn chuyển cảnh thì bỏ qua.
-func curtain_swap(swap: Callable) -> void:
+func curtain_swap(swap: Callable, kind: GDScript = LevelCurtain) -> void:
 	if curtain != null:
 		return
-	curtain = LevelCurtain.new()
-	curtain.name = "LevelCurtain"
+	curtain = kind.new()
+	curtain.name = kind.resource_path.get_file().get_basename().to_pascal_case()
 	add_child(curtain)
 	await curtain.close()
 	if swap.is_valid():
@@ -222,7 +237,7 @@ func add_popup(node: Node) -> Node:
 func open_popup(scene_path: String, args: Dictionary = {}) -> Node:
 	if not ResourceLoader.exists(scene_path):
 		return null
-	var node := (load(scene_path) as PackedScene).instantiate()
+	var node := SceneCache.instantiate(scene_path)
 	add_popup(node)
 	if node.has_method("setup"):
 		node.call("setup", args)
@@ -366,6 +381,10 @@ func _on_tester_closed(result: Variant) -> void:
 		go("home")
 	elif current_screen != null and current_screen.has_method("refresh"):
 		current_screen.call("refresh")
+
+
+func _exit_tree() -> void:
+	Pudding.finish_bank_load()
 
 
 func _notification(what: int) -> void:

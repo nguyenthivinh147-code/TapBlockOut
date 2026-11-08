@@ -158,6 +158,14 @@ func peek(block_id: String) -> String:
 	return _evaluate(block_id)["kind"]
 
 
+## Như `peek` nhưng trả đủ {kind, distance, blocker}: `blocker` là khối chặn đầu tiên trên đường đi ("blocked"), chìa
+## ("chained") hoặc "gate". Khối bị chặn chỉ đổi kết quả khi `blocker` rời bàn; bộ sinh dùng để khỏi tính lại mọi khối.
+func inspect(block_id: String) -> Dictionary:
+	if _won or _moves_left <= 0 or not _blocks.has(block_id):
+		return {"kind": "rejected", "distance": 0, "blocker": ""}
+	return _evaluate(block_id)
+
+
 func can_exit(block_id: String) -> bool:
 	if _won or not _blocks.has(block_id):
 		return false

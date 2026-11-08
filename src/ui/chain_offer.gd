@@ -1,6 +1,7 @@
 extends Control
-## Layer Chain Offer. Cửa sổ trượt `Config.CHAIN.window` bước: bước hiện tại nhận được,
-## bước trước đã nhận, bước sau bị khoá. setup(args); signal closed({claimed: int}).
+## Layer Chain Offer. Cửa sổ `Config.CHAIN.window` bước: bước trước đã nhận, bước hiện tại nhận được,
+## bước sau bị khoá. Cửa sổ đứng yên tới khi bước hiện tại vượt ô cuối, nên gói vừa nhận được tích ngay tại chỗ;
+## lúc phải trượt thì giữ dấu tích tại chỗ SLIDE_DELAY giây rồi mới trượt. setup(args); signal closed({claimed: int}).
 ## Dựng theo PopupChainOffer (color-cube-match-puzzle): 6 ô ChainOfferPack nối bằng tia UIRay theo hình rắn,
 ## mỗi ô một bước của cửa sổ. Trạng thái ô như ChainOfferPackItem.UpdateStatusPack: Locked -> nút khoá,
 ## Available -> nút nhận / giá, Claimed -> BGClaim + nút xám.
@@ -15,7 +16,12 @@ const RewardText := preload("res://src/ui/reward_text.gd")
 const Config := preload("res://src/config.gd")
 
 const LAYER := "PopupChainOffer"
+## Title art: the prefab's chest (ic_EndlessTreasure) redrawn with this game's boosters
+## (tools/compose_chain_offer_art.py).
+const TITLE_IMAGE := "Panel/Top/Image"
+const TITLE_ART := "art_chain_offer"
 const LIST := "Panel/Content/ListPack"
+const RAY := "Panel/Content/UIRay"
 ## The six on-screen slots in path order (ChainOfferPack (6)..(9) wait off-screen for the slide animation).
 const SLOTS := ["ChainOfferPack", "ChainOfferPack (1)", "ChainOfferPack (2)", "ChainOfferPack (3)", "ChainOfferPack (4)",
 	"ChainOfferPack (5)"]
@@ -24,6 +30,12 @@ const BUTTONS := ["Button_Purchase", "Button_Purchase_Lock", "Button_Free", "But
 ## ShopRewardItem slots of a pack's reward row.
 const ITEMS := ["ShopRewardItem(Clone)", "ShopRewardItem(Clone) (2)", "ShopRewardItem(Clone) (3)"]
 const VIDEO_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_5"
+## Pack card backgrounds: the prefab gives ChainOfferPack (1) the yellow one (its current step always sits there).
+## The window here stays put, so the yellow card follows the claimable step.
+const BG_PLAIN := "UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_8"
+const BG_CURRENT := "UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_9"
+## Seconds the tick stays on the pack just claimed before the window slides to bring the next step on screen.
+const SLIDE_DELAY := 0.8
 
 var view: Dictionary = {}
 var claim_button: Button = null
@@ -35,6 +47,7 @@ var node_states: Array[String] = []  # "claimed" | "claimable" | "locked", theo 
 var ui: RefCounted = null
 
 var _content: Control = null
+var _first: int = -1  # first step on screen; -1 before the first build
 var _timer: Timer = null
 var _busy: bool = false
 var _closed: bool = false
@@ -72,12 +85,17 @@ static func fmt_time(sec: int) -> String:
 	return "%d:%02d:%02d" % [sec / 3600, (sec % 3600) / 60, sec % 60]
 
 
-## Bước đầu tiên của cửa sổ trượt (kẹp trong chuỗi), giữ lại 1 bước đã nhận phía trước.
+## Bước đầu tiên của cửa sổ (kẹp trong chuỗi): đứng ở đầu chuỗi, chỉ trượt khi bước hiện tại phải nằm ở ô cuối.
 static func window_start(step: int, count: int, size: int) -> int:
-	return clampi(step - 1, 0, maxi(0, count - size))
+	return clampi(step - (size - 1), 0, maxi(0, count - size))
 
 
-func _rebuild() -> void:
+func _size() -> int:
+	return mini(maxi(int(Config.CHAIN.get("window", 6)), 1), SLOTS.size())
+
+
+## keep >= 0: show the window from that step instead of window_start (the tick lands where the player tapped).
+func _rebuild(keep: int = -1) -> void:
 	var first_build := _content == null
 	if _content != null:
 		_content.queue_free()
@@ -95,6 +113,8 @@ func _rebuild() -> void:
 	_content = root
 	# ShowPopupAnimation once; a rebuild after a claim keeps the panel in place.
 	ui = UnityUI.build(root, LAYER, {"reveal": first_build})
+	if ThemeKit.has_real_icon(TITLE_ART):
+		ui.texture(TITLE_IMAGE, ThemeKit.icon(TITLE_ART))
 	for p in ["Panel/Top/Image/txtHeader BG2", "Panel/Top/Image/txtHeader BG1", "Panel/Top/Image/txtHeader"]:
 		ui.text(p, tr("chain_title"))
 	close_button = ui.button("Panel/Top/btnTurnOff")
@@ -103,6 +123,11 @@ func _rebuild() -> void:
 		(b as Button).connect("clicked", close)
 	for s in SPARE_SLOTS:
 		ui.show(LIST + "/" + s, false)
+	# The prefab's UIRay arrows point back along the path, toward ChainOfferPack (where its packs slide to). Here the
+	# path runs forward from ChainOfferPack (claimed -> claimable -> locked), so each arrow turns half a turn about
+	# its centre to point at the next step.
+	for a in ui.node(RAY).get_children():
+		(a as Control).rotation += PI
 	# Line under the timer: the game's status text (done, expired, error), hidden otherwise.
 	var status: Label = ui.label("Panel/Top/Text (TMP)#2")
 	status.name = "StatusLabel"
@@ -117,8 +142,9 @@ func _rebuild() -> void:
 	UnityUI.set_text(time_label, tr("chain_time_left") % fmt_time(int(view.seconds_left)))
 	var count := int(view.count)
 	var step := int(view.step)
-	var size := mini(maxi(int(Config.CHAIN.get("window", 6)), 1), SLOTS.size())
-	var first := window_start(step, count, size)
+	var size := _size()
+	var first := keep if keep >= 0 else window_start(step, count, size)
+	_first = first
 	var shown := 0
 	for i in range(first, mini(count, first + size)):
 		_slot(str(SLOTS[shown]), i, view.steps[i], step)
@@ -145,6 +171,7 @@ func _slot(slot: String, i: int, st: Dictionary, current: int) -> void:
 	var state := "claimed" if i < current else ("claimable" if i == current else "locked")
 	node_states.append(state)
 	ui.node(p).name = "Node%d" % i
+	ui.sprite(p + "/BG (1)", BG_CURRENT if state == "claimable" else BG_PLAIN)
 	var type := str(st.get("type", "free"))
 	var reward: Dictionary = RewardText.sku_reward(str(st.get("sku", ""))) if type == "pay" else st
 	_fill_rewards(p + "/ItemContainer/Row(Clone)", reward)
@@ -219,17 +246,43 @@ func claim() -> void:
 	_busy = true
 	if claim_button != null:
 		claim_button.call("set_interactable", false)
+	var st: Dictionary = {}
+	if not view.is_empty() and int(view.step) < int(view.count):
+		st = view.steps[int(view.step)]
 	var r: Dictionary = await Game.chain_claim()
-	_busy = false
 	if not is_inside_tree() or _closed:
+		_busy = false
 		return
-	if bool(r.get("ok", false)):
-		claimed_count += 1
-		toast_text = ""
-		Sfx.play("sfx_coin")
-	elif str(r.get("status", "")) not in ["cancel", "closed", "none"]:
-		toast_text = tr("chain_failed")
-	_rebuild()
+	if not bool(r.get("ok", false)):
+		_busy = false
+		if str(r.get("status", "")) not in ["cancel", "closed", "none"]:
+			toast_text = tr("chain_failed")
+		_rebuild()
+		return
+	claimed_count += 1
+	toast_text = _got_text(r, st)
+	Sfx.play("sfx_coin")
+	# Same window first, so the tick lands on the pack the player tapped; slide after a beat when the next step is
+	# off screen.
+	var held := _first
+	_rebuild(held)
+	var v := Game.chain_view()
+	if v.is_empty() or window_start(int(v.step), int(v.count), _size()) == held:
+		_busy = false
+		return
+	await get_tree().create_timer(SLIDE_DELAY).timeout
+	_busy = false
+	if is_inside_tree() and not _closed:
+		_rebuild()
+
+
+## "Reward received! Hint x1": what the step just gave (a Pay step's goods come with its SKU).
+func _got_text(r: Dictionary, st: Dictionary) -> String:
+	var reward: Dictionary = r.get("reward", {})
+	if str(r.get("type", "")) == "pay":
+		reward = RewardText.sku_reward(str(st.get("sku", "")))
+	var what := RewardText.text(reward)
+	return tr("ads_reward_ok") if what == "" else "%s %s" % [tr("ads_reward_ok"), what]
 
 
 func close() -> void:

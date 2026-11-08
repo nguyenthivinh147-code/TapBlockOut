@@ -11,6 +11,8 @@ const UAnim := preload("res://src/ui/u_anim.gd")
 const UiMotion := preload("res://src/ui/ui_motion.gd")
 const UScroll := preload("res://src/ui/u_scroll.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const SceneCache := preload("res://src/ui/scene_cache.gd")
+const Config := preload("res://src/config.gd")
 const TMP_SHADER := preload("res://src/ui/tmp_text.gdshader")
 const CUTOUT_SHADER := preload("res://src/ui/cutout_mask.gdshader")
 const FONT: FontFile = preload("res://assets/fonts/baloo.res")
@@ -22,6 +24,8 @@ static var baking := false
 const BAKED := "res://scenes/unity/"
 ## Metas adopt() sets on nodes; a copied subtree drops them before it is wired again.
 const RUNTIME_METAS := ["u_built", "u_slider", "u_input", "u_placeholder", "u_scale_loop", "u_fitting"]
+## Prefab names of the popups' close X buttons (_grow_close). Code may rename the node; the prefab name stays in meta u.
+const CLOSE_NAMES := ["btnTurnOff", "ExitButton", "ExitBtn", "CloseButton"]
 const REF := Vector2(886, 1920)
 ## TMP font asset "Baloo Bhaijaan Regular 400 SDF": line height and spacing in em/100.
 const TMP_POINT := 32.0
@@ -36,6 +40,20 @@ const DEFAULT_MATERIAL := "Baloo Bhaijaan Regular 400 SDF (atlas)"
 const BUTTON_TEXT_MIN := 18.0
 ## A button this much of its canvas in both axes (a dim, "tap anywhere") holds content, not a caption.
 const COVER_BUTTON := Vector2(0.9, 0.5)
+## What code reads from a node spec (meta "u") once the node exists: adopt() wiring, relayout, UView and the screens'
+## scripts. The other keys only make the node (_make), and a baked scene already holds what they made, so the bake
+## tools save just these (slim). true keeps the value whole; an array keeps those keys of a nested dictionary. Code
+## that reads another key of a baked node's spec must add it here (tests/test_unity_slim.gd).
+const SPEC_KEEP := {
+	"id": true, "n": true, "cs": true, "anim": true, "lay": true, "le": true, "fit": true, "scroll": true,
+	"slider": true, "input": true, "mask": true,
+	"img": ["sp", "ppu", "rt", "cut"], "raw": ["rt"], "txt": ["rt"],
+	"btn": ["target", "graphic", "group", "inter"], "tog": ["target", "graphic", "group", "inter"],
+}
+## What code reads from a text spec (meta "u_txt") once the label exists: auto size, TMP metrics, margins.
+const TXT_KEEP := ["auto", "fs", "st", "cs", "ws", "ls", "m"]
+## Content margins of a new StyleBoxEmpty (left, top, right, bottom): -1 is "none set".
+const NO_MARGINS := Vector4(-1, -1, -1, -1)
 
 static var _layouts := {}
 static var _sprites := {}
@@ -44,6 +62,7 @@ static var _anims := {}
 static var _tex := {}
 static var _mats := {}
 static var _fonts := {}
+static var _boxes := {}
 
 
 # --- data ---
@@ -142,12 +161,12 @@ static func build(owner: Control, layer: String, opts: Dictionary = {}) -> UView
 	return v
 
 
-## New Canvas of a layer: its baked scene, else built from the JSON (no runtime wiring yet, see adopt).
+## New Canvas of a layer: its baked scene (held by SceneCache: a screen that builds its layer at runtime and clones
+## from it loads it twice per open), else built from the JSON (no runtime wiring yet, see adopt).
 static func instance(layer: String) -> Control:
 	var path := BAKED + layer + ".tscn"
 	if ResourceLoader.exists(path):
-		var ps: PackedScene = load(path)
-		return ps.instantiate() as Control
+		return SceneCache.instantiate(path) as Control
 	return make_canvas(layer)
 
 
@@ -313,6 +332,8 @@ static func _wire(c: Control, v: UView, path: String) -> void:
 		var img := c.get_node_or_null("image")
 		if img is UImage:
 			(c as UButton).image = img
+		if not baking and CLOSE_NAMES.has(str(spec.get("n", ""))):
+			_grow_close(c as UButton)
 	if c is Label and c.has_meta("u_txt") and ((c.get_meta("u_txt") as Dictionary).get("auto") != null or _in_button(c)) and not baking:
 		var fit := fit_text.bind(c)
 		if not c.resized.is_connected(fit):
@@ -346,6 +367,58 @@ static func _wire(c: Control, v: UView, path: String) -> void:
 	var motion := UiMotion.kind_for_sprite((spec.get("img", {}) as Dictionary).get("sp"))
 	if motion >= 0:
 		UiMotion.attach(c, motion)
+
+
+## Close X: the button and the prefab art inside it grow Config.CLOSE_ART_SCALE times around the button's center, and
+## the touch target becomes Config.CLOSE_HIT_SCALE times the prefab one (UButton.hit_rect). Runs before the children
+## are wired, so their Unity rects are read back grown. Meta u_close marks a grown node (kept by copies), so a view
+## adopted again or a copy of a wired template does not grow twice. Not when baking: scenes keep the prefab size.
+static func _grow_close(b: UButton) -> void:
+	b.art_scale = Config.CLOSE_ART_SCALE
+	b.hit_scale = Config.CLOSE_HIT_SCALE
+	if b.has_meta("u_close") or not b.has_meta("u_rect"):
+		return
+	b.set_meta("u_close", true)
+	var k := Config.CLOSE_ART_SCALE
+	var g := rect_size(b) * (k - 1.0) * 0.5
+	b.offset_left -= g.x
+	b.offset_top -= g.y
+	b.offset_right += g.x
+	b.offset_bottom += g.y
+	rect_from_node(b)
+	for d in b.find_children("*", "Control", true, false):
+		if d.has_meta("u_rect"):
+			var dc := d as Control
+			dc.offset_left *= k
+			dc.offset_top *= k
+			dc.offset_right *= k
+			dc.offset_bottom *= k
+			rect_from_node(dc)
+	_keep_on_canvas.call_deferred(b)
+
+
+## A grown close X stays Config.CLOSE_EDGE_GAP inside the canvas: on a popup almost as wide as the screen (shop_mini)
+## the edge would cut it. Runs once the popup is laid out, on the rest layout (positions, not the reveal's scale).
+static func _keep_on_canvas(x: Variant) -> void:
+	if not is_instance_valid(x) or not (x as Control).is_inside_tree():
+		return
+	var b := x as Control
+	var pos := b.position
+	var p := b.get_parent() as Control
+	while p != null and not p.has_meta("u_canvas"):
+		pos += p.position
+		p = p.get_parent() as Control
+	if p == null:
+		return
+	var room := Rect2(Vector2.ZERO, p.size).grow(-Config.CLOSE_EDGE_GAP)
+	var shift := (room.position - pos).max(Vector2.ZERO) - (pos + b.size - room.end).max(Vector2.ZERO)
+	if shift == Vector2.ZERO:
+		return
+	b.offset_left += shift.x
+	b.offset_right += shift.x
+	b.offset_top += shift.y
+	b.offset_bottom += shift.y
+	rect_from_node(b)
 
 
 ## Makes one prefab node and its children with every property the prefab sets; adopt() wires them.
@@ -417,10 +490,102 @@ static func _make(spec: Dictionary, parent: Control, path: String, rays: bool, i
 	return c
 
 
+## Godot names a child "@Class@N" when it is added unnamed or with a sibling's name. N comes from a counter shared by
+## the whole run, and the new name is not checked against the siblings. A scene that saves such a name breaks a
+## later run: when the counter reaches N while a node is added under the same parent, the two children share a name,
+## the parent loses track of the saved one, and freeing the parent leaves that child alive with a dangling parent
+## (crash on its next layout). The bake tools call this before saving: every "@Class@N" under root becomes
+## "Class_N", unique among its siblings. With owner, only nodes that owner saves (not an instanced scene's own).
+static func readable_names(root: Node, owner: Node = null) -> void:
+	for n in root.find_children("@*", "", true, false):
+		if owner != null and n.owner != owner:
+			continue
+		var parts := String(n.name).split("@", false)
+		var base := "_".join(parts) if not parts.is_empty() else "Node"
+		var nm := base
+		var k := 2
+		while n.get_parent().has_node(NodePath(nm)):
+			nm = "%s_%d" % [base, k]
+			k += 1
+		n.name = nm
+
+
 static func _safe_name(n: String) -> String:
 	for ch in [".", ":", "@", "/", "\"", "%"]:
 		n = n.replace(ch, "_")
 	return n if n != "" else "Node"
+
+
+## Shared StyleBoxEmpty with these content margins (left, top, right, bottom; NO_MARGINS is a new box's). Every
+## button and most labels draw one, and a scene saves one sub-resource per box object, so code never edits a box it
+## got here: it asks for one with the new margins.
+static func empty_box(m: Vector4 = NO_MARGINS) -> StyleBoxEmpty:
+	if not _boxes.has(m):
+		var b: StyleBoxEmpty = UButton.empty_style if m == NO_MARGINS else StyleBoxEmpty.new()
+		if m != NO_MARGINS:
+			b.content_margin_left = m.x
+			b.content_margin_top = m.y
+			b.content_margin_right = m.z
+			b.content_margin_bottom = m.w
+		_boxes[m] = b
+	return _boxes[m]
+
+
+## Node spec reduced to SPEC_KEEP (a fresh dictionary: specs from layout() are the cached layout).
+static func slim_spec(spec: Dictionary) -> Dictionary:
+	var out := {}
+	for k in spec:
+		var keep: Variant = SPEC_KEEP.get(k)
+		if keep is Array and spec[k] is Dictionary:
+			out[k] = _pick(spec[k], keep)
+		elif keep != null:
+			out[k] = spec[k]
+	return out
+
+
+## Text spec reduced to TXT_KEEP (a fresh dictionary).
+static func slim_txt(t: Dictionary) -> Dictionary:
+	return _pick(t, TXT_KEEP)
+
+
+static func _pick(d: Dictionary, keys: Array) -> Dictionary:
+	var out := {}
+	for k in d:
+		if keys.has(k):
+			out[k] = d[k]
+	return out
+
+
+## Run by the bake tools on what they save: node and text specs shrink to what runtime reads (slim_spec, TXT_KEEP),
+## and the StyleBoxEmpty overrides root's scene owns become shared boxes (empty_box), saved once per margins instead
+## of once per node. A box another scene's instance brings stays: replacing it would add an override. Running it again
+## changes nothing (tools/slim_scenes.gd re-saves baked scenes through it).
+static func slim(root: Node) -> void:
+	var own := root.scene_file_path
+	for n in [root] + root.find_children("*", "", true, false):
+		if n.has_meta("u") and n.get_meta("u") is Dictionary:
+			n.set_meta("u", slim_spec(n.get_meta("u")))
+		if n.has_meta("u_txt") and n.get_meta("u_txt") is Dictionary:
+			n.set_meta("u_txt", slim_txt(n.get_meta("u_txt")))
+		if n is Control:
+			_share_boxes(n as Control, own)
+
+
+static func _share_boxes(c: Control, own: String) -> void:
+	for p in c.get_property_list():
+		var pn := str(p.name)
+		if not pn.begins_with("theme_override_styles/"):
+			continue
+		var box: Variant = c.get(pn)
+		if not (box is StyleBoxEmpty) or (box as Resource).get_script() != null:
+			continue
+		# Made at runtime (no path), or a sub-resource of root's own scene; not one of an instanced scene.
+		var from := (box as Resource).resource_path.get_slice("::", 0)
+		if from != "" and from != own:
+			continue
+		var b := box as StyleBoxEmpty
+		c.set(pn, empty_box(Vector4(b.content_margin_left, b.content_margin_top, b.content_margin_right,
+			b.content_margin_bottom)))
 
 
 static func _child_image(c: Control) -> Control:
@@ -571,12 +736,7 @@ static func _setup_text(l: Label, t: Dictionary) -> void:
 	l.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0))
 	l.add_theme_constant_override("shadow_outline_size", 0)
 	var m: Array = t.get("m", [0, 0, 0, 0])
-	var box := StyleBoxEmpty.new()
-	box.content_margin_left = float(m[0])
-	box.content_margin_top = float(m[1])
-	box.content_margin_right = float(m[2])
-	box.content_margin_bottom = float(m[3])
-	l.add_theme_stylebox_override("normal", box)
+	l.add_theme_stylebox_override("normal", empty_box(Vector4(float(m[0]), float(m[1]), float(m[2]), float(m[3]))))
 	var h := int(t.get("h", 1))
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if h == 2 or h == 32 else (HORIZONTAL_ALIGNMENT_RIGHT if h == 4 else (HORIZONTAL_ALIGNMENT_FILL if h == 8 or h == 16 else HORIZONTAL_ALIGNMENT_LEFT))
 	var va := int(t.get("v", 256))
@@ -805,17 +965,12 @@ static func _set_inset(l: Label, inset: Vector4) -> void:
 	if inset.is_equal_approx(old):
 		return
 	var m := _margins(l) - old + inset
-	var box := StyleBoxEmpty.new()
-	box.content_margin_left = m.x
-	box.content_margin_top = m.y
-	box.content_margin_right = m.z
-	box.content_margin_bottom = m.w
 	# Before the box: it resizes the label, and resized re-runs fit_text, which reads the meta.
 	if inset == Vector4.ZERO:
 		l.remove_meta("u_inset")
 	else:
 		l.set_meta("u_inset", inset)
-	l.add_theme_stylebox_override("normal", box)
+	l.add_theme_stylebox_override("normal", empty_box(m))
 
 
 ## One ShaderMaterial per TMP material (and bold flag), see tmp_text.gdshader.
@@ -964,7 +1119,7 @@ static func input_field(v: UView, c: Control, multiline: bool) -> Control:
 	e.add_theme_color_override("caret_color", Color(str(d.caret)) if d.get("caret") != null else ink)
 	e.add_theme_color_override("selection_color", Color(str(d.get("sel", "a8ceffc0"))))
 	for st in ["normal", "focus", "read_only"]:
-		e.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+		e.add_theme_stylebox_override(st, empty_box())
 	area.add_child(e)
 	label.visible = false
 	c.set_meta("u_input", e)

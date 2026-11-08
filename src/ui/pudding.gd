@@ -1,8 +1,15 @@
 extends RefCounted
 ## Thân khối kẹo: dựng texture khoảng cách-tới-mép (SDF) cho từng hình khối rồi tô bằng `pudding.gdshader`.
 ## SDF không phụ thuộc màu hay cỡ ô nên cache theo hình. Hàm tĩnh, cache tĩnh.
+## Hình của data/levels và data/road_trip lấy từ bank bake sẵn (tools/bake_sdf.gd); hình khác (level sinh lúc chạy)
+## dựng trên WorkerThreadPool qua prewarm(), hoặc dựng ngay trên luồng chính nếu chưa ai gọi prewarm.
 
 const SHADER := preload("res://src/ui/pudding.gdshader")
+const PuddingBank := preload("res://src/ui/pudding_bank.gd")
+const BANK_PATH := "res://data/pudding_sdf.res"
+const FIELD_VERSION := 1  # bump when field() changes in a way the constants below do not capture
+
+enum BankState { NONE, LOADING, READY }
 
 const RES := 16  # px mỗi ô trong texture SDF
 const PAD_PX := 5  # lề quanh khối (px SDF), chứa bóng đổ và viền khử răng cưa
@@ -14,6 +21,10 @@ const SHADOW_A := 0.34  # độ đậm bóng đổ
 const FAR := 1.0e6
 
 static var _cache: Dictionary = {}  # khoá hình -> {tex, dims}
+static var _bank: Resource = null  # pudding_bank.gd; null when missing or baked with another signature()
+static var _bank_index: Dictionary = {}  # shape key -> index in _bank
+static var _bank_state: BankState = BankState.NONE
+static var _jobs: Dictionary = {}  # shape key -> {task, out}: SDF images building on WorkerThreadPool
 
 
 ## Control chứa thân khối, nằm sau phần vẽ của BlockNode.
@@ -85,14 +96,23 @@ static func apply_material(m: ShaderMaterial, entry: Dictionary, cell: float, ra
 	m.set_shader_parameter("cell_px", cell)
 
 
+## {tex, dims} of the shape. Order: cache, a prewarm() job (waits for that one only), the baked bank, then a build
+## on the main thread (about 30 ms per shape on desktop).
 static func sdf_for(cells: Array) -> Dictionary:
-	var key := _key(cells)
-	if not _cache.has(key):
-		_cache[key] = _build(cells)
-	return _cache[key]
+	var key := shape_key(cells)
+	if _cache.has(key):
+		return _cache[key]
+	var img: Image = _finish_job(key) if _jobs.has(key) else null
+	if img == null:
+		img = _bank_image(key)
+	if img == null:
+		img = image_for(cells)
+	var entry := _entry(img)
+	_cache[key] = entry
+	return entry
 
 
-static func _key(cells: Array) -> String:
+static func shape_key(cells: Array) -> String:
 	var parts: PackedStringArray = []
 	for c: Vector2i in cells:
 		parts.append("%d,%d" % [c.x, c.y])
@@ -100,7 +120,34 @@ static func _key(cells: Array) -> String:
 	return ";".join(parts)
 
 
-static func _build(cells: Array) -> Dictionary:
+## Cells moved so the bounding box starts at (0, 0), as BlockNode.local_cells() passes them to sdf_for().
+static func local_shape(cells: Array) -> Array:
+	var mn := Vector2i(1 << 20, 1 << 20)
+	var out: Array = []
+	for raw: Variant in cells:
+		var c: Vector2i = raw if raw is Vector2i else Vector2i(int(raw[0]), int(raw[1]))
+		mn = Vector2i(mini(mn.x, c.x), mini(mn.y, c.y))
+		out.append(c)
+	for i in out.size():
+		out[i] = (out[i] as Vector2i) - mn
+	return out
+
+
+## Local shapes of every block in a level dictionary (data/levels, data/road_trip, LevelGenerator output).
+static func level_shapes(level: Dictionary) -> Array:
+	var out: Array = []
+	for b: Dictionary in level.get("blocks", []):
+		out.append(local_shape(b.get("cells", [])))
+	return out
+
+
+## Everything that changes the bytes of image_for(); the bank stores it and is ignored when it differs.
+static func signature() -> String:
+	return "v%d res%d pad%d gap%s r%s f%s" % [FIELD_VERSION, RES, PAD_PX, GAP, RADIUS, FILLET]
+
+
+## SDF image (FORMAT_RH) of a shape. Pure and thread-safe: prewarm() runs it on WorkerThreadPool, the bake tool too.
+static func image_for(cells: Array) -> Image:
 	var f := field(cells)
 	var w: int = f["w"]
 	var h: int = f["h"]
@@ -109,7 +156,111 @@ static func _build(cells: Array) -> Dictionary:
 	for y in h:
 		for x in w:
 			img.set_pixel(x, y, Color(data[y * w + x], 0.0, 0.0, 1.0))
-	return {"tex": ImageTexture.create_from_image(img), "dims": Vector2(w, h) / float(RES)}
+	return img
+
+
+static func _entry(img: Image) -> Dictionary:
+	return {"tex": ImageTexture.create_from_image(img), "dims": Vector2(img.get_width(), img.get_height()) / float(RES)}
+
+
+# --- baked bank and background builds ---
+
+## Starts reading the bank on a loader thread (Main calls it as the splash opens). Without it the first sdf_for()
+## or prewarm() reads the bank on the main thread.
+static func load_bank_async() -> void:
+	if _bank_state != BankState.NONE:
+		return
+	if ResourceLoader.exists(BANK_PATH) and ResourceLoader.load_threaded_request(BANK_PATH) == OK:
+		_bank_state = BankState.LOADING
+
+
+## Blocks until the bank is read (or known to be missing or stale). Main calls it when the splash ends.
+static func ensure_bank() -> void:
+	if _bank_state == BankState.READY:
+		return
+	var res: Resource = null
+	if _bank_state == BankState.LOADING:
+		res = ResourceLoader.load_threaded_get(BANK_PATH)
+	elif ResourceLoader.exists(BANK_PATH):
+		res = load(BANK_PATH)
+	_bank_state = BankState.READY
+	if res == null or res.get_script() != PuddingBank:
+		return
+	if res.get("signature") != signature():
+		push_warning("Pudding: %s was baked for '%s', the code is '%s'; run tools/bake_sdf.gd" % [
+			BANK_PATH, res.get("signature"), signature()])
+		return
+	_bank = res
+	var keys: PackedStringArray = res.get("keys")
+	for i in keys.size():
+		_bank_index[keys[i]] = i
+
+
+## Takes a load_bank_async() still in flight (leaving during the splash), so ResourceLoader frees its token.
+static func finish_bank_load() -> void:
+	if _bank_state == BankState.LOADING:
+		ensure_bank()
+
+
+static func has_baked(cells: Array) -> bool:
+	ensure_bank()
+	return _bank_index.has(shape_key(cells))
+
+
+static func _bank_image(key: String) -> Image:
+	ensure_bank()
+	var i: int = _bank_index.get(key, -1)
+	if i < 0:
+		return null
+	var sizes: PackedInt32Array = _bank.get("sizes")
+	var offsets: PackedInt32Array = _bank.get("offsets")
+	var w := sizes[2 * i]
+	var h := sizes[2 * i + 1]
+	var packed: PackedByteArray = (_bank.get("data") as PackedByteArray).slice(offsets[i], offsets[i + 1])
+	var bytes := packed.decompress(w * h * 2, FileAccess.COMPRESSION_ZSTD)  # FORMAT_RH: 2 bytes per pixel
+	if bytes.size() != w * h * 2:
+		push_warning("Pudding: baked shape %s is damaged; building it" % key)
+		return null
+	return Image.create_from_data(w, h, false, Image.FORMAT_RH, bytes)
+
+
+## Builds on WorkerThreadPool the SDFs of `shapes` (local cells, as sdf_for takes them) that are neither cached nor
+## baked. Call it as soon as the level is known, then wait on is_warm() behind a loading or transition screen.
+static func prewarm(shapes: Array) -> void:
+	ensure_bank()
+	for cells: Array in shapes:
+		var key := shape_key(cells)
+		if _cache.has(key) or _jobs.has(key) or _bank_index.has(key):
+			continue
+		# The worker writes only into `out`; the main thread reads it after the task is waited for. High priority: a
+		# low priority task gets about a third of the pool, and the screen is waiting on these.
+		var out: Array = [null]
+		var task := WorkerThreadPool.add_task(_run_job.bind(cells.duplicate(), out), true, "Pudding SDF")
+		_jobs[key] = {"task": task, "out": out}
+
+
+static func _run_job(cells: Array, out: Array) -> void:
+	out[0] = image_for(cells)
+
+
+## True when no prewarm() job is left; finished jobs move into the cache (textures are made on the calling thread,
+## which must be the main one).
+static func is_warm() -> bool:
+	for key: String in _jobs.keys():
+		if WorkerThreadPool.is_task_completed(int(_jobs[key]["task"])):
+			_cache[key] = _entry(_finish_job(key))
+	return _jobs.is_empty()
+
+
+static func pending_jobs() -> int:
+	return _jobs.size()
+
+
+static func _finish_job(key: String) -> Image:
+	var job: Dictionary = _jobs[key]
+	_jobs.erase(key)
+	WorkerThreadPool.wait_for_task_completion(int(job["task"]))
+	return (job["out"] as Array)[0]
 
 
 ## Khoảng cách có dấu tới mép hình khối (đơn vị ô, dương là bên trong): {"w", "h", "data"}, ô (0, 0) bắt đầu ở pixel PAD_PX.

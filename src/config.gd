@@ -40,6 +40,13 @@ const _UNLOCK := {
 	"stone": 14, "ice": 30, "chain": 40, "layer": 55, "fog": 70, "pulse": 90,
 }
 
+## On/off switch per Config.UNLOCK feature (missing key = on). Off: Unlocks.is_open is false at every level, the win
+## card neither announces nor counts it, and Home hides its icon. Remote Config: `features_<name>` ("1" / "0").
+## Daily Challenge is off since 2026-11-08 (design.md mục 4 "Phạm vi").
+const _FEATURES := {
+	"challenge": false,
+}
+
 ## 28 ô quà. Tổng: 6.650 gold, 5 hint, 5 move, 4 smash.
 const _DAILY := [
 	{"coins": 50, "items": {}},
@@ -269,7 +276,7 @@ const ROAD_TRIP_REWARDS := [
 
 const _CONTENT := {
 	"demo_max_level": 20,
-	"release_pregen_level": 100,
+	"release_pregen_level": 500,
 	"loop_start_level": 51,
 	# Spare MOVES on top of the solver's min taps (Solver.slack_for): levels up to slack_easy_until get slack_easy,
 	# up to slack_early_until slack_early, after that slack_normal; HARD levels (VeryHard too) get slack_hard.
@@ -279,14 +286,14 @@ const _CONTENT := {
 	"slack_early_until": 13,
 	"slack_normal": 4,
 	"slack_hard": 3,
-	"very_hard_from_level": 100,
+	# From this displayed level (the content loop after L500) every HARD level shows as VeryHard.
+	"very_hard_from_level": 501,
 	"hard_banner_sec": 1.2,
 	"think_clap_sec": 8,
 	# Nhắc Gợi ý (level.gd): đang chơi mà không chạm màn hình idle_hint_sec giây thì nút Gợi ý lắc, bóng đèn sáng
 	# vàng và bong bóng "Available Block : N" hiện idle_hint_show_sec giây (chạm là tắt).
 	"idle_hint_sec": 15,
 	"idle_hint_show_sec": 2.0,
-	"win_delay_sec": 0.8,
 	# Màn loading khi mở game: thanh chạy tới splash_hold trong ít nhất splash_min_sec giây (đứng đó nếu boot chưa
 	# xong), rồi đầy trong splash_fill_sec giây và vào Home.
 	"splash_min_sec": 1.5,
@@ -301,6 +308,33 @@ const _CONTENT := {
 	"curtain_logo_sec": 0.4,
 	"curtain_hold_sec": 0.35,
 	"curtain_open_sec": 0.3,
+	# Màn chuyển cảnh nắp hộp quà của Road Trip (gift_curtain.gd): thân hộp trượt lên trong gift_slide_sec (giảm tốc
+	# dần), nắp rơi xuống (nhanh dần) trong gift_lid_sec, xuất phát khi thân đã đi được gift_lid_at quãng đường của nó;
+	# chạm thân thì nắp nhún và nơ bẹp rồi nảy lại trong gift_bump_sec. Logo nằm trên nắp, rơi theo nắp, bật từ mờ tới
+	# rõ trong curtain_logo_sec khi nắp đã rơi được gift_logo_at quãng đường, rõ hẳn thì giữ curtain_hold_sec, rồi nắp
+	# nhấc lên, thân rơi xuống trong gift_open_sec.
+	"gift_slide_sec": 0.45,
+	"gift_lid_at": 0.3,
+	"gift_logo_at": 0.5,
+	"gift_lid_sec": 0.32,
+	"gift_bump_sec": 0.18,
+	"gift_open_sec": 0.3,
+	# Màn chuyển cảnh kẹo rơi (candy_curtain.gd) khi Home bấm Chơi và nạp mạng xong, mỗi lần một loại kẹo ngẫu
+	# nhiên: mỗi hàng candy_curtain_cols viên, viên to candy_curtain_size lần khoảng cột, hàng cách nhau
+	# candy_curtain_row_gap lần khoảng cột. Từng viên rơi từ trên màn như trọng lực (rơi hết chiều cao màn trong
+	# candy_curtain_fall_sec) xuống chỗ của nó, hàng đáy trước nên đống kẹo đầy dần từ dưới lên; cứ
+	# candy_curtain_drop_sec có một viên chạm chỗ, mỗi viên lệch thêm tới candy_curtain_jitter_sec. Phủ kín thì giữ
+	# candy_curtain_hold_sec, rồi cả đống rơi qua đáy màn (hàng trên trễ candy_curtain_out_row_sec so với hàng dưới,
+	# rơi hết màn trong candy_curtain_out_fall_sec).
+	"candy_curtain_cols": 4,
+	"candy_curtain_size": 1.6,
+	"candy_curtain_row_gap": 0.82,
+	"candy_curtain_fall_sec": 0.45,
+	"candy_curtain_drop_sec": 0.025,
+	"candy_curtain_jitter_sec": 0.03,
+	"candy_curtain_hold_sec": 0.05,
+	"candy_curtain_out_row_sec": 0.01,
+	"candy_curtain_out_fall_sec": 0.65,
 	# Chạm màn hình (tap_fx.gd): ở điểm chạm một vòng tròn nở tới bán kính tap_fx_ring_px và tap_fx_stars sao nhỏ
 	# toả ra chừng tap_fx_star_px, mờ dần trong tap_fx_sec giây. Số px tính ở màn chuẩn 886×1920.
 	"tap_fx_sec": 0.4,
@@ -328,16 +362,51 @@ const BOARD_FRAME_UNIT := 51.7
 const BOARD_W := 14
 const BOARD_H := 18
 const BOARD_CELL_MAX := 80
+## Dòng chú thích trên bàn (hướng dẫn cơ chế, chọn khối để đập): đáy cách mép trên khung chừng này px ở màn chuẩn, chữ
+## xuống dòng thì mọc lên trên, không đè thanh khung.
+const BOARD_CAPTION_GAP := 12
 ## Hình dạng level: dưới SHAPE_MIN_BLOCKS khối thì xếp hình chữ nhật vì quá ít ô để nhận ra dạng; cao tối đa SHAPE_MAX_ASPECT
 ## lần rộng; khoét SHAPE_ROUGHEN số ô rìa để hình không quá đều, như ảnh ref.
 const SHAPE_MIN_BLOCKS := 6
 const SHAPE_MAX_ASPECT := 1.9
 const SHAPE_ROUGHEN := 0.06
-## Từ DifficultyCurve.SHAPED_FROM khối xếp theo hình vẽ tay trong `src/core/motifs.gd`: chọn cỡ hình có số ô (trừ đá) chia
-## số khối trong khoảng MOTIF_FILL_MIN..MOTIF_FILL_MAX; khối cắt đối xứng theo trục của hình, không khoét rìa.
-## Từ khi gấp đôi số khối (DifficultyCurve.COUNT_SCALE) khoảng này giảm một nửa: hình giữ cỡ, khối nhỏ lại.
-const MOTIF_FILL_MIN := 1.15
-const MOTIF_FILL_MAX := 1.8
+## Từ DifficultyCurve.MOTIF_FROM khối xếp theo hình vẽ tay trong `src/core/motifs.gd`: chọn cỡ hình có số ô (trừ đá) chia
+## số khối trong khoảng MOTIF_FILL_MIN..MOTIF_FILL_MAX (khoảng 3 ô mỗi khối như Road Trip, 2026-11-08); khối cắt đối xứng
+## theo trục của hình, không khoét rìa.
+const MOTIF_FILL_MIN := 2.5
+const MOTIF_FILL_MAX := 3.4
+## Cắt khối: mỗi cách gộp có trọng số TILE_SINGLE_BIAS ^ (số khối 1 ô được gộp) / cỡ khối sau gộp, nên khối 1 ô được
+## gộp trước và còn ít khối 1 ô (1.0 là trọng số 1/cỡ của bản trước). Mỗi khối tối đa BLOCK_MAX_CELLS ô.
+const TILE_SINGLE_BIAS := 1.5
+const BLOCK_MAX_CELLS := 7
+## Level mechanics (design.md section 4, "Cơ chế sau bản demo"): at most LEVEL_MECH_MAX kinds per level. From the
+## first unlock, a level with id % LEVEL_REST_EVERY == LEVEL_REST_AT is a rest level with none (teaching levels keep
+## theirs); other levels draw 1, 2 or 3 kinds with weights LEVEL_MECH_WEIGHTS, always including a kind unlocked within
+## the last LEVEL_MECH_FRESH levels.
+const LEVEL_MECH_MAX := 3
+const LEVEL_MECH_WEIGHTS := [0.35, 0.4, 0.25]
+const LEVEL_REST_EVERY := 4
+const LEVEL_REST_AT := 3
+const LEVEL_MECH_FRESH := 10
+## Clear rounds (Solver.clear_rounds) of a generated level stay within max(LEVEL_ROUNDS_TOL_MIN,
+## LEVEL_ROUNDS_TOL * target) of DifficultyCurve.wave_count.
+const LEVEL_ROUNDS_TOL := 0.1
+const LEVEL_ROUNDS_TOL_MIN := 1
+## Level screen HUD (restart, settings, 3 boosters, MOVES frame, piece chip frame, HARD pill): the candy-purple sprites
+## are toned down by src/ui/hud_tone.gdshader (design.md "HUD level"). HUD_TONE_GLOSS pulls the pale gloss sheen toward
+## the body color (0 keeps it, 1 removes it); then HSV saturation and value are multiplied by HUD_TONE_SAT, HUD_TONE_VAL.
+## Child nodes (labels, count badge, lock, hint bulb) keep their colors; the HARD pill draws its own text, which is toned.
+const HUD_TONE_SAT := 0.8
+const HUD_TONE_VAL := 0.97
+const HUD_TONE_GLOSS := 0.5
+
+## Close X of every Unity popup (btnTurnOff, ExitButton, ...; UnityUI.CLOSE_NAMES), 2026-11-08: the art is drawn
+## CLOSE_ART_SCALE times its prefab size around its own center, and the touch target is CLOSE_HIT_SCALE times the
+## prefab one (art grown to UButton.MIN_HIT). Both are side lengths: a 64 px X draws at 128 px, its 96 px target is 211 px.
+## A grown X that would leave the screen moves in to stay CLOSE_EDGE_GAP canvas units from the edge.
+const CLOSE_ART_SCALE := 2.0
+const CLOSE_HIT_SCALE := 2.2
+const CLOSE_EDGE_GAP := 8.0
 
 ## Player nickname length (design.md mục 5 "Biệt danh"), counted after trimming spaces at both ends. NAME_MAX matches the
 ## characterLimit of the input field in PopupEditNameLayer.
@@ -356,6 +425,7 @@ static var ECON: Dictionary = _ECON.duplicate(true)
 static var LIVES: Dictionary = _LIVES.duplicate(true)
 static var ADS: Dictionary = _ADS.duplicate(true)
 static var UNLOCK: Dictionary = _UNLOCK.duplicate(true)
+static var FEATURES: Dictionary = _FEATURES.duplicate(true)
 static var DAILY: Array = _DAILY.duplicate(true)
 static var COSMETICS: Dictionary = _COSMETICS.duplicate(true)
 static var SKUS: Dictionary = _SKUS.duplicate(true)
@@ -414,6 +484,7 @@ static func reset() -> void:
 	LIVES = _LIVES.duplicate(true)
 	ADS = _ADS.duplicate(true)
 	UNLOCK = _UNLOCK.duplicate(true)
+	FEATURES = _FEATURES.duplicate(true)
 	DAILY = _DAILY.duplicate(true)
 	COSMETICS = _COSMETICS.duplicate(true)
 	SKUS = _SKUS.duplicate(true)
@@ -457,7 +528,7 @@ static func cosmetic_price(id: String) -> int:
 ## số âm và chuỗi rỗng bị bỏ qua. `DAILY` (mảng ô) không ghi đè được.
 static func apply_remote(values: Dictionary) -> void:
 	var groups := {
-		"econ": ECON, "lives": LIVES, "ads": ADS, "unlock": UNLOCK,
+		"econ": ECON, "lives": LIVES, "ads": ADS, "unlock": UNLOCK, "features": FEATURES,
 		"cosmetics": COSMETICS, "skus": SKUS, "offers": OFFERS,
 		"notif": NOTIF, "content": CONTENT, "weekly": WEEKLY, "chain": CHAIN,
 		"leaderboard": LEADERBOARD, "road_trip": ROAD_TRIP,
@@ -541,3 +612,9 @@ static func _coerce(old: Variant, raw: String) -> Variant:
 				return null
 			return out
 	return null
+
+
+## UI: how many recently opened scenes (screens, popups, Unity layers) src/ui/scene_cache.gd keeps loaded, so opening
+## one again skips parsing it and decoding its textures. Each held scene keeps its textures in memory
+## (docs/UI_NODES.md, "Cache scene"); 0 turns the cache off.
+const SCENE_CACHE := 8

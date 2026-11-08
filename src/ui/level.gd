@@ -23,18 +23,22 @@ const HintFx := preload("res://src/ui/hint_fx.gd")
 const MoveFx := preload("res://src/ui/move_fx.gd")
 const SmashFx := preload("res://src/ui/smash_fx.gd")
 const CrystalFly := preload("res://src/ui/crystal_fly.gd")
+const PraiseFx := preload("res://src/ui/praise_fx.gd")
+const Pudding := preload("res://src/ui/pudding.gd")
+const HUD_TONE := preload("res://src/ui/hud_tone.gdshader")
 
 const POPUP_RESCUE := "res://scenes/popup_rescue.tscn"
 const POPUP_OFFER := "res://scenes/popup_offer.tscn"
 const WIN_CARD := "res://scenes/win_card.tscn"
 const LOSE_CARD := "res://scenes/lose_card.tscn"
 const SHOP_MINI := "res://scenes/shop_mini.tscn"
+const BOOSTER_UNLOCKED := "res://scenes/booster_unlocked.tscn"
 const INGAME_SETTINGS := "res://scenes/popup_ingame_settings.tscn"
 const POPUP_LB_RESULT := "res://scenes/popup_lb_result.tscn"
 const POPUP_RT_WIN := "res://scenes/popup_road_trip_win.tscn"
 const BOOSTERS := ["hint", "move", "smash"]
 const FREE_PLACEMENT := "booster_free"
-const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
+const MECHS := Unlocks.MECHS
 ## Ô booster chưa mở: tô tối nền và icon (ổ khoá, nhãn là node con nên giữ màu).
 const LOCKED_TINT := Color(0.55, 0.55, 0.62)
 
@@ -188,6 +192,7 @@ var _challenge: bool = false
 var _road_trip: bool = false
 var _level: int = 0
 var _smash_mode: bool = false
+var _caption_max_w: float = 0.0  # caption bubble wraps past this width (the board frame's), 0 = not laid out yet
 var _offer_id: String = ""
 var _overlay: Control = null
 var _hint_fx: Control = null  # sao Gợi ý đang bay; còn bay thì bấm Gợi ý không làm gì
@@ -203,6 +208,8 @@ var _idle_count: Label = null
 var _nudging: bool = false  # đang nhắc Gợi ý (nút lắc hoặc bong bóng đang hiện)
 var _nudge_token: int = 0
 var _nudge_tweens: Array[Tween] = []
+var _card_path: String = ""  # thẻ kết quả đang nạp nền (load_threaded_request), chưa lấy ra
+var _card_scene: PackedScene = null  # thẻ kết quả đã nạp, giữ để nằm trong cache suốt màn
 
 
 func setup(args: Dictionary) -> void:
@@ -210,6 +217,7 @@ func setup(args: Dictionary) -> void:
 	_road_trip = bool(args.get("road_trip", false)) and not _challenge
 	Sfx.music(Sfx.MUSIC_LEVEL)
 	_build()
+	_warm_result_card()
 	_start_level()
 
 
@@ -219,6 +227,8 @@ func _exit_tree() -> void:
 	for w in _waiters.duplicate():
 		(w as Waiter).done.emit(null)
 	_waiters.clear()
+	# Nạp nền chưa lấy ra (rời màn trước khi thắng): lấy để trả token của ResourceLoader.
+	_take_result_card()
 	for sig in [Game.inv_changed, Game.coins_changed]:
 		if (sig as Signal).is_connected(_on_game_changed):
 			(sig as Signal).disconnect(_on_game_changed)
@@ -259,12 +269,14 @@ func _build() -> void:
 	clap_label.visible = false
 	toast_label.text = ""
 	toast_label.visible = false
-	tut_label.text = ""
 	smash_label.text = tr("booster_smash_pick")
-	smash_label.visible = false
+	_fit_caption(smash_label)
+	_set_tut("")
 	restart_button.pressed.connect(_on_restart_pressed)
 	settings_button.pressed.connect(_on_settings_pressed)
 	board_view.block_tapped.connect(_on_block_tapped)
+	# BoardView re-lays its frame on resize first (connected in its _ready), then the captions follow the frame.
+	board_view.resized.connect(_place_captions)
 	# Booster row: always 3 slots, a locked slot shows its lock (see _refresh_hud).
 	for kind in BOOSTERS:
 		var b: Button = get_node("%BoosterButton_" + kind)
@@ -275,6 +287,15 @@ func _build() -> void:
 		var cap: Label = get_node("%BoosterCaption_" + kind)
 		cap.text = tr("booster_" + kind)
 		booster_caps[kind] = cap
+	# Tone down the purple HUD sprites; a CanvasItem material does not reach child nodes, so labels, badges and locks
+	# keep their colors. The piece chip draws its frame in the PieceFrame child, the MOVES chip in its own panel.
+	var tone := ShaderMaterial.new()
+	tone.shader = HUD_TONE
+	tone.set_shader_parameter("saturation", Config.HUD_TONE_SAT)
+	tone.set_shader_parameter("value", Config.HUD_TONE_VAL)
+	tone.set_shader_parameter("gloss_cut", Config.HUD_TONE_GLOSS)
+	for c: CanvasItem in hud_toned():
+		c.material = tone
 	idle_tip = %IdleTip
 	idle_tip.visible = false
 	(%IdleTipLabel as Label).text = tr("level_idle_blocks")
@@ -396,7 +417,7 @@ func _start_level(warn: bool = true) -> void:
 			ch.queue_free()
 	# Daily Challenge sinh trong game: màn chờ ngắn, vẽ xong mới sinh.
 	if _challenge and Game.challenge_needs_generation():
-		tut_label.text = tr("common_loading")
+		_set_tut(tr("common_loading"))
 		await get_tree().process_frame
 		await get_tree().process_frame
 		if _left:
@@ -408,6 +429,15 @@ func _start_level(warn: bool = true) -> void:
 	if attempt.is_empty():
 		_leave("home")
 		return
+	# Block body SDFs missing from the baked bank build on worker threads. The Daily Challenge (made at run time) waits
+	# for them behind its loading line; file levels are baked, and a stale bank only makes the first draw wait.
+	Pudding.prewarm(_board_shapes(attempt.board))
+	if _challenge and not Pudding.is_warm():
+		_set_tut(tr("common_loading"))
+		while not Pudding.is_warm():
+			await get_tree().process_frame
+			if _left:
+				return
 	board = attempt.board
 	_level = int(attempt.level)
 	title_label.text = tr("challenge_title") if _challenge else tr("level_title") % _level
@@ -419,17 +449,23 @@ func _start_level(warn: bool = true) -> void:
 		very_hard = is_hard and Game.difficulty_of(_level) == "very_hard"
 	hard_badge.visible = is_hard
 	(hard_badge as Label).text = tr("level_very_hard") if very_hard else tr("level_hard")
-	tut_label.text = _mech_hint()
+	_set_tut(_mech_hint())
 	board_view.setup(board)
 	board_view.set_specials(attempt.get("specials", []))
+	_place_captions()
 	_refresh_hud()
 	while true:
 		var kind := Game.claim_gift()
 		if kind == "":
 			break
-		var dlg := Dialog.new(tr("mech_new") % tr("booster_" + kind), tr("tut_%s_gift" % kind),
-			[{"id": "ok", "text": tr("mech_got_it"), "kind": "primary", "name": "GotItButton"}])
-		await _ask(dlg)
+		# Quà đã vào kho: popup booster mới (wireframe 3.8) với số trong kho; chạm đâu hoặc Back thì đi tiếp.
+		await _popup_scene(BOOSTER_UNLOCKED, {"view": {"kind": kind, "count": int(Game.s.inv.get(kind, 0))}})
+		if _left:
+			return
+	# Level dạy cơ chế của level chính: cùng popup đó giới thiệu cơ chế mới, một lần; chạm đâu hoặc Back thì đi tiếp.
+	var mech := "" if _challenge or _road_trip else Game.claim_mech_intro(_level)
+	if mech != "":
+		await _popup_scene(BOOSTER_UNLOCKED, {"view": {"mech": mech}})
 		if _left:
 			return
 	_refresh_hud()
@@ -441,8 +477,16 @@ func _start_level(warn: bool = true) -> void:
 	_set_state("playing")
 	_reset_think()
 	if _level == 1 and not _road_trip:
-		tut_label.text = tr("tut_tap")
+		_set_tut(tr("tut_tap"))
 		board_view.highlight(board.hint())
+
+
+## Local cells of every block on `b`, the shapes Pudding draws the bodies of.
+static func _board_shapes(b: BoardState) -> Array:
+	var out: Array = []
+	for id in b.block_ids():
+		out.append(Pudding.local_shape(b.block_view(id)["cells"]))
+	return out
 
 
 ## Dải cảnh báo độ khó theo WarningHardLevelLayer (color-cube-match-puzzle): WarningHardAnimation hiện dần 0.2s rồi
@@ -540,6 +584,17 @@ func _touched() -> bool:
 
 # --- HUD ---
 
+## Nodes drawing the purple HUD sprites that hud_tone.gdshader tones down: restart, settings, the 3 booster buttons,
+## the MOVES chip panel, the piece chip frame and the HARD pill. The pill is a Label drawing its own text, so the
+## text outline gets the same tone.
+func hud_toned() -> Array[CanvasItem]:
+	var out: Array[CanvasItem] = [restart_button, settings_button, moves_chip, piece_chip.get_node("PieceFrame"),
+			hard_badge]
+	for kind in BOOSTERS:
+		out.append(booster_buttons[kind])
+	return out
+
+
 func _refresh_hud() -> void:
 	if not _built or board == null:
 		return
@@ -578,14 +633,36 @@ func _toast(text: String) -> void:
 			toast_label.visible = false)
 
 
+## Lời khen (PraiseFx): chữ bật lên giữa hàng trên của HUD và khung, đáy chữ trên mép khung; hào quang nằm sau bàn
+## (khung che phần dưới), sao và confetti bay trước bàn; dòng hướng dẫn trên khung mờ đi trong lúc đó.
 func _show_clap() -> void:
 	Sfx.play("clap")
-	clap_label.visible = true
-	clap_label.modulate.a = 1.0
-	var tw := clap_label.create_tween()
-	tw.tween_interval(0.5)
-	tw.tween_property(clap_label, "modulate:a", 0.0, 0.5)
-	tw.tween_callback(func() -> void: clap_label.visible = false)
+	var holder := clap_label.get_parent() as Control
+	var old := holder.get_node_or_null("PraiseFx")
+	if old != null:
+		holder.remove_child(old)
+		old.free()
+	var fx := PraiseFx.new()
+	fx.name = "PraiseFx"
+	holder.add_child(fx)
+	holder.move_child(fx, board_view.get_index())  # halo behind the board: the frame stays on top of it
+	var r := praise_rect()
+	var s: float = board_view.frame_unit() / Config.BOARD_FRAME_UNIT if board_view.frame_unit() > 0.0 else 1.0
+	var dim: Array[CanvasItem] = [tut_label]
+	fx.start(clap_label, Vector2(r.get_center().x, r.end.y), r.size.x, r.size.y, s, dim)
+
+
+## Chỗ của lời khen, toạ độ BoardHolder: từ đáy hàng trên của HUD (MOVES, tên level, nút) tới mép trên khung trừ
+## BOARD_CAPTION_GAP, chừa lề hai bên.
+func praise_rect() -> Rect2:
+	var holder := clap_label.get_parent() as Control
+	var inv := holder.get_global_transform().affine_inverse()
+	var row := get_node("Margin/Column/TopBar/TopRow") as Control
+	var s: float = board_view.frame_unit() / Config.BOARD_FRAME_UNIT if board_view.frame_unit() > 0.0 else 1.0
+	var top: float = (inv * row.get_global_rect().end).y + Config.BOARD_CAPTION_GAP * s
+	var bottom: float = board_view.position.y + board_view.frame_rect().position.y - Config.BOARD_CAPTION_GAP * s
+	var side := 24.0
+	return Rect2(side, top, maxf(holder.size.x - 2.0 * side, 1.0), maxf(bottom - top, 1.0))
 
 
 ## Tâm khối trên màn hình (toạ độ toàn cục), lấy trước khi khối rời bàn.
@@ -653,37 +730,54 @@ func _tutorial_after(kind: String) -> void:
 		return
 	var taps := int(attempt.taps)
 	if kind == "blocked" or kind == "gate_closed":
-		tut_label.text = tr("tut_blocked")
+		_set_tut(tr("tut_blocked"))
 	elif taps == 1:
-		tut_label.text = tr("tut_color_dir")
+		_set_tut(tr("tut_color_dir"))
 	else:
-		tut_label.text = ""
+		_set_tut("")
 	if not board.is_won() and not board.is_out_of_moves() and taps < 3:
 		board_view.highlight(board.hint())
 
 
-## Đợi hoạt ảnh bàn và mảnh crystal đang bay xong (tối đa vài giây) rồi nghỉ một nhịp.
-func _settle() -> void:
+## Đợi hoạt ảnh bàn và mảnh crystal đang bay xong (tối đa vài giây). Hết MOVES thì nghỉ thêm một nhịp trước popup
+## cứu; thắng thì không: thẻ thắng hiện ngay khi khối cuối rời bàn.
+func _settle(pause: bool) -> void:
 	var t0 := Time.get_ticks_msec()
 	while (board_view.is_animating() or _pieces_pending > 0) and Time.get_ticks_msec() - t0 < 2500:
 		await get_tree().process_frame
-	await get_tree().create_timer(0.25).timeout
+	if pause:
+		await get_tree().create_timer(0.25).timeout
 
 
 func _resolve() -> void:
 	_set_state("resolving")
 	_set_smash_mode(false)
-	await _settle()
+	await _settle(not board.is_won())
 	if _left:
 		return
 	if board.is_won():
-		if DisplayServer.get_name() != "headless":
-			await get_tree().create_timer(float(Config.CONTENT.win_delay_sec)).timeout
-			if _left:
-				return
 		await _win_flow()
 	else:
 		await _rescue_flow()
+
+
+## Nạp nền thẻ thắng (Road Trip: popup thắng) từ lúc vào màn: lần nạp đầu kéo theo nhiều atlas, nạp lúc thắng thì
+## thẻ hiện trễ. Thắng thì _take_result_card() lấy ra và giữ để các lần thắng sau trong màn này mở ngay từ cache.
+func _warm_result_card() -> void:
+	var path := POPUP_RT_WIN if _road_trip else WIN_CARD
+	if _card_path != "" or (_card_scene != null and _card_scene.resource_path == path):
+		return
+	if ResourceLoader.load_threaded_request(path) == OK:
+		_card_path = path
+
+
+func _take_result_card() -> void:
+	if _card_path == "":
+		return
+	var res := ResourceLoader.load_threaded_get(_card_path)
+	_card_path = ""
+	if res is PackedScene:
+		_card_scene = res
 
 
 # --- hết MOVES ---
@@ -787,6 +881,7 @@ func _lose_flow() -> void:
 
 func _win_flow() -> void:
 	_set_state("over")
+	_take_result_card()
 	var res: Dictionary = Game.on_level_won(attempt)
 	_refresh_hud()
 	if _road_trip:
@@ -956,8 +1051,8 @@ func _use_booster(kind: String) -> void:
 	_reset_think()
 
 
-## Sao bay từ nút Gợi ý tới khối, chạm thì khối mới sáng lên. Người chơi đã đi nước khác hoặc khối đã rời bàn
-## trong lúc sao bay thì nháy gợi ý mới (không nảy), để booster không mất.
+## Sao bay từ nút Gợi ý tới khối, chạm thì khối mới sáng lên và sao lấp lánh phủ khắp khối. Người chơi đã đi nước
+## khác hoặc khối đã rời bàn trong lúc sao bay thì nháy gợi ý mới (không nảy, vẫn lấp lánh), để booster không mất.
 func _fly_hint(id: String) -> void:
 	var taps := int(attempt.taps)
 	_hint_fx = HintFx.new()
@@ -970,7 +1065,7 @@ func _fly_hint(id: String) -> void:
 			var same := int(attempt.taps) == taps and board_view.block_node(id) != null
 			var hid := id if same else board.hint()
 			if hid != "":
-				board_view.highlight(hid, same))
+				board_view.highlight(hid, same, true))
 
 
 ## Dấu "+" bay từ nút +Move tới chip lượt; mỗi dấu chạm thì số lượt hiện tăng thêm phần của nó (bàn đã cộng sẵn).
@@ -1003,11 +1098,53 @@ func _cash_moves(n: int) -> void:
 	_chip_tw.tween_property(moves_chip, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
+## Tutorial and smash captions: a bubble (the label's `normal` style) centred on the frame, bottom edge
+## Config.BOARD_CAPTION_GAP above the frame's top bar, growing upward and sideways (grow_* in the scene), so a wrapped
+## line never covers the frame. The frame is centred in BoardHolder, so its top edge moves with the screen height.
+func _place_captions() -> void:
+	if board_view.board_rect().size == Vector2.ZERO:
+		return
+	var s: float = board_view.frame_unit() / Config.BOARD_FRAME_UNIT
+	var frame: Rect2 = board_view.frame_rect()
+	var bottom: float = board_view.position.y + frame.position.y - Config.BOARD_CAPTION_GAP * s
+	var mid: float = board_view.position.x + frame.get_center().x
+	_caption_max_w = frame.size.x
+	for l: Label in [tut_label, smash_label]:
+		l.offset_left = mid
+		l.offset_right = mid
+		l.offset_top = bottom
+		l.offset_bottom = bottom
+		_fit_caption(l)
+
+
+## The bubble hugs a single line; text wider than the frame wraps inside a frame-wide bubble.
+func _fit_caption(l: Label) -> void:
+	var max_w: float = _caption_max_w if _caption_max_w > 0.0 else (l.get_parent() as Control).size.x
+	var pad: float = l.get_theme_stylebox("normal").get_minimum_size().x
+	var font: Font = l.get_theme_font("font")
+	var w: float = font.get_string_size(l.text, HORIZONTAL_ALIGNMENT_LEFT, -1, l.get_theme_font_size("font_size")).x
+	var wrap := w + pad > max_w
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if wrap else TextServer.AUTOWRAP_OFF
+	l.custom_minimum_size.x = max_w if wrap else 0.0
+
+
+func _set_tut(text: String) -> void:
+	tut_label.text = text
+	_fit_caption(tut_label)
+	_show_captions()
+
+
+## Both captions share one spot above the frame: the smash prompt replaces the tutorial line, and an empty line hides
+## its bubble.
+func _show_captions() -> void:
+	smash_label.visible = _smash_mode
+	tut_label.visible = not _smash_mode and tut_label.text != ""
+
+
 func _set_smash_mode(on: bool) -> void:
 	_smash_mode = on
 	if smash_label != null:
-		smash_label.visible = on
-		tut_label.visible = not on  # cùng một chỗ trên bàn
+		_show_captions()
 
 
 ## Bàn và kho cập nhật ngay; búa kẹo mút hiện giữa màn rồi bay tới gõ, khối chỉ vỡ (và mảnh mới bay) lúc búa chạm.
@@ -1045,7 +1182,7 @@ func _do_smash(id: String) -> void:
 			_resolve())
 
 
-## Booster hết kho: mua bằng gold, hoặc video miễn phí (một lần mỗi lượt) khi thiếu gold.
+## Booster hết kho: mua bằng gold, hoặc video miễn phí (không giới hạn số lần) khi thiếu gold.
 func _booster_dialog(kind: String) -> void:
 	_set_state("dialog")
 	var message := ""
@@ -1054,8 +1191,7 @@ func _booster_dialog(kind: String) -> void:
 		var price := int(Config.ECON.booster_price.get(kind, 0))
 		var can_afford := int(Game.s.coins) >= price
 		var items: Array = [{"id": "buy", "gold": price, "kind": "gold", "dim": not can_afford, "name": "BuyButton"}]
-		var free_ok := not can_afford and not bool((attempt.free_used as Dictionary).get("any", false)) \
-			and bool(Game.lives_view().get("video_ready", false))
+		var free_ok := not can_afford and bool(Game.lives_view().get("video_ready", false))
 		if free_ok:
 			items.append({"id": "video", "text": tr("booster_free_video"), "kind": "video", "name": "VideoButton"})
 			Game.offer_video(FREE_PLACEMENT)
@@ -1074,7 +1210,7 @@ func _booster_dialog(kind: String) -> void:
 			if _left:
 				return
 		elif choice == "video":
-			if await Game.booster_video(attempt, kind):
+			if await Game.booster_video(kind):
 				got = true
 				break
 			match Game.last_ad_reason:

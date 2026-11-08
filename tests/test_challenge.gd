@@ -7,6 +7,7 @@ const MockIap := preload("res://src/platform/mock_iap.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const Solver := preload("res://src/core/solver.gd")
+const Unlocks := preload("res://src/meta/unlocks.gd")
 
 const DIR := "user://test_challenge"
 const NOW := 1800000000
@@ -24,6 +25,8 @@ func _g(level: int = 50) -> Node:
 	DirAccess.make_dir_recursive_absolute(DIR)
 	var g: Node = _tree().root.get_node("Game")
 	g.reset_for_test(DIR + "/save.json")
+	# Daily Challenge is switched off in Config.FEATURES; these tests cover the feature itself.
+	Config.FEATURES.challenge = true
 	g.test_now = NOW
 	g.test_tz = 0
 	var p := _plat()
@@ -66,6 +69,31 @@ func _first_blocked(b: BoardState) -> String:
 
 # --- Game ---
 
+## Config.FEATURES.challenge off (the shipped default): closed at every level, Home hides the icon, Main ignores the
+## action, the win card does not announce it.
+func test_switched_off_by_default(t: T) -> void:
+	var g := _g(60)
+	Config.reset()
+	t.eq(Config.FEATURES.challenge, false, "mặc định tắt")
+	var v: Dictionary = g.challenge_view()
+	t.eq(v.enabled, false, "enabled false")
+	t.eq(v.open, false, "L60 không mở")
+	t.eq(v.available, false, "không chơi được")
+	t.eq(g.start_challenge(), {}, "start_challenge rỗng")
+	t.eq(_plat().an.count("challenge_start"), 0, "không log")
+	var h := _home()
+	t.ok(not h.challenge_btn.get_parent().visible, "Home ẩn icon")
+	t.ok(h.challenge_btn.disabled, "nút không bấm được")
+	h.queue_free()
+	t.ok("challenge" not in Unlocks.features_at(50), "L50 không báo mở")
+	t.ok(int(Unlocks.feature_progress(49).end) != 50, "thanh tiến trình bỏ mốc L50")
+	Config.FEATURES.challenge = true
+	t.ok("challenge" in Unlocks.features_at(50), "bật lại thì L50 báo mở")
+	var h2 := _home()
+	t.ok(h2.challenge_btn.get_parent().visible, "bật lại thì Home hiện icon")
+	h2.queue_free()
+
+
 func test_locked_below_50(t: T) -> void:
 	var g := _g(49)
 	var v: Dictionary = g.challenge_view()
@@ -89,11 +117,12 @@ func test_open_at_50(t: T) -> void:
 	t.eq(a.challenge, true, "cờ challenge")
 	t.eq(int(a.level), 50, "id bàn kẹp tối thiểu 50")
 	t.eq(int(g.s.level), 50, "không đổi level người chơi")
-	# id theo level đã thắng gần nhất, kẹp [50, 100]
+	# id theo level đã thắng gần nhất, kẹp [50, level cuối có file]
 	g.s.level = 80
 	t.eq(g.challenge_level_id(), 79, "L80 -> id 79")
 	g.s.level = 9999
-	t.eq(g.challenge_level_id(), 100, "kẹp 100")
+	var last := int(Config.CONTENT.release_pregen_level)
+	t.eq(g.challenge_level_id(), last, "kẹp %d" % last)
 	g.s.level = 3
 	t.eq(g.challenge_level_id(), 50, "kẹp 50")
 
@@ -110,6 +139,7 @@ func test_same_day_same_level_is_deterministic(t: T) -> void:
 	t.eq(JSON.stringify(g.challenge_data()), d1s, "lần 2 (cache) y hệt")
 	# xoá cache (như mở game lại): vẫn y hệt
 	g.reset_for_test(DIR + "/save.json")
+	Config.FEATURES.challenge = true
 	g.test_now = NOW
 	g.test_tz = 0
 	g.s.level = 60
@@ -364,7 +394,7 @@ func test_challenge_screen_full_win(t: T) -> void:
 	t.ok(_pop(lv, "X2Button") != null, "có nút x2 (video)")
 	(_pop(lv, "X2Button") as Button).pressed.emit()
 	t.ok(await _wait_until(func() -> bool: return int(g.s.coins) == coins0 + 2 * won), "x2 xong")
-	(_pop(lv, "ContinueButton") as Button).pressed.emit()
+	# x2 xong thì gold bay lên thanh trên rồi thẻ tự đóng, không cần bấm Tiếp tục.
 	t.ok(await _wait_until(func() -> bool:
 		if is_instance_valid(lv) and _offer_popup(lv) != null:
 			_offer_popup(lv).later_button.pressed.emit()
@@ -451,16 +481,39 @@ func test_teaching_levels_show_one_line_hint(t: T) -> void:
 	var want := {14: "stone", 30: "ice", 40: "chain", 55: "layer", 70: "fog", 90: "pulse"}
 	for lvn in want:
 		var lv := _mount_level(g, lvn)
-		t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "L%d vào chơi" % lvn)
 		var m: String = want[lvn]
+		# The new-mechanic popup (booster_unlocked view {mech}) comes first; a tap anywhere closes it.
+		var pop: Array = [null]
+		t.ok(await _wait_until(func() -> bool:
+			pop[0] = _mech_popup(lv)
+			return pop[0] != null), "L%d mở popup cơ chế mới" % lvn)
+		if pop[0] != null:
+			t.eq(pop[0].view, {"mech": m}, "L%d popup giới thiệu %s" % [lvn, m])
+			var tap := InputEventMouseButton.new()
+			tap.pressed = true
+			tap.button_index = MOUSE_BUTTON_LEFT
+			pop[0]._gui_input(tap)
+		t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "L%d vào chơi" % lvn)
 		t.eq(lv.tut_label.text, "%s: %s" % [lv.tr("mech_" + m), lv.tr("mech_%s_desc" % m)], "L%d hướng dẫn %s" % [lvn, m])
 		t.ok(not lv.tut_label.text.contains("\n"), "một dòng")
 		lv.free()
-	for lvn in [15, 31, 41, 100]:
+	t.eq(g.s.mech_seen, ["stone", "ice", "chain", "layer", "fog", "pulse"], "đã xem đủ 6 cơ chế")
+	for lvn in [14, 15, 31, 41, 100]:
 		var lv2 := _mount_level(g, lvn)
-		t.ok(await _wait_until(func() -> bool: return lv2.state == "playing"), "L%d vào chơi" % lvn)
-		t.eq(lv2.tut_label.text, "", "L%d không có hướng dẫn" % lvn)
+		t.ok(await _wait_until(func() -> bool: return lv2.state == "playing"), "L%d vào chơi ngay" % lvn)
+		t.eq(_mech_popup(lv2), null, "L%d không có popup cơ chế" % lvn)
+		if lvn != 14:
+			t.eq(lv2.tut_label.text, "", "L%d không có hướng dẫn" % lvn)
 		lv2.free()
+
+
+## Popup booster_unlocked đang mở trên màn level (lớp popup riêng khi chạy lẻ), hoặc null.
+func _mech_popup(lv: Control) -> Control:
+	for c in lv.get_node("LocalPopups").get_children():
+		var sc := c.get_script() as Script
+		if not c.is_queued_for_deletion() and sc != null and sc.resource_path.ends_with("booster_unlocked.gd"):
+			return c as Control
+	return null
 
 
 func test_booster_buttons_follow_unlocks(t: T) -> void:

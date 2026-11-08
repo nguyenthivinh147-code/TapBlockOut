@@ -125,8 +125,10 @@ fill_to = Vector2(0.5, 1)
 
 [sub_resource type="Shader" id="Shader_0grxe"]
 code = "shader_type canvas_item;
+// UV.y where the rail stops, just behind the top edge of the Play button (set by home.gd).
+uniform float cut = 1.0;
 void fragment() {
-	COLOR.a *= smoothstep(0.0, 0.05, UV.y) * (1.0 - smoothstep(0.93, 1.0, UV.y));
+	COLOR.a *= smoothstep(0.0, 0.05, UV.y) * step(UV.y, cut);
 }
 "
 
@@ -156,16 +158,6 @@ height = 256
 fill_from = Vector2(0.5, 0)
 fill_to = Vector2(0.5, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jp7ne"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_viesc"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8v16r"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w6sc3"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_trpum"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1yme"]
 bg_color = Color(0.9490196, 0.34509805, 0.12156863, 1)
 border_width_left = 3
@@ -177,56 +169,6 @@ corner_radius_top_left = 16
 corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lddsn"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_117fy"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nhww4"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8gsen"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cjbpy"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3dr8s"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8mlhg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fyhb5"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8srup"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ldh1"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vxvjb"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iipyy"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pa447"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j5kcj"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kqont"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cwsh6"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qh80m"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fn2x7"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1vr4b"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pswld"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2dyj3"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lq6kt"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6bjkq"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bxy4h"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ye2hr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00fub"]
 bg_color = Color(0.9490196, 0.34509805, 0.12156863, 1)
@@ -240,16 +182,6 @@ corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3sukr"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mdmfk"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j6bu8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_knym3"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n827t"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8iyx7"]
 bg_color = Color(0.9490196, 0.34509805, 0.12156863, 1)
 border_width_left = 3
@@ -261,26 +193,6 @@ corner_radius_top_left = 16
 corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2xa33"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gam3m"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ot6sv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3fekx"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n08hy"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_btdw3"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k8dk3"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h376x"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_76pr5"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0lm7j"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3ncx5"]
 texture = ExtResource("8_vysw7")
@@ -300,8 +212,6 @@ modulate_color = Color(1.08, 1.08, 1.08, 1)
 texture = ExtResource("8_vysw7")
 region_rect = Rect2(0, 816, 380, 168)
 modulate_color = Color(0.55, 0.55, 0.6, 0.9)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_er06r"]
 
 [node name="Home" type="Control" unique_id=1251164586]
 layout_mode = 3
@@ -612,11 +522,11 @@ offset_left = 17.065462
 offset_right = 140.58691
 offset_bottom = 123.52145
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_jp7ne")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_viesc")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_8v16r")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_w6sc3")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_trpum")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
 [node name="Icon" type="TextureRect" parent="GiftItem/GiftButton" unique_id=436811156]
@@ -689,11 +599,11 @@ offset_left = 17.065462
 offset_right = 140.58691
 offset_bottom = 123.52145
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_lddsn")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_117fy")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_nhww4")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_8gsen")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_cjbpy")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 disabled = true
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
@@ -767,11 +677,11 @@ offset_left = 17.065462
 offset_right = 140.58691
 offset_bottom = 123.52145
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_lddsn")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_117fy")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_nhww4")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_8gsen")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_cjbpy")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
 [node name="Icon" type="TextureRect" parent="LeaderboardItem/LeaderboardButton" unique_id=1647382910]
@@ -846,11 +756,11 @@ offset_left = 17.065462
 offset_right = 140.58691
 offset_bottom = 123.52145
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_3dr8s")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_8mlhg")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_fyhb5")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_8srup")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_8ldh1")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
 [node name="Icon" type="TextureRect" parent="OfferItem/OfferChip" unique_id=27515547]
@@ -909,11 +819,11 @@ offset_left = 17.065462
 offset_right = 140.58691
 offset_bottom = 123.52145
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_vxvjb")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_iipyy")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_pa447")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_j5kcj")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_kqont")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
 [node name="Icon" type="TextureRect" parent="SpecialPackItem/SpecialPackButton" unique_id=1041622133]
@@ -972,11 +882,11 @@ offset_left = 17.065462
 offset_right = 140.58691
 offset_bottom = 123.52145
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_cwsh6")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_qh80m")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_fn2x7")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_1vr4b")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_pswld")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
 [node name="Icon" type="TextureRect" parent="WeekendSaleItem/WeekendSaleButton" unique_id=185539746]
@@ -1035,11 +945,11 @@ offset_left = 17.065462
 offset_right = 140.58691
 offset_bottom = 123.52145
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2dyj3")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_lq6kt")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_6bjkq")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_bxy4h")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_ye2hr")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
 [node name="Icon" type="TextureRect" parent="WeeklyPassItem/WeeklyPassButton" unique_id=431952535]
@@ -1112,11 +1022,11 @@ offset_left = 17.065462
 offset_right = 140.58691
 offset_bottom = 123.52145
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_3sukr")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_mdmfk")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_j6bu8")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_knym3")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_n827t")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
 [node name="Icon" type="TextureRect" parent="ChainOfferItem/ChainOfferButton" unique_id=907473898]
@@ -1189,11 +1099,11 @@ offset_left = 17.065462
 offset_right = 140.58691
 offset_bottom = 123.52145
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2xa33")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_gam3m")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_ot6sv")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_3fekx")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_n08hy")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
 [node name="Icon" type="TextureRect" parent="PreviewItem_popup_remove_ads/Preview_popup_remove_ads" unique_id=246005006]
@@ -1252,11 +1162,11 @@ offset_left = 17.065462
 offset_right = 140.58691
 offset_bottom = 123.52145
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_btdw3")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_k8dk3")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_h376x")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_76pr5")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_0lm7j")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
 [node name="Icon" type="TextureRect" parent="PreviewItem_streak_main/Preview_streak_main" unique_id=792718032]
@@ -1301,17 +1211,17 @@ metadata/fb_font = [36.0, 3.0, 166.0]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 0
-offset_left = 208.03612
+offset_left = 202.75395
 offset_top = 852.5508
-offset_right = 522.5282
+offset_right = 517.24605
 offset_bottom = 986.6366
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxTexture_3ncx5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_x527v")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1acex")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_r11y7")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_er06r")
-metadata/fb_rect = Rect2(256, 1274, 387, 165)
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
+metadata/fb_rect = Rect2(249.5, 1274, 387, 165)
 metadata/fb_bottom = true
 
 [node name="HardTag" type="Label" parent="PlayButton" unique_id=640040623]
@@ -1337,9 +1247,8 @@ metadata/fb_font = [36.0, 3.0, 330.0]
 [node name="PlayLabel" type="Label" parent="PlayButton" unique_id=313731296]
 unique_name_in_owner = true
 layout_mode = 0
-offset_top = 21.128668
 offset_right = 314.4921
-offset_bottom = 134.9943
+offset_bottom = 121.89616
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0.3529412, 0.5647059, 0.08627451, 1)
 theme_override_colors/font_outline_color = Color(0.3529412, 0.5647059, 0.08627451, 1)
@@ -1351,7 +1260,7 @@ theme_override_font_sizes/font_size = 83
 text = "PLAY"
 horizontal_alignment = 1
 vertical_alignment = 1
-metadata/fb_rect = Rect2(0, 26, 387, 116)
+metadata/fb_rect = Rect2(0, 0, 387, 150)
 metadata/fb_font = [102.0, 4.0, 340.0]
 
 [node name="ComingSoonLabel" type="Label" parent="." unique_id=818365696]

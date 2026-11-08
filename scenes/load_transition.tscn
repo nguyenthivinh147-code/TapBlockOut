@@ -54,11 +54,6 @@ scale = Vector2(1, 1)
 pivot_offset_ratio = Vector2(0, 1)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"canvas": {
-"order": 3000.0,
-"override_sort": true
-},
 "cs": [{
 "animateBackgroundSeconds": "1",
 "animateIconSeconds": "1.1",
@@ -72,9 +67,7 @@ metadata/u = {
 "name": "LoadLevelProcessVer2"
 }],
 "id": "8179333351673012283",
-"n": "LoadLevelProcessVer2",
-"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-"s": [0.0, 0.0]
+"n": "LoadLevelProcessVer2"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -101,27 +94,16 @@ tex = ExtResource("4_8g6cr")
 region = Rect2(0, 0, 839, 839)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "1392707336156258934",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "bomb_(2)",
-"t": 0.0
+"sp": "bomb_(2)"
 },
 "mask": {
 "show": false
 },
-"n": "icon",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 10000.0, 10000.0, 0.5, 0.5]
+"n": "icon"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -146,25 +128,14 @@ script = ExtResource("3_b0bja")
 color = Color(0, 0, 0, 1)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "1903484387320806187",
 "img": {
-"c": "000000ff",
 "cut": true,
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": null,
-"t": 0.0
+"sp": null
 },
-"n": "Background",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 10000.0, 10000.0, 0.5, 0.5]
+"n": "Background"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -202,29 +173,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true
 metadata/u = {
-"a": true,
 "id": "8361545988854800984",
 "n": "LevelTitle",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 345.0, 186.9014, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 72.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 64.45,
-"h": 2.0,
-"ls": -3.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "Hard Level",
-"st": 16.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -236,22 +188,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 72.0],
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 64.45,
-"h": 2.0,
 "ls": -3.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "Hard Level",
 "st": 16.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 metadata/u_sub = true

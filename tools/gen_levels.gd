@@ -1,11 +1,12 @@
 extends SceneTree
 ## Sinh hàng loạt level bằng LevelGenerator và ghi level_NNNN.json.
-## Chạy: tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- [--from=1] [--to=100] [--out=user://gen_out] [--seed=0] [--early=0]
+## Chạy: tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- [--from=1] [--to=500] [--out=user://gen_out] [--seed=0] [--early=0]
 ## Mặc định ghi vào user://gen_out. Muốn ghi vào data/levels thì truyền --out=res://data/levels một cách chủ ý.
 ## Thoát 1 nếu có level không sinh được hoặc không qua kiểm tra.
 ##
-## Bản phát hành L1-100 (đường cong độ khó difficulty_curve.gd) sinh bằng đúng lệnh này, seed gốc BASE_SEED = 20261101:
-##   tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- --from=1 --to=100 --seed=20261101 --early=1 --out=res://data/levels
+## Bản phát hành L1-500 (đường cong độ khó difficulty_curve.gd) sinh bằng đúng lệnh này, seed gốc BASE_SEED = 20261101
+## (khoảng 1 phút), rồi bake lại data/pudding_sdf.res bằng tools/bake_sdf.gd:
+##   tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- --from=1 --to=500 --seed=20261101 --early=1 --out=res://data/levels
 ## `--early=1`: 4 level đầu (EARLY, chắc chắn thắng) dựng tay thay cho bộ sinh; min_taps và moves vẫn do Solver tính.
 ## Level dạy cơ chế (id = Config.UNLOCK: 14, 30, 40, 55, 70, 90) do bộ sinh tạo như level thường, chỉ bật cơ chế mới.
 
@@ -15,9 +16,9 @@ const Solver := preload("res://src/core/solver.gd")
 const Config := preload("res://src/config.gd")
 
 const DEFAULT_FROM := 1
-const DEFAULT_TO := 100
+const DEFAULT_TO := 500
 const DEFAULT_OUT := "user://gen_out"
-## Seed gốc của bản phát hành L21-300 (ngày chốt thiết kế). Mặc định của --seed vẫn là 0.
+## Seed gốc của bản phát hành L1-500 (ngày chốt thiết kế). Mặc định của --seed vẫn là 0.
 const BASE_SEED := 20261101
 
 ## Bốn level đầu làm tay, khoá là id: 2, 3, 3, 4 màu. L1-3 không khối nào bị chặn quá một lần và dư 5 MOVES nên chắc
@@ -25,7 +26,7 @@ const BASE_SEED := 20261101
 ## `rows`: mỗi chuỗi một hàng (y tăng xuống dưới), '.' ô trống, '#' đá, chữ cái là khối (cùng chữ = cùng khối).
 ## `blk[chữ]`: color (yellow lên, green trái, blue phải, purple xuống) và tuỳ chọn ice, chain (chữ khối chìa),
 ## inner (màu lớp trong), fog. `pulse`: cạnh có cổng nhịp và trạng thái mở ban đầu.
-## Số khối 4, 6, 8, 10 (gấp đôi bản đầu, DifficultyCurve.COUNT_SCALE). L3 chỉ D chờ G, L4 chỉ E chờ H.
+## Số khối 4, 6, 8, 10 (DifficultyCurve.EARLY_BLOCKS). L3 chỉ D chờ G, L4 chỉ E chờ H.
 const EARLY := {
 	1: {"rows": ["AB.CC", "AB...", "...DD"],
 		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "blue"}}},

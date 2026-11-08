@@ -8,6 +8,7 @@ const OUT := "res://tests/shots/"
 const NOW := 1800000000
 const Gallery := preload("res://src/ui/ui_gallery.gd")
 const Leaderboard := preload("res://src/meta/leaderboard.gd")
+const Config := preload("res://src/config.gd")
 const ALL := ["home", "level", "popup_rescue", "popup_rescue_late", "win", "lose", "shop", "daily", "profile", "settings",
 	"no_lives", "offer", "offer_level", "shop_mini", "level_booster"]
 
@@ -228,6 +229,7 @@ func _shot(name: String) -> void:
 			await _settle()
 		"challenge":
 			await _fresh(60)
+			Config.FEATURES.challenge = true
 			_main.go("challenge")
 			await _settle()
 		"ingame_settings":

@@ -3,10 +3,12 @@ extends Control
 ## Thân màn là ShopCashLayer của color-cube-match-puzzle (unity_ui.gd): ScrollRect với thẻ Remove Ads, các thẻ gói
 ## (Starter, Level, Rescue), tiêu đề Gold, gói lớn và lưới gold (FreeGoldPack là video gold mỗi ngày của game).
 ## Thanh trên, thanh dưới dùng chung với Home (HubTop, HubNav) đè lên trên như CurrencyLayer, BottomBarLayer của Unity.
-## scenes/shop.tscn giữ layer đã chỉnh cho game: "BG (2)" ẩn, nền là node Background ở gốc màn (bg_shop.png của
-## Figma, phủ cả vùng ngoài safe area), ExitBtn và các thẻ không dùng ẩn, Viewport cắt theo rect, rect chữ thẻ
+## scenes/shop.tscn giữ layer đã chỉnh cho game: "BG (2)" ẩn, nền là node Background ở gốc màn (assets/bg/bg_shop.png,
+## sọc kẹo pastel hồng tím, phủ cả vùng ngoài safe area), ExitBtn và các thẻ không dùng ẩn, Viewport cắt theo rect, rect chữ thẻ
 ## Remove Ads và nút video; cùng Toast, khung Hub. Script điền chữ, giá, món theo SKU, thẻ preview, đặt các giá trị
 ## trùng mặc định của Godot (_defaults); HubTop, HubNav dựng lúc chạy.
+## Anim của game đè lên layer (ShopFx, shop_fx.gd): thẻ hiện lần lượt khi mở màn, icon gold nổi, nhãn sale lắc, vệt sáng
+## quét nút giá; gold vừa mua hoặc xem video bay từ thẻ lên chip gold của HubTop; giá đổi sang Owned thì nảy.
 ## setup({source}); signal closed({bought: bool, action?}); action: shop, profile, settings, lives, ranking.
 
 signal closed(result: Variant)
@@ -18,6 +20,7 @@ const HubTop := preload("res://src/ui/hub_top.gd")
 const HubNav := preload("res://src/ui/hub_nav.gd")
 const SampleData := preload("res://src/ui/sample_data.gd")
 const Config := preload("res://src/config.gd")
+const ShopFx := preload("res://src/ui/shop_fx.gd")
 
 const LAYER := "ShopCashLayer"
 const PANEL := "GameObject"
@@ -62,12 +65,20 @@ var price_labels: Dictionary = {}
 var bought_any: bool = false
 var last_toast: String = ""
 var ui: RefCounted = null
+## ShopFx (shop_fx.gd), anim của game trên màn.
+var fx: Control = null
 
 var _source: String = ""
 var _busy: bool = false
 var _closed: bool = false
 var _toast_tween: Tween = null
 var _video_text: Label = null
+var _top: Control = null
+## sku -> node gold bay lên chip khi mua (icon gold của ô hoặc thẻ, không có thì nút mua)
+var _gold_from: Dictionary = {}
+var _video_icon: Control = null
+## sku -> đang hiện Owned (đổi sang true thì giá nảy)
+var _owned: Dictionary = {}
 
 
 func setup(args: Dictionary) -> void:
@@ -80,6 +91,7 @@ func setup(args: Dictionary) -> void:
 func _build() -> void:
 	buy_buttons.clear()
 	price_labels.clear()
+	_gold_from.clear()
 	theme = ThemeKit.make_theme()
 	# The layer as the shop shows it is saved in scenes/shop.tscn (see the header), with Toast and the Hub
 	# containers; this fills texts, prices and items. Prefab nodes keep their Unity names in the scene (an
@@ -109,8 +121,19 @@ func _build() -> void:
 	_fit_panel()
 
 	_hub_bars()
+	_animate()
 	if not resized.is_connected(_fit_panel):
 		resized.connect(_fit_panel)
+
+
+## ShopFx over the layer and the bars (last child): the content's cards pop in, the loops start.
+func _animate() -> void:
+	fx = ShopFx.new()
+	add_child(fx)
+	fx.top = _top
+	var content: Control = ui.node(C)
+	fx.enter(content.get_children())
+	fx.idle(content)
 
 
 ## Changes to the layer's nodes that set a Godot default value: the scene does not keep those as overrides of an
@@ -150,6 +173,7 @@ func _hub_bars() -> void:
 	top.action.connect(_on_hub_action)
 	top.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	%HubMargin.add_child(top)
+	_top = top
 	coins_label = top.gold_label
 	var nav: HubNav = HubNav.create("shop")
 	nav.set_meta("u_rt", true)
@@ -200,7 +224,11 @@ func _remove_ads_card() -> void:
 func _pack_card(card: String, sku: String) -> void:
 	var p := C + "/" + card
 	ui.text(p + "/PackName", _pack_title(sku))
-	fill_items(ui.node(p + "/ItemContainer"), sku_items(sku))
+	var ic: Control = ui.node(p + "/ItemContainer")
+	fill_items(ic, sku_items(sku))
+	var gold_item := ic.get_node_or_null("Item_gold")
+	if gold_item != null:
+		_gold_from[sku] = gold_item
 	_buy_button(p + "/Button_Purchase", sku)
 
 
@@ -209,6 +237,8 @@ func _buy_button(path: String, sku: String) -> void:
 	buy_buttons[sku] = b
 	price_labels[sku] = ui.label(path + "/Text (TMP)")
 	b.connect("clicked", buy.bind(sku))
+	if not _gold_from.has(sku):
+		_gold_from[sku] = b
 	_show_owned(sku)
 
 
@@ -220,6 +250,10 @@ func _show_owned(sku: String) -> void:
 	var b: Button = buy_buttons.get(sku)
 	if b != null:
 		b.call("set_interactable", not owned)
+	var was := bool(_owned.get(sku, owned))
+	_owned[sku] = owned
+	if owned and not was and fx != null:
+		fx.pop(l)
 
 
 ## Shop_GoldBigPack takes the biggest pack, the grid tiles (Shop_GoldPack .. (4)) the others in order.
@@ -234,10 +268,12 @@ func _gold_cards(catalog: Array) -> void:
 		if i == catalog.size() - 1 or i >= tiles.size():
 			p = C + "/Shop_GoldBigPack"
 			ui.text(p + "/GoldQuantityTxt", fmt_n0(int(e.gold)))
+			_gold_from[sku] = ui.node(p + "/GoldQuantityTxt/Image (1)")
 		else:
 			p = C + "/SmallPack#2/" + str(tiles[i])
 			ui.sprite(p + "/BG/Icon", str(GOLD_ICONS[mini(i, GOLD_ICONS.size() - 1)]))
 			ui.text(p + "/GoldAmount/GoldQuantity", fmt_n0(int(e.gold)))
+			_gold_from[sku] = ui.node(p + "/BG/Icon")
 		var b: Button = ui.button(p + "/Button_Purchase")
 		buy_buttons[sku] = b
 		price_labels[sku] = ui.label(p + "/Button_Purchase/Text (TMP)")
@@ -266,6 +302,7 @@ func _video_card() -> void:
 	ui.text(p + "/GoldQuantity", fmt_n0(int(Config.ECON.shop_video_coins)))
 	video_button = ui.button(p + "/Button_Ads")
 	video_button.connect("clicked", watch_video)
+	_video_icon = video_button.get_parent().get_node_or_null("BG/Icon")
 	# The game's "Watch video" is longer than Unity's "0/5": the scene moves it right of the TV icon.
 	ui.text(p + "/Button_Ads/Text (TMP)", tr("ads_daily_watch"))
 	_video_text = ui.label(p + "/Image/Text (TMP)")
@@ -541,21 +578,31 @@ func buy(sku: String) -> void:
 		return
 	_set_busy(true)
 	Sfx.play("sfx_button")
+	var before := int(Game.s.coins)
 	var r: Dictionary = await Game.buy_sku(sku)
 	if not is_inside_tree():
 		return
 	_set_busy(false)
+	var flew := false
 	if bool(r.get("granted", false)):
 		bought_any = true
 		_refresh()
-	_show_buy_result(r)
+		flew = _fly_gold(_gold_from.get(sku), int(Game.s.coins) - before)
+	_show_buy_result(r, flew)
 
 
-func _show_buy_result(r: Dictionary) -> void:
+## Gold vừa vào ví bay từ `from` lên chip gold (ShopFx); false thì không bay, bên gọi tự phát tiếng xu.
+func _fly_gold(from: Variant, gold: int) -> bool:
+	return fx != null and from is Control and is_instance_valid(from) and fx.fly_gold(from, gold)
+
+
+## flew: gold đang bay lên chip, tiếng xu phát khi từng đồng chạm chip.
+func _show_buy_result(r: Dictionary, flew: bool = false) -> void:
 	match str(r.get("status", "error")):
 		"ok":
 			if bool(r.granted):
-				Sfx.play("sfx_coin")
+				if not flew:
+					Sfx.play("sfx_coin")
 				toast(tr("shop_buy_ok"))
 			else:
 				toast(tr("shop_buy_failed"))
@@ -573,13 +620,15 @@ func watch_video() -> void:
 	if _busy or _closed:
 		return
 	_set_busy(true)
+	var before := int(Game.s.coins)
 	var ok: bool = await Game.shop_watch_video()
 	if not is_inside_tree():
 		return
 	_set_busy(false)
 	if ok:
 		bought_any = true
-		Sfx.play("sfx_coin")
+		if not _fly_gold(_video_icon, int(Game.s.coins) - before):
+			Sfx.play("sfx_coin")
 		_refresh()
 	elif Game.shop_videos_left() <= 0:
 		toast(tr("shop_video_none"))
@@ -629,8 +678,9 @@ func toast(text: String) -> void:
 	_toast_tween.tween_property(toast_label, "modulate:a", 0.0, 0.4)
 
 
+## While gold flies, the chip counts on its own (HubTop.gold_shown, ShopFx).
 func _on_coins_changed(v: int) -> void:
-	if is_instance_valid(coins_label):
+	if is_instance_valid(coins_label) and not (fx != null and fx.flying()):
 		coins_label.text = str(v)
 
 

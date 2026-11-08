@@ -8,14 +8,6 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oki0t"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fau2e"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y5ghp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m7wrp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ojbuo"]
-
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_55qdw"]
 texture = ExtResource("2_y4n43")
 texture_margin_left = 30.0
@@ -24,16 +16,6 @@ texture_margin_right = 30.0
 texture_margin_bottom = 24.0
 region_rect = Rect2(937, 524, 226, 144)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8gll6"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xrmdq"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jedgs"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yymvn"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_108ip"]
-
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p6mvy"]
 texture = ExtResource("2_y4n43")
 texture_margin_left = 30.0
@@ -41,16 +23,6 @@ texture_margin_top = 30.0
 texture_margin_right = 30.0
 texture_margin_bottom = 24.0
 region_rect = Rect2(937, 672, 226, 140)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_66252"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_24n2w"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7il6d"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wdwd0"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_da214"]
 
 [node name="NavBar" type="Control" unique_id=1051884145]
 anchors_preset = 0
@@ -107,10 +79,10 @@ offset_right = 295.3333
 offset_bottom = 248.0
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_oki0t")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_fau2e")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_y5ghp")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_m7wrp")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_ojbuo")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_oki0t")
 metadata/fb_rect = Rect2(0, 102, 295.3333, 146)
 
 [node name="Icon" type="TextureRect" parent="ShopButton" unique_id=1561852812]
@@ -153,11 +125,11 @@ offset_left = 295.3333
 offset_right = 590.6667
 offset_bottom = 248.0
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_8gll6")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_xrmdq")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_jedgs")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_yymvn")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_108ip")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_oki0t")
 metadata/fb_rect = Rect2(295.3333, 0, 295.3333, 248)
 
 [node name="Icon" type="TextureRect" parent="HomeTab" unique_id=1161179235]
@@ -201,11 +173,11 @@ offset_top = 102.0
 offset_right = 886.0
 offset_bottom = 248.0
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_66252")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_24n2w")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_7il6d")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_wdwd0")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_da214")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_oki0t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_oki0t")
 metadata/fb_rect = Rect2(590.6667, 102, 295.3333, 146)
 
 [node name="Icon" type="TextureRect" parent="RoadTripTab" unique_id=1019677145]

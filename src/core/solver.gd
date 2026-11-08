@@ -9,6 +9,8 @@ const Config := preload("res://src/config.gd")
 const BIG_MOVES := 100000
 const SEARCH_BUDGET := 20000
 const INF := 1 << 30
+## `clear_rounds` gives up after this many waiting taps.
+const CLEAR_WAIT_MAX := 1000
 
 
 ## {ok, min_taps, order, wasted, exact}. Không giải được: ok=false, min_taps=-1.
@@ -55,6 +57,37 @@ static func slack_for(level: Dictionary) -> int:
 	return int(c["slack_normal"])
 
 
+## Clear rounds (design.md section 4): each round taps every block that can act right now (exit, crack the pudding,
+## peel the box), in block order, re-checking each one first; repeat until the board is empty. With nothing to act on
+## (only blocks waiting for a pulse gate) one waiting tap is made and not counted. -1 if the board cannot be cleared.
+## Equals the depth of the blocking chain on a board without mechanics.
+static func clear_rounds(level: Dictionary) -> int:
+	var b := BoardState.new(level)
+	b.add_moves(BIG_MOVES)
+	var rounds := 0
+	var waits := 0
+	while not b.is_won():
+		var act: Array[String] = []
+		for id in b.block_ids():
+			if _acts(b.peek(id)):
+				act.append(id)
+		if act.is_empty():
+			waits += 1
+			if b.gates().is_empty() or waits > CLEAR_WAIT_MAX:
+				return -1
+			b.tap(b.block_ids()[0])
+			continue
+		rounds += 1
+		for id in act:
+			if _acts(b.peek(id)):
+				b.tap(id)
+	return rounds
+
+
+static func _acts(kind: String) -> bool:
+	return kind == "exit" or kind == "crack" or kind == "peel"
+
+
 ## min_taps + dư; -1 nếu level không giải được.
 static func compute_moves(level: Dictionary) -> int:
 	var r := solve(level)
@@ -77,10 +110,14 @@ static func _classify(b: BoardState) -> Dictionary:
 	return cls
 
 
+## Tham lam: thoát qua cổng đang mở trước (dùng cổng lúc nó mở, để dành khối cạnh không cổng cho lúc cổng đóng), rồi
+## thoát cạnh không cổng, nứt, bóc; không còn gì thì chạm chờ. Cùng thứ tự với `LevelGenerator._no_wait`, nên level
+## bộ sinh nhận (không phải chờ) giải xong ngay ở đây, không cần tìm chính xác.
 static func _greedy(b: BoardState) -> Dictionary:
 	var order: Array[String] = []
 	var wasted := 0
 	var guard := 0
+	var gated := b.gates()
 	while not b.is_won():
 		guard += 1
 		if guard > 20000:
@@ -89,6 +126,10 @@ static func _greedy(b: BoardState) -> Dictionary:
 		var pick := ""
 		if not cls["exit"].is_empty():
 			pick = cls["exit"][0]
+			for id: String in cls["exit"]:
+				if gated.has(str(b.block_view(id)["dir"])):
+					pick = id
+					break
 		elif not cls["crack"].is_empty():
 			pick = cls["crack"][0]
 		elif not cls["peel"].is_empty():

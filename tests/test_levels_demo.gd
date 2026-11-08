@@ -99,7 +99,7 @@ func test_table(t: T) -> void:
 			continue
 		var n: int = d["blocks"].size()
 		var want := DifficultyCurve.block_count(id)
-		t.ok(absi(n - want) <= DifficultyCurve.COUNT_SCALE or Config.UNLOCK.stone == id, "L%d số khối %d ~ đường cong %d" % [id, n, want])
+		t.ok(absi(n - want) <= 2, "L%d số khối %d ~ đường cong %d" % [id, n, want])
 		t.eq(bool(d["hard"]), DifficultyCurve.is_hard(id), "L%d cờ HARD" % id)
 		if id <= 4:
 			t.eq(_colors_of(d).size(), [2, 3, 3, 4][id - 1], "L%d số màu" % id)

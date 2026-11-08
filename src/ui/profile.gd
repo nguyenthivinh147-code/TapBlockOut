@@ -59,12 +59,14 @@ var _busy: bool = false
 
 
 ## Avatar có frame bao ngoài. Thiếu ảnh thật thì avatar là hình tròn placeholder, frame là vòng viền.
-static func make_avatar(avatar_id: String, frame_id: String, px: int) -> Control:
+## inset: phần avatar thụt vào mỗi cạnh so với frame (tỉ lệ px). Góc avatar bo to hơn góc lỗ frame,
+## nên 8% hở ở góc; 3% lấp kín lỗ của mọi frame_00..12 mà không lòi ra ngoài.
+static func make_avatar(avatar_id: String, frame_id: String, px: int, inset: float = 0.08) -> Control:
 	var root := Control.new()
 	root.custom_minimum_size = Vector2(px, px)
 	root.size = Vector2(px, px)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var pad := int(px * 0.08)
+	var pad := int(px * inset)
 	var av := TextureRect.new()
 	av.texture = ThemeKit.icon(avatar_id)
 	av.expand_mode = TextureRect.EXPAND_IGNORE_SIZE

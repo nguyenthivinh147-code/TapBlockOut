@@ -152,7 +152,7 @@ func _build_pack(layer: String) -> void:
 	_fill_slots()
 	buy_button = ui.button("Panel/Content/GameObject/FreeBtn")
 	buy_button.connect("clicked", buy)
-	ui.text("Panel/Content/GameObject/FreeBtn/Out", tr("offer_buy") % Platform.price(sku))
+	ui.text("Panel/Content/GameObject/FreeBtn/Out", Platform.price(sku))
 	# Body: the reward quantity text style (Baloo Outline - DarkBlue), wrapped. Starter / Special: above the Bottom
 	# box on the card art. Flash: its LimitedPack image fills that space, so the line goes under the price button.
 	var s := UnityKit.spec(layer, GROUP + "/Image/Text (TMP)")
@@ -222,7 +222,7 @@ func _build_booster() -> void:
 	ui.show(p + "/Content/GameObject/FreeBtn", true)
 	buy_button = ui.button(p + "/Content/GameObject/FreeBtn")
 	buy_button.connect("clicked", buy)
-	ui.text(p + "/Content/GameObject/FreeBtn/Out", tr("offer_buy") % Platform.price(sku))
+	ui.text(p + "/Content/GameObject/FreeBtn/Out", Platform.price(sku))
 	ui.relayout("Panel")
 
 
@@ -247,7 +247,7 @@ func _build_remove_ads() -> void:
 	UnityUI.apply_rect(card)
 	buy_button = ui.button(p + "/Button_Purchase")
 	buy_button.connect("clicked", buy)
-	ui.text(p + "/Button_Purchase/Text (TMP)", tr("offer_buy") % Platform.price(sku))
+	ui.text(p + "/Button_Purchase/Text (TMP)", Platform.price(sku))
 	later_button = ui.button("Continue")
 	later_button.connect("clicked", close)
 	ui.text("Continue/Text (TMP)", tr("offer_no_thanks"))

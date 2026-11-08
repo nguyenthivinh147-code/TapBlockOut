@@ -1,14 +1,16 @@
 extends RefCounted
-## Sprite không chữ cắt từ các atlas Figma (page "02 · Foundations" > Components).
+## Sprite không chữ cắt từ các atlas Figma (page "02 · Foundations" > Components) và vài atlas Unity.
 ## Dùng: const UiAtlas := preload("res://src/ui/ui_atlas.gd"); UiAtlas.tex("pill_green"); UiAtlas.box("pill_green", Vector4i(...)).
 ## Toạ độ lấy từ bounds node trong Figma; sửa atlas thì cập nhật bảng REGIONS.
 
 const DIR := "res://assets/ui/figma/"
+## Tên file trong DIR, hoặc đường dẫn res:// đầy đủ cho atlas nằm ngoài DIR.
 const SHEETS := {
 	"main": "atlas_main.png",
 	"popup": "atlas_popup.png",
 	"winlose": "atlas_winlose.png",
 	"shop": "atlas_shop.png",
+	"winstreak": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
 }
 
 ## tên -> [sheet, Rect2(x, y, w, h)]
@@ -96,6 +98,11 @@ const REGIONS := {
 	"awning": ["shop", Rect2(0, 806, 1024, 218)],
 	# popup atlas
 	"paper_rings": ["popup", Rect2(424, 722, 232, 300)],
+	# hộp quà Road Trip (đỏ nhỏ, xanh vừa, tím lớn): ô vuông ôm sát từng hộp, đo theo alpha, không có trong
+	# _sprites.json (Unity chỉ xuất hộp tím, UI_Winstreak_Atlas_6, ô 200x200 rộng hơn)
+	"gift_red": ["winstreak", Rect2(26, 874, 149, 149)],
+	"gift_blue": ["winstreak", Rect2(224, 856, 161, 161)],
+	"gift_purple": ["winstreak", Rect2(418, 839, 181, 181)],
 }
 
 static var _sheet_cache: Dictionary = {}
@@ -108,7 +115,8 @@ static func has(region: String) -> bool:
 
 static func _sheet(sheet: String) -> Texture2D:
 	if not _sheet_cache.has(sheet):
-		_sheet_cache[sheet] = load(DIR + str(SHEETS[sheet])) as Texture2D
+		var file := str(SHEETS[sheet])
+		_sheet_cache[sheet] = load(file if file.begins_with("res://") else DIR + file) as Texture2D
 	return _sheet_cache[sheet]
 
 

@@ -11,6 +11,8 @@ const MONDAY := 1704715200  # 2024-01-08 12:00 UTC
 const ShopScene := preload("res://scenes/shop.tscn")
 const MiniScene := preload("res://scenes/shop_mini.tscn")
 const OfferScene := preload("res://scenes/popup_offer.tscn")
+const Shop := preload("res://src/ui/shop.gd")
+const ThemeKit := preload("res://src/ui/theme_kit.gd")
 
 
 func _root() -> Window:
@@ -222,10 +224,25 @@ func test_shop_mini(t: T) -> void:
 	var mini := _open(MiniScene, {"source": "rescue"})
 	t.eq(mini.buy_buttons.size(), 6, "chỉ 6 gói gold")
 	t.ok(mini.close_button != null, "có nút đóng")
+	# Title inside the ribbon's oval, not as wide as the ribbon.
+	var hdr: Label = mini.ui.label("Panel/Image/txtHeader")
+	t.ok(hdr.size.x <= mini.ui.node("Panel/Image").size.x * 0.85, "tiêu đề gọn trong dải tím")
+	# Gold balance in a chip like HubTop's GoldPanel.
+	var coins: Label = mini.coins_label
+	var chip := coins.get_parent()
+	t.eq(str(chip.name), "GoldChip", "số gold nằm trong khung")
+	t.ok(chip.get_node_or_null("Bar") is Panel and chip.get_node_or_null("Icon") is TextureRect, "khung có nền và đồng gold")
+	t.eq(coins.text, Shop.fmt_n0(int(g.s.coins)), "số gold trong ví")
+	var font := coins.get_theme_font_size("font_size")
+	mini._on_coins_changed(123456789)
+	t.ok(ThemeKit.FONT.get_string_size(coins.text, HORIZONTAL_ALIGNMENT_LEFT, -1, coins.get_theme_font_size("font_size")).x <= coins.size.x, "số dài co cho vừa khung")
+	mini._on_coins_changed(int(g.s.coins))
+	t.eq(coins.get_theme_font_size("font_size"), font, "số ngắn về cỡ cũ")
 	var res: Array = []
 	mini.closed.connect(func(r: Variant) -> void: res.append(r))
 	await mini.buy("gold_pack_1")
 	t.eq(int(g.s.coins), 2000, "mua trong shop mini")
+	t.eq(coins.text, Shop.fmt_n0(2000), "khung gold cập nhật sau khi mua")
 	mini.close_button.pressed.emit()
 	mini.close()
 	t.eq(res.size(), 1, "đóng một lần")
@@ -247,7 +264,7 @@ func test_offer_popup(t: T) -> void:
 	var pop := _open(OfferScene, {"id": id})
 	t.eq(pop.sku, "starter_pack", "sku")
 	t.eq(pop.contents().size(), 4, "gold + 3 booster")
-	t.eq(_text(pop.buy_button), pop.tr("offer_buy") % "$6.99", "giá trên nút")
+	t.eq(_text(pop.buy_button), "$6.99", "chỉ giá trên nút")
 	t.ok(pop.time_label.visible, "đếm ngược khi có hạn")
 	t.eq(pop.time_label.text, pop.tr("offer_time_left") % "48:00:00", "còn 48 giờ")
 	var res: Array = []

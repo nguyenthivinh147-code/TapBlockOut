@@ -1,13 +1,14 @@
 extends Control
 ## Màn hết mạng: đếm ngược, nạp bằng gold, xem video (+1 mạng), về Home.
 ## setup(args): {source?}; "hub" là mở từ tim trên thanh trên, dạng popup đè lên màn đang mở: tiêu đề "Thêm mạng",
-## không tự đóng khi còn mạng; đầy mạng (hoặc vô hạn) thì ẩn nút video, nút gold và đếm ngược.
+## không tự đóng khi còn mạng; đầy mạng (hoặc vô hạn) thì ẩn nút video, nút gold và đếm ngược, chỗ đếm ngược cạnh
+## tim ghi dòng báo đầy (vô hạn) bằng text của prefab cho trạng thái này, dòng giải thích dưới popup ẩn đi.
 ## Dữ liệu lấy từ Game.lives_view().
 ## closed(result): "refilled" (đã có mạng, quay lại chơi) | "home". Mở từ hub thì không bao giờ "refilled":
 ## nạp xong cũng là "home".
 ## Không có video thì hiện dòng báo, vẫn chờ được.
-## Dựng theo PopupMoreHeartLayer (color-cube-match-puzzle): tim kèm số mạng, "mạng kế tiếp" và chip đồng hồ,
-## nút video (AdsBtn) và nút gold (GoldBtn: +N tim, icon gold và giá qua UnityKit.gold_price). X và chạm nền
+## Dựng theo PopupMoreHeartLayer (color-cube-match-puzzle): tim kèm số mạng, dòng "mạng kế tiếp sau" và chip đồng hồ
+## ghi thời gian tới mạng kế (dòng đếm ngược duy nhất), nút video (AdsBtn) và nút gold (GoldBtn: +N tim, icon gold và giá qua UnityKit.gold_price). X và chạm nền
 ## (NavigationBackButton) là về Home.
 ## Không bán BundleHeart (game không có gói này ở đây): chỗ của nó dành cho dòng giải thích và thông báo.
 ## Ba dòng dưới popup (giải thích, không có video, thông báo), chip đồng hồ nới rộng (340) và đồng hồ làm mới là node
@@ -28,6 +29,7 @@ var _from_hub: bool = false
 var _title: Label
 var _lives_lbl: Label
 var _next_lbl: Label
+var _time_lbl: Label
 var _full_lbl: Label
 var _body: Label
 var _gold_btn: Button
@@ -69,8 +71,12 @@ func _build() -> void:
 	_lives_lbl.name = "LivesLabel"
 	_next_lbl = ui.label("Panel/Content/Description/Text (TMP)")
 	_next_lbl.name = "NextLabel"
-	_full_lbl = ui.label("Panel/Content/Description/Image/Text (TMP)")
+	_time_lbl = ui.label("Panel/Content/Description/Image/Text (TMP)")
+	_time_lbl.name = "TimeLabel"
+	# Prefab text for the full state ("Looks like your hearts are full!"); its Continue button stays hidden.
+	_full_lbl = ui.label("Panel/Content/Description/Text (TMP)#2")
 	_full_lbl.name = "FullLabel"
+	ui.show("Panel/Content/Description/Text (TMP)#2/Continue", false)
 
 	_video_btn = ui.button("Panel/Content/GameObject/AdsBtn")
 	_video_btn.name = "VideoButton"
@@ -134,16 +140,18 @@ func refresh() -> void:
 		body = "no_lives_unlimited_body" if infinite else ("no_lives_full_body" if full else "no_lives_more_body")
 	UnityUI.set_text(_body, tr(body))
 	UnityUI.set_text(_lives_lbl, str(count))
-	ui.show("Panel/Content/Description", not full)
 	ui.show("Panel/Content/GameObject", not full)
+	_next_lbl.visible = not full
+	ui.show("Panel/Content/Description/Image", not full)
+	_full_lbl.visible = full
+	_body.visible = not full
 	if full:
+		UnityUI.set_text(_full_lbl, tr(body))
 		_no_ads_lbl.visible = false
 		_msg.visible = false
 		return
-	var secs := int(v.seconds_to_next)
-	UnityUI.set_text(_next_lbl, tr("no_lives_next") % format_time(secs))
-	var regen := int(Config.LIVES.regen_sec)
-	UnityUI.set_text(_full_lbl, tr("no_lives_full_in") % format_time(secs + maxi(mx - count - 1, 0) * regen))
+	UnityUI.set_text(_next_lbl, tr("no_lives_next"))
+	UnityUI.set_text(_time_lbl, format_time(int(v.seconds_to_next)))
 	UnityKit.gold_price(_gold_btn, int(v.refill_price))
 	var can_gold := bool(v.can_refill_gold)
 	_gold_btn.modulate.a = 1.0 if can_gold else 0.6

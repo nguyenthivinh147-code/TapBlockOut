@@ -138,6 +138,20 @@ func test_hud_level1(t: T) -> void:
 	t.eq(lv.moves_label.text, str(lv.board.moves_left()), "MOVES")
 	t.ok(not lv.hard_badge.visible, "không HARD")
 	_check_bg(t, lv, "L1")
+	var toned: Array = lv.hud_toned()
+	t.eq(toned.size(), 8, "restart, settings, 3 booster, khung MOVES, khung chip mảnh, pill HARD")
+	t.ok(toned.has(lv.hard_badge), "pill HARD chỉnh tông")
+	for c in toned:
+		var m := (c as CanvasItem).material as ShaderMaterial
+		t.ok(m != null and m.shader.resource_path == "res://src/ui/hud_tone.gdshader", "%s chỉnh tông" % c.name)
+		if m != null:
+			t.eq(m.get_shader_parameter("saturation"), Config.HUD_TONE_SAT, "saturation %s" % c.name)
+			t.eq(m.get_shader_parameter("value"), Config.HUD_TONE_VAL, "value %s" % c.name)
+			t.eq(m.get_shader_parameter("gloss_cut"), Config.HUD_TONE_GLOSS, "giảm bóng %s" % c.name)
+	for k in ["hint", "move", "smash"]:
+		t.ok(lv.booster_badges[k].material == null and lv.booster_locks[k].material == null,
+				"nhãn số, ổ khoá booster %s giữ màu" % k)
+	t.ok(lv.moves_label.material == null and lv.piece_label.material == null, "chữ MOVES, số mảnh giữ màu")
 	for k in ["hint", "move", "smash"]:
 		t.ok(lv.booster_buttons[k].get_parent().visible, "ô booster %s luôn hiện" % k)
 		t.ok(lv.booster_locks[k].visible, "booster %s khoá ở L1" % k)
@@ -168,6 +182,21 @@ func test_win_l1_then_next_level(t: T) -> void:
 	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and int(lv.attempt.level) == 2), "sang level 2")
 	t.eq(lv.title_label.text, lv.tr("level_title") % 2, "tên level 2")
 	t.eq(int(g.s.runs), 1, "một lượt xong")
+	lv.free()
+
+
+## Thẻ thắng nạp nền từ lúc vào màn và hiện ngay khi khối cuối rời bàn, không nghỉ thêm nhịp nào.
+func test_win_card_shows_right_after_the_last_block(t: T) -> void:
+	_g(1)
+	var lv := _mount()
+	t.ok(ResourceLoader.load_threaded_get_status(lv.WIN_CARD) != ResourceLoader.THREAD_LOAD_INVALID_RESOURCE,
+		"thẻ thắng nạp nền từ lúc vào màn")
+	await _wait_until(_playing.bind(lv))
+	_solve(lv)
+	t.ok(await _wait_until(func() -> bool: return not lv.board_view.is_animating()), "khối cuối rời bàn")
+	var t0 := Time.get_ticks_msec()
+	t.ok(await _wait_until(_has_pop(lv, "ContinueButton"), 1000), "hiện thẻ thắng")
+	t.ok(Time.get_ticks_msec() - t0 < 100, "không chờ thêm sau khi khối cuối rời bàn (%d ms)" % (Time.get_ticks_msec() - t0))
 	lv.free()
 
 
@@ -214,9 +243,19 @@ func test_clap_after_long_think(t: T) -> void:
 	var lv := _mount()
 	await _wait_until(_playing.bind(lv))
 	t.ok(not lv.clap_label.visible, "chưa vỗ tay")
+	for i in 3:
+		await _tree().process_frame  # containers lay out the board holder before the player could tap
 	lv.think_start_ms -= 20000
 	lv.board_view.block_tapped.emit(lv.board.hint())
 	t.ok(lv.clap_label.visible, "nghĩ lâu rồi đi đúng thì vỗ tay")
+	# Lời khen ở trên khung, dưới hàng trên của HUD, không đè khung.
+	var frame: Rect2 = lv.board_view.get_global_transform() * lv.board_view.frame_rect()
+	var cl: Label = lv.clap_label
+	var foot: Vector2 = cl.get_global_transform() * Vector2(cl.size.x * 0.5, cl.size.y)
+	var row := lv.get_node("Margin/Column/TopBar/TopRow") as Control
+	t.ok(foot.y <= frame.position.y, "đáy chữ khen trên mép khung (%.1f / %.1f)" % [foot.y, frame.position.y])
+	t.ok(foot.y > row.get_global_rect().end.y, "chữ khen dưới hàng trên của HUD")
+	t.ok(lv.get_node_or_null("Margin/Column/BoardHolder/PraiseFx") != null, "có hiệu ứng khen")
 	lv.free()
 
 
@@ -341,13 +380,42 @@ func test_rescue_give_up_confirm_life(t: T) -> void:
 	lv.free()
 
 
+## Gốc popup (con của LocalPopups) chứa node `n`.
+func _gift_root(n: Node) -> Control:
+	while n != null and n.get_parent() != null and n.get_parent().name != "LocalPopups":
+		n = n.get_parent()
+	return n as Control
+
+
+## "Chạm để tiếp tục": chạm đâu trên popup cũng đóng.
+func _tap(pop: Control) -> void:
+	var ev := InputEventMouseButton.new()
+	ev.pressed = true
+	ev.button_index = MOUSE_BUTTON_LEFT
+	pop._gui_input(ev)
+
+
+## Popup booster mới (scenes/booster_unlocked.tscn) đang mở, hoặc null.
+func _gift_pop(lv: Control) -> Control:
+	var tap := _pop(lv, "TapLabel")
+	return null if tap == null else _gift_root(tap)
+
+
 func test_booster_gift_and_hint(t: T) -> void:
 	var g := _g(5, false)
 	var lv := _mount()
-	t.ok(await _wait_until(_has_pop(lv, "GotItButton")), "tặng booster ở L5 kèm giới thiệu")
+	t.ok(await _wait_until(func() -> bool: return _gift_pop(lv) != null), "tặng booster ở L5 bằng popup booster mới")
 	t.eq(lv.state, "intro", "chưa chơi khi đọc giới thiệu")
 	t.eq(int(g.s.inv.hint), 1, "kho +1 gợi ý")
-	_press(lv, "GotItButton")
+	var pop := _gift_pop(lv)
+	const P := "GameObject/UnlockPanel/"
+	t.eq(pop.ui.label(P + "BoosterName").text, lv.tr("booster_hint"), "tên booster")
+	t.eq(pop.ui.label(P + "BoosterQuantity").text, lv.tr("booster_count") % 1, "số trong kho")
+	t.eq(pop.ui.label(P + "BoosterDescription").text, lv.tr("tut_hint_gift"), "lời tặng")
+	t.eq(pop.ui.image(P + "BoosterImage/Icon").get("tex"), ThemeKit.icon("booster_hint"), "icon booster")
+	t.ok(not pop.ui.node(P + "ClaimButton").visible, "không có nút vàng: quà không bán kèm")
+	t.eq((_pop(lv, "TapLabel") as Label).text, lv.tr("boot_tap_continue"), "dòng chạm để tiếp tục")
+	_tap(pop)
 	await _wait_until(_playing.bind(lv))
 	t.ok(not lv.booster_locks.hint.visible, "gợi ý mở ở L5")
 	t.eq(lv.booster_caps.hint.text, lv.tr("booster_hint"), "ô mở ghi tên booster")
@@ -364,6 +432,53 @@ func test_booster_gift_and_hint(t: T) -> void:
 	t.ok(await _wait_until(func() -> bool: return lv.get_node_or_null("LocalPopups/HintFx") == null), "hiệu ứng tự xoá")
 	t.eq(lv.booster_badges.hint.text, "", "hết kho không ghi số")
 	t.ok((lv.booster_badges.hint.get_theme_stylebox("normal") as StyleBoxTexture).texture.resource_path.ends_with("hud_badge_plus.png"), "hết kho hiện sprite dấu +")
+	lv.free()
+
+
+## Nhiều quà cùng lúc (L17 chưa nhận quà nào): popup booster mới hiện lần lượt theo Unlocks.GIFT_ORDER, không tốn gold.
+func test_booster_gifts_in_order(t: T) -> void:
+	var g := _g(17, false)
+	var coins := int(g.s.coins)
+	var lv := _mount()
+	for kind in ["hint", "move", "smash"]:
+		var shown := await _wait_until(func() -> bool:
+			var p := _gift_pop(lv)
+			return p != null and p.ui.label("GameObject/UnlockPanel/BoosterName").text == lv.tr("booster_" + kind))
+		t.ok(shown, "popup quà " + kind)
+		t.eq(lv.state, "intro", "chưa chơi khi còn popup quà " + kind)
+		_tap(_gift_pop(lv))
+	t.ok(await _wait_until(_playing.bind(lv)), "hết quà thì vào chơi")
+	for kind in ["hint", "move", "smash"]:
+		t.eq(int(g.s.inv[kind]), 1, "kho +1 " + kind)
+	t.eq(int(g.s.coins), coins, "không trừ gold")
+	lv.free()
+
+
+## Level dạy cơ chế (L14 thùng sắt): popup booster mới giới thiệu cơ chế một lần, chơi lại không hiện nữa.
+func test_mech_intro_popup(t: T) -> void:
+	var g := _g(14)
+	var inv: Dictionary = g.s.inv.duplicate()
+	var lv := _mount()
+	t.ok(await _wait_until(func() -> bool: return _gift_pop(lv) != null), "L14 mở popup cơ chế mới")
+	t.eq(lv.state, "intro", "chưa chơi khi đọc giới thiệu")
+	var pop := _gift_pop(lv)
+	const P := "GameObject/UnlockPanel/"
+	t.eq(pop.ui.label(P + "Image/txtHeader").text, lv.tr("mech_new_title"), "tiêu đề cơ chế mới")
+	t.eq(pop.ui.label(P + "BoosterName").text, lv.tr("mech_stone"), "tên cơ chế")
+	t.eq(pop.ui.label(P + "BoosterDescription").text, lv.tr("mech_stone_desc"), "luật cơ chế")
+	t.eq(pop.ui.image(P + "BoosterImage/Icon").get("tex"), ThemeKit.icon("mech_stone"), "icon cơ chế")
+	t.ok(not pop.ui.node(P + "BoosterQuantity").visible, "không có số lượng")
+	t.ok(not pop.ui.node(P + "ClaimButton").visible, "không có nút vàng")
+	t.eq((_pop(lv, "TapLabel") as Label).text, lv.tr("boot_tap_continue"), "dòng chạm để tiếp tục")
+	t.eq(g.s.mech_seen, ["stone"], "đã ghi xem cơ chế")
+	_tap(pop)
+	t.ok(await _wait_until(_playing.bind(lv)), "chạm thì vào chơi")
+	t.eq(lv.tut_label.text, "%s: %s" % [lv.tr("mech_stone"), lv.tr("mech_stone_desc")], "dòng luật vẫn ở đầu level")
+	t.eq(g.s.inv, inv, "không tặng gì")
+	lv.free()
+	lv = _mount()
+	t.ok(await _wait_until(_playing.bind(lv)), "chơi lại L14: vào chơi ngay, không hiện lại")
+	t.eq(_gift_pop(lv), null, "không có popup")
 	lv.free()
 
 
@@ -388,7 +503,7 @@ func test_booster_buy_move(t: T) -> void:
 	lv.free()
 
 
-func test_booster_free_video_once(t: T) -> void:
+func test_booster_free_video_repeat(t: T) -> void:
 	var g := _g(12)
 	g.s.coins = 0
 	var lv := _mount()
@@ -402,9 +517,14 @@ func test_booster_free_video_once(t: T) -> void:
 	t.eq(int(g.s.coins), 0, "không tốn gold")
 	t.eq(int(g.s.inv.move), 0, "đã dùng hết")
 	await _wait_until(_playing.bind(lv))
-	lv.booster_buttons.hint.pressed.emit()  # chưa mở ở L6? hint mở từ L4 nên có
-	t.ok(await _wait_until(_has_pop(lv, "BuyButton")), "hộp mua lần hai")
-	t.ok(_pop(lv, "VideoButton") == null, "video chỉ một lần mỗi lượt")
+	lv.booster_buttons.move.pressed.emit()
+	t.ok(await _wait_until(_has_pop(lv, "VideoButton")), "cùng lượt vẫn mời video lần hai")
+	_press(lv, "VideoButton")
+	t.ok(await _wait_until(func() -> bool: return lv.board.moves_left() == before + 6), "video lần hai dùng luôn")
+	t.eq(int(g.s.inv.move), 0, "đã dùng hết")
+	await _wait_until(_playing.bind(lv))
+	lv.booster_buttons.hint.pressed.emit()
+	t.ok(await _wait_until(_has_pop(lv, "VideoButton")), "booster khác cũng mời video")
 	_press(lv, "CloseButton")
 	t.ok(await _wait_until(_playing.bind(lv)), "đóng hộp thì chơi tiếp")
 	lv.free()
@@ -438,7 +558,7 @@ func test_booster_smash(t: T) -> void:
 	t.eq(int(g.s.inv.smash), 1, "chưa trừ kho tới khi chọn")
 	lv.booster_buttons.smash.pressed.emit()
 	t.ok(not lv.smash_label.visible, "bấm lại thì huỷ")
-	t.ok(lv.tut_label.visible, "huỷ thì chữ hướng dẫn hiện lại")
+	t.eq(lv.tut_label.visible, lv.tut_label.text != "", "huỷ thì chữ hướng dẫn hiện lại (không có chữ thì ẩn khung)")
 	lv.booster_buttons.smash.pressed.emit()
 	lv.board_view.block_tapped.emit(lv.board.block_ids()[0])
 	t.eq(lv.board.remaining_count(), n - 1, "khối bị phá")
@@ -696,21 +816,21 @@ func test_release_continues_after_l20(t: T) -> void:
 
 ## Level HARD/VERY HARD hiện dải cảnh báo rồi tự vào chơi; chơi lại không hiện lại.
 func test_hard_warning(t: T) -> void:
-	_g(24)
+	_g(23)
 	var lv := _mount()
-	t.ok(await _wait_until(func() -> bool: return lv.find_child("DifficultyBanner", true, false) != null), "L24 có dải cảnh báo")
+	t.ok(await _wait_until(func() -> bool: return lv.find_child("DifficultyBanner", true, false) != null), "L23 có dải cảnh báo")
 	t.ok(not _playing(lv), "chưa chơi khi đang cảnh báo")
 	t.eq(lv.hard_badge.text, lv.tr("level_hard"), "huy hiệu KHÓ")
 	t.eq((lv.find_child("Text", true, false) as Label).text, lv.tr("level_hard"), "dải ghi KHÓ")
-	_check_bg(t, lv, "L24 (Hard)")
+	_check_bg(t, lv, "L23 (Hard)")
 	t.ok(await _wait_until(_playing.bind(lv)), "tự vào chơi")
 	lv.free()
-	_g(29)
+	_g(33)
 	lv = _mount()
-	t.ok(await _wait_until(func() -> bool: return lv.find_child("DifficultyBanner", true, false) != null), "L29 (VeryHard) có dải cảnh báo")
+	t.ok(await _wait_until(func() -> bool: return lv.find_child("DifficultyBanner", true, false) != null), "L33 (VeryHard) có dải cảnh báo")
 	t.eq(lv.hard_badge.text, lv.tr("level_very_hard"), "huy hiệu RẤT KHÓ")
-	_check_bg(t, lv, "L29 (VeryHard)")
-	t.ok(await _wait_until(_playing.bind(lv)), "L29 tự vào chơi")
+	_check_bg(t, lv, "L33 (VeryHard)")
+	t.ok(await _wait_until(_playing.bind(lv)), "L33 tự vào chơi")
 	lv._on_restart_pressed()
 	await _wait_until(func() -> bool: return _pop(lv, "ConfirmButton") != null or _playing(lv))
 	if _pop(lv, "ConfirmButton") != null:
@@ -731,13 +851,22 @@ func _main() -> Control:
 func test_main_navigation(t: T) -> void:
 	var g := _g(1)
 	var m := _main()
-	t.ok(await _wait_until(func() -> bool: return m.is_booted), "boot xong")
-	g.s.level = 1
-	t.eq(m.current_name, "home", "vào Home")
+	var curtained := [false]
+	t.ok(await _wait_until(func() -> bool:
+		curtained[0] = curtained[0] or m.curtain != null
+		return m.is_booted), "boot xong")
+	t.eq(m.current_name, "level", "mở game vào thẳng level")
+	t.ok(not curtained[0], "mở game không chạy màn chuyển cảnh")
 	t.eq(int(g.s.meta.sessions), 1, "Game.boot đã chạy")
+	t.eq(_tree().root.get_node("Sfx").music_name, "bgm_level", "nhạc level")
+	await _wait_until(func() -> bool: return m.current_screen.state == "playing")
+	m.current_screen.on_back()
+	await _wait_until(func() -> bool: return m.current_name == "home")
+	t.eq(m.current_name, "home", "level đầu phiên -> Home")
 	m.current_screen.find_child("PlayButton", true, false).pressed.emit()
 	t.ok(m.curtain != null, "Chơi mở màn chuyển cảnh")
-	t.eq(m.current_name, "home", "Home còn đó tới khi hai cánh khép")
+	t.eq(str(m.curtain.name), "CandyCurtain", "Chơi dùng màn kẹo rơi")
+	t.eq(m.current_name, "home", "Home còn đó tới khi kẹo phủ kín")
 	t.ok(await _wait_until(func() -> bool: return m.current_name == "level" and m.curtain == null), "Chơi -> level")
 	await _wait_until(func() -> bool: return m.current_screen.state == "playing")
 	m.current_screen.on_back()
@@ -767,11 +896,35 @@ func test_main_navigation(t: T) -> void:
 	m.free()
 
 
+## Mở game khi không bắt đầu level được thì vào Home: hết mạng (như Chơi ở Home), hoặc demo đã hết level.
+func test_main_boot_home_when_cannot_play(t: T) -> void:
+	var g := _g(10)
+	g.s.lives.count = 0
+	g.s.lives.next_at = NOW + 900
+	g.save_now()
+	var m := _main()
+	t.ok(await _wait_until(func() -> bool: return m.is_booted), "boot xong")
+	t.eq(int(g.s.level), 10, "boot nạp bản lưu")
+	t.eq(m.current_name, "home", "hết mạng: vào Home")
+	t.eq(m.curtain, null, "không màn chuyển cảnh")
+	g.s.lives.count = 1
+	t.ok(m.boot_to_level(), "còn mạng: vào level")
+	Config.demo_override = 1
+	g.s.level = int(Config.CONTENT.demo_max_level) + 1
+	t.ok(not m.boot_to_level(), "demo hết level: vào Home")
+	Config.demo_override = -1
+	m.free()
+
+
 func test_main_routes_challenge_action(t: T) -> void:
 	var g := _g(60)
 	var m := _main()
 	t.ok(await _wait_until(func() -> bool: return m.is_booted), "boot xong")
 	g.s.level = 60
+	m.go("home")
+	m.current_screen.closed.emit({"action": "challenge"})
+	t.eq(m.current_name, "home", "Daily Challenge tắt (Config.FEATURES): ở lại Home")
+	Config.FEATURES.challenge = true
 	m.go("home")
 	m.current_screen.closed.emit({"action": "challenge"})
 	t.eq(m.current_name, "challenge", "Home phát challenge -> màn challenge")
@@ -890,3 +1043,49 @@ func test_board_fits_holder_l14(t: T) -> void:
 
 func test_board_fits_holder_l20(t: T) -> void:
 	await _fit_level(t, 20)
+
+
+## Dòng chú thích (hướng dẫn cơ chế L14, xuống hai dòng; chữ chọn khối để đập) nằm trong khung bong bóng ngay trên mép
+## khung bàn, không đè thanh trên, cả khi khung bàn đổi chỗ theo cỡ màn. Dòng ngắn thì bong bóng ôm chữ, dòng dài thì
+## rộng bằng khung bàn; không có chữ thì ẩn bong bóng.
+func test_caption_above_frame(t: T) -> void:
+	var g := _g(14)
+	g.s.mech_seen = ["stone"]
+	var host := Control.new()
+	host.size = Config.BOARD_SCREEN
+	_tree().root.add_child(host)
+	var lv := (load("res://scenes/level.tscn") as PackedScene).instantiate() as Control
+	host.add_child(lv)
+	lv.setup({})
+	await _wait_until(_playing.bind(lv))
+	await _frames(4)
+	var tut: Label = lv.tut_label
+	var smash: Label = lv.smash_label
+	t.ok(tut.text != "", "L14 có hướng dẫn cơ chế")
+	t.ok(tut.visible, "hướng dẫn hiện")
+	t.ok(tut.get_line_count() >= 2, "hướng dẫn xuống dòng (%d dòng)" % tut.get_line_count())
+	for l: Label in [tut, smash]:
+		t.ok(l.get_theme_stylebox("normal") is StyleBoxFlat, "%s có khung bong bóng" % l.name)
+	var top_bar := lv.find_child("TopBar", true, false) as Control
+	for sz in [Config.BOARD_SCREEN, Vector2(886, 2200), Vector2(720, 1280)]:
+		host.size = sz
+		await _frames(4)
+		var bv: Control = lv.board_view
+		var frame := Rect2(bv.global_position + bv.frame_rect().position, bv.frame_rect().size)
+		for l: Label in [tut, smash]:
+			var r := l.get_global_rect()
+			t.ok(r.end.y <= frame.position.y + 0.5, "%s %s: đáy khung chữ %.1f trên mép khung bàn %.1f" % [l.name, str(sz), r.end.y, frame.position.y])
+			t.ok(r.end.y >= frame.position.y - Config.BOARD_CAPTION_GAP - 1.0, "%s %s: sát khung bàn (%.1f, %.1f)" % [l.name, str(sz), r.end.y, frame.position.y])
+			t.ok(r.size.x <= frame.size.x + 1.0, "%s %s: không rộng hơn khung bàn (%.1f / %.1f)" % [l.name, str(sz), r.size.x, frame.size.x])
+			t.near(r.get_center().x, frame.get_center().x, 1.0, "%s %s: giữa khung bàn" % [l.name, str(sz)])
+		t.ok(smash.size.x < frame.size.x * 0.9, "%s: chữ đập một dòng, bong bóng ôm chữ (%.1f)" % [str(sz), smash.size.x])
+		if sz.y >= Config.BOARD_SCREEN.y:
+			var tr_rect := tut.get_global_rect()
+			t.ok(tr_rect.position.y >= top_bar.get_global_rect().end.y, "%s: hướng dẫn không đè HUD (%.1f)" % [str(sz), tr_rect.position.y])
+	lv._set_smash_mode(true)
+	t.ok(smash.visible and not tut.visible, "chế độ đập: chữ đập thay chỗ hướng dẫn")
+	lv._set_smash_mode(false)
+	t.ok(tut.visible and not smash.visible, "hết chế độ đập: hướng dẫn hiện lại")
+	lv._set_tut("")
+	t.ok(not tut.visible, "không có chữ thì ẩn bong bóng")
+	host.free()

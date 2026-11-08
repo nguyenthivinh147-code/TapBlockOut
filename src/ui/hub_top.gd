@@ -16,6 +16,8 @@ const SCENE_PATH := "res://scenes/hub_top.tscn"
 const DESIGN_W := 886.0
 const DESIGN_H := 124.0
 const AVATAR_PX := 124
+## Avatar thụt 3% mỗi cạnh: to vừa đủ lấp lỗ frame, không hở ở góc.
+const AVATAR_INSET := 0.03
 const SIGNALS := ["coins_changed", "lives_changed", "cos_changed", "inv_changed"]
 
 # Getters bind the scene's nodes on first use (callers read them before adding the bar to the tree).
@@ -41,6 +43,16 @@ var gold_label: Label = null:
 	get:
 		_bind()
 		return gold_label
+var gold_icon: TextureRect = null:
+	get:
+		_bind()
+		return gold_icon
+## Số gold hiện thay cho Game.s.coins khi >= 0 (gold đang bay lên thanh đếm dần tới số trong ví); -1 là số trong ví.
+var gold_shown: int = -1:
+	set(v):
+		gold_shown = v
+		if _bound:
+			_show_gold()
 var settings_btn: Button = null:
 	get:
 		_bind()
@@ -88,6 +100,7 @@ func _bind() -> void:
 	lives_label = $LivesPanel/LivesLabel
 	lives_timer_label = $LivesPanel/LivesTimerLabel
 	gold_label = $GoldPanel/GoldLabel
+	gold_icon = $GoldPanel/Icon
 	settings_btn = $SettingsButton
 	# Sub-resources are shared by every instance of the scene; _layout() scales these per bar.
 	for bar: Panel in [$LivesPanel/Bar, $GoldPanel/Bar]:
@@ -141,18 +154,22 @@ func _on_game_changed(_v: Variant = null) -> void:
 
 func refresh() -> void:
 	_bind()
-	gold_label.text = str(int(Game.s.coins))
+	_show_gold()
 	if _avatar != null:
 		profile_btn.remove_child(_avatar)
 		_avatar.queue_free()
 	var cosm: Dictionary = Game.s.cos
-	_avatar = Profile.make_avatar(str(cosm.get("avatar", "avatar_00")), str(cosm.get("frame", "frame_00")), AVATAR_PX)
+	_avatar = Profile.make_avatar(str(cosm.get("avatar", "avatar_00")), str(cosm.get("frame", "frame_00")), AVATAR_PX, AVATAR_INSET)
 	_avatar.name = "AvatarView"
 	_avatar.set_meta("u_rt", true)
 	_avatar.custom_minimum_size = Vector2.ZERO
 	_avatar.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	profile_btn.add_child(_avatar)
 	refresh_lives()
+
+
+func _show_gold() -> void:
+	gold_label.text = str(int(Game.s.coins) if gold_shown < 0 else gold_shown)
 
 
 func refresh_lives() -> void:

@@ -26,10 +26,8 @@ offset_bottom = 277.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "6109928512297137465",
 "n": "Slider",
-"r": [0.5, 0.0, 0.5, 0.0, 0.0, -237.0, 600.0, 80.0, 0.5, 0.5],
 "slider": {
 "dir": 0.0,
 "fill": "1055796078134408685",
@@ -63,24 +61,13 @@ border_scale = 0.9090909090909091
 kind = 1
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "6159021087723854739",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.1,
 "rt": false,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_60",
-"t": 1.0
+"sp": "Resources_UI_Maincenter:UI_Maincenter_60"
 },
-"n": "Background",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Background"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -101,10 +88,8 @@ offset_bottom = -6.36
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "8806500678376450195",
-"n": "Fill Area",
-"r": [0.0, 0.0, 1.0, 1.0, -0.24, 0.98, -7.7601, -10.76, 0.5, 0.5]
+"n": "Fill Area"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -127,24 +112,13 @@ border = Vector4(41, 0, 41, 0)
 border_scale = 0.9090909090909091
 kind = 1
 metadata/u = {
-"a": true,
 "id": "1055796078134408685",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 0.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.1,
 "rt": false,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_61",
-"t": 1.0
+"sp": "Resources_UI_Maincenter:UI_Maincenter_61"
 },
-"n": "Fill",
-"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Fill"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 0),
@@ -162,10 +136,8 @@ offset_left = 10.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "511653947599562809",
-"n": "Handle Slide Area",
-"r": [0.0, 0.0, 1.0, 1.0, 5.0, 0.0, -10.0, 0.0, 0.5, 0.5]
+"n": "Handle Slide Area"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -191,24 +163,13 @@ region = Rect2(82, 1445, 128, 128)
 pivot = Vector2(1, 0.5)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "2997341410301354593",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_62",
-"t": 0.0
+"sp": "Resources_UI_Maincenter:UI_Maincenter_62"
 },
-"n": "Handle",
-"r": [0.0, 0.0, 0.0, 0.0, 3.5, 2.0, 80.0, 0.0, 1.0, 0.5]
+"n": "Handle"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 0),

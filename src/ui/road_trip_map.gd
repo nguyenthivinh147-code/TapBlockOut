@@ -35,8 +35,8 @@ const ROAD_EDGE := Color("B58AE6")
 const ROAD := Color("FFF4FA")
 const ROAD_DASH := Color("F7A8CB")
 const DASH := 22.0
-## Hộp thứ i dùng BOX_ICONS[i % 3].
-const BOX_ICONS := ["ic_giftbox2", "ic_giftbox3", "ic_giftbox1"]
+## Hộp thứ i dùng BOX_ICONS[i % 3]: vùng UiAtlas của atlas UI_Winstreak_Atlas (lấy texture qua box_tex).
+const BOX_ICONS := ["gift_red", "gift_blue", "gift_purple"]
 const CUR_SPRITE := {"": "hex_green", "hard": "hex_red", "very_hard": "hex_purple"}
 const OUTLINE := {"locked": Color("787878"), "done": Color("076F87"), "": Color("4F7F10"), "hard": Color("911B35"),
 	"very_hard": Color("4B1073")}
@@ -187,14 +187,18 @@ func _draw_box(it: Dictionary) -> void:
 	if st == "target" and _glow_tex != null:
 		var g := px * 1.6
 		draw_texture_rect(_glow_tex, Rect2(c - Vector2(g, g) * 0.5, Vector2(g, g)), false, Color(1, 1, 1, 0.85))
-	var idx := maxi(RoadTrip.box_index(n), 0)
-	var tex := ThemeKit.icon(str(BOX_ICONS[idx % BOX_ICONS.size()]))
+	var tex := box_tex(RoadTrip.box_index(n))
 	draw_texture_rect(tex, r, false, Color(1, 1, 1, 0.5) if st == "open" else Color.WHITE)
 	if st == "open":
 		var ck := CHECK * 1.3 * k
 		draw_texture_rect(ThemeKit.icon("ui_check"), Rect2(c - Vector2(ck, ck) * 0.5, Vector2(ck, ck)), false)
 	# Số level của hộp, nhỏ dưới đáy hộp.
 	_draw_number(str(n), Vector2(c.x, r.end.y - 6.0 * k), roundi(NUM_FONT * 0.75 * k), OUTLINE.locked if st != "open" else OUTLINE.done)
+
+
+## Ảnh hộp quà thứ box_i (RoadTrip.box_index; âm thì như hộp đầu). Dùng chung cho bản đồ, chip, popup thắng.
+static func box_tex(box_i: int) -> Texture2D:
+	return UiAtlas.tex(str(BOX_ICONS[maxi(box_i, 0) % BOX_ICONS.size()]))
 
 
 ## Số giữa tại tâm c: chữ trắng viền màu outline.

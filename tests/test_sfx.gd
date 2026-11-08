@@ -80,6 +80,21 @@ func test_real_stream_playback_state(t: T) -> void:
 	s.queue_free()
 
 
+## The candy grind at the bar has its own sound; the paper box must not borrow it (design.md mục 8, Âm thanh).
+func test_grind_and_box_sounds(t: T) -> void:
+	var s := _make()
+	var shatter: AudioStream = s._load_sfx("shatter")
+	t.ok(shatter != null, "có assets/sfx/sfx_shatter.wav")
+	if shatter != null:
+		t.ok(shatter.get_length() <= 0.71, "sfx_shatter tối đa 0,7 giây (%.3f)" % shatter.get_length())
+	s.play_or("shatter", "exit")
+	t.eq(s.last_played, "shatter", "khối nghiền qua thanh phát sfx_shatter, không còn dùng tạm sfx_exit")
+	s.last_played = ""
+	s.play_or("box_tear", "exit")
+	t.ok(s.last_played != "" and s.last_played != "shatter", "hộp giấy rách không phát tiếng kẹo vụn")
+	s.queue_free()
+
+
 func test_music_pause_resume(t: T) -> void:
 	var s := _make()
 	var wav := AudioStreamWAV.new()
@@ -154,8 +169,9 @@ func test_music_fades_on_track_change(t: T) -> void:
 
 
 func test_theme_palette_and_widgets(t: T) -> void:
-	t.eq(ThemeKit.block_color("yellow"), Color("FDD414"), "vàng")
-	t.eq(ThemeKit.block_color("purple"), Color("E644F4"), "tím")
+	t.eq(ThemeKit.block_color("yellow"), ThemeKit.block_tone(Color("FDD414")), "vàng")
+	t.eq(ThemeKit.block_color("purple"), ThemeKit.block_tone(Color("E644F4")), "tím")
+	t.ok(ThemeKit.block_color("blue").s < Color("0C9CFD").s, "khối hạ sắc độ cho bớt chói")
 	for kind in ["primary", "secondary", "video", "danger", "ghost"]:
 		var b := ThemeKit.make_button("OK", kind)
 		t.ok(b.custom_minimum_size.x >= 96 and b.custom_minimum_size.y >= 96, "nút >= 96 (%s)" % kind)

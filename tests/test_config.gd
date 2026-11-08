@@ -153,6 +153,21 @@ func test_apply_remote_bad_values(t: T) -> void:
 	Config.reset()
 
 
+## Daily Challenge ships switched off; Remote Config `features_challenge` turns it back on, reset() off again.
+func test_feature_switches(t: T) -> void:
+	Config.reset()
+	t.eq(Config.FEATURES.challenge, false, "Daily Challenge tắt mặc định")
+	Config.apply_remote({"features_challenge": "1"})
+	t.eq(Config.FEATURES.challenge, true, "Remote Config bật lại")
+	Config.apply_remote({"features_challenge": "maybe"})
+	t.eq(Config.FEATURES.challenge, true, "giá trị hỏng bị bỏ")
+	Config.apply_remote({"features_challenge": "false"})
+	t.eq(Config.FEATURES.challenge, false, "Remote Config tắt")
+	Config.apply_remote({"features_challenge": "true"})
+	Config.reset()
+	t.eq(Config.FEATURES.challenge, false, "reset về tắt")
+
+
 func test_bool_coercion(t: T) -> void:
 	Config.reset()
 	var v: Variant = Config._coerce(true, "0")

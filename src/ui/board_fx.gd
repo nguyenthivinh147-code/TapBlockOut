@@ -1,6 +1,6 @@
 extends RefCounted
 ## Vẽ khối và hiệu ứng cho BoardView: hình khối bo góc, thùng sắt, xích, sương, hạt, rung.
-## Hàm tĩnh, không giữ trạng thái.
+## Hàm tĩnh; chỉ giữ cache tĩnh (ảnh cơ chế, texture hạt, hình xích theo hình khối và cỡ ô).
 
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const Pudding := preload("res://src/ui/pudding.gd")
@@ -14,6 +14,9 @@ const CHAIN_DARK := Color("3B4260")
 const CHAIN_SHINE := Color(1, 1, 1, 0.9)
 const CHAIN_LINK := 0.21  # khoảng cách hai mắt xích (ô)
 const CHAIN_OUT := 0.08  # xích quấn ra ngoài mép khối chừng này (ô)
+const CHAIN_MESH_MAX := 64  # số hình xích giữ trong cache (mỗi hình khối và cỡ ô một hình)
+const KEY_SIZE := 0.8  # ảnh chìa giữa một ô của khối chìa, cạnh theo ô
+const FOG_MARK := 0.7  # ảnh `mech_fog` giữa một ô của khối còn trong sương, cạnh theo ô
 const LOCK_GOLD := Color("FFC93C")
 const LOCK_GOLD_DARK := Color("C9781A")
 const CRATE_GROW := 0.06  # ảnh thùng sắt vẽ to hơn ô chừng này mỗi phía (ô), bù lề trong suốt của ảnh
@@ -27,6 +30,7 @@ const BOLT := Color("E6EBF3")
 static var _real_icon: Dictionary = {}  # tên -> có file thật?
 static var _sparkle_tex: Texture2D = null
 static var _shrink_curve: Curve = null
+static var _chain_mesh: Dictionary = {}  # "hình|cỡ ô" -> Strokes của cả lớp xích
 
 
 ## Ảnh cơ chế thật (`assets/ui/mech_*.png`); null nếu chưa có để nơi gọi vẽ bằng code.
@@ -150,19 +154,25 @@ static func draw_crystal_gloss(ci: CanvasItem, cells: Array, cell: float, at: Ve
 		_ribbon(ci, ctrl, cell, at, feather)
 
 
-## Ô gần trọng tâm nhất: nơi đặt biểu tượng.
-static func anchor_cell(cells: Array) -> Vector2i:
+## Ô gần trọng tâm nhất: nơi đặt biểu tượng. Bỏ qua các ô trong `skip` (đã có biểu tượng khác); mọi ô đều bị bỏ qua
+## thì trả ô gần trọng tâm nhất, nơi gọi tự kiểm `skip.has()` nếu cần biết.
+static func anchor_cell(cells: Array, skip: Array = []) -> Vector2i:
 	var sum := Vector2.ZERO
 	for c: Vector2i in cells:
 		sum += Vector2(c)
 	var centroid := sum / maxf(1.0, float(cells.size()))
 	var best: Vector2i = cells[0]
 	var best_d := INF
-	for c: Vector2i in cells:
-		var d := (Vector2(c) - centroid).length_squared()
-		if d < best_d:
-			best_d = d
-			best = c
+	for use_skip in [true, false]:
+		for c: Vector2i in cells:
+			if use_skip and skip.has(c):
+				continue
+			var d := (Vector2(c) - centroid).length_squared()
+			if d < best_d:
+				best_d = d
+				best = c
+		if best_d < INF:
+			break
 	return best
 
 
@@ -202,26 +212,48 @@ static func tape_center(cells: Array) -> Vector2:
 	return (lo + hi) * 0.5
 
 
-## Vẽ phần nằm trên thân kẹo của một khối đa ô: vệt bóng, rồi sương, xích. Thân (mép gối, sọc, bóng đổ, hoặc
-## chất liệu crystal của khối đặc biệt), lớp pudding và hộp giấy do `Pudding.Body` vẽ bằng shader nằm sau BlockNode,
-## theo concept `art/concepts/concept_candy_board_v5_stripe.png` và `concept_candy_board_v3_crystal.png`.
-## `cells` tính theo toạ độ ô gốc của chính CanvasItem này.
+## Vẽ phần nằm trên thân kẹo của một khối đa ô: vệt bóng, dấu sương mù, xích và ổ khoá, ảnh chìa. Thân (mép gối, sọc,
+## bóng đổ, hoặc chất liệu crystal của khối đặc biệt), lớp pudding, hộp giấy và lớp sương phủ do `Pudding.Body` vẽ bằng
+## shader nằm sau BlockNode, theo concept `art/concepts/concept_candy_board_v5_stripe.png` và
+## `concept_candy_board_v3_crystal.png`. `cells` tính theo toạ độ ô gốc của chính CanvasItem này.
+## Mỗi biểu tượng một ô: ổ khoá nằm trên đường xích, chìa ở ô gần tâm nhất còn trống, dấu sương ở ô kế tiếp còn trống
+## (không còn ô thì bỏ dấu sương, lớp sương phủ đã cho biết khối còn trong sương).
 static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictionary) -> void:
 	var fog_hidden: bool = view.get("is_fog_hidden", false)
 	var chained: bool = view.get("chained", false)
-	if str(view.get("inner_color", "")) == "":  # hộp giấy mờ, không bóng
+	var is_key: bool = view.get("is_key", false)
+	# hộp giấy mờ không bóng; khối trong sương thì vệt bóng chìm dưới lớp sương
+	if str(view.get("inner_color", "")) == "" and not fog_hidden:
 		if is_crystal(view):
 			draw_crystal_gloss(ci, cells, cell)
 		else:
 			draw_gloss(ci, cells, cell)
-	var anchor := anchor_cell(cells)
+	var taken: Array = []
+	var lock_at := Vector2.ZERO
+	if chained:
+		lock_at = chain_center(cells)
+		taken.append(Vector2i(lock_at.floor()))
+	var key_cell := Vector2i.ZERO
+	if is_key:
+		key_cell = anchor_cell(cells, taken)
+		taken.append(key_cell)
 	if fog_hidden:
-		draw_fog_cover(ci, cells, cell)
+		var mark := anchor_cell(cells, taken)
+		if not taken.has(mark):
+			draw_fog_mark(ci, mark, cell)
 	if chained:
 		draw_chain(ci, cells, cell)
-		draw_lock(ci, chain_center(cells) * cell, cell)
-	if bool(view.get("is_key", false)):
-		draw_key(ci, Vector2(anchor) * cell + Vector2(cell * 0.24, cell * 0.24), cell)
+		draw_lock(ci, lock_at * cell, cell)
+	if is_key:
+		draw_key(ci, (Vector2(key_cell) + Vector2(0.5, 0.5)) * cell, cell)
+
+
+## Lớp sương phủ của thân khối (`pudding.gdshader`): `fog` 0..1; `origin` là ô gốc của khối trên bàn để các khối sương
+## cạnh nhau chung một đám sương liền.
+static func set_fog(body: Control, fog: float, origin: Vector2) -> void:
+	var m := body.material as ShaderMaterial
+	m.set_shader_parameter("fog", fog)
+	m.set_shader_parameter("fog_origin", origin)
 
 
 ## Ổ khoá vàng có quai thép; `center` là tâm thân khoá. `open` 0..1 nhấc quai lên (lúc xích đứt).
@@ -256,136 +288,207 @@ static func draw_lock(ci: CanvasItem, center: Vector2, cell: float, open: float 
 	ci.draw_line(hole, hole + Vector2(0, h * 0.28), CHAIN_DARK, maxf(1.5, cell * 0.04))
 
 
-## Tâm xích chéo của khối (toạ độ ô của khối): giữa khung khối, hoặc ô gần đó nhất nếu khung lõm.
+## Tâm ổ khoá (toạ độ ô của khối): giữa khung khối, nơi đường chéo đi qua; khung lõm (tâm rơi vào ô trống, khối hình
+## L, T) thì mắt xích gần tâm nhất.
 static func chain_center(cells: Array) -> Vector2:
 	var mid := tape_center(cells)
+	if cells.has(Vector2i(mid.floor())):
+		return mid
 	var best := mid
 	var best_d := INF
-	for c: Vector2i in cells:
-		var p := Vector2(c) + Vector2(0.5, 0.5)
-		var d := p.distance_squared_to(mid)
+	for l: Array in chain_links(cells):
+		var d := (l[0] as Vector2).distance_squared_to(mid)
 		if d < best_d:
 			best_d = d
-			best = p if d > 0.3 else mid
+			best = l[0]
 	return best
 
 
-## Các đường xích quấn khối (toạ độ ô của khối): chữ X qua trọn khung khối, thêm chữ X riêng cho ô nằm xa hai đường chéo
-## (khối hình L, T). Mỗi phần tử là [đầu, cuối].
-static func chain_paths(cells: Array) -> Array:
-	var lo := Vector2(INF, INF)
-	var hi := -lo
-	for c: Vector2i in cells:
-		lo = lo.min(Vector2(c))
-		hi = hi.max(Vector2(c) + Vector2.ONE)
+## Đường xích của khối (toạ độ ô của khối): một đường chéo qua trọn khung khối, chìa ra ngoài mép CHAIN_OUT. Chọn đường
+## chéo có nhiều mắt nằm trên ô của khối hơn (khối hình L, T); bằng nhau thì đường từ góc trên trái xuống góc dưới phải.
+## Trả [đầu, cuối].
+static func chain_path(cells: Array) -> Array:
+	var box := _cell_box(cells)
+	var lo: Vector2 = box[0]
+	var hi: Vector2 = box[1]
 	var o := Vector2(CHAIN_OUT, CHAIN_OUT)
-	var paths: Array = [[lo - o, hi + o], [Vector2(hi.x + o.x, lo.y - o.y), Vector2(lo.x - o.x, hi.y + o.y)]]
-	if cells.size() == int((hi - lo).x * (hi - lo).y):
-		return paths
-	var main := paths.duplicate()
-	for c: Vector2i in cells:
-		var p := Vector2(c) + Vector2(0.5, 0.5)
-		var near := false
-		for seg: Array in main:
-			if p.distance_to(Geometry2D.get_closest_point_to_segment(p, seg[0], seg[1])) < 0.45:
-				near = true
-		if not near:
-			paths.append([Vector2(c) - o, Vector2(c) + Vector2.ONE + o])
-			paths.append([Vector2(c.x + 1, c.y) + Vector2(o.x, -o.y), Vector2(c.x, c.y + 1) + Vector2(-o.x, o.y)])
-	return paths
+	var down := [lo - o, hi + o]
+	var up := [Vector2(hi.x + o.x, lo.y - o.y), Vector2(lo.x - o.x, hi.y + o.y)]
+	return up if _links_on(cells, up).size() > _links_on(cells, down).size() else down
 
 
-## Xích thép quấn trọn khối: mắt xích xen kẽ mặt tròn và mặt nghiêng, có bóng đổ và viền tối.
-## Mắt rơi vào ô trống trong khung khối (khối hình L, T) thì bỏ.
-static func draw_chain(ci: CanvasItem, cells: Array, cell: float) -> void:
+## Mắt xích của khối theo `chain_path` (toạ độ ô của khối): mỗi phần tử [tâm, hướng, mặt tròn?]. Mắt rơi vào ô trống
+## trong khung khối thì bỏ; phần chìa ra ngoài khung tính theo ô sát mép.
+static func chain_links(cells: Array) -> Array:
+	return _links_on(cells, chain_path(cells))
+
+
+static func _links_on(cells: Array, seg: Array) -> Array:
 	var occ := {}
 	for c: Vector2i in cells:
 		occ[c] = true
+	var box := _cell_box(cells)
+	var lo: Vector2 = box[0]
+	var hi: Vector2 = box[1]
+	var a: Vector2 = seg[0]
+	var b: Vector2 = seg[1]
+	var n := maxi(2, int(round(a.distance_to(b) / CHAIN_LINK)))
+	var t := (b - a).normalized()
+	var out: Array = []
+	for i in n + 1:
+		var p: Vector2 = a.lerp(b, float(i) / n)
+		if occ.has(Vector2i(p.clamp(lo, hi - Vector2(0.001, 0.001)).floor())):
+			out.append([p, t, i % 2 == 0])
+	return out
+
+
+## Khung ô của khối: [góc nhỏ, góc lớn] theo toạ độ ô.
+static func _cell_box(cells: Array) -> Array:
 	var lo := Vector2(INF, INF)
 	var hi := -lo
 	for c: Vector2i in cells:
 		lo = lo.min(Vector2(c))
 		hi = hi.max(Vector2(c) + Vector2.ONE)
-	var links: Array = []  # [tâm px, hướng, mặt tròn?]
-	for seg: Array in chain_paths(cells):
-		var a: Vector2 = seg[0]
-		var b: Vector2 = seg[1]
-		var n := maxi(2, int(round(a.distance_to(b) / CHAIN_LINK)))
-		var t := (b - a).normalized()
-		for i in n + 1:
-			var p: Vector2 = a.lerp(b, float(i) / n)
-			# mắt phải nằm trên ô của khối; phần quấn ra ngoài khung tính theo ô sát mép
-			if not occ.has(Vector2i(p.clamp(lo, hi - Vector2(0.001, 0.001)).floor())):
-				continue
-			links.append([p * cell, t, i % 2 == 0])
+	return [lo, hi]
+
+
+## Xích thép quấn khối theo một đường chéo: mắt xích xen kẽ mặt tròn và mặt nghiêng, có bóng đổ và viền tối. Cả lớp
+## xích là một triangle array (một draw call), dựng một lần cho mỗi hình khối và cỡ ô rồi giữ trong cache.
+static func draw_chain(ci: CanvasItem, cells: Array, cell: float) -> void:
+	var key := "%s|%.2f" % [_cells_key(cells), cell]
+	if not _chain_mesh.has(key):
+		if _chain_mesh.size() >= CHAIN_MESH_MAX:
+			_chain_mesh.clear()
+		_chain_mesh[key] = _chain_strokes(cells, cell)
+	var m: Strokes = _chain_mesh[key]
+	if not m.idx.is_empty():
+		RenderingServer.canvas_item_add_triangle_array(ci.get_canvas_item(), m.idx, m.verts, m.cols)
+
+
+static func _cells_key(cells: Array) -> String:
+	var parts := PackedStringArray()
+	for c: Vector2i in cells:
+		parts.append("%d,%d" % [c.x, c.y])
+	parts.sort()
+	return ";".join(parts)
+
+
+## Hình cả lớp xích theo thứ tự vẽ: bóng đổ mọi mắt, rồi mắt nghiêng, rồi mắt tròn đè lên.
+static func _chain_strokes(cells: Array, cell: float) -> Strokes:
+	var links := chain_links(cells)
 	var w := maxf(1.5, cell * 0.042)
+	var s := Strokes.new()
 	for l: Array in links:
-		_chain_link(ci, l[0] + Vector2(0, cell * 0.05), l[1], cell, w, Color(0.05, 0.04, 0.2, 0.35), Color(0, 0, 0, 0), l[2])
+		_chain_link(s, (l[0] as Vector2) * cell + Vector2(0, cell * 0.05), l[1], cell, w, Color(0.05, 0.04, 0.2, 0.35), Color(0, 0, 0, 0), l[2])
 	for l: Array in links:
 		if not l[2]:
-			_chain_link(ci, l[0], l[1], cell, w, CHAIN_DARK, CHAIN_STEEL, false)
+			_chain_link(s, (l[0] as Vector2) * cell, l[1], cell, w, CHAIN_DARK, CHAIN_STEEL, false)
 	for l: Array in links:
 		if l[2]:
-			_chain_link(ci, l[0], l[1], cell, w, CHAIN_DARK, CHAIN_STEEL, true)
+			_chain_link(s, (l[0] as Vector2) * cell, l[1], cell, w, CHAIN_DARK, CHAIN_STEEL, true)
+	return s
 
 
-## Một mắt xích tại `p` theo hướng `t`: mặt tròn là vòng bầu dục, mặt nghiêng là thanh ngắn.
-## `steel` trong suốt thì chỉ vẽ một lượt màu `dark` (bóng đổ).
-static func _chain_link(ci: CanvasItem, p: Vector2, t: Vector2, cell: float, w: float, dark: Color, steel: Color, face_on: bool) -> void:
+## Một mắt xích tại `p` (px) theo hướng `t`: mặt tròn là vòng bầu dục, mặt nghiêng là thanh ngắn.
+## `steel` trong suốt thì chỉ có một lượt màu `dark` (bóng đổ).
+static func _chain_link(s: Strokes, p: Vector2, t: Vector2, cell: float, w: float, dark: Color, steel: Color, face_on: bool) -> void:
 	var nrm := Vector2(-t.y, t.x)
 	if face_on:
 		var pts := PackedVector2Array()
 		for k in 17:
 			var ang := TAU * k / 16.0
 			pts.append(p + t * cos(ang) * cell * 0.15 + nrm * sin(ang) * cell * 0.085)
-		ci.draw_polyline(pts, dark, w + 2.0, true)
+		s.stroke(pts, w + 2.0, dark)
 		if steel.a > 0.0:
-			ci.draw_polyline(pts, steel, w, true)
+			s.stroke(pts, w, steel)
 			var hi := PackedVector2Array()
 			for k in range(9, 13):
 				var ang := TAU * k / 16.0
 				hi.append(p + t * cos(ang) * cell * 0.15 + nrm * sin(ang) * cell * 0.085)
-			ci.draw_polyline(hi, CHAIN_SHINE, maxf(1.0, w * 0.45), true)
+			s.stroke(hi, maxf(1.0, w * 0.45), CHAIN_SHINE)
 	else:
 		var half := t * cell * 0.11
-		ci.draw_line(p - half, p + half, dark, w * 1.5 + 2.0, true)
+		s.stroke(PackedVector2Array([p - half, p + half]), w * 1.5 + 2.0, dark)
 		if steel.a > 0.0:
-			ci.draw_line(p - half, p + half, steel.darkened(0.12), w * 1.5, true)
-			ci.draw_line(p - half * 0.6 - nrm * w * 0.25, p + half * 0.6 - nrm * w * 0.25, CHAIN_SHINE, maxf(1.0, w * 0.4), true)
+			s.stroke(PackedVector2Array([p - half, p + half]), w * 1.5, steel.darkened(0.12))
+			var off := nrm * w * 0.25
+			s.stroke(PackedVector2Array([p - half * 0.6 - off, p + half * 0.6 - off]), maxf(1.0, w * 0.4), CHAIN_SHINE)
 
 
-## Chìa: huy hiệu tròn vàng có hình chìa ở góc ô; `pos` là tâm huy hiệu.
-static func draw_key(ci: CanvasItem, pos: Vector2, cell: float) -> void:
-	var rad := cell * 0.19
+## Nét có bề dày dựng thành tam giác cho `canvas_item_add_triangle_array`. Mỗi điểm bốn đỉnh ngang nét: mép mờ ngoài,
+## mép đặc, mép đặc, mép mờ ngoài; mép mờ dày FEATHER px đặt giữa mép nét (khớp `draw_polyline` có antialiased), hai
+## đầu nét hở cũng mờ dần. Nét có điểm đầu trùng điểm cuối là vòng kín.
+class Strokes extends RefCounted:
+	const FEATHER := 1.5
+	var verts := PackedVector2Array()
+	var cols := PackedColorArray()
+	var idx := PackedInt32Array()
+
+	func stroke(pts: PackedVector2Array, width: float, col: Color) -> void:
+		var n := pts.size()
+		if n < 2:
+			return
+		var closed := n > 2 and pts[0].is_equal_approx(pts[n - 1])
+		var a_in := maxf(width * 0.5 - FEATHER * 0.5, 0.0)
+		var a_out := width * 0.5 + FEATHER * 0.5
+		var clear := Color(col, 0.0)
+		var base := verts.size()
+		var rows := 0
+		if not closed:
+			var t0 := (pts[1] - pts[0]).normalized()
+			_row(pts[0] - t0 * FEATHER, t0, a_in, a_out, clear, clear)
+			rows += 1
+		for i in n:
+			var prev: Vector2
+			var next: Vector2
+			if closed:
+				prev = pts[n - 2] if i == 0 else pts[i - 1]
+				next = pts[1] if i == n - 1 else pts[i + 1]
+			else:
+				prev = pts[maxi(i - 1, 0)]
+				next = pts[mini(i + 1, n - 1)]
+			_row(pts[i], (next - prev).normalized(), a_in, a_out, col, clear)
+			rows += 1
+		if not closed:
+			var t1 := (pts[n - 1] - pts[n - 2]).normalized()
+			_row(pts[n - 1] + t1 * FEATHER, t1, a_in, a_out, clear, clear)
+			rows += 1
+		for r in rows - 1:
+			var b := base + r * 4
+			for k in 3:
+				idx.append_array(PackedInt32Array([b + k, b + k + 1, b + k + 4, b + k + 1, b + k + 5, b + k + 4]))
+
+	func _row(p: Vector2, t: Vector2, a_in: float, a_out: float, col: Color, clear: Color) -> void:
+		var nrm := Vector2(-t.y, t.x)
+		verts.append_array(PackedVector2Array([p - nrm * a_out, p - nrm * a_in, p + nrm * a_in, p + nrm * a_out]))
+		cols.append_array(PackedColorArray([clear, col, col, clear]))
+
+
+## Chìa: ảnh chìa vàng to (`mech_key`, cạnh KEY_SIZE ô) giữa ô `center` của khối chìa; không có đường nối tới khối bị
+## xích. Thiếu ảnh thì vẽ chìa bằng nét cùng cỡ.
+static func draw_key(ci: CanvasItem, center: Vector2, cell: float) -> void:
+	var side := cell * KEY_SIZE
 	var tex := mech_tex("mech_key")
 	if tex != null:
-		ci.draw_texture_rect(tex, Rect2(pos - Vector2(rad, rad) * 1.1, Vector2(rad, rad) * 2.2), false)
+		ci.draw_texture_rect(tex, Rect2(center - Vector2(side, side) * 0.5, Vector2(side, side)), false)
 		return
-	ci.draw_circle(pos, rad, Color(0.1, 0.12, 0.2, 0.85))
-	ci.draw_arc(pos, rad, 0.0, TAU, 20, KEY_COLOR, maxf(1.5, cell * 0.03))
-	var w := maxf(2.0, cell * 0.035)
-	var head := pos + Vector2(-rad * 0.4, 0.0)
-	ci.draw_arc(head, rad * 0.28, 0.0, TAU, 12, KEY_COLOR, w)
-	ci.draw_line(head + Vector2(rad * 0.28, 0), pos + Vector2(rad * 0.55, 0), KEY_COLOR, w)
-	ci.draw_line(pos + Vector2(rad * 0.3, 0), pos + Vector2(rad * 0.3, rad * 0.3), KEY_COLOR, w)
-	ci.draw_line(pos + Vector2(rad * 0.55, 0), pos + Vector2(rad * 0.55, rad * 0.3), KEY_COLOR, w)
+	var rad := side * 0.5
+	var w := maxf(2.0, cell * 0.06)
+	var head := center + Vector2(-rad * 0.45, 0.0)
+	ci.draw_arc(head, rad * 0.32, 0.0, TAU, 20, KEY_COLOR, w)
+	ci.draw_line(head + Vector2(rad * 0.32, 0), center + Vector2(rad * 0.8, 0), KEY_COLOR, w)
+	ci.draw_line(center + Vector2(rad * 0.4, 0), center + Vector2(rad * 0.4, rad * 0.35), KEY_COLOR, w)
+	ci.draw_line(center + Vector2(rad * 0.7, 0), center + Vector2(rad * 0.7, rad * 0.35), KEY_COLOR, w)
 
 
-## Sương mù: vài vệt mờ trong mỗi ô và dấu "?" ở ô giữa (hoặc ảnh `mech_fog`).
-static func draw_fog_cover(ci: CanvasItem, cells: Array, cell: float) -> void:
-	for c: Vector2i in cells:
-		var o := Vector2(c) * cell
-		var seed_v := absi(c.x * 31 + c.y * 17)
-		for i in 3:
-			var ang := float((seed_v + i * 7) % 11) * 0.57
-			var p := o + Vector2(cell * (0.28 + 0.22 * i), cell * (0.3 + 0.2 * ((seed_v + i) % 3)))
-			ci.draw_circle(p, cell * (0.2 - 0.02 * i), Color(1, 1, 1, 0.1))
-			ci.draw_arc(p + Vector2(cos(ang), sin(ang)) * cell * 0.05, cell * 0.16, ang, ang + 2.2, 10, Color(1, 1, 1, 0.22), maxf(1.5, cell * 0.03))
-	var anchor := anchor_cell(cells)
-	var center := (Vector2(anchor) + Vector2(0.5, 0.5)) * cell
+## Dấu sương mù giữa ô `at` của khối còn trong sương: ảnh `mech_fog` (thiếu ảnh thì dấu "?"). Lớp sương phủ do
+## `pudding.gdshader` vẽ (`set_fog`).
+static func draw_fog_mark(ci: CanvasItem, at: Vector2i, cell: float) -> void:
+	var center := (Vector2(at) + Vector2(0.5, 0.5)) * cell
 	var tex := mech_tex("mech_fog")
 	if tex != null:
-		ci.draw_texture_rect(tex, Rect2(center - Vector2(cell, cell) * 0.35, Vector2(cell, cell) * 0.7), false)
+		var side := cell * FOG_MARK
+		ci.draw_texture_rect(tex, Rect2(center - Vector2(side, side) * 0.5, Vector2(side, side)), false)
 		return
 	var font := ThemeDB.fallback_font
 	var fs := int(cell * 0.55)

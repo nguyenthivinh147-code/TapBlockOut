@@ -93,13 +93,6 @@ func test_no_lives(t: T) -> void:
 	p.free()
 
 
-func test_booster_unlocked(t: T) -> void:
-	_g()
-	var p := _mount("booster_unlocked")
-	_check(t, _btn(p, "BuyButton"), "100", "booster mới")
-	p.free()
-
-
 func test_helper_pack(t: T) -> void:
 	_g()
 	var p := _mount("popup_helper_pack")

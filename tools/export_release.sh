@@ -139,7 +139,8 @@ else
 	echo "Không có $CONFIG_SRC: build không cấu hình (mô-đun thiếu khoá tự tắt)."
 fi
 
-# 4. Import (cập nhật .godot), rồi xuất.
+# 4. SDF thân khối bake sẵn (chỉ bake lại khi level hoặc cách dựng SDF đổi), import (cập nhật .godot), rồi xuất.
+tools/godot.sh --headless --path . -s res://tools/bake_sdf.gd
 tools/godot.sh --headless --path . --import >/dev/null 2>&1 || true
 
 rm -f "$APK_OUT" "$AAB_OUT"

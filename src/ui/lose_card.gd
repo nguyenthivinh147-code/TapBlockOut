@@ -158,7 +158,7 @@ func _build_pack(y: float) -> void:
 	UnityKit.add(_pack_box, body)
 	var buy: Button = v.button("Button_Purchase")
 	buy.name = "PackBuyButton"
-	v.text("Button_Purchase/Text (TMP)", tr("lose_pack_buy") % _price_text("rescue_pack"))
+	v.text("Button_Purchase/Text (TMP)", _price_text("rescue_pack"))
 	buy.connect("clicked", _on_pack_pressed)
 
 

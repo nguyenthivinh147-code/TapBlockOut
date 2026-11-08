@@ -165,6 +165,7 @@ func test_main_f1(t: T) -> void:
 	var m := (load("res://scenes/main.tscn") as PackedScene).instantiate() as Control
 	_root().add_child(m)
 	t.ok(await _wait_until(func() -> bool: return m.is_booted), "boot xong")
+	m.go("home")
 	m._input(_f1())
 	t.ok(_menu() != null, "F1 mở menu tester")
 	t.eq(m.popup_count(), 1, "nằm trong lớp popup")

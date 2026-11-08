@@ -204,6 +204,76 @@ func test_gate_toggles_visual(t: T) -> void:
 	v.queue_free()
 
 
+## Hình cổng nhịp đổi khi hoạt ảnh của lượt chạm xong (design.md mục 8 "Khung cổng"): khối dội vào cổng khoá thì cổng
+## còn khoá tới khi khối về hẳn chỗ cũ; khối nghiền qua cổng mở thì cổng còn mở tới khi khối qua hết thanh.
+func test_gate_changes_after_block_anim(t: T) -> void:
+	var level := _lv(5, 5, [
+		_b("b1", "yellow", [[2, 3]]), _b("b2", "green", [[4, 4]]), _b("b3", "yellow", [[0, 4]]),
+	], {"pulse_sides": [{"side": "up", "open": false}]})
+	var board := BoardState.new(level)
+	var v := _view(board)
+	var n1: Control = v.block_node("b1")
+	var home := n1.position
+	var r := board.tap("b1")
+	t.eq(r["kind"], "gate_closed", "cổng khoá chặn b1")
+	v.apply_result(r)
+	var state := {"done": false, "left": false, "early": false}
+	v.animation_done.connect(func() -> void: state["done"] = true, CONNECT_ONE_SHOT)
+	var deadline := Time.get_ticks_msec() + 2500
+	while not state["done"] and Time.get_ticks_msec() < deadline:
+		await _frames(1)
+		var away := n1.position.distance_to(home) > 0.5
+		state["left"] = bool(state["left"]) or away
+		if v.gate_progress("up") > 0.001 and (away or not bool(state["left"])):
+			state["early"] = true
+	t.ok(state["done"], "b1 dội xong")
+	t.ok(state["left"], "b1 có lao tới thanh")
+	t.ok(not state["early"], "cổng giữ khoá tới khi b1 về chỗ")
+	t.near(v.gate_progress("up"), 1.0, 0.001, "b1 về chỗ rồi cổng mới mở")
+
+	var n3: Control = v.block_node("b3")
+	r = board.tap("b3")
+	t.eq(r["kind"], "exit", "b3 thoát qua cổng mở")
+	v.apply_result(r)
+	var state2 := {"done": false, "early": false}
+	v.animation_done.connect(func() -> void: state2["done"] = true, CONNECT_ONE_SHOT)
+	deadline = Time.get_ticks_msec() + 2500
+	while not state2["done"] and Time.get_ticks_msec() < deadline:
+		await _frames(1)
+		if is_instance_valid(n3) and not n3.is_queued_for_deletion() and v.gate_progress("up") < 0.999:
+			state2["early"] = true
+	t.ok(state2["done"], "b3 nghiền xong")
+	t.ok(not state2["early"], "cổng giữ mở tới khi b3 qua hết thanh")
+	t.near(v.gate_progress("up"), 0.0, 0.001, "b3 qua hết rồi cổng mới khoá")
+	v.queue_free()
+
+
+## Hộp giấy bay về thanh qua cổng nhịp mở: cổng còn mở tới khi hộp rách xong.
+func test_gate_waits_for_paper_box(t: T) -> void:
+	var level := _lv(5, 5, [
+		_b("p", "yellow", [[1, 4]], {"inner_color": "purple"}), _b("g", "green", [[4, 4]]),
+	], {"pulse_sides": [{"side": "up", "open": true}]})
+	var board := BoardState.new(level)
+	var v := _view(board)
+	var r := board.tap("p")
+	t.eq(r["kind"], "peel", "bóc hộp giấy")
+	v.apply_result(r)
+	var state := {"done": false, "box": false, "early": false}
+	v.animation_done.connect(func() -> void: state["done"] = true, CONNECT_ONE_SHOT)
+	var deadline := Time.get_ticks_msec() + 2500
+	while not state["done"] and Time.get_ticks_msec() < deadline:
+		await _frames(1)
+		if v.ghost_count() > 0:
+			state["box"] = true
+			if v.gate_progress("up") < 0.999:
+				state["early"] = true
+	t.ok(state["done"], "hộp rách xong")
+	t.ok(state["box"], "có hộp bay")
+	t.ok(not state["early"], "cổng giữ mở khi hộp còn bay")
+	t.near(v.gate_progress("up"), 0.0, 0.001, "hộp rách rồi cổng mới khoá")
+	v.queue_free()
+
+
 func test_gate_refresh_and_fast_taps(t: T) -> void:
 	var level := _lv(5, 5, [
 		_b("b1", "green", [[4, 0]]), _b("b2", "green", [[4, 1]]), _b("b3", "green", [[4, 2]]),

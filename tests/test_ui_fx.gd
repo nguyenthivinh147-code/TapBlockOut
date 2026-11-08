@@ -61,11 +61,14 @@ func test_exit_grinds_through_the_bar_and_cleans_up(t: T) -> void:
 	var v := _make(board)
 	await _frames()
 	var node: Control = v.block_node("a")
+	# giây tới thanh theo đường lao (còn khối c nên có hãm); khối 2 ô còn trôi qua thanh 2 / GRIND_SPEED giây
+	var steps: float = v._cells_to_bar(node, Vector2.UP)
+	var plan: Array = v._exit_plan(steps * v.cell_size(), _dash(steps))
 	v.apply_result(board.tap("a"))
 	t.eq(v.block_count(), 1, "khối rời bàn ngay khi chạm")
 	t.ok(v.block_at(v.cell_center(Vector2i(2, 3))) == "", "ô đã trống ngay khi chạm")
 	t.eq(_fx_named(v, "Shards").size(), 0, "chưa nghiền khi còn đang lao")
-	await _tree().create_timer(0.40).timeout
+	await _tree().create_timer(float(plan[0]) + float(plan[1]) + 0.1).timeout
 	var bursts := _fx_named(v, "Shards")
 	t.eq(bursts.size(), 1, "tới thanh thì bắt đầu nghiền")
 	t.ok(is_instance_valid(node) and (node.get_parent() as Control).clip_contents, "khối trôi vào vùng cắt ở mặt trong thanh")
@@ -75,11 +78,47 @@ func test_exit_grinds_through_the_bar_and_cleans_up(t: T) -> void:
 	t.ok(not is_instance_valid(node), "khối đã xoá")
 	if bursts.size() == 1 and is_instance_valid(bursts[0]):
 		t.ok(bursts[0].top_level, "vụn thoát khỏi vùng cắt của bàn")
-		# hai ô đi qua thanh, mỗi ô diện tích ra GRIND_BITS khối vuông
-		t.ok(bursts[0].shard_count() >= 24, "đủ khối vuông nhỏ (%d)" % bursts[0].shard_count())
+		# khối rộng 1 ô ra GRIND_BITS mảnh to và GRIND_SMALL mảnh nhỏ
+		t.eq(bursts[0].shard_count(), BoardView.GRIND_BITS + BoardView.GRIND_SMALL, "đủ mảnh to và mảnh nhỏ")
 	await _tree().create_timer(CandyShards.BIT_LIFE.y + 0.2).timeout
 	t.eq(_fx_named(v, "Shards").size(), 0, "vụn tự dọn khi hết đời")
 	v.queue_free()
+
+
+func test_grind_bits_scale_with_the_block_width(t: T) -> void:
+	# [ô của khối vàng (thoát lên trên), bề ngang dọc thanh]; khối dài theo hướng đi không ra thêm
+	for entry: Array in [[[[2, 4]], 1], [[[2, 3], [2, 4], [2, 5]], 1], [[[2, 3], [3, 3], [2, 4], [3, 4]], 2],
+			[[[1, 2], [2, 2], [3, 2], [1, 3], [2, 3], [3, 3]], 3]]:
+		var cells: Array = entry[0]
+		var k := 1.0 + BoardView.GRIND_BITS_EXTRA * float(int(entry[1]) - 1)
+		var want := roundi(float(BoardView.GRIND_BITS) * k) + roundi(float(BoardView.GRIND_SMALL) * k)
+		var board := BoardState.new(_lv([_b("a", "yellow", cells)]))
+		var v := _make(board)
+		await _frames()
+		v.apply_result(board.tap("a"))
+		t.ok(await _wait_done(v), "báo xong hoạt ảnh (khối %d ô)" % cells.size())
+		var bursts := _fx_named(v, "Shards")
+		t.eq(bursts.size(), 1, "một chỗ chứa khối vuông (khối %d ô)" % cells.size())
+		if bursts.size() == 1:
+			t.eq(bursts[0].shard_count(), want, "%d mảnh cho khối rộng %d ô (%d ô)" % [want, entry[1], cells.size()])
+		v.queue_free()
+		await _frames(1)
+
+
+func test_grind_bit_count_follows_the_exit_side(t: T) -> void:
+	var v := _make(BoardState.new(_lv([_b("a", "yellow", [[2, 4]])])))
+	var row := [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0)]
+	t.eq(v._grind_counts(row, Vector2.RIGHT), Vector2i(15, 10), "hàng 3 ô thoát sang phải: rộng 1 ô, 15 to 10 nhỏ")
+	t.eq(v._grind_counts([Vector2i(0, 0), Vector2i(1, 0)], Vector2.UP), Vector2i(23, 15), "rộng 2 ô: thêm 0,5 lần, 22,5 làm tròn lên 23")
+	t.eq(v._grind_counts(row, Vector2.UP), Vector2i(30, 20), "hàng 3 ô thoát lên: rộng 3 ô, thêm 2 × 0,5 lần")
+	var ell := [Vector2i(0, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1)]
+	t.eq(v._grind_counts(ell, Vector2.DOWN), Vector2i(30, 20), "khối chữ L: tính mọi cột khối phủ, không chỉ hàng đầu")
+	v.queue_free()
+
+
+## Giây nhanh dần của khối cách thanh `steps` ô, như _anim_exit().
+func _dash(steps: float) -> float:
+	return clampf(BoardView.SLIDE_MIN + BoardView.SLIDE_PER_CELL * steps, BoardView.SLIDE_MIN, BoardView.SLIDE_TIME)
 
 
 ## Quãng khối thoát đã đi ở giây `s` theo đường `plan` của _exit_plan(), px.
@@ -97,7 +136,7 @@ func test_exit_slows_down_into_the_bar(t: T) -> void:
 	var grind := BoardView.GRIND_SPEED * cell
 	for steps: int in [0, 3, 7, 18]:
 		var travel := (float(steps) + CandyFrame.gap("up")) * cell
-		var dash := clampf(BoardView.SLIDE_MIN + BoardView.SLIDE_PER_CELL * float(steps), BoardView.SLIDE_MIN, BoardView.SLIDE_TIME)
+		var dash := _dash(float(steps))
 		var plan: Array = v._exit_plan(travel, dash)
 		var end: float = plan[0] + plan[1]
 		t.near(_exit_at(v, n, plan, end), travel, 0.01, "%d ô: tới đúng mặt trong của thanh" % steps)
@@ -114,7 +153,15 @@ func test_exit_slows_down_into_the_bar(t: T) -> void:
 		if steps >= 3:
 			t.near(arrive, grind, grind * 0.03, "%d ô: chạm thanh đúng tốc độ nghiền" % steps)
 			var top := (_exit_at(v, n, plan, plan[0]) - _exit_at(v, n, plan, plan[0] - 0.0002)) / 0.0002
-			t.ok(top > grind * 1.5, "%d ô: lao nhanh rồi mới chậm lại (%.0f)" % [steps, top])
+			if steps >= 7:
+				t.ok(top > grind * 1.5, "%d ô: lao nhanh rồi mới chậm lại (%.0f)" % [steps, top])
+				t.near(float(plan[1]), BoardView.EXIT_BRAKE, 0.0001, "%d ô: hãm trọn EXIT_BRAKE" % steps)
+			else:
+				# hãm EXIT_BRAKE cần quãng chừng 4 ô; gần hơn thì không đủ đường để hãm
+				t.near(top, grind, grind * 0.03, "%d ô: sát thanh, nhanh dần tới tốc độ nghiền (%.0f)" % [steps, top])
+				var mid := float(plan[0]) + float(plan[1]) * 0.5
+				var cruise := (_exit_at(v, n, plan, mid) - _exit_at(v, n, plan, mid - 0.0002)) / 0.0002
+				t.near(cruise, grind, grind * 0.03, "%d ô: sát thanh, rồi đi đều tới thanh (%.0f)" % [steps, cruise])
 		var fast: Array = v._exit_plan(travel, dash, 0.0)
 		t.near(float(fast[1]), 0.0, 0.0001, "%d ô: không hãm thì không có đoạn chậm dần" % steps)
 		t.near(float(fast[2]), 2.0 * travel / dash, 0.01, "%d ô: không hãm thì nhanh dần tới tận thanh như cũ" % steps)
@@ -136,8 +183,11 @@ func test_last_block_does_not_brake(t: T) -> void:
 	while (reached[0] < 0 or reached[1] < 0) and Time.get_ticks_msec() - start < 1000:
 		await _tree().process_frame
 		for i in 2:
+			# khối tới trước bị xoá khi nghiền xong, trước lúc khối kia tới: kiểm còn sống trước khi gán vào biến có kiểu
+			if reached[i] >= 0 or not is_instance_valid(nodes[i]):
+				continue
 			var n: Control = nodes[i]
-			if reached[i] < 0 and is_instance_valid(n) and (n.get_parent() as Control).clip_contents:
+			if (n.get_parent() as Control).clip_contents:
 				reached[i] = Time.get_ticks_msec() - start
 	t.ok(reached[0] >= 0 and reached[1] >= 0, "cả hai khối tới thanh")
 	t.ok(reached[0] + 60 < reached[1], "khối cuối không hãm nên tới thanh sớm hơn (%d ms so với %d ms)" % reached)
@@ -159,8 +209,9 @@ func test_grind_bits_are_rounded_with_a_thin_rim(t: T) -> void:
 	var bits: Control = CandyShards.grinder(holder, [Vector2i.ZERO], 42.0, ThemeKit.block_ramp("yellow"))
 	var rng := RandomNumberGenerator.new()
 	bits.bit(at, Vector2(100, 100), Vector2.RIGHT, rng)
+	bits.bit(at, Vector2(100, 100), Vector2.RIGHT, rng, true)
 	bits.close()
-	t.eq(bits.shard_count(), 1 + CandyShards.BIT_SMALL, "một khối vuông nhỏ kèm mảnh nhỏ hơn")
+	t.eq(bits.shard_count(), 2, "một mảnh to, một mảnh nhỏ")
 	t.ok(bits._shards[0].rim < 1.0, "viền mặt gãy hẹp hơn mảnh thường")
 	var reach := func(s: RefCounted) -> float:
 		var far_px := 0.0
@@ -168,7 +219,7 @@ func test_grind_bits_are_rounded_with_a_thin_rim(t: T) -> void:
 			far_px = maxf(far_px, p.length())
 		return far_px
 	for i in range(1, bits.shard_count()):
-		t.ok(reach.call(bits._shards[i]) < reach.call(bits._shards[0]), "mảnh đi kèm nhỏ hơn khối vuông")
+		t.ok(reach.call(bits._shards[i]) < reach.call(bits._shards[0]), "mảnh nhỏ nhỏ hơn mảnh to")
 	holder.queue_free()
 
 

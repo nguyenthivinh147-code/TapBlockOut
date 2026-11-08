@@ -19,17 +19,6 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"canvas": {
-"order": 0.0,
-"override_sort": true
-},
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
-},
 "cs": [{
 "OnDisplayLayout": [],
 "OnHideLayer": [],
@@ -44,8 +33,7 @@ metadata/u = {
 "name": "LoadLevelProcess"
 }],
 "id": "7219197735921211012",
-"n": "LoadLevelProcess",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "LoadLevelProcess"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -65,7 +53,6 @@ script = ExtResource("1_hef4d")
 color = Color(0, 0, 0, 1)
 fill_method = 4
 metadata/u = {
-"a": true,
 "cs": [{
 "_aspectRatio": "2",
 "_center": {
@@ -89,22 +76,11 @@ metadata/u = {
 }],
 "id": "5393293856497901906",
 "img": {
-"c": "000000ff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"mat": "SwirlMask",
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": null,
-"t": 0.0
+"sp": null
 },
-"n": "BG",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "BG"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),

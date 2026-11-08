@@ -67,8 +67,7 @@ func _build() -> void:
 	UnityKit.well(content, WELL)
 	# Hộp đang nhắm: hộp vừa mở, hoặc hộp kế tiếp sau level vừa thắng.
 	var target := RoadTrip.boxes()[box_i] if opened else RoadTrip.next_box(int(_args.get("level", 1)))
-	var icon_i := maxi(RoadTrip.box_index(target), 0)
-	box_sprite = UnityKit.sprite(content, "", BOX, ThemeKit.icon(str(RoadTripMap.BOX_ICONS[icon_i % RoadTripMap.BOX_ICONS.size()])))
+	box_sprite = UnityKit.sprite(content, "", BOX, RoadTripMap.box_tex(RoadTrip.box_index(target)))
 	box_sprite.name = "BoxSprite"
 	box_sprite.visible = target > 0
 	# Thanh tiến độ: khung tím, lõi xanh theo tỉ lệ (neo trái, anchor_right = tỉ lệ).

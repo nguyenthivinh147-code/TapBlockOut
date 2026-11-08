@@ -30,30 +30,6 @@ content_margin_top = 14.0
 content_margin_right = 14.0
 content_margin_bottom = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7gi01"]
-content_margin_left = 14.0
-content_margin_top = 14.0
-content_margin_right = 14.0
-content_margin_bottom = 14.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_thvup"]
-content_margin_left = 14.0
-content_margin_top = 14.0
-content_margin_right = 14.0
-content_margin_bottom = 14.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m5nq2"]
-content_margin_left = 14.0
-content_margin_top = 14.0
-content_margin_right = 14.0
-content_margin_bottom = 14.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_61v0m"]
-content_margin_left = 14.0
-content_margin_top = 14.0
-content_margin_right = 14.0
-content_margin_bottom = 14.0
-
 [node name="UiGallery" type="Control" unique_id=926207933]
 layout_mode = 1
 anchors_preset = 15
@@ -138,10 +114,10 @@ offset_right = 80.0
 offset_bottom = 20.0
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_30mwo")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_7gi01")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_thvup")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_m5nq2")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_61v0m")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_30mwo")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_30mwo")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_30mwo")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_30mwo")
 icon = ExtResource("4_rjipn")
 flat = true
 icon_alignment = 1

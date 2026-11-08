@@ -21,11 +21,6 @@ scale = Vector2(1e-05, 1e-05)
 pivot_offset_ratio = Vector2(0, 1)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"canvas": {
-"order": 3000.0,
-"override_sort": true
-},
 "cs": [{
 "animateBackgroundSeconds": "1",
 "animateIconSeconds": "1.1",
@@ -39,9 +34,7 @@ metadata/u = {
 "name": "LoadLevelProcessVer2"
 }],
 "id": "8179333351673012283",
-"n": "LoadLevelProcessVer2",
-"r": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-"s": [0.0, 0.0]
+"n": "LoadLevelProcessVer2"
 }
 metadata/u_rect = {
 "amax": Vector2(0, 0),
@@ -69,27 +62,16 @@ tex = ExtResource("2_l4h0o")
 region = Rect2(0, 0, 839, 839)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "1392707336156258934",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": "bomb_(2)",
-"t": 0.0
+"sp": "bomb_(2)"
 },
 "mask": {
 "show": false
 },
-"n": "icon",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 10000.0, 10000.0, 0.5, 0.5]
+"n": "icon"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -115,25 +97,14 @@ script = ExtResource("1_lkvux")
 color = Color(0, 0, 0, 1)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "1903484387320806187",
 "img": {
-"c": "000000ff",
 "cut": true,
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": null,
-"t": 0.0
+"sp": null
 },
-"n": "Background",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 10000.0, 10000.0, 0.5, 0.5]
+"n": "Background"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),

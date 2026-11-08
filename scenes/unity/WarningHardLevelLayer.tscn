@@ -46,17 +46,6 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"canvas": {
-"order": 0.0,
-"override_sort": true
-},
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
-},
 "cs": [{
 "OnDisplayLayout": [],
 "OnHideLayer": [],
@@ -91,8 +80,7 @@ metadata/u = {
 }]
 }],
 "id": "7219197735921211012",
-"n": "WarningHardLevelLayer",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "WarningHardLevelLayer"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -109,16 +97,8 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
-},
 "id": "5505950304007009561",
-"n": "Panel",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "Panel"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -135,13 +115,6 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
-"cg": {
-"alpha": 1.0,
-"block": true,
-"ignore_parent": false,
-"inter": true
-},
 "cs": [{
 "_barrierDuration": "30",
 "_hardTextDuration": "0.4",
@@ -179,8 +152,7 @@ metadata/u = {
 "min": [-1.0, -1.0],
 "pref": [-1.0, -1.0]
 },
-"n": "WarningExtreme",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "WarningExtreme"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -202,24 +174,13 @@ script = ExtResource("1_qidg0")
 color = Color(0, 0, 0, 0.6509804)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "6963946675536590191",
 "img": {
-"c": "000000a6",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": true,
-"sp": null,
-"t": 0.0
+"sp": null
 },
-"n": "Dim",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1692.0, 0.5, 0.5]
+"n": "Dim"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -247,24 +208,13 @@ kind = 2
 color = Color(1, 1, 1, 0.29803923)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "9054610775919799394",
 "img": {
-"c": "ffffff4c",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Warning:Warning_5",
-"t": 2.0
+"sp": "Warning:Warning_5"
 },
-"n": "Image",
-"r": [0.0, 0.5, 1.0, 0.5, 0.0, 104.0, 140.0, 20.0, 0.5, 0.5]
+"n": "Image"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 0.5),
@@ -293,25 +243,13 @@ kind = 2
 color = Color(1, 1, 1, 0.29803923)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "8468435356179296250",
 "img": {
-"c": "ffffff4c",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Warning:Warning_5",
-"t": 2.0
+"sp": "Warning:Warning_5"
 },
-"n": "Image (1)",
-"r": [0.0, 0.5, 1.0, 0.5, 0.0, -86.2899, 140.0, 20.0, 0.5, 0.5],
-"z": 3.2
+"n": "Image (1)"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 0.5),
@@ -338,24 +276,13 @@ region = Rect2(25, 232, 983, 201)
 border_scale = 1.1764705882352942
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "3960544168285293660",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 0.85,
 "rt": false,
-"sp": "Warning:Warning_1",
-"t": 0.0
+"sp": "Warning:Warning_1"
 },
-"n": "Bar",
-"r": [0.0, 0.5, 1.0, 0.5, -5.0, 0.0, 150.0, 300.0, 0.5, 0.5]
+"n": "Bar"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 0.5),
@@ -383,24 +310,13 @@ region = Rect2(1326, 589, 138, 128)
 preserve_aspect = true
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "969697619787557230",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": true,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_81",
-"t": 0.0
+"sp": "Resources_UI_Maincenter:UI_Maincenter_81"
 },
-"n": "Noti1",
-"r": [0.5, 0.5, 0.5, 0.5, -370.0, 0.0, 100.0, 100.0, 0.5, 0.5]
+"n": "Noti1"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -427,24 +343,13 @@ tex = ExtResource("3_cllai")
 region = Rect2(950, 1015, 300, 300)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "5768420538119220045",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_76",
-"t": 0.0
+"sp": "Resources_UI_Maincenter:UI_Maincenter_76"
 },
-"n": "Center",
-"r": [0.5, 0.5, 0.5, 0.5, -200.0, 0.0, 236.0, 236.0, 0.5, 0.5]
+"n": "Center"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -472,24 +377,13 @@ region = Rect2(1326, 589, 138, 128)
 preserve_aspect = true
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "421575344465636992",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": true,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_UI_Maincenter:UI_Maincenter_81",
-"t": 0.0
+"sp": "Resources_UI_Maincenter:UI_Maincenter_81"
 },
-"n": "Noti2",
-"r": [0.5, 0.5, 0.5, 0.5, 370.0, 0.0, 100.0, 100.0, 0.5, 0.5]
+"n": "Noti2"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -526,29 +420,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true
 metadata/u = {
-"a": true,
 "id": "8361545988854800984",
 "n": "HardLevelTxt",
-"r": [0.5, 0.5, 0.5, 0.5, 120.0, 0.8343, 345.0, 186.9014, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 72.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 64.45,
-"h": 2.0,
-"ls": -3.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "Hard Level",
-"st": 16.0,
-"v": 512.0,
-"w": false,
-"ws": 0.0
+"rt": false
 }
 }
 metadata/u_rect = {
@@ -560,22 +435,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 72.0],
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 64.45,
-"h": 2.0,
 "ls": -3.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": false,
-"rt": false,
-"s": "Hard Level",
 "st": 16.0,
-"v": 512.0,
-"w": false,
 "ws": 0.0
 }
 
@@ -586,10 +450,8 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "1409682851543960209",
-"n": "GameObject",
-"r": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5]
+"n": "GameObject"
 }
 metadata/u_rect = {
 "amax": Vector2(1, 1),
@@ -616,24 +478,13 @@ tex = ExtResource("6_advnm")
 region = Rect2(0, 617, 96, 96)
 fill_method = 4
 metadata/u = {
-"a": true,
 "id": "3860037523806032999",
 "img": {
-"c": "ffffffff",
-"cw": true,
-"fa": 1.0,
-"fc": true,
-"fm": 4.0,
-"fo": 0.0,
-"on": true,
-"pa": false,
 "ppu": 1.0,
 "rt": false,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_26",
-"t": 0.0
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_26"
 },
-"n": "Skull",
-"r": [0.5, 0.5, 0.5, 0.5, -200.0, 5.0, 146.0, 146.0, 0.5, 0.5]
+"n": "Skull"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -654,10 +505,8 @@ offset_bottom = 273.1
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
-"a": true,
 "id": "5504083993919180832",
-"n": "SkullTarget",
-"r": [0.5, 1.0, 0.5, 1.0, -101.6, -200.1, 146.0, 146.0, 0.5, 0.5]
+"n": "SkullTarget"
 }
 metadata/u_rect = {
 "amax": Vector2(0.5, 1),

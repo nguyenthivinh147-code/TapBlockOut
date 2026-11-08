@@ -12,6 +12,7 @@ static func defaults() -> Dictionary:
 		"coins": int(Config.ECON.start_coins),
 		"inv": {"hint": 0, "move": 0, "smash": 0},
 		"gifted": {"hint": false, "move": false, "smash": false},
+		"mech_seen": [],
 		"level": 1, "runs": 0, "play_ms": 0, "fail_streak": {"level": 0, "count": 0},
 		"lives": {"count": 10, "next_at": 0, "bonus": 0, "inf_until": 0},
 		"daily": {"idx": 0, "claim_day": -1, "ad_day": -1},

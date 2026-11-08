@@ -1,5 +1,5 @@
 extends Control
-## Khung bàn theo concept kẹo: bốn thanh capsule là bốn cổng, bốn ống góc hồng đỏ nằm dưới đầu thanh.
+## Khung bàn theo concept kẹo: bốn thanh capsule là bốn cổng, bốn ống góc hồng phấn (cùng sắc nền) nằm dưới đầu thanh.
 ## BoardView gọi layout(board, cell) khi xếp lại, set_gate() và set_flash() khi cổng đổi.
 ## Node `Frame` và các thanh, ống góc (ColorRect có shader) nằm sẵn trong scenes/board_view.tscn; script chỉ xếp chỗ.
 ## Mọi số hình học tính theo đơn vị khung (`Config.BOARD_FRAME_UNIT` ở màn chuẩn, không theo cỡ ô khối), đo từ
@@ -48,8 +48,8 @@ const END_COLORS := {"up": Color("EFA512"), "left": Color("33BD11"), "right": Co
 const COLOR_SIDE := {"yellow": "up", "green": "left", "blue": "right", "purple": "down"}
 const DERIVE_FROM := "up"
 ## Hạ sắc độ thanh cho bớt chói: nhân saturation và value (HSV) của mọi màu ở BAR_RAMPS, END_COLORS khi vẽ thanh.
-const BAR_SAT := 0.85
-const BAR_VAL := 0.98
+const BAR_SAT := 0.81
+const BAR_VAL := 0.96
 
 const HIT_TIME := 0.45  # giây, sóng sáng và nảy của thanh khi bị va
 const HIT_BUMP := 0.1  # thanh bật ra ngoài chừng này ô
@@ -172,7 +172,7 @@ static func color_ramp(color_name: String) -> Texture2D:
 		return ramp_texture(str(COLOR_SIDE[color_name]))
 	var key := "c:" + color_name
 	if not _ramp_cache.has(key):
-		var target: Color = ThemeKit.block_color(color_name)
+		var target: Color = ThemeKit.BLOCK_COLORS.get(color_name, ThemeKit.TEXT_DIM)  # màu gốc, tone() hạ sắc độ bên dưới
 		var base := Color("FCD026")  # thân mặt cắt vàng
 		var g := Gradient.new()
 		g.offsets = PackedFloat32Array()
@@ -193,7 +193,8 @@ static func color_ramp(color_name: String) -> Texture2D:
 static func color_end(color_name: String) -> Color:
 	if COLOR_SIDE.has(color_name):
 		return tone(END_COLORS[COLOR_SIDE[color_name]])
-	return tone(ThemeKit.block_ramp(color_name)["deep"])
+	var raw: Dictionary = ThemeKit.BLOCK_RAMPS.get(color_name, ThemeKit.block_ramp(color_name))
+	return tone(raw["deep"])
 
 
 ## Xếp lại toàn bộ theo vùng bàn và đơn vị khung `cell`. `board` tính theo toạ độ cục bộ của khung.

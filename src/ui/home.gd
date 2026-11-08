@@ -28,8 +28,10 @@ const DESIGN_H := 1800.0
 ## Trục co của cụm mốc khi màn thấp.
 const PATH_X := 443.0
 ## Ray kẹo thẳng đứng (home_rail_straight.png 64x2008, duỗi từ "Progress line" 71:367 bằng tools/gen_home_rail.py) khi
-## cụm mốc không co: tâm ở PATH_X, từ trên mốc trên cùng chạy sau nút Chơi xuống thanh dưới.
+## cụm mốc không co: tâm ở PATH_X, từ trên mốc trên cùng chạy xuống nút Chơi. Khung vẫn dài 2008 cho sọc không méo;
+## shader của Rail cắt ray ở đỉnh nút (lấn RAIL_UNDER_PLAY vào sau viền nút), dưới nút không còn ray.
 const RAIL_RECT := Rect2(PATH_X - 32.0, 98, 64, 2008)
+const RAIL_UNDER_PLAY := 16.0
 ## Khoảng giữa mốc dưới cùng và nút Chơi (ref; Figma để 101).
 const PATH_GAP := 70.0
 ## fx 1 quanh mốc hiện tại: 518 quanh mốc 290 (khung Hard) ở mọi độ khó, như ref.
@@ -40,8 +42,15 @@ const RIGHT_X := 682.0
 const COL_TOP := 221.0
 const COL_STEP := 213.0
 const ITEM := Vector2(194, 176)
-## Nút Chơi (pill 387x165 trong btn_play 412x188 ở 243,1262).
-const PLAY_RECT := Rect2(256, 1274, 387, 165)
+## Nút Chơi (pill 387x165), tâm ở PATH_X cho thẳng ray và mốc (Figma để btn_play 412x188 ở 243,1262: lệch phải 6.5).
+const PLAY_RECT := Rect2(PATH_X - 193.5, 1274, 387, 165)
+## Chữ PLAY theo nút (px thiết kế). Mặt nút trên gờ 3D là y 8..145 của sprite 168, tâm ~75 trên nút 165.
+## Level thường: chữ giữa mặt nút; khung cao hơn cỡ tối thiểu của Label ở cỡ 102 (~140) nên Label không dãn xuống.
+const PLAY_LABEL_RECT := Rect2(0, 0, 387, 150)
+## Hard, Super Hard: HardTag ở trên, PLAY hạ xuống.
+const PLAY_LABEL_HARD_RECT := Rect2(0, 44, 387, 116)
+## Dải sáng quét dọc nút Chơi (UiMotion.SHINE): lượt đầu sau khi Home mở (s), qua hiệu ứng chuyển màn.
+const PLAY_SHINE_DELAY := 0.8
 const NAV_TOP := 1552.0
 ## Tab bên của thanh dưới (cao 146, đỉnh 1654): đáy của cột icon không chạm xuống đây.
 const NAV_SIDE_TOP := 1654.0
@@ -244,6 +253,8 @@ func _build() -> void:
 	# nút Chơi: chữ PLAY, trên đó là độ khó (Hard/Super Hard)
 	play_btn = %PlayButton
 	play_btn.pressed.connect(_on_play)
+	# shine.gdshader trên chính nút: dải sáng chỉ chạy trên viên thuốc, chữ ở trên không loé; nút tắt thì không loé.
+	UiMotion.attach(play_btn, UiMotion.SHINE, PLAY_SHINE_DELAY)
 	hard_tag = %HardTag
 	play_label = %PlayLabel
 	coming_soon_label = %ComingSoonLabel
@@ -309,6 +320,9 @@ func _layout_path(shift: float) -> void:
 	var origin := Vector2(PATH_X, top + maxf(avail - span, 0.0) * 0.5)
 	var rail_pos := origin + (RAIL_RECT.position - Vector2(PATH_X, top)) * f
 	_fb.put(_rail, Rect2(rail_pos, RAIL_RECT.size * f))
+	var rail_end := PLAY_RECT.position.y + shift + RAIL_UNDER_PLAY
+	(_rail.material as ShaderMaterial).set_shader_parameter("cut",
+		clampf((rail_end - rail_pos.y) / (RAIL_RECT.size.y * f), 0.0, 1.0))
 	var cur_idx := 2 if _path_mode == "first" else 1
 	for i in 3:
 		var px: float = float(slots[i][1]) * f
@@ -421,7 +435,7 @@ func refresh() -> void:
 	play_btn.modulate = Color(1, 1, 1, 0.7) if ended else Color.WHITE
 	hard_tag.visible = _tier != ""
 	hard_tag.text = tr("level_very_hard") if _tier == "very_hard" else (tr("level_hard") if _tier == "hard" else "")
-	_fb.move(play_label, Vector2(0, 44 if hard_tag.visible else 26))
+	_fb.resize(play_label, PLAY_LABEL_HARD_RECT if hard_tag.visible else PLAY_LABEL_RECT)
 
 	# quà
 	var daily: Dictionary = Game.daily_view()
@@ -431,8 +445,9 @@ func refresh() -> void:
 	# weekend sale: chỉ hiện khi sale bật và Shop đã mở
 	_sale_col.visible = Unlocks.is_open("shop", level) and Game.is_sale_active()
 
-	# challenge: khoá thì icon tối, có khoá và ghi level mở
+	# challenge: tắt (Config.FEATURES) thì ẩn hẳn; khoá thì icon tối, có khoá và ghi level mở
 	var ch: Dictionary = Game.challenge_view()
+	_challenge_col.visible = bool(ch.get("enabled", true))
 	var ch_open := bool(ch.get("open", false))
 	challenge_btn.disabled = not ch_open
 	challenge_btn.modulate = Color.WHITE if ch_open else Color(0.75, 0.75, 0.82)

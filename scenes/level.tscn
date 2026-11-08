@@ -110,9 +110,9 @@ PanelContainer/styles/panel = SubResource("StyleBoxFlat_0fmhk")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cr74b"]
 content_margin_left = 13.0
-content_margin_top = 3.0
+content_margin_top = 10.0
 content_margin_right = 13.0
-content_margin_bottom = 13.0
+content_margin_bottom = 6.0
 texture = ExtResource("5_pqd0y")
 texture_margin_left = 44.0
 texture_margin_top = 44.0
@@ -130,38 +130,6 @@ texture_margin_top = 20.0
 texture_margin_right = 22.0
 texture_margin_bottom = 22.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lqb7q"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ok3ci"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hv3ux"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j4eoh"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bhb1k"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tcyu4"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vmndo"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bo6tc"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7iqcu"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v4d4p"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pc0rw"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nj2gj"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_msn66"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xmwm8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jydfl"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u0n8q"]
-
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d5irf"]
 content_margin_left = 0.0
 content_margin_top = 0.0
@@ -169,32 +137,12 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 texture = ExtResource("16_gur6y")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ltwek"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vry8j"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_idnaj"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vwqyp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_smfc2"]
-
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s1acf"]
 content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 texture = ExtResource("16_gur6y")
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u5upv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_om2me"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iij8i"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4qdnu"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7kuto"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_k1glb"]
 content_margin_left = 0.0
@@ -285,7 +233,7 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_cr74b")
 [node name="MovesColumn" type="VBoxContainer" parent="Margin/Column/TopBar/TopRow/MovesChip" unique_id=1032963675]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = -36
+theme_override_constants/separation = -22
 alignment = 1
 
 [node name="MovesCaption" type="Label" parent="Margin/Column/TopBar/TopRow/MovesChip/MovesColumn" unique_id=1698368037]
@@ -362,11 +310,11 @@ theme_override_colors/icon_pressed_color = Color(0.82, 0.82, 0.82, 1)
 theme_override_colors/icon_hover_color = Color(1.08, 1.08, 1.08, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.82, 0.82, 0.82, 1)
 theme_override_colors/icon_disabled_color = Color(0.55, 0.55, 0.6, 0.9)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_lqb7q")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_ok3ci")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_hv3ux")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_j4eoh")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_bhb1k")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_50fbu")
 icon = ExtResource("7_wu01b")
 icon_alignment = 1
 expand_icon = true
@@ -381,11 +329,11 @@ theme_override_colors/icon_pressed_color = Color(0.82, 0.82, 0.82, 1)
 theme_override_colors/icon_hover_color = Color(1.08, 1.08, 1.08, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.82, 0.82, 0.82, 1)
 theme_override_colors/icon_disabled_color = Color(0.55, 0.55, 0.6, 0.9)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_tcyu4")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_vmndo")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_bo6tc")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_7iqcu")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_v4d4p")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_50fbu")
 icon = ExtResource("8_3ies3")
 icon_alignment = 1
 expand_icon = true
@@ -400,7 +348,7 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxEmpty_pc0rw")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_50fbu")
 
 [node name="PieceFrame" type="Control" parent="Margin/Column/TopBar/PieceRow/PieceChip" unique_id=1738201457]
 layout_mode = 2
@@ -503,42 +451,40 @@ theme_override_font_sizes/font_size = 32
 [node name="TutLabel" type="Label" parent="Margin/Column/BoardHolder" unique_id=1805660026]
 unique_name_in_owner = true
 layout_mode = 0
-anchor_right = 1.0
-offset_left = 48.0
-offset_top = 52.0
-offset_right = -48.0
-offset_bottom = 22.0
-theme_override_colors/font_color = Color(0.74509805, 0.7764706, 0.9372549, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 6
-theme_override_constants/shadow_outline_size = 6
+offset_left = 415.0
+offset_top = 103.0
+offset_right = 415.0
+offset_bottom = 103.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.15294118, 0.1882353, 0.41568628, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
 theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_idtip")
 horizontal_alignment = 1
-autowrap_mode = 3
+vertical_alignment = 1
 
 [node name="SmashLabel" type="Label" parent="Margin/Column/BoardHolder" unique_id=2010670540]
 unique_name_in_owner = true
 visible = false
 layout_mode = 0
-anchor_right = 1.0
-offset_left = 48.0
-offset_top = 52.0
-offset_right = -48.0
-offset_bottom = 22.0
-theme_override_colors/font_color = Color(1, 0.7882353, 0.2, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 6
-theme_override_constants/shadow_outline_size = 6
+offset_left = 415.0
+offset_top = 103.0
+offset_right = 415.0
+offset_bottom = 103.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.18039216, 0.41960785, 0.9019608, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
 theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_idtip")
 text = "Tap a block to smash it"
 horizontal_alignment = 1
-autowrap_mode = 3
+vertical_alignment = 1
 
 [node name="BoosterRow" type="HBoxContainer" parent="Margin/Column" unique_id=1332211153]
 custom_minimum_size = Vector2(0, 168)
@@ -560,11 +506,11 @@ theme_override_colors/icon_pressed_color = Color(0.82, 0.82, 0.82, 1)
 theme_override_colors/icon_hover_color = Color(1.08, 1.08, 1.08, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.82, 0.82, 0.82, 1)
 theme_override_colors/icon_disabled_color = Color(0.55, 0.55, 0.6, 0.9)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_nj2gj")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_msn66")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_xmwm8")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_jydfl")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_u0n8q")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_50fbu")
 icon = ExtResource("15_2e2fo")
 icon_alignment = 1
 expand_icon = true
@@ -661,11 +607,11 @@ theme_override_colors/icon_pressed_color = Color(0.82, 0.82, 0.82, 1)
 theme_override_colors/icon_hover_color = Color(1.08, 1.08, 1.08, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.82, 0.82, 0.82, 1)
 theme_override_colors/icon_disabled_color = Color(0.55, 0.55, 0.6, 0.9)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_ltwek")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_vry8j")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_idnaj")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_vwqyp")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_smfc2")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_50fbu")
 icon = ExtResource("18_asl66")
 icon_alignment = 1
 expand_icon = true
@@ -743,11 +689,11 @@ theme_override_colors/icon_pressed_color = Color(0.82, 0.82, 0.82, 1)
 theme_override_colors/icon_hover_color = Color(1.08, 1.08, 1.08, 1)
 theme_override_colors/icon_hover_pressed_color = Color(0.82, 0.82, 0.82, 1)
 theme_override_colors/icon_disabled_color = Color(0.55, 0.55, 0.6, 0.9)
-theme_override_styles/normal = SubResource("StyleBoxEmpty_u5upv")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_om2me")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_iij8i")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_4qdnu")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_7kuto")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_50fbu")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_50fbu")
 icon = ExtResource("19_2jdvr")
 icon_alignment = 1
 expand_icon = true

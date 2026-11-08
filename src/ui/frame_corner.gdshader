@@ -1,6 +1,6 @@
 shader_type canvas_item;
-// Ống góc của khung: một phần tư vành tròn hồng đỏ nối hai thanh, phần thẳng chui dưới đầu thanh.
-// Số đo lấy từ art/concepts/concept_candy_board_v5_stripe.png. Đơn vị là px, trừ `s` và `peak` tính theo nửa bề rộng ống.
+// Ống góc của khung: một phần tư vành tròn hồng phấn nối hai thanh, phần thẳng chui dưới đầu thanh.
+// Số đo lấy từ art/concepts/concept_candy_board_v5_stripe.png; màu theo nền (xem RAMP_* bên dưới). Đơn vị là px, trừ `s` và `peak` tính theo nửa bề rộng ống.
 
 uniform vec2 quad_px = vec2(1.0);
 uniform vec2 center_px = vec2(0.0);  // tâm cung, tính từ góc trên trái vùng vẽ
@@ -15,12 +15,13 @@ uniform float gloss_arc = 0.4;       // độ dài vệt trắng theo góc
 uniform float spread = 1.0;          // mặt cắt tối dần chậm hay nhanh quanh chỗ sáng nhất
 uniform float cell_px = 64.0;
 
-const vec3 RAMP_0 = vec3(0.98, 0.43, 0.6);    // tại chỗ sáng nhất
-const vec3 RAMP_1 = vec3(0.96, 0.31, 0.54);
-const vec3 RAMP_2 = vec3(0.905, 0.19, 0.48);
-const vec3 RAMP_3 = vec3(0.84, 0.12, 0.44);
-const vec3 RAMP_4 = vec3(0.73, 0.045, 0.38);
-const vec3 RIM = vec3(0.68, 0.06, 0.37);
+// Hồng phấn cùng sắc với nền và tấm bàn (ThemeKit.BOARD_BG E9CDD2), đậm hơn nền một chút để ống còn nổi khối.
+const vec3 RAMP_0 = vec3(0.976, 0.863, 0.89);   // F9DCE3, tại chỗ sáng nhất
+const vec3 RAMP_1 = vec3(0.949, 0.784, 0.824);  // F2C8D2
+const vec3 RAMP_2 = vec3(0.91, 0.702, 0.753);   // E8B3C0
+const vec3 RAMP_3 = vec3(0.855, 0.624, 0.682);  // DA9FAE
+const vec3 RAMP_4 = vec3(0.769, 0.533, 0.604);  // C4889A
+const vec3 RIM = vec3(0.71, 0.49, 0.557);       // B57D8E
 const float SHADOW_DY = 0.11;
 const float SHADOW_BLUR = 0.14;
 const float SHADOW_A = 0.32;

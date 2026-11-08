@@ -588,6 +588,35 @@
   },
   {
     "manifest": "images",
+    "name": "bg_shop",
+    "status": "used",
+    "tool": "mcp comfyui start_game_image (asset_type=background)",
+    "workflow": "image_qwen_image_2_1_t2i",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Vertical mobile game shop screen background: a seamless soft candy cane stripe pattern of wide diagonal stripes in pastel pink and light lilac, like sweet gift wrapping paper, with a subtle glossy sugar sheen. Small scattered rainbow sprinkles and tiny white sugar stars across the pattern, very sparse. A soft lighter glow in the center and a gentle darker purple vignette at the edges. Clean, simple and even. No text, no letters, no logo, no watermark, no characters, no objects, no UI elements.",
+    "style_prompt": "Clean casual mobile game background pattern, flat soft shading with a gentle glossy sheen, candy theme, palette (#F6B8D0 pink, #D9C6F5 lilac, #B48AE0 purple vignette), very low contrast, even and calm",
+    "seed": 3104,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": false,
+    "generated_size": [
+      896,
+      1920
+    ],
+    "prompt_id": "d10778e6-2562-41f7-b7a7-6ca496f88494",
+    "source": "art/images/bg_shop_stripes.png",
+    "source_sha256": "54b030974bcbe2dbd7c5c16f7fc6bbda4ffc06a8c3033a07b239a014debd3b30",
+    "file": "assets/bg/bg_shop.png",
+    "file_sha256": "c5371dfad96d87e22c1047891227603fcd844a98e7a7cf20e51c3213db10d30e",
+    "file_size": [
+      886,
+      1920
+    ],
+    "note": "Nen man Shop (scenes/shop.tscn node Background, keo gian phu kin man, khong self_modulate); thay dai xanh Figma assets/ui/figma/bg_shop.png. Cat giua 896 -> 886, bo alpha. Chon phuong an 4 (soc keo) trong 5 phuong an art/concepts/bg_shop_v2/ (so sanh: compare.png), 2026-11-08. Nen truoc: art/images/bg_shop_candy.png (gradient hong tim, keo mo, seed 2201). Phuong an khac: art/concepts/concept_bg_shop_v1_b.png (xu keo mo)"
+  },
+  {
+    "manifest": "images",
     "name": "art_win",
     "status": "used",
     "tool": "mcp comfyui start_game_image (asset_type=ui)",
@@ -2706,5 +2735,380 @@
       "steps": "tools/process_sfx.gd --max=1.0: trim silence, cap length, fade, normalize peak -3 dBFS"
     },
     "note": "2026-11-04: chuong nhat manh, phat luc icon crystal roi cho bat ra de bay; len dan, dinh o 0,5 giay roi dung luc icon cham chip. Chon seed 7204 trong 4 ban: 7202, 7203 (category SFX, 2 giay) keo dai nhu nhac nen; 7205 bat dau cham 50 ms"
+  },
+  {
+    "manifest": "audio",
+    "id": "sfx_shatter",
+    "tool": "comfyui MCP start_game_audio/collect_game_audio",
+    "workflow": "audio_stable_audio_3_medium_base (Stable Audio 3 Medium Base)",
+    "category": "SFX",
+    "seconds_generated": 2,
+    "seed": 7307,
+    "steps": 50,
+    "use_reprompt": false,
+    "prompt": "satisfying ASMR crunch of a hard candy being crushed and ground, crisp crackly sugar crumble then small candy bits softly pattering down, dry close microphone, short, no music, no reverb",
+    "negative_prompt": "harsh, loud, distorted, clipping, music, speech, explosion, glass shatter, ringing tone, whistle, hum, beep, sine tone, metal, machine, motor, drill, footsteps, long tail",
+    "prompt_id": "34c96c0a-f87e-4def-afd0-afa08cecd493",
+    "source": "art/audio/sfx_shatter.mp3",
+    "source_format": "mp3",
+    "source_sha256": "4d5ddfd28d0c890315f610832fcca64ff0d834fcdf0939d60f5661ec501fe1f5",
+    "output": "assets/sfx/sfx_shatter.wav",
+    "output_sha256": "7bb3fba2e3cca8594045b6d9d78b04829ed5742b5ca323d739c14551ff6165f4",
+    "output_bytes": 61782,
+    "processing": {
+      "format": "wav mono 44.1kHz 16-bit",
+      "seconds": 0.7,
+      "max_seconds": 0.7,
+      "start_seconds": 0.25,
+      "lowpass_hz": 3000,
+      "soften_ms": 3,
+      "peak_db": -3.0,
+      "rms_db": -22.61,
+      "steps": "tools/process_sfx.gd --start=0.25 --max=0.7 --lowpass=3000 --soften=3: drop the stray click and gap before 0.3 s, low-pass 3 kHz 12 dB/octave, soften each crackle's attack over 3 ms, trim silence, cap length, fade, normalize peak -3 dBFS"
+    },
+    "note": "2026-11-08: khoi bi nghien qua thanh. Vun keo cung gion, day trong 0,4 giay dau roi lach tach thua dan; dinh 100 ms -15,1 LUFS (sfx_exit -14,3). Chon seed 7307 trong 8 ban: 7301, 7302 (prompt 'quick crunchy grinding ... tinkling candy bits') co vach rit 2,5 kHz noi 23-28 dB va cat dinh 150-230 mau; 7303, 7304 qua choi (trong tam pho 11-12 kHz); 7305, 7306 (prompt 'crunchy sugar candy crumbling ... rock candy') xi nhu snack, nang >8 kHz, cat dinh 280-400 mau; 7308 thua va mong. Ban 7307 doan 0,30-1,00 giay: khong vach rit trong 0,6-8 kHz, 300 Hz-2 kHz / 2-6 kHz / >8 kHz = -5,0 / -4,5 / -6,4 dB, hut 1,1 dB qua loa dien thoai, 24 mau cat dinh. Cung ngay, nguoi dung nghe thay gion qua nen lam em tu cung ban goc bang --lowpass=3000 --soften=3: tam pho 5,0 -> 1,8 kHz, nang luong tren 4 kHz khoang 40% -> 3,5%, do vot dinh trong tung doan 5 ms 10,2 -> 8,0 dB (sfx_exit 7,4); dinh 100 ms -15,4 -> -17,4 LUFS (sfx_exit -14,8, cung cach do), hut them 0,1 dB qua loa dien thoai"
+  },
+  {
+    "manifest": "images",
+    "name": "candy_drop_00",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = dong keo cat tu assets/ui/loading_bg.png)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Use <image1> only as the style and material reference: glossy translucent hard candy, soft inner glow, big soft white highlights on the upper left, rich saturated candy colors, smooth rounded edges, polished 3D cartoon render. Draw ONE new candy only: a round flat peppermint candy disc with a red and white pinwheel swirl, like the red-white swirl candy on the left of <image1>. Front view, slightly tilted, the whole candy fully visible and centered with generous padding on every side, plain pure white background. No other candies, no scenery, no wrapper, no text, no ground shadow.",
+    "style_prompt": "",
+    "seed": 3101,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "9dbafd17-a971-49c3-88a8-74ef71ca4d72",
+    "source": "art/images/candy_drop/candy_drop_00.png",
+    "source_sha256": "3de52bafff92d9bec5edb400b3c800a6cc493a4b121487805ff1b147f4749646",
+    "reference": "art/images/candy_drop/ref_loading_candies.png (cat (120,820)-(1050,1360) cua assets/ui/loading_bg.png)",
+    "file": "assets/ui/candy_drop/candy_drop_00.png",
+    "file_sha256": "5d634551aa0efc7f9f475afc817f0b9a0a737e6b5c634899fc10beea81fda74b",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Man chuyen canh keo roi (src/ui/candy_curtain.gd); tools/fit_icon.gd --size=256 --margin=0.02 --solid=200"
+  },
+  {
+    "manifest": "images",
+    "name": "candy_drop_01",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = dong keo cat tu assets/ui/loading_bg.png)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Use <image1> only as the style and material reference: glossy translucent hard candy, soft inner glow, big soft white highlights on the upper left, rich saturated candy colors, smooth rounded edges, polished 3D cartoon render. Draw ONE new candy only: a round flat peppermint candy disc with a sky blue and white pinwheel swirl, like the blue-white swirl candy on the right of <image1>. Front view, slightly tilted, the whole candy fully visible and centered with generous padding on every side, plain pure white background. No other candies, no scenery, no wrapper, no text, no ground shadow.",
+    "style_prompt": "",
+    "seed": 3102,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "e16741bd-f52e-4da8-a209-4896c1774c6e",
+    "source": "art/images/candy_drop/candy_drop_01.png",
+    "source_sha256": "490ea3d0fcdefff9af342d20fda0da2e953a664f755bc247fdb21025967918d1",
+    "reference": "art/images/candy_drop/ref_loading_candies.png (cat (120,820)-(1050,1360) cua assets/ui/loading_bg.png)",
+    "file": "assets/ui/candy_drop/candy_drop_01.png",
+    "file_sha256": "ae570a75476765ad35352d446955fb56eb36f33c52cb7aa7796d02ef23dbc83a",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Man chuyen canh keo roi (src/ui/candy_curtain.gd); tools/fit_icon.gd --size=256 --margin=0.02 --solid=200"
+  },
+  {
+    "manifest": "images",
+    "name": "candy_drop_02",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = dong keo cat tu assets/ui/loading_bg.png)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Use <image1> only as the style and material reference: glossy translucent hard candy, soft inner glow, big soft white highlights on the upper left, rich saturated candy colors, smooth rounded edges, polished 3D cartoon render. Draw ONE new candy only: a round thick lollipop head with an orange and cream spiral swirl, like the orange swirl candy at the bottom of <image1>, without any stick. Front view, slightly tilted, the whole candy fully visible and centered with generous padding on every side, plain pure white background. No other candies, no scenery, no wrapper, no text, no ground shadow.",
+    "style_prompt": "",
+    "seed": 3103,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "85c58444-ceaf-435d-ace4-b4f3d88783e3",
+    "source": "art/images/candy_drop/candy_drop_02.png",
+    "source_sha256": "410092ab9a14e331e2b3336cb726836c6ed5eed2df836dab00fc335300fa9a7a",
+    "reference": "art/images/candy_drop/ref_loading_candies.png (cat (120,820)-(1050,1360) cua assets/ui/loading_bg.png)",
+    "file": "assets/ui/candy_drop/candy_drop_02.png",
+    "file_sha256": "706978adb1f1bf4953a7bf03cf4409a748bdd13df126ca4169140fe411a39dbd",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Man chuyen canh keo roi (src/ui/candy_curtain.gd); tools/fit_icon.gd --size=256 --margin=0.02 --solid=200"
+  },
+  {
+    "manifest": "images",
+    "name": "candy_drop_03",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = dong keo cat tu assets/ui/loading_bg.png)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Use <image1> only as the style and material reference: glossy translucent hard candy, soft inner glow, big soft white highlights on the upper left, rich saturated candy colors, smooth rounded edges, polished 3D cartoon render. Draw ONE new candy only: a plump bubblegum pink heart-shaped jelly candy, like the pink heart at the bottom left of <image1>. Front view, slightly tilted, the whole candy fully visible and centered with generous padding on every side, plain pure white background. No other candies, no scenery, no wrapper, no text, no ground shadow.",
+    "style_prompt": "",
+    "seed": 3114,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "6a2d19ed-de86-4e8f-8b1d-df088950659a",
+    "source": "art/images/candy_drop/candy_drop_03.png",
+    "source_sha256": "0744419376123e61e71e53e87f8f36e43242e075a0882d9553bc9d56c1eb2de5",
+    "reference": "art/images/candy_drop/ref_loading_candies.png (cat (120,820)-(1050,1360) cua assets/ui/loading_bg.png)",
+    "file": "assets/ui/candy_drop/candy_drop_03.png",
+    "file_sha256": "20f9c481a8d6932f3387af0243e4242f9fd4dfb032cd42abd86d361e9da7e1c2",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Man chuyen canh keo roi (src/ui/candy_curtain.gd); tools/fit_icon.gd --size=256 --margin=0.02 --solid=200. Lan dau (seed 3104) mat khoi hang doi ComfyUI, gui lai seed 3114"
+  },
+  {
+    "manifest": "images",
+    "name": "candy_drop_04",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = dong keo cat tu assets/ui/loading_bg.png)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Use <image1> only as the style and material reference: glossy translucent hard candy, soft inner glow, big soft white highlights on the upper left, rich saturated candy colors, smooth rounded edges, polished 3D cartoon render. Draw ONE new candy only: a plump lemon yellow five-pointed star jelly candy with soft rounded points, like the yellow star in <image1>. Front view, slightly tilted, the whole candy fully visible and centered with generous padding on every side, plain pure white background. No other candies, no scenery, no wrapper, no text, no ground shadow.",
+    "style_prompt": "",
+    "seed": 3105,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "54926608-a01f-4df2-aa83-cdec2a63b2f8",
+    "source": "art/images/candy_drop/candy_drop_04.png",
+    "source_sha256": "62e61cdb3bf8f01d4cd8160aea44d706cc790dc5b024e632c6bffdb0d1b74d8c",
+    "reference": "art/images/candy_drop/ref_loading_candies.png (cat (120,820)-(1050,1360) cua assets/ui/loading_bg.png)",
+    "file": "assets/ui/candy_drop/candy_drop_04.png",
+    "file_sha256": "8fe55ba2e2919a1d0cdc64f71aee94081ea8b12d5b619f51c46c1eef6edd1e4e",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Man chuyen canh keo roi (src/ui/candy_curtain.gd); tools/fit_icon.gd --size=256 --margin=0.02 --solid=200 --floor=8. fit_icon them --floor=8: mot pixel alpha 5 o goc duoi phai lam khung cat qua rong"
+  },
+  {
+    "manifest": "images",
+    "name": "candy_drop_05",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = dong keo cat tu assets/ui/loading_bg.png)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Use <image1> only as the style and material reference: glossy translucent hard candy, soft inner glow, big soft white highlights on the upper left, rich saturated candy colors, smooth rounded edges, polished 3D cartoon render. Draw ONE new candy only: a plump lime green gumdrop jelly candy with a rounded dome top and wide base, like the green gumdrop at the bottom of <image1>. Front view, slightly tilted, the whole candy fully visible and centered with generous padding on every side, plain pure white background. No other candies, no scenery, no wrapper, no text, no ground shadow.",
+    "style_prompt": "",
+    "seed": 3106,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "ae666d7b-7872-456c-8015-937f7e18f941",
+    "source": "art/images/candy_drop/candy_drop_05.png",
+    "source_sha256": "23740fe5774d518286e19ce6a8c25b528a94376123be33a705a467df3add5801",
+    "reference": "art/images/candy_drop/ref_loading_candies.png (cat (120,820)-(1050,1360) cua assets/ui/loading_bg.png)",
+    "file": "assets/ui/candy_drop/candy_drop_05.png",
+    "file_sha256": "cead7f914d4642df924f34dd2a630d9d20280bad784eafdf0e847d5255a22741",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Man chuyen canh keo roi (src/ui/candy_curtain.gd); tools/fit_icon.gd --size=256 --margin=0.02 --solid=200"
+  },
+  {
+    "manifest": "images",
+    "name": "candy_drop_06",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = dong keo cat tu assets/ui/loading_bg.png)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Use <image1> only as the style and material reference: glossy translucent hard candy, soft inner glow, big soft white highlights on the upper left, rich saturated candy colors, smooth rounded edges, polished 3D cartoon render. Draw ONE new candy only: a single chunky square violet purple hard candy block with soft rounded corners and faint diagonal lighter stripes, like one square cell of the purple candy block in <image1>. Front view, slightly tilted, the whole candy fully visible and centered with generous padding on every side, plain pure white background. No other candies, no scenery, no wrapper, no text, no ground shadow.",
+    "style_prompt": "",
+    "seed": 3107,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "442e09bd-9c4e-4d94-8a5c-1550e2c2a223",
+    "source": "art/images/candy_drop/candy_drop_06.png",
+    "source_sha256": "d55074733a97649265ffa3272a41452c6694c254b2cf8c2ffe0c61c75b76f748",
+    "reference": "art/images/candy_drop/ref_loading_candies.png (cat (120,820)-(1050,1360) cua assets/ui/loading_bg.png)",
+    "file": "assets/ui/candy_drop/candy_drop_06.png",
+    "file_sha256": "f78f805e237b2c5c72bbcf369db7edc16e4948d8885dba5efb9e28fb5d4d27e6",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Man chuyen canh keo roi (src/ui/candy_curtain.gd); tools/fit_icon.gd --size=256 --margin=0.02 --solid=200"
+  },
+  {
+    "manifest": "images",
+    "name": "candy_drop_07",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (ref = dong keo cat tu assets/ui/loading_bg.png)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Use <image1> only as the style and material reference: glossy translucent hard candy, soft inner glow, big soft white highlights on the upper left, rich saturated candy colors, smooth rounded edges, polished 3D cartoon render. Draw ONE new candy only: a single chunky square sky blue hard candy block with soft rounded corners and faint diagonal lighter stripes, like one square cell of the blue candy block in <image1>. Front view, slightly tilted, the whole candy fully visible and centered with generous padding on every side, plain pure white background. No other candies, no scenery, no wrapper, no text, no ground shadow.",
+    "style_prompt": "",
+    "seed": 3108,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "c9c6a74b-34c5-4a8e-a4ef-513fb061c48f",
+    "source": "art/images/candy_drop/candy_drop_07.png",
+    "source_sha256": "57cdb4c760538cb5ad509d93c5a2dff5c0d5b8c0d23a453662a6b62882380d6c",
+    "reference": "art/images/candy_drop/ref_loading_candies.png (cat (120,820)-(1050,1360) cua assets/ui/loading_bg.png)",
+    "file": "assets/ui/candy_drop/candy_drop_07.png",
+    "file_sha256": "f869c501450d6218d3c5474d304df21e3958a50c08a4f870df5024c62278b659",
+    "file_size": [
+      256,
+      256
+    ],
+    "note": "Man chuyen canh keo roi (src/ui/candy_curtain.gd); tools/fit_icon.gd --size=256 --margin=0.02 --solid=200"
+  },
+  {
+    "manifest": "images",
+    "name": "gift_curtain_box",
+    "status": "used",
+    "tool": "mcp comfyui start_game_image (asset_type=ui)",
+    "workflow": "image_qwen_image_2_1_t2i",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Full-frame straight-on front view of a giant closed gift box, so close that the box front fills the entire image edge to edge, flat orthographic front face, no perspective, no background visible. The box has a VERY TALL LID: the lid covers the whole upper half of the image, from the top edge down to just below the middle. The lid is glossy pastel pink candy material decorated with scattered small white polka dots, smooth gradient from light pink #fbd3df at the top to #f6a9cf lower down. The lid ends in a thick rounded lip band, about 8% of the image height, running perfectly straight and horizontal across the full width, its bottom edge at 56% of the image height; the lip is a deeper pink #ef8fbf with a bright white glossy highlight line along its top. Below the lip is the box BODY, glossy pastel lavender purple candy material with scattered small white polka dots, gradient from #e0c1f0 just under the lid to #c9abf1 at the bottom edge, slightly shaded just under the lip. A wide glossy satin ribbon, white with a soft pink sheen, runs perfectly vertically down the exact horizontal center of both lid and body from the top edge to the bottom edge, about 18% of the image width wide, with crisp straight edges. No bow, no knot, no text, no letters, no logo, no characters.",
+    "style_prompt": "glossy chunky 3D candy materials, soft studio lighting, casual mobile puzzle game art, clean smooth shapes, pastel pink and lavender palette, perfectly symmetric composition",
+    "negative_prompt": "text, letters, words, logo, watermark, bow, knot, background, room, floor, table, perspective, box corners, side faces, characters, hands, clutter, dark colors, short lid",
+    "seed": 7321,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": false,
+    "generated_size": [
+      896,
+      1920
+    ],
+    "prompt_id": "b59dd759-12cb-4217-b774-99862d50ad45",
+    "source": "art/images/gift_curtain/box_c_tall_s7321.png",
+    "source_sha256": "ed115034491877b29b44d2947fa52df8f580111efd609a2b169f7e54376431c8",
+    "files": [
+      {
+        "file": "assets/ui/gift_curtain/gift_lid.png",
+        "file_sha256": "ea37343a6a8dbaf3f246eb3cd8d3681790ccad8d8676b4993ebbef4303dcd578",
+        "file_size": [
+          864,
+          792
+        ]
+      },
+      {
+        "file": "assets/ui/gift_curtain/gift_body.png",
+        "file_sha256": "632f0cb882074788f4bdce8807d48773b3ac00387e88f500ef8aca03632b051e",
+        "file_size": [
+          864,
+          1014
+        ]
+      }
+    ],
+    "note": "2026-11-08: man chuyen canh nap hop qua Road Trip (src/ui/gift_curtain.gd). Cat bang python3 tools/cut_gift_curtain.py: x 16..880, nap y 56..848, than y 866..1880 (bo vien trang, goc bo, dai bong duoi mep nap). Ban bo: box_a_s7301 (tron) va box_b_dots_s7302 (cham bi) nap thap, mep nap o 34% chieu cao, khong du cho logo; box_d_tall_edit_s7322 (edit_game_image tu box_b) mat ruy bang tren nap."
+  },
+  {
+    "manifest": "images",
+    "name": "gift_curtain_bow",
+    "status": "used",
+    "tool": "mcp comfyui start_game_image (asset_type=icon, transparent_background)",
+    "workflow": "image_qwen_image_2_1_t2i + image_qwen_image_2_1_background_removal",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "One big glossy satin gift bow seen straight from the front: two large rounded puffy loops spreading left and right, a round chunky knot in the center, and two short ribbon tails hanging down below the knot with notched ends. Ribbon is white satin with a soft pink sheen and pale pink shading in the folds, bright white glossy highlights. Symmetric, centered, generous empty padding on all sides. Isolated object only, no box, no text.",
+    "style_prompt": "glossy chunky 3D candy materials, soft studio lighting, casual mobile puzzle game art, clean smooth shapes, pastel pink palette",
+    "negative_prompt": "text, letters, logo, watermark, box, gift box, background scene, multiple bows, characters, hands, dark colors",
+    "seed": 7311,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      1280,
+      1024
+    ],
+    "prompt_id": "57d7c114-acde-41f9-9150-967e92be1dd5",
+    "source": "art/images/gift_curtain/bow_s7311.png",
+    "source_sha256": "bdb1d3d82198dbab32763dcb6cc2dd0764514e59bcab35c26eb0816be693cd2a",
+    "file": "assets/ui/gift_curtain/gift_bow.png",
+    "file_sha256": "2871210cd55edc409695faf28f5fec691f5d49330d2cab323768d17e86821024",
+    "file_size": [
+      560,
+      434
+    ],
+    "note": "2026-11-08: no tren mep nap cua man chuyen canh nap hop qua Road Trip; tools/fit_icon.gd --size=560 --margin=0.02 --keep-aspect"
+  },
+  {
+    "manifest": "images",
+    "name": "art_chain_offer",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (xoa booster cu tren ic_EndlessTreasure) + tools/compose_chain_offer_art.py",
+    "workflow": "image_qwen_image_2_1_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Remove the yellow up-arrow icon and the dark blue square pad under it from the front of the treasure chest. Replace that spot with the plain orange-gold front panel of the chest and its golden vertical frame band, continuing the surrounding chest shapes, shading and lighting seamlessly, with the gold coins of the pile above it unchanged. Keep everything else pixel-identical: the open chest, the lid, all gold coins, the flying coins, the glow, the camera, framing, size, position, colors and the plain white background.",
+    "negative_prompt": "arrow, blue pad, icon, button, new objects, text, watermark, changed composition, cropped",
+    "style_prompt": "",
+    "seed": 777,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": false,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "7843fbcf-ccc7-499a-b29e-3fdb9060db49",
+    "source": "art/images/chain_offer_erased_ai.png",
+    "source_sha256": "2159c9c14d6476376916c0c39c35e1daa35ee8c2c65ef6ae6b2385e980834d42",
+    "reference": "assets/ui/cc/ic_EndlessTreasure.png",
+    "file": "assets/ui/art_chain_offer.png",
+    "file_sha256": "2ac3b72fb3e34ae33d4a49247da1853130645a27ed7a4d08156f4992fa0e5c4f",
+    "file_size": [
+      512,
+      512
+    ],
+    "note": "2026-11-08: anh tieu de popup Chain Offer. Hai luot edit tren ic_EndlessTreasure (lot nen trang, phong 1024): luot 1 seed 1234 (prompt xoa nam cham, mui ten, the khoi hong; prompt_id b2fa237a-71ba-4335-9b0b-b32a4b15b344) xoa duoc nam cham va the khoi, con mui ten; luot 2 (o tren) chay tren ket qua luot 1. tools/compose_chain_offer_art.py giu anh goc ngoai vung 3 booster cu, lay phan AI ve lai trong vung do, dung lai quang sang trang mo, roi dat booster_hint, booster_move, booster_smash. Chay lai script khi doi icon booster."
   }
 ]

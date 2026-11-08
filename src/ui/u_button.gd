@@ -11,8 +11,14 @@ const MIN_HIT := 96.0
 
 ## Button being held, so a ScrollRect drag can cancel it.
 static var active: Button = null
+## The empty box every state of every UButton draws (UnityUI.empty_box with default margins): shared, never edited.
+static var empty_style := StyleBoxEmpty.new()
 
 var image: Control = null
+## The art is drawn art_scale times its prefab size; the touch target is hit_scale times the prefab one
+## (UnityUI._grow_close sets both on the close X).
+var art_scale := 1.0
+var hit_scale := 1.0
 var tint_target: CanvasItem = null
 ## ColorTint colors: normal, highlighted, pressed, disabled (already multiplied by colorMultiplier).
 @export var tint_colors: Array[Color] = [Color.WHITE, Color("f5f5f5"), Color("c8c8c8"), Color(0.784, 0.784, 0.784, 0.5)]
@@ -42,7 +48,7 @@ func _init() -> void:
 	flat = true
 	focus_mode = Control.FOCUS_NONE
 	for st in ["normal", "hover", "pressed", "disabled", "focus", "hover_pressed", "normal_mirrored", "hover_mirrored", "pressed_mirrored", "disabled_mirrored", "hover_pressed_mirrored"]:
-		add_theme_stylebox_override(st, StyleBoxEmpty.new())
+		add_theme_stylebox_override(st, empty_style)
 
 
 func _ready() -> void:
@@ -146,19 +152,21 @@ func _color_to(target: CanvasItem, c: Color, dur: float) -> void:
 	create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT).tween_property(target, "self_modulate", c, dur)
 
 
-## Art keeps the prefab size; the hit area grows to MIN_HIT screen px around its center.
+## Art keeps the prefab size; the hit area grows to MIN_HIT screen px around its center (times hit_scale).
 func _has_point(point: Vector2) -> bool:
 	return hit_rect().has_point(point)
 
 
-## Hit rect in local units.
+## Hit rect in local units: the prefab art (size / art_scale) grown to MIN_HIT, times hit_scale, around the center.
 func hit_rect() -> Rect2:
 	var r := Rect2(Vector2.ZERO, size)
 	var px := _px_per_unit()
 	if px.x <= 0.0 or px.y <= 0.0:
 		return r
-	var gx := maxf(0.0, (MIN_HIT / px.x - r.size.x) * 0.5)
-	var gy := maxf(0.0, (MIN_HIT / px.y - r.size.y) * 0.5)
+	var base := r.size / art_scale
+	var want := Vector2(maxf(base.x, MIN_HIT / px.x), maxf(base.y, MIN_HIT / px.y)) * hit_scale
+	var gx := maxf(0.0, (want.x - r.size.x) * 0.5)
+	var gy := maxf(0.0, (want.y - r.size.y) * 0.5)
 	return r.grow_individual(gx, gy, gx, gy)
 
 

@@ -31,7 +31,7 @@ Bảng này chỉ ghi chỗ khác, không phải danh sách việc phải làm. 
 | Vật cản | Bom đếm ngược, chỉ ở level Special | Không có bom. Có 5 vật cản game gốc không có: thùng sắt (L14), pudding (L30), xích (L40), sương mù (L70), cổng nhịp (L90) |
 | Màu và cạnh bàn | Bộ MoreColor có 12 màu, mỗi cạnh nhiều đoạn màu | 4 màu, mỗi cạnh một cổng liền. Road Trip cũng đổi màu khối theo hướng |
 | Lưới | 20×28, 28×36, 32×32 | Tối đa 14×18 (Road Trip cao tới 24); cỡ ô đổi theo hình của level |
-| Khối | Khối đặc, chia 4 cánh kiểu chong chóng | Polyomino bất kỳ; từ L14 xếp theo 21 hình vẽ tay |
+| Khối | Khối đặc, chia 4 cánh kiểu chong chóng | Polyomino 1–7 ô (khoảng 3 ô mỗi khối); từ L5 xếp theo 27 hình vẽ tay, cắt theo kiểu đối xứng, hình học hoặc vùng vẽ |
 | Khen khi chơi | Lời khen combo (Good … Unbelievable) | Không có combo; chỉ vỗ tay khi nghĩ ≥ 8 giây rồi đi đúng |
 | Thẻ thắng L1–9 | Bỏ qua | Luôn hiện |
 
@@ -65,7 +65,7 @@ Bảng tính "số level để đủ tiền" dùng thưởng một level chơi h
 
 | Mục | Game gốc | Candy Away |
 |---|---|---|
-| Số level | 6.000 level thường + 6 bộ biến thể; hết level thì hiện "Coming soon" | 100 level đóng gói; sau L100 lặp lại L51–100 |
+| Số level | 6.000 level thường + 6 bộ biến thể; hết level thì hiện "Coming soon" | 500 level đóng gói (từ 2026-11-08, số khối, số lượt dọn bàn và tag bám L1–500 của game tham khảo); sau L500 lặp lại L51–500 |
 | Màu theo level | 1 màu ở L1–2, đủ 4 màu từ L5 | 2 màu ở L1, đủ 4 màu từ L4 |
 | Level 1 | 5 khối, cùng hướng lên, 10 bước | 4 khối, 2 màu, 9 MOVES |
 | Số khối trung bình | L1–10: 5,9 · L11–20: 16,1 · L21–32: 23,1 · L33–50: 33,8 · L51–100: 44,9 | L1–10: 13,4 · L11–20: **38,2** · L21–32: **52,1** · L33–50: 54,7 · L51–100: 62,8 (tối đa 78) |

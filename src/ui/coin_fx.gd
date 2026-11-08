@@ -1,8 +1,9 @@
 extends Control
-## Gold MOVES thừa trên thẻ thắng: đồng gold nở ra ở chip lượt trên HUD, vừa lật vừa bay vồng, kéo vệt vàng và bụi sao,
-## rơi vào ô gold của thẻ. Mỗi đồng mang một phần số lượt và một phần gold: rời chip thì gọi `on_launch(lượt)`, chạm ô thì
-## loé sáng, nổ sao và gọi `on_land(gold, last)`; đồng cuối kèm loé lớn và hai vòng sóng. Nằm trên lớp phủ (`top_level`,
-## toạ độ canvas), không bắt chạm, tự xoá khi xong. Bên gọi muốn bỏ qua thì tự cộng nốt phần còn lại rồi queue_free().
+## Đồng gold bay trên thẻ thắng: gold MOVES thừa từ chip lượt trên HUD vào ô gold của thẻ, và gold x2 từ ô gold của thẻ
+## lên chip gold của thanh trên. Đồng nở ra ở nguồn, vừa lật vừa bay vồng, kéo vệt vàng và bụi sao, rơi vào đích. Mỗi đồng
+## mang một phần số lượt và một phần gold: rời nguồn thì gọi `on_launch(lượt)`, chạm đích thì loé sáng, nổ sao và gọi
+## `on_land(gold, last)`; đồng cuối kèm loé lớn và hai vòng sóng. Nằm trên lớp phủ (`top_level`, toạ độ canvas), không
+## bắt chạm, tự xoá khi xong. Bên gọi muốn bỏ qua thì tự cộng nốt phần còn lại rồi queue_free().
 
 const BoardFx := preload("res://src/ui/board_fx.gd")
 
@@ -51,8 +52,9 @@ func _init() -> void:
 	add_child(_solid)
 
 
-## `from` là chip lượt, `to` là icon gold của thẻ, `tex` là hình đồng gold (null thì vẽ đồng tròn).
-## `moves` lượt và `gold` gold chia đều cho tối đa MAX_COINS đồng. Gọi sau khi đã add_child.
+## `from` là nguồn (chip lượt, hoặc icon gold của thẻ), `to` là đích (icon gold của thẻ, hoặc của thanh trên), `tex` là
+## hình đồng gold (null thì vẽ đồng tròn). `moves` lượt và `gold` gold chia đều cho tối đa MAX_COINS đồng (không gắn với
+## lượt thì truyền MAX_COINS làm `moves`). Cỡ đồng theo icon đích. Gọi sau khi đã add_child.
 func start(from: Control, to: Control, tex: Texture2D, moves: int, gold: int, launch: Callable = Callable(),
 		land: Callable = Callable()) -> void:
 	on_launch = launch

@@ -8,14 +8,6 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0mk0g"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_32oyi"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kb1ur"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ocvp1"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m1ujc"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6rpkh"]
 bg_color = Color(1, 0.98039216, 0.9411765, 1)
 border_width_left = 2
@@ -28,16 +20,6 @@ corner_radius_top_right = 36
 corner_radius_bottom_right = 36
 corner_radius_bottom_left = 36
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b86hn"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m5u65"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sqjod"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k5kdx"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f7fut"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_40im1"]
 bg_color = Color(1, 0.98039216, 0.9411765, 1)
 border_width_left = 2
@@ -49,26 +31,6 @@ corner_radius_top_left = 36
 corner_radius_top_right = 36
 corner_radius_bottom_right = 36
 corner_radius_bottom_left = 36
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6q4gn"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yeeyn"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2sx1t"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ey8b"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sgcba"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_73wwe"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2na76"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8y6jo"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7gyvj"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xc7qd"]
 
 [node name="HubTop" type="Control" unique_id=727733372]
 anchors_preset = 0
@@ -85,10 +47,10 @@ offset_right = 135.0
 offset_bottom = 124.0
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_0mk0g")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_32oyi")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_kb1ur")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_ocvp1")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_m1ujc")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0mk0g")
 flat = true
 metadata/fb_rect = Rect2(11, 0, 124, 124)
 
@@ -182,11 +144,11 @@ offset_top = -9.0
 offset_right = 272.0
 offset_bottom = 113.0
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_b86hn")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_m5u65")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_sqjod")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_k5kdx")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_f7fut")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0mk0g")
 flat = true
 metadata/fb_rect = Rect2(0, -9, 272, 122)
 
@@ -261,11 +223,11 @@ offset_top = -9.0
 offset_right = 272.0
 offset_bottom = 113.0
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_6q4gn")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_yeeyn")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_2sx1t")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_5ey8b")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_sgcba")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0mk0g")
 flat = true
 metadata/fb_rect = Rect2(0, -9, 272, 122)
 
@@ -277,11 +239,11 @@ offset_top = 3.0
 offset_right = 898.0
 offset_bottom = 121.0
 focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_73wwe")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_2na76")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_8y6jo")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_7gyvj")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_xc7qd")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_0mk0g")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0mk0g")
 flat = true
 metadata/fb_rect = Rect2(780, 3, 118, 118)
 

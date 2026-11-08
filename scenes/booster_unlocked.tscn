@@ -40,12 +40,6 @@ shader_parameter/underlay_edge = 0.33516482812500004
 shader_parameter/underlay_offset = Vector2(0, 0)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iaefw"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b1ri6"]
 shader = ExtResource("4_vq253")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -58,33 +52,7 @@ shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.1445)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3wner"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vjtq2"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i8v6e"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8e6jg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d6ubs"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j5vdl"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rhk47"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_262p7"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kepdr"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tpm3m"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t4iou"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_doch7"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
 shader = ExtResource("4_vq253")
@@ -102,12 +70,6 @@ shader_parameter/px_range = 14.0
 base_font = ExtResource("5_s4ekx")
 spacing_glyph = -2
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aq6hs"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iqna6"]
 shader = ExtResource("4_vq253")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -124,40 +86,6 @@ shader_parameter/px_range = 14.0
 base_font = ExtResource("5_s4ekx")
 spacing_glyph = -1
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2rp87"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d0vce"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_83pv0"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3h8l8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pcj8t"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_046rc"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_re0g1"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t0x5h"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ej5d0"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_caryg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0oawo"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aodcd"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4f1m6"]
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
 shader = ExtResource("4_vq253")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -170,12 +98,6 @@ shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nr2sf"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o2uxg"]
 shader = ExtResource("4_vq253")
 shader_parameter/face_color = Color(1, 1, 1, 1)
@@ -187,12 +109,6 @@ shader_parameter/underlay_on = false
 shader_parameter/underlay_edge = 0.29107142087500004
 shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
 shader_parameter/px_range = 14.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tq3yo"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 0.0
 
 [node name="BoosterUnlocked" type="Control" unique_id=1467708807]
 layout_mode = 3
@@ -214,7 +130,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 [node name="txtHeader BG1" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/Image" parent_id_path=PackedInt32Array(430419902, 10946718) index="1" unique_id=100438058]
 material = SubResource("ShaderMaterial_o1wlb")
 theme_override_fonts/font = SubResource("FontVariation_51gwy")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_iaefw")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
 "amin": Vector2(0.5, 0.5),
@@ -226,20 +142,20 @@ metadata/u_rect = {
 [node name="txtHeader" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/Image" parent_id_path=PackedInt32Array(430419902, 10946718) index="2" unique_id=81025960]
 material = SubResource("ShaderMaterial_b1ri6")
 theme_override_fonts/font = SubResource("FontVariation_51gwy")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_3wner")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 
 [node name="CloseButton" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" parent_id_path=PackedInt32Array(430419902, 2020149233) index="2" unique_id=1558439662]
 theme_override_styles/normal = SubResource("StyleBoxEmpty_vjtq2")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_i8v6e")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_8e6jg")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_d6ubs")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_j5vdl")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_rhk47")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_262p7")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_kepdr")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_tpm3m")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_t4iou")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_doch7")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_vjtq2")
 
 [node name="Icon" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel/BoosterImage" parent_id_path=PackedInt32Array(430419902, 1807508852) index="3" unique_id=866786361]
 tex = ExtResource("11_na5hj")
@@ -248,7 +164,7 @@ preserve_aspect = true
 [node name="BoosterName" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" parent_id_path=PackedInt32Array(430419902, 2020149233) index="4" unique_id=1204350181]
 material = SubResource("ShaderMaterial_jm0a0")
 theme_override_fonts/font = SubResource("FontVariation_gm7p3")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_aq6hs")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 text = "Capacity"
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -262,7 +178,7 @@ metadata/u_rect = {
 material = SubResource("ShaderMaterial_iqna6")
 theme_override_fonts/font = SubResource("FontVariation_6tqsj")
 theme_override_font_sizes/font_size = 43
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2rp87")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 text = "Add 2 slots to the conveyor!"
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
@@ -275,20 +191,20 @@ metadata/u_rect = {
 [node name="BoosterQuantity" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" parent_id_path=PackedInt32Array(430419902, 2020149233) index="6" unique_id=399862109]
 material = SubResource("ShaderMaterial_jm0a0")
 theme_override_fonts/font = SubResource("FontVariation_gm7p3")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_d0vce")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 
 [node name="ClaimButton" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" parent_id_path=PackedInt32Array(430419902, 2020149233) index="7" unique_id=1428442354]
-theme_override_styles/normal = SubResource("StyleBoxEmpty_83pv0")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_3h8l8")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_pcj8t")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_046rc")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_re0g1")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_t0x5h")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ej5d0")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_caryg")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_0oawo")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_aodcd")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_4f1m6")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_vjtq2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_vjtq2")
 metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
 "amin": Vector2(0.5, 0.5),
@@ -302,7 +218,7 @@ material = SubResource("ShaderMaterial_ahonq")
 theme_override_constants/line_spacing = -4
 theme_override_fonts/font = SubResource("FontVariation_6tqsj")
 theme_override_font_sizes/font_size = 36
-theme_override_styles/normal = SubResource("StyleBoxEmpty_nr2sf")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 text = "Buy for 100"
 
 [node name="TapLabel" type="Label" parent="Canvas/BoosterTutorialLayer/GameObject/UnlockPanel" parent_id_path=PackedInt32Array(430419902, 2020149233) index="8" unique_id=2087895316]
@@ -328,35 +244,16 @@ theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
 theme_override_fonts/font = SubResource("FontVariation_6tqsj")
 theme_override_font_sizes/font_size = 36
-theme_override_styles/normal = SubResource("StyleBoxEmpty_tq3yo")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 text = "Tap to continue"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 metadata/u = {
-"a": true,
 "id": "4451940994325920667",
 "n": "TapLabel",
-"r": [0.5, 0.5, 0.5, 0.5, 0.0, -612.76, 526.0, 60.0, 0.5, 0.5],
 "txt": {
-"auto": [18.0, 36.0],
-"c": "ffffffff",
-"cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
-"fs": 36.0,
-"h": 2.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "Tap to continue",
-"st": 0.0,
-"v": 512.0,
-"w": true,
-"ws": 0.0
+"rt": true
 }
 }
 metadata/u_rect = {
@@ -368,22 +265,11 @@ metadata/u_rect = {
 }
 metadata/u_txt = {
 "auto": [18.0, 36.0],
-"c": "ffffffff",
 "cs": 0.0,
-"font": "Baloo Bhaijaan Regular 400 SDF",
 "fs": 36.0,
-"h": 2.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
-"mat": "Baloo Bhaijaan Regular 400 SDF (atlas)",
-"on": true,
-"ov": 0.0,
-"rich": true,
-"rt": true,
-"s": "Tap to continue",
 "st": 0.0,
-"v": 512.0,
-"w": true,
 "ws": 0.0
 }
 metadata/u_sub = true

@@ -39,11 +39,10 @@ func _bake(host: Control, layer: String) -> bool:
 	host.remove_child(canvas)
 	for n in canvas.find_children("*", "", true, false):
 		n.owner = canvas
-		# The scene holds the children; a copy of their specs in every ancestor would only bloat it.
-		if n.has_meta("u"):
-			var spec: Dictionary = (n.get_meta("u") as Dictionary).duplicate()
-			spec.erase("ch")
-			n.set_meta("u", spec)
+	# Only the spec keys runtime reads (not "ch": the scene holds the children), one box per margins.
+	UnityUI.slim(canvas)
+	# Duplicate Unity names were auto-named "@Control@N"; a saved name like that crashes later runs.
+	UnityUI.readable_names(canvas)
 	var ps := PackedScene.new()
 	var err := ps.pack(canvas)
 	if err == OK:

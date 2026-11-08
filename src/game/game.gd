@@ -434,9 +434,10 @@ func level_exists(lv: int) -> bool:
 
 
 ## Sinh (id, seed cơ sở), qua validate và Solver, sinh lại với seed kế tiếp nếu không đạt. {} nếu hỏng hết.
+## Generated on the main thread, so clear rounds are only steered toward the curve, never retried for (fast mode).
 func generate_checked(id: int, base_seed: int) -> Dictionary:
 	for k in GEN_TRIES:
-		var d := LevelGenerator.generate(id, base_seed + k * RESEED_STEP)
+		var d := LevelGenerator.generate(id, base_seed + k * RESEED_STEP, false)
 		if d.is_empty() or not LevelData.validate(d).is_empty():
 			continue
 		if bool(Solver.solve(d).get("ok", false)):
@@ -474,7 +475,7 @@ func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bo
 	var attempt := {
 		"board": board, "rescue": RescueFlow.new(), "level": level,
 		"taps": 0, "moves0": board.moves_left(), "count0": board.remaining_count(),
-		"start_ms": Time.get_ticks_msec(), "free_used": {}, "ended": false,
+		"start_ms": Time.get_ticks_msec(), "ended": false,
 		"life_charged": false, "challenge": challenge, "hard": bool(data.get("hard", false)),
 		"road_trip": road_trip, "revives": 0, "difficulty": int(data.get("difficulty", 1)),
 		"day": today(), "replay": not side and level == _last_attempt_level,
@@ -780,13 +781,12 @@ func buy_booster(kind: String) -> bool:
 	return true
 
 
-## Booster miễn phí bằng video (`booster_free`), 1 lần mỗi lượt chơi. Thành công thì kho +1.
-func booster_video(attempt: Dictionary, kind: String) -> bool:
-	if not Wallet.KINDS.has(kind) or bool((attempt.free_used as Dictionary).get("any", false)):
+## Booster miễn phí bằng video (`booster_free`), không giới hạn số lần. Thành công thì kho +1.
+func booster_video(kind: String) -> bool:
+	if not Wallet.KINDS.has(kind):
 		return false
 	if not await watch("booster_free", {"kind": kind}):
 		return false
-	(attempt.free_used as Dictionary)["any"] = true
 	Wallet.inv_add(s, kind, 1)
 	inv_changed.emit()
 	save_now()
@@ -992,6 +992,17 @@ func claim_gift() -> String:
 	inv_changed.emit()
 	save_now()
 	return k
+
+
+## Cơ chế mới cần giới thiệu ở level dạy `level` của level chính ("" nếu không có). Đánh dấu đã xem ngay: chơi lại
+## level đó không hiện nữa.
+func claim_mech_intro(level: int) -> String:
+	var m := Unlocks.pending_mech(s, level)
+	if m == "":
+		return ""
+	Unlocks.mark_mech_seen(s, m)
+	save_now()
+	return m
 
 
 # --- cosmetic ---
@@ -1596,12 +1607,14 @@ func challenge_data(day: int = -1) -> Dictionary:
 	return _generated("C%d:%d" % [d, id], id, d * SEED_STRIDE)
 
 
-## {open, locked, unlock_level, available, won, coins, level}. Demo luôn khoá.
+## {enabled, open, locked, unlock_level, available, won, coins, level}. Demo luôn khoá.
+## `enabled`: Config.FEATURES.challenge; off means closed at every level and Home hides the icon.
 ## `won`: đã thắng hôm nay. `available`: mở và chưa thắng hôm nay.
 func challenge_view() -> Dictionary:
 	var open := Unlocks.is_open("challenge", int(s.level)) and not Config.is_demo()
 	var won: bool = int(s.challenge.get("day", -1)) == today() and bool(s.challenge.get("won", false))
-	return {"open": open, "locked": not open, "unlock_level": int(Config.UNLOCK.challenge),
+	return {"enabled": Unlocks.enabled("challenge"), "open": open, "locked": not open,
+		"unlock_level": int(Config.UNLOCK.challenge),
 		"available": open and not won, "won": open and won,
 		"coins": int(Config.ECON.challenge_coins), "level": challenge_level_id()}
 
