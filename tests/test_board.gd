@@ -172,8 +172,9 @@ func test_fog(t: T) -> void:
 	t.eq(b.block_view("f")["is_fog_hidden"], true, "bị vây nên ẩn")
 	t.eq(b.block_view("n")["is_fog_hidden"], false, "khối thường không ẩn")
 	var r := b.tap("f")
-	t.eq(r["kind"], "blocked", "chạm khối ẩn vẫn tốn MOVES nếu bị chặn")
-	t.eq(r["moves_left"], 19, "tốn 1")
+	t.eq(r["kind"], "fog", "chạm khối ẩn: không đi")
+	t.eq(r["moves_left"], 20, "không tốn MOVES")
+	t.eq(b.moves_left(), 20, "bàn giữ MOVES")
 	t.eq(b.block_view("f")["is_fog_hidden"], true, "vẫn ẩn")
 	var r2 := b.tap("n")
 	t.eq(r2["kind"], "exit", "n thoát")
@@ -193,38 +194,100 @@ func test_fog(t: T) -> void:
 	t.eq(e.block_view("f")["is_fog_hidden"], false, "phá w làm lộ f")
 
 
+## Khối còn trong sương không đi dù đường thông, kể cả hộp giấy, pudding, xích; lộ ra rồi mới đi theo màu thật.
+func test_fog_hidden_does_not_move(t: T) -> void:
+	var lvl := _lv(4, 4, [
+		_b("f", "yellow", [[1, 1]], {"fog": true}),
+		_b("n", "purple", [[1, 2]]),
+		_b("p", "blue", [[2, 1]], {"fog": true, "inner_color": "green"}),
+		_b("i", "green", [[0, 1]], {"fog": true, "ice": 1}),
+		_b("k", "blue", [[3, 3]]),
+		_b("c", "purple", [[2, 2]], {"fog": true, "chained_by": "k"})])
+	var b := BoardState.new(lvl)
+	for id in ["f", "p", "i", "c"]:
+		t.eq(b.peek(id), "fog", "%s ẩn: peek fog" % id)
+		t.eq(b.can_exit(id), false, "%s ẩn: không thoát được" % id)
+		var r := b.tap(id)
+		t.eq(r["kind"], "fog", "%s ẩn: chạm không đi" % id)
+		t.eq(r["distance"], 0, "%s không trượt" % id)
+	t.eq(b.moves_left(), 20, "chạm khối ẩn không tốn MOVES")
+	t.eq(b.remaining_count(), 6, "không khối nào rời bàn")
+	t.eq(b.block_view("p")["color"], "blue", "hộp giấy ẩn chưa bóc")
+	t.eq(b.block_view("i")["ice"], 1, "pudding trên khối ẩn chưa nứt")
+	t.eq(b.hint(), "n", "gợi ý bỏ qua khối ẩn")
+	# n rời đi làm lộ f (kề trên) và c (kề phải); f đi lên theo màu thật.
+	var r2 := b.tap("n")
+	t.eq(r2["kind"], "exit", "n thoát")
+	t.eq(b.peek("f"), "exit", "f lộ ra thì thoát được")
+	t.eq(b.peek("c"), "chained", "c lộ ra thì xích mới giữ")
+	t.eq(b.tap("f")["kind"], "exit", "f thoát")
+	t.eq(b.peek("p"), "peel", "f đi làm lộ hộp giấy p, bóc được")
+	t.eq(b.peek("i"), "crack", "f đi làm lộ pudding i, nứt được")
+	# reveal (bộ sinh dùng) bỏ sương ngay.
+	var c := BoardState.new(lvl)
+	c.reveal("p")
+	t.eq(c.block_view("p")["is_fog_hidden"], false, "reveal bỏ sương")
+	t.eq(c.peek("p"), "peel", "lộ rồi thì bóc được")
+
+
+## Cổng nhịp chỉ đổi khi khối của cạnh đó chạm tới thanh: dội vào cổng khoá thì mở, qua cổng mở thì khoá lại.
 func test_pulse_gate(t: T) -> void:
 	var lvl := _lv(5, 5, [
 		_b("y", "yellow", [[2, 2]]),
+		_b("y2", "yellow", [[4, 2]]),
 		_b("g", "green", [[0, 4]])],
 		{"pulse_sides": [{"side": "up", "open": false}]})
 	var b := BoardState.new(lvl)
 	t.eq(b.gate_open("up"), false, "cổng trên đóng")
 	t.eq(b.gate_open("left"), true, "cạnh không có nhịp luôn mở")
 	t.eq(b.can_exit("y"), false, "đóng thì không thoát")
-	t.eq(b.hint(), "g", "hint bỏ qua khối bị cổng đóng")
+	t.eq(b.hint(), "g", "hint ưu tiên khối thoát được")
+	var rg := b.tap("g")
+	t.eq(rg["kind"], "exit", "g thoát")
+	t.eq(b.gate_open("up"), false, "khối cạnh khác không đổi cổng")
+	t.eq(b.first_exit(), "", "không còn khối thoát được")
+	t.eq(b.hint(), "y", "hết khối thoát thì gợi ý dội vào cổng khoá")
 	var r := b.tap("y")
 	t.eq(r["kind"], "gate_closed", "cổng đóng")
 	t.eq(r["distance"], 2, "trượt tới mép")
-	t.eq(r["moves_left"], 19, "tốn MOVES")
-	t.eq(b.gate_open("up"), true, "đổi sau mỗi chạm")
-	t.eq(b.can_exit("y"), true, "giờ mở")
-	t.eq(b.hint(), "y", "hint tính cổng mở")
-	var r2 := b.tap("g")
-	t.eq(r2["kind"], "exit", "g thoát")
-	t.eq(b.gate_open("up"), false, "đổi lại")
-	# Chạm bị chặn cũng đổi nhịp.
+	t.eq(r["moves_left"], 18, "tốn MOVES")
+	t.eq(b.gate_open("up"), true, "dội vào cổng khoá thì cổng mở")
+	t.eq(b.hint(), "y", "cổng mở thì y thoát được")
+	t.eq(b.tap("y2")["kind"], "exit", "y2 qua cổng")
+	t.eq(b.gate_open("up"), false, "qua một khối thì cổng khoá lại")
+	t.eq(b.peek("y"), "gate_closed", "y phải dội lại")
+	# Khối cùng màu cổng bị chặn giữa đường không tới thanh nên không đổi cổng; hai cổng độc lập.
 	var c := BoardState.new(_lv(5, 5, [
-		_b("x", "purple", [[0, 0]]), _b("z", "yellow", [[0, 2]])],
+		_b("x", "purple", [[0, 0]]), _b("z", "yellow", [[0, 2]]), _b("w", "yellow", [[2, 4]])],
 		{"pulse_sides": [{"side": "up", "open": false}, {"side": "down", "open": true}]}))
-	var rc := c.tap("x")
-	t.eq(rc["kind"], "blocked", "chặn")
+	t.eq(c.tap("x")["kind"], "blocked", "x bị z chặn")
+	t.eq(c.tap("z")["kind"], "blocked", "z (vàng) bị x chặn")
+	t.eq(c.gate_open("up"), false, "chạm bị chặn không đổi up")
+	t.eq(c.gate_open("down"), true, "chạm bị chặn không đổi down")
+	t.eq(c.tap("w")["kind"], "gate_closed", "w dội cổng trên")
 	t.eq(c.gate_open("up"), true, "up mở")
-	t.eq(c.gate_open("down"), false, "down đóng")
+	t.eq(c.gate_open("down"), true, "down không đổi theo up")
 	# smash không đổi nhịp.
 	c.smash("z")
 	t.eq(c.gate_open("up"), true, "smash không đổi nhịp")
-	t.eq(c.moves_left(), 19, "smash không tốn MOVES")
+	t.eq(c.moves_left(), 17, "smash không tốn MOVES")
+	# Hộp giấy dội cổng theo màu vỏ; bay qua cổng thì cổng khoá; kẹo trong ra cạnh khác không đổi cổng.
+	var p := BoardState.new(_lv(5, 5, [_b("p", "yellow", [[2, 2]], {"inner_color": "green"})],
+		{"pulse_sides": [{"side": "up", "open": false}]}))
+	t.eq(p.tap("p")["kind"], "gate_closed", "hộp dội cổng")
+	t.eq(p.gate_open("up"), true, "hộp mở cổng")
+	t.eq(p.tap("p")["kind"], "peel", "hộp bay qua")
+	t.eq(p.gate_open("up"), false, "hộp qua rồi cổng khoá")
+	t.eq(p.tap("p")["kind"], "exit", "kẹo trong thoát cạnh trái")
+	t.eq(p.gate_open("up"), false, "kẹo cạnh khác không đổi cổng")
+	# Nứt pudding và giật xích không chạm thanh nên không đổi cổng.
+	var q := BoardState.new(_lv(5, 5, [
+		_b("k", "green", [[0, 4]]), _b("i", "yellow", [[2, 2]], {"ice": 1}),
+		_b("h", "yellow", [[4, 2]], {"chained_by": "k"})],
+		{"pulse_sides": [{"side": "up", "open": false}]}))
+	t.eq(q.tap("i")["kind"], "crack", "nứt pudding")
+	t.eq(q.tap("h")["kind"], "chained", "giật xích")
+	t.eq(q.gate_open("up"), false, "nứt, giật xích không đổi cổng")
 
 
 func test_smash(t: T) -> void:

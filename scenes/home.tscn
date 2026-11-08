@@ -21,6 +21,7 @@
 [ext_resource type="PackedScene" path="res://scenes/hub_top.tscn" id="19_0ltf8"]
 [ext_resource type="PackedScene" path="res://scenes/hub_nav.tscn" id="21_kvj23"]
 [ext_resource type="Texture2D" uid="uid://cnu06olp5o52p" path="res://assets/ui/figma/ic_leaderboard.png" id="22_lbico"]
+[ext_resource type="Texture2D" uid="uid://bo78w1i00t0qw" path="res://assets/ui/ic_chain_offer.png" id="23_chico"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e11fr"]
 content_margin_left = 30.0
@@ -1034,7 +1035,7 @@ layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-texture = ExtResource("11_sh163")
+texture = ExtResource("23_chico")
 expand_mode = 1
 stretch_mode = 5
 

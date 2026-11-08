@@ -1,7 +1,8 @@
 extends Control
 ## Layer Weekly Pass. Active: Main Tree (free + VIP), Bonus Bank, mua VIP. Waiting: đếm ngược.
 ## Popup cuối mùa (nếu có) hiện trước. setup(args); signal closed({}).
-## No Unity prefab (docs/UI_UNITY.md): PopupOkLayer frame with copies of PopupWinStreakMain (time pill, "!" button,
+## No Unity prefab (docs/UI_UNITY.md): PopupOkLayer frame dressed in PopupFlashPack's art (Popup_FlashPack 9-sliced
+## as the panel, Popup_FlashPack_Title as the header) with copies of PopupWinStreakMain (time pill, "!" button,
 ## scroll frame with the vertical track and milestone diamonds, Claim pill), DailyRewardAdLayer (progress slider,
 ## reward items, claimed tick) and PopupRewardLayer's grid numbers for the Bonus Bank. The frame and every fixed piece
 ## of the pass are nodes of scenes/weekly_pass.tscn; a message (Locked, Waiting, end of season) is the frame resized
@@ -40,8 +41,13 @@ const WARN := "ec304fff"
 
 ## Layout in Unity canvas units from the panel's top-left corner.
 const PANEL := Vector2(800, 1688)
-const MESSAGE := Vector2(724, 660)
-const LIST := Rect2(55, 370, 690, 1010)
+## The pass panel sits this much below the canvas center so the Popup_FlashPack_Title ribbon above it stays on
+## screen; a message is centered.
+const PANEL_DROP := 84.0
+## PopupOkLayer's well and button row sit 60 higher in the scene (above Popup_FlashPack's bottom band), so the
+## message is 60 taller than the prefab's 660 to keep the well's size.
+const MESSAGE := Vector2(724, 720)
+const LIST := Rect2(55, 370, 690, 940)
 ## UI_EWStreakProgress.milestoneSpacingY.
 const ROW_STEP := 200.0
 const LIST_PAD := 10.0
@@ -53,7 +59,8 @@ const VIP_X := 400.0
 const BANK_CELL := 148.0
 const BANK_SP := 32.0
 const BANK_COLS := 4
-const BOTTOM_Y := 1500.0
+## Above Popup_FlashPack's bottom band (the cream ends 114 units above the panel's bottom).
+const BOTTOM_Y := 1430.0
 const BUTTON := Vector2(330, 120)
 
 var view: Dictionary = {}
@@ -205,8 +212,13 @@ func _show_layout(active: bool) -> void:
 
 
 func _panel_size(size: Vector2) -> void:
-	UnityKit.set_size(ui.node("Panel"), size)
-	UnityKit.set_size(ui.node("Panel/Bg"), size)
+	var panel: Control = ui.node("Panel")
+	(panel.get_meta("u_rect") as Dictionary).pos = Vector2(0, -PANEL_DROP if size == PANEL else 0.0)
+	UnityKit.set_size(panel, size)
+	var bg: Control = ui.node("Panel/Bg")
+	UnityKit.set_size(bg, size)
+	# Popup_FlashPack is sliced at the panel's width, so its borders keep their proportions at both sizes.
+	bg.set("border_scale", size.x / (bg.get("region") as Rect2).size.x)
 
 
 ## PopupOkLayer as it is: header, description on the cream well, one Ok button.

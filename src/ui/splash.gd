@@ -15,6 +15,10 @@ const UnityKit := preload("res://src/ui/unity_kit.gd")
 const LAYER := "DownloadDataLayer"
 const BG_TEX := "res://assets/ui/loading_bg.png"
 const LOGO_TEX := "res://assets/ui/loading_logo.png"
+## The icon that rides the bar's fill edge: a peppermint from the candy set of the loading art (candy_curtain.gd)
+## instead of the prefab's orange diamond.
+const HANDLE := "Slider/Handle Slide Area/Handle"
+const HANDLE_TEX := "res://assets/ui/candy_drop/candy_drop_00.png"
 ## UIDownloadDataCoreLayer._minValue.
 const SLIDER_MIN := 0.076
 ## Size of application/boot_splash/image (assets/ui/boot_splash.png) and of BG_TEX, in px.
@@ -67,6 +71,9 @@ static func loading_screen(owner: Control, value: float, loading: String, versio
 	v.text("Text (TMP)", loading)
 	v.text("Version", version)
 	v.show("Version", version != "")
+	var handle: Control = v.image(HANDLE)
+	handle.set("preserve_aspect", true)
+	v.texture(HANDLE, load(HANDLE_TEX) as Texture2D)
 	v.slider("Slider", maxf(value, SLIDER_MIN))
 	v.relayout("")
 	_fit_art(art, logo)

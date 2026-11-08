@@ -64,6 +64,7 @@ const CRATE_KNOCK := 0.42  # giây thùng sắt rung và loé khi bị gõ
 const JELLY_JOLT := 2.2  # khối phủ pudding bị va nhún mạnh gấp chừng này khối thường
 const FOG_LIFT_GROW := 1.15  # sương tan: lớp sương phồng ra chừng này lần trong lúc mờ đi
 const FOG_LIFT_TIME := 0.45
+const FOG_NUDGE := 0.05  # chạm khối còn trong sương: lắc ngang tại chỗ chừng này ô
 const BOX_FLY_MIN := 0.22  # giây ngắn nhất hộp giấy bay tới thanh
 const HINT_POP := 1.22  # khối được Gợi ý nảy to chừng này lúc sao chạm
 const HINT_POP_GLOW := 3.0  # độ loé trắng lúc chạm, tắt dần về mức nhấp nháy (1)
@@ -620,7 +621,9 @@ func apply_result(result: Dictionary) -> void:
 	var kind := str(result.get("kind", "rejected"))
 	var id := str(result.get("id", ""))
 	clear_highlight()
-	if kind == "rejected":
+	if kind == "rejected" or kind == "fog":
+		if kind == "fog" and _nodes.has(id):
+			_anim_fogged(_nodes[id])
 		_check_done.call_deferred()
 		return
 	# chặn ở cổng thì tiếng cổng đã kêu lúc va, cổng mở ra sau đó không kêu lại
@@ -1118,6 +1121,20 @@ func _anim_chained(node: BlockNode, key_id: String, seq: int) -> void:
 			var kt := k.create_tween()
 			kt.tween_property(k, "scale", Vector2(1.1, 1.1), 0.12).set_trans(Tween.TRANS_SINE)
 			kt.tween_property(k, "scale", Vector2.ONE, 0.14).set_trans(Tween.TRANS_SINE)
+
+
+## Khối còn trong sương bị chạm: lắc ngang nhẹ tại chỗ như lắc đầu, không đi, không đổi gì trên bàn.
+func _anim_fogged(node: BlockNode) -> void:
+	if node.busy:
+		return
+	node.busy = true
+	_begin()
+	var home := _origin + Vector2(node.origin_cell) * _cell
+	var tw := node.create_tween()
+	for s in [1.0, -1.0, 0.5, -0.5]:
+		tw.tween_property(node, "position", home + Vector2(_cell * FOG_NUDGE * s, 0), 0.04)
+	tw.tween_property(node, "position", home, 0.04)
+	tw.finished.connect(_finish_busy.bind(node))
 
 
 ## Nảy to rồi về, loé sáng: lớp pudding vỡ, hộp giấy bay đi lộ kẹo bên trong. Hạt do `_sync_states` lo theo chất liệu.

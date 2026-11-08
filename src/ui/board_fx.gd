@@ -12,8 +12,12 @@ const KEY_COLOR := Color("F5C518")
 const CHAIN_STEEL := Color("C9D1E3")
 const CHAIN_DARK := Color("3B4260")
 const CHAIN_SHINE := Color(1, 1, 1, 0.9)
-const CHAIN_LINK := 0.21  # khoảng cách hai mắt xích (ô)
-const CHAIN_OUT := 0.08  # xích quấn ra ngoài mép khối chừng này (ô)
+const CHAIN_LINK := 0.15  # khoảng cách hai mắt xích (ô)
+const CHAIN_IN := 0.24  # hai đầu đường xích lùi vào trong mép khung khối chừng này (ô), mắt đầu nằm gọn trên góc bo
+const CHAIN_RX := 0.105  # bán trục dọc của mắt xích mặt tròn (ô)
+const CHAIN_RY := 0.06  # bán trục ngang của mắt xích mặt tròn (ô)
+const CHAIN_BAR := 0.078  # nửa chiều dài mắt xích mặt nghiêng (ô)
+const CHAIN_W := 0.03  # bề dày nét thép (ô)
 const CHAIN_MESH_MAX := 64  # số hình xích giữ trong cache (mỗi hình khối và cỡ ô một hình)
 const KEY_SIZE := 0.8  # ảnh chìa giữa một ô của khối chìa, cạnh theo ô
 const FOG_MARK := 0.7  # ảnh `mech_fog` giữa một ô của khối còn trong sương, cạnh theo ô
@@ -304,21 +308,21 @@ static func chain_center(cells: Array) -> Vector2:
 	return best
 
 
-## Đường xích của khối (toạ độ ô của khối): một đường chéo qua trọn khung khối, chìa ra ngoài mép CHAIN_OUT. Chọn đường
-## chéo có nhiều mắt nằm trên ô của khối hơn (khối hình L, T); bằng nhau thì đường từ góc trên trái xuống góc dưới phải.
-## Trả [đầu, cuối].
+## Đường xích của khối (toạ độ ô của khối): một đường chéo trong khung khối, hai đầu lùi vào trong mép CHAIN_IN nên
+## xích nằm gọn trên thân khối. Chọn đường chéo có nhiều mắt nằm trên ô của khối hơn (khối hình L, T); bằng nhau thì
+## đường từ góc trên trái xuống góc dưới phải. Trả [đầu, cuối].
 static func chain_path(cells: Array) -> Array:
 	var box := _cell_box(cells)
 	var lo: Vector2 = box[0]
 	var hi: Vector2 = box[1]
-	var o := Vector2(CHAIN_OUT, CHAIN_OUT)
-	var down := [lo - o, hi + o]
-	var up := [Vector2(hi.x + o.x, lo.y - o.y), Vector2(lo.x - o.x, hi.y + o.y)]
+	var o := Vector2(CHAIN_IN, CHAIN_IN)
+	var down := [lo + o, hi - o]
+	var up := [Vector2(hi.x - o.x, lo.y + o.y), Vector2(lo.x + o.x, hi.y - o.y)]
 	return up if _links_on(cells, up).size() > _links_on(cells, down).size() else down
 
 
-## Mắt xích của khối theo `chain_path` (toạ độ ô của khối): mỗi phần tử [tâm, hướng, mặt tròn?]. Mắt rơi vào ô trống
-## trong khung khối thì bỏ; phần chìa ra ngoài khung tính theo ô sát mép.
+## Mắt xích của khối theo `chain_path` (toạ độ ô của khối): mỗi phần tử [tâm, hướng, mặt tròn?]. Chỉ giữ mắt mà tâm
+## và bốn đầu mút đều nằm trên ô của khối, nên ở góc lõm (khối hình L, T) xích không chìa sang ô trống.
 static func chain_links(cells: Array) -> Array:
 	return _links_on(cells, chain_path(cells))
 
@@ -327,17 +331,19 @@ static func _links_on(cells: Array, seg: Array) -> Array:
 	var occ := {}
 	for c: Vector2i in cells:
 		occ[c] = true
-	var box := _cell_box(cells)
-	var lo: Vector2 = box[0]
-	var hi: Vector2 = box[1]
 	var a: Vector2 = seg[0]
 	var b: Vector2 = seg[1]
-	var n := maxi(2, int(round(a.distance_to(b) / CHAIN_LINK)))
+	var n := maxi(2, 2 * int(round(a.distance_to(b) / (2.0 * CHAIN_LINK))))  # số khoảng chẵn: hai đầu là mắt tròn
 	var t := (b - a).normalized()
+	var along := t * (CHAIN_RX + CHAIN_W)
+	var across := Vector2(-t.y, t.x) * (CHAIN_RY + CHAIN_W)
 	var out: Array = []
 	for i in n + 1:
 		var p: Vector2 = a.lerp(b, float(i) / n)
-		if occ.has(Vector2i(p.clamp(lo, hi - Vector2(0.001, 0.001)).floor())):
+		var fits := true
+		for q: Vector2 in [p, p - along, p + along, p - across, p + across]:
+			fits = fits and occ.has(Vector2i(q.floor()))
+		if fits:
 			out.append([p, t, i % 2 == 0])
 	return out
 
@@ -376,10 +382,10 @@ static func _cells_key(cells: Array) -> String:
 ## Hình cả lớp xích theo thứ tự vẽ: bóng đổ mọi mắt, rồi mắt nghiêng, rồi mắt tròn đè lên.
 static func _chain_strokes(cells: Array, cell: float) -> Strokes:
 	var links := chain_links(cells)
-	var w := maxf(1.5, cell * 0.042)
+	var w := maxf(1.2, cell * CHAIN_W)
 	var s := Strokes.new()
 	for l: Array in links:
-		_chain_link(s, (l[0] as Vector2) * cell + Vector2(0, cell * 0.05), l[1], cell, w, Color(0.05, 0.04, 0.2, 0.35), Color(0, 0, 0, 0), l[2])
+		_chain_link(s, (l[0] as Vector2) * cell + Vector2(0, cell * 0.035), l[1], cell, w, Color(0.05, 0.04, 0.2, 0.35), Color(0, 0, 0, 0), l[2])
 	for l: Array in links:
 		if not l[2]:
 			_chain_link(s, (l[0] as Vector2) * cell, l[1], cell, w, CHAIN_DARK, CHAIN_STEEL, false)
@@ -397,17 +403,17 @@ static func _chain_link(s: Strokes, p: Vector2, t: Vector2, cell: float, w: floa
 		var pts := PackedVector2Array()
 		for k in 17:
 			var ang := TAU * k / 16.0
-			pts.append(p + t * cos(ang) * cell * 0.15 + nrm * sin(ang) * cell * 0.085)
+			pts.append(p + t * cos(ang) * cell * CHAIN_RX + nrm * sin(ang) * cell * CHAIN_RY)
 		s.stroke(pts, w + 2.0, dark)
 		if steel.a > 0.0:
 			s.stroke(pts, w, steel)
 			var hi := PackedVector2Array()
 			for k in range(9, 13):
 				var ang := TAU * k / 16.0
-				hi.append(p + t * cos(ang) * cell * 0.15 + nrm * sin(ang) * cell * 0.085)
+				hi.append(p + t * cos(ang) * cell * CHAIN_RX + nrm * sin(ang) * cell * CHAIN_RY)
 			s.stroke(hi, maxf(1.0, w * 0.45), CHAIN_SHINE)
 	else:
-		var half := t * cell * 0.11
+		var half := t * cell * CHAIN_BAR
 		s.stroke(PackedVector2Array([p - half, p + half]), w * 1.5 + 2.0, dark)
 		if steel.a > 0.0:
 			s.stroke(PackedVector2Array([p - half, p + half]), w * 1.5, steel.darkened(0.12))

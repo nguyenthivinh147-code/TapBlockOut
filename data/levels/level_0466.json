@@ -50,7 +50,7 @@
 		{"id":"b44","color":"green","cells":[[11,14],[12,14]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b45","color":"yellow","cells":[[1,15]],"ice":0,"chained_by":"","inner_color":"","fog":true},
 		{"id":"b46","color":"green","cells":[[3,15],[4,15]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b47","color":"green","cells":[[6,15],[7,15]],"ice":0,"chained_by":"","inner_color":"","fog":true},
+		{"id":"b47","color":"green","cells":[[6,15],[7,15]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b48","color":"green","cells":[[9,15],[10,15]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b49","color":"green","cells":[[12,15]],"ice":0,"chained_by":"","inner_color":"","fog":true}
 	]

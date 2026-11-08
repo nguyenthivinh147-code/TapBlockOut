@@ -1,6 +1,6 @@
 extends Control
 ## Màn Road Trip (wireframe Road Trip mục 1, design.md mục 7 "Road Trip"): tab phải của thanh dưới, mở từ UNLOCK.road_trip.
-## Thanh trên, ribbon tiêu đề, bản đồ cuộn dọc (RoadTripMap, level 1 ở đáy), chip tiến độ hộp quà dính mép phải
+## Thanh trên, bản đồ cuộn dọc ngay dưới thanh (RoadTripMap, level 1 ở đáy; không ribbon tiêu đề), chip tiến độ hộp quà dính mép phải
 ## (icon hộp kế tiếp, thanh "đã qua/khoảng"), nút "Level N" trên thanh dưới. Chạm hộp: bong bóng thưởng của hộp.
 ## Chạm mốc hiện tại hoặc nút Level: chơi trong màn level (chế độ road_trip) nhúng làm con của màn này như Daily
 ## Challenge, sau màn chuyển cảnh; xong thì về bản đồ, mũi tên trượt tới mốc mới.
@@ -26,8 +26,9 @@ const GiftCurtain := preload("res://src/ui/gift_curtain.gd")
 
 const DESIGN_W := 886.0
 const DESIGN_H := 1800.0
-## Bản đồ nằm giữa đáy ribbon và đỉnh nút Level (px thiết kế; đỉnh nút theo đáy khung).
-const MAP_TOP := 330.0
+## Bản đồ nằm giữa đáy thanh trên (HubTop fb_rect y 35 + 124) và đỉnh nút Level, cách mỗi bên MAP_GAP (px thiết kế;
+## đỉnh nút theo đáy khung).
+const MAP_TOP := 173.0
 const MAP_GAP := 14.0
 ## Mốc hiện tại nằm ở chừng này chiều cao vùng bản đồ tính từ trên khi cuộn tới.
 const FOCUS := 0.62
@@ -45,7 +46,6 @@ const BOOSTER_ICON := {"hint": "booster_hint", "smash": "booster_smash", "move":
 
 var map: Control = null
 var map_scroll: ScrollContainer = null
-var title_label: Label = null
 var play_button: Button = null
 var play_label: Label = null
 var done_label: Label = null
@@ -100,9 +100,6 @@ func _build() -> void:
 	map_scroll.add_child(map)
 	map.connect("tapped", _on_map_tapped)
 	map_scroll.get_v_scroll_bar().value_changed.connect(func(_v: float) -> void: _hide_bubble())
-	(%Banner as TextureRect).texture = UiAtlas.tex("ribbon_pink_horns")
-	title_label = %Title
-	title_label.text = tr("rt_title")
 	chip = %Chip
 	chip_icon = %ChipIcon
 	chip_label = %ChipLabel

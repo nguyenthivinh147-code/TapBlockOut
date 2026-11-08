@@ -174,6 +174,24 @@ func test_fog_blocks_start_hidden(t: T) -> void:
 	t.ok(fogged > 0, "có khối sương mù")
 
 
+## Khối ẩn không đi được: sương làm bàn kẹt thì `_fog_fix` bỏ sương ở khối ẩn đầu tiên lộ ra là đi được, giữ sương ở
+## khối sẽ lộ khi khối kề rời đi.
+func test_fog_fix_unsticks(t: T) -> void:
+	var blk := func(id: String, color: String, cell: Array, fog: bool) -> Dictionary:
+		return {"id": id, "color": color, "cells": [cell], "ice": 0, "chained_by": "", "inner_color": "", "fog": fog}
+	# a (lên) chặn b bên dưới, chỉ b kề a nên a không bao giờ lộ; c đứng riêng; d lộ khi b rời đi.
+	var lv := {"id": 80, "w": 5, "h": 5, "hard": false, "min_taps": 0, "moves": 20, "seed": 0, "stones": [],
+		"pulse_sides": [], "blocks": [blk.call("a", "yellow", [1, 1], true), blk.call("b", "yellow", [1, 2], false),
+			blk.call("c", "blue", [4, 4], true), blk.call("d", "purple", [2, 2], true)]}
+	t.eq(Solver.solve(lv)["ok"], false, "kẹt vì sương")
+	Gen._fog_fix(lv)
+	var fog := {}
+	for b in lv["blocks"]:
+		fog[b["id"]] = b["fog"]
+	t.eq(fog, {"a": false, "b": false, "c": false, "d": true}, "bỏ sương ở a, c; giữ ở d")
+	t.eq(Solver.solve(lv)["ok"], true, "giải được sau khi sửa")
+
+
 ## Bộ sinh dùng đủ mọi dạng hình, không chỉ vài dạng quen (hình cũ, cho level trước DifficultyCurve.SHAPED_FROM).
 func test_every_shape_kind_is_used(t: T) -> void:
 	var seen := {}
@@ -257,6 +275,42 @@ func test_mech_plan(t: T) -> void:
 	t.eq(sizes.size(), Config.LEVEL_MECH_MAX, "có level 1, 2 và 3 cơ chế")
 	t.ok(Gen.is_rest(15) and not Gen.is_rest(16), "L15 nghỉ, L16 không")
 	t.ok(not Gen.is_rest(55), "L55 là level dạy, không nghỉ")
+
+
+## Cổng nhịp đặt ở cạnh có ít lần qua nhất (khối theo màu, hộp giấy tính cả màu vỏ lẫn màu trong), vì mỗi lần qua cổng
+## khoá tốn một cú dội; lúc đầu luôn có khối thoát được ngay. L90 (level dạy) khoá sẵn và có khối dội vào được ngay.
+func test_pulse_on_least_used_side(t: T) -> void:
+	var gated := 0
+	for id in range(90, 220):
+		if not Gen.mech_plan(id).has("pulse"):
+			continue
+		var d := Gen.generate(id, 0, false)
+		if d.is_empty() or d["pulse_sides"].is_empty():
+			continue
+		gated += 1
+		var passes := {}
+		for b in d["blocks"]:
+			for col in [str(b["color"]), str(b["inner_color"])]:
+				if col != "":
+					var side := LevelData.side_of(col)
+					passes[side] = int(passes.get(side, 0)) + 1
+		var counts: Array = passes.values()
+		counts.sort()
+		var got: Array = []
+		for p in d["pulse_sides"]:
+			got.append(int(passes.get(str(p["side"]), 0)))
+		got.sort()
+		t.eq(got, counts.slice(0, got.size()), "L%d: cổng ở cạnh ít lần qua nhất %s" % [id, str(passes)])
+		t.ok(Solver.immediate_exit_exists(d), "L%d có khối thoát ngay" % id)
+	t.ok(gated >= 5, "đủ level có cổng (%d)" % gated)
+	var teach := Gen.generate(90, 0, false)
+	var b90 := BoardState.new(teach)
+	t.eq(b90.gate_open(str(teach["pulse_sides"][0]["side"])), false, "L90 cổng khoá lúc đầu")
+	var bump := ""
+	for bid in b90.block_ids():
+		if b90.peek(bid) == "gate_closed":
+			bump = bid
+	t.ok(bump != "", "L90 có khối dội vào cổng được ngay")
 
 
 func test_gen_tool_roundtrip(t: T) -> void:

@@ -120,7 +120,7 @@ tests/  tools/  reference/horus/  plans/
 
 - Màu và hướng: `yellow` lên `(0,-1)`, `green` trái `(-1,0)`, `blue` phải `(1,0)`, `purple` xuống `(0,1)`. Mã màu (đề xuất của người lập kế hoạch): `#F5C518`, `#43B649`, `#2F80ED`, `#9B51E0`.
 - Cạnh ứng với màu: `up`, `left`, `right`, `down`.
-- `ice`: 1 nghĩa là phải chạm 1 lần để nứt rồi mới đi được. `chained_by`: id khối chìa. `inner_color`: lớp trong. `fog`: chỉ làm mờ màu.
+- `ice`: 1 nghĩa là phải chạm 1 lần để nứt rồi mới đi được. `chained_by`: id khối chìa. `inner_color`: lớp trong. `fog`: khối ẩn màu tới khi một khối kề rời đi; còn ẩn thì chạm vào không đi (`tap` trả `fog`).
 - `moves = min_taps + dư`. Dư theo `design.md` mục 3, tính trên số khối.
 - Level nhiều cổng (Road Trip, `data/road_trip/rt_NNNN.json`, `design.md` mục 7 "Road Trip"): khối có thêm `"dir"` (`up` | `left` | `right` | `down`), khi đó `color` là màu cổng trong `LevelData.GATE_COLORS` (12 màu) và hướng theo `dir`; level có `"gates": {"up": [["red", 0, 7], ["teal", 7, 14]], ...}` (màu, từ ô, tới ô dọc cạnh, phủ hết cạnh, mỗi màu một cổng) để vẽ khung. `moves` lấy thẳng `StepLimit`, không tính lại theo dư.
 
@@ -132,11 +132,13 @@ tests/  tools/  reference/horus/  plans/
 func _init(level: Dictionary) -> void
 func clone() -> BoardState
 func tap(block_id: String) -> Dictionary
-# {kind: "exit"|"peel"|"crack"|"blocked"|"chained"|"gate_closed"|"rejected",
+# {kind: "exit"|"peel"|"crack"|"blocked"|"chained"|"gate_closed"|"fog"|"rejected",
 #  id, distance: int, blocker: String, moves_left: int, won: bool, revealed: Array[String]}
 func can_exit(block_id: String) -> bool     # tính cả xích, băng, cổng nhịp
-func hint() -> String                       # "" nếu không có khối đi được ngay
+func first_exit() -> String                 # khối đầu tiên thoát (hoặc bóc lớp) được ngay; "" nếu không có
+func hint() -> String                       # first_exit(), không có thì khối dội vào cổng nhịp khoá; "" nếu không có cả hai
 func smash(block_id: String) -> bool        # không tốn MOVES; đá không phải khối nên không chọn được
+func reveal(block_id: String) -> void       # bỏ sương của khối; bộ sinh dùng để gỡ bàn kẹt vì sương mù
 func add_moves(n: int) -> void
 func remaining_count() -> int
 func moves_left() -> int
@@ -147,7 +149,7 @@ func block_ids() -> Array[String]
 func gate_open(side: String) -> bool
 ```
 
-Mọi `tap` hợp lệ giảm 1 MOVES, kể cả `crack`, `chained`, `blocked`, `gate_closed`. Sau mọi `tap` hợp lệ, các cạnh trong `pulse_sides` đổi trạng thái. `peel` là thoát lớp ngoài: khối ở nguyên, đổi sang `inner_color`. Khi `moves_left == 0` hoặc đã thắng, `tap` trả `rejected`.
+Mọi `tap` hợp lệ giảm 1 MOVES, kể cả `crack`, `chained`, `blocked`, `gate_closed`. Riêng khối còn trong sương (`is_fog_hidden`) trả `fog`: không đi, không tốn MOVES, không đổi gì, ưu tiên trước mọi kết quả khác. Cổng nhịp chỉ đổi khi khối của cạnh đó chạm tới thanh: `gate_closed` mở cổng, `exit` hoặc `peel` qua cạnh đó khoá cổng lại; kết quả khác (khối cạnh khác, `blocked`, `chained`, `crack`) và `smash` không đổi cổng. `peel` là thoát lớp ngoài: khối ở nguyên, đổi sang `inner_color`. Khi `moves_left == 0` hoặc đã thắng, `tap` trả `rejected`.
 
 ### 1.8 Trạng thái lưu (`src/meta/save_schema.gd`)
 
@@ -394,7 +396,7 @@ Các module chỉ phụ thuộc `src/config.gd` và `save_schema.gd`. Test tự 
 
 - [x] **Task 2.1: Bàn cờ và solver**
   - **Allowed Files:** `src/core/level_data.gd`, `src/core/board_state.gd`, `src/core/solver.gd`, `tests/test_board.gd`, `tests/test_solver.gd`, `tests/fixtures/*.json`.
-  - **Specs:** Làm đúng mục 1.6–1.7, gồm cả 6 cơ chế để Phase 9 không phải viết lại. Khối trượt cứng theo hướng màu tới khi rời hẳn bàn; bị chặn thì `distance` là số ô trượt được trước vật cản. Sương mù: hết ẩn khi có ô kề (4 hướng) trống. `level_data.gd`: `validate(d) -> Array[String]` kiểm khung, ô trùng, ô ngoài bàn, khoá bắt buộc, `chained_by` tồn tại, không có chu trình xích. `solver.gd`: `solve(level) -> {ok, min_taps, order, wasted}`. Vì cơ chế đơn điệu nên đi tham lam: ưu tiên khối thoát được, rồi nứt băng, rồi lớp ngoài; chỉ cạnh nhịp mới có chạm chờ. `immediate_exit_exists(level)`. `compute_moves(level)` = `min_taps` + `slack_for(level)`; dư cố định theo bậc trong `design.md` mục 3 (L1–3, L4–13, level thường, HARD), không theo số khối. `Game` cộng lại dư lúc vào level từ `min_taps` trong file, nên Remote Config đổi `content_slack_*` có tác dụng cả với level ghi sẵn. Test đối chiếu solver với BFS vét cạn trên ít nhất 200 bàn ngẫu nhiên nhỏ (RNG có seed) và kiểm luật không có thế bí: mọi trạng thái đạt được đều còn lời giải khi đủ MOVES.
+  - **Specs:** Làm đúng mục 1.6–1.7, gồm cả 6 cơ chế để Phase 9 không phải viết lại. Khối trượt cứng theo hướng màu tới khi rời hẳn bàn; bị chặn thì `distance` là số ô trượt được trước vật cản. Sương mù: hết ẩn khi có ô kề (4 hướng) trống. `level_data.gd`: `validate(d) -> Array[String]` kiểm khung, ô trùng, ô ngoài bàn, khoá bắt buộc, `chained_by` tồn tại, không có chu trình xích. `solver.gd`: `solve(level) -> {ok, min_taps, order}`. Vì cơ chế đơn điệu nên đi tham lam: ưu tiên khối thoát được, rồi nứt băng, rồi lớp ngoài, cuối cùng dội vào cổng nhịp khoá; số cú dội của một cạnh luôn là số lần qua cạnh đó (trừ 1 nếu cổng mở sẵn) nên thứ tự không đổi `min_taps`. `immediate_exit_exists(level)`. `compute_moves(level)` = `min_taps` + `slack_for(level)`; dư cố định theo bậc trong `design.md` mục 3 (L1–3, L4–13, level thường, HARD), không theo số khối. `Game` cộng lại dư lúc vào level từ `min_taps` trong file, nên Remote Config đổi `content_slack_*` có tác dụng cả với level ghi sẵn. Test đối chiếu solver với BFS vét cạn trên ít nhất 200 bàn ngẫu nhiên nhỏ (RNG có seed) và kiểm luật không có thế bí: mọi trạng thái đạt được đều còn lời giải khi đủ MOVES.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_board && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_solver`
 
 - [x] **Task 2.2: Ví, mạng, mở khoá**
@@ -588,7 +590,7 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
 
 - [x] **Task 9.10: Khối to hơn, xếp có chủ đích (2026-11-08)**
   - **Allowed Files:** `src/core/level_generator.gd`, `src/core/motifs.gd`, `src/core/difficulty_curve.gd`, `src/core/solver.gd`, `src/core/board_state.gd` (thêm `inspect`), `src/config.gd`, `data/levels/level_0005.json` … `level_0100.json`, `tests/test_generator.gd`, `tests/test_motifs.gd`, `tests/test_levels_all.gd`, `design.md`, `docs/REF_GAME_DIFF.md`.
-  - **Specs:** `design.md` mục 4. Từ L14 `block_count` nhân `SHAPED_COUNT_SCALE` = 1,5 (L1–13 vẫn `COUNT_SCALE` = 2). Từ `MOTIF_FROM` = 5 mọi level dùng hình vẽ tay (`_attempt_motif`); `MOTIF_FILL` 2,5–3,4. Bản vẽ: ký tự khác '.' là tên vùng (`Motifs.variants` trả `regions`), vùng đối xứng theo trục của hình, mỗi mảnh vùng ≥ 2 ô; 27 hình, mỗi số khối 12–59 có ≥ 12 hình vừa. `_tile_sym(..., style, regions)`: mỗi khối ≤ `Config.BLOCK_MAX_CELLS` (7); trọng số `TILE_SINGLE_BIAS` ^ số khối 1 ô / cỡ²; `cut_style(id)` theo id % 3: "sym", một kiểu trong `GEO_STYLES` (rows, rings, weave, cols, bricks; `_edge_ok`), "template" (cùng vùng); hết cách gộp hợp kiểu thì gộp tự do; một lần quét chọn tới 1/`TILE_BATCH` số lần gộp còn lại. `_stone_dead` đặt lại thùng sắt tối đa `STONE_TRIES` lần. `_fix_gates` thử `GATE_SIDE_TRIES` bộ cạnh, 2 cổng không được thì còn 1. `_no_wait` và `Solver._greedy` ưu tiên thoát qua cổng đang mở; `_no_wait` chỉ tính lại khối có thể đổi (`BoardState.inspect`). Level dạy xích xích khối thứ hai vào khối thứ nhất. Test: khối ≤ 7 ô, khối 1 ô ≤ 10% trên 300 level sinh, ≥ 90% khối đúng quy luật kiểu cắt, 500 level dưới 200 ms. Sinh lại L1–100 bằng lệnh phát hành của Task 9.6 (L1–4 không đổi).
+  - **Specs:** `design.md` mục 4. Từ L14 `block_count` nhân `SHAPED_COUNT_SCALE` = 1,5 (L1–13 vẫn `COUNT_SCALE` = 2). Từ `MOTIF_FROM` = 5 mọi level dùng hình vẽ tay (`_attempt_motif`); `MOTIF_FILL` 2,5–3,4. Bản vẽ: ký tự khác '.' là tên vùng (`Motifs.variants` trả `regions`), vùng đối xứng theo trục của hình, mỗi mảnh vùng ≥ 2 ô; 27 hình, mỗi số khối 12–59 có ≥ 12 hình vừa. `_tile_sym(..., style, regions)`: mỗi khối ≤ `Config.BLOCK_MAX_CELLS` (7); trọng số `TILE_SINGLE_BIAS` ^ số khối 1 ô / cỡ²; `cut_style(id)` theo id % 3: "sym", một kiểu trong `GEO_STYLES` (rows, rings, weave, cols, bricks; `_edge_ok`), "template" (cùng vùng); hết cách gộp hợp kiểu thì gộp tự do; một lần quét chọn tới 1/`TILE_BATCH` số lần gộp còn lại. `_stone_dead` đặt lại thùng sắt tối đa `STONE_TRIES` lần. Cổng nhịp đặt ở cạnh có ít lần qua nhất, mở hay khoá lúc đầu ngẫu nhiên (level dạy khoá), bàn phải có khối thoát được ngay (2026-11-08, thay `_fix_gates`/`_no_wait` của luật cũ "mọi lần chạm đều đảo cổng"). Level dạy xích xích khối thứ hai vào khối thứ nhất. Test: khối ≤ 7 ô, khối 1 ô ≤ 10% trên 300 level sinh, ≥ 90% khối đúng quy luật kiểu cắt, 500 level dưới 200 ms. Sinh lại L1–100 bằng lệnh phát hành của Task 9.6 (L1–4 không đổi).
   - **Verification:** `tools/godot.sh --headless --path . -s res://tools/validate_levels.gd && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_motifs test_generator test_levels_all test_levels_demo test_challenge test_board test_solver`
 
 - [x] **Task 9.11: Bake sẵn SDF thân khối (2026-11-08)**

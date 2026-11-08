@@ -212,8 +212,11 @@ func test_win_move_gold_flies_from_moves_chip(t: T) -> void:
 	t.eq(reward.text, lv.tr("win_reward") % 40, "ô gold bắt đầu ở thưởng gốc")
 	t.eq(lv.moves_label.text, str(left), "chip lượt chưa đổi")
 	t.ok(await _wait_until(_has_pop(lv, "MoveGoldFx")), "gold bay từ chip lượt")
+	t.ok(lv.moves_chip.z_index > 0, "khung chip lượt vẽ trên nền tối của thẻ lúc gold bay")
 	t.ok(await _wait_until(func() -> bool: return reward.text == lv.tr("win_reward") % (40 + 10 * left)), "ô gold đếm lên đủ")
 	t.eq(lv.moves_label.text, "0", "chip lượt về 0")
+	t.ok(await _wait_until(func() -> bool: return lv.moves_chip.z_index == 0 and lv.moves_chip.modulate.a == 1.0),
+		"bay xong thì chip lượt về dưới nền tối")
 	t.eq(int(g.s.coins), 1040 + 10 * left, "ví chỉ cộng một lần")
 	_press(lv, "ContinueButton")
 	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and int(lv.attempt.level) == 2), "sang level 2")
@@ -822,6 +825,7 @@ func test_hard_warning(t: T) -> void:
 	t.ok(not _playing(lv), "chưa chơi khi đang cảnh báo")
 	t.eq(lv.hard_badge.text, lv.tr("level_hard"), "huy hiệu KHÓ")
 	t.eq((lv.find_child("Text", true, false) as Label).text, lv.tr("level_hard"), "dải ghi KHÓ")
+	t.eq(_banner_art(lv), ["warn_frame_hard.png", "warn_badge_hard.png"], "khung và huy hiệu kẹo đỏ")
 	_check_bg(t, lv, "L23 (Hard)")
 	t.ok(await _wait_until(_playing.bind(lv)), "tự vào chơi")
 	lv.free()
@@ -829,6 +833,7 @@ func test_hard_warning(t: T) -> void:
 	lv = _mount()
 	t.ok(await _wait_until(func() -> bool: return lv.find_child("DifficultyBanner", true, false) != null), "L33 (VeryHard) có dải cảnh báo")
 	t.eq(lv.hard_badge.text, lv.tr("level_very_hard"), "huy hiệu RẤT KHÓ")
+	t.eq(_banner_art(lv), ["warn_frame_very_hard.png", "warn_badge_very_hard.png"], "khung và huy hiệu kẹo tím")
 	_check_bg(t, lv, "L33 (VeryHard)")
 	t.ok(await _wait_until(_playing.bind(lv)), "L33 tự vào chơi")
 	lv._on_restart_pressed()
@@ -838,6 +843,16 @@ func test_hard_warning(t: T) -> void:
 	await _wait_until(_playing.bind(lv))
 	t.ok(lv.find_child("DifficultyBanner", true, false) == null, "chơi lại không cảnh báo")
 	lv.free()
+
+
+## File texture của khung (Bar) và huy hiệu (Center) trên dải cảnh báo đang hiện.
+func _banner_art(lv: Control) -> Array:
+	var b := lv.find_child("DifficultyBanner", true, false)
+	var out: Array = []
+	for n in ["Bar", "Center"]:
+		var tex := b.find_child(n, true, false).get("tex") as Texture2D
+		out.append(tex.resource_path.get_file() if tex != null else "")
+	return out
 
 
 # --- main ---

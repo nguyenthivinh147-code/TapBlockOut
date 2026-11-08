@@ -474,16 +474,19 @@ func test_teaching_levels(t: T) -> void:
 							shown = true
 				t.ok(shown, "fog: khối ẩn lộ màu khi ô bên cạnh trống")
 			"pulse":
-				var closed := 0
+				var bump := ""
 				for bid in b.block_ids():
 					if b.peek(bid) == "gate_closed":
-						closed += 1
-				t.ok(closed >= 1, "pulse: có khối bị cổng đóng lúc đầu")
+						bump = bid
+				t.ok(bump != "", "pulse: có khối dội vào cổng khoá được ngay")
 				var side: String = d["pulse_sides"][0]["side"]
 				t.ok(not b.gate_open(side), "pulse: cổng %s đóng lúc đầu" % side)
+				var other := b.clone()
+				other.tap(other.first_exit())
+				t.ok(not other.gate_open(side), "pulse: khối cạnh khác không mở cổng")
 				var tapped := b.clone()
-				tapped.tap(tapped.hint())
-				t.ok(tapped.gate_open(side), "pulse: một lần chạm làm cổng đảo trạng thái")
+				tapped.tap(bump)
+				t.ok(tapped.gate_open(side), "pulse: dội vào cổng khoá thì cổng mở")
 
 
 func test_generator_reproduces_files(t: T) -> void:

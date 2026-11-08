@@ -177,6 +177,27 @@ func test_fog_reveal(t: T) -> void:
 	v.queue_free()
 
 
+## Chạm khối còn trong sương: lắc ngang tại chỗ rồi về đúng ô, vẫn ở trên bàn, không có bóng sương tan.
+func test_fog_tap_shakes_in_place(t: T) -> void:
+	var board := BoardState.new(_fog_level())
+	var v := _view(board)
+	var node: Control = v.block_node("c")
+	var home := node.position
+	var r := board.tap("c")
+	t.eq(r["kind"], "fog", "c ẩn: không đi")
+	v.apply_result(r)
+	await _frames(2)
+	t.ok(node.position != home, "đang lắc")
+	t.eq(node.position.y, home.y, "chỉ lắc ngang")
+	t.ok(await _wait_done(v), "lắc xong")
+	t.eq(node.position, home, "về đúng chỗ")
+	t.eq(v.block_node("c"), node, "khối vẫn trên bàn")
+	t.eq(node.view["is_fog_hidden"], true, "vẫn trong sương")
+	t.eq(v.ghost_count(), 0, "không có sương tan")
+	v.queue_free()
+
+
+## Cổng chỉ đổi theo khối cùng màu chạm tới nó; hai cổng độc lập; khối cạnh khác không đổi cổng nào.
 func test_gate_toggles_visual(t: T) -> void:
 	var level := _lv(5, 5, [
 		_b("b1", "yellow", [[2, 3]]),
@@ -190,17 +211,23 @@ func test_gate_toggles_visual(t: T) -> void:
 	var r := board.tap("b1")
 	t.eq(r["kind"], "gate_closed", "cổng đóng chặn")
 	v.apply_result(r)
-	t.eq(v.gate_is_open("up"), true, "up mở sau chạm")
-	t.eq(v.gate_is_open("down"), false, "down đóng sau chạm")
+	t.eq(v.gate_is_open("up"), true, "up mở sau cú dội")
+	t.eq(v.gate_is_open("down"), true, "down không đổi theo up")
 	t.ok(await _wait_done(v), "gate_closed xong")
 	t.eq(v.block_count(), 3, "khối ở lại")
 	t.near(v.gate_progress("up"), 1.0, 0.001, "hình up mở")
-	t.near(v.gate_progress("down"), 0.0, 0.001, "hình down đóng")
+	t.near(v.gate_progress("down"), 1.0, 0.001, "hình down vẫn mở")
 	r = board.tap("b2")
 	v.apply_result(r)
 	t.ok(await _wait_done(v), "b2 xong")
-	t.near(v.gate_progress("up"), 0.0, 0.001, "hình up đóng lại")
-	t.near(v.gate_progress("down"), 1.0, 0.001, "hình down mở lại")
+	t.near(v.gate_progress("up"), 1.0, 0.001, "khối cạnh khác không đổi up")
+	t.near(v.gate_progress("down"), 1.0, 0.001, "khối cạnh khác không đổi down")
+	r = board.tap("b1")
+	t.eq(r["kind"], "exit", "b1 qua cổng mở")
+	v.apply_result(r)
+	t.ok(await _wait_done(v), "b1 xong")
+	t.near(v.gate_progress("up"), 0.0, 0.001, "b1 qua rồi up khoá lại")
+	t.near(v.gate_progress("down"), 1.0, 0.001, "down vẫn mở")
 	v.queue_free()
 
 
@@ -285,7 +312,7 @@ func test_gate_refresh_and_fast_taps(t: T) -> void:
 		v.apply_result(board.tap(id))
 		await _frames(2)
 	t.ok(await _wait_done(v), "xong chuỗi chạm nhanh")
-	t.eq(board.gate_open("left"), true, "board: lẻ lần nên mở")
+	t.eq(board.gate_open("left"), true, "board: dội, qua, dội nên mở")
 	t.near(v.gate_progress("left"), 1.0, 0.001, "hình khớp board")
 	t.ok(not v.is_animating(), "không kẹt hoạt ảnh")
 	board.add_moves(1)

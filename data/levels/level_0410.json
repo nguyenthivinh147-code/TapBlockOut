@@ -41,7 +41,7 @@
 		{"id":"b35","color":"purple","cells":[[7,13],[7,14]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b36","color":"yellow","cells":[[8,13],[9,13]],"ice":1,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b37","color":"yellow","cells":[[10,13],[11,13],[12,13],[8,14],[9,14],[10,14],[12,14]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b38","color":"purple","cells":[[2,14]],"ice":0,"chained_by":"","inner_color":"","fog":true},
+		{"id":"b38","color":"purple","cells":[[2,14]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b39","color":"yellow","cells":[[11,14]],"ice":0,"chained_by":"","inner_color":"","fog":true}
 	]
 }

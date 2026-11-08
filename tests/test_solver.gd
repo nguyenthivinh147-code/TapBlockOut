@@ -130,7 +130,6 @@ func test_fixture_basic(t: T) -> void:
 	var r := Solver.solve(lv)
 	t.eq(r["ok"], true, "giải được")
 	t.eq(r["min_taps"], 3, "3 chạm")
-	t.eq(r["wasted"], 0, "không chạm chờ")
 	t.eq(r["order"].size(), 3, "order")
 	t.ok(_replay_wins(lv, r), "phát lại thắng")
 	t.eq(Solver.immediate_exit_exists(lv), true, "có khối đi ngay")
@@ -154,24 +153,24 @@ func test_fixture_mechanics(t: T) -> void:
 	t.ok(_replay_wins(lv, r), "phát lại thắng")
 
 
-func test_gate_forces_wait(t: T) -> void:
-	# Một khối duy nhất qua cổng đang đóng: phải chờ đúng 1 chạm.
+## Mỗi lần qua cổng nhịp khoá cần một cú dội; khối cạnh khác không mở hộ.
+func test_gate_bumps(t: T) -> void:
 	var lv := _lv(5, 5, [_b("y", "yellow", [[2, 2]])], {"pulse_sides": [{"side": "up", "open": false}]})
 	var r := Solver.solve(lv)
 	t.eq(r["ok"], true, "giải được")
-	t.eq(r["wasted"], 1, "1 chạm chờ")
-	t.eq(r["min_taps"], 2, "2 chạm")
+	t.eq(r["min_taps"], 2, "dội rồi qua")
 	t.ok(_replay_wins(lv, r), "phát lại")
-	# Cổng đang mở thì không chờ.
 	lv["pulse_sides"] = [{"side": "up", "open": true}]
 	t.eq(Solver.solve(lv)["min_taps"], 1, "mở sẵn")
-	# Hai khối cùng cạnh cổng: dùng khối kia làm nhịp, không phí.
+	# Hai khối cùng cạnh cổng mở sẵn: khối đầu qua luôn, khối sau phải dội; g ra cạnh khác không mở cổng hộ.
 	var two := _lv(5, 5, [_b("y1", "yellow", [[1, 2]]), _b("y2", "yellow", [[3, 2]]),
 		_b("g", "green", [[4, 4]])], {"pulse_sides": [{"side": "up", "open": true}]})
 	var r2 := Solver.solve(two)
 	t.eq(r2["ok"], true, "giải được")
-	t.eq(r2["min_taps"], 3, "g làm nhịp giữa hai lần mở")
+	t.eq(r2["min_taps"], 4, "3 khối + 1 cú dội")
+	t.eq(r2["min_taps"], _bfs(two, {}), "khớp BFS")
 	t.ok(_replay_wins(two, r2), "phát lại")
+	t.eq(Solver.clear_rounds(two), 2, "vòng dọn tính cú dội như một nước")
 
 
 func test_greedy_matches_bfs_small(t: T) -> void:
@@ -197,7 +196,6 @@ func test_greedy_matches_bfs_small(t: T) -> void:
 			t.eq(r["ok"], true, "bàn %d giải được" % i)
 			t.eq(r["min_taps"], expected, "bàn %d min_taps khớp BFS" % i)
 			t.ok(_replay_wins(lv, r), "bàn %d phát lại" % i)
-			t.eq(r["order"].size() - r["wasted"] >= 0, true, "wasted hợp lý")
 	t.ok(solvable >= 120, "đủ bàn giải được (%d)" % solvable)
 	t.ok(unsolvable >= 10, "đủ bàn bí (%d)" % unsolvable)
 	t.ok(with_gates >= 40, "đủ bàn có cổng (%d)" % with_gates)
@@ -275,13 +273,14 @@ func test_immediate_exit(t: T) -> void:
 	t.eq(Solver.immediate_exit_exists(lv), false, "băng không tính")
 	var gated := _lv(5, 5, [_b("y", "yellow", [[2, 2]])], {"pulse_sides": [{"side": "up", "open": false}]})
 	t.eq(Solver.immediate_exit_exists(gated), false, "cổng đóng không tính")
+	t.eq(BoardState.new(gated).hint(), "y", "nhưng Gợi ý chỉ cú dội")
 
 
-## Bàn thiên về cổng nhịp (2 cạnh, nhiều khối thoát tự do): kiểm chạm chờ so với BFS.
+## Bàn thiên về cổng nhịp (2 cạnh, nhiều khối thoát tự do): kiểm số chạm (gồm cú dội) so với BFS.
 func test_gate_heavy_matches_bfs(t: T) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 424242
-	var waited := 0
+	var bumped := 0
 	var solvable := 0
 	for i in range(220):
 		var lv := _rand_level(rng, 2000 + i, false)
@@ -301,7 +300,18 @@ func test_gate_heavy_matches_bfs(t: T) -> void:
 		t.eq(r["ok"], true, "bàn cổng %d giải được" % i)
 		t.eq(r["min_taps"], expected, "bàn cổng %d khớp BFS" % i)
 		t.ok(_replay_wins(lv, r), "bàn cổng %d phát lại" % i)
-		if int(r["wasted"]) > 0:
-			waited += 1
+		if _bumps(lv, r) > 0:
+			bumped += 1
 	t.ok(solvable >= 80, "đủ bàn cổng giải được (%d)" % solvable)
-	t.ok(waited >= 15, "đủ bàn phải chờ (%d)" % waited)
+	t.ok(bumped >= 15, "đủ bàn phải dội cổng (%d)" % bumped)
+
+
+## Số cú dội vào cổng khoá khi phát lại lời giải.
+func _bumps(lv: Dictionary, r: Dictionary) -> int:
+	var b := BoardState.new(lv)
+	b.add_moves(Solver.BIG_MOVES)
+	var n := 0
+	for id: String in r["order"]:
+		if b.tap(id)["kind"] == "gate_closed":
+			n += 1
+	return n

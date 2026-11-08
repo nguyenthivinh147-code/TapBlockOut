@@ -4,7 +4,8 @@
 [ext_resource type="PackedScene" path="res://scenes/unity/PopupOkLayer.tscn" id="2_iay7j"]
 [ext_resource type="Script" path="res://src/ui/u_button.gd" id="3_x8p5l"]
 [ext_resource type="Script" path="res://src/ui/u_image.gd" id="4_4y1he"]
-[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup2.png" id="5_uegor"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup_FlashPack.png" id="5_flash"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup_FlashPack_Title.png" id="5_flash_title"]
 [ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_moved_UI_Maincenter.png" id="6_fp4qn"]
 [ext_resource type="Shader" path="res://src/ui/tmp_text.gdshader" id="7_ewfhx"]
 [ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="8_ukwxv"]
@@ -19,8 +20,8 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g4d6u"]
 shader = ExtResource("7_ewfhx")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
-shader_parameter/underlay_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/outline_color = Color(0.50980395, 0, 0.043137256, 1)
+shader_parameter/underlay_color = Color(0.50980395, 0, 0.043137256, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.1285714305
 shader_parameter/underlay_on = true
@@ -307,9 +308,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -400.0
-offset_top = -844.0
+offset_top = -760.0
 offset_right = 400.0
-offset_bottom = 844.0
+offset_bottom = 928.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
@@ -320,7 +321,7 @@ metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
 "amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 0),
+"pos": Vector2(0, -84),
 "size": Vector2(800, 1688)
 }
 
@@ -337,9 +338,10 @@ offset_bottom = 844.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
 script = ExtResource("4_4y1he")
-tex = ExtResource("5_uegor")
-region = Rect2(0, 0, 800, 800)
-border = Vector4(120, 120, 120, 120)
+tex = ExtResource("5_flash")
+region = Rect2(0, 0, 840, 836)
+border = Vector4(60, 250, 60, 130)
+border_scale = 0.952381
 kind = 1
 fill_method = 4
 metadata/u = {
@@ -347,7 +349,7 @@ metadata/u = {
 "img": {
 "ppu": 1.0,
 "rt": true,
-"sp": "Popup2"
+"sp": "Popup_FlashPack"
 },
 "n": "Bg"
 }
@@ -363,15 +365,15 @@ metadata/u_rect = {
 anchors_preset = 0
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -225.0
-offset_top = -87.85
-offset_right = 225.0
-offset_bottom = 87.85
+offset_left = -325.0
+offset_top = -184.0
+offset_right = 325.0
+offset_bottom = 98.5
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
 script = ExtResource("4_4y1he")
-tex = ExtResource("6_fp4qn")
-region = Rect2(384, 1332, 368, 108)
+tex = ExtResource("5_flash_title")
+region = Rect2(0, 0, 1024, 445)
 preserve_aspect = true
 fill_method = 4
 metadata/u = {
@@ -379,7 +381,7 @@ metadata/u = {
 "img": {
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60"
+"sp": "Popup_FlashPack_Title"
 },
 "n": "Image"
 }
@@ -387,8 +389,8 @@ metadata/u_rect = {
 "amax": Vector2(0.5, 1),
 "amin": Vector2(0.5, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 0),
-"size": Vector2(450, 175.7)
+"pos": Vector2(0, 42.75),
+"size": Vector2(650, 282.5)
 }
 
 [node name="txtHeader" parent="Layer/Canvas/PopupOkLayer/Panel/Image" index="0" unique_id=1160393672]
@@ -398,12 +400,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -227.7163
-offset_top = -52.0
-offset_right = 227.7163
-offset_bottom = 52.0
+offset_left = -234.5
+offset_top = 9.5
+offset_right = 220.5
+offset_bottom = 97.5
 grow_horizontal = 2
 grow_vertical = 2
+rotation = -0.16772614
 pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
@@ -411,7 +414,7 @@ theme_override_constants/line_spacing = -8
 theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
 theme_override_fonts/font = SubResource("FontVariation_qt0on")
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 56
 theme_override_styles/normal = SubResource("StyleBoxEmpty_wvnh1")
 text = "Weekly Pass"
 horizontal_alignment = 1
@@ -428,13 +431,13 @@ metadata/u_rect = {
 "amax": Vector2(0.5, 0.5),
 "amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 0),
-"size": Vector2(455.4326, 104)
+"pos": Vector2(-7, -53.5),
+"size": Vector2(455, 88)
 }
 metadata/u_txt = {
-"auto": [18.0, 64.0],
+"auto": [18.0, 56.0],
 "cs": 0.0,
-"fs": 64.0,
+"fs": 56.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
 "st": 16.0,
@@ -554,7 +557,7 @@ anchor_bottom = 1.0
 offset_left = 52.0
 offset_top = 133.4
 offset_right = -52.0
-offset_bottom = -220.0
+offset_bottom = -280.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 script = ExtResource("4_4y1he")
@@ -576,8 +579,8 @@ metadata/u_rect = {
 "amax": Vector2(1, 1),
 "amin": Vector2(0, 0),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 43.300003),
-"size": Vector2(-104, -353.4)
+"pos": Vector2(0, 73.3),
+"size": Vector2(-104, -413.4)
 }
 
 [node name="Description" parent="Layer/Canvas/PopupOkLayer/Panel/Content" index="1" unique_id=774443199]
@@ -635,9 +638,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 56.0
-offset_top = -188.0
+offset_top = -248.0
 offset_right = -56.0
-offset_bottom = -68.0
+offset_bottom = -128.0
 pivot_offset_ratio = Vector2(0.5, 1)
 mouse_filter = 2
 metadata/u = {
@@ -661,7 +664,7 @@ metadata/u_rect = {
 "amax": Vector2(1, 0),
 "amin": Vector2(0, 0),
 "pivot": Vector2(0.5, 0),
-"pos": Vector2(0, 68),
+"pos": Vector2(0, 128),
 "size": Vector2(-112, 120)
 }
 
@@ -1505,7 +1508,7 @@ anchors_preset = 0
 offset_left = 55.0
 offset_top = 370.0
 offset_right = 745.0
-offset_bottom = 1380.0
+offset_bottom = 1310.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
 script = ExtResource("4_4y1he")
@@ -1531,8 +1534,8 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(400, -875),
-"size": Vector2(690, 1010)
+"pos": Vector2(400, -840),
+"size": Vector2(690, 940)
 }
 metadata/u_sub = true
 
@@ -1625,9 +1628,9 @@ unique_name_in_owner = true
 material = SubResource("ShaderMaterial_ibdlu")
 layout_mode = 0
 offset_left = 60.0
-offset_top = 1392.0
+offset_top = 1322.0
 offset_right = 740.0
-offset_bottom = 1488.0
+offset_bottom = 1418.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
@@ -1654,7 +1657,7 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(400, -1440),
+"pos": Vector2(400, -1370),
 "size": Vector2(680, 96)
 }
 metadata/u_txt = {
@@ -1672,9 +1675,9 @@ metadata/u_sub = true
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 50.0
-offset_top = 1500.0
+offset_top = 1430.0
 offset_right = 380.0
-offset_bottom = 1620.0
+offset_bottom = 1550.0
 pivot_offset_ratio = Vector2(0.5, 0)
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_0n568")
@@ -1710,7 +1713,7 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 1),
-"pos": Vector2(215, -1500),
+"pos": Vector2(215, -1430),
 "size": Vector2(330, 120)
 }
 metadata/u_sub = true
@@ -1781,9 +1784,9 @@ unique_name_in_owner = true
 material = SubResource("ShaderMaterial_ibdlu")
 layout_mode = 0
 offset_left = 60.0
-offset_top = 1392.0
+offset_top = 1322.0
 offset_right = 740.0
-offset_bottom = 1488.0
+offset_bottom = 1418.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
@@ -1810,7 +1813,7 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(400, -1440),
+"pos": Vector2(400, -1370),
 "size": Vector2(680, 96)
 }
 metadata/u_txt = {
@@ -1829,9 +1832,9 @@ unique_name_in_owner = true
 material = SubResource("ShaderMaterial_ibdlu")
 layout_mode = 0
 offset_left = 60.0
-offset_top = 1392.0
+offset_top = 1322.0
 offset_right = 740.0
-offset_bottom = 1488.0
+offset_bottom = 1418.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
@@ -1857,7 +1860,7 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(400, -1440),
+"pos": Vector2(400, -1370),
 "size": Vector2(680, 96)
 }
 metadata/u_txt = {
@@ -1875,9 +1878,9 @@ metadata/u_sub = true
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 420.0
-offset_top = 1500.0
+offset_top = 1430.0
 offset_right = 750.0
-offset_bottom = 1620.0
+offset_bottom = 1550.0
 pivot_offset_ratio = Vector2(0.5, 0)
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_0n568")
@@ -1913,7 +1916,7 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 1),
-"pos": Vector2(585, -1500),
+"pos": Vector2(585, -1430),
 "size": Vector2(330, 120)
 }
 metadata/u_sub = true

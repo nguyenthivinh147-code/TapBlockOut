@@ -266,8 +266,11 @@ func test_mechanics_states(t: T) -> void:
 	v.apply_result(r)
 	t.eq(v.block_node("b4").view["color"], "yellow", "đổi sang màu lớp trong")
 	t.ok(await _wait_done(v), "peel xong")
-	# b1 vàng: cổng up đóng sau 3 lần chạm hợp lệ (đổi mỗi lần): đóng -> mở -> đóng -> mở
-	# lần này cổng đang ở trạng thái "mở" (đã đổi 3 lần) nên b1 thoát được
+	# b1 vàng: nứt, xích, bóc lớp ở cạnh khác không đổi cổng up, nên up vẫn khoá: b1 dội vào cho cổng mở rồi mới thoát
+	r = board.tap("b1")
+	t.eq(r["kind"], "gate_closed", "b1 dội cổng khoá")
+	v.apply_result(r)
+	t.ok(await _wait_done(v), "dội cổng xong")
 	r = board.tap("b1")
 	t.eq(r["kind"], "exit", "b1 thoát")
 	v.apply_result(r)

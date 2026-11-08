@@ -5,7 +5,8 @@ extends Control
 ## (đã qua), mốc hiện tại to hơn theo độ khó (xanh lá, đỏ Hard, tím Super Hard) với quầng sáng thở và mũi tên nhún
 ## (node con Glow, Arrow). Hộp: chưa tới nguyên màu, hộp đang nhắm có quầng sáng, đã mở mờ đi kèm dấu tích.
 ## Chạm (không kéo) một mốc hay hộp thì phát tapped(n, is_box). Toạ độ là px thiết kế khung rộng DESIGN_W, nhân k.
-## Nằm trong ScrollContainer: mouse_filter PASS để kéo vẫn cuộn.
+## Nằm trong ScrollContainer: mouse_filter PASS để kéo vẫn cuộn. ScrollContainer chỉ tự kéo khi có cảm ứng; không có
+## (desktop, chạy từ editor) thì bản đồ tự cuộn cha theo chuột kéo (_gui_input).
 
 signal tapped(n: int, is_box: bool)
 
@@ -60,6 +61,10 @@ var items: Array[Dictionary] = []
 var _rows: int = 1
 var _by_n: Dictionary = {}
 var _press: Vector2 = Vector2.INF
+## Kéo bằng chuột (không cảm ứng): đang kéo, y viewport và scroll_vertical lúc bắt đầu kéo.
+var _mouse_drag: bool = false
+var _drag_y: float = 0.0
+var _drag_scroll: int = 0
 var _glow: TextureRect = null
 var _arrow_holder: Control = null
 var _arrow: TextureRect = null
@@ -286,6 +291,7 @@ func slide_markers(from: int) -> Tween:
 func _gui_input(event: InputEvent) -> void:
 	var mb := event as InputEventMouseButton
 	if mb != null and mb.button_index == MOUSE_BUTTON_LEFT:
+		_mouse_drag = false
 		if mb.pressed:
 			_press = mb.position
 		elif _press != Vector2.INF:
@@ -295,8 +301,18 @@ func _gui_input(event: InputEvent) -> void:
 				_tap_at(mb.position)
 		return
 	var mm := event as InputEventMouseMotion
-	if mm != null and _press != Vector2.INF and mm.position.distance_to(_press) > TAP_SLOP:
+	if mm == null:
+		return
+	if _press != Vector2.INF and mm.position.distance_to(_press) > TAP_SLOP:
 		_press = Vector2.INF
+		# ScrollContainer only drags on a touchscreen; with a mouse (desktop, editor) the map follows the drag itself.
+		var sc := get_parent() as ScrollContainer
+		if sc != null and not DisplayServer.is_touchscreen_available():
+			_mouse_drag = true
+			_drag_y = mm.global_position.y
+			_drag_scroll = sc.scroll_vertical
+	if _mouse_drag and mm.button_mask & MOUSE_BUTTON_MASK_LEFT:
+		(get_parent() as ScrollContainer).scroll_vertical = _drag_scroll - roundi(mm.global_position.y - _drag_y)
 
 
 ## Mốc hay hộp dưới điểm p (toạ độ node); phát tapped. Trả n, 0 khi trượt.

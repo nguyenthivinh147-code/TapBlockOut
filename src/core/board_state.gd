@@ -1,7 +1,10 @@
 extends RefCounted
 ## Trạng thái một bàn cờ (kế hoạch mục 1.7). Logic thuần, không Node, không Platform.
 ## Khối trượt cứng theo hướng màu tới khi rời hẳn bàn. Quy ước ưu tiên khi chạm:
-## xích > băng > đường bị chặn > cổng nhịp đóng > thoát (hoặc bóc lớp ngoài).
+## sương mù > xích > băng > đường bị chặn > cổng nhịp đóng > thoát (hoặc bóc lớp ngoài).
+## Khối còn trong sương (chưa lộ màu) chạm vào không đi, không tốn MOVES, không đổi gì (`fog`).
+## Cổng nhịp chỉ đổi khi khối của cạnh đó chạm tới thanh: dội vào cổng khoá thì cổng mở, thoát (hoặc hộp giấy bay)
+## qua cổng mở thì cổng khoá lại. Chạm khác (khối cạnh khác, bị chặn, xích, nứt pudding) không đổi cổng.
 
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
@@ -173,12 +176,24 @@ func can_exit(block_id: String) -> bool:
 	return k == "exit" or k == "peel"
 
 
-func hint() -> String:
+## Khối đầu tiên (theo thứ tự khối) thoát hoặc bóc lớp được ngay; "" nếu không có.
+func first_exit() -> String:
 	if _won:
 		return ""
 	for id in _order:
 		if can_exit(id):
 			return id
+	return ""
+
+
+## Gợi ý: khối thoát được ngay; không có thì khối dội vào cổng nhịp đang khoá (để mở cổng). "" nếu không có cả hai.
+func hint() -> String:
+	var id := first_exit()
+	if id != "" or _won:
+		return id
+	for bid in _order:
+		if _evaluate(bid)["kind"] == "gate_closed":
+			return bid
 	return ""
 
 
@@ -188,8 +203,12 @@ func tap(block_id: String) -> Dictionary:
 	if _won or _moves_left <= 0 or not _blocks.has(block_id):
 		return res
 	var ev := _evaluate(block_id)
+	if ev["kind"] == "fog":
+		res["kind"] = "fog"
+		return res
 	_moves_left -= 1
 	var b: Dictionary = _blocks[block_id]
+	var side := LevelData.block_side(b)  # trước khi bóc lớp: hộp giấy bay về cạnh của màu vỏ
 	match ev["kind"]:
 		"crack":
 			b["ice"] = int(b["ice"]) - 1
@@ -198,8 +217,12 @@ func tap(block_id: String) -> Dictionary:
 			b["inner_color"] = ""
 		"exit":
 			_remove(block_id)
-	for side in _gates:
-		_gates[side] = not _gates[side]
+	if _gates.has(side):
+		match ev["kind"]:
+			"gate_closed":
+				_gates[side] = true
+			"exit", "peel":
+				_gates[side] = false
 	res["kind"] = ev["kind"]
 	res["distance"] = ev["distance"]
 	res["blocker"] = ev["blocker"]
@@ -208,6 +231,12 @@ func tap(block_id: String) -> Dictionary:
 	res["moves_left"] = _moves_left
 	res["won"] = _won
 	return res
+
+
+## Bỏ sương của khối (lộ màu ngay), như khi khối kề rời đi. Bộ sinh dùng để gỡ bàn kẹt vì sương mù.
+func reveal(block_id: String) -> void:
+	if _blocks.has(block_id):
+		_blocks[block_id]["revealed"] = true
 
 
 ## Phá khối: xoá hẳn, không tốn MOVES, không đổi cổng nhịp. Đá không chọn được.
@@ -248,6 +277,8 @@ func _in_bounds(c: Vector2i) -> bool:
 ## Chạm sẽ cho kết quả gì, chưa đổi gì. Trả {kind, distance, blocker}.
 func _evaluate(id: String) -> Dictionary:
 	var b: Dictionary = _blocks[id]
+	if b["fog"] and not b["revealed"]:
+		return {"kind": "fog", "distance": 0, "blocker": ""}
 	var key: String = b["chained_by"]
 	if key != "" and _blocks.has(key):
 		return {"kind": "chained", "distance": 0, "blocker": key}

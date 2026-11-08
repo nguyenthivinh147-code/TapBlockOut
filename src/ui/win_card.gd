@@ -7,6 +7,7 @@ extends Control
 ## ô gold hiện coins (đã gồm gold MOVES thừa). Màn level thêm moves_chip (chip lượt), moves_left và
 ## on_move_cashed(lượt): khi đó ô gold bắt đầu từ coins - move_coins, đồng gold bay từ chip vào ô (CoinFx), mỗi đồng
 ## rời chip thì gọi on_move_cashed, chạm ô thì số gold (cả số trên nút x2) tăng dần. Bấm x2 hay Tiếp tục thì cộng nốt.
+## Lúc bay, cả khung chip lượt vẽ trên nền tối của thẻ (z_index CHIP_Z), xong thì về dưới nền.
 ## x2: popup tự gọi Game.claim_x2 (xem video, hoặc miễn phí ở L1). Nút x2 là FreeBtn (miễn phí) hoặc ClaimBtn (video).
 ## x2 xong thì thanh trên (HubTop, chỉ mạng và gold) trượt xuống, gold của thẻ bay từ ô gold lên chip gold của thanh
 ## (CoinFx), số trên chip đếm từ ví trước lúc thắng tới ví hiện tại, rồi thẻ tự đóng như Tiếp tục (nút khoá suốt lúc bay).
@@ -27,6 +28,10 @@ const HubTop := preload("res://src/ui/hub_top.gd")
 const X2_PLACEMENT := "x2_coins"
 ## Gold MOVES thừa bắt đầu bay khi thẻ đã hiện chừng này giây.
 const MOVE_GOLD_DELAY := 0.45
+## Lúc gold MOVES thừa bay, chip lượt (dưới nền tối Bg của thẻ) vẽ trên thẻ ở z_index này, sáng dần từ độ tối của nền
+## trong CHIP_FADE giây; bay xong thì mờ lại rồi về dưới nền. Đồng gold vẽ trên chip (CHIP_Z + 1).
+const CHIP_Z := 2
+const CHIP_FADE := 0.2
 ## x2 xong: thanh trên trượt xuống trong chừng này giây rồi gold mới bay; đồng cuối chạm chip thì đợi thêm X2_HOLD
 ## giây (loé và vòng sóng của CoinFx) rồi đóng thẻ. X2_TOP_Y: mép trên của thanh như ở Home (px thiết kế).
 const X2_TOP_IN := 0.3
@@ -64,6 +69,10 @@ var _move_gold_left: bool = false
 var _moves_sent: int = 0
 var _coin_fx: Control = null
 var _reward_tw: Tween = null
+## Chip lượt đang vẽ trên thẻ; z_index gốc của nó; tween sáng hay mờ của nó.
+var _chip_lifted: bool = false
+var _chip_z: int = 0
+var _chip_tw: Tween = null
 ## Thanh trên hiện lúc gold x2 bay lên; số gold đang hiện trên chip của nó; đã phát closed.
 var _top: Control = null
 var _top_gold: int = 0
@@ -331,11 +340,54 @@ func _fly_move_gold() -> void:
 	if not is_instance_valid(chip) or not (chip as Control).is_inside_tree():
 		_finish_move_gold()
 		return
+	_lift_chip(chip)
 	var icon: Control = %GoldReward.get_node("CoinIcon")
 	_coin_fx = CoinFx.new()
 	_coin_fx.name = "MoveGoldFx"
+	_coin_fx.z_index = CHIP_Z + 1
 	add_child(_coin_fx)
 	_coin_fx.start(chip, icon, _coin_texture(icon), _moves(), _move_coins(), _on_move_coin_launch, _on_move_coin_land)
+
+
+## Cả khung chip lượt hiện trên nền tối và bảng của thẻ, sáng dần từ độ tối của nền.
+func _lift_chip(chip: Control) -> void:
+	if _chip_lifted:
+		return
+	_chip_lifted = true
+	_chip_z = chip.z_index
+	chip.z_index = CHIP_Z
+	chip.modulate.a = _chip_dim()
+	_chip_tw = chip.create_tween()
+	_chip_tw.tween_property(chip, "modulate:a", 1.0, CHIP_FADE)
+
+
+## Chip lượt mờ lại rồi về dưới nền tối. Tween nằm trên chip nên chạy nốt cả khi thẻ đã đóng; `now` (thẻ rời cây giữa
+## chừng) thì trả ngay.
+func _drop_chip(now: bool = false) -> void:
+	if not _chip_lifted:
+		return
+	_chip_lifted = false
+	if _chip_tw != null and _chip_tw.is_valid():
+		_chip_tw.kill()
+	_chip_tw = null
+	var chip: Variant = _args.get("moves_chip")
+	if not is_instance_valid(chip):
+		return
+	var c := chip as Control
+	if now or not c.is_inside_tree():
+		c.z_index = _chip_z
+		c.modulate.a = 1.0
+		return
+	var tw := c.create_tween()
+	tw.tween_property(c, "modulate:a", _chip_dim(), CHIP_FADE)
+	tw.tween_callback(c.set_z_index.bind(_chip_z))
+	tw.tween_property(c, "modulate:a", 1.0, 0.0)
+
+
+## Độ sáng chip lượt khi nằm dưới nền tối Bg của thẻ.
+func _chip_dim() -> float:
+	var bg: Control = ui.node("Panel/Bg") if ui != null and ui.has("Panel/Bg") else null
+	return 1.0 - (bg.get("color") as Color).a if bg != null else 1.0
 
 
 ## Hình đồng gold của ô thưởng (u_image: atlas và vùng cắt).
@@ -382,9 +434,14 @@ func _finish_move_gold(landed: bool = false) -> void:
 		_send_moves(_moves() - _moves_sent)
 	_move_gold_left = false
 	_set_shown(_coins())
+	_drop_chip()
 	if not landed and is_instance_valid(_coin_fx):
 		_coin_fx.queue_free()
 	_coin_fx = null
+
+
+func _exit_tree() -> void:
+	_drop_chip(true)
 
 
 func _set_shown(n: int) -> void:

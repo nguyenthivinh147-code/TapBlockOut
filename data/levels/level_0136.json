@@ -18,7 +18,7 @@
 		{"id":"b12","color":"blue","cells":[[2,8],[3,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b13","color":"blue","cells":[[4,8],[5,8],[6,8]],"ice":0,"chained_by":"","inner_color":"","fog":true},
 		{"id":"b14","color":"purple","cells":[[7,8],[8,8],[9,8]],"ice":0,"chained_by":"b37","inner_color":"","fog":false},
-		{"id":"b15","color":"blue","cells":[[10,8],[11,8]],"ice":0,"chained_by":"","inner_color":"","fog":true},
+		{"id":"b15","color":"blue","cells":[[10,8],[11,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b16","color":"yellow","cells":[[2,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b17","color":"green","cells":[[3,9],[4,9]],"ice":0,"chained_by":"","inner_color":"","fog":true},
 		{"id":"b18","color":"blue","cells":[[5,9],[6,9],[7,9],[8,9]],"ice":0,"chained_by":"","inner_color":"","fog":true},
@@ -38,7 +38,7 @@
 		{"id":"b32","color":"green","cells":[[3,13],[4,13],[5,13]],"ice":0,"chained_by":"b36","inner_color":"","fog":false},
 		{"id":"b33","color":"blue","cells":[[6,13],[7,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b34","color":"purple","cells":[[8,13],[9,13],[10,13]],"ice":0,"chained_by":"b35","inner_color":"","fog":false},
-		{"id":"b35","color":"green","cells":[[4,14],[5,14]],"ice":0,"chained_by":"","inner_color":"","fog":true},
+		{"id":"b35","color":"green","cells":[[4,14],[5,14]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b36","color":"green","cells":[[6,14],[7,14]],"ice":0,"chained_by":"","inner_color":"","fog":true},
 		{"id":"b37","color":"purple","cells":[[8,14],[9,14]],"ice":0,"chained_by":"","inner_color":"","fog":true}
 	]

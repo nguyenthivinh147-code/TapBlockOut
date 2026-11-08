@@ -123,6 +123,7 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 |---|---|
 | `Popup2` | Khung popup tím, sliced |
 | `m:UI_Maincenter_60` | Mũ tiêu đề tím |
+| `Popup_FlashPack`, `Popup_FlashPack_Title` | Khung kẹo (sliced, viền 60/250/60/130 px, `border_scale` = bề rộng khung / 840) và ruy băng tiêu đề của `PopupFlashPack`, dùng cho `weekly_pass` và `popup_weekly_upsell`. Ruy băng cao hơn mũ tím nên khung Weekly Pass hạ `PANEL_DROP`; phần kem hết sớm hơn `Popup2` ở đáy nên nút đặt cao hơn |
 | `m:UI_Maincenter_20` | Nút X đỏ 64×64 |
 | `m:UI_Maincenter_68` | Ô nội dung kem, sliced |
 | `m:UI_Maincenter_48/51/52/49/50/79/74` | Nút pill xanh lá, xanh dương, cyan, đỏ, vàng, tím, xám |
@@ -137,7 +138,7 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `popup_notice` | `PopupOkLayer` |
 | `popup_reward` | `PopupRewardLayer` |
 | `popup_update` | `CheckUpdateLayer` |
-| `download_data`, `splash` | `DownloadDataLayer`; `Loadingscreen` và `CandySort_logo` thay bằng `assets/ui/loading_bg.png` (9:16) và `assets/ui/loading_logo.png` (tên game có sẵn trong logo); cả hai đặt theo khung boot splash (`Splash.boot_rect`, logo ở `Splash.LOGO_RECT` của ảnh), không theo rect prefab của `LogoGame` |
+| `download_data`, `splash` | `DownloadDataLayer`; `Loadingscreen` và `CandySort_logo` thay bằng `assets/ui/loading_bg.png` (9:16) và `assets/ui/loading_logo.png` (tên game có sẵn trong logo); cả hai đặt theo khung boot splash (`Splash.boot_rect`, logo ở `Splash.LOGO_RECT` của ảnh), không theo rect prefab của `LogoGame`. Handle của `Slider` thay bằng kẹo `assets/ui/candy_drop/candy_drop_00.png` (`Splash.HANDLE_TEX`, giữ tỉ lệ trong rect prefab) |
 | `select_account` | `SelectAccountLayer` |
 | `popup_no_internet` | `MaintainInternetLayer` |
 | `tutorial_intro` | `MainTutorialLayer` |
@@ -151,7 +152,7 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `popup_keep_playing` | `PopupKeepPlaying` |
 | `popup_rescue` | `PopupReviveLayer` |
 | `win_card`, `lose_card` | `EndGameUILayer` (`WinPanel`, `LossPanel`) |
-| Dải cảnh báo độ khó trong level | `WarningHardLevelLayer` |
+| Dải cảnh báo độ khó trong level | `WarningHardLevelLayer` (khung, huy hiệu là sprite kẹo `assets/ui/warn_banner/` theo bậc, bỏ `Noti1`, `Noti2`, hai vạch chắn `Image`; xem `design.md`) |
 | `popup_ingame_settings` | `SettingInGameLayer` |
 | `settings` | `SettingMainMenuLayer` |
 | `popup_language` | `SettingLanguage` |

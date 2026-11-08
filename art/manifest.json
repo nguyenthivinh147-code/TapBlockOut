@@ -3110,5 +3110,160 @@
       512
     ],
     "note": "2026-11-08: anh tieu de popup Chain Offer. Hai luot edit tren ic_EndlessTreasure (lot nen trang, phong 1024): luot 1 seed 1234 (prompt xoa nam cham, mui ten, the khoi hong; prompt_id b2fa237a-71ba-4335-9b0b-b32a4b15b344) xoa duoc nam cham va the khoi, con mui ten; luot 2 (o tren) chay tren ket qua luot 1. tools/compose_chain_offer_art.py giu anh goc ngoai vung 3 booster cu, lay phan AI ve lai trong vung do, dung lai quang sang trang mo, roi dat booster_hint, booster_move, booster_smash. Chay lai script khi doi icon booster."
+  },
+  {
+    "manifest": "images",
+    "name": "ic_chain_offer",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (2 luot: luot 1 tham chieu phong cach ic_store + ic_leaderboard, luot 2 sua bo cuc tren ket qua luot 1)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Redraw <image1> as a more compact, chunkier square icon in the same cartoon sticker style (thick darker outlines, flat cel shading, white glossy highlights, no text). Keep the same three gift boxes, colors and golden chain links, but pull them close together so the icon fills a square: the hot pink gift box with the big golden bow is much bigger and sits in front at the bottom-left, taking about 60% of the frame; the purple box with pink ribbon sits just behind it at the middle-right, partly overlapped; the small teal box with yellow ribbon sits at the top-right; short thick golden chain links connect pink to purple and purple to teal. Centered, balanced, transparent background.",
+    "negative_prompt": "text, letters, watermark, padlock, realistic, photo, blurry, background scene, extra boxes",
+    "style_prompt": "",
+    "seed": 7104,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "f0f0e033-a8e7-4c8a-8f46-ae1be9d0150c",
+    "source": "art/images/chain_icon/chain_icon_d.png",
+    "source_sha256": "5ca3e072654fc41cedb0076f9fff141315eba64bca94eafa7aaee461d8b4f77a",
+    "reference": "art/images/chain_icon/chain_icon_a.png",
+    "file": "assets/ui/ic_chain_offer.png",
+    "file_sha256": "ce26880bbb9e9381b39c974eb771faab1f8edc95f555fdb5caddd59ffeeffc1f",
+    "file_size": [
+      192,
+      192
+    ],
+    "note": "2026-11-08: icon Chain Offer o cot phai Home (thay ic_dailygift dung chung). Luot 1 seed 7101 (prompt_id 0f196483-3c55-48de-b050-aa3d4262c349, tham chieu assets/ui/figma/ic_store.png va ic_leaderboard.png): ba hop qua hong, tim, xanh ngoc noi bang xich vang theo duong cheo, nguon chain_icon_a.png; o 123 px thua hon icon ben canh. Luot 2 (o tren) gom bo cuc, hop hong to phia truoc. Bo phuong an ruong quan xich (seed 7102, trong nhu ruong bi khoa) va seed 7103 (mat mat xich hong-tim). tools/fit_icon.gd --size=192 --margin=0.02"
+  },
+  {
+    "manifest": "images",
+    "status": "used",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "style_prompt": "",
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "name": "warn_frame_very_hard",
+    "tool": "mcp comfyui edit_game_image (tham chieu badge_purple_a, custom_size 2048x512)",
+    "prompt": "Using the exact candy style of <image1>, draw a very wide horizontal banner frame, 4:1, for a warning banner in a casual candy puzzle game. Shape: a long rounded rectangle with rounded ends, filling the canvas width with a small even margin. Border: a thick twisted candy-cane rope running all the way around, made of the same glossy white and grape-purple spiral stripes as the ring in <image1>, with a thin darker purple outline, its thickness about 1/5 of the banner height. Inside the border: one smooth glossy grape-purple jelly panel like the center disc of <image1>, violet-to-magenta gradient, slightly recessed, completely plain and empty for text, no texture, no noise. The banner looks the same all along its length so it can be stretched horizontally. Front view, transparent background, no text.",
+    "negative_prompt": "text, letters, watermark, skull, icons, circle in the middle, noise, grain, marble texture, realistic, photo, blurry, background scene",
+    "seed": 7303,
+    "generated_size": [
+      2048,
+      512
+    ],
+    "prompt_id": "9e2b7c3f-09da-4222-87f7-3953d3112ee6",
+    "source": "art/images/warn_banner/frame_purple_c.png",
+    "source_sha256": "b5517f5b475f897a1058a2be0b6862d087f6ed6fe4f89bb8a680a9dad8c6b17e",
+    "reference": "art/images/warn_banner/badge_purple_a.png",
+    "file": "assets/ui/warn_banner/warn_frame_very_hard.png",
+    "file_sha256": "40955ec403b4deb7db30dae8673e7b1f9e3021ef2521975ca5a1fe53c60c537a",
+    "file_size": [
+      1184,
+      288
+    ],
+    "note": "2026-11-08: khung dai canh bao level Hard/VeryHard (thay Warning_1 cua prefab WarningHardLevelLayer), 9-slice ngang vien 160 px. Bo frame_purple_a (luot dau, tham chieu hud_moves_panel, seed 7301: long khung loang, alpha 215) va frame_purple_b (seed 7302: dau trai cham mep). python3 tools/make_warn_banner_art.py: lap alpha long khung, cat vien, cao 288."
+  },
+  {
+    "manifest": "images",
+    "status": "used",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "style_prompt": "",
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "name": "warn_frame_hard",
+    "tool": "mcp comfyui edit_game_image (tham chieu badge_purple_a, custom_size 2048x512)",
+    "prompt": "Using the exact candy style of <image1>, draw a very wide horizontal banner frame, 4:1, for a warning banner in a casual candy puzzle game. Shape: a long rounded rectangle with rounded ends, filling the canvas width with a small even margin. Border: a thick twisted candy-cane rope running all the way around, made of the same glossy white and grape-purple spiral stripes as the ring in <image1>, with a thin darker purple outline, its thickness about 1/5 of the banner height. Inside the border: one smooth glossy grape-purple jelly panel like the center disc of <image1>, violet-to-magenta gradient, slightly recessed, completely plain and empty for text, no texture, no noise. The banner looks the same all along its length so it can be stretched horizontally. Front view, transparent background, no text.",
+    "negative_prompt": "text, letters, watermark, skull, icons, circle in the middle, noise, grain, marble texture, realistic, photo, blurry, background scene",
+    "seed": 7303,
+    "generated_size": [
+      2048,
+      512
+    ],
+    "prompt_id": "9e2b7c3f-09da-4222-87f7-3953d3112ee6",
+    "source": "art/images/warn_banner/frame_purple_c.png",
+    "source_sha256": "b5517f5b475f897a1058a2be0b6862d087f6ed6fe4f89bb8a680a9dad8c6b17e",
+    "reference": "art/images/warn_banner/badge_purple_a.png",
+    "file": "assets/ui/warn_banner/warn_frame_hard.png",
+    "file_sha256": "65dce564fe86daf7d918c4c77728d5e9dc51352b477538c546248e36bd5952f6",
+    "file_size": [
+      1184,
+      288
+    ],
+    "note": "2026-11-08: khung dai canh bao level Hard/VeryHard (thay Warning_1 cua prefab WarningHardLevelLayer), 9-slice ngang vien 160 px. Bo frame_purple_a (luot dau, tham chieu hud_moves_panel, seed 7301: long khung loang, alpha 215) va frame_purple_b (seed 7302: dau trai cham mep). python3 tools/make_warn_banner_art.py: lap alpha long khung, cat vien, cao 288. Ban do: doi sac tu ban tim (HARD_HUE_SHIFT trong script), soc trang giu mau."
+  },
+  {
+    "manifest": "images",
+    "status": "used",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "style_prompt": "",
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "name": "warn_badge_very_hard",
+    "tool": "mcp comfyui edit_game_image (tham chieu assets/ui/hud/hud_panel.png)",
+    "prompt": "Redraw <image1> as a perfectly round circular candy badge, front view, same glossy jelly-candy style as <image1>. Outer part: a thick ring of twisted candy-cane stripes, glossy white and grape-purple diagonal stripes spiraling around the ring, with a thin darker purple outline. Inner part: a round glossy grape-purple jelly disc, violet-to-magenta gradient, slightly recessed, bright rim light on top, darker lower lip, a white glossy highlight on the upper left, the center smooth and empty. Centered, generous padding, transparent background, no text.",
+    "negative_prompt": "text, letters, watermark, skull, face, icon in the center, square, realistic, photo, blurry, background scene",
+    "seed": 7311,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "a80a567f-44fe-488c-ac25-8d57f000fd5a",
+    "source": "art/images/warn_banner/badge_purple_a.png",
+    "source_sha256": "d2cd068504bf7ecf6a310ce7459f4b66b49034e0f8cfcf7899895c54aad13cf3",
+    "reference": "assets/ui/hud/hud_panel.png",
+    "file": "assets/ui/warn_banner/warn_badge_very_hard.png",
+    "file_sha256": "ef8219502f9ee2a6f6cda6245678fa452c666df6d1608d6459af725726b05652",
+    "file_size": [
+      291,
+      288
+    ],
+    "note": "2026-11-08: huy hieu tron sau dau lau tren dai canh bao (thay vong do UI_Maincenter_76). python3 tools/make_warn_banner_art.py: alpha 254 -> 255, cat vien, cao 288."
+  },
+  {
+    "manifest": "images",
+    "status": "used",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "style_prompt": "",
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "name": "warn_badge_hard",
+    "tool": "mcp comfyui edit_game_image (tham chieu assets/ui/hud/hud_panel.png)",
+    "prompt": "Redraw <image1> as a perfectly round circular candy badge, front view, same glossy jelly-candy style as <image1>. Outer part: a thick ring of twisted candy-cane stripes, glossy white and grape-purple diagonal stripes spiraling around the ring, with a thin darker purple outline. Inner part: a round glossy grape-purple jelly disc, violet-to-magenta gradient, slightly recessed, bright rim light on top, darker lower lip, a white glossy highlight on the upper left, the center smooth and empty. Centered, generous padding, transparent background, no text.",
+    "negative_prompt": "text, letters, watermark, skull, face, icon in the center, square, realistic, photo, blurry, background scene",
+    "seed": 7311,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "a80a567f-44fe-488c-ac25-8d57f000fd5a",
+    "source": "art/images/warn_banner/badge_purple_a.png",
+    "source_sha256": "d2cd068504bf7ecf6a310ce7459f4b66b49034e0f8cfcf7899895c54aad13cf3",
+    "reference": "assets/ui/hud/hud_panel.png",
+    "file": "assets/ui/warn_banner/warn_badge_hard.png",
+    "file_sha256": "a48b1b4d55b28dc51b78936a6f3179410cc089eda5a559aab6d5087c4097f60a",
+    "file_size": [
+      291,
+      288
+    ],
+    "note": "2026-11-08: huy hieu tron sau dau lau tren dai canh bao (thay vong do UI_Maincenter_76). python3 tools/make_warn_banner_art.py: alpha 254 -> 255, cat vien, cao 288. Ban do: doi sac tu ban tim (HARD_HUE_SHIFT trong script), soc trang giu mau."
   }
 ]

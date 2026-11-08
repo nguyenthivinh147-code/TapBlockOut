@@ -30,8 +30,8 @@ const MAX_H := Config.BOARD_H - 1
 const MAX_TRIES := 60
 ## Cứ mỗi COUNT_RELAX_EVERY lần thử hỏng thì bớt 1 khối mục tiêu (`_target_count`).
 const COUNT_RELAX_EVERY := 20
-## Bàn có cổng nhịp: giữ ít khối để tìm được trạng thái cổng ban đầu không bắt chạm chờ, nên `mech_plan` chỉ cho cổng
-## nhịp vào level có số khối mục tiêu tới GATE_MAX_BLOCKS. Từ GATE2_FROM bàn tới GATE2_MAX_BLOCKS khối có 2 cổng.
+## Bàn có cổng nhịp giữ ít khối (mỗi khối qua cổng khoá tốn thêm một cú dội), nên `mech_plan` chỉ cho cổng nhịp vào
+## level có số khối mục tiêu tới GATE_MAX_BLOCKS. Từ GATE2_FROM bàn tới GATE2_MAX_BLOCKS khối có 2 cổng.
 const GATE_MAX_BLOCKS := 52
 const GATE2_MAX_BLOCKS := 40
 const GATE2_FROM := 130
@@ -43,8 +43,7 @@ const PLAN_SEED := 977
 ## `_finish`: gán hướng lại tối đa ASSIGN_TRIES lần để số lượt dọn bàn vào khoảng của đường cong, bỏ cách cắt khi
 ## ROUNDS_STALL lần liền không sâu thêm; cứ ROUNDS_RELAX_EVERY lần thử hỏng thì nới khoảng đó thêm 1.
 const ASSIGN_TRIES := 8
-## Chế độ sinh trong game (`strict_rounds` false) chỉ gán FAST_ASSIGN_TRIES lần (bàn có cổng nhịp một lần, vì mỗi lần
-## còn phải dò trạng thái cổng) rồi giữ bàn gần nhất.
+## Chế độ sinh trong game (`strict_rounds` false) chỉ gán FAST_ASSIGN_TRIES lần rồi giữ bàn gần nhất.
 const FAST_ASSIGN_TRIES := 3
 const ROUNDS_STALL := 2
 const ROUNDS_RELAX_EVERY := 5
@@ -54,8 +53,6 @@ const ROUNDS_RELAX_EVERY := 5
 const DEPTH_PUSH := 2.0
 const DEPTH_HOLD := 0.05
 const DEPTH_FREE := 0.3
-## `_fix_gates` thử tối đa GATE_SIDE_TRIES bộ cạnh đặt cổng (kể cả bộ `_mechanics` chọn).
-const GATE_SIDE_TRIES := 2
 ## `_attempt_motif`: đặt lại thùng sắt và cắt lại tối đa STONE_TRIES lần khi có khối bị thùng chắn cả bốn hướng.
 const STONE_TRIES := 3
 ## Bước nhảy trong Motifs.KINDS giữa hai level liền nhau (nguyên tố cùng nhau với số hình), để hình kế tiếp khác nhóm.
@@ -291,8 +288,8 @@ static func _stone_dead(groups: Array, stones: Array[Vector2i], w: int, h: int) 
 ## Gán hướng, rải cơ chế, dịch vào giữa bàn, chọn trạng thái cổng, rồi qua validate và Solver. {} nếu hỏng.
 ## Số lượt dọn bàn (`Solver.clear_rounds`) phải lệch đường cong tối đa `_rounds_tol`: lệch thì gán hướng lại với độ sâu
 ## mục tiêu bù phần lệch, tối đa ASSIGN_TRIES lần; ROUNDS_STALL lần liền không sâu thêm thì bỏ cách cắt này. Bàn chỉ có
-## thùng sắt, sương mù thì số lượt bằng độ sâu lúc gán hướng nên không cần mô phỏng; pudding, xích, hộp giấy chỉ làm
-## chuỗi dài thêm nên độ sâu đã quá mục tiêu thì gán lại luôn.
+## thùng sắt thì số lượt bằng độ sâu lúc gán hướng nên không cần mô phỏng; pudding, xích, hộp giấy, sương mù chỉ làm
+## chuỗi dài thêm nên độ sâu đã quá mục tiêu thì gán lại luôn. Sương mù rải xong qua `_fog_fix` để bàn không kẹt.
 ## `teach`: cơ chế level này dạy ("" nếu không), level phải cho chạm thử cơ chế đó ngay lúc đầu.
 static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictionary, w: int, h: int,
 		stones: Array[Vector2i], groups: Array, teach: String, attempt: int, strict: bool = true) -> Dictionary:
@@ -301,13 +298,13 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 	var tol := _rounds_tol(want, attempt)
 	var aim := want
 	var shift := _centering(groups, stones)
-	var plain: bool = not (feats["ice"] or feats["chain"] or feats["layer"] or feats["pulse"])
+	var plain: bool = not (feats["ice"] or feats["chain"] or feats["layer"] or feats["fog"] or feats["pulse"])
 	var level := {}
 	var near := {}  # bàn có số lượt gần nhất (giữ khi không `strict`)
 	var near_err := 1 << 20
 	var low := -1
 	var stall := 0
-	var tries := ASSIGN_TRIES if strict else (1 if feats["pulse"] else FAST_ASSIGN_TRIES)
+	var tries := ASSIGN_TRIES if strict else FAST_ASSIGN_TRIES
 	for _k in tries:
 		var asg := _assign(w, h, stones, groups, _allowed_colors(id), DifficultyCurve.blocked_power(id), rng, aim)
 		if asg.is_empty():
@@ -316,8 +313,12 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 		if not strict or absi(rounds - want) <= tol or (not plain and (feats["pulse"] or rounds < want)):
 			var mech := _mechanics(id, feats, groups.size(), asg, rng)
 			var cand := _build(id, s, hard, _shifted(stones, shift), _shifted_groups(groups, shift), asg, mech)
-			if not mech["pulse"].is_empty() and not _fix_gates(cand, rng, teach):
-				continue
+			if not mech["fog"].is_empty():
+				_fog_fix(cand)
+			# Cổng nhịp khoá có thể chặn hết khối đi được lúc đầu (cú dội không tính); level dạy cổng cần khối dội vào được ngay.
+			if not mech["pulse"].is_empty():
+				if not Solver.immediate_exit_exists(cand) or (teach == "pulse" and not _teach_ok(cand, teach)):
+					continue
 			if not plain:
 				rounds = Solver.clear_rounds(cand)
 				if rounds < 0:
@@ -353,60 +354,42 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 	return level
 
 
-## Thử các cạnh đặt cổng (bắt đầu từ cạnh `_mechanics` chọn, rồi các cạnh khác có khối thoát qua) và mọi tổ hợp
-## mở/đóng ban đầu, giữ tổ hợp đầu tiên mà không phải chạm chờ (solver chỉ tốn thời gian tìm chính xác khi phải chờ).
-## Hướng thoát của khối không đổi nên mỗi lần thử chỉ tốn một ván tham lam, rẻ hơn sinh lại cả bàn. false nếu không có
-## tổ hợp nào như vậy (bàn 2 cổng thì thử lại với 1 cổng trước). Level dạy cổng nhịp còn cần cổng đóng lúc đầu và có
-## khối đang chờ cổng (`_teach_ok`).
-static func _fix_gates(level: Dictionary, rng: RandomNumberGenerator, teach: String = "") -> bool:
-	var sides: Array = level["pulse_sides"]
-	var combos := 1 << sides.size()
-	var start := rng.randi_range(0, combos - 1)
-	var present: Array = []
-	for b in level["blocks"]:
-		var side := LevelData.block_side(b)
-		if not present.has(side):
-			present.append(side)
-	present.sort()
-	var current: Array = []
-	for p in sides:
-		current.append(str(p["side"]))
-	current.sort()
-	var sets := _side_sets(present, sides.size())
-	_shuffle(sets, rng)
-	sets.erase(current)
-	sets.push_front(current)
-	for set: Array in sets.slice(0, GATE_SIDE_TRIES):
-		for i in sides.size():
-			sides[i]["side"] = set[i]
-		for k in combos:
-			var m := (start + k) % combos
-			for i in sides.size():
-				sides[i]["open"] = (m >> i) & 1 == 1
-			if _no_wait(level) and (teach != "pulse" or _teach_ok(level, teach)):
-				return true
-	# Bàn "có tới 2 cổng": hai cổng không chơi được mà không chờ thì bỏ bớt một cổng rồi thử lại.
-	if sides.size() > 1:
-		sides.resize(1)
-		return _fix_gates(level, rng, teach)
-	return false
-
-
-## Mọi cách chọn `k` (1 hoặc 2) cạnh khác nhau trong `present`, theo thứ tự của `present`.
-static func _side_sets(present: Array, k: int) -> Array:
-	var out: Array = []
-	for i in present.size():
-		if k == 1:
-			out.append([present[i]])
+## Khối còn trong sương không đi được và chỉ lộ khi khối kề rời đi, nên sương rải ngẫu nhiên có thể làm bàn kẹt (khối
+## thường chờ khối sương, khối sương chờ khối thường). Đi tham lam như Solver; mỗi lần kẹt thì bỏ sương của khối ẩn đầu
+## tiên (theo thứ tự khối) sẽ đi được nếu lộ, tới khi dọn hết bàn hoặc không còn khối như vậy (bàn kẹt vì lý do khác,
+## Solver loại sau). Khối thấy sớm hơn chỉ mở thêm nước đi nên bàn đã sửa vẫn giải được. Không dùng rng.
+static func _fog_fix(level: Dictionary) -> void:
+	var b := BoardState.new(level)
+	b.add_moves(Solver.BIG_MOVES)
+	var lifted := {}
+	var guard := 0
+	while not b.is_won() and guard < Solver.GUARD:
+		guard += 1
+		var pick := Solver.pick_tap(b)
+		if pick != "":
+			b.tap(pick)
 			continue
-		for j in range(i + 1, present.size()):
-			out.append([present[i], present[j]])
-	return out
+		var lift := ""
+		for bid in b.block_ids():
+			if not bool(b.block_view(bid)["is_fog_hidden"]):
+				continue
+			var c := b.clone()
+			c.reveal(bid)
+			if Solver.RANK.has(c.peek(bid)):
+				lift = bid
+				break
+		if lift == "":
+			break
+		b.reveal(lift)
+		lifted[lift] = true
+	for bd in level["blocks"]:
+		if lifted.has(str(bd["id"])):
+			bd["fog"] = false
 
 
 ## Level dạy có cho chạm thử cơ chế `mech` ngay lúc đầu không: Đá có ít nhất 2 viên; Băng có khối nứt được; Xích có khối
 ## bị xích mà chìa thoát được ngay và bỏ chìa thì khối đó đi được; Hai lớp có khối bóc được; Sương mù có khối ẩn màu;
-## Cổng nhịp có cổng đóng và khối đang chờ cổng đó.
+## Cổng nhịp có cổng khoá lúc đầu và khối dội vào được cổng đó ngay.
 static func _teach_ok(level: Dictionary, mech: String) -> bool:
 	var b := BoardState.new(level)
 	b.add_moves(Solver.BIG_MOVES)
@@ -440,76 +423,6 @@ static func _teach_ok(level: Dictionary, mech: String) -> bool:
 				if b.peek(bid) == "gate_closed":
 					return true
 	return false
-
-
-## Tham lam (thoát qua cổng đang mở > thoát cạnh không cổng > nứt > bóc) có đi hết mà không phải chạm chờ cổng không;
-## đồng thời có khối thoát ngay. Dùng cổng lúc nó mở và để dành khối cạnh không cổng cho lúc cổng đóng, nên cuối ván
-## không còn dồn vài khối cùng chờ một cổng.
-static func _no_wait(level: Dictionary) -> bool:
-	var b := BoardState.new(level)
-	if b.hint() == "":
-		return false
-	b.add_moves(Solver.BIG_MOVES)
-	var gated := b.gates()
-	# Khối thoát qua cạnh có cổng: theo màu ngoài, sau khi bóc thì theo màu trong.
-	var via_gate := {}
-	var inner_gate := {}
-	for blk in level["blocks"]:
-		via_gate[blk["id"]] = gated.has(LevelData.block_side(blk))
-		if str(blk["inner_color"]) != "":
-			inner_gate[blk["id"]] = gated.has(LevelData.side_of(str(blk["inner_color"])))
-	# Kết quả chạm của từng khối, chỉ tính lại khi có thể đổi: khối bị chặn hay bị xích chỉ đổi khi vật chặn (hoặc chìa)
-	# rời bàn, khối qua cổng đổi khi cổng đảo, khối vừa nứt hay vừa bóc đổi chính nó. Cho cùng kết quả với tính lại
-	# mọi khối mỗi bước (như Solver._greedy) nhưng rẻ hơn nhiều.
-	var kind := {}
-	var waiting := {}  # khối chặn -> các khối đang chờ nó
-	var ids: Array = b.block_ids()  # khối còn trên bàn, cùng thứ tự với block_ids()
-	var dirty: Array = ids.duplicate()
-	while not b.is_won():
-		for id: String in dirty:
-			if not kind.has(id) and not via_gate.has(id):
-				continue
-			var ev := b.inspect(id)
-			kind[id] = ev["kind"]
-			if ev["kind"] == "blocked" or ev["kind"] == "chained":
-				if not waiting.has(ev["blocker"]):
-					waiting[ev["blocker"]] = []
-				waiting[ev["blocker"]].append(id)
-		var pick := ""
-		var rank := 9
-		for id in ids:
-			var k: String = kind[id]
-			var r := 9
-			if k == "exit":
-				r = 0 if via_gate[id] else 1
-			elif k == "crack":
-				r = 2
-			elif k == "peel":
-				r = 3
-			if r < rank:
-				rank = r
-				pick = id
-				if r == 0:
-					break
-		if pick == "":
-			return false
-		b.tap(pick)
-		dirty = []
-		if rank <= 1:
-			kind.erase(pick)
-			via_gate.erase(pick)
-			ids.erase(pick)
-			dirty.append_array(waiting.get(pick, []))
-		else:
-			if rank == 3:
-				via_gate[pick] = inner_gate[pick]
-			dirty.append(pick)
-		if not gated.is_empty():
-			for id in ids:
-				var k: String = kind[id]
-				if via_gate[id] and (k == "exit" or k == "peel" or k == "gate_closed"):
-					dirty.append(id)
-	return true
 
 
 static func _allowed_colors(id: int) -> Array[int]:
@@ -1225,19 +1138,22 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 				break
 			fog[i] = true
 	if feats["pulse"]:
-		var sides := {}
+		# Mỗi lần qua cổng khoá tốn một cú dội, nên cổng đặt ở cạnh có ít lần qua nhất (khối theo màu, hộp giấy tính cả
+		# màu vỏ lẫn màu trong); bằng nhau thì ngẫu nhiên. Cổng mở sẵn hay khoá ngẫu nhiên; level dạy luôn khoá.
+		var passes := {}
 		for i in n:
-			sides[int(asg["color"][i])] = true
-		var cols: Array = sides.keys()
+			var col := int(asg["color"][i])
+			passes[col] = int(passes.get(col, 0)) + 1
+			if layer.has(i):
+				passes[int(layer[i])] = int(passes.get(int(layer[i]), 0)) + 1
+		var cols: Array = passes.keys()
 		cols.sort()
 		_shuffle(cols, rng)
+		cols.sort_custom(func(a: int, b: int) -> bool: return int(passes[a]) < int(passes[b]))
 		var want := 2 if id >= GATE2_FROM and cols.size() >= 2 and n <= GATE2_MAX_BLOCKS else 1
 		for k in mini(want, cols.size()):
-			var col: int = cols[k]
-			var open := rng.randf() < 0.5
-			if col == int(asg["color"][first]):
-				open = true
-			pulse.append({"side": LevelData.SIDES[col], "open": open})
+			var open := rng.randf() < 0.5 and teach_mech(id) != "pulse"
+			pulse.append({"side": LevelData.SIDES[int(cols[k])], "open": open})
 	return {"ice": ice, "chain": chain, "layer": layer, "fog": fog, "pulse": pulse}
 
 

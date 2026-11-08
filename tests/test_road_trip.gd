@@ -477,7 +477,8 @@ func test_screen(t: T) -> void:
 	_g(20, 13)
 	var rt := _mount("road_trip")
 	await _tree().process_frame
-	t.eq(rt.title_label.text, "Road Trip", "tiêu đề")
+	t.ok(rt.find_child("Banner", true, false) == null, "không có ribbon tiêu đề")
+	t.ok(rt.map_scroll.position.y < (rt.chip as Control).position.y, "bản đồ bắt đầu trên chip, sát thanh trên")
 	t.eq(rt.play_label.text, "Level 13", "nút Level 13")
 	t.ok(rt.chip.visible, "chip tiến độ")
 	t.eq(rt.chip_label.text, "12/15", "chip 12/15")
@@ -495,6 +496,53 @@ func test_screen(t: T) -> void:
 	t.ok(rt.done_label.visible, "chữ đã đi hết")
 	t.ok(not rt.chip.visible, "ẩn chip")
 	rt.free()
+
+
+## Chuột không có cảm ứng (desktop, headless): ScrollContainer không tự kéo, bản đồ tự cuộn theo chuột.
+func test_map_mouse_drag(t: T) -> void:
+	_g(20, 1)
+	var rt := _mount("road_trip")
+	await _tree().process_frame
+	await _tree().process_frame
+	var sc: ScrollContainer = rt.map_scroll
+	var map: Control = rt.map
+	t.ok(not DisplayServer.is_touchscreen_available(), "chạy không cảm ứng")
+	var v0 := sc.scroll_vertical
+	t.ok(v0 > 0, "level 1: cuộn ở đáy")
+	var taps := []
+	map.tapped.connect(func(n: int, _b: bool) -> void: taps.append(n))
+	var x := 300.0
+	_map_mouse(map, Vector2(x, 500), true)
+	_map_motion(map, Vector2(x, 530))
+	_map_motion(map, Vector2(x, 830))
+	t.eq(sc.scroll_vertical, v0 - 300, "kéo xuống 300 px: lên 300 px bản đồ")
+	_map_mouse(map, Vector2(x, 830), false)
+	t.eq(taps, [], "kéo không tính là chạm")
+	_map_mouse(map, Vector2(x, 600), true)
+	_map_motion(map, Vector2(x, 570))
+	_map_motion(map, Vector2(x, 370))
+	_map_mouse(map, Vector2(x, 370), false)
+	t.eq(sc.scroll_vertical, v0 - 100, "kéo lên 200 px")
+	rt.free()
+
+
+## Sự kiện chuột vào thẳng _gui_input của bản đồ: position cục bộ, global_position theo viewport.
+func _map_mouse(map: Control, global: Vector2, pressed: bool) -> void:
+	var e := InputEventMouseButton.new()
+	e.button_index = MOUSE_BUTTON_LEFT
+	e.pressed = pressed
+	e.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
+	e.global_position = global
+	e.position = map.get_global_transform().affine_inverse() * global
+	map.call("_gui_input", e)
+
+
+func _map_motion(map: Control, global: Vector2) -> void:
+	var e := InputEventMouseMotion.new()
+	e.button_mask = MOUSE_BUTTON_MASK_LEFT
+	e.global_position = global
+	e.position = map.get_global_transform().affine_inverse() * global
+	map.call("_gui_input", e)
 
 
 func _pop(lv: Control, node_name: String) -> Node:

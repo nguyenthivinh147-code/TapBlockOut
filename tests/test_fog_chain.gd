@@ -45,12 +45,33 @@ func _covered(cells: Array, p: Vector2) -> bool:
 	return cells.has(Vector2i(p.clamp(lo, hi - Vector2(0.001, 0.001)).floor()))
 
 
+## Mỗi mắt xích nằm gọn trên ô của khối: tâm và bốn đầu mút (cộng bề dày nét) đều trên ô của khối, không chìa ra
+## ngoài mép khung hay sang ô trống ở góc lõm.
+func _check_inside(t: T, cells: Array, links: Array) -> void:
+	for l: Array in links:
+		var p: Vector2 = l[0]
+		var d: Vector2 = l[1]
+		var along := d * (BoardFx.CHAIN_RX + BoardFx.CHAIN_W)
+		var across := Vector2(-d.y, d.x) * (BoardFx.CHAIN_RY + BoardFx.CHAIN_W)
+		for q: Vector2 in [p - along, p + along, p - across, p + across]:
+			t.ok(cells.has(Vector2i(q.floor())), "mắt xích %s nằm trong khối" % p)
+
+
+func test_chain_stays_inside_one_cell(t: T) -> void:
+	var one := [Vector2i(0, 0)]
+	var links := BoardFx.chain_links(one)
+	t.ok(links.size() >= 3, "khối một ô vẫn có xích")
+	_check_inside(t, one, links)
+
+
 func test_chain_runs_one_diagonal(t: T) -> void:
 	var bar := [Vector2i(0, 0), Vector2i(1, 0)]
-	var o := Vector2(BoardFx.CHAIN_OUT, BoardFx.CHAIN_OUT)
-	t.eq(BoardFx.chain_path(bar), [-o, Vector2(2, 1) + o], "khối chữ nhật: một đường chéo xuống phải")
+	var o := Vector2(BoardFx.CHAIN_IN, BoardFx.CHAIN_IN)
+	t.eq(BoardFx.chain_path(bar), [o, Vector2(2, 1) - o], "khối chữ nhật: một đường chéo xuống phải, lùi vào trong mép")
 	var links := BoardFx.chain_links(bar)
 	t.ok(links.size() >= 8, "đủ mắt xích dọc đường chéo")
+	t.ok(links[0][2] and links[-1][2], "hai đầu xích là mắt tròn")
+	_check_inside(t, bar, links)
 	var dir: Vector2 = links[0][1]
 	for l: Array in links:
 		t.eq(l[1], dir, "mọi mắt cùng một hướng")
@@ -64,8 +85,9 @@ func test_chain_l_shape_takes_the_covered_diagonal(t: T) -> void:
 	var links := BoardFx.chain_links(l)
 	for k: Array in links:
 		t.ok(_covered(l, k[0]), "mắt xích nằm trên ô của khối")
-	var o := Vector2(BoardFx.CHAIN_OUT, BoardFx.CHAIN_OUT)
-	var other := [-o, Vector2(2, 3) + o] if path[0] != -o else [Vector2(2 + o.x, -o.y), Vector2(-o.x, 3 + o.y)]
+	_check_inside(t, l, links)
+	var o := Vector2(BoardFx.CHAIN_IN, BoardFx.CHAIN_IN)
+	var other := [o, Vector2(2, 3) - o] if path[0] != o else [Vector2(2 - o.x, o.y), Vector2(o.x, 3 - o.y)]
 	t.ok(BoardFx._links_on(l, other).size() <= links.size(), "chọn đường chéo phủ nhiều ô hơn")
 	var center := BoardFx.chain_center(l)
 	t.ok(l.has(Vector2i(center.floor())), "ổ khoá nằm trên ô của khối")

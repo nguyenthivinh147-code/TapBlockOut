@@ -89,7 +89,7 @@ static func chain_rattle(parent: Node, pos: Vector2, cell: float) -> void:
 static func chain_break(parent: Node, center: Vector2, cell: float, span: Vector2, lock_at: Vector2) -> void:
 	var k := cell / 42.0
 	var links := _emit(parent, center, "link", {"name": "ChainLinks", "amount": 12, "lifetime": 0.85, "dir": Vector2.UP,
-		"spread": 180.0, "v": Vector2(140, 400) * k, "gravity": 1300.0 * k, "scale": Vector2(0.7, 1.0) * k,
+		"spread": 180.0, "v": Vector2(140, 400) * k, "gravity": 1300.0 * k, "scale": Vector2(0.5, 0.7) * k,
 		"ramp": [Color.WHITE, STEEL, Color(STEEL, 0.0)], "box": span * 0.45})
 	links.angular_velocity_min = -720.0
 	links.angular_velocity_max = 720.0

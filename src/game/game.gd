@@ -505,7 +505,7 @@ func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bo
 ## Khối đặc biệt rời bàn thì res.piece = true (+1 mảnh leaderboard, cộng khi thắng).
 func tap(attempt: Dictionary, block_id: String) -> Dictionary:
 	var res: Dictionary = (attempt.board as BoardState).tap(block_id)
-	if res.kind != "rejected":
+	if res.kind != "rejected" and res.kind != "fog":
 		attempt["taps"] = int(attempt.taps) + 1
 		ftue("first_tap")
 	res["piece"] = res.kind == "exit" and _take_piece(attempt, block_id)

@@ -36,6 +36,9 @@ const BOOSTER_UNLOCKED := "res://scenes/booster_unlocked.tscn"
 const INGAME_SETTINGS := "res://scenes/popup_ingame_settings.tscn"
 const POPUP_LB_RESULT := "res://scenes/popup_lb_result.tscn"
 const POPUP_RT_WIN := "res://scenes/popup_road_trip_win.tscn"
+## Candy-cane frame and skull badge of the difficulty banner, by tier ("hard", "very_hard"); the layer scene holds the
+## Hard pair. Built by tools/make_warn_banner_art.py, both tiers the same size.
+const WARN_ART := "res://assets/ui/warn_banner/warn_%s_%s.png"
 const BOOSTERS := ["hint", "move", "smash"]
 const FREE_PLACEMENT := "booster_free"
 const MECHS := Unlocks.MECHS
@@ -489,9 +492,10 @@ static func _board_shapes(b: BoardState) -> Array:
 	return out
 
 
-## Dải cảnh báo độ khó theo WarningHardLevelLayer (color-cube-match-puzzle): WarningHardAnimation hiện dần 0.2s rồi
-## nhịp các icon, chữ, vạch chắn chạy; giữ Config.CONTENT.hard_banner_sec (chạm để bỏ qua), mờ đi 0.2s rồi tự vào chơi.
-## Đầu lâu bay về huy hiệu độ khó trên HUD (SkullTarget của prefab) trong lúc đã chơi được.
+## Dải cảnh báo độ khó theo WarningHardLevelLayer (color-cube-match-puzzle), khung kẹo gậy và huy hiệu đầu lâu theo
+## bậc (WARN_ART: Hard đỏ dâu, VeryHard tím nho; scene bỏ tam giác "!" và vạch chắn của prefab). WarningHardAnimation
+## hiện dần 0.2s rồi nhịp đầu lâu và chữ; giữ Config.CONTENT.hard_banner_sec (chạm để bỏ qua), mờ đi 0.2s rồi tự vào
+## chơi. Đầu lâu bay về huy hiệu độ khó trên HUD (SkullTarget của prefab) trong lúc đã chơi được.
 func _show_difficulty_banner(very_hard: bool) -> void:
 	await get_tree().process_frame
 	if _left:
@@ -507,34 +511,27 @@ func _show_difficulty_banner(very_hard: bool) -> void:
 	var skull: Control = v.node("GameObject/Skull")
 	v.texture("GameObject/Skull", ThemeKit.icon("ui_superhard" if very_hard else "ui_hard"))
 	UnityUI.image_of(skull).preserve_aspect = true
+	if very_hard:
+		for p in [["Panel/WarningExtreme/Bar", "frame"], ["Panel/WarningExtreme/Center", "badge"]]:
+			UnityUI.image_of(v.node(p[0])).tex = load(WARN_ART % [p[1], "very_hard"]) as Texture2D
 	var skip := [false]
 	root.gui_input.connect(func(ev: InputEvent) -> void:
 		if ev is InputEventMouseButton and ev.pressed or ev is InputEventScreenTouch and ev.pressed:
 			skip[0] = true)
 	Sfx.play("button")
-	# WarningHardAnimation.PlayAnim: fade in, then yoyo pulses (InOutSine) and the barrier tapes shrink from 100x width.
+	# WarningHardAnimation.PlayAnim: fade in, then yoyo pulses (InOutSine) of the skull and the text.
 	var extreme: Control = v.node("Panel/WarningExtreme")
 	extreme.modulate.a = 0.0
 	var loops: Array[Tween] = []
 	var tin := root.create_tween()
 	tin.tween_property(extreme, "modulate:a", 1.0, 0.2)
 	tin.tween_callback(func() -> void:
-		for p in [["Panel/WarningExtreme/Noti1", 1.15, 0.3], ["Panel/WarningExtreme/Noti2", 1.15, 0.3],
-				["GameObject/Skull", 1.12, 0.4], ["Panel/WarningExtreme/HardLevelTxt", 1.12, 0.4]]:
+		for p in [["GameObject/Skull", 1.12, 0.4], ["Panel/WarningExtreme/HardLevelTxt", 1.12, 0.4]]:
 			var n: Control = v.node(p[0])
 			var tw := n.create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 			tw.tween_property(n, "scale", Vector2.ONE * float(p[1]), float(p[2]))
 			tw.tween_property(n, "scale", Vector2.ONE, float(p[2]))
 			loops.append(tw))
-	for p in ["Panel/WarningExtreme/Image", "Panel/WarningExtreme/Image (1)"]:
-		var bar: Control = v.node(p)
-		var r: Dictionary = bar.get_meta("u_rect")
-		var w := float((r.size as Vector2).x)
-		var tw := bar.create_tween().set_loops()
-		tw.tween_method(func(x: float) -> void:
-			r.size = Vector2(x, (r.size as Vector2).y)
-			UnityUI.apply_rect(bar), w * 100.0, w, 30.0)
-		loops.append(tw)
 	var deadline := Time.get_ticks_msec() + int(float(Config.CONTENT.hard_banner_sec) * 1000.0)
 	while not _left and not skip[0] and Time.get_ticks_msec() < deadline:
 		await get_tree().process_frame
@@ -713,6 +710,8 @@ func _on_block_tapped(id: String) -> void:
 	if kind == "rejected":
 		return
 	board_view.apply_result(res)
+	if kind == "fog":
+		return  # khối còn trong sương chỉ lắc tại chỗ: không tốn MOVES, không tính là nước đi
 	if bool(res.get("piece", false)):
 		_pieces_pending += 1
 		_fly_piece(from)
@@ -1261,7 +1260,7 @@ func _notification(what: int) -> void:
 		idle_start_ms = Time.get_ticks_msec()
 
 
-## Số khối thoát được ngay (cùng luật với Gợi ý), ghi trên bong bóng nhắc.
+## Số khối thoát được ngay (Gợi ý chọn trong số này trước, cú dội cổng nhịp không tính), ghi trên bong bóng nhắc.
 func _exit_count() -> int:
 	var n := 0
 	for id in board.block_ids():
