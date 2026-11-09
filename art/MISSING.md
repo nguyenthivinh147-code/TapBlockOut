@@ -25,5 +25,6 @@
 - `sfx_box_tear` chưa có: hộp giấy rách ở thanh đang dùng `sfx_exit`. Có file là tự dùng.
 
 ## Icon app (Task 7.3)
-- `assets/icon_main_192.png`, `assets/icon_adaptive_fg_432.png` (icon_app thu nhỏ 288 px, bo góc, nền trong), `assets/icon_adaptive_bg_432.png` (màu đặc xanh #2F80ED) dùng cho `launcher_icons/*` của hai preset.
-- Chưa có icon đơn sắc (`adaptive_monochrome_432x432`) cho Android 13 themed icons.
+- Icon kẹo (2026-11-09): nguồn `art/images/icon_app_candy.png`, các cỡ sinh bằng `tools/make_app_icon.gd --mono`. `assets/icon_main_192.png` là ảnh vuông kín; `assets/icon_adaptive_fg_432.png` là cả ảnh thu còn 272 px đặt giữa lớp, mép mờ dần, để khối L nằm trong mặt nạ tròn; `assets/icon_adaptive_bg_432.png` là dải màu lấy từ mép ảnh, khớp với lớp trước nên không thấy đường nối. Đường dẫn trong `launcher_icons/*` của ba preset (Demo, Release, Gradle APK) giữ nguyên.
+- `assets/icon_adaptive_mono_432.png` (icon đơn sắc cho Android 13 themed icons) đã có nhưng chưa gắn: `launcher_icons/adaptive_monochrome_432x432` trong `export_presets.cfg` vẫn rỗng ở cả ba chỗ. Phải sửa khi editor đóng (CLAUDE.md), đặt `"res://assets/icon_adaptive_mono_432.png"`.
+- Chưa xem trên máy thật: launcher thật có thể cắt khác bản giả lập (tròn, squircle, bo góc).

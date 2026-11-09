@@ -422,7 +422,7 @@
   },
   {
     "name": "icon_app",
-    "status": "used",
+    "status": "superseded",
     "tool": "mcp comfyui start_game_image (asset_type=icon)",
     "workflow": "image_qwen_image_2_1_t2i",
     "model": "qwen_image_2.1_int8_convrot",
@@ -440,13 +440,39 @@
     "prompt_id": "63939c33-fcae-4520-b3a9-e563a946ac3f",
     "source": "art/images/icon_app.png",
     "source_sha256": "4e7c7dd62cacff6608709e569e12efff5c4c2d894a95a11f0d98783764be3db2",
+    "note": "Icon theme cu (khoi vang qua cong, nen xanh). Ngay 2026-11-09 thay bang icon_app_candy.png (muc ke tiep)"
+  },
+  {
+    "name": "icon_app",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (buoc cuoi cua chuoi sua, xem note)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Make the hot pink L-shaped candy block about 25% bigger and keep it centered, with a small margin between the top of the block and the top edge of the image. Make the pale tray a bit smaller and lower, near the bottom. Add a motion effect under the L block: four or five soft glowing white speed streaks, straight vertical trails that start at the bottom of the L block and fade out downward toward the tray, as if the block is shooting quickly upward out of the tray. Keep the block shape, deep hot pink glossy gel candy with diagonal white stripes, the pale blurred tray, crumbs, sparkles and the soft pink to lavender background the same.",
+    "negative_prompt": "grid lines, cell divisions, seams, block cut off by edge, text, logo, watermark, border, frame",
+    "input_paths": [
+      "D:/GameProjects/candy_icon/icon_c6a_L_pink.png"
+    ],
+    "seed": 31071,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": false,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "7b2d04be-a37e-44f8-9efd-87548b91e009",
+    "source": "art/images/icon_app_candy.png",
+    "source_sha256": "ba7c2c975882b5312f715a24e6efc29fc62dcb0e4176ee02c5a77258ac1d34f1",
+    "concepts": "art/concepts/concept_icon_app_v1.png, v2_L, v3_bg, v4_streak (nguoi dung chon cot 2 cua v4_streak)",
     "file": "assets/icon_app.png",
-    "file_sha256": "f8cfffb8e360b419a09c1417f2f4ab5ac43d0ba76d1141e86cf4a3c03a88cfe2",
+    "file_sha256": "4c202f804a37c7b3c172cbda434bb162fd2db311b36ceb61e62cd10b98ce2c53",
     "file_size": [
       512,
       512
     ],
-    "note": "Ra o vuong bo goc, tool cat sat vao trong 6.5% de bo vung trong suot, thanh nen dac 512x512"
+    "note": "Chuoi tao (file trung gian o D:/GameProjects/candy_icon): t2i seed 31013 (khoi S bay khoi khay, nen hong) -> edit 31023 (khoi T) -> 31033 (L vang lien khoi, lay chat lieu tu icon_b_pop_T) -> 31041 (dung hinh chu L, chan o duoi) -> 31051 (L hong dam to hon, khay nho nhat mo, bo vien hong) -> 31071 (vet trang truot duoi khoi). tools/make_app_icon.gd --mono sinh icon_app 512, icon_main_192, icon_adaptive_bg_432 (gradient mau mep anh), icon_adaptive_fg_432 (ca anh 272 px giua lop, mep mo dan) va icon_adaptive_mono_432 (L phang ve bang SDF)"
   },
   {
     "name": "block_surface",

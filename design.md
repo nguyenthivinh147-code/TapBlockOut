@@ -630,7 +630,7 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 
 | File | `asset_type` | Cỡ tạo → cỡ dùng | Nội dung |
 | --- | --- | --- | --- |
-| `icon_app` | `icon`, nền đặc | 1024 → các cỡ bản build cần | Một khối màu trượt ra cổng |
+| `icon_app` | `icon` rồi sửa nhiều bước bằng `edit_game_image`, nền đặc (`art/images/icon_app_candy.png`, 2026-11-09) | 1024 → 512, 192 và các lớp adaptive 432 (`tools/make_app_icon.gd`) | Khối kẹo chữ L hồng đậm sọc chéo, liền một khối, bay lên khỏi khay nhỏ màu nhạt và mờ, vệt trắng trượt dưới khối, nền hồng nhạt chuyển sang tím lavender; khối là chủ thể. Icon đơn sắc (Android 13) là hình L phẳng có sọc và vệt trượt |
 | `bg_home` | `background` | 768×1664 → rộng 720 | Nền ít chi tiết, phần giữa yên để bàn cờ nổi; cắt được cho 360×640 |
 | `bg_level` | Ảnh có sẵn (`art/images/bg_level_candy.png`) | 880×1787 → rộng 720 | Phong cảnh kẹo, giữa là bãi cát trống cho bàn cờ; code phủ dim và cắt kiểu cover theo màn |
 | `bg_shop` | `background` (`art/images/bg_shop_candy.png`) | 896×1920 → 886×1920 | Nền màn Shop: gradient pastel hồng → tím nhạt, kẹo mờ ở hai mép, giữa trống để thẻ gói nổi; kéo giãn phủ kín màn |
