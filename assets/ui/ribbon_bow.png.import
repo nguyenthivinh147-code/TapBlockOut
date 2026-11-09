@@ -2,22 +2,22 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://db105rys8bqrj"
-path="res://.godot/imported/lb_banner.png-aa70d2a3145e3f40ffdaeeb0268f76d8.ctex"
+uid="uid://d1kih5b2jjap1"
+path="res://.godot/imported/ribbon_bow.png-31f0c297b4722ec006e32d91d6a883b8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/lb_banner.png"
-dest_files=["res://.godot/imported/lb_banner.png-aa70d2a3145e3f40ffdaeeb0268f76d8.ctex"]
+source_file="res://assets/ui/ribbon_bow.png"
+dest_files=["res://.godot/imported/ribbon_bow.png-31f0c297b4722ec006e32d91d6a883b8.ctex"]
 
 [params]
 
-compress/mode=1
+compress/mode=0
 compress/high_quality=false
-compress/lossy_quality=0.9
+compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
