@@ -248,11 +248,12 @@ func test_shop_gold_flies_to_chip(t: T) -> void:
 func test_shop_owned_pops(t: T) -> void:
 	_g()
 	var shop := _open()
-	var label: Label = shop.price_labels["remove_ads"]
+	# Starter Pack: one-time, with gold (a bought No Ads pack hides its whole section instead).
+	var label: Label = shop.price_labels["starter_pack"]
 	t.eq(label.scale, Vector2.ONE, "giá đứng yên trước khi mua")
-	await shop.buy("remove_ads")
+	await shop.buy("starter_pack")
 	t.ok(label.scale.x > 1.0, "Owned nảy lên")
-	t.ok(shop.fx.flying(), "500 gold tặng kèm bay lên chip")
+	t.ok(shop.fx.flying(), "gold của gói bay lên chip")
 	var price: Label = shop.price_labels["gold_pack_1"]
 	t.eq(price.scale, Vector2.ONE, "gói khác không nảy")
 	_free(shop)

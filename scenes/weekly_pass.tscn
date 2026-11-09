@@ -130,13 +130,13 @@ shader_parameter/px_range = 14.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lhnw6"]
 shader = ExtResource("7_ewfhx")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.5372549, 0.12156863, 0, 1)
-shader_parameter/underlay_color = Color(0.5411765, 0.12156863, 0, 1)
-shader_parameter/face_edge = 0.446428570625
-shader_parameter/outline_half = 0.1285714305
+shader_parameter/outline_color = Color(0.40392157, 0.14901961, 0.011764706, 1)
+shader_parameter/underlay_color = Color(0.24313726, 0.03137255, 0.03137255, 1)
+shader_parameter/face_edge = 0.45
+shader_parameter/outline_half = 0.12
 shader_parameter/underlay_on = true
-shader_parameter/underlay_edge = 0.277678570625
-shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/underlay_edge = 0.2925
+shader_parameter/underlay_offset = Vector2(0, -0.84)
 shader_parameter/px_range = 14.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4o55c"]

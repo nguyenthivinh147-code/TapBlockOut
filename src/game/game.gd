@@ -7,6 +7,13 @@ signal inv_changed
 signal lives_changed
 signal cos_changed
 signal offer_ready(id: String)
+## Chờ video rewarded sẵn sàng (watch): true lúc bắt đầu chờ, false khi xong. Main hiện ad_loading (wireframe 11.1).
+signal ad_wait(on: bool)
+## Báo cho người chơi qua popup của Main: "not_ready" (không có video, popup_notice 11.2) hoặc "offline" (không có
+## mạng khi xem video hay mua hàng, popup_no_internet 1.6).
+signal notice(kind: String)
+## Bản lưu Google Play và bản trên máy là hai lịch sử chơi khác nhau: Main hỏi chọn (select_account, wireframe 1.4).
+signal cloud_conflict
 
 const Config := preload("res://src/config.gd")
 const SaveSchema := preload("res://src/meta/save_schema.gd")
@@ -28,6 +35,12 @@ const PackConditions := preload("res://src/meta/pack_conditions.gd")
 const NotifPlan := preload("res://src/meta/notif_plan.gd")
 const Leaderboard := preload("res://src/meta/leaderboard.gd")
 const RoadTrip := preload("res://src/meta/road_trip.gd")
+const SpecialBomb := preload("res://src/meta/special_bomb.gd")
+const SpecialBoard := preload("res://src/core/special_board.gd")
+const WinStreak := preload("res://src/meta/win_streak.gd")
+const AppVersion := preload("res://src/meta/app_version.gd")
+## last_ad_reason / trạng thái mua mà Main đã báo bằng popup (notice): màn gọi không cần báo thêm.
+const NOTICE_REASONS := ["not_ready", "offline"]
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const LevelLoop := preload("res://src/core/level_loop.gd")
@@ -83,6 +96,14 @@ var _last_attempt_level: int = 0
 var _x2_pending: int = 0
 var _x2_free: bool = false
 var _connected: bool = false
+## Win Streak vừa tụt (thua hoặc bỏ ván): popup "Bạn đã mất chuỗi" chờ hiện (streak_take_lost).
+var _streak_lost: bool = false
+## Bản cloud chờ người chơi chọn (cloud_conflict); {} khi không có.
+var _cloud_pending: Dictionary = {}
+## Popup cập nhật không bắt buộc đã hiện trong phiên này (Để sau thì không hỏi lại tới lần mở game sau).
+var _update_asked: bool = false
+## Test: 1 có mạng, 0 không mạng, -1 kiểm thật (online()).
+var test_online: int = -1
 ## Màn level/challenge đang mở (do Main đặt qua set_in_level). Bản cloud tới muộn không áp lúc này.
 var in_level: bool = false
 var _boot_done: bool = false
@@ -163,6 +184,7 @@ func boot() -> void:
 	NotifPlan.note_return(s, t, "", Platform.enabled())
 	weekly_refresh()
 	lb_refresh()
+	streak_refresh()
 	Lives.tick(s, t)
 	_deliver_pending()
 	_recover_lost_ads()
@@ -187,6 +209,12 @@ func reset_for_test(path: String) -> void:
 	in_level = false
 	test_now = 0
 	test_tz = null
+	test_online = 1
+	# Tests start past the first-time intro (wireframe 1.5) and the Rate us prompt (4.3), also after a boot that
+	# reloads the save file; tests of those clear the flags.
+	s.meta["intro_seen"] = true
+	s.meta["rated"] = true
+	save_now()
 	_session_start = now()
 	_first_session = false
 	if Platform.an != null and Platform.an.has_method("clear"):
@@ -215,6 +243,9 @@ func _clear_session() -> void:
 	_last_attempt_level = 0
 	_x2_pending = 0
 	_x2_free = false
+	_streak_lost = false
+	_cloud_pending = {}
+	_update_asked = false
 	_gen_cache = {}
 	last_ad_reason = ""
 
@@ -346,6 +377,12 @@ func _apply_cloud(raw: String) -> bool:
 	if j.parse(raw) != OK or not (j.data is Dictionary) or (j.data as Dictionary).is_empty():
 		return false
 	var cloud := SaveSchema.merge_defaults(j.data)
+	if _is_conflict(s, cloud):
+		# Hai lịch sử chơi khác nhau (cài ở máy khác): người chơi chọn bản giữ lại (resolve_cloud).
+		_cloud_pending = cloud
+		log_event("cloud_conflict", {"local_level": int(s.level), "cloud_level": int(cloud.level)})
+		cloud_conflict.emit()
+		return false
 	var cloud_wins := is_same(SaveStore.further(s, cloud), cloud)  # hoà thì giữ bản local
 	var other := cloud
 	if cloud_wins:
@@ -356,6 +393,51 @@ func _apply_cloud(raw: String) -> bool:
 		return false
 	save_now()
 	return true
+
+
+## Xung đột cần hỏi (wireframe 1.4): cả hai bản đều đã chơi, khác level và cài lần đầu ở hai thời điểm khác nhau
+## (meta.install_at: hai máy hay hai lần cài). Cùng một lịch sử thì vẫn tự giữ bản chơi nhiều hơn.
+## install_at 0 (bản chưa ghi lúc cài) là không biết: coi như cùng lịch sử.
+static func _is_conflict(local: Dictionary, cloud: Dictionary) -> bool:
+	var a := int(local.meta.get("install_at", 0))
+	var b := int(cloud.meta.get("install_at", 0))
+	return int(local.get("runs", 0)) > 0 and int(cloud.get("runs", 0)) > 0 \
+		and int(local.get("level", 1)) != int(cloud.get("level", 1)) and a > 0 and b > 0 and a != b
+
+
+## Hai bản đang chờ chọn: {local, cloud}, mỗi bản {name, level, avatar}; {} khi không có xung đột.
+func cloud_conflict_view() -> Dictionary:
+	if _cloud_pending.is_empty():
+		return {}
+	return {"local": _account_of(s), "cloud": _account_of(_cloud_pending)}
+
+
+func _account_of(d: Dictionary) -> Dictionary:
+	var nm := str(d.get("profile", {}).get("name", ""))
+	return {"name": nm if nm != "" else tr("profile_name_default"), "level": int(d.get("level", 1)),
+		"avatar": str(d.get("cos", {}).get("avatar", Config.COSMETICS.default_avatar))}
+
+
+## Người chơi chọn bản giữ lại; bản kia bị bỏ, chỉ đơn mua của nó được gộp vào (cấp lại hàng chưa có).
+func resolve_cloud(use_cloud: bool) -> void:
+	if _cloud_pending.is_empty():
+		return
+	var cloud := _cloud_pending
+	_cloud_pending = {}
+	if use_cloud:
+		var local := s
+		s = cloud
+		SaveStore.merge_purchases(s, local, _regrant)
+	else:
+		SaveStore.merge_purchases(s, cloud, _regrant)
+	log_event("cloud_pick", {"cloud": 1 if use_cloud else 0, "level": int(s.level)})
+	save_now()
+	_apply_language()
+	Sfx.apply_settings(s.settings)
+	coins_changed.emit(int(s.coins))
+	inv_changed.emit()
+	lives_changed.emit()
+	cos_changed.emit()
 
 
 ## Cấp lại hàng của đơn chỉ có ở bản kia (entry đã nằm trong s.buys). Món mua một lần đã có
@@ -372,7 +454,8 @@ func _regrant(entry: Dictionary) -> void:
 				n += 1
 		if n > 1:
 			return
-	_give({"coins": int(info.get("gold", 0)), "items": info.get("inv", {})}, "iap_" + sku)
+	_give({"coins": int(info.get("gold", 0)), "items": info.get("inv", {}), "inf_min": int(info.get("inf_min", 0))},
+		"iap_" + sku)
 	if bool(info.get("no_ads", false)):
 		s["no_ads"] = true
 
@@ -465,13 +548,14 @@ func start_attempt() -> Dictionary:
 
 
 ## road_trip: a Road Trip level (start_road_trip): MOVES = the file's StepLimit, no leaderboard pieces, not the
-## main level's replay.
-func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bool = false) -> Dictionary:
+## main level's replay. special: a Special Bomb board (special_start), MOVES from the file the same way.
+func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bool = false,
+		special: bool = false) -> Dictionary:
 	# MOVES follow the current slack config (Remote Config can change it), not the number baked into the file.
-	if not road_trip and int(data.get("min_taps", 0)) > 0:
+	if not road_trip and not special and int(data.get("min_taps", 0)) > 0:
 		data["moves"] = int(data["min_taps"]) + Solver.slack_for(data)
 	var board := BoardState.new(data)
-	var side := challenge or road_trip
+	var side := challenge or road_trip or special
 	var attempt := {
 		"board": board, "rescue": RescueFlow.new(), "level": level,
 		"taps": 0, "moves0": board.moves_left(), "count0": board.remaining_count(),
@@ -480,7 +564,10 @@ func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bo
 		"road_trip": road_trip, "revives": 0, "difficulty": int(data.get("difficulty", 1)),
 		"day": today(), "replay": not side and level == _last_attempt_level,
 		"specials": [] as Array[String], "special_left": [] as Array[String], "pieces": 0,
+		"special": special,
 	}
+	if special:
+		return attempt
 	if road_trip:
 		log_event("rt_start", {"level": level, "runs": int(s.runs), "moves": board.moves_left()})
 		return attempt
@@ -505,7 +592,7 @@ func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bo
 ## Khối đặc biệt rời bàn thì res.piece = true (+1 mảnh leaderboard, cộng khi thắng).
 func tap(attempt: Dictionary, block_id: String) -> Dictionary:
 	var res: Dictionary = (attempt.board as BoardState).tap(block_id)
-	if res.kind != "rejected" and res.kind != "fog":
+	if res.kind != "rejected" and res.kind != "fog" and res.kind != "covered":
 		attempt["taps"] = int(attempt.taps) + 1
 		ftue("first_tap")
 	res["piece"] = res.kind == "exit" and _take_piece(attempt, block_id)
@@ -540,17 +627,24 @@ func _finish_attempt(attempt: Dictionary, won: bool, coins: int) -> void:
 	s["runs"] = int(s.runs) + 1
 	_ftue_runs()
 	var ev := "level_end"
-	if bool(attempt.get("road_trip", false)):
+	if bool(attempt.get("special", false)):
+		ev = "sp_end"
+	elif bool(attempt.get("road_trip", false)):
 		ev = "rt_end"
 	elif bool(attempt.get("challenge", false)):
 		ev = "challenge_end"
-	log_event(ev,
-		{"level": int(attempt.level), "won": 1 if won else 0,
+	var params := {"level": int(attempt.level), "won": 1 if won else 0,
 		"taps": int(attempt.taps), "moves_left": (attempt.board as BoardState).moves_left(),
 		"ms": ms, "coins": coins, "runs": int(s.runs),
 		"blocks_left": (attempt.board as BoardState).remaining_count(),
 		"rescues": (attempt.rescue as RescueFlow).used(),
-		"replay": 1 if bool(attempt.get("replay", false)) else 0})
+		"replay": 1 if bool(attempt.get("replay", false)) else 0}
+	if bool(attempt.get("special", false)):
+		# reason: won | steps | bomb | quit; bombs_left: bombs still counting down (set by the level screen).
+		params["reason"] = "won" if won else str(attempt.get("end_reason", "steps"))
+		params["bombs"] = (attempt.get("bombs", []) as Array).size()
+		params["bombs_left"] = int(attempt.get("bombs_left", 0))
+	log_event(ev, params)
 
 
 ## {coins, move_coins, x2_available, x2_free, rate_prompt, progress, unlocked}. Cộng gold, tăng level, tăng s.runs,
@@ -561,6 +655,8 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 			"progress": {}, "unlocked": [] as Array[String]}
 	if bool(attempt.get("road_trip", false)):
 		return _road_trip_won(attempt)
+	if bool(attempt.get("special", false)):
+		return _special_won(attempt)
 	var level := int(attempt.level)
 	var is_challenge := bool(attempt.get("challenge", false))
 	var base := int(Config.ECON.win_coins)
@@ -586,8 +682,17 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 	var lb: Dictionary = {}
 	if not is_challenge:
 		lb = _lb_award(attempt)
+	var sp_tickets := 0
+	if not is_challenge:
+		sp_tickets = _special_grant(level)
 	if not is_challenge and level >= int(s.level):
 		s["level"] = level + 1
+	var streak_up := false
+	if not is_challenge:
+		streak_refresh()
+		streak_up = WinStreak.on_win(s, now(), _tz())
+		if streak_up:
+			log_event("streak_up", {"level": level, "streak": WinStreak.count(s)})
 	lb_refresh()
 	_last_win_level = level
 	_x2_pending = coins
@@ -610,7 +715,7 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 		progress = Unlocks.feature_progress(level, _content_cap())
 	return {"coins": coins, "move_coins": move_coins, "x2_available": avail, "x2_free": _x2_free, "rate_prompt": rate,
 		"progress": progress, "unlocked": progress.get("unlocked", [] as Array[String]),
-		"weekly_points": weekly_pts, "lb": lb}
+		"weekly_points": weekly_pts, "lb": lb, "streak_up": streak_up, "special_tickets": sp_tickets}
 
 
 func _content_cap() -> int:
@@ -640,14 +745,15 @@ func restart_cost_life(attempt: Dictionary) -> bool:
 func _end_lost(attempt: Dictionary, show_offer: bool) -> bool:
 	if bool(attempt.get("ended", false)):
 		return false
-	if bool(attempt.get("road_trip", false)):
-		# Road Trip never costs a life and shows no offer.
+	if bool(attempt.get("road_trip", false)) or bool(attempt.get("special", false)):
+		# Road Trip and Special Bomb never cost a life and show no offer.
 		_finish_attempt(attempt, false, 0)
 		save_now()
 		return false
 	var level := int(attempt.level)
 	_finish_attempt(attempt, false, 0)
 	if not bool(attempt.get("challenge", false)):
+		_streak_miss(level)
 		Offers.note_fail(s, level)
 		if show_offer:
 			_chain_check(true, level)
@@ -819,13 +925,19 @@ func watch(placement: String, ctx: Dictionary = {}) -> bool:
 		Platform.load_ads()
 		var waited := 0.0
 		var wait_max := float(Config.ADS.get("rv_wait_sec", 3.0))
+		ad_wait.emit(true)
 		while not Platform.ready_rewarded() and waited < wait_max:
 			await get_tree().create_timer(0.1).timeout
 			waited += 0.1
 		if not Platform.ready_rewarded():
-			last_ad_reason = "not_ready"
-			log_event("rv_unavailable", {"pl": placement})
+			# Không có video: mất mạng thì popup 1.6, còn lại popup 11.2 (Main, signal notice).
+			var off := not await online()
+			ad_wait.emit(false)
+			last_ad_reason = "offline" if off else "not_ready"
+			log_event("rv_unavailable", {"pl": placement, "offline": 1 if off else 0})
+			notice.emit(last_ad_reason)
 			return false
+		ad_wait.emit(false)
 	s["ad_pend"] = {"pl": placement, "coins": int(ctx.get("coins", 0)), "at": now()}
 	save_now()
 	log_event("rv_start", {"pl": placement})
@@ -891,6 +1003,18 @@ func rescue_offer(attempt: Dictionary) -> Dictionary:
 		log_event("rescue_show", {"level": int(attempt.level), "price": o.price,
 			"remaining": o.remaining, "index": o.index})
 	return o
+
+
+## Popup cứu lượt kèm Helper Pack (wireframe 4.7) thay cho popup thường: level chính, đây là lần hết MOVES thứ
+## ECON.helper_pack_fail liên tiếp ở level này (s.fail_streak đếm các lần trước) và kho hết +3 Move.
+func helper_pack_due(attempt: Dictionary, offer: Dictionary) -> bool:
+	if bool(attempt.get("challenge", false)) or bool(attempt.get("road_trip", false)):
+		return false
+	if bool(offer.get("use_inventory", false)) or not Config.SKUS.has(str(Config.ECON.get("helper_pack_sku", ""))):
+		return false
+	var fs: Dictionary = s.get("fail_streak", {})
+	return int(fs.get("level", 0)) == int(attempt.level) \
+		and int(fs.get("count", 0)) + 1 >= int(Config.ECON.get("helper_pack_fail", 3))
 
 
 ## method: "inventory" | "gold" | "video". Thành công thì board +3 MOVES.
@@ -1090,13 +1214,13 @@ func is_sale_active() -> bool:
 	return Offers.is_sale(now(), _tz(), has_purchased())
 
 
-## Gói gold theo giá sale hôm nay, thêm `price_text` từ store. Lúc sale có thêm
-## `base_price_text` (giá gói thường để gạch) và `sale_percent`.
+## Gói gold theo giá sale hôm nay, thêm `price_text` từ store. Lúc sale, gói rẻ hơn gói thường có thêm
+## `base_price_text` (giá gói thường để gạch) và `sale_percent`; gói cùng giá mà nhiều gold hơn thì không.
 func shop_catalog() -> Array:
 	var out := Offers.catalog(now(), _tz(), has_purchased())
 	for e in out:
 		e["price_text"] = Platform.price(str(e.sku))
-		if bool(e.sale):
+		if bool(e.sale) and float(e.usd) < float(e.base_usd):
 			e["base_price_text"] = Platform.price(str(e.base_sku))
 			e["sale_percent"] = Config.SALE_PERCENT
 	return out
@@ -1110,9 +1234,37 @@ func buy_sku(sku: String) -> Dictionary:
 	var r: Dictionary = await Platform.buy(sku)
 	_buying -= 1
 	var granted := false
-	if str(r.get("status", "")) == "ok":
+	var status := str(r.get("status", "error"))
+	if status == "ok":
 		granted = grant_purchase(r)
-	return {"status": str(r.get("status", "error")), "sku": sku, "granted": granted}
+	elif not status in ["cancel", "pending", "owned", "invalid"] and not await online():
+		# Mua lỗi vì mất mạng: Main hiện popup 1.6; màn gọi bỏ qua trạng thái "offline".
+		status = "offline"
+		notice.emit(status)
+	return {"status": status, "sku": sku, "granted": granted}
+
+
+## Lần thất bại vừa rồi (video hoặc mua hàng) đã được Main báo bằng popup (notice): màn gọi không báo thêm.
+func notice_shown(reason: String) -> bool:
+	return reason in NOTICE_REASONS
+
+
+## Có mạng không: HEAD Config.CONTENT.net_check_url (trả 204), chờ tối đa net_check_sec giây. Chỉ gọi khi đã lỗi.
+func online() -> bool:
+	if test_online >= 0:
+		return test_online > 0
+	var url := str(Config.CONTENT.get("net_check_url", ""))
+	if url == "":
+		return true
+	var req := HTTPRequest.new()
+	req.timeout = float(Config.CONTENT.get("net_check_sec", 3.0))
+	add_child(req)
+	if req.request(url, [], HTTPClient.METHOD_HEAD) != OK:
+		req.queue_free()
+		return false
+	var res: Array = await req.request_completed
+	req.queue_free()
+	return int(res[0]) == HTTPRequest.RESULT_SUCCESS and int(res[1]) > 0 and int(res[1]) < 500
 
 
 ## Giao một đơn (mỗi token một lần; món mua một lần không giao lại khi restore).
@@ -1133,7 +1285,8 @@ func grant_purchase(p: Dictionary) -> bool:
 		if not info.is_empty():
 			Platform.finish(p, consumable)
 		return false
-	_give({"coins": int(info.get("gold", 0)), "items": info.get("inv", {})}, "iap_" + sku)
+	_give({"coins": int(info.get("gold", 0)), "items": info.get("inv", {}), "inf_min": int(info.get("inf_min", 0))},
+		"iap_" + sku)
 	if bool(info.get("no_ads", false)):
 		s["no_ads"] = true
 	if bool(info.get("weekly_vip", false)):
@@ -1297,6 +1450,22 @@ func weekly_view() -> Dictionary:
 
 
 ## Đã xem tutorial Weekly Pass chưa. Chưa xem thì thắng level không cộng key.
+## Weekly Pass Upsell (wireframe 7.5): một lần mỗi mùa, khi về Home lúc mùa Active, đã xem tutorial, đã có key
+## và chưa VIP. True thì Main mở popup_weekly_upsell.
+func weekly_take_upsell() -> bool:
+	if weekly_state() != WeeklyPass.ACTIVE:
+		return false
+	var w: Dictionary = s.weekly
+	if bool(w.get("vip", false)) or not bool(w.get("tut_seen", false)) or int(w.get("points", 0)) <= 0:
+		return false
+	if str(w.get("upsell", "")) == str(w.get("cycle", "")):
+		return false
+	w["upsell"] = str(w.get("cycle", ""))
+	log_event("weekly_upsell", {"points": int(w.points)})
+	save_now()
+	return true
+
+
 func weekly_tutorial_seen() -> bool:
 	return WeeklyPass.tutorial_seen(s)
 
@@ -1380,15 +1549,21 @@ func lb_open() -> bool:
 	return Leaderboard.enabled() and Unlocks.is_open("leaderboard", int(s.level))
 
 
-## Vào BXH khi vừa mở khoá, bù điểm bot theo ngày BXH. Gọi lúc boot, resume, bắt đầu level, trước khi đọc view.
+## Vào BXH khi vừa mở khoá (tuần đầu bắt đầu lúc này), chốt tuần đã hết, bù điểm bot theo ngày BXH. Gọi lúc boot,
+## resume, bắt đầu level, trước khi đọc view.
 func lb_refresh() -> void:
 	if not lb_open():
 		return
 	var t := now()
-	if Leaderboard.join(s, t):
-		log_event("lb_join", {"level": int(s.level), "league": Leaderboard.league_id(Leaderboard.league(s))})
-		_queue_save()
-	if Leaderboard.grow(s, t) > 0:
+	var dirty := Leaderboard.join(s, t)
+	dirty = Leaderboard.ensure_week(s, t) or dirty
+	var week := Leaderboard.week(s)
+	var r := Leaderboard.roll(s, t)
+	if not r.is_empty():
+		log_event("lb_week_end", {"week": int(r.week) + 1, "league": Leaderboard.league_id(int(r.league)),
+			"points": int(r.points), "rank": int(r.rank)})
+	dirty = dirty or Leaderboard.week(s) != week
+	if Leaderboard.grow(s, t) > 0 or dirty:
 		_queue_save()
 
 
@@ -1407,6 +1582,9 @@ func _lb_award(attempt: Dictionary) -> Dictionary:
 	r["league_min"] = Leaderboard.league_min(li)
 	r["next_min"] = Leaderboard.next_min(li)
 	r["next_league"] = "" if Leaderboard.is_top(li) else Leaderboard.league_id(li + 1)
+	if int(r.before) == 0:
+		# First points of the week: the player takes part in this week.
+		log_event("lb_join", {"week": Leaderboard.week(s) + 1, "level": int(attempt.level)})
 	log_event("lb_points", {"level": int(attempt.level), "points": n, "total": int(r.after), "rank": int(r.rank_after)})
 	for k in r.promoted:
 		log_event("lb_promote", {"league": Leaderboard.league_id(int(k)), "points": int(r.after)})
@@ -1414,7 +1592,8 @@ func _lb_award(attempt: Dictionary) -> Dictionary:
 
 
 ## Mọi thứ màn Leaderboard (tab League) cần: {open, unlock_level, league, league_index, league_count, points,
-## league_min, next_min, next_league, progress, rank, size, delta, top_percent, refresh_in, podium, rows, pending}.
+## league_min, next_min, next_league, progress, rank, size, delta, top_percent, ends_in, podium, rows, pending}.
+## ends_in: giây tới lúc hết tuần.
 ## podium: 3 hàng đầu; rows: tối đa view_size hàng quanh người chơi. Hàng như Leaderboard.standings.
 func lb_view() -> Dictionary:
 	lb_refresh()
@@ -1432,7 +1611,7 @@ func lb_view() -> Dictionary:
 		"next_league": "" if nxt < 0 else Leaderboard.league_id(li + 1),
 		"progress": 1.0 if nxt < 0 else clampf(float(pts - lo) / float(maxi(nxt - lo, 1)), 0.0, 1.0),
 		"rank": rank, "size": rows.size(), "delta": seen - rank if seen > 0 else 0,
-		"top_percent": Leaderboard.top_percent(s), "refresh_in": Leaderboard.seconds_to_grow(now()),
+		"top_percent": Leaderboard.top_percent(s), "ends_in": Leaderboard.seconds_to_week_end(s, now()),
 		"podium": rows.slice(0, 3), "rows": Leaderboard.window(rows, rank),
 		"pending": not Leaderboard.pending(s).is_empty(),
 	}
@@ -1447,7 +1626,8 @@ func lb_world_view() -> Dictionary:
 	return w
 
 
-## Popup Leagues: {current, points, rows: [{id, min, max (-1 ở league cuối), reward, reached, current}]}.
+## Thang 7 league: {current, points, rows: [{id, min, max (-1 ở league cuối), reward, has_reward, reached (đã vào
+## trong tuần này), current}]}.
 func lb_leagues_view() -> Dictionary:
 	var cur := Leaderboard.league(s)
 	var rows: Array = []
@@ -1455,7 +1635,7 @@ func lb_leagues_view() -> Dictionary:
 		var nxt := Leaderboard.next_min(i)
 		rows.append({"id": Leaderboard.league_id(i), "min": Leaderboard.league_min(i),
 			"max": nxt - 1 if nxt >= 0 else -1, "reward": Leaderboard.reward_of(i),
-			"reached": i <= cur and Leaderboard.joined(s), "current": i == cur})
+			"has_reward": Leaderboard.has_reward(i), "reached": i <= cur and Leaderboard.joined(s), "current": i == cur})
 	return {"current": Leaderboard.league_id(cur), "points": Leaderboard.points(s), "rows": rows}
 
 
@@ -1489,6 +1669,42 @@ func lb_claim() -> Dictionary:
 	log_event("lb_claim", {"league": Leaderboard.league_id(Leaderboard.league(s)), "coins": int(r.get("coins", 0))})
 	save_now()
 	return r
+
+
+## Kết quả tuần chờ xem: {week (1 = tuần đầu), league (id), points, rank, reward} hoặc {} nếu không có.
+func lb_week_result_view() -> Dictionary:
+	lb_refresh()
+	var r := Leaderboard.result(s)
+	if r.is_empty():
+		return {}
+	r["week"] = int(r.week) + 1
+	r["league"] = Leaderboard.league_id(int(r.league))
+	return r
+
+
+## Đóng popup kết quả tuần: cộng thưởng (nếu có), xoá kết quả. Trả thưởng đã cộng ({} nếu không có kết quả).
+func lb_week_claim() -> Dictionary:
+	var res := Leaderboard.result(s)
+	var r := Leaderboard.claim_result(s)
+	if res.is_empty():
+		return {}
+	_give(r, "lb_week")
+	log_event("lb_claim", {"league": Leaderboard.league_id(int(res.league)), "coins": int(r.get("coins", 0)),
+		"week": int(res.week) + 1})
+	save_now()
+	return r
+
+
+## Giây tới lúc hết tuần BXH (đếm ngược trên popup Leaderboard).
+func lb_ends_in() -> int:
+	return Leaderboard.seconds_to_week_end(s, now())
+
+
+## Chấm đỏ ở icon Bảng xếp hạng của Home: có kết quả tuần chờ xem hoặc thưởng league chờ nhận.
+func lb_badge() -> bool:
+	if not lb_open():
+		return false
+	return not Leaderboard.result(s).is_empty() or not Leaderboard.pending(s).is_empty()
 
 
 # --- Chain Offer ---
@@ -1551,6 +1767,125 @@ func chain_claim() -> Dictionary:
 	return {"ok": true, "type": type, "reward": adv.reward, "status": "ok"}
 
 
+# --- mở game: cập nhật, hướng dẫn đầu ---
+
+## Phiên bản app (application/config/version).
+static func app_version() -> String:
+	return str(ProjectSettings.get_setting("application/config/version", ""))
+
+
+## Popup cập nhật (wireframe 1.2): "force" (dưới CONTENT.min_version: bắt buộc), "optional" (dưới latest_version,
+## một lần mỗi lần mở game) hoặc "".
+func update_state() -> String:
+	var st := AppVersion.update_state(app_version(), str(Config.CONTENT.get("latest_version", "")),
+		str(Config.CONTENT.get("min_version", "")))
+	if st == "optional" and _update_asked:
+		return ""
+	return st
+
+
+func mark_update_asked() -> void:
+	_update_asked = true
+
+
+## Mở trang game trên store (nút Cập nhật).
+func open_store() -> void:
+	log_event("update_open", {"version": app_version()})
+	OS.shell_open(str(Config.CONTENT.get("store_url", "")))
+
+
+## Hướng dẫn lần đầu (wireframe 1.5) trước khi chơi L1: true một lần.
+func take_intro() -> bool:
+	if bool(s.meta.get("intro_seen", false)):
+		return false
+	s.meta["intro_seen"] = true
+	save_now()
+	return true
+
+
+# --- Win Streak (design.md mục 7 "Win Streak") ---
+
+func streak_refresh() -> void:
+	WinStreak.validate(s, now(), _tz(), int(s.level))
+
+
+## WinStreak.view: {visible, running, started, streak, before, milestones, claimable, ends_in, next_in, entry}.
+func streak_view() -> Dictionary:
+	streak_refresh()
+	return WinStreak.view(s, now(), _tz(), int(s.level))
+
+
+## Popup mở khi bấm icon Home: "intro", "main", "end" hoặc "" (ẩn).
+func streak_entry() -> String:
+	streak_refresh()
+	return WinStreak.entry(s, now(), _tz(), int(s.level))
+
+
+## Lần đầu về Home trong lượt mà chưa bấm Start: true một lần (popup giới thiệu tự mở).
+func streak_take_auto_intro() -> bool:
+	streak_refresh()
+	if not WinStreak.should_auto_intro(s, now(), _tz(), int(s.level)):
+		return false
+	WinStreak.mark_auto_intro(s)
+	save_now()
+	return true
+
+
+## Start ở popup giới thiệu: từ đây thắng mới cộng chuỗi.
+func streak_start() -> bool:
+	streak_refresh()
+	if not WinStreak.start(s, now(), _tz()):
+		return false
+	log_event("streak_start", {"level": int(s.level)})
+	save_now()
+	return true
+
+
+## Nhận thưởng một mốc đã đạt ({} khi không nhận được).
+func streak_claim(streak: int) -> Dictionary:
+	streak_refresh()
+	var reward := WinStreak.claim(s, streak)
+	if reward.is_empty():
+		return {}
+	_give(reward, "streak")
+	log_event("streak_claim", {"streak": streak, "coins": int(reward.get("coins", 0))})
+	save_now()
+	return reward
+
+
+## Bỏ ván lúc này làm chuỗi tụt (level chính, đã chạm, lượt đang đếm).
+func streak_at_stake(attempt: Dictionary) -> bool:
+	if bool(attempt.get("ended", false)) or bool(attempt.get("challenge", false)) \
+			or bool(attempt.get("road_trip", false)) or not _touched(attempt):
+		return false
+	streak_refresh()
+	return WinStreak.at_stake(s, now(), _tz())
+
+
+## Về Home giữa ván đã chạm: chuỗi tụt kể cả khi không mất mạng (HandleMissStreak lúc thoát).
+func leave_attempt(attempt: Dictionary) -> void:
+	if bool(attempt.get("ended", false)) or bool(attempt.get("challenge", false)) \
+			or bool(attempt.get("road_trip", false)) or not _touched(attempt):
+		return
+	_streak_miss(int(attempt.level))
+	save_now()
+
+
+func _streak_miss(level: int) -> void:
+	streak_refresh()
+	var before := WinStreak.count(s)
+	if WinStreak.on_miss(s, now(), _tz()):
+		_streak_lost = true
+		log_event("streak_lost", {"level": level, "from": before, "to": WinStreak.count(s)})
+
+
+## Chuỗi vừa tụt: true một lần, để UI báo "Bạn đã mất chuỗi" (popup_notice).
+func streak_take_lost() -> bool:
+	var v := _streak_lost
+	_streak_lost = false
+	return v
+
+
 # --- mạng ---
 
 func lives_view() -> Dictionary:
@@ -1593,7 +1928,8 @@ func refill_video() -> bool:
 
 # --- Daily Challenge (mở từ L50, không phải demo) ---
 
-## Level id của thử thách hôm nay: level đã thắng gần nhất của người chơi (s.level - 1), kẹp vào [50, 300].
+## Level id của thử thách hôm nay: level đã thắng gần nhất của người chơi (s.level - 1), kẹp vào
+## [CHALLENGE_MIN_ID, Config.CONTENT.release_pregen_level] (mặc định [50, 500]).
 ## Dùng level đã qua để cơ chế trên bàn luôn là cơ chế người chơi đã được dạy.
 func challenge_level_id() -> int:
 	return clampi(int(s.level) - 1, CHALLENGE_MIN_ID, int(Config.CONTENT.release_pregen_level))
@@ -1735,6 +2071,144 @@ func road_trip_mark_guide() -> void:
 	save_now()
 
 
+# --- Màn đặc biệt (design.md mục 7 "Màn đặc biệt") ---
+
+var _sp_reward: String = ""
+
+## {open, unlock_level, tickets, timer_ready, wait_sec (tới vé chờ kế), bonus, wins, bombs (số bom trận tới),
+## invite_first (chưa tự mời lần đầu), guide (chưa xem hướng dẫn)}.
+func special_view() -> Dictionary:
+	var t := now()
+	SpecialBomb.normalize(s, t)
+	var open := Unlocks.is_open("special_bomb", int(s.level))
+	return {"open": open, "unlock_level": int(Config.UNLOCK.get("special_bomb", 0)),
+		"tickets": SpecialBomb.tickets(s, t), "timer_ready": SpecialBomb.timer_ready(s, t),
+		"wait_sec": SpecialBomb.wait_left(s, t), "bonus": SpecialBomb.bonus(s), "wins": SpecialBomb.wins(s),
+		"bombs": SpecialBomb.bomb_count(s), "invite_first": open and not bool(s.special.get("invited", false)),
+		"guide": not bool(s.special.get("guide", false))}
+
+
+## Bàn Special thứ `n` (file theo SpecialBomb.board_file), {} nếu thiếu file.
+func special_data(n: int) -> Dictionary:
+	var path := SpecialBoard.path_of(SpecialBomb.board_file(n))
+	if not FileAccess.file_exists(path):
+		return {}
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return parsed if parsed is Dictionary else {}
+
+
+## Dùng một vé và mở bàn Special đang tới. Attempt như start_attempt, thêm special = true, bombs (SpecialBoard.bomb_plan:
+## [{id, cell, taps, seconds}]) và ticket ("timer" | "bonus"). {} khi chưa mở, hết vé hoặc thiếu file (vé không mất).
+## Không cần mạng; thắng / thua đi qua on_level_won / special_lost.
+func special_start() -> Dictionary:
+	var v := special_view()
+	if not bool(v.open) or int(v.tickets) <= 0:
+		return {}
+	var n := SpecialBomb.board(s)
+	var data := special_data(n)
+	if data.is_empty():
+		return {}
+	var bombs := SpecialBoard.bomb_plan(data, SpecialBomb.bomb_count(s), SpecialBomb.bomb_seed(s))
+	var source := SpecialBomb.consume(s, now())
+	var attempt := _begin_attempt(data, n, false, false, true)
+	attempt["bombs"] = bombs
+	attempt["ticket"] = source
+	save_now()
+	_replan_notifications()
+	log_event("sp_start", {"level": n, "board": SpecialBomb.board_file(n), "bombs": bombs.size(),
+		"moves": (attempt.board as BoardState).moves_left(), "ticket": source, "wins": SpecialBomb.wins(s),
+		"tickets_left": SpecialBomb.tickets(s, now()), "runs": int(s.runs)})
+	return attempt
+
+
+## Thắng bàn Special: +1 trận (số bom), sang bàn kế, 1 booster rút đều vào kho ngay. Không gold, không tăng level chính,
+## không Weekly Pass, leaderboard, Win Streak. Trả {special: true, reward (loại booster), x2_available, coins: 0, ...}.
+func _special_won(attempt: Dictionary) -> Dictionary:
+	var n := int(attempt.level)
+	_finish_attempt(attempt, true, 0)
+	SpecialBomb.win(s)
+	var kind := SpecialBomb.pick_reward(SpecialBomb.bomb_seed(s) * 31 + int(s.runs))
+	Wallet.inv_add(s, kind, 1)
+	_sp_reward = kind
+	inv_changed.emit()
+	ftue("first_win")
+	save_now()
+	log_event("sp_reward", {"level": n, "kind": kind, "wins": SpecialBomb.wins(s)})
+	var avail := Platform.ready_rewarded()
+	if avail:
+		offer_video("special_x2")
+	return {"special": true, "level": n, "reward": kind, "x2_available": avail, "coins": 0, "move_coins": 0,
+		"x2_free": false, "rate_prompt": false, "progress": {}, "unlocked": [] as Array[String]}
+
+
+## Xem quảng cáo `special_x2`: thêm 1 booster cùng loại với thưởng vừa nhận. Một lần mỗi trận thắng.
+func special_claim_x2() -> bool:
+	if _sp_reward == "":
+		return false
+	var kind := _sp_reward
+	if not await watch("special_x2", {"kind": kind}):
+		return false
+	_sp_reward = ""
+	Wallet.inv_add(s, kind, 1)
+	inv_changed.emit()
+	save_now()
+	log_event("sp_x2", {"kind": kind})
+	return true
+
+
+## Thua bàn Special: `reason` "steps" (hết bước), "bomb" (bom nổ) hoặc "quit" (rời màn, Back, tắt app); `bombs_left`
+## là số bom còn đếm. Không mất mạng, vé đã dùng lúc vào; lần sau gặp lại đúng bàn và bom đó.
+func special_lost(attempt: Dictionary, reason: String, bombs_left: int = 0) -> void:
+	attempt["end_reason"] = reason
+	attempt["bombs_left"] = bombs_left
+	_end_lost(attempt, false)
+
+
+## Rời popup thắng Special: interstitial result_exit theo nhịp thẻ thắng (đã lấy x2 thì không có).
+func special_leave_win(x2_taken: bool) -> void:
+	_sp_reward = ""
+	var main_done := int(s.level) - 1
+	await _result_exit_inter(main_done, true, x2_taken, {"level": main_done, "mode": "special"})
+
+
+var _sp_invite_queued: bool = false
+
+## Thắng Hard / VeryHard được vé mà sau thẻ thắng về Home (vừa mở tính năng ở Home): Home mời thay cho màn level.
+func special_queue_invite() -> void:
+	_sp_invite_queued = true
+
+
+## Popup mời tự mở khi về Home: lần đầu sau khi mở tính năng, hoặc lời mời đang chờ (special_queue_invite) khi còn vé.
+## true một lần cho mỗi lời mời.
+func special_take_invite() -> bool:
+	var v := special_view()
+	if bool(v.invite_first):
+		s.special["invited"] = true
+		_sp_invite_queued = false
+		save_now()
+		return true
+	if _sp_invite_queued:
+		_sp_invite_queued = false
+		return bool(v.open) and int(v.tickets) > 0
+	return false
+
+
+func special_mark_guide() -> void:
+	s.special["guide"] = true
+	save_now()
+
+
+## Thắng level chính `level`: Hard / VeryHard cộng vé ngăn thưởng khi tính năng đã mở. Trả số vé đã cộng.
+func _special_grant(level: int) -> int:
+	if not Unlocks.is_open("special_bomb", level):
+		return 0
+	var tier := difficulty_of(level)
+	var n := SpecialBomb.add_bonus(s, SpecialBomb.tickets_for(tier))
+	if n > 0:
+		log_event("sp_ticket", {"source": tier, "n": n, "level": level, "total": SpecialBomb.tickets(s, now())})
+	return n
+
+
 # --- cài đặt, rung, thông báo ---
 
 func set_setting(key: String, value: Variant) -> void:
@@ -1815,6 +2289,9 @@ func _notif_candidates() -> Array:
 	for o in Offers.open_offers(s, t):
 		out.append({"kind": "offer_open", "until": int(o.until)})
 		break
+	# Màn đặc biệt: báo khi vé chờ hồi xong, chỉ khi ngăn thưởng trống (còn vé thì đã chơi được rồi).
+	if Unlocks.is_open("special_bomb", level) and SpecialBomb.bonus(s) == 0 and not SpecialBomb.timer_ready(s, t):
+		out.append({"kind": "special_ready", "at": SpecialBomb.ready_at(s, t)})
 	return out
 
 

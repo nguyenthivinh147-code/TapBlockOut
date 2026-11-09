@@ -1,6 +1,6 @@
 # Kế hoạch triển khai: Tap Block Out (Godot 4.7.2, Android gốc)
 
-Tạo ngày 2026-11-01, đối chiếu lại với thư mục thực tế cùng ngày. Đây là nguồn chân lý duy nhất cho việc thực thi. Sub-agent có bộ nhớ độc lập, chỉ biết những gì đọc từ file này và các file được nêu trong task.
+Tạo ngày 2026-11-01, đối chiếu lại với thư mục thực tế cùng ngày. Đối chiếu lại với code ngày 2026-11-09: mục 1.5, 1.6, 1.7, 1.8, 1.10, 1.11, bảng mục 2, Task 9.1, 9.3, 9.4, thêm Task 9.13–9.19 cho phần đã làm mà chưa có task; Task 9.20–9.23 là việc mới cùng ngày. Đây là nguồn chân lý duy nhất cho việc thực thi. Sub-agent có bộ nhớ độc lập, chỉ biết những gì đọc từ file này và các file được nêu trong task.
 
 **Thứ tự ưu tiên khi mâu thuẫn:**
 - Luật chơi, con số, nội dung: [`design.md`](../design.md) thắng.
@@ -80,17 +80,20 @@ project.godot  export_presets.cfg  CLAUDE.md  design.md  icon.svg
 .gitignore  .gitattributes  .editorconfig
 src/config.gd
 src/core/      level_data.gd  board_state.gd  solver.gd  level_generator.gd  silhouette.gd  motifs.gd  difficulty_curve.gd
+               level_loop.gd (level hiển thị -> level nội dung sau level cuối)  special_board.gd (Màn đặc biệt)
 src/meta/      save_schema.gd  save_store.gd  clock.gd  wallet.gd  lives.gd  unlocks.gd
                rescue_flow.gd  daily_calendar.gd  cosmetics.gd  shop_videos.gd
                ad_pacing.gd  offers.gd  notif_plan.gd  leaderboard.gd  road_trip.gd
-               nickname.gd  name_filter.gd
+               nickname.gd  name_filter.gd  win_streak.gd  app_version.gd
+               weekly_pass.gd  chain_offer.gd  pack_conditions.gd (Special Pack)  special_bomb.gd (Màn đặc biệt)
 src/platform/  platform.gd (autoload Platform)  mock_*.gd  android_*.gd
 src/game/      game.gd (autoload Game)  sfx.gd (autoload Sfx)
 src/ui/        theme_kit.gd  ...script màn hình...
 scenes/        main.tscn  board_view.tscn  ...  unity/<Prefab>.tscn (layout Unity đã bake)
-data/levels/   level_0001.json ...
+data/levels/   level_0001.json ... level_0500.json (CONTENT.release_pregen_level; sau L500 lặp lại từ CONTENT.loop_start_level)
 data/road_trip/ rt_0001.json ... rt_0400.json (Road Trip, nhập bằng tools/import_road_trip.gd)
-data/pudding_sdf.res  SDF thân khối bake sẵn cho mọi hình của hai thư mục trên (tools/bake_sdf.gd)
+data/special/  sp_0001.json ... sp_0100.json (Màn đặc biệt, sinh bằng tools/gen_special.gd; bom đặt lúc vào chơi)
+data/pudding_sdf.res  SDF thân khối bake sẵn cho mọi hình của ba thư mục trên (tools/bake_sdf.gd)
 i18n/strings.csv
 assets/        hình, âm thanh dùng trong game
 art/           bản gốc và manifest.json, có .gdignore
@@ -107,7 +110,7 @@ tests/  tools/  reference/horus/  plans/
 
 ```json
 {
-  "id": 21, "w": 14, "h": 19, "hard": false,
+  "id": 21, "w": 14, "h": 18, "hard": false,
   "min_taps": 24, "moves": 26, "seed": 0,
   "stones": [[3, 4]],
   "pulse_sides": [{"side": "up", "open": false}],
@@ -120,9 +123,10 @@ tests/  tools/  reference/horus/  plans/
 
 - Màu và hướng: `yellow` lên `(0,-1)`, `green` trái `(-1,0)`, `blue` phải `(1,0)`, `purple` xuống `(0,1)`. Mã màu (đề xuất của người lập kế hoạch): `#F5C518`, `#43B649`, `#2F80ED`, `#9B51E0`.
 - Cạnh ứng với màu: `up`, `left`, `right`, `down`.
-- `ice`: 1 nghĩa là phải chạm 1 lần để nứt rồi mới đi được. `chained_by`: id khối chìa. `inner_color`: lớp trong. `fog`: khối ẩn màu tới khi một khối kề rời đi; còn ẩn thì chạm vào không đi (`tap` trả `fog`).
-- `moves = min_taps + dư`. Dư theo `design.md` mục 3, tính trên số khối.
+- `ice`: số lớp phủ (0–2, `Config.COVER_MAX_LAYERS`). Khối còn phủ chạm vào không đi; mỗi khối kề rời bàn (thoát hoặc bị Phá) bóc 1 lớp. Lớp phủ là pudding, hoặc băng khi level có `"cover": "frost"` (thiếu khoá là pudding; `LevelData.COVERS`). `chained_by`: id khối chìa. `inner_color`: lớp trong. `fog`: khối ẩn màu tới khi một khối kề rời đi; còn ẩn thì chạm vào không đi (`tap` trả `fog`). `ribbons` (tuỳ chọn, chỉ khối có ruy băng): mảng 1–4 màu ruy băng ngoài vào trong, khi đó `color` là màu kẹo trong cùng; mỗi `peel` bóc ruy băng ngoài cùng, `block_view` trả màu lớp ngoài hiện tại ở `color` và số ruy băng còn lại ở `ribbons` (`LevelData._validate_ribbons`, `design.md` mục 4).
+- `moves = min_taps + dư`. Dư cố định theo bậc trong `design.md` mục 3 (`Config.CONTENT.slack_*`), không theo số khối. `Game` cộng lại dư từ `min_taps` lúc vào level, nên `moves` trong file chỉ là giá trị theo số mặc định.
 - Level nhiều cổng (Road Trip, `data/road_trip/rt_NNNN.json`, `design.md` mục 7 "Road Trip"): khối có thêm `"dir"` (`up` | `left` | `right` | `down`), khi đó `color` là màu cổng trong `LevelData.GATE_COLORS` (12 màu) và hướng theo `dir`; level có `"gates": {"up": [["red", 0, 7], ["teal", 7, 14]], ...}` (màu, từ ô, tới ô dọc cạnh, phủ hết cạnh, mỗi màu một cổng) để vẽ khung. `moves` lấy thẳng `StepLimit`, không tính lại theo dư.
+- Bàn Màn đặc biệt (`data/special/sp_NNNN.json`, Task 9.23, `design.md` mục 7 "Màn đặc biệt"): lát kín hình chữ nhật, thêm `"special": true`, `"rect": [x, y, w, h]`, `"rounds"` (số lượt dọn bàn); bom không nằm trong file mà đặt lúc vào chơi.
 
 ### 1.7 Interface `BoardState` (`src/core/board_state.gd`)
 
@@ -132,24 +136,33 @@ tests/  tools/  reference/horus/  plans/
 func _init(level: Dictionary) -> void
 func clone() -> BoardState
 func tap(block_id: String) -> Dictionary
-# {kind: "exit"|"peel"|"crack"|"blocked"|"chained"|"gate_closed"|"fog"|"rejected",
-#  id, distance: int, blocker: String, moves_left: int, won: bool, revealed: Array[String]}
-func can_exit(block_id: String) -> bool     # tính cả xích, băng, cổng nhịp
+# {kind: "exit"|"peel"|"blocked"|"chained"|"gate_closed"|"fog"|"covered"|"rejected",
+#  id, distance: int, blocker: String, moves_left: int, won: bool, revealed: Array[String],
+#  stripped: Array[String]}  # stripped: khối kề vừa bị bóc 1 lớp phủ vì khối này thoát
+func can_exit(block_id: String) -> bool     # tính cả xích, lớp phủ, cổng nhịp
 func first_exit() -> String                 # khối đầu tiên thoát (hoặc bóc lớp) được ngay; "" nếu không có
 func hint() -> String                       # first_exit(), không có thì khối dội vào cổng nhịp khoá; "" nếu không có cả hai
 func smash(block_id: String) -> bool        # không tốn MOVES; đá không phải khối nên không chọn được
 func reveal(block_id: String) -> void       # bỏ sương của khối; bộ sinh dùng để gỡ bàn kẹt vì sương mù
+func strip(block_id: String) -> void        # bóc 1 lớp phủ; bộ sinh dùng để gỡ bàn kẹt vì lớp phủ
+func cover_kind() -> String                 # "pudding" hoặc "frost" (khoá `cover` của level)
 func add_moves(n: int) -> void
 func remaining_count() -> int
 func moves_left() -> int
 func is_won() -> bool
 func is_out_of_moves() -> bool              # moves_left == 0 và chưa thắng
-func block_view(block_id: String) -> Dictionary  # màu hiện tại, ô, ice, chained, is_fog_hidden
+func block_view(block_id: String) -> Dictionary  # màu hiện tại, ô, ice, cover, chained, is_fog_hidden
 func block_ids() -> Array[String]
 func gate_open(side: String) -> bool
+func gates() -> Dictionary                  # cạnh có cổng nhịp -> đang mở
+func gate_segments() -> Dictionary          # Road Trip: cạnh -> [[màu, từ ô, tới ô)], chỉ để vẽ khung; {} với level thường
+func width() -> int; func height() -> int; func stones() -> Array[Vector2i]
+func peek(block_id: String) -> String       # kind mà tap() sẽ trả, không đổi trạng thái
+func inspect(block_id: String) -> Dictionary  # như peek, thêm {distance, blocker}; blocker là khối chặn, chìa hoặc "gate"
+func state_key() -> String                  # khoá trạng thái (không gồm MOVES) cho solver và test
 ```
 
-Mọi `tap` hợp lệ giảm 1 MOVES, kể cả `crack`, `chained`, `blocked`, `gate_closed`. Riêng khối còn trong sương (`is_fog_hidden`) trả `fog`: không đi, không tốn MOVES, không đổi gì, ưu tiên trước mọi kết quả khác. Cổng nhịp chỉ đổi khi khối của cạnh đó chạm tới thanh: `gate_closed` mở cổng, `exit` hoặc `peel` qua cạnh đó khoá cổng lại; kết quả khác (khối cạnh khác, `blocked`, `chained`, `crack`) và `smash` không đổi cổng. `peel` là thoát lớp ngoài: khối ở nguyên, đổi sang `inner_color`. Khi `moves_left == 0` hoặc đã thắng, `tap` trả `rejected`.
+Mọi `tap` hợp lệ giảm 1 MOVES, kể cả `chained`, `blocked`, `gate_closed`. Riêng khối còn trong sương (`is_fog_hidden`) trả `fog`, và khối còn lớp phủ (`ice` > 0) trả `covered`: không đi, không tốn MOVES, không đổi gì; thứ tự ưu tiên sương mù > xích > lớp phủ. `exit` và `smash` bóc 1 lớp phủ của mỗi khối kề (chung cạnh); `peel` không bóc. Cổng nhịp chỉ đổi khi khối của cạnh đó chạm tới thanh: `gate_closed` mở cổng, `exit` hoặc `peel` qua cạnh đó khoá cổng lại; kết quả khác (khối cạnh khác, `blocked`, `chained`, `covered`) và `smash` không đổi cổng. `peel` là thoát lớp ngoài: khối ở nguyên, đổi sang `inner_color`. Khi `moves_left == 0` hoặc đã thắng, `tap` trả `rejected`.
 
 ### 1.8 Trạng thái lưu (`src/meta/save_schema.gd`)
 
@@ -160,8 +173,11 @@ Mọi `tap` hợp lệ giảm 1 MOVES, kể cả `crack`, `chained`, `blocked`, 
   "version": 1, "coins": Config.ECON.start_coins,
   "inv": {"hint": 0, "move": 0, "smash": 0},
   "gifted": {"hint": false, "move": false, "smash": false},
+  "mech_seen": [],  # cơ chế đã hiện popup giới thiệu ở level dạy (Unlocks.pending_mech, Game.claim_mech_intro)
   "level": 1, "runs": 0, "play_ms": 0, "fail_streak": {"level": 0, "count": 0},
-  "lives": {"count": 10, "next_at": 0},
+  "lives": {"count": 10, "next_at": 0,
+            "bonus": 0,      # mạng tối đa cộng thêm khi Weekly Pass VIP đang Active (Lives.max_for)
+            "inf_until": 0}, # mạng vô hạn tới lúc này, unix giây; 0 là không có (thưởng Weekly Pass, league)
   "daily": {"idx": 0, "claim_day": -1, "ad_day": -1},
   "shop": {"day": -1, "videos": 0},
   "cos": {"owned": ["avatar_00", "frame_00"], "avatar": "avatar_00", "frame": "frame_00"},
@@ -170,13 +186,24 @@ Mọi `tap` hợp lệ giảm 1 MOVES, kể cả `crack`, `chained`, `blocked`, 
   "ad_pend": {}, "ad_credit": {},
   "offers": {"last_run": -999, "items": {}},
   "buys": [], "no_ads": false,
+  "weekly": {"cycle": "", "points": 0, "vip": false, "opened": false, "end_seen": false, "tut_seen": false,
+             "claimed_free": [], "claimed_vip": [], "claimed_bank": [],
+             "pending_end": {},
+             "upsell": ""},  # Weekly Pass (design.md mục 7), src/meta/weekly_pass.gd; tut_seen không reset theo mùa; upsell = mùa đã hiện popup mời VIP
+  "chain": {"active": false, "id": "", "step": 0, "expires": 0, "cooldown_until": 0,
+            "shown": false, "rotation": 0},  # Chain Offer (design.md mục 7), src/meta/chain_offer.gd
   "challenge": {"day": -1, "won": false},
   "road_trip": {"level": 1, "boxes": 0, "guide": false},  # Road Trip (design.md mục 7), src/meta/road_trip.gd
+  "special": {"slot_at": 0, "bonus": 0, "wins": 0, "board": 1, "invited": false, "guide": false},  # Màn đặc biệt (design.md mục 7), src/meta/special_bomb.gd
+  "streak": {"week": -1, "started": false, "auto_shown": false, "count": 0, "before": 0,
+             "claimed": []},  # Win Streak (design.md mục 7), src/meta/win_streak.gd
   "lb": {"joined": false, "points": 0, "league": 0, "seed": 0, "day": -1, "seen_rank": 0,
-         "bots": [], "risen": [], "pending": []},  # Leaderboard (design.md mục 7), src/meta/leaderboard.gd
+         "bots": [], "risen": [], "pending": [],
+         "t0": 0, "week": 0, "clock": 0, "result": {}},  # Leaderboard (design.md mục 7), src/meta/leaderboard.gd
   "notify": {"ignored": 0, "plan": [], "asked": false, "hours": []},
   "settings": {"sfx": true, "music": true, "haptics": true, "notif": true, "lang": ""},
-  "meta": {"install_at": 0, "sessions": 0, "first_session_done": false, "rated": false, "ftue": []}
+  "meta": {"install_at": 0, "sessions": 0, "first_session_done": false, "rated": false, "ftue": [],
+           "intro_seen": false}  # intro_seen: hướng dẫn đầu (wireframe 1.5) đã hiện
 }
 ```
 
@@ -237,25 +264,74 @@ UI chỉ gọi `Game` và `Sfx`, không gọi thẳng `Platform` hay module meta
 ```gdscript
 signal coins_changed(value: int); signal inv_changed; signal lives_changed; signal cos_changed
 signal offer_ready(id: String)
+signal ad_wait(on: bool)            # watch đang chờ video sẵn sàng: Main hiện ad_loading (11.1)
+signal notice(kind: String)         # "not_ready" (popup_notice 11.2) | "offline" (popup_no_internet 1.6), Main hiện
+signal cloud_conflict               # bản cloud là lịch sử chơi khác: Main mở select_account (1.4)
 var s: Dictionary
-func boot() -> void                 # thứ tự: backup, cloud, Remote Config, ngôn ngữ, đơn treo, quảng cáo mất
+var last_ad_reason: String          # lý do lần rewarded gần nhất không thưởng ("closed" | "not_ready" | "offline" | "error")
+var test_now: int; var test_tz: Variant  # chỉ test: giờ giả (0 là giờ máy), múi giờ giả (null là của máy)
+func boot() -> void                 # thứ tự: backup, cloud, Remote Config, ngôn ngữ, meta, đơn treo, quảng cáo mất
+func reset_for_test(path: String) -> void  # file lưu riêng, trạng thái và nhật ký sạch
 func now() -> int
 func today() -> int
-# level
-func current_level_data() -> Dictionary
-func start_attempt() -> Dictionary  # trả BoardState mới và RescueFlow mới: {board, rescue}
-func on_level_won(attempt: Dictionary) -> Dictionary  # {coins, move_coins, x2_available, x2_free, rate_prompt}; coins gồm move_coins (MOVES thừa x ECON.win_move_coins)
+func save_now() -> void
+func log_event(event_name: String, params: Dictionary = {}) -> void  # thêm tham số build
+func current_lang() -> String       # mã đã chọn trong Settings, chưa chọn thì theo máy
+static func match_lang(locale: String) -> String  # mã trong LANGS cho locale máy ("pt_PT" -> "pt_BR"), không khớp thì "en"
+func set_in_level(v: bool) -> void  # main báo đang ở màn level/challenge; ra khỏi level thì áp bản cloud đang chờ
+func ftue(step: String) -> void     # mỗi bước trong CONTENT.ftue_steps một lần, bước lạ bị bỏ qua
+func haptic(ms: int) -> void        # Platform.haptic nếu cài đặt rung bật
+func set_setting(key: String, value: Variant) -> void
+# level: s.level là số hiển thị, tăng mãi; file nội dung theo content_level (Task 9.4)
+func current_level_data() -> Dictionary  # {} khi demo qua demo_max_level hoặc thiếu file
+func content_level(lv: int) -> int  # LevelLoop.content_level(lv, CONTENT.loop_start_level, CONTENT.release_pregen_level)
+func difficulty_of(lv: int) -> String  # "" | "hard" | "very_hard"
+func level_exists(lv: int) -> bool  # demo: tới demo_max_level; phát hành: có file nội dung (kể cả trong vòng lặp)
+func generate_checked(id: int, base_seed: int) -> Dictionary  # sinh, validate, Solver, sinh lại seed kế; {} nếu hỏng hết
+func start_attempt() -> Dictionary  # {board, rescue, level, ...} hoặc {} khi hết level hay thiếu dữ liệu
+func tap(attempt: Dictionary, block_id: String) -> Dictionary  # BoardState.tap + piece (khối crystal rời bàn); đếm lượt chạm
+func smash_block(attempt: Dictionary, block_id: String) -> Dictionary  # {ok, piece}; UI đã trừ booster qua use_booster
+func on_level_won(attempt: Dictionary) -> Dictionary  # {coins, move_coins, x2_available, x2_free, rate_prompt, progress, unlocked, weekly_points, lb, streak_up}; coins gồm move_coins (MOVES thừa x ECON.win_move_coins)
+func next_after_win(res: Dictionary, challenge: bool) -> String  # "home" khi vừa mở tính năng ở Home hoặc thắng Daily Challenge, còn lại "level"
 func on_level_lost(attempt: Dictionary) -> void
 func restart_cost_life(attempt: Dictionary) -> bool
-func leave_win_card(x2_offered: bool, x2_taken: bool) -> void  # chạy luật interstitial
-# ví
+func claim_x2() -> bool             # coroutine: video x2_coins, L1 miễn phí
+func leave_win_card(x2_offered: bool, x2_taken: bool) -> void  # coroutine: interstitial result_exit, rồi offer, rồi xin quyền thông báo
+func rate_now() -> void             # hộp đánh giá của store, sau popup đánh giá (popup_rate, 4.3)
+func leave_attempt(attempt: Dictionary) -> void  # về Home giữa ván đã chạm: chuỗi Win Streak tụt (kể cả không mất mạng)
+func helper_pack_due(attempt: Dictionary, offer: Dictionary) -> bool  # popup hết MOVES kèm Helper Pack (4.7) thay popup thường
+func take_intro() -> bool           # hướng dẫn đầu (1.5) trước lần chơi đầu L1, true một lần
+static func app_version() -> String
+func update_state() -> String       # "" | "optional" | "force" (popup_update 1.2, CONTENT.latest_version / min_version)
+func mark_update_asked() -> void
+func open_store() -> void
+func cloud_conflict_view() -> Dictionary  # {local, cloud}: {name, level, avatar}; {} khi không có xung đột
+func resolve_cloud(use_cloud: bool) -> void  # giữ một bản, gộp đơn mua của bản kia
+func notice_shown(reason: String) -> bool  # lỗi video/mua đã được Main báo bằng popup: màn gọi không báo thêm
+func online() -> bool               # coroutine: HEAD CONTENT.net_check_url; test đặt test_online
+# Win Streak (design.md mục 7 "Win Streak", Task 9.18)
+func streak_refresh() -> void       # WinStreak.validate: ngày Active của tuần mới thì bắt đầu lượt mới, lượt cũ quá hạn thì xoá (quà chưa nhận mất); streak_view tự gọi
+func streak_view() -> Dictionary    # WinStreak.view: {visible, running, started, streak, floor, before, milestones, claimable, ends_in, next_in, entry}
+func streak_entry() -> String       # "intro" | "main" | "end" | ""
+func streak_take_auto_intro() -> bool
+func streak_start() -> bool
+func streak_claim(streak: int) -> Dictionary  # thưởng đã cộng, {} nếu không nhận được
+func streak_at_stake(attempt: Dictionary) -> bool  # bỏ ván lúc này làm chuỗi tụt
+func streak_take_lost() -> bool     # chuỗi vừa tụt: true một lần (popup "Bạn đã mất chuỗi")
+func weekly_take_upsell() -> bool   # popup Weekly Pass Upsell (7.5) một lần mỗi mùa
+func claim_gift() -> String         # booster tặng kèm hướng dẫn tới hạn, "" nếu hết; gọi lặp
+func claim_mech_intro(level: int) -> String  # cơ chế mới cần popup giới thiệu ở level dạy, "" nếu không; ghi s.mech_seen ngay
+# ví, booster
 func spend_coins(n: int, sink: String) -> bool
-func use_booster(kind: String) -> bool
+func use_booster(kind: String) -> bool  # chỉ lấy khỏi kho; hiệu ứng lên bàn do UI làm
 func buy_booster(kind: String) -> bool
+func booster_video(kind: String) -> bool  # coroutine: video booster_free, kho +1, không giới hạn số lần
 # quảng cáo: tự log rv_offer/rv_start/rv_done, lưu trước khi hiện, dừng nhạc
-func watch(placement: String) -> bool
-# rescue, quà, cosmetic, shop, offer: bọc module meta, log analytics, lưu
-func rescue_accept(attempt: Dictionary, method: String) -> bool
+func watch(placement: String, ctx: Dictionary = {}) -> bool  # coroutine; không tự thưởng; hỏng thì xem last_ad_reason
+func offer_video(placement: String) -> void  # nút mời xem vừa hiện: log rv_offer một lần tới lần xem kế
+# rescue, quà, cosmetic, biệt danh: bọc module meta, log analytics, lưu
+func rescue_offer(attempt: Dictionary) -> Dictionary  # RescueFlow.offer + lost (index < 0); log rescue_show
+func rescue_accept(attempt: Dictionary, method: String) -> bool  # "inventory" | "gold" | "video"; thành công thì +3 MOVES
 func rescue_skip(attempt: Dictionary) -> void
 func daily_view() -> Dictionary
 func daily_claim() -> Dictionary
@@ -264,24 +340,84 @@ func cos_buy(id: String) -> bool
 func cos_unlock_video(id: String) -> bool
 func cos_equip(id: String) -> bool
 func profile_name() -> String       # biệt danh, "" là chưa đặt
-func set_profile_name(raw: String) -> String  # "" là đã lưu, hoặc "length" | "chars" | "banned"
+func set_profile_name(raw: String) -> String  # "" là đã lưu, hoặc Nickname.ERR_LENGTH | ERR_CHARS | ERR_BANNED ("length" | "chars" | "banned")
+# shop, mua hàng, offer
 func shop_watch_video() -> bool
-func shop_catalog() -> Array        # gói gold theo giá sale hôm nay
-func buy_sku(sku: String) -> Dictionary
+func shop_videos_left() -> int
+func shop_opened(source: String = "") -> void  # log shop_open
+func shop_catalog() -> Array        # gói gold theo giá sale hôm nay, thêm price_text; lúc sale gói rẻ hơn gói thường có base_price_text, sale_percent
+func has_purchased() -> bool        # đã từng mua gói nào (weekend_sale_mode 2)
+func is_sale_active() -> bool       # weekend sale bật cho người chơi này (mode, ngày, lịch sử mua)
+func buy_sku(sku: String) -> Dictionary  # coroutine: {status, granted}; status "offline" khi lỗi vì mất mạng (đã báo qua notice)
+func grant_purchase(p: Dictionary) -> bool  # giao một đơn, mỗi token một lần, luôn finish
 func restore_purchases() -> bool
-func lives_view() -> Dictionary
+func check_offer(on_lose: bool = false) -> String  # offer cần hiện ("" nếu không); ghi shown, log offer_show, phát offer_ready
+func offer_buy(id: String) -> Dictionary  # coroutine: buy_sku(offer_sku(id))
+func offers_open() -> Array         # [{id, sku, until}]
+func offer_sku(id: String) -> String  # Config.OFFERS rồi Config.PACKS; lúc sale đổi sang <sku>_sale nếu có
+func special_pack_id() -> String    # gói cần hiện icon ở Home ("" nếu không), PackConditions.first_visible (Task 9.14)
+# Weekly Pass (design.md mục 7, Task 9.13)
+func weekly_unlock_level() -> int   # level HARD thứ WEEKLY.unlock_hard_index; 0 nếu không có
+func weekly_unlocked() -> bool      # s.level đã qua weekly_unlock_level()
+func weekly_state() -> String       # WeeklyPass.LOCKED | ACTIVE | WAITING
+func weekly_refresh() -> Dictionary # sang mùa nếu cần (VIP tự nhận thưởng tồn), đặt s.lives.bonus; trả {settled, reward}
+func weekly_view() -> Dictionary    # {state, unlocked, seconds_left, points, last_points, vip, vip_price, badge, dot, pending_end, main, bank, bank_unlocked, bank_slots, bonus_hearts, tut_seen, tut_row, progress}
+func weekly_tutorial_seen() -> bool # chưa xem thì thắng level không cộng key
+func weekly_mark_tutorial_seen() -> void
+func weekly_opened() -> void        # người chơi mở layer: ghi opened, end_seen
+func weekly_take_end() -> Dictionary  # lấy và xoá popup cuối mùa đang chờ ({} nếu không có)
+func weekly_claim_free(i: int) -> Dictionary  # các hàm claim trả thưởng đã cộng {coins, items, inf_min}, {} nếu không nhận được
+func weekly_claim_vip(i: int) -> Dictionary
+func weekly_claim_bank(i: int) -> Dictionary
+func weekly_claim_all() -> Dictionary  # hết Main Tree và Bonus Bank đang nhận được
+func weekly_buy_vip() -> Dictionary # coroutine: chỉ khi Active và chưa VIP; kết quả như buy_sku
+# Chain Offer (design.md mục 7, Task 9.14)
+func chain_view() -> Dictionary     # {id, steps, step, count, expires, seconds_left} hoặc {}
+func chain_take_autoshow() -> bool  # true đúng một lần mỗi chuỗi: main mở layer khi ở Home
+func chain_claim() -> Dictionary    # coroutine: bước free / ad (chain_offer) / pay (SKU của bước); {ok, type, reward, status}
+# Leaderboard (design.md mục 7, Task 9.15, 9.20)
+func lb_open() -> bool              # UNLOCK.leaderboard và LEADERBOARD.enabled
+func lb_refresh() -> void           # vào BXH khi vừa mở khoá (tuần đầu bắt đầu), chốt tuần đã hết, bù điểm bot theo ngày; gọi lúc boot, resume, vào level, trước khi đọc view
+func lb_view() -> Dictionary        # tab League: {open, unlock_level, league, league_index, league_count, points, league_min, next_min, next_league, progress, rank, size, delta, top_percent, ends_in, podium, rows, pending}
+func lb_world_view() -> Dictionary  # tab World: Leaderboard.world + points, league
+func lb_leagues_view() -> Dictionary  # thang league: {current, points, rows: [{id, min, max, reward, has_reward, reached, current}]}
+func lb_opened() -> void            # ghi hạng đang thấy để lần sau hiện ▲/▼
+func lb_pending_view() -> Dictionary  # popup lên league: {leagues, league, reward} hoặc {}
+func lb_claim() -> Dictionary       # nhận thưởng các league đang chờ, {} nếu không có
+func lb_week_result_view() -> Dictionary  # kết quả tuần chờ xem: {week, league, points, rank, reward} hoặc {}
+func lb_week_claim() -> Dictionary  # đóng kết quả tuần: cộng thưởng của nó, {} nếu không có kết quả
+func lb_ends_in() -> int            # giây tới lúc hết tuần
+func lb_badge() -> bool             # chấm đỏ ở icon Bảng xếp hạng: kết quả tuần hoặc thưởng league chờ
+# mạng
+func lives_view() -> Dictionary     # {count, max, seconds_to_next, open, infinite, infinite_left, can_play, refill_price, refill_lives, can_refill_gold, video_ready}
 func refill_gold() -> bool
 func refill_video() -> bool
-func challenge_view() -> Dictionary
-func start_challenge() -> Dictionary
+# Daily Challenge (Task 9.4); tắt bằng Config.FEATURES.challenge
+func challenge_level_id() -> int    # level đã thắng gần nhất (s.level - 1), kẹp vào [50, CONTENT.release_pregen_level]
+func challenge_data(day: int = -1) -> Dictionary  # generate_checked(challenge_level_id(), today() * 1000)
+func challenge_view() -> Dictionary # {enabled, open, locked, unlock_level, available, won, coins, level}
+func start_challenge() -> Dictionary  # như start_attempt, thêm challenge = true; {} khi khoá hoặc đã thắng hôm nay
+func challenge_needs_generation() -> bool  # chưa có trong cache: UI hiện màn chờ
 # Road Trip (design.md mục 7 "Road Trip"): attempt có road_trip = true, thắng/thua qua on_level_won / on_level_lost
 func road_trip_view() -> Dictionary  # {open, unlock_level, level, done, levels, progress, next_box, prev_box, boxes, guide, tier}
+func road_trip_data(lv: int) -> Dictionary  # data/road_trip/rt_NNNN.json, {} nếu ngoài 1..levels hoặc thiếu file
+func road_trip_tier(lv: int) -> String  # "" | "hard" | "very_hard" theo Difficulty của file
 func start_road_trip() -> Dictionary
 func road_trip_revive_view(attempt: Dictionary) -> Dictionary  # {available, moves, left}
 func road_trip_revive(attempt: Dictionary) -> bool  # coroutine: video rt_revive, +revive_moves bước
 func road_trip_mark_guide() -> void
 func road_trip_leave_win(rt_level: int) -> void  # coroutine: interstitial result_exit, cùng luật thẻ thắng
-func set_setting(key: String, value: Variant) -> void
+# Màn đặc biệt (design.md mục 7 "Màn đặc biệt", Task 9.23): attempt có special = true, bombs, ticket
+func special_view() -> Dictionary  # {open, unlock_level, tickets, timer_ready, wait_sec, bonus, wins, bombs, invite_first, guide}
+func special_data(n: int) -> Dictionary  # data/special/sp_NNNN.json của bàn thứ n (quay vòng), {} nếu thiếu
+func special_start() -> Dictionary  # dùng 1 vé (ngăn chờ trước), đặt bom theo số trận thắng; {} khi khoá / hết vé
+func special_lost(attempt: Dictionary, reason: String, bombs_left: int = 0) -> void  # steps | bomb | quit, không mất mạng
+func special_claim_x2() -> bool  # coroutine: video special_x2, +1 booster cùng loại
+func special_leave_win(x2_taken: bool) -> void  # coroutine: interstitial result_exit
+func special_queue_invite() -> void  # vé từ Hard / VeryHard mà sau thẻ thắng về Home: Home mời
+func special_take_invite() -> bool  # lần đầu sau khi mở, hoặc lời mời đang chờ khi còn vé
+func special_mark_guide() -> void
+# on_level_won: thêm special_tickets (vé vừa cộng khi thắng Hard / VeryHard); bàn special trả {special, reward, x2_available}
 # menu tester, chỉ khi Config.account_tool() (bản debug); không log earn/spend
 func tester_edit(edits: Dictionary) -> bool  # {coins?, level?, inv?: {hint, move, smash}, rt_level?}
 func tester_wipe() -> bool          # coroutine: xoá file lưu, Platform.wipe(), boot lại như lần cài đầu
@@ -292,8 +428,9 @@ func tester_wipe() -> bool          # coroutine: xoá file lưu, Platform.wipe()
 `scenes/main.tscn` (`src/ui/main.gd`) giữ một màn hiện tại và một lớp popup:
 
 ```gdscript
-func go(screen: String, args: Dictionary = {}) -> void  # "home", "level", "no_lives", "profile", "shop", "challenge", "leaderboard", "road_trip"
+func go(screen: String, args: Dictionary = {}) -> void  # "splash", "home", "level", "no_lives", "profile", "shop", "challenge", "road_trip" (Leaderboard là popup, open_popup)
 func open_popup(scene_path: String, args: Dictionary = {}) -> Node
+func boot_to_level() -> bool  # sau màn loading: vào thẳng level khi chơi được (còn mạng, còn level), không thì Home
 ```
 
 Mọi màn và popup là scene có script `func setup(args: Dictionary) -> void` và signal `closed(result: Variant)`. UI tĩnh của màn là node trong scene (layout Unity instance từ `scenes/unity/<Prefab>.tscn`); script chỉ tìm node, điền chữ, dữ liệu, signal, còn phần theo dữ liệu thì sinh lúc chạy (`docs/UI_NODES.md`). Nút Back Android đóng popup trên cùng. Đường dẫn scene: `scenes/<tên>.tscn`, script `src/ui/<tên>.gd`. Kích thước gốc 720×1280, stretch `canvas_items`, aspect `expand`, nút tối thiểu 96×96 ở độ phân giải gốc (tương đương khoảng 48dp).
@@ -318,7 +455,7 @@ Addon `addons/godot_ai` nối editor đang mở với MCP `godot-ai`. MCP chỉ 
 
 1. **Không dùng `test_run`, `test_manage`.** Runner này chỉ nhận `McpTestSuite` và báo mọi file `tests/test_*.gd` của ta là `not a McpTestSuite subclass`. Test của dự án chạy bằng `run_all.gd`.
 2. **Editor đang mở thì không chạy `--import`**, vì hai tiến trình editor sẽ cùng ghi `.godot/`. Dùng `filesystem_manage(op="scan")`. `--quit` và `-s` chạy song song với editor được.
-3. **Task sửa `project.godot`, `export_presets.cfg` hoặc editor settings chạy khi editor đóng**, gồm 0.2, 0.3, 7.3, 10.3, 10.4, vì editor giữ bản trong RAM và có thể ghi đè. MCP cũng từ chối ghi `editor_plugins/*`. Trước các task này Orchestrator kiểm `editor_state`: `current_scene` rỗng thì đóng bằng `editor_manage(op="quit")`; khác rỗng thì có thể người dùng đang làm việc, phải hỏi trước, không tự lưu. Xong task thì mở lại bằng `nohup tools/godot.sh --editor --path . >/dev/null 2>&1 &` và kiểm `session_manage(op="list")`. Không có session cũng không chặn việc.
+3. **Task sửa `project.godot`, `export_presets.cfg` hoặc editor settings chạy khi editor đóng**, gồm 0.2, 0.3, 7.3, 9.17, 10.3, 10.4, vì editor giữ bản trong RAM và có thể ghi đè. MCP cũng từ chối ghi `editor_plugins/*`. Trước các task này Orchestrator kiểm `editor_state`: `current_scene` rỗng thì đóng bằng `editor_manage(op="quit")`; khác rỗng thì có thể người dùng đang làm việc, phải hỏi trước, không tự lưu. Xong task thì mở lại bằng `nohup tools/godot.sh --editor --path . >/dev/null 2>&1 &` và kiểm `session_manage(op="list")`. Không có session cũng không chặn việc.
 4. **Giữ autoload `_mcp_game_helper` và plugin `godot_ai` trong `project.godot`.** Bản export không mang theo: plugin tự gỡ autoload lúc export, kể cả headless, còn preset loại file addon. Đã kiểm bằng `--export-pack` trên bản sao project, gói không có autoload và file addon, vẫn có `data/levels/*.json` và `.translation`.
 5. Headless không đụng MCP: plugin tự tắt và in `MCP | plugin disabled in headless mode`. Khi chạy `-s` hoặc `--quit`, helper in một dòng `[godot_ai game_helper]`, không phải lỗi.
 
@@ -350,10 +487,76 @@ git status --short
 | 6 | Ráp màn level | | 6.1 → 6.2 |
 | 7 | Hình, âm thanh | 7.1, 7.2 | sau đó 7.3 |
 | 8 | **Mốc: bản demo** | | 8.1 → 8.2 |
-| 9 | Nội dung phát hành | 9.1, 9.2, 9.5 | sau đó 9.3 → 9.4 |
+| 9 | Nội dung phát hành | 9.1, 9.2, 9.5 | sau đó 9.3 → 9.4; 9.6–9.23 tuần tự (chung `game.gd`, `config.gd`, `save_schema.gd`, `home.gd`, `i18n/strings.csv`) |
 | 10 | Android thật | 10.1, 10.2 | sau đó 10.3 → 10.4 |
 
 Phase 9–10 làm tiếp sau mốc demo, ẩn sau preset `Android Release`, nên không đổi bản demo. Nếu người dùng duyệt demo và đổi luật, các phase này có thể phải sửa theo.
+
+### Mốc theo ngày
+
+Ngày lấy từ tiêu đề task và các đoạn "Bổ sung" trong mục 3. Task 0.1–9.5 và Phase 10 không ghi ngày, lấy theo commit đầu `5031784` (2026-11-01). Task làm qua nhiều ngày có mặt ở mỗi ngày; các ngày sau ghi "(bổ sung)" kèm phần làm hôm đó. Thêm task mới hay bổ sung có ngày thì ghi thêm vào đây.
+
+**2026-11-01:** lập kế hoạch, **mốc bản demo** (L1–20, APK `Android Demo`).
+
+- **Phase 0, Nền dự án:** Task 0.1: Repo và dọn file Horus; Task 0.2: Project Godot và test runner; Task 0.3: Môi trường xuất Android.
+- **Phase 1, Config và schema:** Task 1.1: Config; Task 1.2: Save schema và kho lưu.
+- **Phase 2, Logic thuần:** Task 2.1: Bàn cờ và solver; Task 2.2: Ví, mạng, mở khoá; Task 2.3: Luồng hết MOVES; Task 2.4: Quà 28 ngày; Task 2.5: Avatar, frame, video shop; Task 2.6: Nhịp interstitial; Task 2.7: Offer và sale; Task 2.8: Lịch thông báo.
+- **Phase 3, Nền tảng, chữ, level demo:** Task 3.1: Platform và mock; Task 3.2: Chữ en và vi; Task 3.3: 20 level demo.
+- **Phase 4, Điều phối:** Task 4.1: Autoload Game; Task 4.2: Theme và Sfx.
+- **Phase 5, UI từng màn:** Task 5.1: BoardView; Task 5.2: Home và Profile; Task 5.3: Popup hết MOVES, thắng, thua, hết mạng; Task 5.4: Shop và offer; Task 5.5: Popup quà và Settings.
+- **Phase 6, Ráp màn level:** Task 6.1: Màn level và điều hướng; Task 6.2: E2E headless toàn demo.
+- **Phase 7, Hình và âm thanh:** Task 7.1: Hình; Task 7.2: Âm thanh; Task 7.3: Nối tài nguyên.
+- **Phase 8, Mốc bản demo:** Task 8.1: Kiểm tra bằng hình; Task 8.2: APK demo và ghi chú duyệt.
+- **Phase 9, Nội dung phát hành:** Task 9.1: Bộ sinh level; Task 9.2: Hiển thị cơ chế; Task 9.3: Sinh L21–100 và level dạy; Task 9.4: Daily Challenge, vòng lặp sau level cuối, cơ chế trong game; Task 9.5: Tài nguyên cơ chế.
+- **Phase 10, Android thật:** Task 10.1: Plugin Kotlin; Task 10.2: Plugin Billing; Task 10.3: Backend Android của Platform; Task 10.4: Bản Gradle và AAB bàn giao.
+
+**2026-11-02:**
+
+- Task 5.3: Popup hết MOVES, thắng, thua, hết mạng (bổ sung): thẻ thắng có thanh tiến trình tính năng.
+- Task 9.4: Daily Challenge, vòng lặp sau level cuối, cơ chế trong game (bổ sung): sau level cuối lặp lại nội dung, không sinh level mới.
+- Task 9.13: Weekly Pass.
+- Task 9.14: Chain Offer và Special Pack.
+
+**2026-11-03:**
+
+- Task 9.1: Bộ sinh level (bổ sung): mọi level nhân `DifficultyCurve.COUNT_SCALE` = 2.
+- Task 9.2: Hiển thị cơ chế (bổ sung): vật cản vẽ theo theme kẹo.
+- Task 9.6: Khó hơn từ L14, hình có chủ đích.
+- Task 9.7: Gấp đôi số khối mọi level.
+- Task 9.13: Weekly Pass (bổ sung): tutorial.
+- Task 9.15: Leaderboard theo league.
+- Task 9.17: Màn loading khi mở game.
+
+**2026-11-04:**
+
+- Task 6.1: Màn level và điều hướng (bổ sung): không chạm `idle_hint_sec` giây thì nhắc Gợi ý.
+- Task 9.2: Hiển thị cơ chế (bổ sung): đá đổi thành thùng sắt bốn đinh tán.
+
+**2026-11-05:**
+
+- Task 9.8: Không giới hạn hình dạng khối.
+- Task 9.9: Road Trip, Bảng xếp hạng thành icon ở Home.
+- Task 9.15: Leaderboard theo league (bổ sung): màn mới, icon cúp ở cột trái Home.
+- Task 9.16: Biệt danh.
+
+**2026-11-08:**
+
+- Task 5.3: Popup hết MOVES, thắng, thua, hết mạng (bổ sung): thẻ thắng hiện ngay khi khối cuối rời bàn.
+- Task 6.1: Màn level và điều hướng (bổ sung): popup `booster_unlocked`, video `booster_free` không giới hạn, lời khen `PraiseFx`.
+- Task 9.4: Daily Challenge, vòng lặp sau level cuối, cơ chế trong game (bổ sung): công tắc `Config.FEATURES.challenge`.
+- Task 9.10: Khối to hơn, xếp có chủ đích (kèm luật cổng nhịp mới).
+- Task 9.11: Bake sẵn SDF thân khối.
+- Task 9.12: 500 level bám game tham khảo.
+- Task 9.17: Màn loading khi mở game (bổ sung): nối boot splash, vào thẳng level.
+
+**2026-11-09:** đối chiếu kế hoạch với code, thêm Task 9.13–9.19 cho phần đã làm; mục 4 thêm việc duyệt chỗ đặt `load_transition` và việc báo sinh lại level.
+
+- Task 9.18: Win Streak.
+- Task 9.19: Nối logic các màn wireframe còn lại, gói No Ads, Helper Packs, Bundles.
+- Task 9.20: Leaderboard thành popup, điểm theo tuần.
+- Task 9.21: Road Trip khó hơn 10%, bỏ ghi nguồn.
+- Task 9.22: Pudding bóc theo khối kề, thêm băng (còn bước sinh lại level).
+- Task 9.23: Màn đặc biệt (Special Bomb).
 
 ---
 
@@ -396,7 +599,7 @@ Các module chỉ phụ thuộc `src/config.gd` và `save_schema.gd`. Test tự 
 
 - [x] **Task 2.1: Bàn cờ và solver**
   - **Allowed Files:** `src/core/level_data.gd`, `src/core/board_state.gd`, `src/core/solver.gd`, `tests/test_board.gd`, `tests/test_solver.gd`, `tests/fixtures/*.json`.
-  - **Specs:** Làm đúng mục 1.6–1.7, gồm cả 6 cơ chế để Phase 9 không phải viết lại. Khối trượt cứng theo hướng màu tới khi rời hẳn bàn; bị chặn thì `distance` là số ô trượt được trước vật cản. Sương mù: hết ẩn khi có ô kề (4 hướng) trống. `level_data.gd`: `validate(d) -> Array[String]` kiểm khung, ô trùng, ô ngoài bàn, khoá bắt buộc, `chained_by` tồn tại, không có chu trình xích. `solver.gd`: `solve(level) -> {ok, min_taps, order}`. Vì cơ chế đơn điệu nên đi tham lam: ưu tiên khối thoát được, rồi nứt băng, rồi lớp ngoài, cuối cùng dội vào cổng nhịp khoá; số cú dội của một cạnh luôn là số lần qua cạnh đó (trừ 1 nếu cổng mở sẵn) nên thứ tự không đổi `min_taps`. `immediate_exit_exists(level)`. `compute_moves(level)` = `min_taps` + `slack_for(level)`; dư cố định theo bậc trong `design.md` mục 3 (L1–3, L4–13, level thường, HARD), không theo số khối. `Game` cộng lại dư lúc vào level từ `min_taps` trong file, nên Remote Config đổi `content_slack_*` có tác dụng cả với level ghi sẵn. Test đối chiếu solver với BFS vét cạn trên ít nhất 200 bàn ngẫu nhiên nhỏ (RNG có seed) và kiểm luật không có thế bí: mọi trạng thái đạt được đều còn lời giải khi đủ MOVES.
+  - **Specs:** Làm đúng mục 1.6–1.7, gồm cả 6 cơ chế để Phase 9 không phải viết lại. Khối trượt cứng theo hướng màu tới khi rời hẳn bàn; bị chặn thì `distance` là số ô trượt được trước vật cản. Sương mù: hết ẩn khi có ô kề (4 hướng) trống. `level_data.gd`: `validate(d) -> Array[String]` kiểm khung, ô trùng, ô ngoài bàn, khoá bắt buộc, `chained_by` tồn tại, không có chu trình xích. `solver.gd`: `solve(level) -> {ok, min_taps, order}`. Vì cơ chế đơn điệu nên đi tham lam: ưu tiên khối thoát được, rồi lớp ngoài, cuối cùng dội vào cổng nhịp khoá (khối còn phủ chờ khối kề rời đi, từ 2026-11-09); số cú dội của một cạnh luôn là số lần qua cạnh đó (trừ 1 nếu cổng mở sẵn) nên thứ tự không đổi `min_taps`. `immediate_exit_exists(level)`. `compute_moves(level)` = `min_taps` + `slack_for(level)`; dư cố định theo bậc trong `design.md` mục 3 (L1–3, L4–13, level thường, HARD), không theo số khối. `Game` cộng lại dư lúc vào level từ `min_taps` trong file, nên Remote Config đổi `content_slack_*` có tác dụng cả với level ghi sẵn. Test đối chiếu solver với BFS vét cạn trên ít nhất 200 bàn ngẫu nhiên nhỏ (RNG có seed) và kiểm luật không có thế bí: mọi trạng thái đạt được đều còn lời giải khi đủ MOVES.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_board && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_solver`
 
 - [x] **Task 2.2: Ví, mạng, mở khoá**
@@ -426,7 +629,7 @@ Các module chỉ phụ thuộc `src/config.gd` và `save_schema.gd`. Test tự 
 
 - [x] **Task 2.7: Offer và sale**
   - **Allowed Files:** `src/meta/offers.gd`, `tests/test_offers.gd`.
-  - **Specs:** Đọc `design.md` mục 7. `is_sale(now, tz)` thứ Bảy và Chủ nhật; `catalog(now, tz)` trả gói đúng SKU thường hoặc `_sale`. `due(s, ctx) -> id`, với `ctx {now, day, level, runs, session_start, first_session, inter_today}` (không gọi `AdPacing`), cho `starter_pack` (qua L10 hoặc lượt 12, mở 48 giờ, một lần), `remove_ads` (sau interstitial thứ 3 trong ngày, 1 lần/ngày, 3 lần tổng), `rescue_pack` (thua 3 lần liền một level, mỗi 24 giờ, hiện trên màn thua), `level_pack` (mỗi 10 level, mở 72 giờ). Không trong 5 phút đầu phiên đầu, cách nhau ít nhất 3 lượt. `shown`, `bought`, `open_offers(s, now)`, `note_fail(s, level)`, `note_win(s, level)`.
+  - **Specs:** Đọc `design.md` mục 7. `is_sale(now, tz)` thứ Bảy và Chủ nhật; `catalog(now, tz)` trả gói đúng SKU thường hoặc `_sale`. `due(s, ctx) -> id`, với `ctx {now, day, level, runs, session_start, first_session, inter_today}` (không gọi `AdPacing`), cho `starter_pack` (qua L10 hoặc lượt 12, mở 48 giờ, một lần), `remove_ads` (sau interstitial thứ 3 trong ngày, 1 lần/ngày, 3 lần tổng), `rescue_pack` (thua 3 lần liền một level, mỗi 24 giờ, hiện trên màn thua), `level_pack` (mỗi 50 level, mở 72 giờ). Không trong 5 phút đầu phiên đầu, cách nhau ít nhất 3 lượt. `shown`, `bought`, `open_offers(s, now)`, `note_fail(s, level)`, `note_win(s, level)`.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_offers`
 
 - [x] **Task 2.8: Lịch thông báo**
@@ -471,7 +674,7 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 5.1: BoardView**
   - **Allowed Files:** `scenes/board_view.tscn`, `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `src/ui/pudding.gd`, `src/ui/pudding.gdshader`, `tests/test_ui_board.gd`.
-  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 đơn vị khung mỗi bên và 0,61 đơn vị trên dưới, `frame_rect()` trả về trọn khung, `frame_unit()` là đơn vị khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; khung cố định theo màn: `board_rect()` là `Config.BOARD_AREA` ở màn chuẩn `BOARD_SCREEN` nhân theo màn, chỉ co khi vùng chứa nhỏ hơn khung; cỡ ô là số nguyên, theo hình của level `content_box()` cộng một ô lề mỗi phía, tối đa 14×18 ô, vừa `board_rect()`, to nhất `BOARD_CELL_MAX`; hình ở giữa khung, `content_rect()`). Khối thoát lao nhanh dần tới thanh cùng màu (0,20–0,35 giây), 0,3 giây cuối chậm dần về đúng tốc độ nghiền (`EXIT_BRAKE`; khối cuối trên bàn không hãm) rồi trôi qua thanh và bị nghiền thành khối vuông kẹo nhỏ phun ra ngoài thanh (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)` (khối vỡ thành mảnh kẹo, gọi lúc búa kẹo mút của `src/ui/smash_fx.gd` gõ), `strike_point(id)` (tâm ô của khối gần tâm khối nhất, nơi búa gõ). Cơ chế mới để Task 9.2.
+  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 đơn vị khung mỗi bên và 0,61 đơn vị trên dưới, `frame_rect()` trả về trọn khung, `frame_unit()` là đơn vị khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; khung cố định theo màn: `board_rect()` là `Config.BOARD_AREA` ở màn chuẩn `BOARD_SCREEN` nhân theo màn, chỉ co khi vùng chứa nhỏ hơn khung; cỡ ô là số nguyên, theo hình của level `content_box()` cộng một ô lề mỗi phía, tối đa 14×18 ô, vừa `board_rect()`, to nhất `BOARD_CELL_MAX`; hình ở giữa khung, `content_rect()`). Khối thoát lao nhanh dần tới thanh cùng màu (0,20–0,35 giây theo quãng đường, `SLIDE_MIN`–`SLIDE_TIME`), 0,3 giây cuối chậm dần về đúng tốc độ nghiền (`EXIT_BRAKE`; từ 4 ô trở xuống không đủ đường hãm thì đi đều ở tốc độ nghiền; khối cuối trên bàn không hãm) rồi trôi qua thanh và bị nghiền thành khối vuông kẹo nhỏ phun ra ngoài thanh (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)` (khối vỡ thành mảnh kẹo, gọi lúc búa kẹo mút của `src/ui/smash_fx.gd` gõ), `strike_point(id)` (tâm ô của khối gần tâm khối nhất, nơi búa gõ). Cơ chế mới để Task 9.2.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_board`
 
 - [x] **Task 5.2: Home và Profile**
@@ -545,7 +748,7 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
 
 - [x] **Task 9.1: Bộ sinh level**
   - **Allowed Files:** `src/core/level_generator.gd`, `src/core/silhouette.gd`, `tests/test_generator.gd`, `tests/test_silhouette.gd`, `tools/gen_levels.gd`.
-  - **Specs:** `generate(id: int, seed: int) -> Dictionary` thuần, theo `RandomNumberGenerator` có seed: chọn hình trong `src/core/silhouette.gd`, lát hình thành khối (tự do hoặc đối xứng), dịch vào giữa lưới 14×18 (hình lớn nhất 12×17), bật cơ chế theo `Config.UNLOCK`, HARD mỗi 4 level, số khối tăng tới trần 30 (từ L14 xem Task 9.6; mọi level nhân `DifficultyCurve.COUNT_SCALE` = 2 từ 2026-11-03, `design.md` mục 4), qua `validate` và `solver`, sinh lại với seed kế tiếp nếu không đạt. Dùng cho Daily Challenge; level sau L100 (`CONTENT.release_pregen_level`) không sinh mà lặp lại nội dung từ `CONTENT.loop_start_level` (`src/core/level_loop.gd`, `Game.content_level`). Cùng `id` và `seed` phải ra cùng level.
+  - **Specs:** `generate(id: int, seed: int) -> Dictionary` thuần, theo `RandomNumberGenerator` có seed: chọn hình trong `src/core/silhouette.gd`, lát hình thành khối (tự do hoặc đối xứng), dịch vào giữa lưới 14×18 (hình lớn nhất 12×17), bật cơ chế theo `Config.UNLOCK`, HARD mỗi 4 level, số khối tăng tới trần 30 (từ L14 xem Task 9.6; mọi level nhân `DifficultyCurve.COUNT_SCALE` = 2 từ 2026-11-03, `design.md` mục 4), qua `validate` và `solver`, sinh lại với seed kế tiếp nếu không đạt. Dùng cho Daily Challenge; level sau level cuối (`CONTENT.release_pregen_level`, nay 500) không sinh mà lặp lại nội dung từ `CONTENT.loop_start_level` (`src/core/level_loop.gd`, `Game.content_level`). Cùng `id` và `seed` phải ra cùng level.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_generator` (500 level hợp lệ, xác định, mỗi level dưới 200 ms trên máy dev).
 
 - [x] **Task 9.2: Hiển thị cơ chế**
@@ -553,15 +756,15 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
   - **Specs:** Vẽ đá, băng và nứt, xích và chìa, hai lớp và bóc lớp, sương mù, cổng nhịp đóng mở. Âm thanh gọi `Sfx` theo bảng `design.md`, thiếu file thì im. Dùng `assets/ui/mech_*` nếu có, nếu không vẽ bằng code. Theme kẹo (2026-11-03): đá vẽ thành khối gỗ (2026-11-04 đổi thành thùng sắt bốn đinh tán), băng thành lớp pudding, hai lớp thành hộp giấy, xích quấn cả khối; hiệu ứng va chạm và mất vật cản theo chất liệu ở `src/ui/obstacle_fx.gd` (`design.md` mục 4 và 8). Tên trong dữ liệu và code giữ nguyên.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_mech`
 
-- [x] **Task 9.3: Sinh L21–300 và level dạy**
-  - **Allowed Files:** `data/levels/level_0021.json` … `level_0300.json`, `data/levels/index.json`, `tests/test_levels_all.gd`, `tools/gen_levels.gd`.
-  - **Specs:** Chạy `tools/gen_levels.gd`. Các level 21, 31, 46, 61, 81, 101 làm tay, chỉ một cơ chế mới, dễ. L1–20 giữ layout tay, trừ các level kín khung (`design.md` mục 4). Ghi `index.json` nếu cần tăng tốc tải. (Đã thay bởi Task 9.6: level dạy nay ở 14, 30, 40, 55, 70, 90 và do bộ sinh tạo.)
-  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_levels_all` (100 level qua validator và solver).
+- [x] **Task 9.3: Sinh L21–100 và level dạy**
+  - **Allowed Files:** `data/levels/level_0021.json` … `level_0100.json`, `tests/test_levels_all.gd`, `tools/gen_levels.gd`.
+  - **Specs:** Chạy `tools/gen_levels.gd`. L1–20 giữ layout tay, trừ các level kín khung (`design.md` mục 4). Bản đầu sinh tới L100 (`CONTENT.release_pregen_level`), không làm L101–300 và không cần `index.json` (tải từng file đủ nhanh). Level dạy ban đầu làm tay ở 21, 31, 46, 61, 81, 101. Đã thay: Task 9.6 dời level dạy sang 14, 30, 40, 55, 70, 90 và để bộ sinh tạo; Task 9.12 nâng lên 500 level (`level_0001.json` … `level_0500.json`).
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_levels_all` (mọi level `1..TOTAL` qua validator và solver; `TOTAL` nay là 500).
 
-- [x] **Task 9.4: Daily Challenge, tuỳ chọn sau L300, cơ chế trong game**
-  - **Allowed Files:** `scenes/challenge.tscn`, `src/ui/challenge.gd`, `src/game/game.gd`, `src/ui/home.gd`, `src/ui/level.gd`, `tests/test_challenge.gd`, `tests/test_level_after_300.gd`.
-  - **Specs:** Daily Challenge từ L50 theo `design.md`: seed theo ngày, +100 gold lần thắng đầu trong ngày, x2 bằng video, thua mất mạng. Sau L300 gọi generator, solver kiểm, có màn chờ ngắn. Preset demo vẫn dừng ở L20 và khoá nút. Level dạy cơ chế có hướng dẫn. Mở khoá các nút theo `Unlocks`. Từ 2026-11-08 tính năng tắt bằng công tắc `Config.FEATURES.challenge` = false (Remote Config `features_challenge`; `Unlocks.enabled`, `Game.challenge_view().enabled`): Home ẩn icon, thẻ thắng bỏ mốc L50; `design.md` mục 4 "Phạm vi".
-  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_challenge && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_level_after_300 && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_e2e`
+- [x] **Task 9.4: Daily Challenge, vòng lặp sau level cuối, cơ chế trong game**
+  - **Allowed Files:** `scenes/challenge.tscn`, `src/ui/challenge.gd`, `src/game/game.gd`, `src/core/level_loop.gd`, `src/ui/home.gd`, `src/ui/level.gd`, `tests/test_challenge.gd`, `tests/test_level_loop.gd`.
+  - **Specs:** Daily Challenge từ L50 theo `design.md`: seed theo ngày, +100 gold lần thắng đầu trong ngày, x2 bằng video, thua mất mạng; bàn sinh trong game (`Game.challenge_data`), phải sinh thì có màn chờ ngắn (`challenge_needs_generation`). Sau level cuối (`CONTENT.release_pregen_level`, lúc làm task là L100, nay L500) không sinh level mới (2026-11-02, thay cho ý cũ "sau L300 gọi generator"): `s.level` là số hiển thị, tăng mãi; `Game.content_level` đọc file theo `LevelLoop.content_level(display, loop_start, last)`, lặp `[CONTENT.loop_start_level, release_pregen_level]` (mặc định 51–500); bản lưu cũ có `s.level` lớn hơn level cuối tự nhận nội dung vòng lặp, không migrate (`design.md` mục 4 "Phạm vi"). Preset demo vẫn dừng ở L20 và khoá nút. Level dạy cơ chế có hướng dẫn. Mở khoá các nút theo `Unlocks`. Từ 2026-11-08 tính năng tắt bằng công tắc `Config.FEATURES.challenge` = false (Remote Config `features_challenge`; `Unlocks.enabled`, `Game.challenge_view().enabled`): Home ẩn icon, thẻ thắng bỏ mốc L50; `design.md` mục 4 "Phạm vi".
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_challenge test_level_loop test_e2e`
 
 - [x] **Task 9.5: Tài nguyên cơ chế**
   - **Allowed Files:** `art/images/mech_*`, `art/audio/sfx_*`, `art/manifest.mech.json`, `art/MISSING.mech.md`, `assets/ui/mech_*.png`, `assets/sfx/sfx_stone.wav`, `assets/sfx/sfx_ice.wav`, `assets/sfx/sfx_chain.wav`, `assets/sfx/sfx_layer.wav`, `assets/sfx/sfx_fog.wav`, `assets/sfx/sfx_gate.wav`.
@@ -603,7 +806,86 @@ Bước đầu mỗi task: thử gọi MCP `comfyui`. **Không có MCP hoặc g�
   - **Specs:** `design.md` mục 4. `DifficultyCurve`: `REF_BLOCKS`, `REF_WAVES` (500 số đo), `HARD`, `VERY_HARD` theo game tham khảo; `block_count` kẹp `MOTIF_MIN_BLOCKS`..`BLOCK_CAP` (12–60), `wave_count` giảm theo tỉ lệ khi bị kẹp, tối đa `WAVE_SHARE_MAX` lượt mỗi khối; tag là đỉnh (`PEAK_*`, `PEAK_SPAN`). `Solver.clear_rounds`. `LevelGenerator`: `_assign(..., aim)` lái độ sâu chuỗi (`DEPTH_PUSH`, `DEPTH_HOLD`, `DEPTH_FREE`), `_finish` gán lại tối đa `ASSIGN_TRIES` lần cho số lượt trong `_rounds_tol` (`Config.LEVEL_ROUNDS_TOL*`, nới mỗi `ROUNDS_RELAX_EVERY` lần thử), `ROUNDS_STALL`; `generate(id, seed, strict_rounds = true)`, `Game.generate_checked` dùng `false`. `mech_plan(id)`, `is_rest(id)`: tối đa `Config.LEVEL_MECH_MAX` cơ chế, level nghỉ `LEVEL_REST_*`, `LEVEL_MECH_WEIGHTS`, `LEVEL_MECH_FRESH`; cổng nhịp chỉ bàn tới `GATE_MAX_BLOCKS`. `Config.TILE_SINGLE_BIAS` 5 → 1,5. `CONTENT.release_pregen_level` 500, `very_hard_from_level` 501. Sinh bằng `tools/gen_levels.gd -- --from=1 --to=500 --seed=20261101 --early=1 --out=res://data/levels`, rồi `tools/bake_sdf.gd`.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tools/validate_levels.gd && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_levels_all test_generator test_levels_demo test_motifs test_level_loop test_challenge test_pudding_bank test_ui_level`
 
-**Cổng Phase 9:** cổng mặc định, gộp manifest của Task 9.5, thêm xem cơ chế qua MCP (mục 1.12): chạy level dạy 14, 30, 40, 55, 70, 90 và chụp từng màn. Không có session MCP thì ghi vào báo cáo, không chặn.
+Task 9.13–9.17 ghi lại phần đã làm từ 2026-11-02 tới 2026-11-08 mà lúc đó chưa có task (đối chiếu ngày 2026-11-09). Cả năm task sửa chung `src/game/game.gd`, `src/config.gd`, `i18n/strings.csv` nên chạy tuần tự.
+
+- [x] **Task 9.13: Weekly Pass (2026-11-02, tutorial 2026-11-03)**
+  - **Allowed Files:** `src/meta/weekly_pass.gd`, `src/meta/lives.gd` (`bonus`, `inf_until`, `max_for`, `grant_infinite`), `src/meta/save_schema.gd` (`weekly`, `lives.bonus`, `lives.inf_until`), `src/config.gd` (`WEEKLY`, SKU `weekly_pass`), `src/game/game.gd` (`weekly_*`, cộng key trong `on_level_won`, thưởng `inf_min` trong `_give`), `src/ui/weekly_pass.gd`, `scenes/weekly_pass.tscn`, `src/ui/weekly_pass_tutorial.gd`, `scenes/weekly_pass_tutorial.tscn`, `src/ui/popup_weekly_tutorial.gd`, `scenes/popup_weekly_tutorial.tscn`, `src/ui/reward_text.gd`, `src/ui/home.gd`, `scenes/home.tscn`, `src/ui/main.gd`, `i18n/strings.csv`, `tests/test_weekly_pass.gd`, `tests/test_lives.gd`, `tests/test_game_events.gd`, `tests/test_ui_events.gd`, `design.md`, `docs/HORUS_HANDOFF.md`.
+  - **Specs:** `design.md` mục 7 "Weekly Pass", port từ pixelflow. `weekly_pass.gd` là logic thuần, giờ truyền vào (`now`, `tz`): chu kỳ thứ Hai 06:00 tới thứ Hai 00:00 tuần sau theo giờ máy (`window`, `cycle`), thứ Hai 00:00–06:00 là `WAITING`, config tắt hoặc SKU sai (`config_valid`) là `LOCKED`. Mở sau khi qua level HARD thứ `WEEKLY.unlock_hard_index` (2) (`Game.weekly_unlock_level`), nên bản demo không bao giờ mở. Thắng level chính khi `ACTIVE` cộng key theo `points_for` (Normal 1, Hard 3, VeryHard 5), không tính Daily Challenge và Road Trip, chỉ sau khi đã xem tutorial (`s.weekly.tut_seen`, không reset theo mùa). Main Tree: mốc 0 key và 10 mốc, mỗi mốc có thưởng free và VIP; Bonus Bank mở khi đủ mốc cuối, có VIP và đã xem End popup, cứ `bank_step` (15) key thừa thêm 1 mốc, tối đa `bank_max` (10), mỗi mốc `bank_reward_coins` (400). VIP: SKU `weekly_pass` ($4.99, consumable, mua lại mỗi tuần), +`vip_bonus_hearts` (3) mạng tối đa khi `ACTIVE` (`s.lives.bonus`, tăng thì cộng luôn vào số mạng, hết tuần thì kẹp lại). Sang mùa (`refresh`): chỉ VIP tự nhận thưởng chưa claim, rồi reset điểm, VIP, danh sách đã nhận; ghi `pending_end` để UI hiện popup cuối mùa một lần. Module không cộng hàng: trả `{coins, items, inf_min}`, `Game._give` cộng (`inf_min` thành `Lives.grant_infinite`). UI: nút ở Home có badge và chấm (`weekly_view`), layer `weekly_pass` (Main Tree, Bonus Bank, mua VIP), tutorial spotlight 3 bước lần đầu mở layer khi `ACTIVE` (đóng giữa chừng thì lần sau chạy lại), popup "How to earn rewards" mở sau tutorial hoặc bằng nút "i". Analytics `weekly_points`, `weekly_open`, `weekly_tutorial`, `weekly_claim`, `weekly_vip`, `weekly_end`.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_weekly_pass test_lives test_game_events test_ui_events`
+
+- [x] **Task 9.14: Chain Offer và Special Pack (2026-11-02)**
+  - **Allowed Files:** `src/meta/chain_offer.gd`, `src/meta/pack_conditions.gd`, `src/meta/offers.gd`, `src/meta/save_schema.gd` (`chain`), `src/config.gd` (`CHAIN`, `PACKS`, SKU `chain_pack_1`, `chain_pack_2`, `special_pack`, `special_pack_sale`), `src/game/game.gd` (`chain_*`, `_chain_check`, `special_pack_id`, `offer_sku`), `src/ui/chain_offer.gd`, `scenes/chain_offer.tscn`, `src/ui/popup_offer.gd`, `src/ui/reward_text.gd`, `src/ui/home.gd`, `scenes/home.tscn`, `src/ui/main.gd` (`_chain_autoshow`), `src/ui/shop.gd`, `i18n/strings.csv`, `tests/test_chain_offer.gd`, `tests/test_offers.gd`, `tests/test_game_events.gd`, `tests/test_ui_events.gd`, `design.md`, `docs/HORUS_HANDOFF.md`.
+  - **Specs:** `design.md` mục 7 "Chain Offer", "Special Pack". Chain Offer (`chain_offer.gd`, logic thuần): hai chuỗi trong `CHAIN.sequences` xoay vòng, mỗi chuỗi 8 bước `free` / `ad` (placement `chain_offer`) / `pay` (SKU của bước; thưởng lấy từ chính gói qua `grant_purchase`, không cộng hai lần), layer hiện cửa sổ `CHAIN.window` (6) bước. Sau mỗi ván `Game._chain_check` bật chuỗi khi chưa có chuỗi, level từ `level_unlock` (100, từ 2026-11-09; trước là 150) và hết cooldown; `require_lose` -1 xét mọi ván, giá trị khác chỉ xét khi thua ở level không HARD. Sống `days_to_existence` (1) ngày, hết hạn thì nghỉ `days_to_reset` (3) ngày tính từ lúc hết hạn; làm hết bước không tắt chuỗi. Hết hạn trong lúc xem quảng cáo hay thanh toán thì vẫn trao phần đã xong. Layer tự mở đúng một lần mỗi chuỗi khi người chơi ở Home (`chain_take_autoshow`, `main._chain_autoshow`), sau đó mở bằng nút ở Home. Special Pack (`pack_conditions.gd`): `PACKS.special_pack` hiện icon ở Home từ `level_appear` (16), phải đã mua mọi gói trong `required` (`starter_pack`), `purchase_limit` 0 là không giới hạn; mỗi lần chỉ một gói (`first_visible`, theo thứ tự trong `PACKS`); mở bằng popup offer chung, lúc weekend sale `offer_sku` đổi sang `special_pack_sale`; gói `_sale` tính như gói gốc khi đếm số lần mua. Analytics `chain_start`, `chain_claim`, cùng `offer_show`, `offer_buy` của offer.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_chain_offer test_offers test_game_events test_ui_events`
+
+- [x] **Task 9.15: Leaderboard theo league (2026-11-03, màn mới 2026-11-05)**
+  - **Allowed Files:** `src/meta/leaderboard.gd`, `src/meta/save_schema.gd` (`lb`), `src/meta/unlocks.gd`, `src/config.gd` (`LEADERBOARD`, `UNLOCK.leaderboard`), `src/game/game.gd` (`lb_*`, khối crystal trong `start_attempt`, `piece` của `tap` và `smash_block`, `_lb_award` trong `on_level_won`), `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `src/ui/pudding.gd`, `src/ui/crystal_fly.gd`, `src/ui/level.gd`, `scenes/level.tscn`, `src/ui/win_card.gd`, `src/ui/leaderboard.gd`, `scenes/leaderboard.tscn`, `src/ui/lb_kit.gd`, `src/ui/popup_lb_howto.gd`, `src/ui/popup_lb_player.gd`, `src/ui/popup_lb_result.gd`, `src/ui/popup_leagues.gd` và `.tscn` cùng tên, `src/ui/home.gd`, `scenes/home.tscn`, `src/ui/hub_nav.gd`, `src/ui/main.gd`, `src/ui/theme_kit.gd`, `assets/ui/lb_banner.png`, `assets/ui/lb_piece.png`, `i18n/strings.csv`, `tests/test_leaderboard.gd`, `tests/test_ui_leaderboard.gd`, `tests/test_unlocks.gd`, `tests/test_ui_stubs.gd`, `tests/shot.gd`, `design.md`, `docs/UI_FIGMA.md`.
+  - **Specs:** `design.md` mục 7 "Leaderboard theo league". `leaderboard.gd` là logic thuần, mọi người khác trên BXH là bot sinh trong máy theo seed (game offline). Mở từ `UNLOCK.leaderboard` (L8), có cả bản demo. Điểm: từ L8 mỗi level chính có `pieces_*` khối crystal (Normal 2, Hard 3, Very Hard 4, `Leaderboard.pick_specials` theo số level nên chơi lại cùng khối), Daily Challenge và Road Trip không có; khối crystal rời bàn (thoát hoặc Smash) cho 1 mảnh, icon bay về chip đếm ở thanh trên (`crystal_fly.gd`), mảnh cộng thành điểm khi thắng, thua thì mất. 7 league chỉ lên không xuống, thưởng một lần khi vào league (Silver nhận lúc mở màn lần đầu, các league sau ở popup Lên giải sau thẻ thắng, đóng bằng X vẫn nhận). BXH 100 người (người chơi và 99 bot), điểm bot chia dải theo vị trí, bot tăng điểm mỗi ngày lúc `grow_hour` theo `grow_tz_hours`, bù tối đa `grow_max_days` ngày, đồng hồ lùi thì không tăng; bot chạm league kế thì rời BXH, giữ tối đa `carry_max` bot vừa lên hạng cho BXH mới. Top % và World Ranking mô phỏng theo cột người chơi mô phỏng. UI (2026-11-05): icon cúp ở cột trái Home (khoá tới L8), không còn là tab thanh dưới; màn `leaderboard` có banner, tab League (khung thưởng thăng hạng, podium, tối đa `view_size` hàng quanh người chơi, hàng của mình ghim khi cuộn, ▲/▼ so với lần mở trước qua `lb_opened`) và tab World (thẻ người chơi, thang 7 giải). Analytics `lb_join`, `lb_points`, `lb_promote`, `lb_claim`, `lb_open`. Từ 2026-11-09 thay bởi Task 9.20 (popup, tuần).
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_leaderboard test_ui_leaderboard test_unlocks test_ui_stubs`
+
+- [x] **Task 9.16: Biệt danh (2026-11-05)**
+  - **Allowed Files:** `src/meta/nickname.gd`, `src/meta/name_filter.gd`, `src/meta/save_schema.gd` (`profile`), `src/config.gd` (`NAME_MIN`, `NAME_MAX`), `src/game/game.gd` (`profile_name`, `set_profile_name`), `src/ui/profile.gd`, `scenes/profile.tscn`, `src/ui/popup_change_name.gd`, `scenes/popup_change_name.tscn`, `i18n/strings.csv` (`profile_name_*`), `tests/test_nickname.gd`, `tests/test_ui_change_name.gd`, `tests/test_ui_profile.gd`, `design.md`.
+  - **Specs:** `design.md` mục 5 "Biệt danh". `nickname.gd` chỉ đọc và ghi `s.profile`: `check(raw)` bỏ khoảng trắng hai đầu, dài `NAME_MIN`–`NAME_MAX` (3–14) ký tự, chỉ chữ cái tiếng Anh, số, `_`, `.`, `-`, có ít nhất một chữ hoặc số, không chứa từ cấm; trả `""` hoặc `ERR_LENGTH`, `ERR_CHARS`, `ERR_BANNED`; `change(s, raw)` lưu bản đã bỏ khoảng trắng. `name_filter.gd` (`is_banned`): từ cấm của 14 ngôn ngữ viết bằng chữ Latin không dấu cùng tên dành riêng (admin, support, Horus, Candy Away...), không phân biệt hoa thường, bắt chữ kéo dài, chữ chen `_ . -`, số thay chữ; từ ngắn dễ nằm trong từ thường chỉ cấm khi đứng riêng. Profile: ô tên có nút bút chì mở `popup_change_name`; chưa đặt thì hiện `profile_name_default` theo ngôn ngữ. Tên sai luật hay có từ cấm thì popup giữ nguyên và báo nhanh (`profile_name_invalid`, `profile_name_banned`). Miễn phí, đổi bao nhiêu lần cũng được, không kiểm trùng tên. Tên chỉ hiện ở Profile; hàng của người chơi trên BXH vẫn ghi "Bạn". Chữ ngoài bộ font subset dùng font hệ thống (mục 1.3).
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_nickname test_ui_change_name test_ui_profile`
+
+- [x] **Task 9.17: Màn loading khi mở game (2026-11-03, nối boot splash và vào thẳng level 2026-11-08)**
+  - **Allowed Files:** `scenes/splash.tscn`, `src/ui/splash.gd`, `src/ui/main.gd` (`_boot`, `boot_to_level`), `src/config.gd` (`CONTENT.splash_min_sec`, `splash_hold`, `splash_fill_sec`), `project.godot` (`application/boot_splash/*`, `window/size/window_*_override`), `assets/ui/loading_bg.png`, `assets/ui/loading_logo.png`, `assets/ui/boot_splash.png`, `i18n/strings.csv` (`boot_loading`), `tests/test_splash_art.gd`, `tests/test_shipped_assets.gd`, `tests/test_ui_stubs.gd`, `tests/test_ui_level.gd`, `design.md`, `docs/UI_FIGMA.md`, `docs/UI_UNITY.md`.
+  - **Specs:** `design.md` mục 2. Chạy khi editor đóng vì sửa `project.godot` (mục 1.12). `main._boot` mở màn `splash` (layout `DownloadDataLayer` của Unity, ảnh thay bằng `loading_bg.png` phủ kín màn và `loading_logo.png`; icon trên thanh là kẹo bạc hà `candy_drop_00`; dòng phiên bản lấy `application/config/version`, rỗng thì ẩn), chạy thanh tới `splash_hold` (0,9) trong ít nhất `splash_min_sec` (1,5) giây, đứng đó nếu `Game.boot()` chưa xong, rồi đầy trong `splash_fill_sec` (0,3) giây. Trong lúc đó nạp bank SDF ở luồng nền (`Pudding.load_bank_async`, Task 9.11). Màn loading không phát nhạc. Xong thì vào thẳng level đang tới, không màn chuyển cảnh (`boot_to_level`: còn mạng như nút Chơi ở Home và `level_exists`), không thì Home; popup tự mở ở Home (Chain Offer) chờ tới khi người chơi về Home. Boot splash của Godot dùng cùng ảnh (PNG, quy tắc ở mục 1.3); màn loading vẽ logo đúng chỗ boot splash vẽ (`Splash.LOGO_RECT`, `boot_rect`) để nối liền, không nhảy ảnh.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_splash_art test_shipped_assets test_ui_stubs test_ui_level`
+
+Task 9.18–9.19 ghi lại phần nối logic các màn wireframe ngày 2026-11-09 (`design.md` mục 9, `docs/UI_FIGMA.md` bảng "Trạng thái"). Chạy tuần tự sau 9.17 vì cùng sửa `game.gd`, `main.gd`, `level.gd`, `home.gd`, `config.gd`, `i18n/strings.csv`.
+
+- [x] **Task 9.18: Win Streak (2026-11-09)**
+  - **Allowed Files:** `src/meta/win_streak.gd`, `src/meta/save_schema.gd` (`streak`), `src/meta/unlocks.gd`, `src/config.gd` (`WIN_STREAK`, `UNLOCK.win_streak`), `src/game/game.gd` (`streak_*`, `leave_attempt`, `streak_up` của `on_level_won`), scene và script cùng tên của `popup_streak_intro`, `streak_main`, `popup_streak_rewards`, `popup_streak_end`, `popup_streak_keep`, `src/ui/popup_notice.gd`, `src/ui/popup_reward.gd`, `src/ui/home.gd`, `scenes/home.tscn`, `src/ui/level.gd`, `src/ui/main.gd` (`_open_streak`), `i18n/strings.csv`, `tests/test_win_streak.gd`, `tests/test_ui_streak.gd`, `design.md`, `docs/UI_FIGMA.md`.
+  - **Specs:** `design.md` mục 7 "Win Streak", theo `ME_WinStreak` của color-cube-match-puzzle. `win_streak.gd` là logic thuần, giờ truyền vào (`now`, `tz`), giờ máy như Weekly Pass. Mở từ `UNLOCK.win_streak` (L40), icon ở cột trái Home. Lượt theo tuần: ngày trong `WIN_STREAK.active_days` (thứ Sáu, Bảy, Chủ nhật) là Active, lượt bắt đầu ở ngày Active đầu tiên người chơi mở game, các ngày khác chỉ nhận quà; lượt mới xoá chuỗi và mốc đã nhận, quà chưa nhận mất (`validate`). Chuỗi chỉ đếm sau khi bấm Start và chỉ trong ngày Active: thắng level chính +1 (Daily Challenge, Road Trip không tính); thua hoặc bỏ ván đã chạm (`Game.leave_attempt`) thì tụt về mốc đã đạt gần nhất, rồi hiện "Bạn đã mất chuỗi thắng" (`popup_notice`, `streak_take_lost`). Mốc và thưởng trong `WIN_STREAK.milestones` (gold, booster, phút mạng vô hạn `inf_min`), nhận thủ công từng mốc (`streak_claim`) rồi hiện `popup_reward`. Icon Home mở theo `streak_entry()`: Giới thiệu 9.1, Main 9.2, End 9.4; Giới thiệu tự mở một lần mỗi lượt (`streak_take_auto_intro`); Start mở luật 9.3 rồi Main. Bỏ ván khi chuỗi sẽ tụt (`streak_at_stake`) dùng `popup_streak_keep` (9.5) thay `popup_keep_playing`.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_win_streak test_ui_streak test_ui_level test_ui_stubs`
+
+- [x] **Task 9.19: Nối logic các màn wireframe còn lại, gói No Ads, Helper Packs, Bundles (2026-11-09)**
+  - **Allowed Files:** `src/meta/app_version.gd`, `src/meta/save_schema.gd` (`meta.intro_seen`, `weekly.upsell`), `src/config.gd` (SKU `remove_ads_bundle`, `helper_great`, `helper_epic`, `bundle_sweet`, `bundle_tasty`, `bundle_yummy`; `ECON.helper_pack_sku`; `CONTENT.latest_version`, `min_version`, `store_url`, `net_check_url`, `net_check_sec`), `src/game/game.gd` (signal `ad_wait`, `notice`, `cloud_conflict`; `update_state`, `mark_update_asked`, `open_store`, `cloud_conflict_view`, `resolve_cloud`, `online`, `notice_shown`, `take_intro`, `helper_pack_due`, `rate_now`, `weekly_take_upsell`), `src/ui/main.gd`, `src/ui/home.gd`, `scenes/home.tscn`, `src/ui/level.gd`, `src/ui/shop.gd`, `src/ui/settings.gd`, scene và script cùng tên của `popup_update`, `select_account`, `tutorial_intro`, `popup_no_internet`, `popup_remove_ads`, `load_transition`, `booster_soon`, `popup_free_pick`, `popup_rate`, `popup_keep_playing`, `popup_helper_pack`, `popup_weekly_upsell`, `popup_language`, `popup_help`, `ad_loading`, `popup_notice`, `popup_reward`; `src/ui/stub_ui.gd`, `src/ui/ui_gallery.gd`, `src/ui/sample_data.gd`; xoá scene và script `download_data`, `popup_bonus`, `popup_mechanic`, `speedup_tutorial`; `i18n/strings.csv`, `tests/test_ui_wired.gd`, `tests/test_cloud.gd`, `tests/test_ui_shop.gd`, `tests/test_ui_stubs.gd`, `tests/test_ui_level.gd`, `tests/test_ui_settings.gd`, `design.md`, `docs/UI_FIGMA.md`, `docs/HORUS_HANDOFF.md`.
+  - **Specs:** Theo cách "Nối logic cho một màn" trong `docs/UI_FIGMA.md`: `view` thật từ `Game` thay dữ liệu mẫu, nút làm hành động thật, bỏ điều kiện `Config.ui_preview` ở lối vào; script vẫn có thể `extends stub_ui.gd` để dùng chung phần dựng. Từng màn:
+    - **Khởi động:**
+      - 1.2 `popup_update`: so `CONTENT.latest_version`, `min_version` (Remote Config) bằng `AppVersion`; bản bắt buộc thì ẩn Để sau và X, Back không đóng.
+      - 1.4 `select_account`: bản cloud là lịch sử chơi khác thì phát `cloud_conflict`; chọn "Máy này" hoặc "Google Play", gộp đơn mua của bản kia (`resolve_cloud`).
+      - 1.5 `tutorial_intro`: hiện một lần trước lần chơi đầu của L1 (`take_intro`, `s.meta.intro_seen`).
+    - **Video và mạng:** rewarded chưa sẵn sàng thì chờ tối đa `ADS.rv_wait_sec`, có lớp `ad_loading` (11.1). Hết giờ thì kiểm mạng (`online`): mất mạng hiện `popup_no_internet` (1.6), còn mạng hiện `popup_notice` (11.2). Mua hàng lỗi cũng kiểm mạng. `popup_reward` (11.3, 6.3) hiện sau khi nhận mốc Win Streak, nhận bước Chain Offer hoặc mua gói.
+    - **Mua hàng:**
+      - 2.4 `popup_remove_ads`: mở từ icon ở cột phải Home và offer `remove_ads`; thẻ `remove_ads_bundle` và `remove_ads`, có Restore. Shop có mục No Ads, ẩn khi đã có `no_ads`.
+      - Shop có Helper Packs (`helper_great`); `helper_epic` và Bundles (`bundle_*`) ẩn khỏi Shop (người dùng chọn, 2026-11-09), SKU vẫn trong `Config.SKUS`.
+      - 7.5 `popup_weekly_upsell`: một lần mỗi mùa trên Home khi chưa VIP.
+    - **Trong level:**
+      - 3.1 `load_transition`: khi sang level kế hoặc chơi lại.
+      - 3.7 `booster_soon`: khi chạm booster còn khoá.
+      - 3.9 `popup_free_pick`: sau popup quà booster.
+      - 4.3 `popup_rate`: một lần, sau thẻ thắng ở level mở Rate us (`rate_now`).
+      - 4.6 `popup_keep_playing`: thay hộp thoại xác nhận bỏ ván mất mạng.
+      - 4.7 `popup_helper_pack`: ở lần cứu đầu khi hết MOVES lần thứ 3 liên tiếp ở level và kho hết +3 Move (`helper_pack_due`), bán `ECON.helper_pack_sku`.
+    - **Settings:** mở `popup_language` (10.4) và `popup_help` (10.5); Gửi mở mail tới `CONTENT.support_email`.
+    - **Bỏ:** 1.3, 3.3, 3.11, 4.2.
+    - **Còn chỉ UI:** 5.2, 5.3 và mục Hearts của Shop. `popup_ads_daily` (2.3) chỉ còn trong danh sách xem trước; ADS Daily thật nằm trong Shop.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_wired test_cloud test_ui_shop test_ui_stubs test_ui_level test_ui_settings test_e2e`
+
+- [x] **Task 9.20: Leaderboard thành popup, điểm theo tuần (2026-11-09)**
+  - **Allowed Files:** `src/meta/leaderboard.gd`, `src/meta/save_schema.gd` (`lb`), `src/config.gd` (`LEADERBOARD`), `src/game/game.gd` (`lb_*`), `src/ui/leaderboard.gd`, `scenes/leaderboard.tscn`, `src/ui/popup_lb_result.gd`, `src/ui/lb_kit.gd` (`fmt_week`), `src/ui/home.gd`, `scenes/home.tscn` (`LeaderboardDot`), `src/ui/main.gd`, `i18n/strings.csv`, `assets/ui/lb_banner.png` (xoá), `art/manifest.json`, `tests/test_leaderboard.gd`, `tests/test_ui_leaderboard.gd`, `tests/shot.gd`, `design.md`.
+  - **Specs:** `design.md` mục 7 "Leaderboard theo league", phần "Tuần" và "UI". Popup qua `main._popup_then` (khung PopupOkLayer dựng không reveal, canvas LeaderboardLayer đặt vào lòng khung, `BG/Image` ẩn), X, Back, nền tối đóng; nút "i" đối xứng với X. PromoBox: bản sao `RankBadge` (chạm thì bong bóng là bản sao `RewardsParent`, dùng chung cho thang World), tên giải, đồng hồ tới hết tuần (`LbKit.fmt_week`). Tuần trong `leaderboard.gd`: `join` đặt `t0`, `ensure_week` cho bản lưu cũ, `roll` (bù bot tới hết tuần, ghi `result`, reset), `claim_result`, `seconds_to_week_end` theo `clock`. `popup_lb_result` nhận `{week}` cho kết quả tuần. Analytics thêm `lb_week_end`; `lb_join` mỗi tuần một lần.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_leaderboard test_ui_leaderboard test_unlocks test_ui_stubs`
+
+- [x] **Task 9.21: Road Trip khó hơn 10%, bỏ ghi nguồn (2026-11-09)**
+  - **Allowed Files:** `tools/import_road_trip.gd`, `data/road_trip/rt_0001.json` … `rt_0400.json`, `tests/test_road_trip.gd`, `src/config.gd` (comment `ROAD_TRIP`), `design.md`.
+  - **Specs:** `design.md` mục 7 "Road Trip", phần "Làm khó". `import_road_trip.gd`: `convert_level` chia cổng, `color_blocks` tô màu theo cổng, `harden_all` đổi hướng khối rồi tô lại; mỗi level tất định theo id (`harden`: lật khối đang thoát được không tạo vòng chặn, thiếu thì dựng lại từ ngoài vào `_peel` + `_climb`, cuối cùng `_cleanup` trả khối thừa về hướng cũ; trước hết cấm sang cạnh vắt hai cổng, thiếu mức mới bỏ luật này). Không ghi khoá `source`. Đã chạy một lần trên 400 file có sẵn (thư mục cấu hình gốc không có trên máy này), cùng hàm, giữ nguyên định dạng file.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_road_trip test_pudding_bank`
+
+- [ ] **Task 9.22: Pudding bóc theo khối kề, thêm băng (2026-11-09; còn bước sinh lại level)**
+  - **Allowed Files:** `src/core/board_state.gd`, `src/core/solver.gd`, `src/core/level_data.gd`, `src/core/level_generator.gd`, `src/config.gd` (`UNLOCK.frost`, `COVER_*`), `src/meta/unlocks.gd`, `src/game/game.gd` (`tap`), `src/game/sfx.gd` (`volume_db`), `src/ui/level.gd`, `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `src/ui/obstacle_fx.gd`, `src/ui/pudding.gd`, `src/ui/pudding.gdshader`, `tools/gen_levels.gd`, `i18n/strings.csv` và `.translation`, `assets/ui/mech_frost.png`, `assets/sfx/sfx_pudding.wav`, `art/`, `tests/fixtures/mechanics.json`, test của các file trên, `design.md`.
+  - **Specs:** `design.md` mục 4 "Cơ chế sau bản demo" (dòng Pudding, Băng), "Hình dạng level"; mục 8 hiệu ứng. Board: kind `covered` thay `crack`; `_remove` bóc 1 lớp mỗi khối kề và trả `stripped`; `strip`, `cover_kind`. Solver bỏ `crack` khỏi `RANK`. Bộ sinh: `MECHS` thêm `frost`, `mech_plan` không giữ cả `ice` lẫn `frost`, `_mechanics` nhận `groups` (số lớp theo `COVER_*`, khối 2 lớp kề ít nhất 2 khối, không chung khối với sương), `_unstick` thay `_fog_fix` (gỡ cả sương lẫn lớp phủ), `_teach_ok` cho `ice`/`frost`, `_build` ghi `cover`. View: `_cover_hold` giữ lớp trên hình tới khi khối kề chạm thanh (`_grind` gọi `_release_covers`), `cover_held(id)` để `level.gd` coi chạm sớm là `covered`; `_cover_burst` theo chất liệu và số lớp; shader thêm `jelly_thick`, `ice_mat`.
+  - **Còn lại:** sinh lại 500 level (`tools/gen_levels.gd`) và bake lại `data/pudding_sdf.res` khi người dùng báo đã thêm xong các cơ chế khác. Tới lúc đó `test_levels_all` báo lỗi ở các level đóng gói có pudding, `cover` và level dạy L110.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_board test_solver test_generator test_unlocks test_challenge test_i18n test_ui_mech test_ui_board test_ui_candy`
+
+- [x] **Task 9.23: Màn đặc biệt (Special Bomb) (2026-11-09)**
+  - **Allowed Files:** `src/core/special_board.gd` (mới), `src/meta/special_bomb.gd` (mới), `src/meta/save_schema.gd` (`special`), `src/meta/unlocks.gd` (`HOME_FEATURES`), `src/config.gd` (`SPECIAL`, `UNLOCK.special_bomb`), `src/game/game.gd` (`special_*`, `_begin_attempt`, `_finish_attempt`, `on_level_won`, `_end_lost`, `_notif_candidates`), `src/ui/special_bombs.gd` (mới), `src/ui/popup_special.gd` + `scenes/popup_special.tscn` (mới), `src/ui/popup_special_end.gd` + `scenes/popup_special_end.tscn` (mới), `src/ui/bomb_curtain.gd` (mới), `src/ui/candy_curtain.gd` (`custom_tex`), `src/ui/level.gd`, `src/ui/main.gd`, `src/ui/home.gd`, `scenes/home.tscn` (`BombItem`), `src/ui/win_card.gd` (ô "+N vé"), `src/ui/booster_unlocked.gd` (`special`), `src/ui/popup_ingame_settings.gd` (`no_retry`), `tools/gen_special.gd` (mới), `tools/bake_sdf.gd` (`DIRS`), `data/special/sp_0001.json` … `sp_0100.json`, `data/pudding_sdf.res`, `assets/ui/special_bomb.png`, `assets/sfx/sfx_bomb_*.wav`, `art/`, `i18n/strings.csv` và `.translation`, font subset, `tests/test_special.gd`, `tests/test_ui_special.gd`, `tests/test_unlocks.gd`, `design.md`, `CLAUDE.md`.
+  - **Specs:** `design.md` mục 7 "Màn đặc biệt", mục 3 "Tiêu chí thư giãn" (ngoại lệ). Bàn: `SpecialBoard.generate(index, seed)` lát kín hình chữ nhật `rect_w_*` x `rect_h_*` bằng `LevelGenerator._tile` / `_assign` (không sửa `level_generator.gd`), file có `special`, `rect`, `rounds`; sinh bằng `tools/gen_special.gd -- --to=100 --seed=20261109 --out=res://data/special`, rồi `tools/bake_sdf.gd`. Bom: `bomb_count(wins)`, `bomb_plan(level, count, seed)` (tầng độ sâu, giây cộng dồn 19 + số khối phải chạm), `urgent_hint(board, bombs)`. Vé: `SpecialBomb` (ngăn chờ `slot_at`, ngăn thưởng `bonus`, `consume` ngăn chờ trước, `normalize` khi giờ lùi). UI: `level.gd` chế độ `special` (bom là con của `BoardView.block_node`, `_tick_bombs` chỉ khi đang chơi, không popup của màn hay Main, không búa / sao Gợi ý bay, app không ở nền; hết bước thua ngay; Restart thành Rời màn; xong thì đổi tại chỗ sang level chính kế), mời sau thẻ thắng Hard / VeryHard, `main._open_special` (Home, màn mưa bom `BombCurtain`), icon `BombItem` cột trái Home.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_special test_ui_special test_unlocks test_i18n test_pudding_bank test_save`
+
+**Cổng Phase 9:** cổng mặc định, gộp manifest của Task 9.5, thêm xem cơ chế qua MCP (mục 1.12): chạy level dạy 14, 30, 40, 55, 70, 90, 110 và chụp từng màn. Không có session MCP thì ghi vào báo cáo, không chặn.
 
 ### Phase 10: Android thật
 
@@ -643,6 +925,8 @@ Orchestrator không đánh dấu các mục này, chỉ liệt kê lại trong b
 - [ ] Có cấu hình rồi: test rewarded, interstitial, mua hàng bằng license tester, Remote Config, cloud save, thông báo trên bản nội bộ.
 - [ ] Thông báo trên máy thật, Android 13 trở lên.
 - [ ] Nhờ người bản xứ duyệt 12 cột dịch máy trong `i18n/strings.csv` (`pt_BR`, `tr`, `de`, `fr`, `id`, `es`, `ru`, `ko`, `ja`, `hi`, `uk`, `it`) và xem chữ có tràn khung trên máy thật (tiếng Đức, Nga dài nhất; Hindi, Hàn, Nhật dùng font fallback).
+- [ ] Duyệt lại chỗ đặt màn chuyển cảnh 3.1 (`load_transition`): đang dùng khi sang level kế hoặc chơi lại, không đặt ở Road Trip vì Road Trip đã có màn nắp hộp quà (`design.md` mục 9, 2026-11-09).
+- [ ] Báo khi đã thêm xong các cơ chế để sinh lại 500 level và bake lại `data/pudding_sdf.res` (Task 9.22 "Còn lại"). Tới lúc đó `test_levels_all` báo lỗi ở level đóng gói.
 
 ## 5. Blocker thật sự
 

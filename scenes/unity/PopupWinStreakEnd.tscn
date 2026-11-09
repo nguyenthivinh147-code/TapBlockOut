@@ -46,6 +46,18 @@ shader_parameter/underlay_edge = 0.29107142087500004
 shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
 shader_parameter/px_range = 14.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_grn01"]
+shader = ExtResource("5_xn1aa")
+shader_parameter/face_color = Color(1, 1, 1, 1)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
+shader_parameter/px_range = 14.0
+
 [node name="Canvas" type="Control" unique_id=383692084]
 layout_mode = 3
 anchors_preset = 0
@@ -385,7 +397,7 @@ border_scale = 0.3448275862068966
 fill_method = 4
 
 [node name="Text (TMP)" type="Label" parent="PopupWinStreakEnd/Panel/Button" unique_id=2001218337]
-material = SubResource("ShaderMaterial_iqna6")
+material = SubResource("ShaderMaterial_grn01")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0

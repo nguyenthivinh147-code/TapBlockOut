@@ -23,7 +23,6 @@
 [ext_resource type="Texture2D" path="res://assets/ui/cc/blocked.png" id="21_cy8ru"]
 [ext_resource type="Texture2D" path="res://assets/ui/cc/ic_badge2.png" id="22_4x63x"]
 [ext_resource type="Texture2D" path="res://assets/ui/cc/ic_badge1.png" id="23_agyby"]
-[ext_resource type="Texture2D" path="res://assets/ui/lb_banner.png" id="24_h8rjh"]
 [ext_resource type="Texture2D" path="res://assets/ui/cc/BG_Winstreak.png" id="25_bgwst"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1l57u"]
@@ -1142,7 +1141,7 @@ anchor_right = 0.5
 offset_left = -400.0
 offset_top = 14.0
 offset_right = 400.0
-offset_bottom = 224.0
+offset_bottom = 194.0
 pivot_offset_ratio = Vector2(0.5, 0)
 mouse_filter = 2
 metadata/u = {
@@ -1153,7 +1152,7 @@ metadata/u_rect = {
 "amin": Vector2(0.5, 1),
 "pivot": Vector2(0.5, 1),
 "pos": Vector2(0, -14),
-"size": Vector2(800, 210)
+"size": Vector2(800, 180)
 }
 metadata/u_sub = true
 
@@ -1191,25 +1190,21 @@ metadata/u_sub = true
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_uvgey")
 layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -370.0
-offset_top = 12.0
-offset_right = 370.0
-offset_bottom = 62.0
+offset_left = 190.0
+offset_top = 26.0
+offset_right = 770.0
+offset_bottom = 86.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset_ratio = Vector2(0.5, 0)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -4
 theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
 theme_override_fonts/font = SubResource("FontVariation_o363j")
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 44
 theme_override_styles/normal = SubResource("StyleBoxEmpty_tnopf")
-text = "Promotion reward: Gold League"
-horizontal_alignment = 1
+text = "Silver League"
 vertical_alignment = 1
 autowrap_mode = 3
 metadata/u = {
@@ -1220,16 +1215,16 @@ metadata/u = {
 }
 }
 metadata/u_rect = {
-"amax": Vector2(0.5, 1),
-"amin": Vector2(0.5, 1),
-"pivot": Vector2(0.5, 1),
-"pos": Vector2(0, -12),
-"size": Vector2(740, 50)
+"amax": Vector2(0, 1),
+"amin": Vector2(0, 1),
+"pivot": Vector2(0, 1),
+"pos": Vector2(190, -26),
+"size": Vector2(580, 60)
 }
 metadata/u_txt = {
-"auto": [18.0, 36.0],
+"auto": [24.0, 44.0],
 "cs": 0.0,
-"fs": 36.0,
+"fs": 44.0,
 "ls": 0.0,
 "m": [0.0, 0.0, 0.0, 0.0],
 "st": 1.0,
@@ -1237,28 +1232,124 @@ metadata/u_txt = {
 }
 metadata/u_sub = true
 
-[node name="PromoRewards" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PromoBox" unique_id=640360411]
+[node name="CountdownPill" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PromoBox" unique_id=152831927]
 unique_name_in_owner = true
 anchors_preset = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -370.0
-offset_top = 66.0
-offset_right = 370.0
-offset_bottom = 200.0
-pivot_offset_ratio = Vector2(0.5, 0)
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 190.0
+offset_top = -82.0
+offset_right = 570.0
+offset_bottom = -18.0
+pivot_offset_ratio = Vector2(0, 1)
 mouse_filter = 2
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
+region = Rect2(204, 64, 72, 60)
+border = Vector4(36, 0, 36, 0)
+kind = 1
+pivot = Vector2(0, 0)
+fill_method = 4
 metadata/u = {
-"n": "PromoRewards"
+"id": "1708403531920476882",
+"img": {
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_11"
+},
+"n": "CountdownPill"
 }
 metadata/u_rect = {
-"amax": Vector2(0.5, 1),
-"amin": Vector2(0.5, 1),
-"pivot": Vector2(0.5, 1),
-"pos": Vector2(0, -66),
-"size": Vector2(740, 134)
+"amax": Vector2(0, 0),
+"amin": Vector2(0, 0),
+"pivot": Vector2(0, 0),
+"pos": Vector2(190, 18),
+"size": Vector2(380, 64)
 }
 metadata/u_sub = true
+
+[node name="CountdownLabel" type="Label" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PromoBox/CountdownPill" unique_id=1830209077]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_c7li3")
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -132.0
+offset_top = -31.0
+offset_right = 168.0
+offset_bottom = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/line_spacing = -3
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_wpogu")
+theme_override_font_sizes/font_size = 23
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tnopf")
+text = "Ends in 6d 23h"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+metadata/u = {
+"id": "541336199798106768",
+"n": "TimeText",
+"txt": {
+"rt": true
+}
+}
+metadata/u_rect = {
+"amax": Vector2(0.5, 0.5),
+"amin": Vector2(0.5, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(18, 0),
+"size": Vector2(300, 62)
+}
+metadata/u_txt = {
+"auto": [16.0, 30.0],
+"cs": 0.0,
+"fs": 30.0,
+"ls": 0.0,
+"m": [0.0, 0.0, 0.0, 0.0],
+"st": 0.0,
+"ws": 0.0
+}
+
+[node name="ClockIcon" type="Control" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent/PromoBox/CountdownPill" unique_id=1621988186]
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -25.32
+offset_top = -30.0
+offset_right = 34.68
+offset_bottom = 30.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("3_bbyyb")
+tex = ExtResource("12_14kf3")
+region = Rect2(1828, 16, 220, 220)
+fill_method = 4
+metadata/u = {
+"id": "2533931720250760637",
+"img": {
+"ppu": 1.0,
+"rt": true,
+"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7"
+},
+"n": "ClockIcon"
+}
+metadata/u_rect = {
+"amax": Vector2(0, 0.5),
+"amin": Vector2(0, 0.5),
+"pivot": Vector2(0.5, 0.5),
+"pos": Vector2(4.6800003, 0),
+"size": Vector2(60, 60)
+}
 
 [node name="Line (1)" parent="Canvas/LeaderboardLayer/BG/Panel/ToggleGroup/LeaguesContent" index="1" unique_id=1901787159]
 visible = false
@@ -6688,443 +6779,6 @@ metadata/u_rect = {
 "size": Vector2(800, 150)
 }
 
-[node name="Banner" type="Control" parent="Canvas/LeaderboardLayer/BG" index="3" unique_id=600126185]
-unique_name_in_owner = true
-clip_contents = true
-anchors_preset = 0
-anchor_right = 1.0
-offset_top = 193.8149
-offset_bottom = 453.81488
-pivot_offset_ratio = Vector2(0.5, 0)
-mouse_filter = 2
-metadata/u = {
-"n": "Banner"
-}
-metadata/u_rect = {
-"amax": Vector2(1, 1),
-"amin": Vector2(0, 1),
-"pivot": Vector2(0.5, 1),
-"pos": Vector2(0, -193.8149),
-"size": Vector2(0, 260)
-}
-metadata/u_sub = true
-
-[node name="BannerArt" type="TextureRect" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=1983281394]
-unique_name_in_owner = true
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-texture = ExtResource("24_h8rjh")
-expand_mode = 1
-stretch_mode = 6
-
-[node name="BannerGlow" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=2099927563]
-unique_name_in_owner = true
-anchors_preset = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -135.0
-offset_top = -43.0
-offset_right = 135.0
-offset_bottom = 227.0
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-script = ExtResource("3_bbyyb")
-tex = ExtResource("16_whcxy")
-region = Rect2(0, 0, 237, 255.73953)
-border_scale = 3.628691983122363
-preserve_aspect = true
-metadata/u = {
-"img": {
-"sp": "light1"
-},
-"n": "BannerGlow"
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 1),
-"amin": Vector2(0.5, 1),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, -92),
-"size": Vector2(270, 270)
-}
-metadata/u_sub = true
-
-[node name="BannerIcon" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=94678787]
-unique_name_in_owner = true
-anchors_preset = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -75.0
-offset_top = 17.0
-offset_right = 75.0
-offset_bottom = 167.0
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-script = ExtResource("3_bbyyb")
-tex = ExtResource("9_3bdeo")
-region = Rect2(0, 0, 256, 256)
-border_scale = 2.0
-preserve_aspect = true
-metadata/u = {
-"img": {
-"sp": "ic_Silver"
-},
-"n": "BannerIcon"
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 1),
-"amin": Vector2(0.5, 1),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, -92),
-"size": Vector2(150, 150)
-}
-metadata/u_sub = true
-
-[node name="BannerLeague" type="Label" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=1223144065]
-unique_name_in_owner = true
-material = SubResource("ShaderMaterial_uvgey")
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -180.0
-offset_top = -84.0
-offset_right = 180.0
-offset_bottom = -12.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset_ratio = Vector2(0.5, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/line_spacing = -6
-theme_override_constants/outline_size = 0
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_o363j")
-theme_override_font_sizes/font_size = 52
-theme_override_styles/normal = SubResource("StyleBoxEmpty_tnopf")
-text = "Silver"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-metadata/u = {
-"id": "709436973652917155",
-"n": "Text",
-"txt": {
-"rt": false
-}
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 0),
-"amin": Vector2(0.5, 0),
-"pivot": Vector2(0.5, 0),
-"pos": Vector2(0, 12),
-"size": Vector2(360, 72)
-}
-metadata/u_txt = {
-"auto": [18.0, 56.0],
-"cs": 0.0,
-"fs": 56.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"st": 1.0,
-"ws": 0.0
-}
-metadata/u_sub = true
-
-[node name="CountdownPill" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=152831927]
-unique_name_in_owner = true
-anchors_preset = 0
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 44.0
-offset_top = -82.0
-offset_right = 304.0
-offset_bottom = -18.0
-pivot_offset_ratio = Vector2(0, 1)
-mouse_filter = 1
-script = ExtResource("3_bbyyb")
-tex = ExtResource("4_7ognb")
-region = Rect2(204, 64, 72, 60)
-border = Vector4(36, 0, 36, 0)
-kind = 1
-pivot = Vector2(0, 0)
-fill_method = 4
-metadata/u = {
-"id": "1708403531920476882",
-"img": {
-"ppu": 1.0,
-"rt": true,
-"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_11"
-},
-"n": "CountdownPill"
-}
-metadata/u_rect = {
-"amax": Vector2(0, 0),
-"amin": Vector2(0, 0),
-"pivot": Vector2(0, 0),
-"pos": Vector2(44, 18),
-"size": Vector2(260, 64)
-}
-metadata/u_sub = true
-
-[node name="CountdownLabel" type="Label" parent="Canvas/LeaderboardLayer/BG/Banner/CountdownPill" unique_id=1830209077]
-unique_name_in_owner = true
-material = SubResource("ShaderMaterial_c7li3")
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -82.0
-offset_top = -31.0
-offset_right = 118.0
-offset_bottom = 31.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 1
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/line_spacing = -3
-theme_override_constants/outline_size = 0
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_wpogu")
-theme_override_font_sizes/font_size = 23
-theme_override_styles/normal = SubResource("StyleBoxEmpty_tnopf")
-text = "Updates in 16:00:00"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-metadata/u = {
-"id": "541336199798106768",
-"n": "TimeText",
-"txt": {
-"rt": true
-}
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 0.5),
-"amin": Vector2(0.5, 0.5),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(18, 0),
-"size": Vector2(200, 62)
-}
-metadata/u_txt = {
-"auto": [16.0, 30.0],
-"cs": 0.0,
-"fs": 30.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"st": 0.0,
-"ws": 0.0
-}
-
-[node name="ClockIcon" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner/CountdownPill" unique_id=1621988186]
-anchors_preset = 0
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = -25.32
-offset_top = -30.0
-offset_right = 34.68
-offset_bottom = 30.0
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 1
-script = ExtResource("3_bbyyb")
-tex = ExtResource("12_14kf3")
-region = Rect2(1828, 16, 220, 220)
-fill_method = 4
-metadata/u = {
-"id": "2533931720250760637",
-"img": {
-"ppu": 1.0,
-"rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_7"
-},
-"n": "ClockIcon"
-}
-metadata/u_rect = {
-"amax": Vector2(0, 0.5),
-"amin": Vector2(0, 0.5),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(4.6800003, 0),
-"size": Vector2(60, 60)
-}
-
-[node name="InfoButton" type="Button" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=1440621942]
-unique_name_in_owner = true
-layout_mode = 0
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -86.0
-offset_top = -82.0
-offset_right = -26.0
-offset_bottom = -22.0
-pivot_offset_ratio = Vector2(1, 1)
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_1l57u")
-flat = true
-script = ExtResource("5_lps3l")
-tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
-sound = true
-metadata/u = {
-"btn": {
-"inter": true,
-"target": "7402373560209848535"
-},
-"id": "7402373560209848535",
-"img": {
-"ppu": 1.0,
-"rt": true,
-"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_6"
-},
-"n": "InfoButton"
-}
-metadata/u_rect = {
-"amax": Vector2(1, 0),
-"amin": Vector2(1, 0),
-"pivot": Vector2(1, 0),
-"pos": Vector2(-26, 22),
-"size": Vector2(60, 60)
-}
-metadata/u_sub = true
-
-[node name="image" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner/InfoButton" unique_id=109791287]
-anchors_preset = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-script = ExtResource("3_bbyyb")
-tex = ExtResource("4_7ognb")
-region = Rect2(0, 164, 52, 52)
-pivot = Vector2(1, 0)
-fill_method = 4
-
-[node name="RewardToggle" type="Button" parent="Canvas/LeaderboardLayer/BG/Banner" unique_id=1288754615]
-unique_name_in_owner = true
-visible = false
-layout_mode = 0
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -230.0
-offset_top = -104.0
-offset_right = -20.0
-offset_bottom = -14.0
-pivot_offset_ratio = Vector2(1, 1)
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_1l57u")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_1l57u")
-flat = true
-script = ExtResource("5_lps3l")
-tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
-sound = true
-vibrate = true
-metadata/u = {
-"btn": {
-"inter": true,
-"target": "2976045016534427140"
-},
-"id": "2976045016534427140",
-"img": {
-"ppu": 2.0,
-"rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_51"
-},
-"n": "Button_blue"
-}
-metadata/u_rect = {
-"amax": Vector2(1, 0),
-"amin": Vector2(1, 0),
-"pivot": Vector2(1, 0),
-"pos": Vector2(-20, 14),
-"size": Vector2(210, 90)
-}
-metadata/u_sub = true
-
-[node name="image" type="Control" parent="Canvas/LeaderboardLayer/BG/Banner/RewardToggle" unique_id=1297520750]
-anchors_preset = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-script = ExtResource("3_bbyyb")
-tex = ExtResource("12_14kf3")
-region = Rect2(0, 1332, 380, 168)
-border = Vector4(80, 84, 80, 84)
-border_scale = 0.5
-preserve_aspect = true
-pivot = Vector2(0.5, 1)
-fill_method = 4
-
-[node name="RewardToggleLabel" type="Label" parent="Canvas/LeaderboardLayer/BG/Banner/RewardToggle" unique_id=1633280816]
-unique_name_in_owner = true
-material = SubResource("ShaderMaterial_rcxs4")
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_bottom = -8.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/line_spacing = -7
-theme_override_constants/outline_size = 0
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_o363j")
-theme_override_font_sizes/font_size = 56
-theme_override_styles/normal = SubResource("StyleBoxEmpty_tnopf")
-text = "Rewards"
-horizontal_alignment = 1
-vertical_alignment = 1
-uppercase = true
-metadata/u = {
-"id": "5028444773256912849",
-"n": "Out",
-"txt": {
-"rt": false
-}
-}
-metadata/u_rect = {
-"amax": Vector2(1, 1),
-"amin": Vector2(0, 0),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 4),
-"size": Vector2(0, -8)
-}
-metadata/u_txt = {
-"auto": [18.0, 56.0],
-"cs": 0.0,
-"fs": 56.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"st": 16.0,
-"ws": 0.0
-}
-
 [node name="WeekResultPanel" parent="Canvas/LeaderboardLayer" index="1" unique_id=1749930254]
 visible = false
 anchors_preset = 0
@@ -8373,6 +8027,67 @@ metadata/u_txt = {
 "st": 0.0,
 "ws": 0.0
 }
+
+[node name="InfoButton" type="Button" parent="Canvas/LeaderboardLayer" unique_id=1440621942]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -86.0
+offset_top = -82.0
+offset_right = -26.0
+offset_bottom = -22.0
+pivot_offset_ratio = Vector2(1, 1)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_1l57u")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_1l57u")
+flat = true
+script = ExtResource("5_lps3l")
+tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
+sound = true
+metadata/u = {
+"btn": {
+"inter": true,
+"target": "7402373560209848535"
+},
+"id": "7402373560209848535",
+"img": {
+"ppu": 1.0,
+"rt": true,
+"sp": "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_6"
+},
+"n": "InfoButton"
+}
+metadata/u_rect = {
+"amax": Vector2(1, 0),
+"amin": Vector2(1, 0),
+"pivot": Vector2(1, 0),
+"pos": Vector2(-26, 22),
+"size": Vector2(60, 60)
+}
+metadata/u_sub = true
+
+[node name="image" type="Control" parent="Canvas/LeaderboardLayer/InfoButton" unique_id=109791287]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("3_bbyyb")
+tex = ExtResource("4_7ognb")
+region = Rect2(0, 164, 52, 52)
+pivot = Vector2(1, 0)
+fill_method = 4
 
 [node name="Tick" type="Timer" parent="." unique_id=1315257932]
 unique_name_in_owner = true

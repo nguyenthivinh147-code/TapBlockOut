@@ -4,6 +4,7 @@ extends RefCounted
 const T := preload("res://tests/t.gd")
 const Config := preload("res://src/config.gd")
 const Leaderboard := preload("res://src/meta/leaderboard.gd")
+const LbKit := preload("res://src/ui/lb_kit.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 
 const DIR := "user://test_ui_leaderboard"
@@ -74,21 +75,27 @@ func test_ranking_icon_unlock(t: T) -> void:
 	var home := _mount("home")
 	t.ok(home.find_child("LeaderboardButton", true, false).disabled, "L5 chưa mở Ranking")
 	home.free()
-	_g(8)
+	var g := _g(8)
 	home = _mount("home")
 	t.ok(not home.find_child("LeaderboardButton", true, false).disabled, "L8 mở Ranking")
+	t.ok(not _shown(home, "LeaderboardDot"), "không có gì chờ: không chấm đỏ")
+	home.free()
+	Leaderboard.add_points(g.s, 10)
+	g.test_now = NOW + 7 * 86400
+	g.lb_refresh()
+	home = _mount("home")
+	t.ok(_shown(home, "LeaderboardDot"), "kết quả tuần chờ xem: chấm đỏ")
 	home.free()
 
 
 func test_hub_top_hides_profile_and_settings(t: T) -> void:
 	_g()
-	for scene in ["shop", "leaderboard"]:
-		var n := _mount(scene, {"source": "test"} if scene == "shop" else {})
-		var top: Control = n.find_child("HubTop", true, false)
-		t.ok(not top.profile_btn.visible, scene + ": ẩn avatar")
-		t.ok(not top.settings_btn.visible, scene + ": ẩn settings")
-		t.ok(top.gold_label.is_visible_in_tree(), scene + ": còn vàng")
-		n.free()
+	var n := _mount("shop", {"source": "test"})
+	var top: Control = n.find_child("HubTop", true, false)
+	t.ok(not top.profile_btn.visible, "shop: ẩn avatar")
+	t.ok(not top.settings_btn.visible, "shop: ẩn settings")
+	t.ok(top.gold_label.is_visible_in_tree(), "shop: còn vàng")
+	n.free()
 	var home := _mount("home")
 	t.ok(home.profile_btn.visible and home.settings_btn.visible, "Home giữ avatar, settings")
 	home.free()
@@ -99,23 +106,56 @@ func _shown(node: Node, n: String) -> bool:
 	return c != null and c.is_visible_in_tree()
 
 
-## Tab League theo wireframe: banner (giải, đếm ngược, "i"), khung thưởng thăng hạng, podium, hàng ghim, thanh tab dưới.
+func _bubble_items(node: Node) -> int:
+	var b := node.find_child("RewardBubble", true, false) as Control
+	if b == null or not b.visible:
+		return 0
+	return b.get_children().filter(func(c: Node) -> bool:
+		return str(c.name).begins_with("ItemReward") and (c as Control).visible).size()
+
+
+func _bubble_caption(node: Node) -> String:
+	return (node.find_child("RewardBubble", true, false).find_child("Caption", true, false) as Label).text
+
+
+## Popup Leaderboard, tab League: khung popup (tiêu đề, X, nút i ở góc trái), không còn thanh trên, thanh dưới, banner;
+## PromoBox (huy hiệu giải hiện tại, tên giải, đếm ngược tới hết tuần), chạm huy hiệu thì bong bóng thưởng của giải kế;
+## podium, hàng ghim, thanh tab ở đáy.
 func test_league_tab(t: T) -> void:
 	var g := _g()
-	g.lb_claim()
 	var node := _mount("leaderboard")
+	# The info button follows the frame's X after layout (deferred).
+	await _wait_until(func() -> bool: return false, 100)
 	var silver := node.tr("lb_league_silver")
-	t.eq((node.find_child("BannerLeague", true, false) as Label).text, silver, "banner: tên giải")
+	for gone in ["HubTop", "HubNav", "Banner", "BannerLeague", "RewardToggle", "PromoRewards"]:
+		t.ok(node.find_child(gone, true, false) == null, "popup không còn " + gone)
+	var x := node.find_child("btnTurnOff", true, false) as Control
+	var info := node.find_child("InfoButton", true, false) as Control
+	t.ok(x != null and x.is_visible_in_tree(), "có nút X")
+	t.ok(info.is_visible_in_tree(), "có nút i")
+	# Prefab buttons grow their hit area around the art: compare centres.
+	var ic := info.get_global_rect().get_center()
+	var xc := x.get_global_rect().get_center()
+	var panel := (node.find_child("FrameCanvas", true, false) as Node).find_child("Panel", true, false) as Control
+	var pc := panel.get_global_rect().get_center()
+	t.ok(absf(ic.y - xc.y) < 2.0 and absf((pc.x - ic.x) - (xc.x - pc.x)) < 12.0, "nút i đối xứng với X ở đầu khung")
 	var tab_l := node.find_child("Tab_league", true, false)
 	t.eq((tab_l.get_node("Text (TMP)") as Label).text, silver, "tab League mang tên giải hiện tại")
 	t.ok(_shown(node, "TabLeagueIcon") and _shown(node, "TabWorldIcon"), "tab có icon")
-	t.ok(_shown(node, "CountdownPill") and _shown(node, "InfoButton"), "banner: đếm ngược và nút i")
-	t.ok(not _shown(node, "RewardToggle"), "nút Phần thưởng chỉ ở tab World")
-	t.ok((node.find_child("CountdownLabel", true, false) as Label).text != "", "đếm ngược lần cập nhật")
-	t.ok(_shown(node, "PromoBox"), "khung thưởng thăng hạng")
-	t.eq((node.find_child("PromoTitle", true, false) as Label).text,
-		node.tr("lb_promo_title") % (node.tr("lb_league") % node.tr("lb_league_gold")), "thưởng của giải kế")
-	t.eq((node.find_child("PromoRewards", true, false) as Node).get_child_count(), 2, "Gold: 300 gold, 1 Hint")
+	t.ok(_shown(node, "PromoBox") and _shown(node, "PromoBadge") and _shown(node, "CountdownPill"), "PromoBox: huy hiệu, đếm ngược")
+	t.eq((node.find_child("PromoTitle", true, false) as Label).text, node.tr("lb_league") % silver, "PromoBox: tên giải hiện tại")
+	var left := Leaderboard.week_len()
+	var want := [node.tr("lb_ends_in") % LbKit.fmt_week(left), node.tr("lb_ends_in") % LbKit.fmt_week(left - 1)]
+	t.ok(want.has((node.find_child("CountdownLabel", true, false) as Label).text), "đếm ngược tới hết tuần")
+	t.eq(_bubble_items(node), 0, "bong bóng ẩn")
+	var badge := node.find_child("PromoBadge", true, false) as Button
+	badge.pressed.emit()
+	t.eq(_bubble_items(node), 2, "chạm huy hiệu: thưởng Gold (300 gold, 1 Hint)")
+	t.eq(_bubble_caption(node), node.tr("lb_reward_next") % (node.tr("lb_league") % node.tr("lb_league_gold")), "thưởng của giải kế")
+	var bubble := node.find_child("RewardBubble", true, false) as Control
+	t.ok(bubble.get_global_rect().position.y >= badge.get_global_rect().end.y - 1.0, "bong bóng dưới huy hiệu")
+	badge.pressed.emit()
+	t.eq(_bubble_items(node), 0, "chạm lần nữa thì ẩn")
 	t.ok(node.find_child("Podium", true, false) != null, "podium top 3")
 	t.ok(node.find_child("MeRow", true, false) != null, "hàng người chơi ghim")
 	var rows := node.find_child("Rows", true, false)
@@ -129,6 +169,10 @@ func test_league_tab(t: T) -> void:
 	t.eq(Leaderboard.seen_rank(g.s), Leaderboard.rank(g.s), "ghi hạng đã xem")
 	(node.find_child("InfoButton", true, false) as Button).pressed.emit()
 	t.ok(node.find_child("PopupLbHowto", true, false) != null, "nút i mở Cách hoạt động")
+	var got: Array = []
+	node.closed.connect(func(r: Variant) -> void: got.append(r))
+	(x as Button).pressed.emit()
+	t.eq(got, [null], "X đóng popup")
 	node.free()
 
 
@@ -137,8 +181,12 @@ func test_league_tab_top_league(t: T) -> void:
 	Leaderboard.add_points(g.s, 1000)
 	g.lb_claim()
 	var node := _mount("leaderboard")
-	t.eq((node.find_child("BannerLeague", true, false) as Label).text, node.tr("lb_league_one_above_all"), "giải cuối")
-	t.ok(not _shown(node, "PromoBox"), "giải cao nhất: ẩn khung thưởng thăng hạng")
+	var top := node.tr("lb_league") % node.tr("lb_league_one_above_all")
+	t.eq((node.find_child("PromoTitle", true, false) as Label).text, top, "giải cuối")
+	t.ok(_shown(node, "PromoBox") and _shown(node, "CountdownPill"), "giải cao nhất vẫn có PromoBox và đếm ngược")
+	(node.find_child("PromoBadge", true, false) as Button).pressed.emit()
+	t.eq(_bubble_items(node), 5, "thưởng của chính giải cuối")
+	t.eq(_bubble_caption(node), node.tr("lb_reward_claimed"), "đánh dấu đã nhận")
 	node.free()
 
 
@@ -174,17 +222,26 @@ func test_tabs_take_real_taps_over_scrolled_list(t: T) -> void:
 	node.free()
 
 
-## Tab World theo wireframe: thẻ người chơi, thang 7 giải từ cao xuống thấp, nút đổi sang thưởng của từng giải.
+func _tap(c: Control) -> void:
+	for down in [true, false]:
+		var e := InputEventMouseButton.new()
+		e.button_index = MOUSE_BUTTON_LEFT
+		e.pressed = down
+		e.global_position = c.get_global_rect().get_center()
+		c.gui_input.emit(e)
+
+
+## Tab World theo wireframe: thẻ người chơi, thang 7 giải từ cao xuống thấp; chạm huy hiệu một giải thì bong bóng
+## thưởng của giải đó.
 func test_world_tab_ladder(t: T) -> void:
 	var g := _g()
-	Leaderboard.add_points(g.s, 35)
+	Leaderboard.add_points(g.s, 160)
 	g.lb_claim()
 	var node := _mount("leaderboard", {"tab": "world"})
 	t.ok(_shown(node, "PlayerCard"), "thẻ người chơi")
 	t.eq((node.find_child("CardTop", true, false) as Label).text, node.tr("lb_top_percent") % Leaderboard.top_percent(g.s),
 		"Top %")
-	t.ok(not _shown(node, "CountdownPill") and not _shown(node, "InfoButton"), "đếm ngược, i chỉ ở tab League")
-	t.ok(_shown(node, "RewardToggle"), "nút Phần thưởng trên banner")
+	t.ok(not _shown(node, "CountdownPill") and _shown(node, "InfoButton"), "đếm ngược chỉ ở tab League, nút i ở cả hai tab")
 	var ladder := node.find_child("Ladder", true, false)
 	var ids: Array = []
 	for c in ladder.get_children():
@@ -198,12 +255,17 @@ func test_world_tab_ladder(t: T) -> void:
 	t.eq((ladder.get_node("League_silver") as Control).modulate.a, 1.0, "giải đã qua rõ")
 	t.eq((ladder.get_node("League_silver/Players") as Label).text, "48K", "số người chơi mô phỏng")
 	_check_ui(t, node, "leaderboard world")
-	(node.find_child("RewardToggle", true, false) as Button).pressed.emit()
-	t.eq((node.find_child("RewardToggleLabel", true, false) as Label).text, node.tr("lb_btn_info"), "nút đổi thành Thông tin")
-	var rw := ladder.get_node_or_null("League_platinum/Rewards")
-	t.ok(rw != null and rw.get_child_count() == 2, "chế độ Phần thưởng: Platinum 500 gold, 1 Move")
-	t.ok(ladder.get_node_or_null("League_gold/Players") == null, "ẩn số người")
-	_check_ui(t, node, "leaderboard world rewards")
+	_tap(ladder.get_node("League_platinum/LeagueIcon"))
+	t.eq(_bubble_items(node), 2, "chạm Platinum: 500 gold, 1 Move")
+	t.eq(_bubble_caption(node), node.tr("lb_reward_next") % (node.tr("lb_league") % node.tr("lb_league_platinum")),
+		"giải chưa tới")
+	_tap(ladder.get_node("League_gold/LeagueIcon"))
+	t.eq(_bubble_caption(node), node.tr("lb_reward_claimed"), "giải đã vào trong tuần: đã nhận")
+	_tap(ladder.get_node("League_gold/LeagueIcon"))
+	t.eq(_bubble_items(node), 0, "chạm lần nữa thì ẩn")
+	_tap(ladder.get_node("League_silver/LeagueIcon"))
+	t.eq(_bubble_items(node), 0, "Silver không có thưởng")
+	t.ok(ladder.get_node_or_null("League_platinum/Players") != null, "luôn ghi số người chơi")
 	(node.find_child("Tab_league", true, false) as Button).pressed.emit()
 	t.ok(_shown(node, "PromoBox") and not _shown(node, "PlayerCard"), "đổi về tab League")
 	node.free()
@@ -211,21 +273,56 @@ func test_world_tab_ladder(t: T) -> void:
 
 func test_pending_popup_on_open(t: T) -> void:
 	var g := _g()
-	t.ok(not g.lb_pending_view().is_empty(), "mới mở khoá: chờ thưởng Silver")
+	t.eq(g.lb_pending_view(), {}, "mới mở khoá: Silver không có thưởng")
+	t.ok(not g.lb_badge(), "không chấm đỏ")
+	Leaderboard.add_points(g.s, 150)
+	t.ok(g.lb_badge(), "lên Gold: chấm đỏ")
 	var coins := int(g.s.coins)
 	var node := _mount("leaderboard")
 	var found := func() -> bool: return node.find_child("ClaimButton", true, false) != null
 	t.ok(await _wait_until(found), "tự mở popup nhận thưởng")
 	_check_ui(t, node.find_child("PopupLbResult", true, false), "popup_lb_result")
+	t.ok(not _shown(node, "WeekCard"), "popup lên giải không có thẻ hạng tuần")
 	(node.find_child("ClaimButton", true, false) as Button).pressed.emit()
-	t.eq(int(g.s.coins), coins + 100, "+100 gold thưởng Silver")
+	t.eq(int(g.s.coins), coins + 300, "+300 gold thưởng Gold")
 	t.eq(g.lb_pending_view(), {}, "hết chờ")
+	t.ok(not g.lb_badge(), "hết chấm đỏ")
+	node.free()
+
+
+## Tuần đã hết lúc mở: popup kết quả tuần (hạng, điểm, giải cuối tuần, tuần mới từ Silver, thưởng còn chờ).
+func test_week_result_popup_on_open(t: T) -> void:
+	var g := _g()
+	Leaderboard.add_points(g.s, 160)
+	g.test_now = NOW + 7 * 86400
+	g.lb_refresh()
+	t.ok(g.lb_badge(), "kết quả tuần: chấm đỏ")
+	var coins := int(g.s.coins)
+	var node := _mount("leaderboard")
+	var found := func() -> bool: return node.find_child("WeekCard", true, false) != null
+	t.ok(await _wait_until(found), "tự mở popup kết quả tuần")
+	var pop := node.find_child("PopupLbResult", true, false)
+	_check_ui(t, pop, "popup kết quả tuần")
+	var texts: Array = []
+	_texts(pop, texts)
+	t.ok(texts.has(node.tr("lb_week_title")), "tiêu đề Kết quả tuần")
+	t.ok(texts.has(node.tr("lb_week_restart") % (node.tr("lb_league") % node.tr("lb_league_silver"))), "tuần mới từ Silver")
+	t.ok(texts.has("160"), "điểm của tuần")
+	t.eq((node.find_child("PromoTitle", true, false) as Label).text, node.tr("lb_league") % node.tr("lb_league_silver"),
+		"BXH đã về Silver")
+	(pop.find_child("ClaimButton", true, false) as Button).pressed.emit()
+	t.eq(int(g.s.coins), coins + 300, "thưởng Gold còn chờ được nhận")
+	t.eq(g.lb_week_result_view(), {}, "hết kết quả")
+	t.ok(not g.lb_badge(), "hết chấm đỏ")
+	await _tree().process_frame
+	t.ok(node.find_child("PopupLbResult", true, false) == null or node.find_child("PopupLbResult", true, false).is_queued_for_deletion(),
+		"không mở thêm popup")
 	node.free()
 
 
 func test_result_close_still_claims(t: T) -> void:
 	var g := _g()
-	Leaderboard.add_points(g.s, 30)
+	Leaderboard.add_points(g.s, 150)
 	var coins := int(g.s.coins)
 	var node := _mount("popup_lb_result")
 	var got: Array = []
@@ -234,7 +331,7 @@ func test_result_close_still_claims(t: T) -> void:
 	var dim := node.find_child("ClaimButton", true, false) as Button
 	dim.pressed.emit()
 	dim.pressed.emit()
-	t.eq(int(g.s.coins), coins + 400, "chạm để đóng vẫn nhận thưởng Silver + Gold")
+	t.eq(int(g.s.coins), coins + 300, "chạm để đóng vẫn nhận thưởng Gold")
 	t.eq(int(g.s.inv.hint), 1, "+1 hint của Gold")
 	t.eq(got.size(), 1, "phát closed một lần")
 	node.free()
@@ -242,7 +339,7 @@ func test_result_close_still_claims(t: T) -> void:
 
 func test_leagues_popup(t: T) -> void:
 	var g := _g()
-	Leaderboard.add_points(g.s, 35)
+	Leaderboard.add_points(g.s, 160)
 	var node := _mount("popup_leagues")
 	for id in ["silver", "gold", "platinum", "emerald", "diamond", "immortal", "one_above_all"]:
 		t.ok(node.find_child("League_" + id, true, false) != null, "có league " + id)
@@ -250,7 +347,7 @@ func test_leagues_popup(t: T) -> void:
 	_texts(node, texts)
 	t.ok(texts.has(node.tr("lb_current")), "đánh dấu league hiện tại")
 	t.ok(texts.has(node.tr("lb_reached")), "đánh dấu league đã qua")
-	t.ok(texts.has(node.tr("lb_league_range_top") % 1000), "league cuối không có trần")
+	t.ok(texts.has(node.tr("lb_league_range_top") % 950), "league cuối không có trần")
 	_check_ui(t, node, "popup_leagues")
 	node.free()
 	var how := _mount("popup_lb_howto")

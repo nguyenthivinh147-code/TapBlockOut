@@ -201,8 +201,8 @@ func _on_video_pressed() -> void:
 		_finish("refilled")
 		return
 	match Game.last_ad_reason:
-		"not_ready":
-			_show_msg(tr("no_lives_no_ads"))
+		"not_ready", "offline":
+			pass  # Main đã báo bằng popup (Game.notice)
 		"closed":
 			_show_msg(tr("ads_closed_early"))
 		_:

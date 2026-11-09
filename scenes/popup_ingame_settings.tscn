@@ -2069,7 +2069,7 @@ text = "Restart"
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
-uppercase = true
+uppercase = false
 metadata/u = {
 "id": "3582087303870257874",
 "n": "Text (TMP)",

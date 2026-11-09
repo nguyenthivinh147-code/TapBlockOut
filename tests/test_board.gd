@@ -97,17 +97,66 @@ func test_win_on_last_move(t: T) -> void:
 	t.eq(b.is_out_of_moves(), false, "không phải hết MOVES")
 
 
+## Lớp phủ (pudding, băng): khối còn phủ chạm vào không đi, không tốn MOVES; mỗi khối kề rời bàn bóc 1 lớp.
 func test_ice(t: T) -> void:
-	var b := BoardState.new(_lv(5, 5, [_b("i", "yellow", [[2, 2]], {"ice": 1})]))
-	t.eq(b.can_exit("i"), false, "băng chưa đi được")
-	t.eq(b.hint(), "", "hint rỗng khi chỉ còn khối băng")
+	var b := BoardState.new(_lv(5, 5, [_b("n", "yellow", [[2, 1]]), _b("i", "yellow", [[2, 2]], {"ice": 1})]))
+	t.eq(b.can_exit("i"), false, "còn phủ chưa đi được")
+	t.eq(b.hint(), "n", "hint bỏ qua khối còn phủ")
 	var r := b.tap("i")
-	t.eq(r["kind"], "crack", "nứt")
-	t.eq(r["moves_left"], 19, "nứt tốn MOVES")
-	t.eq(b.remaining_count(), 1, "khối còn")
-	t.eq(b.block_view("i")["ice"], 0, "hết băng")
-	t.eq(b.can_exit("i"), true, "đi được")
-	t.eq(b.tap("i")["kind"], "exit", "thoát")
+	t.eq(r["kind"], "covered", "chạm khối còn phủ: không đi")
+	t.eq(r["moves_left"], 20, "không tốn MOVES")
+	t.eq(r["distance"], 0, "không trượt")
+	t.eq(b.block_view("i")["ice"], 1, "vẫn còn phủ")
+	var r2 := b.tap("n")
+	t.eq(r2["kind"], "exit", "n thoát")
+	t.eq(r2["stripped"], ["i"] as Array[String], "khối kề rời đi bóc lớp phủ")
+	t.eq(b.block_view("i")["ice"], 0, "hết phủ")
+	t.eq(b.tap("i")["kind"], "exit", "hết phủ thì thoát")
+	# Ô trống sẵn quanh khối không bóc: khối phủ không có khối kề nào thì không bao giờ đi được.
+	var alone := BoardState.new(_lv(5, 5, [_b("i", "yellow", [[2, 2]], {"ice": 1})]))
+	t.eq(alone.peek("i"), "covered", "ô trống sẵn không bóc")
+	t.eq(alone.hint(), "", "hint rỗng khi chỉ còn khối phủ")
+	t.eq(alone.block_view("i")["cover"], "pudding", "level không ghi cover là pudding")
+	# Băng cùng luật; khoá `cover` của level.
+	var frost := BoardState.new(_lv(5, 5, [_b("n", "yellow", [[2, 1]]), _b("i", "yellow", [[2, 2]], {"ice": 1})],
+		{"cover": "frost"}))
+	t.eq(frost.cover_kind(), "frost", "level băng")
+	t.eq(frost.block_view("i")["cover"], "frost", "view có chất liệu lớp phủ")
+	t.eq(frost.tap("i")["kind"], "covered", "băng: chạm không đi")
+	frost.tap("n")
+	t.eq(frost.peek("i"), "exit", "băng: khối kề đi thì hết phủ")
+
+
+## Khối 2 lớp cần 2 khối kề khác nhau rời bàn; khối kề nhiều ô chỉ bóc 1 lớp; bị Phá cũng bóc; bóc vỏ hộp giấy, bị chặn
+## thì không.
+func test_ice_layers(t: T) -> void:
+	var lvl := _lv(5, 5, [
+		_b("n", "yellow", [[2, 1]]),
+		_b("w", "green", [[1, 2], [1, 3], [2, 3]]),  # kề i ở hai cạnh (trái và dưới)
+		_b("i", "yellow", [[2, 2]], {"ice": 2}),
+		_b("p", "purple", [[3, 2]], {"inner_color": "blue"}),
+		_b("s", "blue", [[0, 1]])])
+	var b := BoardState.new(lvl)
+	t.eq(b.tap("s")["kind"], "blocked", "s bị n chặn")
+	t.eq(b.block_view("i")["ice"], 2, "bị chặn không bóc")
+	t.eq(b.tap("p")["kind"], "peel", "p bóc vỏ")
+	t.eq(b.block_view("i")["ice"], 2, "bóc vỏ hộp giấy không bóc lớp phủ")
+	var r := b.tap("w")
+	t.eq(r["kind"], "exit", "w thoát")
+	t.eq(b.block_view("i")["ice"], 1, "khối kề hai cạnh chỉ bóc 1 lớp")
+	t.eq(b.peek("i"), "covered", "còn 1 lớp")
+	t.eq(b.smash("n"), true, "phá n")
+	t.eq(b.block_view("i")["ice"], 0, "bị Phá cũng bóc")
+	t.eq(b.peek("i"), "exit", "hết phủ thì đi được")
+	# strip (bộ sinh dùng) bóc một lớp, không xuống dưới 0.
+	var c := BoardState.new(lvl)
+	c.strip("i")
+	t.eq(c.block_view("i")["ice"], 1, "strip bóc một lớp")
+	c.strip("i")
+	c.strip("i")
+	t.eq(c.block_view("i")["ice"], 0, "strip không âm")
+	c.strip("n")
+	t.eq(c.block_view("n")["ice"], 0, "khối không phủ giữ nguyên")
 
 
 func test_chain(t: T) -> void:
@@ -130,13 +179,13 @@ func test_chain(t: T) -> void:
 		_b("c", "green", [[3, 1]], {"chained_by": "k"})]))
 	t.eq(c.smash("k"), true, "phá chìa")
 	t.eq(c.can_exit("c"), true, "mở xích")
-	# Xích đi trước băng.
+	# Xích đi trước lớp phủ.
 	var d := BoardState.new(_lv(5, 5, [
 		_b("k", "blue", [[0, 4]]),
 		_b("c", "green", [[3, 1]], {"chained_by": "k", "ice": 1})]))
-	t.eq(d.tap("c")["kind"], "chained", "xích trước băng")
+	t.eq(d.tap("c")["kind"], "chained", "xích trước lớp phủ")
 	d.tap("k")
-	t.eq(d.tap("c")["kind"], "crack", "rồi tới băng")
+	t.eq(d.tap("c")["kind"], "covered", "rồi tới lớp phủ")
 
 
 func test_peel(t: T) -> void:
@@ -222,7 +271,7 @@ func test_fog_hidden_does_not_move(t: T) -> void:
 	t.eq(b.peek("c"), "chained", "c lộ ra thì xích mới giữ")
 	t.eq(b.tap("f")["kind"], "exit", "f thoát")
 	t.eq(b.peek("p"), "peel", "f đi làm lộ hộp giấy p, bóc được")
-	t.eq(b.peek("i"), "crack", "f đi làm lộ pudding i, nứt được")
+	t.eq(b.peek("i"), "exit", "f đi làm lộ pudding i và bóc lớp, thoát được")
 	# reveal (bộ sinh dùng) bỏ sương ngay.
 	var c := BoardState.new(lvl)
 	c.reveal("p")
@@ -280,14 +329,14 @@ func test_pulse_gate(t: T) -> void:
 	t.eq(p.gate_open("up"), false, "hộp qua rồi cổng khoá")
 	t.eq(p.tap("p")["kind"], "exit", "kẹo trong thoát cạnh trái")
 	t.eq(p.gate_open("up"), false, "kẹo cạnh khác không đổi cổng")
-	# Nứt pudding và giật xích không chạm thanh nên không đổi cổng.
+	# Chạm khối còn phủ và giật xích không chạm thanh nên không đổi cổng.
 	var q := BoardState.new(_lv(5, 5, [
 		_b("k", "green", [[0, 4]]), _b("i", "yellow", [[2, 2]], {"ice": 1}),
 		_b("h", "yellow", [[4, 2]], {"chained_by": "k"})],
 		{"pulse_sides": [{"side": "up", "open": false}]}))
-	t.eq(q.tap("i")["kind"], "crack", "nứt pudding")
+	t.eq(q.tap("i")["kind"], "covered", "chạm khối còn pudding")
 	t.eq(q.tap("h")["kind"], "chained", "giật xích")
-	t.eq(q.gate_open("up"), false, "nứt, giật xích không đổi cổng")
+	t.eq(q.gate_open("up"), false, "khối còn phủ, giật xích không đổi cổng")
 
 
 func test_smash(t: T) -> void:
@@ -359,7 +408,7 @@ func test_fixture_mechanics(t: T) -> void:
 	var b := BoardState.new(_load("mechanics"))
 	t.eq(b.remaining_count(), 4, "4 khối")
 	t.eq(b.gate_open("up"), false, "cổng trên đóng")
-	t.eq(b.tap("b1")["kind"], "crack", "b1 băng")
+	t.eq(b.tap("b1")["kind"], "covered", "b1 còn pudding")
 	t.eq(b.tap("b2")["kind"], "chained", "b2 bị xích")
 
 
@@ -425,7 +474,15 @@ func test_validate_errors(t: T) -> void:
 	t.ok(LevelData.validate(d).size() > 0, "cạnh trùng")
 	d = base.duplicate(true)
 	d["blocks"][0]["ice"] = 2
-	t.ok(LevelData.validate(d).size() > 0, "ice 2")
+	t.eq(LevelData.validate(d).size(), 0, "ice 2 hợp lệ (2 lớp)")
+	d["blocks"][0]["ice"] = 3
+	t.ok(LevelData.validate(d).size() > 0, "ice 3")
+	d["blocks"][0]["ice"] = 0
+	d["cover"] = "frost"
+	t.eq(LevelData.validate(d).size(), 0, "cover frost hợp lệ")
+	d["cover"] = "lava"
+	t.ok(LevelData.validate(d).size() > 0, "cover lạ")
+	d.erase("cover")
 	d = base.duplicate(true)
 	d["blocks"][0]["inner_color"] = "pink"
 	t.ok(LevelData.validate(d).size() > 0, "lớp trong lạ")

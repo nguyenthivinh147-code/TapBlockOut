@@ -1,5 +1,6 @@
 extends RefCounted
 const T := preload("res://tests/t.gd")
+const Config := preload("res://src/config.gd")
 const MockIap := preload("res://src/platform/mock_iap.gd")
 const NoLives := preload("res://src/ui/no_lives.gd")
 const UiMotion := preload("res://src/ui/ui_motion.gd")
@@ -277,7 +278,7 @@ func test_lose_rescue_pack_cancel_keeps_open(t: T) -> void:
 
 func _no_lives_state(g: Node) -> void:
 	g.s.level = 10
-	g.s.lives = {"count": 0, "next_at": NOW + 900}
+	g.s.lives = {"count": 0, "next_at": NOW + int(Config.LIVES.regen_sec)}
 
 
 func test_no_lives_countdown(t: T) -> void:
@@ -289,17 +290,18 @@ func test_no_lives_countdown(t: T) -> void:
 	t.eq(NoLives.format_time(3725), "1:02:05", "format h:mm:ss")
 	# PopupMoreHeartLayer: "next life in" above, the clock chip holds the only countdown.
 	t.eq(_lbl(p, "NextLabel").text, p.tr("no_lives_next"), "dòng mạng kế tiếp không có giờ")
-	t.eq(_lbl(p, "TimeLabel").text, "15:00", "đếm ngược 15:00 trên chip đồng hồ")
+	var rg: int = Config.LIVES.regen_sec
+	t.eq(_lbl(p, "TimeLabel").text, NoLives.format_time(rg), "đếm ngược một chu kỳ hồi trên chip đồng hồ")
 	# The count is written on the heart icon.
 	t.eq(_lbl(p, "LivesLabel").text, "0", "số mạng")
 	# GoldBtn of PopupMoreHeartLayer: gold icon + price, heart badge +refill_lives.
 	t.eq(_lbl(p, "GoldPrice").text, "900", "nút 900 gold")
 	t.ok(_btn(p, "GoldButton").is_ancestor_of(_lbl(p, "GoldPrice")), "giá nằm trên nút gold")
-	g.test_now = NOW + 301
+	g.test_now = NOW + 61
 	p.refresh()
-	t.eq(_lbl(p, "TimeLabel").text, "9:59", "đếm ngược sau 301 giây")
+	t.eq(_lbl(p, "TimeLabel").text, NoLives.format_time(rg - 61), "đếm ngược sau 61 giây")
 	t.ok(not st.has("r"), "chưa đóng")
-	g.test_now = NOW + 901
+	g.test_now = NOW + rg + 1
 	p.refresh()
 	t.eq(st.get("r"), "refilled", "mạng hồi thì đóng")
 	p.free()
@@ -434,8 +436,12 @@ func test_win_feature_progress(t: T) -> void:
 
 
 func test_win_no_progress_when_exhausted(t: T) -> void:
+	const Config := preload("res://src/config.gd")
+	var last := 0
+	for k in Config.UNLOCK:
+		last = maxi(last, int(Config.UNLOCK[k]))
 	var g := _g()
-	var res := _won(g, 95)
+	var res := _won(g, last + 5)
 	t.eq(res.progress.has_next, false, "hết tính năng")
 	var p := _mount("win_card", res)
 	t.ok(p.find_child("FeatureProgress", true, false) == null, "ẩn thanh")

@@ -1,5 +1,5 @@
 extends RefCounted
-## Road Trip (design.md mục 7 "Road Trip"): dữ liệu 400 level MoreColor, tiến độ và hộp quà, bố cục bản đồ, Game (mở ở L2,
+## Road Trip (design.md mục 7 "Road Trip"): dữ liệu 400 level, tiến độ và hộp quà, bố cục bản đồ, Game (mở ở L2,
 ## không mất mạng, không gold, hộp cộng vật phẩm, hồi sinh bằng video), thanh dưới Shop · Home · Road Trip, icon Bảng
 ## xếp hạng ở Home, màn Road Trip chơi level thật.
 const T := preload("res://tests/t.gd")
@@ -12,6 +12,12 @@ const SaveSchema := preload("res://src/meta/save_schema.gd")
 
 const DIR := "user://test_road_trip"
 const NOW := 1800000000
+## Main level for tests that need Road Trip open (Config.UNLOCK.road_trip = 70 since 2026-11-09).
+const MAIN := 80
+## Blocks blocked at the start over all 400 levels before harder levels (18591 of 23061, 80.6%); now at least
+## HARDEN_PERCENT % of that (design.md mục 7 "Road Trip", tools/import_road_trip.gd).
+const BLOCKED_BEFORE := 18591
+const HARDEN_PERCENT := 110
 
 
 func _tree() -> SceneTree:
@@ -22,7 +28,7 @@ func _plat() -> Node:
 	return _tree().root.get_node("Platform")
 
 
-func _g(level: int = 20, rt_level: int = 1) -> Node:
+func _g(level: int = MAIN, rt_level: int = 1) -> Node:
 	DirAccess.make_dir_recursive_absolute(DIR)
 	var g: Node = _tree().root.get_node("Game")
 	g.reset_for_test(DIR + "/save.json")
@@ -71,8 +77,11 @@ static func _greedy(b: BoardState) -> PackedStringArray:
 func test_levels_valid(t: T) -> void:
 	var tiers := {1: 0, 2: 0, 3: 0}
 	var bad: Array[String] = []
+	var sourced: Array[String] = []
 	for n in range(1, RoadTrip.levels() + 1):
 		var d := _data(n)
+		if d.has("source"):
+			sourced.append(str(n))
 		if d.is_empty() or not LevelData.validate(d).is_empty():
 			bad.append(str(n))
 			continue
@@ -83,23 +92,42 @@ func test_levels_valid(t: T) -> void:
 			bad.append(str(n))
 	t.eq(bad, [], "400 file hợp lệ, MOVES >= số khối")
 	t.eq(tiers, {1: 310, 2: 68, 3: 22}, "độ khó 310 Normal, 68 Hard, 22 Super Hard")
-	t.eq(_data(1).source, "MoreColorLevel10001", "level 1 là MoreColorLevel10001")
+	t.eq(sourced, [], "không file nào ghi nguồn (khoá source)")
 	t.eq(int(_data(1).moves), 45, "level 1: StepLimit 45")
 	t.ok(not FileAccess.file_exists(RoadTrip.LEVEL_PATH % (RoadTrip.levels() + 1)), "không có level 401")
 
 
 func test_levels_clear_greedy(t: T) -> void:
-	# Không có cơ chế nên rút khối nào thoát được trước cũng giải hết; thử 1 trên 8 level và mọi level Super Hard.
+	# Không có cơ chế nên rút khối nào thoát được trước cũng giải hết; thử mọi level (sau khi làm khó đổi hướng khối).
 	var bad: Array[String] = []
 	for n in range(1, RoadTrip.levels() + 1):
 		var d := _data(n)
-		if n % 8 != 1 and int(d.difficulty) < 3:
-			continue
 		var b := BoardState.new(d)
 		var order := _greedy(b)
-		if order.size() != (d.blocks as Array).size() or not b.is_won():
+		if order.size() != (d.blocks as Array).size() or order.size() > int(d.moves) or not b.is_won():
 			bad.append(str(n))
 	t.eq(bad, [], "giải hết trong đúng số khối lần chạm, không vượt StepLimit")
+
+
+## Làm khó (design.md mục 7 "Road Trip"): cả 400 level có ít nhất HARDEN_PERCENT % số khối bị chặn lúc đầu của bản
+## trước (BLOCKED_BEFORE), mỗi level còn ít nhất một khối thoát được.
+func test_levels_blocked_at_start(t: T) -> void:
+	var blocked := 0
+	var total := 0
+	var no_free: Array[String] = []
+	for n in range(1, RoadTrip.levels() + 1):
+		var b := BoardState.new(_data(n))
+		var free := 0
+		for id in b.block_ids():
+			total += 1
+			if b.peek(id) == "blocked":
+				blocked += 1
+			else:
+				free += 1
+		if free == 0:
+			no_free.append(str(n))
+	t.ok(blocked * 100 >= BLOCKED_BEFORE * HARDEN_PERCENT, "khối bị chặn lúc đầu %d/%d" % [blocked, total])
+	t.eq(no_free, [], "mỗi level còn khối thoát được")
 
 
 ## Cổng màu: L1-200 mỗi cạnh 2 cổng (8 màu), L201-400 mỗi cạnh 3 cổng (12 màu), mỗi cổng một màu; khối mang màu cổng
@@ -244,22 +272,21 @@ func test_layout(t: T) -> void:
 
 # --- Game ---
 
-func test_unlock_at_level_2(t: T) -> void:
-	var g := _g(1)
-	t.eq(g.road_trip_view().open, false, "L1 chưa mở")
+func test_unlock_at_level_70(t: T) -> void:
+	var g := _g(69)
+	t.eq(g.road_trip_view().open, false, "L69 chưa mở")
 	t.eq(g.start_road_trip(), {}, "khoá thì không chơi")
-	g.s.level = 2
+	g.s.level = 70
 	var v: Dictionary = g.road_trip_view()
-	t.eq(v.open, true, "mở từ L2")
-	t.eq(int(v.unlock_level), 2, "Config.UNLOCK.road_trip = 2")
+	t.eq(v.open, true, "mở từ L70")
+	t.eq(int(v.unlock_level), 70, "Config.UNLOCK.road_trip = 70")
 	t.eq(int(v.level), 1, "bắt đầu từ level 1")
 	t.eq(v.progress, Vector2i(0, 15), "0/15")
-	# Thắng L1 thường: Road Trip là tính năng ở Home nên về Home.
-	t.eq(Config.UNLOCK.road_trip, 2, "unlock trong Config")
+	t.eq(Config.UNLOCK.road_trip, 70, "unlock trong Config")
 
 
 func test_attempt_uses_step_limit(t: T) -> void:
-	var g := _g(20, 1)
+	var g := _g(MAIN, 1)
 	var a: Dictionary = g.start_road_trip()
 	t.ok(not a.is_empty(), "có attempt")
 	t.eq(bool(a.road_trip), true, "attempt road_trip")
@@ -271,7 +298,7 @@ func test_attempt_uses_step_limit(t: T) -> void:
 
 
 func test_win_no_coins_box_to_inventory(t: T) -> void:
-	var g := _g(20, 15)
+	var g := _g(MAIN, 15)
 	var coins0 := int(g.s.coins)
 	var hint0 := int(g.s.inv.hint)
 	var main0 := int(g.s.level)
@@ -292,7 +319,7 @@ func test_win_no_coins_box_to_inventory(t: T) -> void:
 
 
 func test_lose_costs_no_life(t: T) -> void:
-	var g := _g(20, 3)
+	var g := _g(MAIN, 3)
 	var lives0 := int(g.lives_view().count)
 	var a: Dictionary = g.start_road_trip()
 	g.on_level_lost(a)
@@ -305,7 +332,7 @@ func test_lose_costs_no_life(t: T) -> void:
 
 
 func test_revive_by_video(t: T) -> void:
-	var g := _g(20, 2)
+	var g := _g(MAIN, 2)
 	var a: Dictionary = g.start_road_trip()
 	var b: BoardState = a.board
 	var m0 := b.moves_left()
@@ -333,7 +360,7 @@ func _won_rt(g: Node) -> void:
 
 
 func test_interstitial_after_win(t: T) -> void:
-	var g := _g(20, 1)
+	var g := _g(MAIN, 1)
 	g.s.runs = 3
 	g.set("_session_start", NOW - 10000)
 	g.set("_first_session", false)
@@ -368,7 +395,7 @@ func test_interstitial_after_win(t: T) -> void:
 
 
 func test_tester_sets_level(t: T) -> void:
-	var g := _g(20, 1)
+	var g := _g(MAIN, 1)
 	Config.account_tool_override = 1
 	t.ok(g.tester_edit({"rt_level": 40}), "tester sửa level Road Trip")
 	t.eq(int(g.s.road_trip.level), 40, "level 40")
@@ -386,19 +413,19 @@ func _mount(scene: String, args: Dictionary = {}) -> Control:
 
 
 func test_nav_tabs(t: T) -> void:
-	_g(1)
+	_g(69)
 	var home := _mount("home")
 	var nav: Control = home.find_child("NavBar", true, false)
 	t.ok(home.find_child("RankingTab", true, false) == null, "không còn tab Ranking")
 	var rt: Button = home.find_child("RoadTripTab", true, false)
 	t.ok(rt != null, "có tab Road Trip")
-	t.ok(rt.disabled, "L1: Road Trip khoá")
-	t.eq(nav.road_trip_caption.text, "Unlocked at Level 2", "chữ mở ở L2")
+	t.ok(rt.disabled, "L69: Road Trip khoá")
+	t.eq(nav.road_trip_caption.text, "Unlocked at Level 70", "chữ mở ở L70")
 	home.free()
-	_g(2)
+	_g(70)
 	home = _mount("home")
 	rt = home.find_child("RoadTripTab", true, false)
-	t.ok(not rt.disabled, "L2: Road Trip mở")
+	t.ok(not rt.disabled, "L70: Road Trip mở")
 	var got := []
 	home.closed.connect(func(r: Variant) -> void: got.append(r))
 	rt.pressed.emit()
@@ -425,7 +452,7 @@ func test_home_leaderboard_icon(t: T) -> void:
 
 
 func test_home_guide_once(t: T) -> void:
-	var g := _g(2)
+	var g := _g(70)
 	g.s.road_trip.guide = false
 	var home := _mount("home")
 	t.ok(home.road_trip_guide != null, "Road Trip vừa mở: có hướng dẫn")
@@ -443,11 +470,11 @@ func test_home_guide_once(t: T) -> void:
 
 
 func test_main_routes(t: T) -> void:
-	var g := _g(20)
+	var g := _g(MAIN)
 	var m := (load("res://scenes/main.tscn") as PackedScene).instantiate() as Control
 	_tree().root.add_child(m)
 	t.ok(await _wait_until(func() -> bool: return m.is_booted), "boot xong")
-	g.s.level = 20
+	g.s.level = MAIN
 	g.s.road_trip.guide = true
 	m.go("home")
 	await _settle(m)
@@ -458,12 +485,16 @@ func test_main_routes(t: T) -> void:
 	t.eq(m.current_name, "home", "tab Home về Home")
 	await _settle(m)
 	m.current_screen.leaderboard_btn.pressed.emit()
-	t.eq(m.current_name, "leaderboard", "icon mở Bảng xếp hạng")
+	# Leaderboard is a popup over Home (2026-11-09): Home stays the screen.
+	t.eq(m.current_name, "home", "icon mở Bảng xếp hạng trên Home")
+	var lb: Node = m.popup_layer.find_child("Leaderboard", false, false)
+	t.ok(lb != null, "popup Bảng xếp hạng")
 	await _settle(m)
-	var nav: Control = m.current_screen.find_child("NavBar", true, false)
-	t.ok(not (nav.get_node("Highlight") as Control).visible, "Bảng xếp hạng: không tab nào sáng")
-	nav.road_trip_btn.pressed.emit()
-	t.eq(m.current_name, "road_trip", "từ Bảng xếp hạng sang Road Trip")
+	lb.emit_signal("closed", null)
+	t.ok(lb.is_queued_for_deletion(), "đóng popup thì về Home")
+	await _tree().process_frame
+	m.current_screen.find_child("RoadTripTab", true, false).pressed.emit()
+	t.eq(m.current_name, "road_trip", "từ Home sang Road Trip")
 	m.free()
 
 
@@ -474,7 +505,7 @@ func _settle(m: Control) -> void:
 
 
 func test_screen(t: T) -> void:
-	_g(20, 13)
+	_g(MAIN, 13)
 	var rt := _mount("road_trip")
 	await _tree().process_frame
 	t.ok(rt.find_child("Banner", true, false) == null, "không có ribbon tiêu đề")
@@ -490,7 +521,7 @@ func test_screen(t: T) -> void:
 	t.ok(rt.bubble != null, "bong bóng thưởng")
 	t.ok(rt.bubble.find_children("*", "TextureRect", true, false).size() == 1, "một vật phẩm")
 	rt.free()
-	_g(20, 401)
+	_g(MAIN, 401)
 	rt = _mount("road_trip")
 	t.ok(not rt.play_button.visible, "đi hết: ẩn nút Level")
 	t.ok(rt.done_label.visible, "chữ đã đi hết")
@@ -500,7 +531,7 @@ func test_screen(t: T) -> void:
 
 ## Chuột không có cảm ứng (desktop, headless): ScrollContainer không tự kéo, bản đồ tự cuộn theo chuột.
 func test_map_mouse_drag(t: T) -> void:
-	_g(20, 1)
+	_g(MAIN, 1)
 	var rt := _mount("road_trip")
 	await _tree().process_frame
 	await _tree().process_frame
@@ -558,7 +589,7 @@ func _pop(lv: Control, node_name: String) -> Node:
 
 
 func test_screen_plays_and_wins_box(t: T) -> void:
-	var g := _g(20, 15)
+	var g := _g(MAIN, 15)
 	var hint0 := int(g.s.inv.hint)
 	var lives0 := int(g.lives_view().count)
 	var rt := _mount("road_trip")
@@ -587,7 +618,7 @@ func test_screen_plays_and_wins_box(t: T) -> void:
 
 
 func test_screen_out_of_moves_revive_then_give_up(t: T) -> void:
-	var g := _g(20, 2)
+	var g := _g(MAIN, 2)
 	var lives0 := int(g.lives_view().count)
 	var rt := _mount("road_trip")
 	rt.play_button.pressed.emit()

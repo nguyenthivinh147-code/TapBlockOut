@@ -381,5 +381,32 @@
       "steps": "tools/process_sfx.gd --start=0.25 --max=0.7 --lowpass=3000 --soften=3: drop the stray click and gap before 0.3 s, low-pass 3 kHz 12 dB/octave, soften each crackle's attack over 3 ms, trim silence, cap length, fade, normalize peak -3 dBFS"
     },
     "note": "2026-11-08: khoi bi nghien qua thanh. Vun keo cung gion, day trong 0,4 giay dau roi lach tach thua dan; dinh 100 ms -15,1 LUFS (sfx_exit -14,3). Chon seed 7307 trong 8 ban: 7301, 7302 (prompt 'quick crunchy grinding ... tinkling candy bits') co vach rit 2,5 kHz noi 23-28 dB va cat dinh 150-230 mau; 7303, 7304 qua choi (trong tam pho 11-12 kHz); 7305, 7306 (prompt 'crunchy sugar candy crumbling ... rock candy') xi nhu snack, nang >8 kHz, cat dinh 280-400 mau; 7308 thua va mong. Ban 7307 doan 0,30-1,00 giay: khong vach rit trong 0,6-8 kHz, 300 Hz-2 kHz / 2-6 kHz / >8 kHz = -5,0 / -4,5 / -6,4 dB, hut 1,1 dB qua loa dien thoai, 24 mau cat dinh. Cung ngay, nguoi dung nghe thay gion qua nen lam em tu cung ban goc bang --lowpass=3000 --soften=3: tam pho 5,0 -> 1,8 kHz, nang luong tren 4 kHz khoang 40% -> 3,5%, do vot dinh trong tung doan 5 ms 10,2 -> 8,0 dB (sfx_exit 7,4); dinh 100 ms -15,4 -> -17,4 LUFS (sfx_exit -14,8, cung cach do), hut them 0,1 dB qua loa dien thoai"
+  },
+  {
+    "id": "sfx_bump",
+    "tool": "comfyui MCP start_game_audio/collect_game_audio",
+    "workflow": "audio_stable_audio_3_medium_base (Stable Audio 3 Medium Base)",
+    "category": "SFX",
+    "seconds_generated": 1,
+    "seed": 7412,
+    "steps": 50,
+    "use_reprompt": false,
+    "prompt": "soft rubbery jelly candy bumping into another candy, gentle muffled thud with a tiny wobble, soft ASMR, close microphone, short, no music, no reverb",
+    "negative_prompt": "harsh, loud, noisy, distorted, music, speech, explosion, long tail, glass, metal clank, footsteps",
+    "candidates": "seeds 7411, 7412; chose 7412 (see art/manifest.json)",
+    "source": "art/audio/sfx_bump.mp3",
+    "source_format": "mp3",
+    "source_sha256": "afb18c2a817a869852f44514d21218d7fd7002e8438264d3ab7d512d91b15e00",
+    "output": "assets/sfx/sfx_bump.wav",
+    "output_sha256": "dd310455f071294bb59d8da99b83ac6883f4c8ee15a69f58e177a01d16279526",
+    "output_bytes": 12366,
+    "processing": {
+      "format": "wav mono 44.1kHz 16-bit",
+      "seconds": 0.14,
+      "max_seconds": 0.3,
+      "peak_db": -3.0,
+      "rms_db": -15.57,
+      "steps": "tools/process_sfx.gd --max=0.3: trim silence, cap length, fade, normalize peak -3 dBFS"
+    }
   }
 ]

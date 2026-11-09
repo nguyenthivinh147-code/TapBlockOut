@@ -3,7 +3,8 @@ extends "res://src/ui/stub_ui.gd"
 ## step (MainTutorialOverlay.PlayStep(1)): its Animator plays TutController_Step1 (hand press, tap rings) and its
 ## TargetButton under the hand continues. Step2 stays hidden. The game's "Tap to continue" is a copy of the step's
 ## text below the panel, white with the black outline Unity uses on top of gameplay; a tap anywhere also continues,
-## as before. Not wired to logic.
+## as before. level.gd opens it once, before the first play of L1 (Game.take_intro, s.meta.intro_seen):
+## closed({"action": "tap"}) starts the level, whose own "tap a block" hint follows.
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 

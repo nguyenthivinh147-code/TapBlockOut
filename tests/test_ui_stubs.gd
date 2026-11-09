@@ -57,10 +57,11 @@ func test_every_screen_builds(t: T) -> void:
 		node.free()
 
 
+## Screens not wired to logic yet only emit closed; they never touch gold or purchases.
 func test_buttons_only_emit_closed(t: T) -> void:
 	var g := _g()
 	var coins := int(g.s.coins)
-	for scene in ["popup_remove_ads", "popup_heart_bundle", "popup_helper_pack", "popup_weekly_upsell"]:
+	for scene in ["popup_heart_bundle", "popup_heart_support", "popup_ads_daily"]:
 		var node := _open(scene)
 		var got: Array = []
 		node.closed.connect(func(r: Variant) -> void: got.append(r))
@@ -75,23 +76,23 @@ func test_buttons_only_emit_closed(t: T) -> void:
 
 func test_view_arg_overrides_sample(t: T) -> void:
 	_g()
-	var node := _open("popup_streak_end", {"view": {"streak": 99, "gold": 1, "hint": 1}})
+	var node := _open("popup_streak_end", {"view": {"streak": 99, "next_in": 3600}})
 	var texts: Array = []
 	_walk_labels(node, texts)
 	t.ok(str(texts).contains("99"), "dùng view truyền vào")
+	t.ok(str(texts).contains("1h 0m"), "đếm tới lượt sau dạng {h}h {m}m")
 	node.free()
 
 
 func test_hidden_in_release(t: T) -> void:
-	_g()
+	var g := _g(45)
 	Config.ui_preview_override = 0
 	var home := _open("home")
 	t.ok(not home.find_child("LeaderboardButton", true, false).disabled, "Bảng xếp hạng đã nối logic: mở theo level, không theo bản build")
-	var got: Array = []
-	home.closed.connect(func(r: Variant) -> void: got.append(r))
+	t.ok(home.find_child("RemoveAdsItem", true, false).visible, "Remove Ads đã nối logic: có ở bản phát hành")
+	t.ok(home.find_child("StreakItem", true, false).visible, "Win Streak đã nối logic: mở từ L40")
 	var labels: Array = []
 	_walk_labels(home, labels)
-	t.ok(not labels.has(home.tr("streak_title")), "không có Win Streak")
 	t.ok(not labels.has(home.tr("home_ads_daily")), "không có ADS Daily")
 	home.free()
 	var settings := _open("settings")
@@ -100,8 +101,17 @@ func test_hidden_in_release(t: T) -> void:
 	var shop := _open("shop", {"source": "test"})
 	var shop_labels: Array = []
 	_walk_labels(shop, shop_labels)
-	t.ok(not shop_labels.has(shop.tr("shop_section_bundles")), "Shop không bán gói chưa có logic")
+	t.ok(not shop_labels.has(shop.tr("shop_section_bundles")), "Bundles ẩn khỏi Shop")
+	t.ok(shop_labels.has(shop.tr("shop_section_helpers")), "Shop bán Helper Packs")
+	t.ok(shop.find_child("Pack_helper_great", true, false) != null, "Helper Packs còn helper_great")
+	for sku in ["helper_epic", "bundle_sweet", "bundle_tasty", "bundle_yummy"]:
+		t.ok(shop.find_child("Pack_" + sku, true, false) == null, "%s ẩn khỏi Shop" % sku)
+	t.ok(not shop_labels.has(shop.tr("shop_section_hearts")), "Hearts chưa có logic: ẩn ở bản phát hành")
 	shop.free()
+	g.s.no_ads = true
+	home = _open("home")
+	t.ok(not home.find_child("RemoveAdsItem", true, false).visible, "đã bỏ quảng cáo thì ẩn icon")
+	home.free()
 	Config.ui_preview_override = -1
 
 
@@ -114,6 +124,8 @@ func test_entry_points_in_preview(t: T) -> void:
 	home.closed.connect(func(r: Variant) -> void: got.append(r))
 	home.find_child("LeaderboardButton", true, false).pressed.emit()
 	t.eq(got[0], {"action": "ranking"}, "icon Bảng xếp hạng")
+	home.find_child("RemoveAdsButton", true, false).pressed.emit()
+	t.eq(got[1], {"action": "remove_ads"}, "icon Remove Ads")
 	var labels: Array = []
 	_walk_labels(home, labels)
 	t.ok(not labels.has(home.tr("home_ads_daily")), "ADS Daily nằm trong Shop, không có trên Home")
@@ -121,6 +133,11 @@ func test_entry_points_in_preview(t: T) -> void:
 	var settings := _open("settings")
 	t.ok(settings.find_child("GalleryButton", true, false) != null, "có danh sách xem trước")
 	settings.free()
+	var shop := _open("shop", {"source": "test"})
+	var shop_labels: Array = []
+	_walk_labels(shop, shop_labels)
+	t.ok(shop_labels.has(shop.tr("shop_section_hearts")), "bản debug: mục Hearts xem trước")
+	shop.free()
 	Config.ui_preview_override = -1
 
 

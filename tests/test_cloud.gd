@@ -121,12 +121,12 @@ func test_cloud_wins_regrants_local_only_purchase(t: T) -> void:
 
 func test_non_consumable_not_granted_twice(t: T) -> void:
 	var g := _g()
-	var local := _save(8, 100, 12, [_buy("n1", "remove_ads")])
+	var local := _save(8, 100, 12, [_buy("n1", "remove_ads_bundle")])
 	local["no_ads"] = true
-	var cloud := _save(2, 0, 1, [_buy("n2", "remove_ads")])
+	var cloud := _save(2, 0, 1, [_buy("n2", "remove_ads_bundle")])
 	await _boot_with(g, local, _json(cloud))
 	t.eq(g.s.buys.size(), 2, "ghi cả hai token")
-	t.eq(int(g.s.coins), 100, "remove_ads đã có thì không cộng 500 lần hai")
+	t.eq(int(g.s.coins), 100, "bundle đã có thì không cộng gold lần hai")
 
 
 func test_corrupt_or_empty_cloud_ignored(t: T) -> void:
@@ -193,3 +193,44 @@ func test_resume_skips_delivery_while_buying(t: T) -> void:
 	t.eq(res.granted, true, "buy_sku vẫn thấy granted")
 	_p().resumed.emit()
 	t.eq(int(g.s.coins), coins0 + 1000, "không cộng trùng")
+
+
+## Hai lịch sử chơi khác nhau (install_at khác, cả hai đã chơi, khác level): không tự gộp, chờ người chơi chọn.
+func _lineage(runs: int, coins: int, level: int, install_at: int, buys: Array = []) -> Dictionary:
+	var d := _save(runs, coins, level, buys)
+	d.meta["install_at"] = install_at
+	return d
+
+
+func test_conflict_waits_for_choice(t: T) -> void:
+	var g := _g()
+	var hits: Array = []
+	g.cloud_conflict.connect(func() -> void: hits.append(1))
+	await _boot_with(g, _lineage(3, 100, 5, 1000), _json(_lineage(9, 900, 30, 2000)))
+	t.eq(hits.size(), 1, "báo xung đột")
+	t.eq(int(g.s.level), 5, "chưa chọn thì giữ bản máy")
+	var v: Dictionary = g.cloud_conflict_view()
+	t.eq(int(v.local.level), 5, "ô Máy này")
+	t.eq(int(v.cloud.level), 30, "ô Google Play")
+	g.resolve_cloud(true)
+	t.eq(int(g.s.level), 30, "chọn Google Play")
+	t.eq(int(g.s.coins), 900, "coins của bản cloud")
+	t.eq(g.cloud_conflict_view(), {}, "hết xung đột")
+	_p().save.cloud_json = ""
+
+
+func test_conflict_keep_local_merges_purchases(t: T) -> void:
+	var g := _g()
+	await _boot_with(g, _lineage(3, 100, 5, 1000), _json(_lineage(9, 900, 30, 2000, [_buy("c1", "remove_ads")])))
+	g.resolve_cloud(false)
+	t.eq(int(g.s.level), 5, "giữ bản máy")
+	t.eq(bool(g.s.no_ads), true, "đơn mua của bản cloud được gộp")
+	_p().save.cloud_json = ""
+
+
+func test_same_lineage_merges_without_asking(t: T) -> void:
+	var g := _g()
+	await _boot_with(g, _lineage(3, 100, 5, 1000), _json(_lineage(9, 900, 30, 1000)))
+	t.eq(g.cloud_conflict_view(), {}, "cùng install_at: không hỏi")
+	t.eq(int(g.s.level), 30, "giữ bản chơi nhiều hơn như cũ")
+	_p().save.cloud_json = ""

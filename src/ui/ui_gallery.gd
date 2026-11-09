@@ -1,6 +1,7 @@
 extends Control
-## Danh sách các màn đã dựng UI nhưng chưa nối logic. Chỉ mở từ Settings khi Config.ui_preview.
-## Chạm một dòng để xem màn đó với dữ liệu mẫu. Khung và danh sách cuộn nằm trong scenes/ui_gallery.tscn, mỗi dòng
+## Danh sách màn theo số wireframe để duyệt bố cục (công cụ phát triển). Chỉ mở từ Settings khi Config.ui_preview.
+## Chạm một dòng để xem màn đó: màn đã nối logic hiện dữ liệu thật của Game, màn chưa nối (5.2, 5.3, 2.3) dữ liệu mẫu;
+## nút chỉ đóng màn, không chạy luồng của game. Khung và danh sách cuộn nằm trong scenes/ui_gallery.tscn, mỗi dòng
 ## SCREENS sinh lúc chạy. setup(args); signal closed(null).
 
 signal closed(result: Variant)
@@ -10,12 +11,12 @@ const PopupKit := preload("res://src/ui/popup_kit.gd")
 
 ## [số wireframe, scene]
 const SCREENS := [
-	["1.1", "splash"], ["1.2", "popup_update"], ["1.3", "download_data"], ["1.4", "select_account"],
+	["1.1", "splash"], ["1.2", "popup_update"], ["1.4", "select_account"],
 	["1.5", "tutorial_intro"], ["1.6", "popup_no_internet"],
 	["2.3", "popup_ads_daily"], ["2.4", "popup_remove_ads"],
-	["3.1", "load_transition"], ["3.3", "popup_mechanic"], ["3.7", "booster_soon"], ["3.8", "booster_unlocked"],
-	["3.9", "popup_free_pick"], ["3.11", "speedup_tutorial"],
-	["4.2", "popup_bonus"], ["4.3", "popup_rate"], ["4.6", "popup_keep_playing"], ["4.7", "popup_helper_pack"],
+	["3.1", "load_transition"], ["3.7", "booster_soon"], ["3.8", "booster_unlocked"],
+	["3.9", "popup_free_pick"],
+	["4.3", "popup_rate"], ["4.6", "popup_keep_playing"], ["4.7", "popup_helper_pack"],
 	["5.2", "popup_heart_bundle"], ["5.3", "popup_heart_support"],
 	["7.5", "popup_weekly_upsell"],
 	["9.1", "popup_streak_intro"], ["9.2", "streak_main"], ["9.3", "popup_streak_rewards"], ["9.4", "popup_streak_end"], ["9.5", "popup_streak_keep"],

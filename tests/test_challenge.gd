@@ -86,7 +86,8 @@ func test_switched_off_by_default(t: T) -> void:
 	t.ok(h.challenge_btn.disabled, "nút không bấm được")
 	h.queue_free()
 	t.ok("challenge" not in Unlocks.features_at(50), "L50 không báo mở")
-	t.ok(int(Unlocks.feature_progress(49).end) != 50, "thanh tiến trình bỏ mốc L50")
+	# Mốc L50 vẫn còn vì Màn đặc biệt (Config.UNLOCK.special_bomb = 50), nhưng không ghi Daily Challenge.
+	t.ok("challenge" not in Unlocks.feature_progress(49).features, "thanh tiến trình không ghi Daily Challenge")
 	Config.FEATURES.challenge = true
 	t.ok("challenge" in Unlocks.features_at(50), "bật lại thì L50 báo mở")
 	var h2 := _home()
@@ -478,7 +479,7 @@ func _mount_level(g: Node, lvn: int) -> Control:
 
 func test_teaching_levels_show_one_line_hint(t: T) -> void:
 	var g := _g(1)
-	var want := {14: "stone", 30: "ice", 40: "chain", 55: "layer", 70: "fog", 90: "pulse"}
+	var want := {14: "stone", 30: "ice", 40: "chain", 55: "layer", 70: "fog", 90: "pulse", 110: "frost"}
 	for lvn in want:
 		var lv := _mount_level(g, lvn)
 		var m: String = want[lvn]
@@ -497,7 +498,7 @@ func test_teaching_levels_show_one_line_hint(t: T) -> void:
 		t.eq(lv.tut_label.text, "%s: %s" % [lv.tr("mech_" + m), lv.tr("mech_%s_desc" % m)], "L%d hướng dẫn %s" % [lvn, m])
 		t.ok(not lv.tut_label.text.contains("\n"), "một dòng")
 		lv.free()
-	t.eq(g.s.mech_seen, ["stone", "ice", "chain", "layer", "fog", "pulse"], "đã xem đủ 6 cơ chế")
+	t.eq(g.s.mech_seen, ["stone", "ice", "chain", "layer", "fog", "pulse", "frost"], "đã xem đủ 7 cơ chế")
 	for lvn in [14, 15, 31, 41, 100]:
 		var lv2 := _mount_level(g, lvn)
 		t.ok(await _wait_until(func() -> bool: return lv2.state == "playing"), "L%d vào chơi ngay" % lvn)

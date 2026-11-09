@@ -121,10 +121,11 @@ func test_demo_still_stops_at_20(t: T) -> void:
 	var g := _g(21)
 	Config.demo_override = 1
 	t.eq(g.level_exists(21), false, "demo: L21 không có")
-	t.eq(g.level_exists(301), false, "demo: L301 không có")
+	var after := int(Config.CONTENT.release_pregen_level) + 1
+	t.eq(g.level_exists(after), false, "demo: L%d không có" % after)
 	t.eq(g.current_level_data(), {}, "demo: dữ liệu rỗng")
-	g.s.level = 301
-	t.eq(g.current_level_data(), {}, "demo: sau L300 cũng rỗng")
+	g.s.level = after
+	t.eq(g.current_level_data(), {}, "demo: sau level cuối cũng rỗng")
 	t.eq(g.start_attempt(), {}, "demo: không bắt đầu được")
 	Config.demo_override = -1
 
@@ -148,13 +149,15 @@ func _pop(lv: Control, node_name: String) -> Node:
 
 
 func test_level_screen_continues_into_loop(t: T) -> void:
-	var g := _g(301)
-	var lv := _mount(g, 301)
+	var first := int(Config.CONTENT.release_pregen_level) + 1
+	var g := _g(first)
+	var lv := _mount(g, first)
 	t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "vào chơi")
-	t.eq(lv.title_label.text, "Level 301", "tiêu đề")
+	t.eq(lv.title_label.text, "Level %d" % first, "tiêu đề")
 	t.eq(lv.tut_label.text, "", "hết chữ chờ")
-	t.eq(int(lv.attempt.level), 301, "attempt L301")
-	# thắng L301 -> sang L302 (sinh tiếp, có màn chờ)
+	t.eq(int(lv.attempt.level), first, "attempt L%d" % first)
+	t.eq(g.content_level(first), int(Config.CONTENT.loop_start_level), "chơi nội dung của loop_start_level")
+	# thắng level đầu của vòng lặp -> sang level kế, vẫn đọc file, không sinh
 	for i in 200:
 		if lv.board.is_won():
 			break
@@ -163,23 +166,29 @@ func test_level_screen_continues_into_loop(t: T) -> void:
 			break
 		lv.board_view.block_tapped.emit(str(r.order[0]))
 		await _tree().process_frame
-	t.ok(lv.board.is_won(), "thắng L301")
+	t.ok(lv.board.is_won(), "thắng L%d" % first)
 	t.ok(await _wait_until(func() -> bool: return _pop(lv, "ContinueButton") != null), "thẻ thắng")
-	t.eq(int(g.s.level), 302, "lên L302")
+	t.eq(int(g.s.level), first + 1, "lên L%d" % (first + 1))
 	(_pop(lv, "ContinueButton") as Button).pressed.emit()
 	t.ok(await _wait_until(func() -> bool:
 		for c in lv.get_node("LocalPopups").get_children():
 			if not c.is_queued_for_deletion() and "later_button" in c:
 				c.later_button.pressed.emit()
-		return lv.state == "playing" and int(lv.attempt.level) == 302), "vào L302")
-	t.eq(lv.title_label.text, "Level 302", "tiêu đề L302")
+			# L501 là level Hard: thắng được vé Màn đặc biệt, popup mời hiện trước level kế; X thì đi tiếp.
+			if not c.is_queued_for_deletion() and str(c.name).begins_with("PopupSpecial"):
+				c.call("_send", "close")
+		return lv.state == "playing" and int(lv.attempt.level) == first + 1), "vào L%d" % (first + 1))
+	t.eq(lv.title_label.text, "Level %d" % (first + 1), "tiêu đề L%d" % (first + 1))
 	t.ok(_pop(lv, "OkButton") == null, "không có hộp hết level")
+	t.eq(g._gen_cache.size(), 0, "không sinh level")
 	lv.free()
 	Config.demo_override = -1
 
 
-func test_home_play_enabled_after_300(t: T) -> void:
-	var g := _g(320)
+func test_home_play_enabled_after_last(t: T) -> void:
+	var last := int(Config.CONTENT.release_pregen_level)
+	var g := _g(last + 20)
+	t.ok(g.content_level(last + 20) < last + 20, "L%d nằm trong vòng lặp" % (last + 20))
 	var h := (load("res://scenes/home.tscn") as PackedScene).instantiate() as Control
 	_tree().root.add_child(h)
 	h.setup({})

@@ -15,9 +15,9 @@
 [ext_resource type="Texture2D" uid="uid://xtn215wanvms" path="res://assets/ui/figma/ic_clock.png" id="13_6k8sm"]
 [ext_resource type="Texture2D" uid="uid://8ofgy3rlnu7f" path="res://assets/ui/figma/gold6.png" id="14_k665q"]
 [ext_resource type="Texture2D" uid="uid://bbi3h0low8l1e" path="res://assets/ui/figma/ic_store.png" id="15_oku8d"]
-[ext_resource type="Texture2D" uid="uid://d3tqx4p13y3wb" path="res://assets/ui/figma/ic_gold.png" id="16_ri7o4"]
+[ext_resource type="Texture2D" uid="uid://b0wkyjp7a3vsv" path="res://assets/ui/ic_weekly_pass.png" id="16_ri7o4"]
 [ext_resource type="Texture2D" uid="uid://d0xci88xvvuba" path="res://assets/ui/figma/ic_noads.png" id="17_ucx8p"]
-[ext_resource type="Texture2D" uid="uid://c8anbqhclfogx" path="res://assets/ui/figma/ic_star1.png" id="18_34np2"]
+[ext_resource type="Texture2D" uid="uid://bxqf3xgelb7di" path="res://assets/ui/ic_win_streak.png" id="18_34np2"]
 [ext_resource type="PackedScene" path="res://scenes/hub_top.tscn" id="19_0ltf8"]
 [ext_resource type="PackedScene" path="res://scenes/hub_nav.tscn" id="21_kvj23"]
 [ext_resource type="Texture2D" uid="uid://cnu06olp5o52p" path="res://assets/ui/figma/ic_leaderboard.png" id="22_lbico"]
@@ -709,6 +709,20 @@ texture = ExtResource("9_miq5y")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="LeaderboardDot" type="Panel" parent="LeaderboardItem/LeaderboardButton" unique_id=1928374699]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -38.0
+offset_top = 4.0
+offset_right = -6.0
+offset_bottom = 36.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8iyx7")
+
 [node name="Ribbon" type="TextureRect" parent="LeaderboardItem" unique_id=556473829]
 layout_mode = 0
 offset_top = 97.51693
@@ -1082,7 +1096,7 @@ vertical_alignment = 1
 metadata/fb_rect = Rect2(0, 118, 194, 50)
 metadata/fb_font = [36.0, 3.0, 166.0]
 
-[node name="PreviewItem_popup_remove_ads" type="Control" parent="." unique_id=305243250]
+[node name="RemoveAdsItem" type="Control" parent="." unique_id=305243250]
 unique_name_in_owner = true
 anchors_preset = 0
 offset_left = 554.2212
@@ -1092,7 +1106,7 @@ offset_bottom = 668.80365
 mouse_filter = 2
 metadata/fb_rect = Rect2(682, 647, 194, 176)
 
-[node name="Preview_popup_remove_ads" type="Button" parent="PreviewItem_popup_remove_ads" unique_id=1841863976]
+[node name="RemoveAdsButton" type="Button" parent="RemoveAdsItem" unique_id=1841863976]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 0
@@ -1107,7 +1121,7 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
-[node name="Icon" type="TextureRect" parent="PreviewItem_popup_remove_ads/Preview_popup_remove_ads" unique_id=246005006]
+[node name="Icon" type="TextureRect" parent="RemoveAdsItem/RemoveAdsButton" unique_id=246005006]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1116,7 +1130,7 @@ texture = ExtResource("17_ucx8p")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Ribbon" type="TextureRect" parent="PreviewItem_popup_remove_ads" unique_id=1148779101]
+[node name="Ribbon" type="TextureRect" parent="RemoveAdsItem" unique_id=1148779101]
 layout_mode = 0
 offset_top = 97.51693
 offset_right = 157.65237
@@ -1126,7 +1140,7 @@ texture = ExtResource("12_okf6m")
 expand_mode = 1
 metadata/fb_rect = Rect2(0, 120, 194, 56)
 
-[node name="Caption" type="Label" parent="PreviewItem_popup_remove_ads" unique_id=1391832094]
+[node name="Caption" type="Label" parent="RemoveAdsItem" unique_id=1391832094]
 layout_mode = 0
 offset_top = 95.89165
 offset_right = 157.65237
@@ -1145,7 +1159,7 @@ vertical_alignment = 1
 metadata/fb_rect = Rect2(0, 118, 194, 50)
 metadata/fb_font = [36.0, 3.0, 166.0]
 
-[node name="PreviewItem_streak_main" type="Control" parent="." unique_id=68300993]
+[node name="StreakItem" type="Control" parent="." unique_id=68300993]
 unique_name_in_owner = true
 anchors_preset = 0
 offset_left = 554.2212
@@ -1155,7 +1169,7 @@ offset_bottom = 841.8962
 mouse_filter = 2
 metadata/fb_rect = Rect2(682, 860, 194, 176)
 
-[node name="Preview_streak_main" type="Button" parent="PreviewItem_streak_main" unique_id=1801174079]
+[node name="StreakButton" type="Button" parent="StreakItem" unique_id=1801174079]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 0
@@ -1170,7 +1184,7 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
 metadata/fb_rect = Rect2(21, 0, 152, 152)
 
-[node name="Icon" type="TextureRect" parent="PreviewItem_streak_main/Preview_streak_main" unique_id=792718032]
+[node name="Icon" type="TextureRect" parent="StreakItem/StreakButton" unique_id=792718032]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1179,7 +1193,7 @@ texture = ExtResource("18_34np2")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Ribbon" type="TextureRect" parent="PreviewItem_streak_main" unique_id=443565383]
+[node name="Ribbon" type="TextureRect" parent="StreakItem" unique_id=443565383]
 layout_mode = 0
 offset_top = 97.51693
 offset_right = 157.65237
@@ -1189,7 +1203,7 @@ texture = ExtResource("12_okf6m")
 expand_mode = 1
 metadata/fb_rect = Rect2(0, 120, 194, 56)
 
-[node name="Caption" type="Label" parent="PreviewItem_streak_main" unique_id=515167700]
+[node name="Caption" type="Label" parent="StreakItem" unique_id=515167700]
 layout_mode = 0
 offset_top = 95.89165
 offset_right = 157.65237
@@ -1203,6 +1217,94 @@ theme_override_constants/outline_size = 5
 theme_override_constants/shadow_outline_size = 5
 theme_override_font_sizes/font_size = 27
 text = "Win Streak"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/fb_rect = Rect2(0, 118, 194, 50)
+metadata/fb_font = [36.0, 3.0, 166.0]
+
+[node name="BombItem" type="Control" parent="." unique_id=1907351146]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 554.2212
+offset_top = 860.0
+offset_right = 711.87354
+offset_bottom = 1003.0
+mouse_filter = 2
+metadata/fb_rect = Rect2(682, 1060, 194, 176)
+
+[node name="BombButton" type="Button" parent="BombItem" unique_id=1907351147]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 0
+offset_left = 17.065462
+offset_right = 140.58691
+offset_bottom = 123.52145
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_v8i26")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_v8i26")
+metadata/fb_rect = Rect2(21, 0, 152, 152)
+
+[node name="Icon" type="TextureRect" parent="BombItem/BombButton" unique_id=1907351148]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BombBadge" type="Panel" parent="BombItem/BombButton" unique_id=1907351149]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -44.0
+offset_top = 2.0
+offset_right = -4.0
+offset_bottom = 42.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_p1yme")
+
+[node name="Count" type="Label" parent="BombItem/BombButton/BombBadge" unique_id=1907351150]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Ribbon" type="TextureRect" parent="BombItem" unique_id=1907351151]
+layout_mode = 0
+offset_top = 97.51693
+offset_right = 157.65237
+offset_bottom = 143.02483
+mouse_filter = 2
+texture = ExtResource("12_okf6m")
+expand_mode = 1
+metadata/fb_rect = Rect2(0, 120, 194, 56)
+
+[node name="Caption" type="Label" parent="BombItem" unique_id=1907351152]
+layout_mode = 0
+offset_top = 95.89165
+offset_right = 157.65237
+offset_bottom = 136.5237
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 5
+theme_override_font_sizes/font_size = 27
+text = "Special"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/fb_rect = Rect2(0, 118, 194, 50)

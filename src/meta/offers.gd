@@ -26,8 +26,8 @@ static func is_sale(now: int, tz: int, purchased: bool = false) -> bool:
 
 
 ## Các gói gold theo thứ tự, mỗi gói đúng SKU thường hoặc `_sale`.
-## [{id: "gold_pack_1", sku, usd, gold, consumable, sale, base_sku, base_usd}]
-## `base_*` là gói thường, để UI gạch giá gốc lúc sale.
+## [{id: "gold_pack_1", sku, usd, gold, consumable, sale, base_sku, base_usd, base_gold}]
+## `base_*` là gói thường, để UI so giá và gold lúc sale.
 static func catalog(now: int, tz: int, purchased: bool = false) -> Array:
 	var sale := is_sale(now, tz, purchased)
 	var ids: Array = []
@@ -48,6 +48,7 @@ static func catalog(now: int, tz: int, purchased: bool = false) -> Array:
 			"gold": int(d.get("gold", 0)), "consumable": bool(d.get("consumable", true)),
 			"sale": use_sale,
 			"base_sku": id, "base_usd": float(Config.SKUS[id].get("usd", 0.0)),
+			"base_gold": int(Config.SKUS[id].get("gold", 0)),
 		})
 	return out
 
@@ -108,7 +109,7 @@ static func _eligible(s: Dictionary, id: String, ctx: Dictionary) -> bool:
 	return false
 
 
-## Mốc level đã qua chia cho every_levels (level sắp chơi 11 nghĩa là đã qua 10).
+## Mốc level đã qua chia cho every_levels (every_levels 50: level sắp chơi 51 nghĩa là đã qua mốc 50).
 static func _milestone(cfg: Dictionary, level: int) -> int:
 	@warning_ignore("integer_division")
 	return maxi(level - 1, 0) / maxi(int(cfg.every_levels), 1)

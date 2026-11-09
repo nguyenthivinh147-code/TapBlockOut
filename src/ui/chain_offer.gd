@@ -5,6 +5,7 @@ extends Control
 ## Dựng theo PopupChainOffer (color-cube-match-puzzle): 6 ô ChainOfferPack nối bằng tia UIRay theo hình rắn,
 ## mỗi ô một bước của cửa sổ. Trạng thái ô như ChainOfferPackItem.UpdateStatusPack: Locked -> nút khoá,
 ## Available -> nút nhận / giá, Claimed -> BGClaim + nút xám.
+## Nhận xong mở popup Reward (PopupRewardLayer) với thưởng của bước; cửa sổ chỉ trượt sau khi popup đóng.
 
 signal closed(result: Variant)
 
@@ -16,6 +17,7 @@ const RewardText := preload("res://src/ui/reward_text.gd")
 const Config := preload("res://src/config.gd")
 
 const LAYER := "PopupChainOffer"
+const POPUP_REWARD := "res://scenes/popup_reward.tscn"
 ## Title art: the prefab's chest (ic_EndlessTreasure) redrawn with this game's boosters
 ## (tools/compose_chain_offer_art.py).
 const TITLE_IMAGE := "Panel/Top/Image"
@@ -45,6 +47,8 @@ var toast_text: String = ""
 var claimed_count: int = 0
 var node_states: Array[String] = []  # "claimed" | "claimable" | "locked", theo thứ tự đang hiện
 var ui: RefCounted = null
+## The Reward popup of the last claim while it is open.
+var reward_popup: Node = null
 
 var _content: Control = null
 var _first: int = -1  # first step on screen; -1 before the first build
@@ -260,12 +264,29 @@ func claim() -> void:
 		_rebuild()
 		return
 	claimed_count += 1
-	toast_text = _got_text(r, st)
-	Sfx.play("sfx_coin")
-	# Same window first, so the tick lands on the pack the player tapped; slide after a beat when the next step is
-	# off screen.
+	var reward := got_reward(r, st)
+	var popup := RewardText.text(reward) != "" and ResourceLoader.exists(POPUP_REWARD)
+	# Without the popup the line under the timer says the reward came in.
+	toast_text = "" if popup else tr("ads_reward_ok")
+	# Same window first, so the tick lands on the pack the player tapped.
 	var held := _first
 	_rebuild(held)
+	if not popup:
+		Sfx.play("sfx_coin")
+		_after_reward(held)
+		return
+	# PopupRewardLayer plays the coin sound itself.
+	reward_popup = _open_over(POPUP_REWARD, {"view": {"reward": reward}})
+	reward_popup.connect("closed", func(_r: Variant) -> void:
+		reward_popup = null
+		_after_reward(held), CONNECT_ONE_SHOT)
+
+
+## After the Reward popup: slide after a beat when the next step is off screen.
+func _after_reward(held: int) -> void:
+	if not is_inside_tree() or _closed:
+		_busy = false
+		return
 	var v := Game.chain_view()
 	if v.is_empty() or window_start(int(v.step), int(v.count), _size()) == held:
 		_busy = false
@@ -276,13 +297,25 @@ func claim() -> void:
 		_rebuild()
 
 
-## "Reward received! Hint x1": what the step just gave (a Pay step's goods come with its SKU).
-func _got_text(r: Dictionary, st: Dictionary) -> String:
-	var reward: Dictionary = r.get("reward", {})
+## What the step just gave: {coins, items}; a Pay step's goods come with its SKU.
+static func got_reward(r: Dictionary, st: Dictionary) -> Dictionary:
 	if str(r.get("type", "")) == "pay":
-		reward = RewardText.sku_reward(str(st.get("sku", "")))
-	var what := RewardText.text(reward)
-	return tr("ads_reward_ok") if what == "" else "%s %s" % [tr("ads_reward_ok"), what]
+		return RewardText.sku_reward(str(st.get("sku", "")))
+	return r.get("reward", {})
+
+
+## Opens a popup over this layer through Main.open_popup, or as a child when the layer runs alone (tests).
+func _open_over(path: String, args: Dictionary) -> Node:
+	var n := get_parent()
+	while n != null:
+		if n.has_method("open_popup") and n.has_method("add_popup"):
+			return n.call("open_popup", path, args)
+		n = n.get_parent()
+	var node := (load(path) as PackedScene).instantiate()
+	add_child(node)
+	node.connect("closed", func(_r: Variant) -> void: node.queue_free())
+	node.call("setup", args)
+	return node
 
 
 func close() -> void:

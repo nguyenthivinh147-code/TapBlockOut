@@ -57,7 +57,9 @@ const DEPTH_FREE := 0.3
 const STONE_TRIES := 3
 ## Bước nhảy trong Motifs.KINDS giữa hai level liền nhau (nguyên tố cùng nhau với số hình), để hình kế tiếp khác nhóm.
 const MOTIF_STRIDE := 8
-const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
+const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon"]
+## Lớp phủ: pudding (`ice`) và băng (`frost`) cùng luật, không bao giờ cùng một level.
+const COVERS := ["ice", "frost"]
 const NEIGHBORS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 ## Kiểu cắt khối theo hình học (`cut_style`): "rows" dải ngang, "cols" dải dọc, "rings" vòng theo viền hình,
 ## "weave" đan rổ (ô WEAVE_TILE x WEAVE_TILE, dải ngang và dọc xen kẽ), "bricks" gạch xây so le dài BRICK_LEN.
@@ -109,7 +111,7 @@ static func is_rest(id: int) -> bool:
 ## Cơ chế của level `id`, theo id (không theo seed): level dạy chỉ có cơ chế mới; chưa mở cơ chế nào hoặc level nghỉ thì
 ## không có; level khác rút 1..Config.LEVEL_MECH_MAX loại trong các cơ chế đã mở theo Config.LEVEL_MECH_WEIGHTS, và cơ
 ## chế vừa mở (trong Config.LEVEL_MECH_FRESH level sau level dạy) luôn có mặt. Cổng nhịp chỉ ở level có số khối mục tiêu
-## tới GATE_MAX_BLOCKS.
+## tới GATE_MAX_BLOCKS. Pudding và băng (COVERS) không cùng level: chỉ giữ loại đứng trước trong thứ tự rút.
 static func mech_plan(id: int) -> Array[String]:
 	var out: Array[String] = []
 	var teach := teach_mech(id)
@@ -138,6 +140,12 @@ static func mech_plan(id: int) -> Array[String]:
 	if fresh != "":
 		pool.erase(fresh)
 		pool.push_front(fresh)
+	var cover_seen := false
+	for m in pool.duplicate():
+		if COVERS.has(m):
+			if cover_seen:
+				pool.erase(m)
+			cover_seen = true
 	for m in pool.slice(0, mini(want, Config.LEVEL_MECH_MAX)):
 		out.append(m)
 	return out
@@ -288,8 +296,9 @@ static func _stone_dead(groups: Array, stones: Array[Vector2i], w: int, h: int) 
 ## Gán hướng, rải cơ chế, dịch vào giữa bàn, chọn trạng thái cổng, rồi qua validate và Solver. {} nếu hỏng.
 ## Số lượt dọn bàn (`Solver.clear_rounds`) phải lệch đường cong tối đa `_rounds_tol`: lệch thì gán hướng lại với độ sâu
 ## mục tiêu bù phần lệch, tối đa ASSIGN_TRIES lần; ROUNDS_STALL lần liền không sâu thêm thì bỏ cách cắt này. Bàn chỉ có
-## thùng sắt thì số lượt bằng độ sâu lúc gán hướng nên không cần mô phỏng; pudding, xích, hộp giấy, sương mù chỉ làm
-## chuỗi dài thêm nên độ sâu đã quá mục tiêu thì gán lại luôn. Sương mù rải xong qua `_fog_fix` để bàn không kẹt.
+## thùng sắt thì số lượt bằng độ sâu lúc gán hướng nên không cần mô phỏng; lớp phủ, xích, hộp giấy, sương mù chỉ làm
+## chuỗi dài thêm nên độ sâu đã quá mục tiêu thì gán lại luôn. Sương mù và lớp phủ rải xong qua `_unstick` để bàn không
+## kẹt.
 ## `teach`: cơ chế level này dạy ("" nếu không), level phải cho chạm thử cơ chế đó ngay lúc đầu.
 static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictionary, w: int, h: int,
 		stones: Array[Vector2i], groups: Array, teach: String, attempt: int, strict: bool = true) -> Dictionary:
@@ -298,7 +307,8 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 	var tol := _rounds_tol(want, attempt)
 	var aim := want
 	var shift := _centering(groups, stones)
-	var plain: bool = not (feats["ice"] or feats["chain"] or feats["layer"] or feats["fog"] or feats["pulse"])
+	var plain: bool = not (feats["ice"] or feats["frost"] or feats["chain"] or feats["layer"] or feats["fog"] \
+		or feats["pulse"] or feats["ribbon"])
 	var level := {}
 	var near := {}  # bàn có số lượt gần nhất (giữ khi không `strict`)
 	var near_err := 1 << 20
@@ -311,10 +321,10 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 			return {}
 		var rounds: int = asg["depth"]
 		if not strict or absi(rounds - want) <= tol or (not plain and (feats["pulse"] or rounds < want)):
-			var mech := _mechanics(id, feats, groups.size(), asg, rng)
+			var mech := _mechanics(id, feats, groups, asg, rng)
 			var cand := _build(id, s, hard, _shifted(stones, shift), _shifted_groups(groups, shift), asg, mech)
-			if not mech["fog"].is_empty():
-				_fog_fix(cand)
+			if not mech["fog"].is_empty() or not mech["ice"].is_empty():
+				_unstick(cand)
 			# Cổng nhịp khoá có thể chặn hết khối đi được lúc đầu (cú dội không tính); level dạy cổng cần khối dội vào được ngay.
 			if not mech["pulse"].is_empty():
 				if not Solver.immediate_exit_exists(cand) or (teach == "pulse" and not _teach_ok(cand, teach)):
@@ -354,14 +364,16 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 	return level
 
 
-## Khối còn trong sương không đi được và chỉ lộ khi khối kề rời đi, nên sương rải ngẫu nhiên có thể làm bàn kẹt (khối
-## thường chờ khối sương, khối sương chờ khối thường). Đi tham lam như Solver; mỗi lần kẹt thì bỏ sương của khối ẩn đầu
-## tiên (theo thứ tự khối) sẽ đi được nếu lộ, tới khi dọn hết bàn hoặc không còn khối như vậy (bàn kẹt vì lý do khác,
-## Solver loại sau). Khối thấy sớm hơn chỉ mở thêm nước đi nên bàn đã sửa vẫn giải được. Không dùng rng.
-static func _fog_fix(level: Dictionary) -> void:
+## Khối còn trong sương hay còn lớp phủ không đi được và chỉ lộ hay bóc lớp khi khối kề rời đi, nên rải ngẫu nhiên có
+## thể làm bàn kẹt (khối thường chờ khối sương hay khối phủ, khối đó lại chờ khối thường). Đi tham lam như Solver; mỗi
+## lần kẹt thì bỏ sương của khối ẩn đầu tiên (theo thứ tự khối) sẽ đi được nếu lộ; không có thì bóc 1 lớp phủ của khối
+## phủ đầu tiên sẽ đi được nếu hết phủ; lặp tới khi dọn hết bàn hoặc không còn khối như vậy (bàn kẹt vì lý do khác,
+## Solver loại sau). Lộ sớm hay ít lớp hơn chỉ mở thêm nước đi nên bàn đã sửa vẫn giải được. Không dùng rng.
+static func _unstick(level: Dictionary) -> void:
 	var b := BoardState.new(level)
 	b.add_moves(Solver.BIG_MOVES)
 	var lifted := {}
+	var stripped := {}  # id -> số lớp đã bỏ
 	var guard := 0
 	while not b.is_won() and guard < Solver.GUARD:
 		guard += 1
@@ -378,29 +390,63 @@ static func _fog_fix(level: Dictionary) -> void:
 			if Solver.RANK.has(c.peek(bid)):
 				lift = bid
 				break
-		if lift == "":
+		if lift != "":
+			b.reveal(lift)
+			lifted[lift] = true
+			continue
+		var peel := ""
+		for bid in b.block_ids():
+			var v := b.block_view(bid)
+			if int(v["ice"]) <= 0 or bool(v["is_fog_hidden"]):
+				continue
+			var c := b.clone()
+			for _k in int(v["ice"]):
+				c.strip(bid)
+			if Solver.RANK.has(c.peek(bid)):
+				peel = bid
+				break
+		if peel == "":
 			break
-		b.reveal(lift)
-		lifted[lift] = true
+		b.strip(peel)
+		stripped[peel] = int(stripped.get(peel, 0)) + 1
 	for bd in level["blocks"]:
-		if lifted.has(str(bd["id"])):
+		var k := str(bd["id"])
+		if lifted.has(k):
 			bd["fog"] = false
+		if stripped.has(k):
+			bd["ice"] = maxi(0, int(bd["ice"]) - int(stripped[k]))
 
 
-## Level dạy có cho chạm thử cơ chế `mech` ngay lúc đầu không: Đá có ít nhất 2 viên; Băng có khối nứt được; Xích có khối
-## bị xích mà chìa thoát được ngay và bỏ chìa thì khối đó đi được; Hai lớp có khối bóc được; Sương mù có khối ẩn màu;
-## Cổng nhịp có cổng khoá lúc đầu và khối dội vào được cổng đó ngay.
+## Level dạy có cho chạm thử cơ chế `mech` ngay lúc đầu không: Đá có ít nhất 2 viên; Pudding, Băng có khối kề một khối
+## thoát được ngay, và khối đó thoát thì hết phủ; Xích có khối bị xích mà chìa thoát được ngay và bỏ chìa thì khối đó đi
+## được; Hai lớp có khối bóc được; Sương mù có khối ẩn màu; Cổng nhịp có cổng khoá lúc đầu và khối dội vào được cổng đó
+## ngay; Ruy băng có khối ruy băng bóc được ngay và một khối từ Config.RIBBON_TEACH_BIG.x lớp.
 static func _teach_ok(level: Dictionary, mech: String) -> bool:
 	var b := BoardState.new(level)
 	b.add_moves(Solver.BIG_MOVES)
 	match mech:
 		"stone":
 			return level["stones"].size() >= 2
-		"ice", "layer":
-			var want := "crack" if mech == "ice" else "peel"
+		"ice", "frost":
 			for bid in b.block_ids():
-				if b.peek(bid) == want:
+				if b.peek(bid) != "exit":
+					continue
+				var c := b.clone()
+				for sid in c.tap(bid)["stripped"]:
+					if int(c.block_view(sid)["ice"]) == 0:
+						return true
+		"layer":
+			for bid in b.block_ids():
+				if b.peek(bid) == "peel":
 					return true
+		"ribbon":
+			var big := false
+			var now := false
+			for bid in b.block_ids():
+				var n := int(b.block_view(bid)["ribbons"])
+				big = big or n >= Config.RIBBON_TEACH_BIG.x
+				now = now or (n > 0 and b.peek(bid) == "peel")
+			return big and now
 		"chain":
 			for bid in b.block_ids():
 				if b.peek(bid) != "chained":
@@ -1063,8 +1109,11 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 	return {"order": order, "color": color, "clear": clear, "depth": deepest}
 
 
-## Rải cơ chế lên các khối. Trả {ice, chain (idx -> idx khoá), layer (idx -> màu trong), fog, pulse}.
-static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+## Rải cơ chế lên các khối. Trả {ice (idx -> số lớp phủ), cover ("frost" hoặc ""), chain (idx -> idx khoá), layer
+## (idx -> màu trong), fog, pulse, ribbon (idx -> màu các lớp, `_ribbons`)}. Lớp phủ (pudding hoặc băng, theo `feats`) không chung khối với xích, hộp giấy, sương
+## mù; khối 2 lớp phải kề ít nhất 2 khối khác.
+static func _mechanics(id: int, feats: Dictionary, groups: Array, asg: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+	var n := groups.size()
 	var order: Array = asg["order"]
 	var pos := {}
 	for k in order.size():
@@ -1086,12 +1135,22 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 	if teach_mech(id) == "chain" and order.size() > 1:
 		pool.erase(order[1])
 		pool.push_front(order[1])
-	if feats["ice"]:
-		var cnt := maxi(1, roundi(n * _ramp(id, int(Config.UNLOCK["ice"]), 0.10, 0.28, 60)))
+	var cover := ""
+	for m in COVERS:
+		if feats[m] and cover == "":
+			cover = m
+	if cover != "":
+		var u := int(Config.UNLOCK[cover])
+		var cnt := maxi(1, roundi(n * _ramp(id, u, Config.COVER_SHARE_LO, Config.COVER_SHARE_HI, Config.COVER_SHARE_OVER)))
+		var dbl := 0.0
+		if id >= u + Config.COVER_DOUBLE_AFTER:
+			dbl = _ramp(id, u + Config.COVER_DOUBLE_AFTER, Config.COVER_DOUBLE_LO, Config.COVER_DOUBLE_HI,
+				Config.COVER_DOUBLE_OVER)
+		var near := _neighbor_counts(groups)
 		for i in pool:
 			if ice.size() >= cnt:
 				break
-			ice[i] = true
+			ice[i] = 2 if dbl > 0.0 and int(near[i]) >= 2 and rng.randf() < dbl else 1
 			taken[i] = true
 	if feats["chain"]:
 		@warning_ignore("integer_division")
@@ -1128,6 +1187,7 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 				continue
 			layer[i] = opts[rng.randi_range(0, opts.size() - 1)]
 			taken[i] = true
+	var ribbon := _ribbons(id, feats, groups, asg, pool, pos, taken, rng)
 	if feats["fog"]:
 		var frac := _ramp(id, int(Config.UNLOCK["fog"]), 0.2, 0.5, 30)
 		var cnt := maxi(1, roundi(n * frac))
@@ -1136,6 +1196,8 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 		for i in all:
 			if fog.size() >= cnt:
 				break
+			if ice.has(i):
+				continue
 			fog[i] = true
 	if feats["pulse"]:
 		# Mỗi lần qua cổng khoá tốn một cú dội, nên cổng đặt ở cạnh có ít lần qua nhất (khối theo màu, hộp giấy tính cả
@@ -1146,6 +1208,9 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 			passes[col] = int(passes.get(col, 0)) + 1
 			if layer.has(i):
 				passes[int(layer[i])] = int(passes.get(int(layer[i]), 0)) + 1
+			if ribbon.has(i):
+				for k in range(1, ribbon[i].size()):  # lớp 0 là màu gán của khối, đã đếm ở trên
+					passes[int(ribbon[i][k])] = int(passes.get(int(ribbon[i][k]), 0)) + 1
 		var cols: Array = passes.keys()
 		cols.sort()
 		_shuffle(cols, rng)
@@ -1154,7 +1219,84 @@ static func _mechanics(id: int, feats: Dictionary, n: int, asg: Dictionary, rng:
 		for k in mini(want, cols.size()):
 			var open := rng.randf() < 0.5 and teach_mech(id) != "pulse"
 			pulse.append({"side": LevelData.SIDES[int(cols[k])], "open": open})
-	return {"ice": ice, "chain": chain, "layer": layer, "fog": fog, "pulse": pulse}
+	return {"ice": ice, "cover": "frost" if cover == "frost" else "", "chain": chain, "layer": layer, "fog": fog,
+		"pulse": pulse, "ribbon": ribbon}
+
+
+## Ruy băng: idx -> [màu ruy băng ngoài, ..., màu kẹo] (chỉ số màu). Lớp ngoài là màu gán của khối lúc mô phỏng, các lớp
+## sau rút trong các màu thoát được lúc khối đó đi (`asg.clear`, vẫn thông về sau vì chỉ có khối rời bàn), khác màu lớp
+## ngay trước, nên bóc hết ruy băng rồi thoát ngay ở lượt của khối vẫn giải được. Chỉ khối chưa có cơ chế khác, đủ ô
+## (Config.RIBBON_CELL_CAP) và có ít nhất 2 màu thoát. Level thường: số khối và số lớp tăng dần theo level (Config).
+## Level dạy: Config.RIBBON_TEACH_SMALL khối ít lớp đi sớm nhất (để có khối bóc được ngay), cộng một khối từ 3 ô đi
+## muộn nhất mang Config.RIBBON_TEACH_BIG lớp.
+static func _ribbons(id: int, feats: Dictionary, groups: Array, asg: Dictionary, pool: Array, pos: Dictionary,
+		taken: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+	var out := {}
+	if not feats["ribbon"]:
+		return out
+	var cand: Array = []
+	for i in pool:
+		if not taken.has(i) and _ribbon_cap(groups[i].size()) > 0 and (asg["clear"][i] as Array).size() >= 2:
+			cand.append(i)
+	var u := int(Config.UNLOCK["ribbon"])
+	if teach_mech(id) == "ribbon":
+		cand.sort_custom(func(a: int, b: int) -> bool: return int(pos[a]) < int(pos[b]))
+		for k in range(cand.size() - 1, -1, -1):
+			var i: int = cand[k]
+			if _ribbon_cap(groups[i].size()) >= Config.RIBBON_TEACH_BIG.y:
+				out[i] = _ribbon_colors(asg, i, rng.randi_range(Config.RIBBON_TEACH_BIG.x, Config.RIBBON_TEACH_BIG.y), rng)
+				cand.remove_at(k)
+				break
+		var small := rng.randi_range(Config.RIBBON_TEACH_SMALL.x, Config.RIBBON_TEACH_SMALL.y)
+		for i in cand.slice(0, small):
+			out[i] = _ribbon_colors(asg, i, rng.randi_range(1, mini(Config.RIBBON_TEACH_SMALL_LAYERS,
+				_ribbon_cap(groups[i].size()))), rng)
+	else:
+		@warning_ignore("integer_division")
+		var cnt := mini(Config.RIBBON_COUNT_MAX, 1 + (id - u) / Config.RIBBON_COUNT_EVERY)
+		@warning_ignore("integer_division")
+		var cap := mini(Config.RIBBON_MAX_LAYERS, Config.RIBBON_LAYERS_START + (id - u) / Config.RIBBON_LAYERS_EVERY)
+		for i in cand.slice(0, cnt):
+			out[i] = _ribbon_colors(asg, i, rng.randi_range(1, mini(cap, _ribbon_cap(groups[i].size()))), rng)
+	for i in out:
+		taken[i] = true
+	return out
+
+
+## Số ruy băng tối đa của khối `cells` ô (Config.RIBBON_CELL_CAP, trần Config.RIBBON_MAX_LAYERS).
+static func _ribbon_cap(cells: int) -> int:
+	var caps: Array = Config.RIBBON_CELL_CAP
+	return mini(int(caps[mini(cells, caps.size() - 1)]), Config.RIBBON_MAX_LAYERS)
+
+
+## `layers` ruy băng của khối `i` cộng màu kẹo: [màu gán, ...], mỗi màu sau rút trong `asg.clear[i]` khác màu ngay trước.
+static func _ribbon_colors(asg: Dictionary, i: int, layers: int, rng: RandomNumberGenerator) -> Array[int]:
+	var out: Array[int] = [int(asg["color"][i])]
+	for _k in layers:
+		var opts: Array = []
+		for col in asg["clear"][i]:
+			if int(col) != out[out.size() - 1]:
+				opts.append(int(col))
+		out.append(int(opts[rng.randi_range(0, opts.size() - 1)]))
+	return out
+
+
+## Số khối khác kề (chung cạnh) với từng khối, theo chỉ số trong `groups`.
+static func _neighbor_counts(groups: Array) -> Array[int]:
+	var owner := {}
+	for i in groups.size():
+		for c in groups[i]:
+			owner[c] = i
+	var out: Array[int] = []
+	for i in groups.size():
+		var seen := {}
+		for c: Vector2i in groups[i]:
+			for d in NEIGHBORS:
+				var o: int = owner.get(c + d, -1)
+				if o >= 0 and o != i:
+					seen[o] = true
+		out.append(seen.size())
+	return out
 
 
 ## Độ dời đưa hình (khối và đá) vào giữa bàn cố định.
@@ -1212,23 +1354,36 @@ static func _build(id: int, s: int, hard: bool, stones: Array[Vector2i], groups:
 		var cl: Array = []
 		for c in cells:
 			cl.append([c.x, c.y])
-		blocks.append({
+		var bd := {
 			"id": name_of[i],
 			"color": LevelData.COLORS[int(asg["color"][i])],
 			"cells": cl,
-			"ice": 1 if mech["ice"].has(i) else 0,
+			"ice": int(mech["ice"].get(i, 0)),
 			"chained_by": name_of[mech["chain"][i]] if mech["chain"].has(i) else "",
 			"inner_color": LevelData.COLORS[int(mech["layer"][i])] if mech["layer"].has(i) else "",
 			"fog": mech["fog"].has(i),
-		})
+		}
+		var rib: Dictionary = mech.get("ribbon", {})
+		if rib.has(i):
+			# Dữ liệu ghi ruy băng ngoài vào trong; `color` là màu kẹo (lớp cuối).
+			var layers: Array = rib[i]
+			var names: Array = []
+			for k in layers.size() - 1:
+				names.append(LevelData.COLORS[int(layers[k])])
+			bd["ribbons"] = names
+			bd["color"] = LevelData.COLORS[int(layers[layers.size() - 1])]
+		blocks.append(bd)
 	var st: Array = []
 	var sorted_stones := stones.duplicate()
 	sorted_stones.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
 		return a.y < b.y or (a.y == b.y and a.x < b.x))
 	for c in sorted_stones:
 		st.append([c.x, c.y])
-	return {
+	var out := {
 		"id": id, "w": Config.BOARD_W, "h": Config.BOARD_H, "hard": hard,
 		"min_taps": 0, "moves": 0, "seed": s,
 		"stones": st, "pulse_sides": mech["pulse"], "blocks": blocks,
 	}
+	if str(mech.get("cover", "")) != "" and not mech["ice"].is_empty():
+		out["cover"] = mech["cover"]
+	return out

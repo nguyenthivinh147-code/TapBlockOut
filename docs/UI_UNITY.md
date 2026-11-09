@@ -66,7 +66,7 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
     - Giọt nước mắt là node `Tear` riêng (ảnh `art_lose_tear`, con của icon nên nhấp nhô theo; `tools/split_tear.gd` tách nó khỏi `art_lose`), `UiMotion.TEAR` cùng nhịp với tiếng nấc: ứa ra dưới mi mắt (0.35 s, từ 30% cỡ, hiện dần), đọng tới 0.55 s, chảy xuống má 2.2 lần chiều cao giọt (nhanh dần, dài ra tới 18%), mờ dần từ 1.3 s, tắt hẳn ở 1.55 s, ẩn tới tiếng nấc sau. Motion này giữ alpha của node.
     - Shop (`src/ui/shop_fx.gd`, node `ShopFx` con cuối của màn, gắn thêm ba kiểu motion dưới đây). `attach(c, kind, delay)` lùi vòng đầu `delay` giây nên các node cùng kiểu chạy lệch nhau, lan từ trên xuống:
       - `FLOAT`: icon gold của các ô (`BG/Icon`, cả ô ADS Daily) nổi lên 5% chiều cao rồi về chỗ cũ, chu kỳ 2.4 s, không chìm dưới chỗ cũ. Ô sau trễ 0.3 s.
-      - `WOBBLE`: nhãn `SellBadge` (-50%) lắc mỗi 2.6 s: 0.6 s đầu nghiêng 2.5 lượt (tới 12°, nhỏ dần) và phồng tới 10%, rồi đứng yên. Nhãn sau trễ 0.15 s.
+      - `WOBBLE`: nhãn `SellBadge` (-50%, gói 1 là x2) lắc mỗi 2.6 s: 0.6 s đầu nghiêng 2.5 lượt (tới 12°, nhỏ dần) và phồng tới 10%, rồi đứng yên. Nhãn sau trễ 0.15 s.
       - `SHINE`: vệt sáng xiên (`src/ui/shine.gdshader`, gắn làm material của node) quét qua nút mua (`Button_Purchase`, `Button_Ads`, phần `image`) và nền gói gold lớn trong 0.65 s, mỗi 3.2 s. Node đã có material riêng thì giữ nguyên, không loé. Nút đang khoá (đã sở hữu, đang mua, hết video) không loé; host là chính nút (nút Chơi ở Home) thì xét nút đó. Nút sau trễ 0.12 s.
       - Vòng đầu của cả ba bắt đầu sau 0.7 s, lúc các thẻ đã hiện xong.
     - Motion cộng lên vị trí, scale, góc của chính node. Giá trị do nơi khác ghi (layout, xoay, reveal, nhún nút) thành gốc mới nên không trôi. Node ẩn thì dừng và trả về gốc.
@@ -138,13 +138,11 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `popup_notice` | `PopupOkLayer` |
 | `popup_reward` | `PopupRewardLayer` |
 | `popup_update` | `CheckUpdateLayer` |
-| `download_data`, `splash` | `DownloadDataLayer`; `Loadingscreen` và `CandySort_logo` thay bằng `assets/ui/loading_bg.png` (9:16) và `assets/ui/loading_logo.png` (tên game có sẵn trong logo); cả hai đặt theo khung boot splash (`Splash.boot_rect`, logo ở `Splash.LOGO_RECT` của ảnh), không theo rect prefab của `LogoGame`. Handle của `Slider` thay bằng kẹo `assets/ui/candy_drop/candy_drop_00.png` (`Splash.HANDLE_TEX`, giữ tỉ lệ trong rect prefab) |
+| `splash` | `DownloadDataLayer`; `Loadingscreen` và `CandySort_logo` thay bằng `assets/ui/loading_bg.png` (9:16) và `assets/ui/loading_logo.png` (tên game có sẵn trong logo); cả hai đặt theo khung boot splash (`Splash.boot_rect`, logo ở `Splash.LOGO_RECT` của ảnh), không theo rect prefab của `LogoGame`. Handle của `Slider` thay bằng kẹo `assets/ui/candy_drop/candy_drop_00.png` (`Splash.HANDLE_TEX`, giữ tỉ lệ trong rect prefab) |
 | `select_account` | `SelectAccountLayer` |
 | `popup_no_internet` | `MaintainInternetLayer` |
 | `tutorial_intro` | `MainTutorialLayer` |
-| `popup_mechanic` | `MechanicTutorialLayer` |
 | `booster_unlocked`, `booster_soon` | `BoosterTutorialLayer` |
-| `speedup_tutorial` | `SpeedUpTutorialLayer` |
 | `load_transition` | `LoadLevelProcessVer2` |
 | `popup_help` | `PopupFeedBack` |
 | `popup_change_name` | `PopupEditNameLayer` |
@@ -162,7 +160,7 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `popup_heart_bundle` | `PopupBundleHeart` |
 | `popup_helper_pack`, `popup_heart_support` | `SupportPackLayer` |
 | `popup_offer` | `PopupOfferLayer`, `PopupStarterPack`, `PopupSpecialPack`, `PopupFlashPack` |
-| `chain_offer` | `PopupChainOffer`; mũi tên `UIRay` xoay 180° lúc dựng: prefab cho chúng chỉ ngược về `ChainOfferPack` (chiều các ô trượt), còn ở đây chuỗi đi xuôi từ `ChainOfferPack` (đã nhận → nhận được → khoá) nên mũi tên chỉ sang bước kế. Prefab luôn để bước hiện tại ở `ChainOfferPack (1)` (nền vàng `UI_Shop_Packs_Atlas_9`); ở đây cửa sổ đứng yên nên nền vàng đi theo ô nhận được, các ô khác nền hồng `UI_Shop_Packs_Atlas_8`. Ảnh tiêu đề `Panel/Top/Image` đổi lúc dựng từ `ic_EndlessTreasure` sang `assets/ui/art_chain_offer.png`: cùng rương vàng, ba booster của game Unity (nam châm, mũi tên, thẻ khối) thay bằng hint, move, smash của game (`tools/compose_chain_offer_art.py`, chạy lại khi đổi icon booster; file trong `assets/ui/cc/` giữ nguyên) |
+| `chain_offer` | `PopupChainOffer`; mũi tên `UIRay` xoay 180° lúc dựng: prefab cho chúng chỉ ngược về `ChainOfferPack` (chiều các ô trượt), còn ở đây chuỗi đi xuôi từ `ChainOfferPack` (đã nhận → nhận được → khoá) nên mũi tên chỉ sang bước kế. Prefab luôn để bước hiện tại ở `ChainOfferPack (1)` (nền vàng `UI_Shop_Packs_Atlas_9`); ở đây cửa sổ đứng yên nên nền vàng đi theo ô nhận được, các ô khác nền hồng `UI_Shop_Packs_Atlas_8`. Ảnh tiêu đề `Panel/Top/Image` đổi lúc dựng từ `ic_EndlessTreasure` sang `assets/ui/art_chain_offer.png`: cùng rương vàng, ba booster của game Unity (nam châm, mũi tên, thẻ khối) thay bằng hint, move, smash của game (`tools/compose_chain_offer_art.py`, chạy lại khi đổi icon booster; file trong `assets/ui/cc/` giữ nguyên). Nhận một bước thì mở `popup_reward` (`PopupRewardLayer`) chồng lên, như game Unity |
 | `popup_remove_ads` | `PopupRemoveAds` |
 | `popup_ads_daily` | `DailyRewardAdLayer` |
 | `leaderboard` | `LeaderboardLayer` |
@@ -173,7 +171,7 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `popup_streak_rewards` | `PopupWinStreakInfo` |
 | `popup_streak_end` | `PopupWinStreakEnd` |
 | `popup_streak_keep` | `PopupKeepPlayingWinstreak` |
-| `ad_loading`, `popup_free_pick`, `popup_bonus`, `popup_daily`, `shop_mini`, `weekly_pass`, `popup_weekly_tutorial`, `popup_weekly_upsell`, `challenge`, `popup_leagues`, `popup_lb_player` | Không có prefab: `UnityKit` |
+| `ad_loading`, `popup_free_pick`, `popup_daily`, `shop_mini`, `weekly_pass`, `popup_weekly_tutorial`, `popup_weekly_upsell`, `challenge`, `popup_leagues`, `popup_lb_player` | Không có prefab: `UnityKit` |
 
 Home, `level` (bàn chơi, HUD) và thanh trên/dưới dùng chung (`hub_top.gd`, `hub_nav.gd`) giữ nguyên.
 
@@ -181,5 +179,6 @@ Home, `level` (bàn chơi, HUD) và thanh trên/dưới dùng chung (`hub_top.gd
 
 - Bố cục lấy từ prefab. Nội dung (chữ qua `tr()`, số, icon vật phẩm của game, các nút hành động) là của game. Mục game có mà prefab không có thì dựng bằng bản sao node của prefab (`UnityKit.spec`), đặt theo nhịp của prefab. Mục prefab có mà game không có thì ẩn.
 - Không dùng sprite có chữ in sẵn. Ribbon tiêu đề trong prefab là ảnh trơn, chữ do TMP vẽ.
-- Mọi nút mua bằng gold (cứu lượt, nạp mạng, mua booster, booster mới, gói trợ giúp, avatar và frame) dùng pill vàng `pill_yellow` và icon `big_coin` của `assets/ui/figma/atlas_main.png`, chỉ có icon gold rồi đến giá, không chữ "Mua"; hàng icon + giá là `Price` của `GoldBtn` trong `PopupReviveLayer`. Thiếu gold thì nút vẫn vàng: popup cứu lượt ghi dòng thiếu gold, hộp mua booster làm mờ nút (alpha 0.6) như nút gold của `no_lives`. Huy hiệu "+N tim" trên nút nạp mạng giữ nguyên.
+- Mọi nút mua bằng gold (cứu lượt, nạp mạng, mua booster, booster mới, gói trợ giúp, avatar và frame) dùng pill vàng `pill_yellow` và icon `big_coin` của `assets/ui/figma/atlas_main.png`, chỉ có icon gold rồi đến giá, không chữ "Mua"; hàng icon + giá là `Price` của `GoldBtn` trong `PopupReviveLayer`. Mọi chữ trên pill vàng (giá, "Dùng", nút VIP của Weekly Pass, `UnityKit.button("yellow")`) dùng material TMP `Baloo Outline - Yellow` (viền nâu `672603`, bóng `3e0808`) như prefab. Thiếu gold thì nút vẫn vàng: popup cứu lượt ghi dòng thiếu gold, hộp mua booster làm mờ nút (alpha 0.6) như nút gold của `no_lives`. Huy hiệu "+N tim" trên nút nạp mạng giữ nguyên.
+- Chữ trên nút xanh lá (pill `UI_Maincenter_48`, `UI_Shop_Popup_Atlas_8`, nút vuông `UI_Maincenter_30`, `UnityKit.button("green")`) dùng material TMP `Baloo Outline - Green` (viền và bóng `032b00`), kể cả chỗ prefab để material atlas không viền: giá trên nút mua của Starter/Helper Pack trong `SupportPackLayer`, nút OK của `PopupWinStreakEnd`. Huy hiệu riêng trên nút (ví dụ "-1" tim của Retry) giữ material của huy hiệu. Nút Play ở Home theo Figma, viền theo độ khó (`home.gd`).
 - Giữ signal, `setup()`, hành vi và tên node mà test dùng.

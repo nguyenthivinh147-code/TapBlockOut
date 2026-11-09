@@ -206,8 +206,8 @@ func _refresh_buttons(view: Dictionary) -> void:
 
 func _fail_text() -> String:
 	match Game.last_ad_reason:
-		"not_ready":
-			return tr("ads_not_available")
+		"not_ready", "offline":
+			return ""  # Main đã báo bằng popup (Game.notice)
 		"closed":
 			return tr("ads_closed_early")
 	return tr("ads_failed")

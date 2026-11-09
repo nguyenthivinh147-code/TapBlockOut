@@ -137,15 +137,15 @@ func test_claim_and_season_end(t: T) -> void:
 
 func test_chain_on_lose(t: T) -> void:
 	var g := _g()
-	g.s.level = 23
+	g.s.level = 99
 	var a: Dictionary = g.start_attempt()
 	g.on_level_lost(a)
-	t.eq(g.chain_view().is_empty(), true, "L23 chưa bật")
-	g.s.level = 24
+	t.eq(g.chain_view().is_empty(), true, "L99 chưa bật")
+	g.s.level = 100
 	var b: Dictionary = g.start_attempt()
 	g.on_level_lost(b)
 	var v: Dictionary = g.chain_view()
-	t.eq(v.id, "chain_a", "bật ở L24 sau ván thua")
+	t.eq(v.id, "chain_a", "bật ở L100 sau ván thua")
 	t.eq(g.chain_take_autoshow(), true, "tự mở một lần")
 	t.eq(g.chain_take_autoshow(), false, "không mở lại")
 	# bước 0: free
@@ -169,7 +169,7 @@ func test_chain_on_lose(t: T) -> void:
 	# hết hạn rồi bật lại sau cooldown
 	g.test_now += D + 10
 	t.eq(g.chain_view().is_empty(), true, "hết hạn")
-	g.s.level = 25
+	g.s.level = 151
 	var d: Dictionary = g.start_attempt()
 	g.on_level_lost(d)
 	t.eq(g.chain_view().is_empty(), true, "đang cooldown")
@@ -179,9 +179,30 @@ func test_chain_on_lose(t: T) -> void:
 	t.eq(g.chain_view().id, "chain_b", "chuỗi kế sau cooldown")
 
 
+func test_chain_on_win(t: T) -> void:
+	var g := _g()
+	g.s.level = 150
+	var a: Dictionary = g.start_attempt()
+	g.on_level_won(a)
+	t.eq(g.chain_view().id, "chain_a", "bật sau ván thắng")
+
+
+func test_chain_skips_challenge(t: T) -> void:
+	var g := _g()
+	g.s.level = 150
+	var a: Dictionary = g.start_attempt()
+	a["challenge"] = true
+	g.on_level_lost(a)
+	t.eq(g.chain_view().is_empty(), true, "thua Challenge không bật")
+	var b: Dictionary = g.start_attempt()
+	b["challenge"] = true
+	g.on_level_won(b)
+	t.eq(g.chain_view().is_empty(), true, "thắng Challenge không bật")
+
+
 func test_chain_pay_cancel_keeps_step(t: T) -> void:
 	var g := _g()
-	g.s.level = 24
+	g.s.level = 150
 	g.s.chain = {"active": true, "id": "chain_a", "step": 3, "expires": g.test_now + D,
 		"cooldown_until": 0, "shown": true, "rotation": 1}
 	var p: Node = _root().get_node("Platform")

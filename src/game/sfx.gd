@@ -104,7 +104,8 @@ func apply_settings(settings: Dictionary) -> void:
 	_sync_music()
 
 
-func play(sfx_name: String) -> void:
+## `volume_db`: phát nhỏ hơn (hoặc to hơn) mức thường của bus SFX chừng này dB.
+func play(sfx_name: String, volume_db: float = 0.0) -> void:
 	if sfx_name == "":
 		return
 	setup()
@@ -118,20 +119,21 @@ func play(sfx_name: String) -> void:
 	last_played = sfx_name
 	var p := _free_player()
 	p.stream = stream
+	p.volume_db = volume_db
 	p.play()
 
 
 ## Phát `sfx_name`; chưa có file thì phát `fallback`. Rung theo tên chính.
-func play_or(sfx_name: String, fallback: String) -> void:
+func play_or(sfx_name: String, fallback: String, volume_db: float = 0.0) -> void:
 	setup()
 	if _load_sfx(sfx_name) != null:
-		play(sfx_name)
+		play(sfx_name, volume_db)
 		return
 	if haptics_on and HAPTIC_MS.has(sfx_name):
 		Platform.haptic(HAPTIC_MS[sfx_name])
 	var was_haptics := haptics_on
 	haptics_on = false
-	play(fallback)
+	play(fallback, volume_db)
 	haptics_on = was_haptics
 
 

@@ -50,7 +50,9 @@ const MEDALS := ["UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_14", "UI_Leaderboard
 	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_24"]
 ## Feature (Unlocks) -> game icon shown in the next-feature frame; hidden when the icon has no file.
 const FEATURE_ICONS := {"daily_gift": "ui_gift", "hint": "booster_hint", "shop": "ui_shop", "move": "booster_move",
-	"smash": "booster_smash", "lives": "ui_heart", "leaderboard": "ui_leaderboard", "road_trip": "ui_road_trip"}
+	"smash": "booster_smash", "lives": "ui_heart", "leaderboard": "ui_leaderboard", "road_trip": "ui_road_trip",
+	"win_streak": "ic_win_streak", "special_bomb": "special_bomb", "weekly_pass": "ic_weekly_pass",
+	"level_pack": "ic_level_pack", "chain_offer": "ic_chain_offer"}
 
 var ui: RefCounted = null
 var _args: Dictionary = {}
@@ -138,7 +140,27 @@ func _build_rewards() -> void:
 	# out: rank points show only on the player's leaderboard card.
 	_reward = %GoldReward.get_node("RewardLabel")
 	UnityUI.set_text(_reward, tr("win_reward") % _shown)
+	_build_special_ticket()
 	ui.relayout(REWARDS)
+
+
+## Thắng Hard / VeryHard khi Màn đặc biệt đã mở (args.special_tickets > 0): ô thứ hai cạnh gold, icon bom và "+N vé".
+func _build_special_ticket() -> void:
+	var n := int(_args.get("special_tickets", 0))
+	if n <= 0:
+		return
+	var gold: Control = %GoldReward
+	var r := gold.duplicate() as Control
+	r.name = "SpecialTicketReward"
+	r.unique_name_in_owner = false
+	gold.get_parent().add_child(r)
+	var light := r.get_node_or_null("Light") as Control
+	if light != null:
+		light.visible = false
+	var icon := UnityUI.image_of(r.get_node("CoinIcon"))
+	icon.tex = ThemeKit.icon("special_bomb")
+	icon.preserve_aspect = true
+	UnityUI.set_text(r.get_node("RewardLabel") as Label, tr("special_ticket_reward") % n)
 
 
 # --- leaderboard card (UILeaderboardUserCard of the player) ---
@@ -591,8 +613,8 @@ func _on_x2_pressed() -> void:
 		_fly_x2_gold()
 		return
 	match Game.last_ad_reason:
-		"not_ready":
-			UnityUI.set_text(_msg, tr("ads_not_available"))
+		"not_ready", "offline":
+			UnityUI.set_text(_msg, "")  # Main đã báo bằng popup (Game.notice)
 		"closed":
 			UnityUI.set_text(_msg, tr("ads_closed_early"))
 		_:

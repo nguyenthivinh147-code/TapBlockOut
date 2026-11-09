@@ -178,8 +178,8 @@ func _accept(method: String) -> void:
 		return
 	if method == "video":
 		match Game.last_ad_reason:
-			"not_ready":
-				_show_msg(tr("ads_not_available"))
+			"not_ready", "offline":
+				pass  # Main đã báo bằng popup (Game.notice)
 			"closed":
 				_show_msg(tr("ads_closed_early"))
 			_:

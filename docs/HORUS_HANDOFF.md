@@ -21,27 +21,33 @@ Nguồn: `src/config.gd` (`Config.SKUS`). Giá USD là giá gốc; Play tự quy
 | --- | --- | --- | --- |
 | `gold_pack_1` | 1.99 | consumable | 1.000 gold |
 | `gold_pack_2` | 7.99 | consumable | 5.000 gold |
-| `gold_pack_3` | 14.99 | consumable | 10.000 gold |
+| `gold_pack_3` | 14.99 | consumable | 11.000 gold (2026-11-09, trước là 10.000) |
 | `gold_pack_4` | 29.99 | consumable | 25.000 gold |
 | `gold_pack_5` | 49.99 | consumable | 50.000 gold |
-| `gold_pack_6` | 99.99 | consumable | 100.000 gold |
-| `gold_pack_1_sale` | 0.99 | consumable | 2.000 gold |
+| `gold_pack_6` | 99.99 | consumable | 120.000 gold (2026-11-09, trước là 100.000) |
+| `gold_pack_1_sale` | 1.99 | consumable | 2.000 gold (cùng giá gói thường, gấp đôi gold; đổi 2026-11-09, trước là 0.99) |
 | `gold_pack_2_sale` | 3.99 | consumable | 5.000 gold |
-| `gold_pack_3_sale` | 7.49 | consumable | 10.000 gold |
+| `gold_pack_3_sale` | 7.49 | consumable | 11.000 gold |
 | `gold_pack_4_sale` | 14.99 | consumable | 25.000 gold |
 | `gold_pack_5_sale` | 24.99 | consumable | 50.000 gold |
-| `gold_pack_6_sale` | 49.99 | consumable | 100.000 gold |
-| `remove_ads` | 4.99 | **không consumable** (có Restore) | bỏ interstitial + 500 gold |
+| `gold_pack_6_sale` | 49.99 | consumable | 120.000 gold |
+| `remove_ads` | 5.99 | **không consumable** (có Restore) | chỉ bỏ interstitial (đổi 2026-11-09, trước là 4.99 + 500 gold) |
 | `starter_pack` | 6.99 | **không consumable** (mua một lần) | 6.000 gold + 1 hint, 1 move, 1 smash |
 | `rescue_pack` | 0.99 | consumable | 1 booster +3 Move |
-| `level_pack` | 4.99 | consumable | 2.000 gold + 1 hint, 1 move, 1 smash |
+| `level_pack` | 4.99 | consumable | 3.000 gold + 2 hint, 2 move, 2 smash (2026-11-09, trước là 2.000 gold + 1 mỗi loại) |
 | `weekly_pass` | 4.99 | consumable (mua lại mỗi tuần) | VIP của chu kỳ Weekly Pass hiện tại: thưởng VIP + 3 mạng tối đa |
 | `special_pack` | 10.99 | consumable | 12.000 gold + 2 hint, 2 move, 2 smash |
 | `special_pack_sale` | 5.49 | consumable | như `special_pack`, dùng lúc weekend sale |
 | `chain_pack_1` | 0.99 | consumable | 1.500 gold (bước Pay của Chain Offer) |
 | `chain_pack_2` | 2.99 | consumable | 3.000 gold + 1 hint, 1 move (bước Pay của Chain Offer) |
+| `remove_ads_bundle` | 9.99 | **không consumable** (có Restore) | bỏ interstitial + 3.000 gold + 3 hint, 3 move, 3 smash (thêm 2026-11-09) |
+| `helper_great` | 3.99 | consumable | 2 hint, 2 move, 1 smash (2026-11-09, trước là 1 move; Shop Helper Packs, popup hết MOVES kèm Helper Pack; thêm 2026-11-09) |
+| `helper_epic` | 4.99 | consumable | 3 hint, 2 move, 1 smash (thêm 2026-11-09; đang ẩn khỏi Shop) |
+| `bundle_sweet` | 4.99 | consumable | 3.000 gold + 1 hint, 1 move, 1 smash + 60 phút mạng vô hạn (thêm 2026-11-09; đang ẩn khỏi Shop) |
+| `bundle_tasty` | 9.99 | consumable | 7.000 gold + 2 hint, 2 move, 2 smash + 180 phút mạng vô hạn (thêm 2026-11-09; đang ẩn khỏi Shop) |
+| `bundle_yummy` | 14.99 | consumable | 12.000 gold + 3 hint, 3 move, 3 smash + 360 phút mạng vô hạn (thêm 2026-11-09; đang ẩn khỏi Shop) |
 
-Giao hàng: game cộng hàng và lưu trước, rồi mới consume (consumable) hoặc acknowledge (không consumable). Mỗi `purchase token` giao một lần; lúc mở game giao hết đơn còn treo; `remove_ads` có nút Restore. Game kiểm chữ ký đơn bằng `billing_public_key`; đơn sai chữ ký bị coi là `invalid`, không thưởng.
+Giao hàng: game cộng hàng và lưu trước, rồi mới consume (consumable) hoặc acknowledge (không consumable). Mỗi `purchase token` giao một lần; lúc mở game giao hết đơn còn treo; `remove_ads` và `remove_ads_bundle` có nút Restore. Game kiểm chữ ký đơn bằng `billing_public_key`; đơn sai chữ ký bị coi là `invalid`, không thưởng.
 
 ## 3. Placement quảng cáo (AppLovin MAX, không banner)
 
@@ -70,14 +76,18 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `econ_rescue_moves` | 3 |
 | `econ_rescue_video_max` | 4 |
 | `econ_challenge_coins` | 100 |
-| `lives_max` / `lives_regen_sec` / `lives_from_level` | 10 / 900 / 10 |
+| `lives_max` / `lives_regen_sec` / `lives_from_level` | 10 / 300 / 10 |
 | `ads_inter_from_run` | 4 |
 | `ads_inter_every` | 2 |
 | `ads_inter_cooldown` (giây) | 120 |
 | `ads_session_warmup` (giây) | 90 |
 | `ads_rewarded_grace` (giây) | 45 |
 | `ads_first_session_block_until_level` | 10 |
-| `unlock_daily_gift`, `unlock_hint`, `unlock_shop`, `unlock_move`, `unlock_smash`, `unlock_lives`, `unlock_starter`, `unlock_review`, `unlock_challenge`, `unlock_stone`, `unlock_ice`, `unlock_chain`, `unlock_layer`, `unlock_fog`, `unlock_pulse` | 4, 5, 5, 12, 17, 10, 10, 10, 50, 14, 30, 40, 55, 70, 90 (level mở khoá) |
+| `unlock_daily_gift`, `unlock_hint`, `unlock_shop`, `unlock_move`, `unlock_smash`, `unlock_lives`, `unlock_starter`, `unlock_review`, `unlock_challenge`, `unlock_stone`, `unlock_ice`, `unlock_chain`, `unlock_layer`, `unlock_fog`, `unlock_pulse`, `unlock_win_streak` | 4, 5, 5, 12, 17, 10, 10, 10, 50, 14, 30, 40, 55, 70, 90, 40 (level mở khoá) |
+| `unlock_road_trip`, `unlock_special_bomb` (đổi 2026-11-09, trước là 2, 41) | 70, 50 |
+| `features_win_streak` (bật/tắt Win Streak, "1" hoặc "0") | true |
+| `win_streak_active_days` (ngày Active, 0 = Chủ nhật, 6 = thứ Bảy; ngày khác chỉ nhận quà) | 5,6,0 |
+| `econ_helper_pack_fail`, `econ_helper_pack_sku` (popup hết MOVES kèm Helper Pack từ lần hết MOVES thứ N liên tiếp ở một level) | 3, helper_great |
 | `features_challenge` (bật/tắt Daily Challenge, "1" hoặc "0"; tắt thì Home ẩn icon) | false (tắt từ 2026-11-08) |
 | `cosmetics_avatar_count`, `cosmetics_frame_count` | 12, 12 |
 | `cosmetics_prices` | 50,75,100 |
@@ -86,7 +96,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `offers_starter_pack_sku`, `_after_level`, `_at_run`, `_hours` | starter_pack, 10, 12, 48 |
 | `offers_remove_ads_sku`, `_after_inter_today`, `_per_day`, `_max_total` | remove_ads, 3, 1, 3 |
 | `offers_rescue_pack_sku`, `_fail_streak`, `_cooldown_hours` | rescue_pack, 3, 24 |
-| `offers_level_pack_sku`, `_every_levels`, `_hours` | level_pack, 10, 72 |
+| `offers_level_pack_sku`, `_every_levels`, `_hours` | level_pack, 50, 72 |
 | `notif_first_week_days`, `_first_week_per_day`, `_lead_min`, `_daily_until_day` | 7, 3, 15, 14 |
 | `notif_sparse_days` | 16,18,21,24,27,30 |
 | `notif_earliest_hour`, `_latest_hour`, `_quiet_after_ignored`, `_ask_after_run` | 8, 22, 9, 2 |
@@ -94,11 +104,13 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `content_slack_easy`, `_slack_easy_until`, `_slack_early`, `_slack_early_until`, `_slack_normal`, `_slack_hard` (dư MOVES; có tác dụng cả với L1–500 ghi sẵn) | 5, 3, 3, 13, 4, 3 |
 | `content_think_clap_sec` | 8 |
 | `content_build`, `content_support_email` | v1, support@horusvn.com |
+| `content_latest_version`, `content_min_version` (popup cập nhật: dưới latest thì mời, dưới min thì bắt buộc; trống là tắt), `content_store_url` | "", "", https://play.google.com/store/apps/details?id=com.tungcv2.tapblockout |
+| `content_net_check_url`, `content_net_check_sec` (kiểm mạng khi video hay mua hàng lỗi) | https://www.google.com/generate_204, 3.0 |
 | `content_ftue_steps` | open,first_tap,first_win,first_x2,first_booster,run_2,run_5,level_10 |
 | `weekly_enabled`, `weekly_sku`, `weekly_unlock_hard_index`, `weekly_start_hour`, `weekly_vip_bonus_hearts` | true, weekly_pass, 2, 6, 3 |
 | `weekly_points_normal`, `_points_hard`, `_points_very_hard` | 1, 3, 5 |
 | `weekly_bank_step`, `weekly_bank_max`, `weekly_bank_reward_coins` | 15, 10, 400 |
-| `chain_days_to_existence`, `chain_days_to_reset`, `chain_level_unlock`, `chain_require_lose` (-1 = sau mọi ván), `chain_window` | 1, 3, 24, -1, 6 |
+| `chain_days_to_existence`, `chain_days_to_reset`, `chain_level_unlock`, `chain_require_lose` (-1 = sau mọi ván), `chain_window` | 1, 3, 100, -1, 6 |
 | `sale_weekdays` (0 = Chủ nhật, 6 = thứ Bảy) | 5,6,0 |
 | `weekend_sale_mode` (1 = mọi người, 2 = chỉ người chưa mua gói nào, 3 = tắt) | 1 |
 | `sale_percent` (số % trên nhãn sale, chỉ hiển thị) | 50 |
@@ -120,13 +132,21 @@ Tên và tham số chữ thường, `snake_case`, phẳng. Mọi sự kiện do 
 | `rv_start` | pl |
 | `rv_done` | pl (có thể kèm credit = 1) |
 | `rv_cancel` / `rv_fail` | pl, why |
-| `rv_unavailable` | pl |
+| `rv_unavailable` | pl, offline (0/1: không có video vì mất mạng) |
 | `weekly_points` | level, points, total |
 | `weekly_open` | points, vip (0/1) |
 | `weekly_claim` | kind (free, vip, bank, all), coins, points |
 | `weekly_vip` | points |
 | `weekly_tutorial` | points (xem xong tutorial lần đầu) |
 | `weekly_end` | coins |
+| `weekly_upsell` | points (popup mời mua VIP hiện, một lần mỗi mùa) |
+| `streak_start` | level (bấm Start ở popup giới thiệu Win Streak) |
+| `streak_up` | level, streak |
+| `streak_lost` | level, from, to (chuỗi tụt về mốc gần nhất) |
+| `streak_claim` | streak, coins |
+| `cloud_conflict` | local_level, cloud_level (bản cloud và bản máy là hai lịch sử khác nhau) |
+| `cloud_pick` | cloud (0/1), level |
+| `update_open` | version (bấm Cập nhật ở popup cập nhật) |
 | `chain_start` | id, level |
 | `chain_claim` | id, step, type (free, ad, pay) |
 | `ad_reward_recovered` | pl |

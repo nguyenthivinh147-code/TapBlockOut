@@ -53,7 +53,7 @@ func test_shop_lists_gold_packs_and_others(t: T) -> void:
 		t.ok(shop.buy_buttons.has("gold_pack_%d" % i), "gói gold %d" % i)
 		t.ok(not shop.buy_buttons.has("gold_pack_%d_sale" % i), "không sale ngày thường")
 	t.eq(_text(shop.buy_buttons["gold_pack_1"]), "$1.99", "giá hiển thị")
-	for sku in ["starter_pack", "level_pack", "rescue_pack", "remove_ads"]:
+	for sku in ["starter_pack", "level_pack", "rescue_pack", "remove_ads", "remove_ads_bundle"]:
 		t.ok(shop.buy_buttons.has(sku), "gói " + sku)
 	t.ok(shop.restore_button != null, "có Restore")
 	t.ok(shop.video_button != null and not shop.video_button.disabled, "video bật")
@@ -69,7 +69,22 @@ func test_shop_weekend_sale(t: T) -> void:
 	var shop := _open(ShopScene)
 	for i in range(1, 7):
 		t.ok(shop.buy_buttons.has("gold_pack_%d_sale" % i), "SKU sale %d" % i)
-	t.eq(_text(shop.buy_buttons["gold_pack_1_sale"]), "$0.99", "giá sale")
+	t.eq(_text(shop.buy_buttons["gold_pack_1_sale"]), "$1.99", "gói 1: giá giữ nguyên")
+	t.eq(_text(shop.buy_buttons["gold_pack_2_sale"]), "$3.99", "gói 2: giá sale")
+	var cat: Array = g.shop_catalog()
+	t.eq(cat[0].has("sale_percent"), false, "gói 1 không giảm giá")
+	t.eq(shop.sale_tag(cat[0]), "x2", "gói 1: nhãn x2")
+	t.eq(shop.sale_tag(cat[1]), "-50%", "gói 2: nhãn -50%")
+	_free(shop)
+
+
+func test_shop_sale_tag(t: T) -> void:
+	var shop := _open(ShopScene)
+	t.eq(shop.sale_tag({"sale": false, "gold": 2000, "base_gold": 1000}), "", "không sale")
+	t.eq(shop.sale_tag({"sale": true, "sale_percent": 40, "gold": 2000, "base_gold": 1000}), "-40%", "giảm giá trước")
+	t.eq(shop.sale_tag({"sale": true, "gold": 3000, "base_gold": 1000}), "x3", "gấp gold")
+	t.eq(shop.sale_tag({"sale": true, "gold": 1500, "base_gold": 1000}), "+50%", "thêm gold lẻ")
+	t.eq(shop.sale_tag({"sale": true, "gold": 1000, "base_gold": 1000}), "", "không hơn gì")
 	_free(shop)
 
 
@@ -128,27 +143,73 @@ func test_shop_buy_cancel_and_invalid(t: T) -> void:
 func test_shop_remove_ads_owned_and_restore(t: T) -> void:
 	var g := _g()
 	var shop := _open(ShopScene)
+	t.ok(_no_ads_shown(shop), "chưa mua: mục No Ads hiện")
 	await shop.buy("remove_ads")
 	t.eq(bool(g.s.no_ads), true, "no_ads")
-	t.eq(int(g.s.coins), 1500, "tặng 500 gold")
+	t.eq(int(g.s.coins), 1000, "gói thường không kèm gold")
 	t.ok((shop.buy_buttons["remove_ads"] as Button).disabled, "nút khoá khi đã sở hữu")
-	t.eq(_text(shop.buy_buttons["remove_ads"]), shop.tr("shop_owned"), "Đã sở hữu")
+	t.ok((shop.buy_buttons["remove_ads_bundle"] as Button).disabled, "bundle cũng khoá")
+	t.ok(_no_ads_hidden(shop), "mua xong: ẩn cả mục No Ads")
 	# Restore không giao lần hai.
 	shop.restore_button.pressed.emit()
 	await _root().get_tree().process_frame
-	t.eq(int(g.s.coins), 1500, "restore không giao hai lần")
+	t.eq(int(g.s.coins), 1000, "restore không giao hai lần")
 	t.eq(g.s.buys.size(), 1, "buys giữ nguyên")
 	t.eq(shop.last_toast, shop.tr("shop_restore_ok"), "báo đã khôi phục")
 	_free(shop)
+	# Mở lại Shop: mục vẫn ẩn.
+	var again := _open(ShopScene)
+	t.ok(_no_ads_hidden(again), "mở lại: mục No Ads ẩn")
+	_free(again)
 	# Cài lại: bản lưu mới, đơn sở hữu còn ở store.
 	g.reset_for_test(DIR + "/save2.json")
 	g.test_now = MONDAY
 	var shop2 := _open(ShopScene)
 	t.ok(not (shop2.buy_buttons["remove_ads"] as Button).disabled, "bản lưu mới: chưa sở hữu")
+	t.ok(_no_ads_shown(shop2), "bản lưu mới: mục No Ads hiện")
 	await shop2.restore()
 	t.eq(bool(g.s.no_ads), true, "restore trả Remove Ads")
 	t.ok((shop2.buy_buttons["remove_ads"] as Button).disabled, "Owned sau restore")
+	t.ok(_no_ads_hidden(shop2), "restore xong: ẩn cả mục No Ads")
 	_free(shop2)
+
+
+func test_shop_no_ads_bundle(t: T) -> void:
+	var g := _g()
+	var shop := _open(ShopScene)
+	var info: Dictionary = Config.SKUS.remove_ads_bundle
+	t.eq(_text(shop.buy_buttons["remove_ads_bundle"]), "$9.99", "giá bundle")
+	var card := Shop.C + "/Shop_RemoveAdsBundle"
+	var gold := shop.ui.label(card + "/ItemContainer/Row(Clone)/ShopRewardItem(Clone) (1)/Text (TMP)") as Label
+	t.eq(gold.text, Shop.fmt_n0(int(info.gold)), "thẻ ghi gold của bundle")
+	t.ok(gold.is_visible_in_tree(), "ô gold hiện")
+	for k in Shop.NO_ADS_BOOSTERS:
+		var slot: Control = shop.ui.node(card + "/ItemContainer/" + str(Shop.NO_ADS_BOOSTERS[k][0]))
+		t.ok(slot.is_visible_in_tree(), "ô booster " + str(k))
+	t.ok(not shop.ui.node(card + "/SellBadge").visible, "không có nhãn giảm giá")
+	var inv_before: Dictionary = (g.s.inv as Dictionary).duplicate()
+	await shop.buy("remove_ads_bundle")
+	t.eq(bool(g.s.no_ads), true, "bundle bỏ quảng cáo")
+	t.eq(int(g.s.coins), 1000 + int(info.gold), "cộng gold của bundle")
+	for k in ["hint", "move", "smash"]:
+		t.eq(int(g.s.inv[k]), int(inv_before.get(k, 0)) + int(info.inv[k]), "booster " + k)
+	t.ok(_no_ads_hidden(shop), "mua bundle: ẩn cả mục No Ads")
+	t.ok((shop.buy_buttons["remove_ads"] as Button).disabled, "không mua thêm gói thường")
+	_free(shop)
+
+
+func _no_ads_shown(shop: Node) -> bool:
+	for n in Shop.NO_ADS_NODES:
+		if not shop.ui.node(Shop.C + "/" + str(n)).visible:
+			return false
+	return true
+
+
+func _no_ads_hidden(shop: Node) -> bool:
+	for n in Shop.NO_ADS_NODES:
+		if shop.ui.node(Shop.C + "/" + str(n)).visible:
+			return false
+	return true
 
 
 func test_shop_restore_none(t: T) -> void:

@@ -16,6 +16,9 @@ var offers_seen: int = 0
 var gifts_seen: int = 0
 ## Popup cơ chế mới (cùng scene booster_unlocked) ở level dạy cơ chế.
 var mechs_seen: int = 0
+## Popup dùng thử booster (3.9) sau quà booster, popup Rate us (4.3).
+var free_picks_seen: int = 0
+var rates_seen: int = 0
 
 
 func tree() -> SceneTree:
@@ -49,6 +52,8 @@ func begin(dir: String, level: int = 1, coins: int = -1, gifted: bool = false, d
 	offers_seen = 0
 	gifts_seen = 0
 	mechs_seen = 0
+	free_picks_seen = 0
+	rates_seen = 0
 	main = (load("res://scenes/main.tscn") as PackedScene).instantiate() as Control
 	tree().root.add_child(main)
 	await wait_until(func() -> bool: return main.is_booted)
@@ -135,6 +140,26 @@ func dismiss_strays(keep: String = "") -> void:
 		elif "later_button" in c:
 			offers_seen += 1
 			(c.later_button as Button).pressed.emit()
+		elif script != null:
+			var file := script.resource_path.get_file()
+			match file:
+				"tutorial_intro.gd", "booster_soon.gd":
+					var tap := InputEventMouseButton.new()
+					tap.pressed = true
+					tap.button_index = MOUSE_BUTTON_LEFT
+					c.call("_gui_input", tap)
+				"popup_free_pick.gd":
+					free_picks_seen += 1
+					c.call("_send", "close")
+				"popup_rate.gd":
+					# Yes: the store's review opens (Platform.review), as the old direct call did.
+					rates_seen += 1
+					c.call("_send", "rate")
+				"popup_remove_ads.gd":
+					offers_seen += 1
+					c.call("_send", "close")
+				"popup_notice.gd", "popup_streak_intro.gd", "popup_weekly_upsell.gd":
+					c.call("_send", "close")
 
 
 func level_screen() -> Control:

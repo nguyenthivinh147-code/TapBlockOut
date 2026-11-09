@@ -1,11 +1,13 @@
 extends RefCounted
-## Hiệu ứng va chạm và mất vật cản theo chất liệu: thùng sắt, pudding, xích, hộp giấy, khối crystal.
+## Hiệu ứng va chạm và mất vật cản theo chất liệu: thùng sắt, pudding, băng, xích, hộp giấy, khối crystal.
 ## Mọi hạt nằm trên mọi thứ (`top_level`), toạ độ canvas, tự xoá khi xong. Cỡ và tốc độ theo cỡ ô (`cell / 42`).
 
 const BoardFx := preload("res://src/ui/board_fx.gd")
 
 const JELLY := Color(1.0, 0.86, 0.92)
 const JELLY_DEEP := Color("F07AA8")
+const ICE := Color(0.9, 0.97, 1.0)
+const ICE_DEEP := Color("7FC4F2")
 const STEEL := Color("DDE3F0")
 const SPARK_HOT := Color("FFE27A")
 const KRAFT := Color("C99A63")
@@ -62,17 +64,46 @@ static func jelly_hit(parent: Node, pos: Vector2, out_dir: Vector2, cell: float)
 
 
 ## Lớp pudding vỡ: bọt pudding toả tròn, giọt nhỏ bắn xa, loé hồng lớn với vòng sóng, sao lấp lánh.
-## `span` là cỡ khung khối (px).
-static func jelly_burst(parent: Node, center: Vector2, cell: float, span: Vector2) -> void:
+## `span` là cỡ khung khối (px); `size` < 1 khi chỉ bóc lớp ngoài của khối 2 lớp (ít bọt hơn, loé nhỏ hơn).
+static func jelly_burst(parent: Node, center: Vector2, cell: float, span: Vector2, size: float = 1.0) -> void:
 	var k := cell / 42.0
-	_emit(parent, center, "blob", {"name": "JellyBurst", "amount": 16, "lifetime": 0.75, "dir": Vector2.UP, "spread": 180.0,
-		"v": Vector2(160, 420) * k, "gravity": 900.0 * k, "damping": Vector2(40, 120), "scale": Vector2(0.35, 0.8) * k,
-		"ramp": [Color.WHITE, JELLY, Color(JELLY_DEEP, 0.0)], "box": span * 0.4})
-	_emit(parent, center, "blob", {"amount": 14, "lifetime": 0.55, "dir": Vector2.UP, "spread": 180.0,
-		"v": Vector2(380, 720) * k, "gravity": 1300.0 * k, "damping": Vector2(200, 400), "scale": Vector2(0.12, 0.22) * k,
-		"ramp": [Color.WHITE, Color(JELLY_DEEP, 0.0)], "box": span * 0.3, "add": true})
-	BoardFx.impact_flash(parent, center, JELLY_DEEP, maxf(span.x, span.y) + cell * 2.2, 0.42, 0.95)
-	BoardFx.sparkles(parent, center, {"stripe": JELLY_DEEP}, Vector2.UP, cell / 95.0, 8)
+	_emit(parent, center, "blob", {"name": "JellyBurst", "amount": maxi(3, int(round(16 * size))), "lifetime": 0.75,
+		"dir": Vector2.UP, "spread": 180.0, "v": Vector2(160, 420) * k * sqrt(size), "gravity": 900.0 * k,
+		"damping": Vector2(40, 120), "scale": Vector2(0.35, 0.8) * k, "ramp": [Color.WHITE, JELLY, Color(JELLY_DEEP, 0.0)],
+		"box": span * 0.4})
+	_emit(parent, center, "blob", {"amount": maxi(3, int(round(14 * size))), "lifetime": 0.55, "dir": Vector2.UP,
+		"spread": 180.0, "v": Vector2(380, 720) * k * sqrt(size), "gravity": 1300.0 * k, "damping": Vector2(200, 400),
+		"scale": Vector2(0.12, 0.22) * k, "ramp": [Color.WHITE, Color(JELLY_DEEP, 0.0)], "box": span * 0.3, "add": true})
+	BoardFx.impact_flash(parent, center, JELLY_DEEP, (maxf(span.x, span.y) + cell * 2.2) * size, 0.42, 0.95)
+	BoardFx.sparkles(parent, center, {"stripe": JELLY_DEEP}, Vector2.UP, cell / 95.0 * size, maxi(3, int(round(8 * size))))
+
+
+## Khối phủ băng bị va: vài mảnh băng nhỏ toé ra, loé xanh lạnh.
+static func frost_hit(parent: Node, pos: Vector2, out_dir: Vector2, cell: float) -> void:
+	var k := cell / 42.0
+	var p := _emit(parent, pos, "gem", {"name": "FrostChips", "amount": 6, "lifetime": 0.45, "dir": out_dir,
+		"spread": 70.0, "v": Vector2(160, 380) * k, "gravity": 1200.0 * k, "scale": Vector2(0.3, 0.55) * k, "add": true,
+		"ramp": [Color.WHITE, ICE, Color(ICE_DEEP, 0.0)], "box": cell * 0.1})
+	p.angular_velocity_min = -720.0
+	p.angular_velocity_max = 720.0
+	BoardFx.impact_flash(parent, pos, ICE_DEEP, cell * 1.5, 0.28, 0.85)
+
+
+## Lớp băng vỡ: mảnh băng trong như kính bung tròn rồi rơi xoay, một làn hơi lạnh phồng ra rồi tan, loé xanh trắng
+## lớn với vòng sóng, sao lấp lánh. `span` là cỡ khung khối (px); `size` như jelly_burst.
+static func frost_burst(parent: Node, center: Vector2, cell: float, span: Vector2, size: float = 1.0) -> void:
+	var k := cell / 42.0
+	var shards := _emit(parent, center, "gem", {"name": "FrostBurst", "amount": maxi(4, int(round(18 * size))),
+		"lifetime": 0.7, "dir": Vector2.UP, "spread": 180.0, "v": Vector2(180, 480) * k * sqrt(size),
+		"gravity": 1300.0 * k, "damping": Vector2(40, 140), "scale": Vector2(0.5, 1.1) * k, "add": true,
+		"ramp": [Color.WHITE, ICE, Color(ICE_DEEP, 0.0)], "box": span * 0.4})
+	shards.angular_velocity_min = -900.0
+	shards.angular_velocity_max = 900.0
+	_emit(parent, center, "puff", {"amount": maxi(3, int(round(8 * size))), "lifetime": 0.6, "dir": Vector2.UP,
+		"spread": 180.0, "v": Vector2(30, 110) * k, "gravity": -40.0 * k, "damping": Vector2(60, 140),
+		"scale": Vector2(0.7, 1.2) * k, "grow": true, "ramp": [Color(ICE, 0.7), Color(ICE_DEEP, 0.0)], "box": span * 0.35})
+	BoardFx.impact_flash(parent, center, ICE_DEEP, (maxf(span.x, span.y) + cell * 2.2) * size, 0.4, 0.95)
+	BoardFx.sparkles(parent, center, {"stripe": ICE}, Vector2.UP, cell / 95.0 * size, maxi(3, int(round(8 * size))))
 
 
 ## Xích bị va hay bị giật: tia lửa thép toả nhanh, loé trắng nhỏ.
@@ -119,6 +150,25 @@ static func paper_burst(parent: Node, pos: Vector2, dir: Vector2, cell: float, t
 		"v": Vector2(60, 160) * k, "damping": Vector2(100, 200), "scale": Vector2(0.6, 1.0) * k, "grow": true,
 		"ramp": [Color(TAPE, 0.65), Color(KRAFT, 0.0)], "box": Vector2(span, span) * 0.35})
 	BoardFx.impact_flash(parent, pos, tint.lightened(0.3), span + cell * 1.6, 0.34, 0.8)
+	BoardFx.sparkles(parent, pos, {"stripe": tint.lightened(0.3)}, dir, cell / 100.0, 6)
+
+
+## Ruy băng bung ở thanh cổng: sợi ruy băng satin cùng màu (đậm, nhạt) bay lả và xoay theo `dir`, loé theo màu, sao
+## lấp lánh.
+static func ribbon_burst(parent: Node, pos: Vector2, dir: Vector2, cell: float, tint: Color, span: float) -> void:
+	var k := cell / 42.0
+	var p := _emit(parent, pos, "ribbon", {"name": "RibbonBits", "amount": 14, "lifetime": 1.0, "dir": dir,
+		"spread": 70.0, "v": Vector2(180, 460) * k, "gravity": 300.0 * k, "damping": Vector2(260, 460),
+		"scale": Vector2(0.8, 1.3) * k, "ramp": [Color.WHITE, Color.WHITE, Color(1, 1, 1, 0.0)],
+		"box": Vector2(span, span) * 0.3})
+	p.angular_velocity_min = -420.0
+	p.angular_velocity_max = 420.0
+	var g := Gradient.new()
+	g.set_color(0, tint)
+	g.set_color(1, tint.lightened(0.35))
+	g.interpolation_mode = Gradient.GRADIENT_INTERPOLATE_CONSTANT
+	p.color_initial_ramp = g
+	BoardFx.impact_flash(parent, pos, tint.lightened(0.3), span + cell * 1.4, 0.3, 0.7)
 	BoardFx.sparkles(parent, pos, {"stripe": tint.lightened(0.3)}, dir, cell / 100.0, 6)
 
 
@@ -232,13 +282,13 @@ static func _grow_curve() -> Curve:
 
 ## Hình hạt trắng dựng một lần bằng code, tô màu bằng `color` của hạt: puff (bụi mềm),
 ## blob (giọt pudding có vệt bóng), streak (tia lửa), link (mắt xích), paper (mẩu giấy có nếp gấp),
-## gem (mảnh crystal hình thoi hai mặt sáng tối, tâm loé).
+## gem (mảnh crystal hình thoi hai mặt sáng tối, tâm loé), ribbon (sợi ruy băng satin uốn lượn).
 static func texture(tex_name: String) -> Texture2D:
 	if _tex.has(tex_name):
 		return _tex[tex_name]
 	var sz: Vector2i = {"puff": Vector2i(32, 32), "blob": Vector2i(32, 32),
 		"streak": Vector2i(6, 28), "link": Vector2i(28, 18), "paper": Vector2i(16, 12),
-		"gem": Vector2i(16, 24)}.get(tex_name, Vector2i(16, 16))
+		"gem": Vector2i(16, 24), "ribbon": Vector2i(32, 14)}.get(tex_name, Vector2i(16, 16))
 	var img := Image.create(sz.x, sz.y, false, Image.FORMAT_RGBA8)
 	for y in sz.y:
 		for x in sz.x:
@@ -279,5 +329,11 @@ static func _texel(tex_name: String, u: Vector2) -> Color:
 			var face := 1.0 if u.x < 0.0 else 0.62
 			var core := exp(-(u - Vector2(-0.18, -0.2)).length_squared() * 18.0)
 			var v := clampf(face * 0.8 + core * 0.6, 0.0, 1.0)
+			return Color(v, v, v, a)
+		"ribbon":
+			# dải uốn sóng: tâm dải theo hình sin, mép tối, vệt bóng satin dọc dải
+			var off := u.y - sin(u.x * PI * 1.5) * 0.45
+			var a := clampf((0.38 - absf(off)) * 14.0, 0.0, 1.0) * clampf((1.0 - absf(u.x)) * 8.0, 0.0, 1.0)
+			var v := clampf(0.78 + 0.22 * cos(off * 7.0) + 0.2 * exp(-pow((off + 0.08) / 0.1, 2.0)), 0.0, 1.0)
 			return Color(v, v, v, a)
 	return Color.WHITE

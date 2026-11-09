@@ -2,6 +2,8 @@ extends RefCounted
 ## Dữ liệu level (kế hoạch mục 1.6): hằng màu/hướng/cạnh và kiểm khung level.
 ## Gốc toạ độ ở góc trên trái, x sang phải, y xuống dưới.
 
+const Config := preload("res://src/config.gd")
+
 const COLORS := ["yellow", "green", "blue", "purple"]
 const SIDES := ["up", "left", "right", "down"]
 const DIR := {
@@ -13,6 +15,8 @@ const DIR := {
 const SIDE_OF := {"yellow": "up", "green": "left", "blue": "right", "purple": "down"}
 const HEX := {"yellow": "#F5C518", "green": "#43B649", "blue": "#2F80ED", "purple": "#9B51E0"}
 const STONE := "stone"
+## Chất liệu lớp phủ (khoá `cover` của level, thiếu là pudding); số lớp ở khoá `ice` của khối.
+const COVERS := ["pudding", "frost"]
 ## Màu cổng của level nhiều cổng (Road Trip, design.md mục 7 "Road Trip"): mỗi cạnh chia 2-3 cổng, mỗi cổng một màu,
 ## khối mang màu cổng nó thoát qua và có hướng riêng ở khoá `dir`. 8 màu đầu dùng cho level 8 cổng.
 const GATE_COLORS := ["yellow", "green", "blue", "purple", "red", "orange", "teal", "brown",
@@ -87,6 +91,8 @@ static func validate(d: Dictionary) -> Array[String]:
 		errs.append("hard phải là bool")
 	if d.has("seed") and not _is_int(d["seed"]):
 		errs.append("seed phải là số nguyên")
+	if d.has("cover") and not COVERS.has(str(d["cover"])):
+		errs.append("cover phải là pudding hoặc frost")
 	var taken := {}  # Vector2i -> mô tả
 	if d.has("stones"):
 		if not (d["stones"] is Array):
@@ -142,8 +148,10 @@ static func validate(d: Dictionary) -> Array[String]:
 		var inner := str(b.get("inner_color", ""))
 		if inner != "" and not COLORS.has(inner):
 			errs.append("khối %s: inner_color sai" % id)
-		if b.has("ice") and (not _is_int(b["ice"]) or int(b["ice"]) < 0 or int(b["ice"]) > 1):
-			errs.append("khối %s: ice phải là 0 hoặc 1" % id)
+		if b.has("ribbons"):
+			errs.append_array(_validate_ribbons(id, b))
+		if b.has("ice") and (not _is_int(b["ice"]) or int(b["ice"]) < 0 or int(b["ice"]) > Config.COVER_MAX_LAYERS):
+			errs.append("khối %s: ice phải trong 0..%d" % [id, Config.COVER_MAX_LAYERS])
 		if b.has("fog") and typeof(b["fog"]) != TYPE_BOOL:
 			errs.append("khối %s: fog phải là bool" % id)
 		var cells = b.get("cells", null)
@@ -187,6 +195,35 @@ static func validate(d: Dictionary) -> Array[String]:
 			if cur == id:
 				errs.append("chu trình xích qua khối %s" % id)
 				break
+	return errs
+
+
+## `ribbons`: mảng màu (COLORS) ngoài vào trong, tối đa Config.RIBBON_MAX_LAYERS và theo cỡ khối
+## (Config.RIBBON_CELL_CAP); lớp nào cũng khác màu lớp ngay trong nó (kẹo là `color`). Không chung khối với hộp giấy,
+## lớp phủ, xích, hướng riêng (`dir`). Mảng rỗng là không có ruy băng.
+static func _validate_ribbons(id: String, b: Dictionary) -> Array[String]:
+	var errs: Array[String] = []
+	var rib: Variant = b["ribbons"]
+	if not (rib is Array):
+		errs.append("khối %s: ribbons phải là mảng" % id)
+		return errs
+	if (rib as Array).is_empty():
+		return errs
+	var layers: Array = rib.duplicate()
+	layers.append(str(b.get("color", "")))
+	for k in rib.size():
+		if not COLORS.has(str(rib[k])):
+			errs.append("khối %s: màu ruy băng sai" % id)
+		elif str(layers[k]) == str(layers[k + 1]):
+			errs.append("khối %s: hai lớp ruy băng liền nhau cùng màu" % id)
+	var cells: Variant = b.get("cells", [])
+	var n: int = (cells as Array).size() if cells is Array else 0
+	var cap: int = Config.RIBBON_CELL_CAP[mini(n, Config.RIBBON_CELL_CAP.size() - 1)]
+	if rib.size() > mini(cap, Config.RIBBON_MAX_LAYERS):
+		errs.append("khối %s: %d ô chỉ được tối đa %d ruy băng" % [id, n, mini(cap, Config.RIBBON_MAX_LAYERS)])
+	if str(b.get("inner_color", "")) != "" or int(b.get("ice", 0)) > 0 or str(b.get("chained_by", "")) != "" \
+			or str(b.get("dir", "")) != "":
+		errs.append("khối %s: ruy băng không chung khối với hộp giấy, lớp phủ, xích hay dir" % id)
 	return errs
 
 

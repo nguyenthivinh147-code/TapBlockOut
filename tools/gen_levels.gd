@@ -193,13 +193,17 @@ static func write_level(dir: String, d: Dictionary) -> bool:
 	return true
 
 
-## Cùng khuôn dạng các file level 1-20: đầu level nhiều dòng, mỗi khối một dòng.
+## Cùng khuôn dạng các file level 1-20: đầu level nhiều dòng, mỗi khối một dòng. Level băng có thêm dòng `cover`.
 static func format_level(d: Dictionary) -> String:
 	var lines: Array[String] = []
 	for b in d["blocks"]:
-		lines.append("\t\t" + JSON.stringify({
-			"id": b["id"], "color": b["color"], "cells": b["cells"], "ice": b["ice"],
-			"chained_by": b["chained_by"], "inner_color": b["inner_color"], "fog": b["fog"]}, "", false))
-	return "{\n\t\"id\": %d, \"w\": %d, \"h\": %d, \"hard\": %s,\n\t\"min_taps\": %d, \"moves\": %d, \"seed\": %d,\n\t\"stones\": %s,\n\t\"pulse_sides\": %s,\n\t\"blocks\": [\n%s\n\t]\n}\n" % [
-		d["id"], d["w"], d["h"], str(d["hard"]).to_lower(), d["min_taps"], d["moves"], d["seed"],
+		var row := {"id": b["id"], "color": b["color"], "cells": b["cells"], "ice": b["ice"],
+			"chained_by": b["chained_by"], "inner_color": b["inner_color"], "fog": b["fog"]}
+		var rib: Array = b.get("ribbons", [])
+		if not rib.is_empty():
+			row["ribbons"] = rib  # chỉ khối có ruy băng, nên file level cũ không đổi
+		lines.append("\t\t" + JSON.stringify(row, "", false))
+	var cover := "\t\"cover\": %s,\n" % JSON.stringify(d["cover"]) if d.has("cover") else ""
+	return "{\n\t\"id\": %d, \"w\": %d, \"h\": %d, \"hard\": %s,\n\t\"min_taps\": %d, \"moves\": %d, \"seed\": %d,\n%s\t\"stones\": %s,\n\t\"pulse_sides\": %s,\n\t\"blocks\": [\n%s\n\t]\n}\n" % [
+		d["id"], d["w"], d["h"], str(d["hard"]).to_lower(), d["min_taps"], d["moves"], d["seed"], cover,
 		JSON.stringify(d["stones"]), JSON.stringify(d["pulse_sides"], "", false), ",\n".join(lines)]

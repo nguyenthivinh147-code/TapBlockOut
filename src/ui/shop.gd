@@ -1,6 +1,7 @@
 extends Control
 ## Shop đầy đủ (màn "shop", mở từ L5): gói gold theo giá hôm nay, video gold, gói khác, Restore.
-## Thân màn là ShopCashLayer của color-cube-match-puzzle (unity_ui.gd): ScrollRect với thẻ Remove Ads, các thẻ gói
+## Thân màn là ShopCashLayer của color-cube-match-puzzle (unity_ui.gd): ScrollRect với mục No Ads (thẻ No Ads Bundle và
+## Remove Ads; có một trong hai gói thì ẩn cả mục, như ProductBundleBase của Unity), các thẻ gói
 ## (Starter, Level, Rescue), tiêu đề Gold, gói lớn và lưới gold (FreeGoldPack là video gold mỗi ngày của game).
 ## Thanh trên, thanh dưới dùng chung với Home (HubTop, HubNav) đè lên trên như CurrencyLayer, BottomBarLayer của Unity.
 ## scenes/shop.tscn giữ layer đã chỉnh cho game: "BG (2)" ẩn, nền là node Background ở gốc màn (assets/bg/bg_shop.png,
@@ -26,8 +27,27 @@ const LAYER := "ShopCashLayer"
 const PANEL := "GameObject"
 const SCROLL := "GameObject/GameObject/Scroll View"
 const C := "GameObject/GameObject/Scroll View/Viewport/Content"
-const PACK_SKUS := ["starter_pack", "level_pack", "rescue_pack", "remove_ads"]
-## ShopCashLayer card for each pack (remove_ads has its own Shop_RemoveAds card).
+const POPUP_REWARD := "res://scenes/popup_reward.tscn"
+const PACK_SKUS := ["starter_pack", "level_pack", "rescue_pack", "remove_ads", "remove_ads_bundle"]
+## The No Ads section (title, Shop_RemoveAdsBundle, Shop_RemoveAds). Like ProductBundleBase, owning either no_ads
+## SKU hides all of it.
+const NO_ADS_NODES := ["NoAdsTitle", "Shop_RemoveAdsBundle", "Shop_RemoveAds"]
+## Booster slots of the Shop_RemoveAdsBundle card's second row (same in ShopCashLayer and PopupRemoveAds): path under
+## ItemContainer, its booster image. Left to right the prefab places Capacity, Magnet, Storage (Plus#2 between the
+## first two, Plus between the last two), so the boosters read hint, move, smash like the other cards.
+const NO_ADS_BOOSTERS := {
+	"hint": ["Row(Clone)#2/ShopRewardItem(Clone)#3", "ImgBoosterCapacity"],
+	"move": ["Row(Clone)#2/ShopRewardItem(Clone)", "ImgBoosterMagnet"],
+	"smash": ["Row(Clone)#2/ShopRewardItem(Clone)#2", "ImgBoosterStorage"],
+}
+## Shop_RemoveAds description centre x from the card centre: right of the ADS icon (rect 393.7 wide, card 806).
+const NO_ADS_DESC_X := 159.2
+## ShopCashLayer card for each pack (remove_ads, remove_ads_bundle have their own Shop_RemoveAds* cards).
+## Shop sections Helper Packs and Bundles (_add_pack_sections). helper_epic and bundle_sweet, bundle_tasty,
+## bundle_yummy are hidden from the Shop (user request 2026-11-09; the SKUs stay in Config.SKUS); a section with no
+## SKU shows no title.
+const HELPER_SKUS := ["helper_great"]
+const BUNDLE_SKUS := []
 const PACK_CARDS := {"starter_pack": "StarterPack", "level_pack": "SpecialPack", "rescue_pack": "BundleSweet"}
 ## UIShopCashLayer.SetupLayerData: the panel is 183 units shorter when the bottom bar shows. HubNav is taller
 ## than Unity's BottomBarLayer, so the panel loses the height of HubNav's bar (182 of its 886-wide frame) when larger.
@@ -102,7 +122,7 @@ func _build() -> void:
 
 	var catalog: Array = Game.shop_catalog()
 	ui.text(C + "/NoAdsTitle/Text (TMP)", tr("shop_remove_ads"))
-	_remove_ads_card()
+	_remove_ads_cards()
 	ui.text(C + "/BundleTitle/Text (TMP)", tr("shop_section_other"))
 	for sku in PACK_CARDS:
 		_pack_card(str(PACK_CARDS[sku]), sku)
@@ -110,8 +130,7 @@ func _build() -> void:
 	_gold_cards(catalog)
 	_video_card()
 	_restore_row()
-	if Config.ui_preview():
-		_add_preview_sections()
+	_add_pack_sections()
 	_pass_scroll_buttons()
 	ui.relayout(C)
 	_fade_in()
@@ -213,12 +232,69 @@ func _anchor(c: Control, amin: Vector2, amax: Vector2, pos: Vector2, sz: Vector2
 
 # --- cards ---
 
-func _remove_ads_card() -> void:
+## The No Ads section: bundle card (remove_ads_bundle, hidden in the scene) and the plain card (remove_ads).
+func _remove_ads_cards() -> void:
+	var b := C + "/Shop_RemoveAdsBundle"
+	ui.text(b + "/PackName", _pack_title("remove_ads_bundle"))
+	# No discounted bundle SKU in the game: no sale badge, no struck price.
+	ui.show(b + "/SellBadge", false)
+	ui.show(b + "/Button_Purchase/DiscountLine", false)
+	_gold_from["remove_ads_bundle"] = fill_no_ads_bundle(ui, b)
+	_buy_button(b + "/Button_Purchase", "remove_ads_bundle")
 	var p := C + "/Shop_RemoveAds"
 	ui.text(p + "/PackName", tr("shop_remove_ads"))
 	# One game sentence instead of three short lines: in the scene the description takes the rect of all three.
+	# The scene centres that rect on the card, so the text starts over the ADS icon: move it right of the icon.
+	var d: Label = ui.label(p + "/Description")
+	var r: Dictionary = (d.get_meta("u_rect") as Dictionary).duplicate()
+	r.pos = Vector2(NO_ADS_DESC_X, (r.pos as Vector2).y)
+	d.set_meta("u_rect", r)
+	UnityUI.apply_rect(d)
 	ui.text(p + "/Description", _pack_desc("remove_ads"))
 	_buy_button(p + "/Button_Purchase", "remove_ads")
+	_show_no_ads()
+
+
+## Shows the No Ads section while neither no_ads SKU is owned. True if its visibility changed.
+func _show_no_ads() -> bool:
+	var want := not bool(Game.s.get("no_ads", false))
+	var changed := false
+	for n in NO_ADS_NODES:
+		var c: Control = ui.node(C + "/" + str(n))
+		changed = changed or c.visible != want
+		c.visible = want
+	return changed
+
+
+## The Shop_RemoveAdsBundle card (ShopCashLayer and PopupRemoveAds) at `card`: Config.SKUS.remove_ads_bundle's gold
+## and boosters in the card's slots (first row gold + No Ads, second row the boosters); empty slots hide.
+## Returns the gold item, for the gold that flies to the chip.
+static func fill_no_ads_bundle(u: RefCounted, card: String) -> Control:
+	var items := card + "/ItemContainer"
+	var info: Dictionary = Config.SKUS.get("remove_ads_bundle", {})
+	var gold := int(info.get("gold", 0))
+	var gold_item := items + "/Row(Clone)/ShopRewardItem(Clone) (1)"
+	u.show(gold_item, gold > 0)
+	u.show(items + "/Row(Clone)/Plus(Clone)", gold > 0)
+	u.text(gold_item + "/Text (TMP)", fmt_n0(gold))
+	var inv: Dictionary = info.get("inv", {})
+	var shown := 0
+	for k in NO_ADS_BOOSTERS:
+		var slot: Array = NO_ADS_BOOSTERS[k]
+		var path := items + "/" + str(slot[0])
+		var n := int(inv.get(k, 0))
+		u.show(path, n > 0)
+		if n <= 0:
+			continue
+		shown += 1
+		u.texture(path + "/" + str(slot[1]), ThemeKit.icon("booster_" + k))
+		u.text(path + "/Text (TMP)", TranslationServer.translate("booster_count") % n)
+	u.show(items + "/Row(Clone)#2", shown > 0)
+	# A plus between two shown neighbours only.
+	u.show(items + "/Row(Clone)#2/Plus(Clone)#2", int(inv.get("hint", 0)) > 0 and int(inv.get("move", 0)) > 0)
+	u.show(items + "/Row(Clone)#2/Plus(Clone)", int(inv.get("move", 0)) > 0 and int(inv.get("smash", 0)) > 0)
+	u.relayout(items)
+	return u.node(gold_item)
 
 
 func _pack_card(card: String, sku: String) -> void:
@@ -279,11 +355,29 @@ func _gold_cards(catalog: Array) -> void:
 		price_labels[sku] = ui.label(p + "/Button_Purchase/Text (TMP)")
 		UnityUI.set_text(price_labels[sku], str(e.get("price_text", "")))
 		b.connect("clicked", buy.bind(sku))
-		if bool(e.get("sale", false)) and int(e.get("sale_percent", 0)) > 0:
-			_sale_badge(ui.node(p), "-%d%%" % int(e.sale_percent))
+		var tag := sale_tag(e)
+		if tag != "":
+			_sale_badge(ui.node(p), tag)
 	# Weekend sale: the big pack's PopularTag ribbon carries the game's sale line.
 	ui.show(C + "/Shop_GoldBigPack/PopularTag", any_sale)
 	ui.text(C + "/Shop_GoldBigPack/PopularTag/PopularTag", tr("shop_sale_weekend"))
+
+
+## Sale badge text of a gold pack (entry of Game.shop_catalog): "-50%" for a `_sale` SKU cheaper than the plain one,
+## "x2" (or "+N%") for one at the same price with more gold, "" when the pack is not on sale.
+static func sale_tag(e: Dictionary) -> String:
+	if not bool(e.get("sale", false)):
+		return ""
+	if int(e.get("sale_percent", 0)) > 0:
+		return "-%d%%" % int(e.sale_percent)
+	var base := int(e.get("base_gold", 0))
+	var gold := int(e.get("gold", 0))
+	if base <= 0 or gold <= base:
+		return ""
+	if gold % base == 0:
+		@warning_ignore("integer_division")
+		return "x%d" % (gold / base)
+	return "+%d%%" % roundi(100.0 * (gold - base) / base)
 
 
 ## SellBadge of the pack cards (StarterPack/SellBadge), at the tile's top-left corner like on the cards.
@@ -364,6 +458,9 @@ static func sku_items(sku: String) -> Array:
 	for k in BOOSTERS:
 		if int(inv.get(k, 0)) > 0:
 			out.append([k, int(inv[k])])
+	# Unlimited lives (bundles): shown in hours.
+	if int(info.get("inf_min", 0)) > 0:
+		out.append(["heart_inf", maxi(1, int(round(float(info.inf_min) / 60.0)))])
 	return out
 
 
@@ -436,12 +533,51 @@ static func _item_fill(v: RefCounted, item: Array) -> void:
 			v.text("Text (TMP)", TranslationServer.translate("booster_count") % n)
 
 
-# --- preview (wireframe 6.2, no selling logic yet) ---
+# --- Helper Packs, Bundles (wireframe 6.2) ---
 
-## Hearts, Helper Packs, Bundles from SampleData. Buttons only toast "coming soon".
-func _add_preview_sections() -> void:
+## Helper Packs and Bundles (Config.SKUS helper_*, bundle_*: design.md mục 7) after the other packs, as copies of the
+## bundle cards (GreatPack / EpicPack are unfinished in the prefab: white placeholder art). The Hearts section
+## (wireframe 6.1) is not wired to logic yet: debug builds only (Config.ui_preview), buttons say "coming soon".
+func _add_pack_sections() -> void:
 	var content: Control = ui.node(C)
 	var at: int = ui.node(C + "/BundleSweet").get_index() + 1
+	if Config.ui_preview():
+		at = _add_heart_preview(content, at)
+	if not HELPER_SKUS.is_empty():
+		at = _preview_title(content, at, tr("shop_section_helpers"))
+	for i in HELPER_SKUS.size():
+		at = _pack_copy(content, at, str(HELPER_SKUS[i]), str(["BundleTasty", "BundleYummy"][mini(i, 1)]), "HelperOffer")
+	if not BUNDLE_SKUS.is_empty():
+		at = _preview_title(content, at, tr("shop_section_bundles"))
+	var bundles := ["BundleSweet", "BundleTasty", "BundleYummy"]
+	for i in BUNDLE_SKUS.size():
+		at = _pack_copy(content, at, str(BUNDLE_SKUS[i]), str(bundles[mini(i, bundles.size() - 1)]), "")
+
+
+## A copy of a bundle card selling sku (the real BundleSweet card sells the rescue pack): name, contents, price.
+func _pack_copy(content: Control, at: int, sku: String, card: String, art: String) -> int:
+	var s := UnityKit.spec(LAYER, C + "/" + card)
+	s.a = true
+	var v: RefCounted = UnityKit.add(content, s)
+	v.root.name = "Pack_" + sku
+	v.root.set_meta("u_rt", true)
+	content.move_child(v.root, at)
+	v.text("PackName", _pack_title(sku))
+	if art != "":
+		v.sprite("Image (2)", art)
+	var ic: Control = v.node("ItemContainer")
+	fill_items(ic, sku_items(sku))
+	var b: Button = v.button("Button_Purchase")
+	buy_buttons[sku] = b
+	price_labels[sku] = v.label("Button_Purchase/Text (TMP)")
+	b.connect("clicked", buy.bind(sku))
+	var gold_item := ic.get_node_or_null("Item_gold")
+	_gold_from[sku] = gold_item if gold_item != null else b
+	_show_owned(sku)
+	return at + 1
+
+
+func _add_heart_preview(content: Control, at: int) -> int:
 	at = _preview_title(content, at, tr("shop_section_hearts"))
 	var grid := UnityKit.add(content, UnityKit.spec(LAYER, C + "/SmallPack#2"))
 	grid.root.name = "HeartPacks"
@@ -457,39 +593,7 @@ func _add_preview_sections() -> void:
 		t.text("GoldAmount/GoldQuantity", tr("shop_heart_inf") % int(h.hours) if inf else tr("shop_heart_count") % int(h.count))
 		t.text("Button_Purchase/Text (TMP)", str(h.price))
 		t.on_click("Button_Purchase", toast.bind(tr("common_coming_soon")))
-	at = _preview_title(content, at, tr("shop_section_helpers"))
-	# GreatPack / EpicPack are unfinished in the prefab (white placeholder art): copies of the bundle cards instead.
-	var cards := ["BundleTasty", "BundleYummy"]
-	for i in SampleData.SHOP_HELPERS.size():
-		var hp: Dictionary = SampleData.SHOP_HELPERS[i]
-		var s := UnityKit.spec(LAYER, C + "/" + str(cards[mini(i, cards.size() - 1)]))
-		s.a = true
-		var hv: RefCounted = UnityKit.add(content, s)
-		hv.root.name = "Helper%d" % i
-		hv.root.set_meta("u_rt", true)
-		content.move_child(hv.root, at)
-		at += 1
-		hv.text("PackName", tr(str(hp.title)))
-		hv.sprite("Image (2)", "HelperOffer")
-		hv.show("ItemContainer", false)
-		hv.text("Button_Purchase/Text (TMP)", str(hp.price))
-		hv.on_click("Button_Purchase", toast.bind(tr("common_coming_soon")))
-	at = _preview_title(content, at, tr("shop_section_bundles"))
-	var bundles := ["BundleSweet", "BundleTasty", "BundleYummy"]
-	for i in SampleData.SHOP_BUNDLES.size():
-		var bd: Dictionary = SampleData.SHOP_BUNDLES[i]
-		var card := str(bundles[mini(i, bundles.size() - 1)])
-		# Copies: the real BundleSweet card sells the rescue pack.
-		var s := UnityKit.spec(LAYER, C + "/" + card)
-		s.a = true
-		var v: RefCounted = UnityKit.add(content, s)
-		v.root.name = card + "Preview"
-		v.root.set_meta("u_rt", true)
-		content.move_child(v.root, at)
-		at += 1
-		v.text("PackName", tr(str(bd.title)))
-		v.text("Button_Purchase/Text (TMP)", str(bd.price))
-		v.on_click("Button_Purchase", toast.bind(tr("common_coming_soon")))
+	return at
 
 
 func _preview_title(content: Control, at: int, text: String) -> int:
@@ -536,6 +640,10 @@ func _pack_title(sku: String) -> String:
 			return tr("shop_rescue_pack")
 		"remove_ads":
 			return tr("shop_remove_ads")
+		"remove_ads_bundle":
+			return tr("shop_remove_ads_bundle")
+	if sku.begins_with("helper_") or sku.begins_with("bundle_"):
+		return tr("shop_" + sku)
 	return sku
 
 
@@ -549,7 +657,8 @@ func _pack_desc(sku: String) -> String:
 		"rescue_pack":
 			return tr("shop_rescue_pack_desc")
 		"remove_ads":
-			return tr("shop_remove_ads_desc") % gold
+			# No gold in the pack any more: the offer's sentence (no full-screen ads, one-time purchase).
+			return tr("offer_remove_ads_body")
 	return ""
 
 
@@ -557,7 +666,7 @@ func _pack_desc(sku: String) -> String:
 func is_owned(sku: String) -> bool:
 	if bool(Config.SKUS.get(sku, {}).get("consumable", true)):
 		return false
-	if sku == "remove_ads" and bool(Game.s.get("no_ads", false)):
+	if bool(Config.SKUS.get(sku, {}).get("no_ads", false)) and bool(Game.s.get("no_ads", false)):
 		return true
 	for e in Game.s.buys:
 		if e is Dictionary and str(e.get("sku", "")) == sku:
@@ -570,6 +679,8 @@ func _refresh() -> void:
 	for sku in PACK_SKUS:
 		if buy_buttons.has(sku):
 			_show_owned(sku)
+	if _show_no_ads():
+		ui.relayout(C)
 	_refresh_video()
 
 
@@ -586,9 +697,23 @@ func buy(sku: String) -> void:
 	var flew := false
 	if bool(r.get("granted", false)):
 		bought_any = true
-		_refresh()
+		# Gold leaves its card before _refresh hides a bought No Ads section.
 		flew = _fly_gold(_gold_from.get(sku), int(Game.s.coins) - before)
+		_refresh()
+		# Purchase Success (wireframe 6.3) for packs with boosters or lives; gold packs only fly their gold.
+		var items := sku_items(sku)
+		if items.size() > 1 or (items.size() == 1 and str(items[0][0]) != "gold"):
+			_show_reward(sku)
 	_show_buy_result(r, flew)
+
+
+func _show_reward(sku: String) -> void:
+	var info: Dictionary = Config.SKUS.get(sku, {})
+	var args := {"view": {"title": "shop_buy_ok", "reward": {"coins": int(info.get("gold", 0)),
+		"items": info.get("inv", {}), "inf_min": int(info.get("inf_min", 0))}}}
+	var host := get_parent()
+	if host != null and host.has_method("open_popup"):
+		host.call("open_popup", POPUP_REWARD, args)
 
 
 ## Gold vừa vào ví bay từ `from` lên chip gold (ShopFx); false thì không bay, bên gọi tự phát tiếng xu.
@@ -610,7 +735,7 @@ func _show_buy_result(r: Dictionary, flew: bool = false) -> void:
 			toast(tr("shop_buy_pending"))
 		"owned":
 			toast(tr("shop_owned"))
-		"cancel":
+		"cancel", "offline":
 			pass
 		_:
 			toast(tr("shop_buy_failed"))
@@ -633,7 +758,8 @@ func watch_video() -> void:
 	elif Game.shop_videos_left() <= 0:
 		toast(tr("shop_video_none"))
 	else:
-		toast(tr("ads_not_available") if Game.last_ad_reason == "not_ready" else tr("ads_failed"))
+		if not Game.notice_shown(Game.last_ad_reason):
+			toast(tr("ads_failed"))
 
 
 func restore() -> void:

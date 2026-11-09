@@ -91,7 +91,7 @@ func test_full_demo_l1_to_l20(t: T) -> void:
 	t.ok(d.gifts_seen == 3, "thấy 3 hộp tặng booster (L4/6/9)")
 	t.eq(d.mechs_seen, 1, "thấy 1 popup cơ chế mới (L14 thùng sắt)")
 	t.eq(g.s.mech_seen, ["stone"], "đã ghi xem thùng sắt")
-	t.ok(bool(g.s.meta.rated), "đã hỏi đánh giá sau L18")
+	t.ok(bool(g.s.meta.rated), "đã hỏi đánh giá (reset_for_test coi như đã hỏi; luồng popup Rate ở test_ui_streak)")
 	t.eq(_rewarded(d, "x2_coins").size(), 0, "không xem video x2 trong lượt chơi này")
 	# luật interstitial: phiên đầu chặn tới hết L10, cách nhau >= inter_every lượt, chỉ ở result_exit
 	var shows: Array = d.plat().an.named("inter_show")

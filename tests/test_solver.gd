@@ -107,7 +107,7 @@ func _rand_level(rng: RandomNumberGenerator, idx: int, mech: bool) -> Dictionary
 		var extra := {}
 		if mech:
 			if rng.randf() < 0.25:
-				extra["ice"] = 1
+				extra["ice"] = 1 if rng.randf() < 0.7 else 2
 			if rng.randf() < 0.2:
 				extra["inner_color"] = LevelData.COLORS[rng.randi_range(0, 3)]
 			if i > 0 and rng.randf() < 0.2:
@@ -179,7 +179,8 @@ func test_greedy_matches_bfs_small(t: T) -> void:
 	var solvable := 0
 	var unsolvable := 0
 	var with_gates := 0
-	var boards := 260
+	# Khối phủ chỉ hết phủ khi khối kề rời đi nên bàn ngẫu nhiên nhỏ hay bí; thêm bàn để vẫn đủ bàn giải được.
+	var boards := 340
 	for i in range(boards):
 		var lv := _rand_level(rng, i, i % 4 != 0)
 		t.eq(LevelData.validate(lv).size(), 0, "bàn %d hợp lệ: %s" % [i, str(LevelData.validate(lv))])

@@ -36,7 +36,7 @@ func test_defaults(t: T) -> void:
 	t.eq(Config.ECON.rescue_prices, [1900, 2200, 2500, 2800], "giá cứu")
 	t.eq(Config.ECON.rescue_video_max, 4, "video cả 4 lần")
 	t.eq(Config.LIVES.max, 10, "mạng")
-	t.eq(Config.LIVES.regen_sec, 900, "hồi mạng")
+	t.eq(Config.LIVES.regen_sec, 300, "hồi mạng")
 	t.eq(Config.UNLOCK.pulse, 90, "pulse")
 	t.eq(Config.CONTENT.demo_max_level, 20, "demo")
 	t.eq(Config.CONTENT.ftue_steps.size(), 8, "ftue")
@@ -61,15 +61,18 @@ func test_demo_override(t: T) -> void:
 
 func test_skus(t: T) -> void:
 	Config.reset()
-	t.eq(Config.SKUS.size(), 21, "21 SKU")
+	t.eq(Config.SKUS.size(), 27, "27 SKU")
 	for i in range(1, 7):
 		var base := "gold_pack_%d" % i
 		t.ok(Config.SKUS.has(base), base)
 		t.ok(Config.SKUS.has(base + "_sale"), base + "_sale")
-		t.ok(Config.SKUS[base + "_sale"].usd < Config.SKUS[base].usd, "giá sale thấp hơn " + base)
+		var sale: Dictionary = Config.SKUS[base + "_sale"]
+		t.ok(sale.usd < Config.SKUS[base].usd or sale.gold > Config.SKUS[base].gold, "sale rẻ hơn hoặc nhiều gold hơn " + base)
+		t.ok(sale.usd <= Config.SKUS[base].usd, "sale không đắt hơn " + base)
 		t.eq(Config.SKUS[base].consumable, true, "consumable " + base)
 	t.near(Config.SKUS.gold_pack_1.usd, 1.99, 0.0001, "usd 1")
 	t.eq(Config.SKUS.gold_pack_1_sale.gold, 2000, "sale 1 gold")
+	t.near(Config.SKUS.gold_pack_1_sale.usd, 1.99, 0.0001, "sale 1 giữ giá")
 	t.eq(Config.SKUS.remove_ads.consumable, false, "remove_ads một lần")
 	t.eq(Config.SKUS.starter_pack.consumable, false, "starter một lần")
 	t.eq(Config.SKUS.rescue_pack.consumable, true, "rescue dùng hết")

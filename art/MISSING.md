@@ -2,7 +2,7 @@
 
 ## Hình
 - Không có file demo nào thiếu.
-- Cơ chế (Task 9.5): đã tạo xong `mech_stone`, `mech_ice`, `mech_chain`, `mech_key`, `mech_fog` (art/manifest.mech.json, gộp vào manifest.json).
+- Cơ chế (Task 9.5): đã tạo xong `mech_stone`, `mech_ice`, `mech_chain`, `mech_key`, `mech_fog` (art/manifest.mech.json, gộp vào manifest.json); `mech_frost` (băng, L110) thêm ngày 2026-11-09, ghi thẳng vào manifest.json. `mech_ribbon` (icon popup ruy băng, L130) và `ribbon_bow` (nơ xám nhuộm màu khối) thêm ngày 2026-11-09 từ cùng một ảnh nơ (phương án A trong 3; B vàng kim, C sọc kẹo bạc hà ở `D:/GameProjects/candy_ribbon/`); concept `art/concepts/ribbon_concept_v1.png` (bị bỏ), `ribbon_concept_v2.png` (đã duyệt).
 - `mech_pulse` (cổng nhịp) chưa có: popup cơ chế mới ở L90 (2026-11-08) dùng placeholder vẽ bằng code của `ThemeKit.icon`. Có file `assets/ui/mech_pulse.png` là tự dùng.
 - Bản bỏ (superseded): `art/images/block_surface.png`, `art/images/art_no_lives.png` (thay bằng `_v2`).
 - Chưa có icon riêng cho `shop_<sku>` (gói shop, popup offer): `ThemeKit.icon` trả placeholder vẽ bằng code.
@@ -19,10 +19,10 @@
 - `sfx_clap` và `sfx_smash` nhỏ tiếng hơn các hiệu ứng khác khoảng 6-10 dB: cần cân lại (tăng gain trong `tools/process_audio.sh` rồi xuất lại) hoặc chỉnh bus.
 
 - `sfx_shatter` (khối bị nghiền qua thanh) đã tạo ngày 2026-11-08, chi tiết trong `art/manifest.audio.json`. Bản đầu chọn bằng phép đo; người dùng nghe thấy giòn quá nên cùng ngày đã làm êm bằng `tools/process_sfx.gd --lowpass=3000 --soften=3` từ cùng bản gốc. Bản êm chưa ai nghe; nếu vẫn giòn thì hạ `--lowpass` (2200 êm hơn nữa), nếu đục quá thì nâng (4500). Bản Stable Audio nào cũng có tiếng lách tách ở 0,02 giây rồi lặng tới khoảng 0,3 giây, nên xử lý bằng `tools/process_sfx.gd --start=`. Nhiều bản có vạch rít kéo dài ở khoảng 2,5 kHz dù prompt không nhắc; thêm `ringing tone, whistle, hum, sine tone` vào negative thì đỡ.
-- `sfx_bump` chưa tạo: máy chủ ComfyUI trả lỗi 502 ngày 2026-11-02. Trong lúc đó game tự dùng `sfx_blocked` (`Sfx.play_or`). Có file là tự dùng, không phải sửa code. Cách tạo:
-  - `start_game_audio`, `use_reprompt=false`, `category=SFX`, `file_format=mp3`, `negative_prompt="harsh, loud, noisy, distorted, music, speech, explosion"`, lưu vào `art/audio/<tên>.mp3`; rồi chạy `tools/process_sfx.gd` (cách chạy ở đầu file) và ghi vào `art/manifest.audio.json` cùng `art/manifest.json`.
-  - `sfx_bump`, 1 giây: "soft rubbery jelly candy bumping into another candy, gentle muffled thud with a tiny wobble, soft ASMR, no music".
+- `sfx_bump`: đã tạo ngày 2026-11-09 (prompt, seed, lý do chọn trong `art/manifest.json`), chọn bằng số liệu (đường bao âm lượng, phổ), chưa nghe bằng tai. Các bản không chọn nằm ở `D:/GameProjects/candy_sfx/` (`sfx_bump_a`, `_b`). Cần người nghe duyệt.
+- Cùng ngày 2026-11-09 có một bản `sfx_shatter` khác (seed 7404, "hard candy shattering", nứt giòn rồi leng keng) tạo song song với bản 2026-11-08 ở trên; người dùng chọn giữ bản 7307 (2026-11-09). File ở `D:/GameProjects/candy_sfx/sfx_shatter_d.mp3`, cùng các bản `_a`–`_e` khác.
 - `sfx_box_tear` chưa có: hộp giấy rách ở thanh đang dùng `sfx_exit`. Có file là tự dùng.
+- `sfx_ribbon` (chạm bóc ruy băng): đã tạo ngày 2026-11-09, một bản duy nhất (seed 4110), chưa nghe bằng tai. Cần người nghe duyệt. Ruy băng bung ở thanh dùng `sfx_exit`.
 
 ## Icon app (Task 7.3)
 - Icon kẹo (2026-11-09): nguồn `art/images/icon_app_candy.png`, các cỡ sinh bằng `tools/make_app_icon.gd --mono`. `assets/icon_main_192.png` là ảnh vuông kín; `assets/icon_adaptive_fg_432.png` là cả ảnh thu còn 272 px đặt giữa lớp, mép mờ dần, để khối L nằm trong mặt nạ tròn; `assets/icon_adaptive_bg_432.png` là dải màu lấy từ mép ảnh, khớp với lớp trước nên không thấy đường nối. Đường dẫn trong `launcher_icons/*` của ba preset (Demo, Release, Gradle APK) giữ nguyên.

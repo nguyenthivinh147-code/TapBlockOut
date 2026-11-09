@@ -2,23 +2,57 @@ extends RefCounted
 ## Mở khoá theo level (Config.UNLOCK) và quà hướng dẫn booster.
 
 const Config := preload("res://src/config.gd")
+const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 ## Luôn mở, không nằm trong Config.UNLOCK.
 const ALWAYS_OPEN := ["rescue", "avatar", "frame"]
 ## Booster được tặng một lần khi tới level mở, theo thứ tự.
 const GIFT_ORDER := ["hint", "move", "smash"]
 ## Cơ chế, mỗi cái có một level dạy (design.md mục 4); popup cơ chế mới hiện một lần ở level đó.
-const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
+const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon"]
 ## Không hiện như một "tính năng mới" trên thanh tiến trình của thẻ thắng.
 const SILENT := ["starter", "review"]
-## Mở màn/nút mới ở Home: thắng xong dẫn người chơi về Home để thấy. Road Trip (mở ngay sau L1) không có ở đây để
-## L1 -> L2 liền mạch; hướng dẫn Road Trip hiện lần đầu người chơi về Home.
-const HOME_FEATURES := ["daily_gift", "shop", "challenge", "lives", "leaderboard"]
+## Mở màn/nút mới ở Home: thắng xong dẫn người chơi về Home để thấy. Road Trip không có ở đây (thắng L69 vào thẳng
+## L70, level dạy Sương mù); hướng dẫn Road Trip hiện lần đầu người chơi về Home. Weekly Pass, Level Pack, Chain Offer
+## cũng không kéo về Home.
+const HOME_FEATURES := ["daily_gift", "shop", "challenge", "lives", "leaderboard", "win_streak", "special_bomb"]
 
 
-## Switched on in Config.FEATURES (a feature not listed there is on).
+## Switched on in Config.FEATURES (a feature not listed there is on). Weekly Pass also needs Config.WEEKLY.enabled.
 static func enabled(feature: String) -> bool:
+	if feature == "weekly_pass" and not bool(Config.WEEKLY.get("enabled", true)):
+		return false
 	return bool(Config.FEATURES.get(feature, true))
+
+
+## Every unlock mark for the win-card progress bar (design.md mục 4 "Mở khoá theo level"): Config.UNLOCK plus the
+## features whose mark lives in their own config, as the level the player is on when it opens (same as Config.UNLOCK):
+## weekly_pass after the `unlock_hard_index`-th HARD level, level_pack after the first `every_levels` milestone,
+## chain_offer at CHAIN.level_unlock.
+static func levels() -> Dictionary:
+	var out: Dictionary = Config.UNLOCK.duplicate()
+	var weekly := weekly_level()
+	if weekly > 0:
+		out["weekly_pass"] = weekly
+	var pack: Dictionary = Config.OFFERS.get("level_pack", {})
+	if not pack.is_empty():
+		out["level_pack"] = maxi(int(pack.get("every_levels", 50)), 1) + 1
+	if not (Config.CHAIN.get("sequences", []) as Array).is_empty():
+		out["chain_offer"] = int(Config.CHAIN.get("level_unlock", 100))
+	return out
+
+
+## Level the player is on when Weekly Pass opens: the one after the `unlock_hard_index`-th HARD level
+## (Game.weekly_unlock_level() + 1). 0 if the curve has no such level.
+static func weekly_level() -> int:
+	var want := maxi(int(Config.WEEKLY.get("unlock_hard_index", 2)), 1)
+	var seen := 0
+	for lv in range(1, DifficultyCurve.last_level() + 1):
+		if DifficultyCurve.is_hard(lv):
+			seen += 1
+			if seen >= want:
+				return lv + 1
+	return 0
 
 
 ## `level` là level đang chơi/sắp chơi (người chơi đang ở level này).
@@ -67,8 +101,9 @@ static func features_at(level: int, max_level: int = 0) -> Array[String]:
 	var out: Array[String] = []
 	if level <= 1 or (max_level > 0 and level > max_level):
 		return out
-	for k in Config.UNLOCK:
-		if k not in SILENT and enabled(str(k)) and int(Config.UNLOCK[k]) == level:
+	var marks := levels()
+	for k in marks:
+		if k not in SILENT and enabled(str(k)) and int(marks[k]) == level:
 			out.append(str(k))
 	out.sort()
 	return out
@@ -78,8 +113,9 @@ static func features_at(level: int, max_level: int = 0) -> Array[String]:
 ## {has_next, start, end, before, after, features (ở mốc kế tiếp), unlocked (mở ngay khi sang level kế)}.
 static func feature_progress(level: int, max_level: int = 0) -> Dictionary:
 	var marks: Array[int] = []
-	for k in Config.UNLOCK:
-		var lv := int(Config.UNLOCK[k])
+	var all := levels()
+	for k in all:
+		var lv := int(all[k])
 		if k in SILENT or not enabled(str(k)) or lv <= 1 or (max_level > 0 and lv > max_level) or lv in marks:
 			continue
 		marks.append(lv)

@@ -6,7 +6,7 @@ extends "res://src/ui/stub_ui.gd"
 ## with the logo baked in), so the loading screen takes over from it without moving or resizing on any screen.
 ## PopupLoginNoInternet stays inactive. A tap anywhere emits "tap", as before.
 ## Main shows it while Game.boot() runs and moves the bar with set_progress(). The layer and LoadingArt are nodes of
-## scenes/splash.tscn; loading_screen() sets the rest each time, since download_data.gd and owners without that scene
+## scenes/splash.tscn; loading_screen() sets the rest each time, since owners without that scene
 ## share it.
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
@@ -46,7 +46,7 @@ func set_progress(value: float) -> void:
 
 
 ## DownloadDataLayer as a loading screen: game logo, loading text, Slider at `value`, version (hidden when "").
-## The owner's scene may already hold the layer with LoadingArt (scenes/splash.tscn, download_data.tscn); otherwise
+## The owner's scene may already hold the layer with LoadingArt (scenes/splash.tscn); otherwise
 ## both are built here.
 static func loading_screen(owner: Control, value: float, loading: String, version: String) -> RefCounted:
 	var v: RefCounted = UnityUI.build(owner, LAYER)

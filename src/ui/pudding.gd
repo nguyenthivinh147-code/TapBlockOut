@@ -81,6 +81,18 @@ static func set_layers(body: Control, jelly: float, paper: float, tape: Vector2 
 	m.set_shader_parameter("candy_a", candy_a)
 
 
+## Lớp phủ: `thick` 1 là lớp dày (khối 2 lớp), `frost` 1 là băng thay cho pudding.
+static func set_cover(body: Control, thick: float, frost: float) -> void:
+	var m: ShaderMaterial = body.material
+	m.set_shader_parameter("jelly_thick", thick)
+	m.set_shader_parameter("ice_mat", frost)
+
+
+## Ruy băng: số dải satin còn quấn trên khối (0..Config.RIBBON_MAX_LAYERS).
+static func set_ribbons(body: Control, ribbons: float) -> void:
+	(body.material as ShaderMaterial).set_shader_parameter("ribbons", ribbons)
+
+
 ## Chất liệu thân: `crystal` 1 là khối crystal (mảnh leaderboard), 0 là kẹo sọc.
 static func set_crystal(body: Control, crystal: float) -> void:
 	(body.material as ShaderMaterial).set_shader_parameter("crystal", crystal)

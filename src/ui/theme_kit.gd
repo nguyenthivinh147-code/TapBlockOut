@@ -140,6 +140,8 @@ const PILL_DIR := "res://assets/ui/figma/pill/"
 ## Tên UI hay gọi mà file mang tên khác.
 const ICON_ALIAS := {
 	"coin": "ui_gold",
+	# Level Pack offer chip on Home (candy gift sack, assets/ui/ic_level_pack.png).
+	"shop_level_pack": "ic_level_pack",
 }
 ## Tên UI -> icon Figma (assets/ui/figma/<tên>.png). Có trong bảng này thì ưu tiên hơn file cũ.
 const FIGMA_ICON := {
@@ -173,7 +175,6 @@ const FIGMA_ICON := {
 	"shop_gold_pack_5": "gold5",
 	"shop_gold_pack_6": "gold6",
 	"shop_starter_pack": "gold5",
-	"shop_level_pack": "gold3",
 	"shop_rescue_pack": "ic_giftbox1",
 	"shop_remove_ads": "ic_noads",
 	"shop_special_pack": "gold6",

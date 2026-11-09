@@ -20,11 +20,11 @@ const MAX_MSEC := 200.0
 
 
 func _uses(d: Dictionary) -> Dictionary:
-	var u := {"stone": not d["stones"].is_empty(), "ice": false, "chain": false, "layer": false,
+	var u := {"stone": not d["stones"].is_empty(), "ice": false, "frost": false, "chain": false, "layer": false,
 		"fog": false, "pulse": not d["pulse_sides"].is_empty()}
 	for b in d["blocks"]:
 		if int(b["ice"]) > 0:
-			u["ice"] = true
+			u["frost" if str(d.get("cover", "")) == "frost" else "ice"] = true
 		if str(b["chained_by"]) != "":
 			u["chain"] = true
 		if str(b["inner_color"]) != "":
@@ -36,7 +36,7 @@ func _uses(d: Dictionary) -> Dictionary:
 
 
 func test_valid_solvable_fast(t: T) -> void:
-	var seen := {"stone": 0, "ice": 0, "chain": 0, "layer": 0, "fog": 0, "pulse": 0}
+	var seen := {"stone": 0, "ice": 0, "frost": 0, "chain": 0, "layer": 0, "fog": 0, "pulse": 0}
 	var max_ms := 0.0
 	var total_ms := 0.0
 	var worst_id := 0
@@ -174,7 +174,7 @@ func test_fog_blocks_start_hidden(t: T) -> void:
 	t.ok(fogged > 0, "có khối sương mù")
 
 
-## Khối ẩn không đi được: sương làm bàn kẹt thì `_fog_fix` bỏ sương ở khối ẩn đầu tiên lộ ra là đi được, giữ sương ở
+## Khối ẩn không đi được: sương làm bàn kẹt thì `_unstick` bỏ sương ở khối ẩn đầu tiên lộ ra là đi được, giữ sương ở
 ## khối sẽ lộ khi khối kề rời đi.
 func test_fog_fix_unsticks(t: T) -> void:
 	var blk := func(id: String, color: String, cell: Array, fog: bool) -> Dictionary:
@@ -184,12 +184,77 @@ func test_fog_fix_unsticks(t: T) -> void:
 		"pulse_sides": [], "blocks": [blk.call("a", "yellow", [1, 1], true), blk.call("b", "yellow", [1, 2], false),
 			blk.call("c", "blue", [4, 4], true), blk.call("d", "purple", [2, 2], true)]}
 	t.eq(Solver.solve(lv)["ok"], false, "kẹt vì sương")
-	Gen._fog_fix(lv)
+	Gen._unstick(lv)
 	var fog := {}
 	for b in lv["blocks"]:
 		fog[b["id"]] = b["fog"]
 	t.eq(fog, {"a": false, "b": false, "c": false, "d": true}, "bỏ sương ở a, c; giữ ở d")
 	t.eq(Solver.solve(lv)["ok"], true, "giải được sau khi sửa")
+
+
+## Lớp phủ làm bàn kẹt thì `_unstick` bóc từng lớp ở khối phủ đầu tiên hết phủ là đi được, giữ lớp phủ ở khối sẽ được
+## bóc khi khối kề rời đi.
+func test_unstick_covers(t: T) -> void:
+	var blk := func(id: String, color: String, cell: Array, ice: int) -> Dictionary:
+		return {"id": id, "color": color, "cells": [cell], "ice": ice, "chained_by": "", "inner_color": "", "fog": false}
+	# a (lên) chặn b bên dưới, chỉ b kề a nên a không bao giờ hết phủ; c đứng riêng, 2 lớp; d hết phủ khi b rời đi.
+	var lv := {"id": 80, "w": 5, "h": 5, "hard": false, "min_taps": 0, "moves": 20, "seed": 0, "stones": [],
+		"pulse_sides": [], "blocks": [blk.call("a", "yellow", [1, 1], 1), blk.call("b", "yellow", [1, 2], 0),
+			blk.call("c", "blue", [4, 4], 2), blk.call("d", "purple", [2, 2], 1)]}
+	t.eq(Solver.solve(lv)["ok"], false, "kẹt vì lớp phủ")
+	Gen._unstick(lv)
+	var ice := {}
+	for b in lv["blocks"]:
+		ice[b["id"]] = b["ice"]
+	t.eq(ice, {"a": 0, "b": 0, "c": 0, "d": 1}, "bỏ phủ ở a, c (cả 2 lớp); giữ ở d")
+	t.eq(Solver.solve(lv)["ok"], true, "giải được sau khi sửa")
+
+
+## Lớp phủ trong level sinh: level dạy chỉ 1 lớp và có khối phủ kề khối thoát được ngay; pudding và băng không cùng level;
+## khối 2 lớp có từ COVER_DOUBLE_AFTER level sau mốc mở và kề ít nhất 2 khối; lớp phủ không chung khối với sương,
+## xích, hộp giấy.
+func test_covers_in_generated_levels(t: T) -> void:
+	var doubles := {"ice": 0, "frost": 0}
+	for id in range(int(Config.UNLOCK["ice"]), 200):
+		var d := Gen.generate(id, 0, false)
+		var plan := Gen.mech_plan(id)
+		t.ok(not (plan.has("ice") and plan.has("frost")), "L%d: pudding và băng không cùng level" % id)
+		var kind := "frost" if str(d.get("cover", "")) == "frost" else "ice"
+		var owner := {}
+		for b in d["blocks"]:
+			for c in b["cells"]:
+				owner[LevelData.cell_of(c)] = str(b["id"])
+		for b in d["blocks"]:
+			var layers := int(b["ice"])
+			if layers == 0:
+				continue
+			t.ok(plan.has(kind), "L%d: lớp phủ %s theo mech_plan" % [id, kind])
+			t.ok(not bool(b["fog"]) and str(b["chained_by"]) == "" and str(b["inner_color"]) == "",
+				"L%d %s: lớp phủ không chung khối với cơ chế khác" % [id, b["id"]])
+			if layers < 2:
+				continue
+			doubles[kind] += 1
+			t.ok(id >= int(Config.UNLOCK[kind]) + Config.COVER_DOUBLE_AFTER, "L%d: 2 lớp sau mốc" % id)
+			var near := {}
+			for c in b["cells"]:
+				for dv in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+					var o := str(owner.get(LevelData.cell_of(c) + dv, ""))
+					if o != "" and o != str(b["id"]):
+						near[o] = true
+			t.ok(near.size() >= 2, "L%d %s: khối 2 lớp kề ít nhất 2 khối" % [id, b["id"]])
+	t.ok(doubles["ice"] > 0, "có pudding 2 lớp (%d)" % doubles["ice"])
+	t.ok(doubles["frost"] > 0, "có băng 2 lớp (%d)" % doubles["frost"])
+	for teach in ["ice", "frost"]:
+		var lid := int(Config.UNLOCK[teach])
+		var d := Gen.generate(lid, 0, false)
+		t.eq(Gen.mech_plan(lid), [teach] as Array[String], "L%d dạy %s" % [lid, teach])
+		t.eq(str(d.get("cover", "pudding")), "frost" if teach == "frost" else "pudding", "L%d chất liệu" % lid)
+		var covered := 0
+		for b in d["blocks"]:
+			t.ok(int(b["ice"]) <= 1, "L%d level dạy chỉ 1 lớp" % lid)
+			covered += int(int(b["ice"]) > 0)
+		t.ok(covered > 0, "L%d có khối phủ" % lid)
+		t.ok(Gen._teach_ok(d, teach), "L%d cho thử cơ chế ngay" % lid)
 
 
 ## Bộ sinh dùng đủ mọi dạng hình, không chỉ vài dạng quen (hình cũ, cho level trước DifficultyCurve.SHAPED_FROM).
@@ -250,6 +315,7 @@ func test_mechanics_for(t: T) -> void:
 	t.eq(Gen.mechanics_for(13).size(), 0, "L13 chưa cơ chế")
 	t.eq(Gen.mechanics_for(14), ["stone"] as Array[String], "L14")
 	t.eq(Gen.mechanics_for(90).size(), 6, "L90 đủ 6")
+	t.ok(Gen.mechanics_for(110).has("frost"), "L110 mở băng")
 
 
 ## mech_plan: level dạy chỉ cơ chế mới; trước L14 và level nghỉ không có; còn lại 1..LEVEL_MECH_MAX cơ chế đã mở,

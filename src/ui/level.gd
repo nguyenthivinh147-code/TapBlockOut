@@ -4,6 +4,10 @@ extends Control
 ## setup({road_trip: true}) chạy level Road Trip đang chơi (Game.start_road_trip): không mất mạng, không hướng dẫn L1,
 ## booster mở theo level chính; hết bước thì xem quảng cáo hồi sinh, thắng thì popup Road Trip rồi closed("home")
 ## (màn Road Trip đưa về bản đồ).
+## setup({special: true}) chạy Màn đặc biệt (Game.special_start, design.md mục 7): bàn lát kín có bom (SpecialBombs),
+## không mất mạng, không cứu lượt, không chơi lại (nút Restart thành Rời màn); thắng / thua thì popup_special_end rồi
+## đổi tại chỗ sang level chính kế (hoặc về Home). Thắng level chính Hard / VeryHard được vé thì mời vào Special ngay
+## sau thẻ thắng (màn mưa bom bomb_curtain.gd).
 ## closed({"action": "home" | "no_lives"}). Popup mở qua Main.open_popup (hoặc lớp riêng khi chạy lẻ).
 ## HUD theo wireframe 3.4: lượt, tên level, restart, bánh răng (Home và Retry nằm trong popup cài đặt); chip mảnh dưới chip lượt.
 ## Hàng booster luôn đủ 3 ô; ô chưa mở tối đi, có ổ khoá và ghi level mở. Treo máy thì nhắc Gợi ý (bong bóng IdleTip).
@@ -25,10 +29,15 @@ const SmashFx := preload("res://src/ui/smash_fx.gd")
 const CrystalFly := preload("res://src/ui/crystal_fly.gd")
 const PraiseFx := preload("res://src/ui/praise_fx.gd")
 const Pudding := preload("res://src/ui/pudding.gd")
+const UImage := preload("res://src/ui/u_image.gd")
 const HUD_TONE := preload("res://src/ui/hud_tone.gdshader")
+const SpecialBombs := preload("res://src/ui/special_bombs.gd")
+const SpecialBoard := preload("res://src/core/special_board.gd")
+const BombCurtain := preload("res://src/ui/bomb_curtain.gd")
 
 const POPUP_RESCUE := "res://scenes/popup_rescue.tscn"
 const POPUP_OFFER := "res://scenes/popup_offer.tscn"
+const POPUP_REMOVE_ADS := "res://scenes/popup_remove_ads.tscn"
 const WIN_CARD := "res://scenes/win_card.tscn"
 const LOSE_CARD := "res://scenes/lose_card.tscn"
 const SHOP_MINI := "res://scenes/shop_mini.tscn"
@@ -36,6 +45,23 @@ const BOOSTER_UNLOCKED := "res://scenes/booster_unlocked.tscn"
 const INGAME_SETTINGS := "res://scenes/popup_ingame_settings.tscn"
 const POPUP_LB_RESULT := "res://scenes/popup_lb_result.tscn"
 const POPUP_RT_WIN := "res://scenes/popup_road_trip_win.tscn"
+const POPUP_KEEP := "res://scenes/popup_keep_playing.tscn"
+const POPUP_STREAK_KEEP := "res://scenes/popup_streak_keep.tscn"
+const POPUP_NOTICE := "res://scenes/popup_notice.tscn"
+const POPUP_RATE := "res://scenes/popup_rate.tscn"
+const BOOSTER_SOON := "res://scenes/booster_soon.tscn"
+const FREE_PICK := "res://scenes/popup_free_pick.tscn"
+const HELPER_PACK := "res://scenes/popup_helper_pack.tscn"
+const LOAD_TRANSITION := "res://scenes/load_transition.tscn"
+const TUTORIAL_INTRO := "res://scenes/tutorial_intro.tscn"
+const POPUP_SPECIAL := "res://scenes/popup_special.tscn"
+const POPUP_SPECIAL_END := "res://scenes/popup_special_end.tscn"
+## Bom chỉ trừ tối đa chừng này giây mỗi khung (khung giật, máy chậm không làm bom nhảy cóc).
+const BOMB_MAX_STEP := 0.25
+## Bàn tay chỉ vào nút booster sau popup dùng thử (wireframe 3.9): HandSprite của SpeedUpTutorialLayer.
+const HAND_TEX := "res://assets/ui/cc/Resources_UI_Maincenter.png"
+const HAND_REGION := Rect2(766, 264, 256, 256)
+const HAND_PX := 130.0
 ## Candy-cane frame and skull badge of the difficulty banner, by tier ("hard", "very_hard"); the layer scene holds the
 ## Hard pair. Built by tools/make_warn_banner_art.py, both tiers the same size.
 const WARN_ART := "res://assets/ui/warn_banner/warn_%s_%s.png"
@@ -193,10 +219,19 @@ var idle_tip: Control = null
 var _built: bool = false
 var _challenge: bool = false
 var _road_trip: bool = false
+var _special: bool = false
+## Bom của Màn đặc biệt (SpecialBombs), con của màn; rỗng ở level khác.
+var bombs: Node = null
+var _app_paused: bool = false
+var _skip_tick: bool = false
+var _restart_icon: Texture2D = null
 var _level: int = 0
 var _smash_mode: bool = false
 var _caption_max_w: float = 0.0  # caption bubble wraps past this width (the board frame's), 0 = not laid out yet
 var _offer_id: String = ""
+## Booster vừa tặng mà người chơi chọn dùng thử (popup 3.9): bàn tay chỉ vào nút tới khi bấm.
+var _free_pick: String = ""
+var _hand: Control = null
 var _overlay: Control = null
 var _hint_fx: Control = null  # sao Gợi ý đang bay; còn bay thì bấm Gợi ý không làm gì
 var _moves_pending: int = 0  # lượt +Move đã cộng vào bàn nhưng dấu "+" chưa bay tới chip lượt
@@ -218,6 +253,7 @@ var _card_scene: PackedScene = null  # thẻ kết quả đã nạp, giữ để
 func setup(args: Dictionary) -> void:
 	_challenge = bool(args.get("challenge", false))
 	_road_trip = bool(args.get("road_trip", false)) and not _challenge
+	_special = bool(args.get("special", false)) and not _challenge and not _road_trip
 	Sfx.music(Sfx.MUSIC_LEVEL)
 	_build()
 	_warm_result_card()
@@ -299,6 +335,10 @@ func _build() -> void:
 	tone.set_shader_parameter("gloss_cut", Config.HUD_TONE_GLOSS)
 	for c: CanvasItem in hud_toned():
 		c.material = tone
+	_restart_icon = restart_button.icon
+	bombs = SpecialBombs.new()
+	bombs.name = "SpecialBombs"
+	add_child(bombs)
 	idle_tip = %IdleTip
 	idle_tip.visible = false
 	(%IdleTipLabel as Label).text = tr("level_idle_blocks")
@@ -394,16 +434,19 @@ func _leave(action: String) -> void:
 
 
 func _can_play() -> bool:
-	return _road_trip or bool(Game.lives_view().get("can_play", true))
+	return _road_trip or _special or bool(Game.lives_view().get("can_play", true))
 
 
-## Level that boosters unlock by: the main level in Road Trip, whose level numbers are its own.
+## Level that boosters unlock by: the main level in Road Trip and Special Bomb, whose level numbers are their own.
 func _unlock_ref() -> int:
-	return int(Game.s.level) if _road_trip else _level
+	return int(Game.s.level) if _road_trip or _special else _level
 
 
-## Back của Android khi không có popup: như bấm Home.
+## Back của Android khi không có popup: như bấm Home (Màn đặc biệt: như Rời màn).
 func on_back() -> void:
+	if _special:
+		_on_leave_special()
+		return
 	_on_home_pressed()
 
 
@@ -412,6 +455,7 @@ func on_back() -> void:
 func _start_level(warn: bool = true) -> void:
 	_set_state("intro")
 	_set_smash_mode(false)
+	_drop_hand()
 	_moves_pending = 0
 	_moves_cashed = 0
 	_pieces_pending = 0
@@ -425,7 +469,9 @@ func _start_level(warn: bool = true) -> void:
 		await get_tree().process_frame
 		if _left:
 			return
-	if _road_trip:
+	if _special:
+		attempt = Game.special_start()
+	elif _road_trip:
 		attempt = Game.start_road_trip()
 	else:
 		attempt = Game.start_challenge() if _challenge else Game.start_attempt()
@@ -443,8 +489,12 @@ func _start_level(warn: bool = true) -> void:
 				return
 	board = attempt.board
 	_level = int(attempt.level)
-	title_label.text = tr("challenge_title") if _challenge else tr("level_title") % _level
-	var is_hard := bool(attempt.get("hard", false))
+	if _special:
+		title_label.text = tr("special_title")
+	else:
+		title_label.text = tr("challenge_title") if _challenge else tr("level_title") % _level
+	restart_button.icon = ThemeKit.icon("ui_home") if _special else _restart_icon
+	var is_hard := bool(attempt.get("hard", false)) and not _special
 	var very_hard := false
 	if _road_trip:
 		very_hard = int(attempt.get("difficulty", 1)) >= 3
@@ -455,9 +505,10 @@ func _start_level(warn: bool = true) -> void:
 	_set_tut(_mech_hint())
 	board_view.setup(board)
 	board_view.set_specials(attempt.get("specials", []))
+	bombs.call("setup", board_view, attempt.get("bombs", []))
 	_place_captions()
 	_refresh_hud()
-	while true:
+	while not _special:
 		var kind := Game.claim_gift()
 		if kind == "":
 			break
@@ -465,10 +516,24 @@ func _start_level(warn: bool = true) -> void:
 		await _popup_scene(BOOSTER_UNLOCKED, {"view": {"kind": kind, "count": int(Game.s.inv.get(kind, 0))}})
 		if _left:
 			return
+		# Mời dùng thử ngay (wireframe 3.9): Nhận thì bàn tay chỉ vào nút booster khi vào chơi.
+		if Unlocks.is_open(kind, _unlock_ref()):
+			var fr: Variant = await _popup_scene(FREE_PICK, {"view": {"kind": kind}})
+			if _left:
+				return
+			if fr is Dictionary and str(fr.get("action", "")) == "claim":
+				_free_pick = kind
 	# Level dạy cơ chế của level chính: cùng popup đó giới thiệu cơ chế mới, một lần; chạm đâu hoặc Back thì đi tiếp.
-	var mech := "" if _challenge or _road_trip else Game.claim_mech_intro(_level)
+	var mech := "" if _challenge or _road_trip or _special else Game.claim_mech_intro(_level)
 	if mech != "":
 		await _popup_scene(BOOSTER_UNLOCKED, {"view": {"mech": mech}})
+		if _left:
+			return
+	# Màn đặc biệt lần đầu: hướng dẫn (khung popup vật cản mới) với quả bom và luật; một lần.
+	if _special and bool(Game.special_view().guide):
+		_set_state("dialog")
+		Game.special_mark_guide()
+		await _popup_scene(BOOSTER_UNLOCKED, {"view": {"special": true}})
 		if _left:
 			return
 	_refresh_hud()
@@ -477,11 +542,72 @@ func _start_level(warn: bool = true) -> void:
 		await _show_difficulty_banner(very_hard)
 		if _left:
 			return
+	# Hướng dẫn lần đầu (wireframe 1.5): trước khi chơi L1 lần đầu, chạm để vào chơi.
+	if _level == 1 and not _road_trip and not _challenge and not _special and Game.take_intro():
+		_set_state("dialog")
+		await _popup_scene(TUTORIAL_INTRO)
+		if _left:
+			return
 	_set_state("playing")
 	_reset_think()
-	if _level == 1 and not _road_trip:
+	if _level == 1 and not _road_trip and not _special:
 		_set_tut(tr("tut_tap"))
 		board_view.highlight(board.hint())
+	if _free_pick != "":
+		_point_booster(_free_pick)
+
+
+## Bàn tay nhấp vào nút booster vừa tặng (TutController_Step1 của SpeedUpTutorialLayer), tới khi bấm nút đó.
+func _point_booster(kind: String) -> void:
+	_drop_hand()
+	var btn: Control = booster_buttons.get(kind)
+	if btn == null or UnityUI.baking:
+		_free_pick = ""
+		return
+	_hand = UImage.new()
+	_hand.name = "FreePickHand"
+	_hand.set("tex", load(HAND_TEX))
+	_hand.set("region", HAND_REGION)
+	_hand.set("preserve_aspect", true)
+	_hand.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_overlay.add_child(_hand)
+	var s: float = btn.get_global_transform().get_scale().x / _overlay.get_global_transform().get_scale().x
+	_hand.size = Vector2.ONE * HAND_PX * s
+	_hand.pivot_offset = _hand.size * 0.5
+	var r := btn.get_global_rect()
+	var at := _overlay.get_global_transform().affine_inverse() * (r.get_center() + Vector2(r.size.x * 0.15, r.size.y * 0.2))
+	_hand.position = at
+	var tw := _hand.create_tween().set_loops()
+	tw.tween_property(_hand, "scale", Vector2.ONE * 0.85, 0.35).set_trans(Tween.TRANS_SINE)
+	tw.tween_property(_hand, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_SINE)
+
+
+func _drop_hand() -> void:
+	if is_instance_valid(_hand):
+		_hand.queue_free()
+	_hand = null
+
+
+## Bỏ ván mất mạng hoặc làm chuỗi Win Streak tụt: hỏi bằng popup 4.6, hoặc 9.5 khi chuỗi tụt (design.md mục 7
+## "Win Streak"). true khi người chơi chọn bỏ (hoặc không có gì để mất).
+func _confirm_quit(mode: String, life: bool) -> bool:
+	var streak := Game.streak_at_stake(attempt)
+	if not life and not streak:
+		return true
+	var r: Variant = null
+	if streak:
+		var v: Dictionary = Game.streak_view()
+		r = await _popup_scene(POPUP_STREAK_KEEP, {"view": {"mode": mode, "streak": int(v.streak),
+			"drop_to": int(v.floor), "life": life}})
+	else:
+		r = await _popup_scene(POPUP_KEEP, {"view": {"mode": mode}})
+	return r is Dictionary and str(r.get("action", "")) == "quit"
+
+
+## ShowLostStreakNotify: chuỗi vừa tụt thì báo "Bạn đã mất chuỗi" (popup_notice), một lần.
+func _notify_streak_lost() -> void:
+	if Game.streak_take_lost():
+		await _popup_scene(POPUP_NOTICE, {"view": {"title": "streak_title", "body": "streak_lost"}})
 
 
 ## Local cells of every block on `b`, the shapes Pudding draws the bodies of.
@@ -564,9 +690,9 @@ func _fly_skull(root: Control, skull: Control, fallback: Control) -> void:
 	tw.chain().tween_callback(root.queue_free)
 
 
-## Level dạy cơ chế (14, 30, 40, 55, 70, 90): một dòng "Tên: luật" ở đầu level. Challenge không có.
+## Level dạy cơ chế (14, 30, 40, 55, 70, 90, 110, 130): một dòng "Tên: luật" ở đầu level. Challenge không có.
 func _mech_hint() -> String:
-	if _challenge or _road_trip:
+	if _challenge or _road_trip or _special:
 		return ""
 	for m in MECHS:
 		if _level == int(Config.UNLOCK.get(m, -1)):
@@ -703,6 +829,10 @@ func _on_block_tapped(id: String) -> void:
 	if _smash_mode:
 		_do_smash(id)
 		return
+	# Lớp phủ đã bóc trên board nhưng khối kề chưa tới thanh: khối vẫn tính là còn phủ (design.md mục 4, Pudding).
+	if board_view.cover_held(id):
+		board_view.apply_result({"kind": "covered", "id": id})
+		return
 	var idle_ms := Time.get_ticks_msec() - think_start_ms
 	var from := _block_center(id)
 	var res: Dictionary = Game.tap(attempt, id)
@@ -710,8 +840,10 @@ func _on_block_tapped(id: String) -> void:
 	if kind == "rejected":
 		return
 	board_view.apply_result(res)
-	if kind == "fog":
-		return  # khối còn trong sương chỉ lắc tại chỗ: không tốn MOVES, không tính là nước đi
+	if kind == "fog" or kind == "covered":
+		return  # khối còn trong sương hay còn phủ chỉ nhún, lắc tại chỗ: không tốn MOVES, không tính là nước đi
+	if _special:
+		_bomb_touch(id, kind == "exit")
 	if bool(res.get("piece", false)):
 		_pieces_pending += 1
 		_fly_piece(from)
@@ -725,7 +857,7 @@ func _on_block_tapped(id: String) -> void:
 
 
 func _tutorial_after(kind: String) -> void:
-	if _level != 1 or _road_trip:
+	if _level != 1 or _road_trip or _special:
 		return
 	var taps := int(attempt.taps)
 	if kind == "blocked" or kind == "gate_closed":
@@ -782,6 +914,10 @@ func _take_result_card() -> void:
 # --- hết MOVES ---
 
 func _rescue_flow() -> void:
+	if _special:
+		# Màn đặc biệt: hết bước là thua ngay, không cứu lượt.
+		await _special_fail("steps")
+		return
 	if _road_trip:
 		await _revive_flow()
 		return
@@ -791,7 +927,9 @@ func _rescue_flow() -> void:
 		if bool(o.get("lost", true)):
 			break
 		o["attempt"] = attempt
-		var r: Variant = await _popup_scene(POPUP_RESCUE, o)
+		# Lần hết MOVES thứ helper_pack_fail liên tiếp ở level này, lần cứu đầu: popup kèm Helper Pack (4.7).
+		var path := HELPER_PACK if i == 0 and Game.helper_pack_due(attempt, o) else POPUP_RESCUE
+		var r: Variant = await _popup_scene(path, o)
 		if _left:
 			return
 		var method := str(r) if r is String else ""
@@ -806,15 +944,13 @@ func _rescue_flow() -> void:
 			if _left:
 				return
 			continue
-		if bool(o.get("warn_life", false)) and not bool(Game.lives_view().get("infinite", false)):
-			var dlg := Dialog.new(tr("rescue_confirm_title"), tr("rescue_warn_life"), [
-				{"id": "yes", "text": tr("rescue_confirm_yes"), "kind": "danger", "name": "ConfirmButton"},
-				{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}], "", UiAtlas.tex("big_heart_broken"))
-			var ans: Variant = await _ask(dlg)
-			if _left:
-				return
-			if str(ans) != "yes":
-				continue
+		# Bỏ cứu lượt mà mất mạng hoặc tụt chuỗi Win Streak: hỏi lại (4.6 / 9.5); Chơi tiếp thì về popup cứu lượt.
+		var warn := bool(o.get("warn_life", false)) and not bool(Game.lives_view().get("infinite", false))
+		var quit: bool = await _confirm_quit("give_up", warn)
+		if _left:
+			return
+		if not quit:
+			continue
 		Game.rescue_skip(attempt)
 		break
 	await _lose_flow()
@@ -843,7 +979,9 @@ func _revive_flow() -> void:
 					dlg.closed.emit("revived")
 				else:
 					picked[0] = ""
-					_toast(tr("ads_not_available")))
+					# Không có video hay mất mạng: Main đã báo bằng popup (Game.notice).
+					if not Game.notice_shown(Game.last_ad_reason):
+						_toast(tr("ads_failed")))
 		var r: Variant = await _wait_closed(dlg)
 		if _left:
 			return
@@ -867,8 +1005,13 @@ func _lose_flow() -> void:
 	var r: Variant = await _popup_scene(LOSE_CARD, {"offer": offer, "life_charged": bool(attempt.get("life_charged", false))})
 	if _left:
 		return
+	# TryShowPendingLostStreakNotify: sau thẻ thua.
+	await _notify_streak_lost()
+	if _left:
+		return
 	if str(r) == "retry":
 		if _can_play():
+			_reveal_level(_level)
 			await _start_level()
 		else:
 			_leave("no_lives")
@@ -881,8 +1024,13 @@ func _lose_flow() -> void:
 func _win_flow() -> void:
 	_set_state("over")
 	_take_result_card()
+	if _special:
+		bombs.call("stop_all")
 	var res: Dictionary = Game.on_level_won(attempt)
 	_refresh_hud()
+	if _special:
+		await _special_win(res)
+		return
 	if _road_trip:
 		await _popup_scene(POPUP_RT_WIN, res)
 		if _left:
@@ -919,11 +1067,31 @@ func _win_flow() -> void:
 	if _left:
 		return
 	if _offer_id != "":
-		await _popup_scene(POPUP_OFFER, {"id": _offer_id})
+		# Offer Remove Ads mở popup 2.4 (hai gói bỏ quảng cáo); offer khác dùng popup_offer.
+		if _offer_id == "remove_ads":
+			await _popup_scene(POPUP_REMOVE_ADS)
+		else:
+			await _popup_scene(POPUP_OFFER, {"id": _offer_id})
 		if _left:
 			return
 	if rate:
-		Game.rate_now()
+		# Rate us (wireframe 4.3): hỏi trước, Có thì mở popup đánh giá của store.
+		var rr: Variant = await _popup_scene(POPUP_RATE)
+		if _left:
+			return
+		if rr is Dictionary and str(rr.get("action", "")) == "rate":
+			Game.rate_now()
+	# Thắng Hard / VeryHard được vé Màn đặc biệt: mời ngay (về Home thì Home mời, Game.special_take_invite).
+	if not _challenge and int(res.get("special_tickets", 0)) > 0:
+		if Game.next_after_win(res, false) == "home":
+			Game.special_queue_invite()
+		elif int(Game.special_view().tickets) > 0:
+			var ir: Variant = await _popup_scene(POPUP_SPECIAL)
+			if _left:
+				return
+			if ir is Dictionary and str(ir.get("action", "")) == "start":
+				await _enter_special()
+				return
 	if _challenge:
 		_leave("home")
 	elif Game.next_after_win(res, false) == "home":
@@ -936,32 +1104,50 @@ func _win_flow() -> void:
 	elif not _can_play():
 		_leave("no_lives")
 	else:
+		_reveal_level(int(Game.s.level))
 		await _start_level()
+
+
+## Load Level Transition (wireframe 3.1, LoadLevelProcessVer2): level kế hoặc chơi lại mở ra từ màn đen qua lỗ hình
+## bom lớn dần trên bàn mới, kèm tên level. Road Trip dùng màn nắp hộp quà của nó, không có màn này.
+func _reveal_level(level_no: int) -> void:
+	if _road_trip or UnityUI.baking:
+		return
+	var node := (load(LOAD_TRANSITION) as PackedScene).instantiate() as Control
+	node.name = "LoadTransition"
+	add_child(node)
+	node.call("setup", {"view": {"level": level_no, "open": true}})
 
 
 # --- Home và restart ---
 
 func _confirm_life_loss() -> bool:
-	return not _road_trip and _level >= int(Config.LIVES.from_level) and _touched() and not bool(Game.lives_view().get("infinite", false))
+	return not _road_trip and not _special and _level >= int(Config.LIVES.from_level) and _touched() \
+		and not bool(Game.lives_view().get("infinite", false))
 
 
 func _on_home_pressed() -> void:
 	if state != "playing":
 		return
+	if _special:
+		_on_leave_special()
+		return
 	Sfx.play("button")
 	_set_state("dialog")
-	if _confirm_life_loss():
-		var dlg := Dialog.new(tr("level_home"), tr("rescue_warn_life"), [
-			{"id": "yes", "text": tr("common_confirm"), "kind": "danger", "name": "ConfirmButton"},
-			{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}], "", UiAtlas.tex("big_heart_broken"))
-		var r: Variant = await _ask(dlg)
-		if _left:
-			return
-		if str(r) != "yes":
-			_set_state("playing")
-			_reset_think()
-			return
+	var life := _confirm_life_loss()
+	var quit: bool = await _confirm_quit("home", life)
+	if _left:
+		return
+	if not quit:
+		_set_state("playing")
+		_reset_think()
+		return
+	if life:
 		Game.restart_cost_life(attempt)
+	Game.leave_attempt(attempt)
+	await _notify_streak_lost()
+	if _left:
+		return
 	_leave("home")
 
 
@@ -971,7 +1157,7 @@ func _on_settings_pressed() -> void:
 		return
 	Sfx.play("button")
 	_set_state("dialog")
-	var r: Variant = await _popup_scene(INGAME_SETTINGS, {"life_cost": _confirm_life_loss()})
+	var r: Variant = await _popup_scene(INGAME_SETTINGS, {"life_cost": _confirm_life_loss(), "no_retry": _special})
 	if _left:
 		return
 	_set_state("playing")
@@ -986,14 +1172,26 @@ func _on_settings_pressed() -> void:
 func _on_restart_pressed() -> void:
 	if state != "playing":
 		return
+	if _special:
+		# Màn đặc biệt không có chơi lại: nút này là Rời màn.
+		_on_leave_special()
+		return
 	Sfx.play("button")
 	_set_state("dialog")
-	if not _road_trip and _level >= int(Config.LIVES.from_level):
-		var body := tr("level_restart_confirm_life") if _touched() else tr("level_restart_confirm_free")
-		var dlg := Dialog.new(tr("level_restart_confirm_title"), body, [
+	var life := _confirm_life_loss()
+	if life or Game.streak_at_stake(attempt):
+		# Mất mạng hoặc tụt chuỗi: popup 4.6 / 9.5.
+		var quit: bool = await _confirm_quit("restart", life)
+		if _left:
+			return
+		if not quit:
+			_set_state("playing")
+			_reset_think()
+			return
+	elif not _road_trip and _level >= int(Config.LIVES.from_level):
+		var dlg := Dialog.new(tr("level_restart_confirm_title"), tr("level_restart_confirm_free"), [
 			{"id": "yes", "text": tr("level_restart_yes"), "kind": "danger", "name": "ConfirmButton"},
-			{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}], "",
-			UiAtlas.tex("big_heart_broken") if _touched() else null)
+			{"id": "no", "text": tr("level_restart_no"), "kind": "ghost", "name": "CancelButton"}])
 		var r: Variant = await _ask(dlg)
 		if _left:
 			return
@@ -1002,6 +1200,9 @@ func _on_restart_pressed() -> void:
 			_reset_think()
 			return
 	var charged := Game.restart_cost_life(attempt)
+	await _notify_streak_lost()
+	if _left:
+		return
 	if charged and not _can_play():
 		_leave("no_lives")
 		return
@@ -1015,8 +1216,17 @@ func _on_booster_pressed(kind: String) -> void:
 		return
 	Sfx.play("button")
 	if not Unlocks.is_open(kind, _unlock_ref()):
-		_toast(tr("booster_locked") % _unlock_level(kind))
+		# Booster còn khoá (wireframe 3.7): popup báo level mở, chạm đâu cũng đóng.
+		_set_state("dialog")
+		await _popup_scene(BOOSTER_SOON, {"view": {"kind": kind, "level": _unlock_level(kind)}})
+		if _left:
+			return
+		_set_state("playing")
+		_reset_think()
 		return
+	if kind == _free_pick:
+		_free_pick = ""
+		_drop_hand()
 	if kind == "hint" and is_instance_valid(_hint_fx):
 		return
 	if _smash_mode:
@@ -1032,7 +1242,7 @@ func _on_booster_pressed(kind: String) -> void:
 func _use_booster(kind: String) -> void:
 	match kind:
 		"hint":
-			var id := board.hint()
+			var id := _hint_target()
 			if id == "":
 				_toast(tr("level_hint_none"))
 				return
@@ -1062,9 +1272,19 @@ func _fly_hint(id: String) -> void:
 			if state != "playing":
 				return
 			var same := int(attempt.taps) == taps and board_view.block_node(id) != null
-			var hid := id if same else board.hint()
+			var hid := id if same else _hint_target()
 			if hid != "":
 				board_view.highlight(hid, same, true))
+
+
+## Khối Gợi ý chỉ: Màn đặc biệt ưu tiên khối thoát được trong chuỗi chặn của quả bom gấp nhất (SpecialBoard.urgent_hint),
+## không có thì như level thường (board.hint()).
+func _hint_target() -> String:
+	if _special:
+		var id := SpecialBoard.urgent_hint(board, bombs.call("live_ids"))
+		if id != "":
+			return id
+	return board.hint()
 
 
 ## Dấu "+" bay từ nút +Move tới chip lượt; mỗi dấu chạm thì số lượt hiện tăng thêm phần của nó (bàn đã cộng sẵn).
@@ -1157,6 +1377,8 @@ func _do_smash(id: String) -> void:
 	var r: Dictionary = Game.smash_block(attempt, id)
 	if bool(r.get("piece", false)):
 		_pieces_pending += 1  # số trên chip đợi icon crystal bay tới (sau cú gõ)
+	if _special and bool(r.get("ok", false)):
+		_bomb_touch(id, true)
 	_reset_think()
 	_refresh_hud()
 	if not bool(r.ok):
@@ -1213,8 +1435,8 @@ func _booster_dialog(kind: String) -> void:
 				got = true
 				break
 			match Game.last_ad_reason:
-				"not_ready":
-					message = tr("ads_not_available")
+				"not_ready", "offline":
+					message = ""  # Main đã báo bằng popup (Game.notice)
 				"closed":
 					message = tr("ads_closed_early")
 				_:
@@ -1231,11 +1453,14 @@ func _booster_dialog(kind: String) -> void:
 
 ## Đang chơi mà không chạm màn hình Config.CONTENT.idle_hint_sec giây thì nhắc Gợi ý. Không đếm khi chưa mở Gợi ý,
 ## đang chọn khối để phá, sao Gợi ý đang bay hay có popup; không khối nào thoát được thì bỏ lượt nhắc đó.
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if not _built or board == null:
 		return
+	if _special:
+		_tick_bombs(delta)
 	var now := Time.get_ticks_msec()
-	if _nudging or state != "playing" or _smash_mode or is_instance_valid(_hint_fx) or not Unlocks.is_open("hint", _level):
+	if _nudging or state != "playing" or _smash_mode or is_instance_valid(_hint_fx) \
+			or not Unlocks.is_open("hint", _unlock_ref() if _special else _level):
 		idle_start_ms = now
 		return
 	if now - idle_start_ms < int(float(Config.CONTENT.idle_hint_sec) * 1000.0):
@@ -1255,9 +1480,13 @@ func _input(event: InputEvent) -> void:
 
 
 func _notification(what: int) -> void:
-	# Thời gian app nằm nền không tính là treo.
+	# Thời gian app nằm nền không tính là treo, và bom không đếm (khung đầu sau khi quay lại cũng bỏ).
 	if what == NOTIFICATION_APPLICATION_FOCUS_IN or what == NOTIFICATION_APPLICATION_RESUMED:
 		idle_start_ms = Time.get_ticks_msec()
+		_app_paused = false
+		_skip_tick = true
+	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
+		_app_paused = true
 
 
 ## Số khối thoát được ngay (Gợi ý chọn trong số này trước, cú dội cổng nhịp không tính), ghi trên bong bóng nhắc.
@@ -1319,3 +1548,135 @@ func _end_nudge() -> void:
 	idle_tip.visible = false
 	idle_tip.scale = Vector2.ONE
 	idle_tip.modulate.a = 1.0
+
+
+# --- Màn đặc biệt (design.md mục 7 "Màn đặc biệt") ---
+
+## Lần chạm hợp lệ (cả chạm khối bị chặn, cả búa): bom bắt đầu đếm từ lần đầu. Khối mang bom rời bàn (`out`: thoát
+## hoặc bị búa) thì quả đó tắt hẳn; bom của khối khác vẫn đếm.
+func _bomb_touch(id: String, out: bool) -> void:
+	if not bool(bombs.get("started")):
+		bombs.call("start")
+	if out and bool(bombs.call("is_live", id)):
+		bombs.call("defuse", id)
+
+
+## Bom chỉ đếm khi người chơi chạm được vào bàn: đang chơi (không popup của màn, không búa bay), không sao Gợi ý đang
+## bay, không popup nào của Main đang mở, app không ở nền. Khung đầu sau khi app quay lại bị bỏ.
+func _bomb_can_tick() -> bool:
+	if state != "playing" or _app_paused or is_instance_valid(_hint_fx):
+		return false
+	var h := _host()
+	return h == null or not h.has_method("popup_count") or int(h.call("popup_count")) == 0
+
+
+func _tick_bombs(delta: float) -> void:
+	if bombs == null or not bool(bombs.get("started")):
+		return
+	if not _bomb_can_tick():
+		return
+	if _skip_tick:
+		_skip_tick = false
+		return
+	var hit: String = bombs.call("tick", minf(delta, BOMB_MAX_STEP))
+	if hit != "":
+		_bomb_exploded(hit)
+
+
+## Bom về 0: thua ngay (Game ghi lại trước), chặn chạm, nổ, khoảng boom_popup_sec giây sau hiện popup "Bùm!".
+func _bomb_exploded(id: String) -> void:
+	_set_state("over")
+	_set_smash_mode(false)
+	var live: int = bombs.call("live_count")
+	Game.special_lost(attempt, "bomb", live)
+	bombs.call("explode", id, _overlay, board_view)
+	await get_tree().create_timer(float(Config.SPECIAL.boom_popup_sec)).timeout
+	if _left:
+		return
+	await _special_end_popup("boom")
+
+
+## Hết bước (Màn đặc biệt không cứu lượt): thua, popup "Thử thách thất bại".
+func _special_fail(reason: String) -> void:
+	_set_state("over")
+	var live: int = bombs.call("live_count")
+	bombs.call("stop_all")
+	Game.special_lost(attempt, reason, live)
+	await _special_end_popup("fail")
+
+
+## Popup thua: "Level N" vào level chính kế (đổi tại chỗ), X về Home. Không interstitial.
+func _special_end_popup(mode: String) -> void:
+	var r: Variant = await _popup_scene(POPUP_SPECIAL_END, {"mode": mode, "level": int(Game.s.level)})
+	if _left:
+		return
+	if r is Dictionary and str(r.get("action", "")) == "level":
+		await _continue_main()
+	else:
+		_leave("home")
+
+
+## Thắng: popup hộp quà (booster đã vào kho; x2 bằng quảng cáo), interstitial result_exit theo nhịp thẻ thắng, rồi
+## vào level chính kế.
+func _special_win(res: Dictionary) -> void:
+	var wr: Variant = await _popup_scene(POPUP_SPECIAL_END, {"mode": "win", "reward": str(res.get("reward", "hint")),
+		"x2_available": bool(res.get("x2_available", false))})
+	if _left:
+		return
+	var x2 := wr is Dictionary and bool(wr.get("x2_taken", false))
+	await Game.special_leave_win(x2)
+	if _left:
+		return
+	await _continue_main()
+
+
+## Rời Màn đặc biệt sang level chính kế ngay trong màn này (màn chuyển cảnh load_transition), hoặc về Home khi hết
+## level, sang màn hết mạng khi hết mạng.
+func _continue_main() -> void:
+	_special = false
+	bombs.call("clear")
+	if not Game.level_exists(int(Game.s.level)):
+		_leave("home")
+		return
+	if not _can_play():
+		_leave("no_lives")
+		return
+	_warm_result_card()
+	_reveal_level(int(Game.s.level))
+	await _start_level()
+
+
+## Vào Màn đặc biệt từ popup mời sau thẻ thắng: màn mưa bom phủ kín, dựng bàn Special bên dưới rồi mở ra.
+func _enter_special() -> void:
+	var start := func() -> void:
+		_special = true
+		_start_level()
+	var h := _host()
+	if h != null and h.has_method("curtain_swap"):
+		await h.curtain_swap(start, BombCurtain)
+	else:
+		start.call()
+
+
+## Rời màn (nút Rời màn, Home trong cài đặt, Back): hỏi trước; đồng ý thì thua (vé đã dùng) và về Home, không
+## interstitial.
+func _on_leave_special() -> void:
+	if state != "playing":
+		return
+	Sfx.play("button")
+	_set_state("dialog")
+	var dlg := Dialog.new(tr("special_leave_title"), tr("special_leave_body"), [
+		{"id": "leave", "text": tr("special_leave_yes"), "kind": "danger", "name": "LeaveButton"},
+		{"id": "stay", "text": tr("special_leave_no"), "kind": "ghost", "name": "StayButton"}])
+	var r: Variant = await _ask(dlg)
+	if _left:
+		return
+	if str(r) != "leave":
+		_set_state("playing")
+		_reset_think()
+		return
+	_set_state("over")
+	var live: int = bombs.call("live_count")
+	bombs.call("stop_all")
+	Game.special_lost(attempt, "quit", live)
+	_leave("home")

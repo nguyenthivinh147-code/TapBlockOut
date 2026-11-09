@@ -52,6 +52,9 @@ static var _last_kind := -1
 
 ## Candy kind (index in CANDY_TEX); -1 picks one at random, never the last curtain's. Set before adding to the tree.
 var kind := -1
+## Sprite used instead of a candy kind (bomb_curtain.gd: the Special Bomb rain), with its own backing tone.
+var custom_tex: String = ""
+var custom_backing: Color = Color.BLACK
 var _rng := RandomNumberGenerator.new()
 var _backing: ColorRect = null
 ## Rows from the bottom; each an Array of {node, slot (centre), scale, tilt}, in landing order.
@@ -71,14 +74,15 @@ func _ready() -> void:
 	# The full-rect anchors size it on the next layout pass; the parent (Main) already has the screen's size.
 	var parent := get_parent() as Control
 	_screen = parent.size if parent != null and parent.size != Vector2.ZERO else get_viewport_rect().size
-	if kind < 0 or kind >= CANDY_TEX.size():
+	if custom_tex == "" and (kind < 0 or kind >= CANDY_TEX.size()):
 		kind = _rng.randi_range(0, CANDY_TEX.size() - 1)
 		if kind == _last_kind:
 			kind = (kind + _rng.randi_range(1, CANDY_TEX.size() - 1)) % CANDY_TEX.size()
-	_last_kind = kind
+	if custom_tex == "":
+		_last_kind = kind
 	_backing = ColorRect.new()
 	_backing.name = "Backing"
-	_backing.color = BACKING[kind]
+	_backing.color = custom_backing if custom_tex != "" else BACKING[kind]
 	_backing.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_backing.position = Vector2(0.0, _screen.y)
 	_backing.size = Vector2(_screen.x, 0.0)
@@ -89,7 +93,8 @@ func _ready() -> void:
 ## Lays the candies out on the grid, above the screen; close() drops them in.
 func _build() -> void:
 	var c: Dictionary = Config.CONTENT
-	var tex: Texture2D = load(CANDY_TEX[kind]) if ResourceLoader.exists(CANDY_TEX[kind]) else null
+	var path := custom_tex if custom_tex != "" else CANDY_TEX[kind]
+	var tex: Texture2D = load(path) if ResourceLoader.exists(path) else null
 	var cols := maxi(int(c.candy_curtain_cols), 1)
 	var dx := _screen.x / cols
 	var dy := dx * float(c.candy_curtain_row_gap)

@@ -16,12 +16,16 @@ const _ECON := {
 	"rescue_prices": [1900, 2200, 2500, 2800],
 	"rescue_moves": 3,
 	"rescue_video_max": 4,
+	## Popup cứu lượt kèm Helper Pack (wireframe 4.7): lần cứu đầu của ván khi đây là lần hết MOVES thứ
+	## helper_pack_fail liên tiếp ở level đó và kho hết +3 Move; gói bán là SKU helper_pack_sku.
+	"helper_pack_fail": 3,
+	"helper_pack_sku": "helper_great",
 	"challenge_coins": 100,
 }
 
 const _LIVES := {
 	"max": 10,
-	"regen_sec": 900,
+	"regen_sec": 300,
 	"from_level": 10,
 }
 
@@ -36,8 +40,9 @@ const _ADS := {
 
 const _UNLOCK := {
 	"daily_gift": 4, "hint": 5, "shop": 5, "move": 12, "smash": 17,
-	"lives": 10, "starter": 10, "review": 10, "challenge": 50, "leaderboard": 8, "road_trip": 2,
-	"stone": 14, "ice": 30, "chain": 40, "layer": 55, "fog": 70, "pulse": 90,
+	"lives": 10, "starter": 10, "review": 10, "challenge": 50, "leaderboard": 8, "road_trip": 70, "win_streak": 40,
+	"special_bomb": 50,
+	"stone": 14, "ice": 30, "chain": 40, "layer": 55, "fog": 70, "pulse": 90, "frost": 110, "ribbon": 130,
 }
 
 ## On/off switch per Config.UNLOCK feature (missing key = on). Off: Unlocks.is_open is false at every level, the win
@@ -92,22 +97,24 @@ const _COSMETICS := {
 const _SKUS := {
 	"gold_pack_1": {"usd": 1.99, "consumable": true, "gold": 1000},
 	"gold_pack_2": {"usd": 7.99, "consumable": true, "gold": 5000},
-	"gold_pack_3": {"usd": 14.99, "consumable": true, "gold": 10000},
+	"gold_pack_3": {"usd": 14.99, "consumable": true, "gold": 11000},
 	"gold_pack_4": {"usd": 29.99, "consumable": true, "gold": 25000},
 	"gold_pack_5": {"usd": 49.99, "consumable": true, "gold": 50000},
-	"gold_pack_6": {"usd": 99.99, "consumable": true, "gold": 100000},
-	"gold_pack_1_sale": {"usd": 0.99, "consumable": true, "gold": 2000},
+	"gold_pack_6": {"usd": 99.99, "consumable": true, "gold": 120000},
+	# Pack 1 keeps its price on sale and doubles the gold (badge "x2"); the others halve the price (badge "-50%").
+	"gold_pack_1_sale": {"usd": 1.99, "consumable": true, "gold": 2000},
 	"gold_pack_2_sale": {"usd": 3.99, "consumable": true, "gold": 5000},
-	"gold_pack_3_sale": {"usd": 7.49, "consumable": true, "gold": 10000},
+	"gold_pack_3_sale": {"usd": 7.49, "consumable": true, "gold": 11000},
 	"gold_pack_4_sale": {"usd": 14.99, "consumable": true, "gold": 25000},
 	"gold_pack_5_sale": {"usd": 24.99, "consumable": true, "gold": 50000},
-	"gold_pack_6_sale": {"usd": 49.99, "consumable": true, "gold": 100000},
-	"remove_ads": {"usd": 4.99, "consumable": false, "gold": 500, "no_ads": true},
+	"gold_pack_6_sale": {"usd": 49.99, "consumable": true, "gold": 120000},
+	# Like the reference game's No Ads (cube.sort.color.ads.1): no ads only.
+	"remove_ads": {"usd": 5.99, "consumable": false, "no_ads": true},
 	"starter_pack": {"usd": 6.99, "consumable": false, "gold": 6000,
 		"inv": {"hint": 1, "move": 1, "smash": 1}},
 	"rescue_pack": {"usd": 0.99, "consumable": true, "inv": {"move": 1}},
-	"level_pack": {"usd": 4.99, "consumable": true, "gold": 2000,
-		"inv": {"hint": 1, "move": 1, "smash": 1}},
+	"level_pack": {"usd": 4.99, "consumable": true, "gold": 3000,
+		"inv": {"hint": 2, "move": 2, "smash": 2}},
 	# Mua lại được mỗi tuần nên consumable; trạng thái VIP nằm ở s.weekly.vip.
 	"weekly_pass": {"usd": 4.99, "consumable": true, "weekly_vip": true},
 	"special_pack": {"usd": 10.99, "consumable": true, "gold": 12000,
@@ -118,6 +125,20 @@ const _SKUS := {
 	"chain_pack_1": {"usd": 0.99, "consumable": true, "gold": 1500},
 	"chain_pack_2": {"usd": 2.99, "consumable": true, "gold": 3000,
 		"inv": {"hint": 1, "move": 1}},
+	# No Ads Bundle (popup 2.4 and the Shop), like the reference game's cube.sort.color.ads.3: no ads plus gold and
+	# 3 of each booster. Owning either no_ads SKU hides both (Shop section, Home icon, popup).
+	"remove_ads_bundle": {"usd": 9.99, "consumable": false, "gold": 3000, "no_ads": true,
+		"inv": {"hint": 3, "move": 3, "smash": 3}},
+	# Shop Helper Packs (boosters only). helper_great is also the Helper Pack of the out-of-moves popup 4.7.
+	"helper_great": {"usd": 3.99, "consumable": true, "inv": {"hint": 2, "move": 2, "smash": 1}},
+	"helper_epic": {"usd": 4.99, "consumable": true, "inv": {"hint": 3, "move": 2, "smash": 1}},
+	# Shop Bundles: gold, boosters and minutes of infinite lives (inf_min).
+	"bundle_sweet": {"usd": 4.99, "consumable": true, "gold": 3000,
+		"inv": {"hint": 1, "move": 1, "smash": 1}, "inf_min": 60},
+	"bundle_tasty": {"usd": 9.99, "consumable": true, "gold": 7000,
+		"inv": {"hint": 2, "move": 2, "smash": 2}, "inf_min": 180},
+	"bundle_yummy": {"usd": 14.99, "consumable": true, "gold": 12000,
+		"inv": {"hint": 3, "move": 3, "smash": 3}, "inf_min": 360},
 }
 
 ## Điều kiện hiện gói (PackConditionSO). level_appear: từ level này; purchase_limit: 0 = không giới hạn;
@@ -165,7 +186,7 @@ const _WEEKLY := {
 const _CHAIN := {
 	"days_to_existence": 1,
 	"days_to_reset": 3,
-	"level_unlock": 24,
+	"level_unlock": 100,
 	"require_lose": -1,
 	"window": 6,
 	"sequences": [
@@ -193,8 +214,10 @@ const _CHAIN := {
 }
 
 ## Leaderboard theo league (design.md mục 7). Level từ Config.UNLOCK.leaderboard có `pieces_*` khối đặc biệt
-## (theo độ khó); phá một khối được 1 mảnh = 1 điểm, cộng khi thắng. League theo tổng điểm, chỉ lên không xuống.
-## leagues: {id, min, reward {coins, items, inf_min}, bot_base, players}. League đầu có min 0; reward nhận khi vào league.
+## (theo độ khó); phá một khối được 1 mảnh = 1 điểm, cộng khi thắng. League theo điểm của tuần, chỉ lên trong tuần.
+## Tuần dài `week_days` ngày, tính từ lúc mở khoá; hết tuần thì điểm về 0, về league đầu, thưởng league nhận lại được.
+## leagues: {id, min, reward {coins, items, inf_min}, bot_base, players}. League đầu có min 0 và không có thưởng;
+## reward nhận khi vào league. min là đề xuất: chơi 20 level/ngày tới Platinum, 60 level/ngày tới One Above All.
 ## bot_base: điểm tăng cơ bản mỗi ngày của bot; players: số người chơi mô phỏng của league, dùng cho Top %.
 ## Bot tăng điểm mỗi ngày lúc `grow_hour` giờ ở múi GMT+`grow_tz_hours`:
 ## tăng = bot_base + round(randi_range(bot_rand) * randf_range(bot_var)). Vắng lâu thì chỉ bù tối đa `grow_max_days` ngày.
@@ -215,16 +238,37 @@ const _LEADERBOARD := {
 	"bot_avatar_default_pct": 80,
 	"bot_frame_default_pct": 85,
 	"carry_max": 10,
-	"top_span": 1000,
+	"top_span": 950,
 	"world_size": 50,
+	"week_days": 7,
 	"leagues": [
-		{"id": "silver", "min": 0, "reward": {"coins": 100, "items": {}}, "bot_base": 1, "players": 48000},
-		{"id": "gold", "min": 30, "reward": {"coins": 300, "items": {"hint": 1}}, "bot_base": 2, "players": 24000},
-		{"id": "platinum", "min": 80, "reward": {"coins": 500, "items": {"move": 1}}, "bot_base": 3, "players": 14000},
-		{"id": "emerald", "min": 180, "reward": {"coins": 800, "items": {"smash": 1}}, "bot_base": 4, "players": 8000},
-		{"id": "diamond", "min": 330, "reward": {"coins": 1200, "items": {"hint": 1, "move": 1}}, "bot_base": 5, "players": 4000},
-		{"id": "immortal", "min": 550, "reward": {"coins": 2000, "items": {"hint": 1, "move": 1, "smash": 1}}, "bot_base": 7, "players": 1600},
-		{"id": "one_above_all", "min": 1000, "reward": {"coins": 5000, "items": {"hint": 2, "move": 2, "smash": 2}, "inf_min": 60}, "bot_base": 10, "players": 400},
+		{"id": "silver", "min": 0, "reward": {"coins": 0, "items": {}}, "bot_base": 6, "players": 48000},
+		{"id": "gold", "min": 150, "reward": {"coins": 300, "items": {"hint": 1}}, "bot_base": 7, "players": 24000},
+		{"id": "platinum", "min": 300, "reward": {"coins": 500, "items": {"move": 1}}, "bot_base": 8, "players": 14000},
+		{"id": "emerald", "min": 450, "reward": {"coins": 800, "items": {"smash": 1}}, "bot_base": 9, "players": 8000},
+		{"id": "diamond", "min": 600, "reward": {"coins": 1200, "items": {"hint": 1, "move": 1}}, "bot_base": 10, "players": 4000},
+		{"id": "immortal", "min": 770, "reward": {"coins": 2000, "items": {"hint": 1, "move": 1, "smash": 1}}, "bot_base": 11, "players": 1600},
+		{"id": "one_above_all", "min": 950, "reward": {"coins": 5000, "items": {"hint": 2, "move": 2, "smash": 2}, "inf_min": 60}, "bot_base": 12, "players": 400},
+	],
+}
+
+## Win Streak (design.md mục 7 "Win Streak", ME_WinStreakConfig của color-cube-match-puzzle). active_days: thứ theo
+## quy ước Godot (0 = Chủ nhật), các ngày khác chỉ nhận quà. Mốc là chuỗi thực (tổng Gap của Unity); thưởng {coins,
+## items, inf_min}. Gold Unity nhân 6 theo giá refill (150 -> 900); AutoFill, Storage, Capacity -> Gợi ý, +3 Move,
+## Phá khối; InfiniteHeart theo phút của HeartConfigSO. Mở từ Config.UNLOCK.win_streak (LevelAppear 40).
+const _WIN_STREAK := {
+	"active_days": [5, 6, 0],
+	"milestones": [
+		{"streak": 2, "reward": {"inf_min": 15}},
+		{"streak": 4, "reward": {"items": {"hint": 1}}},
+		{"streak": 7, "reward": {"inf_min": 20}},
+		{"streak": 10, "reward": {"items": {"move": 1}}},
+		{"streak": 14, "reward": {"inf_min": 20, "items": {"hint": 1}}},
+		{"streak": 18, "reward": {"coins": 300, "items": {"move": 1}}},
+		{"streak": 23, "reward": {"inf_min": 20, "items": {"smash": 1}}},
+		{"streak": 28, "reward": {"coins": 300, "inf_min": 45, "items": {"move": 1}}},
+		{"streak": 34, "reward": {"coins": 600, "inf_min": 20, "items": {"hint": 1}}},
+		{"streak": 40, "reward": {"coins": 1500, "inf_min": 60, "items": {"smash": 2}}},
 	],
 }
 
@@ -236,7 +280,7 @@ const _OFFERS := {
 	"starter_pack": {"sku": "starter_pack", "after_level": 10, "at_run": 12, "hours": 48},
 	"remove_ads": {"sku": "remove_ads", "after_inter_today": 3, "per_day": 1, "max_total": 3},
 	"rescue_pack": {"sku": "rescue_pack", "fail_streak": 3, "cooldown_hours": 24},
-	"level_pack": {"sku": "level_pack", "every_levels": 10, "hours": 72},
+	"level_pack": {"sku": "level_pack", "every_levels": 50, "hours": 72},
 }
 
 ## Lịch thông báo (theo GAME-GUIDE mục 15). Giờ theo giờ máy.
@@ -255,7 +299,7 @@ const _NOTIF := {
 	"evening_days": 30,
 }
 
-## Road Trip (design.md mục 7 "Road Trip"): đường 400 level riêng (data/road_trip, bộ MoreColor), mở từ UNLOCK.road_trip.
+## Road Trip (design.md mục 7 "Road Trip"): đường 400 level riêng (data/road_trip), mở từ UNLOCK.road_trip.
 ## Chơi không tốn mạng, thắng không cộng gold; thưởng là hộp quà ở level trong `boxes` (hộp thứ i cho
 ## ROAD_TRIP_REWARDS[i]). Hết bước: xem quảng cáo +revive_moves, tối đa revive_max lần mỗi lượt chơi.
 const _ROAD_TRIP := {
@@ -273,6 +317,48 @@ const ROAD_TRIP_REWARDS := [
 	{"hint": 1, "smash": 1}, {"smash": 1, "move": 1}, {"hint": 1, "smash": 1}, {"hint": 1, "move": 1},
 	{"hint": 1, "smash": 1}, {"smash": 1, "move": 1}, {"hint": 1, "smash": 1}, {"hint": 1, "smash": 1, "move": 1},
 ]
+
+## Màn đặc biệt (design.md mục 7 "Màn đặc biệt"; logic src/meta/special_bomb.gd, src/core/special_board.gd), mở từ
+## UNLOCK.special_bomb. Vé: ngăn chờ giữ tối đa 1 vé, hồi sau timer_sec kể từ lúc dùng; ngăn thưởng +ticket_hard /
+## +ticket_very_hard mỗi lần thắng level chính Hard / VeryHard, bonus_cap vé (0 = không giới hạn).
+## Bàn: `boards` bàn sinh sẵn trong data/special (tools/gen_special.gd), hình chữ nhật rect_w_* x rect_h_* lát kín,
+## cells_per_block_* ô mỗi khối, số lượt dọn bàn nhắm rounds_share x số khối, trọng số khối bị chặn mũ blocked_power;
+## moves = số khối + slack (slack_plus1_share bàn +1, slack_plus2_share bàn +2).
+## Bom: bombs_start + số trận thắng / bombs_every quả, tối đa bombs_max. Khối mang bom có số lần chạm để gỡ trong
+## [bomb_min_taps, bomb_max_share x số khối]; số giây = bomb_base_sec + bomb_sec_per_tap x số khối phải chạm (cộng dồn
+## theo thứ tự gỡ). Còn warn_sec giây thì ngòi cháy và tích tắc; nổ xong boom_popup_sec giây thì hiện popup "Bùm!".
+## Thắng: 1 booster rút đều trong mảng reward_kinds, lặp tên để đặt tỉ lệ (x2 bằng rewarded `special_x2`).
+const _SPECIAL := {
+	"boards": 100,
+	"timer_sec": 7200,
+	"ticket_hard": 1,
+	"ticket_very_hard": 1,
+	"bonus_cap": 0,
+	"rect_w_min": 10,
+	"rect_w_max": 12,
+	"rect_h_min": 14,
+	"rect_h_max": 16,
+	"cells_per_block_min": 3.0,
+	"cells_per_block_max": 3.4,
+	"rounds_share": 0.45,
+	"blocked_power": 2,
+	"slack": 3,
+	"slack_plus1_share": 0.1,
+	"slack_plus2_share": 0.02,
+	"bombs_start": 1,
+	"bombs_every": 20,
+	"bombs_max": 6,
+	"bomb_min_taps": 4,
+	"bomb_max_share": 0.8,
+	"bomb_base_sec": 19,
+	"bomb_sec_per_tap": 1.0,
+	"bomb_scale": 1.3,
+	"warn_sec": 3,
+	"boom_popup_sec": 1.0,
+	"boom_haptic_ms": 120,
+	# Drawn uniformly from the array, so repeats set the odds: hint 60%, move 30%, smash 10%.
+	"reward_kinds": ["hint", "hint", "hint", "hint", "hint", "hint", "move", "move", "move", "smash"],
+}
 
 const _CONTENT := {
 	"demo_max_level": 20,
@@ -347,6 +433,15 @@ const _CONTENT := {
 	"music_fade_out_sec": 0.5,
 	"build": "v1",
 	"support_email": "support@horusvn.com",
+	# Popup cập nhật lúc mở game (popup_update.gd): phiên bản app (application/config/version) thấp hơn
+	# latest_version thì mời cập nhật, có Để sau; thấp hơn min_version thì bắt buộc, không có Để sau. Trống là tắt.
+	# Remote Config `content_latest_version`, `content_min_version`. Nút Cập nhật mở store_url.
+	"latest_version": "",
+	"min_version": "",
+	"store_url": "https://play.google.com/store/apps/details?id=com.tungcv2.tapblockout",
+	# Kiểm có mạng (net_check.gd) trước khi mua hàng hoặc xem video: GET net_check_url, chờ tối đa net_check_sec.
+	"net_check_url": "https://www.google.com/generate_204",
+	"net_check_sec": 3.0,
 	"ftue_steps": ["open", "first_tap", "first_win", "first_x2", "first_booster", "run_2", "run_5", "level_10"],
 }
 
@@ -388,6 +483,34 @@ const LEVEL_MECH_WEIGHTS := [0.35, 0.4, 0.25]
 const LEVEL_REST_EVERY := 4
 const LEVEL_REST_AT := 3
 const LEVEL_MECH_FRESH := 10
+## Cover mechanics, pudding (`ice`) and ice (`frost`), never both in one level (design.md section 4): a block's `ice`
+## field is its layer count, 0..COVER_MAX_LAYERS; each neighbouring block that leaves the board strips one layer.
+## Share of covered blocks: COVER_SHARE_LO -> COVER_SHARE_HI over COVER_SHARE_OVER levels from the kind's unlock. From
+## COVER_DOUBLE_AFTER levels past the unlock, COVER_DOUBLE_LO -> COVER_DOUBLE_HI of the covered blocks (over
+## COVER_DOUBLE_OVER levels) get 2 layers; a 2-layer block needs at least 2 neighbouring blocks.
+const COVER_MAX_LAYERS := 2
+const COVER_SHARE_LO := 0.10
+const COVER_SHARE_HI := 0.28
+const COVER_SHARE_OVER := 60
+const COVER_DOUBLE_AFTER := 10
+const COVER_DOUBLE_LO := 0.2
+const COVER_DOUBLE_HI := 0.5
+const COVER_DOUBLE_OVER := 60
+## Ribbon (design.md section 4): a block wears 1..RIBBON_MAX_LAYERS ribbons over its candy (`ribbons`, outer first);
+## each ribbon peels like the paper box shell. Max ribbons by block size: RIBBON_CELL_CAP[mini(cells, size - 1)] (1 cell
+## none, 2 cells 2). Regular levels: up to mini(RIBBON_COUNT_MAX, 1 + (id - unlock) / RIBBON_COUNT_EVERY) ribbon blocks,
+## each with 1..mini(RIBBON_MAX_LAYERS, RIBBON_LAYERS_START + (id - unlock) / RIBBON_LAYERS_EVERY) ribbons. Teaching
+## level: RIBBON_TEACH_SMALL (min, max) blocks with 1..RIBBON_TEACH_SMALL_LAYERS ribbons, plus one block of 3+ cells
+## with RIBBON_TEACH_BIG (min, max) ribbons, late in the solve order.
+const RIBBON_MAX_LAYERS := 4
+const RIBBON_CELL_CAP := [0, 0, 2, 4]
+const RIBBON_COUNT_MAX := 5
+const RIBBON_COUNT_EVERY := 15
+const RIBBON_LAYERS_START := 2
+const RIBBON_LAYERS_EVERY := 30
+const RIBBON_TEACH_SMALL := Vector2i(3, 5)
+const RIBBON_TEACH_SMALL_LAYERS := 2
+const RIBBON_TEACH_BIG := Vector2i(3, 4)
 ## Clear rounds (Solver.clear_rounds) of a generated level stay within max(LEVEL_ROUNDS_TOL_MIN,
 ## LEVEL_ROUNDS_TOL * target) of DifficultyCurve.wave_count.
 const LEVEL_ROUNDS_TOL := 0.1
@@ -418,7 +541,8 @@ const _SALE_WEEKDAYS := [5, 6, 0]
 ## Weekend sale cho ai: 1 = mọi người chơi, 2 = chỉ người chưa mua gói nào, 3 = tắt.
 ## Remote Config: `weekend_sale_mode`.
 const _SALE_MODE := 1
-## Số % ghi trên nhãn sale (chỉ để hiển thị; giá thật do SKU `_sale` quyết định).
+## Số % ghi trên nhãn sale của gói `_sale` rẻ hơn gói thường (chỉ để hiển thị; giá thật do SKU `_sale` quyết định).
+## Gói `_sale` cùng giá mà nhiều gold hơn thì nhãn ghi số lần gold (Shop.sale_tag), không dùng số này.
 const _SALE_PERCENT := 50
 
 static var ECON: Dictionary = _ECON.duplicate(true)
@@ -436,6 +560,8 @@ static var WEEKLY: Dictionary = _WEEKLY.duplicate(true)
 static var CHAIN: Dictionary = _CHAIN.duplicate(true)
 static var LEADERBOARD: Dictionary = _LEADERBOARD.duplicate(true)
 static var ROAD_TRIP: Dictionary = _ROAD_TRIP.duplicate(true)
+static var SPECIAL: Dictionary = _SPECIAL.duplicate(true)
+static var WIN_STREAK: Dictionary = _WIN_STREAK.duplicate(true)
 static var CONTENT: Dictionary = _CONTENT.duplicate(true)
 static var SALE_WEEKDAYS: Array = _SALE_WEEKDAYS.duplicate(true)
 static var SALE_MODE: int = _SALE_MODE
@@ -495,6 +621,8 @@ static func reset() -> void:
 	CHAIN = _CHAIN.duplicate(true)
 	LEADERBOARD = _LEADERBOARD.duplicate(true)
 	ROAD_TRIP = _ROAD_TRIP.duplicate(true)
+	SPECIAL = _SPECIAL.duplicate(true)
+	WIN_STREAK = _WIN_STREAK.duplicate(true)
 	CONTENT = _CONTENT.duplicate(true)
 	SALE_WEEKDAYS = _SALE_WEEKDAYS.duplicate(true)
 	SALE_MODE = _SALE_MODE
@@ -531,7 +659,7 @@ static func apply_remote(values: Dictionary) -> void:
 		"econ": ECON, "lives": LIVES, "ads": ADS, "unlock": UNLOCK, "features": FEATURES,
 		"cosmetics": COSMETICS, "skus": SKUS, "offers": OFFERS,
 		"notif": NOTIF, "content": CONTENT, "weekly": WEEKLY, "chain": CHAIN,
-		"leaderboard": LEADERBOARD, "road_trip": ROAD_TRIP,
+		"leaderboard": LEADERBOARD, "road_trip": ROAD_TRIP, "win_streak": WIN_STREAK, "special": SPECIAL,
 	}
 	for raw_key in values:
 		var key := str(raw_key).to_lower()

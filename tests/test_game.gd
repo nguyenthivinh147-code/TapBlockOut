@@ -244,9 +244,9 @@ func test_purchase_delivered_once(t: T) -> void:
 	r = await g.buy_sku("remove_ads")
 	t.eq(r.granted, true, "remove_ads")
 	t.eq(bool(g.s.no_ads), true, "no_ads")
-	t.eq(int(g.s.coins), 2500, "+500")
+	t.eq(int(g.s.coins), 2000, "gói thường chỉ bỏ quảng cáo")
 	t.eq(await g.restore_purchases(), true, "restore")
-	t.eq(int(g.s.coins), 2500, "restore không cộng lại")
+	t.eq(int(g.s.coins), 2000, "restore không cộng lại")
 	t.eq(_p().iap.pending().size(), 0, "restore đã finish")
 	t.eq(await g.buy_sku("nope"), {"status": "error", "sku": "nope", "granted": false}, "sku lạ")
 

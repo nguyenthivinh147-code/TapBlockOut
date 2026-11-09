@@ -61,7 +61,7 @@ static func try_activate(s: Dictionary, now: int, level: int) -> bool:
 	var seqs := sequences()
 	if bool(c.active) or seqs.is_empty():
 		return false
-	if level < int(Config.CHAIN.get("level_unlock", 24)) or now < int(c.cooldown_until):
+	if level < int(Config.CHAIN.get("level_unlock", 100)) or now < int(c.cooldown_until):
 		return false
 	var q: Dictionary = seqs[int(c.rotation) % seqs.size()]
 	c["active"] = true

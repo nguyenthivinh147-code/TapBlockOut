@@ -61,10 +61,14 @@ const CRYSTAL_GRIND_GLINTS := 0.8  # mảnh kính lúc khối crystal bắt đ�
 const CRYSTAL_SMASH_GLINTS := 1.6  # mảnh kính toả tròn lúc khối crystal bị búa gõ
 const GATE_TIME := 0.22
 const CRATE_KNOCK := 0.42  # giây thùng sắt rung và loé khi bị gõ
-const JELLY_JOLT := 2.2  # khối phủ pudding bị va nhún mạnh gấp chừng này khối thường
+const JELLY_JOLT := 2.2  # khối phủ pudding bị va nhún mạnh gấp chừng này khối thường (khối phủ băng nhún như thường)
 const FOG_LIFT_GROW := 1.15  # sương tan: lớp sương phồng ra chừng này lần trong lúc mờ đi
 const FOG_LIFT_TIME := 0.45
 const FOG_NUDGE := 0.05  # chạm khối còn trong sương: lắc ngang tại chỗ chừng này ô
+const COVER_SQUISH := 0.16  # chạm khối còn pudding: nén dẹt chừng này rồi rung như thạch
+const COVER_SQUISH_TIME := 0.5
+const COVER_HALF := 0.5  # bóc lớp ngoài của khối 2 lớp: hiệu ứng vỡ cỡ chừng này lần lúc bóc lớp cuối
+const COVER_HALF_DB := -6.0  # và tiếng nhỏ hơn chừng này dB
 const BOX_FLY_MIN := 0.22  # giây ngắn nhất hộp giấy bay tới thanh
 const HINT_POP := 1.22  # khối được Gợi ý nảy to chừng này lúc sao chạm
 const HINT_POP_GLOW := 3.0  # độ loé trắng lúc chạm, tắt dần về mức nhấp nháy (1)
@@ -141,11 +145,17 @@ class BlockNode extends Control:
 			return
 		var tape := BoardFx.tape_center(lc) if layers["paper"] > 0.0 else Vector2(-9, -9)
 		var jelly_only := bool(view.get("jelly_only", false))
-		BoardFx.Pudding.set_layers(_body, layers["jelly"], layers["paper"], tape, 0.0 if jelly_only else 1.0)
-		BoardFx.Pudding.set_crystal(_body, layers["crystal"])
+		# `ribbon_only`: lớp ruy băng ngoài bay đi, chỉ vẽ các dải và nơ
+		var ribbon_only := bool(view.get("ribbon_only", false))
+		var candy := 0.0 if jelly_only or ribbon_only else 1.0
+		BoardFx.Pudding.set_layers(_body, layers["jelly"], layers["paper"], tape, candy)
+		BoardFx.Pudding.set_cover(_body, layers["thick"], layers["frost"])
+		BoardFx.Pudding.set_crystal(_body, 0.0 if ribbon_only else layers["crystal"])
+		BoardFx.Pudding.set_ribbons(_body, layers["ribbons"])
 		if shadow != null:
 			BoardFx.Pudding.update_body(shadow.body, lc, cell_size, ramp)
 			BoardFx.Pudding.set_layers(shadow.body, layers["jelly"], 0.0)
+			BoardFx.Pudding.set_cover(shadow.body, layers["thick"], layers["frost"])
 		if not jelly_only:
 			BoardFx.draw_block(self, lc, cell_size, view)
 
@@ -195,6 +205,9 @@ var _shake_tw: Tween = null
 var _rng := RandomNumberGenerator.new()
 var _specials: Dictionary = {}  # id -> true: khối đặc biệt của leaderboard (vẽ bằng chất liệu crystal)
 var _knocked: Dictionary = {}  # Vector2i -> true: ô thùng sắt đang rung (vẽ bằng node riêng)
+## id -> số lớp phủ board đã bóc mà hình chưa bóc: khối kề đã thoát nhưng chưa chạm thanh. Trong lúc đó khối vẫn tính là
+## còn phủ (cover_held), lớp vỡ lúc khối kề chạm thanh (_release_covers).
+var _cover_hold: Dictionary = {}
 
 static var _fx_prewarmed: bool = false
 
@@ -228,6 +241,10 @@ func setup(board: BoardState, area: Vector2 = Vector2.ZERO) -> void:
 		_set_fixed_size(area)
 	for id in board.block_ids():
 		_add_block(id)
+	# Nơ của khối ruy băng tràn ra ngoài khối: vẽ sau khối thường để không bị khối bên cạnh che.
+	for id in _nodes:
+		if int((_nodes[id] as BlockNode).view.get("ribbons", 0)) > 0:
+			_blocks_root.move_child(_nodes[id], -1)
 	# Sương phủ lấn ra ngoài mép khối: khối còn trong sương vẽ sau mọi khối khác để phủ lên mép khối bên cạnh.
 	for id in _nodes:
 		if bool((_nodes[id] as BlockNode).view.get("is_fog_hidden", false)):
@@ -343,6 +360,11 @@ func _cell_at(pos: Vector2) -> Vector2i:
 	return Vector2i(floori(rel.x), floori(rel.y))
 
 
+## Khối còn lớp phủ trên hình mà board đã bóc (khối kề đang lao tới thanh): chạm vào tính là khối còn phủ.
+func cover_held(id: String) -> bool:
+	return _cover_hold.has(id) and _nodes.has(id)
+
+
 func is_animating() -> bool:
 	return _pending > 0
 
@@ -400,6 +422,7 @@ func _clear() -> void:
 	_gate_moves.clear()
 	_gate_shown_seq = _gate_seq
 	_knocked.clear()
+	_cover_hold.clear()
 	for ch in _fx_root.get_children():
 		ch.queue_free()
 	_blocks_root.position = Vector2.ZERO
@@ -427,6 +450,7 @@ func _add_block(id: String) -> void:
 
 
 func _unmap(id: String) -> void:
+	_cover_hold.erase(id)
 	var n: BlockNode = _nodes.get(id, null)
 	if n == null:
 		return
@@ -621,9 +645,11 @@ func apply_result(result: Dictionary) -> void:
 	var kind := str(result.get("kind", "rejected"))
 	var id := str(result.get("id", ""))
 	clear_highlight()
-	if kind == "rejected" or kind == "fog":
+	if kind == "rejected" or kind == "fog" or kind == "covered":
 		if kind == "fog" and _nodes.has(id):
 			_anim_fogged(_nodes[id])
+		elif kind == "covered" and _nodes.has(id):
+			_anim_covered(_nodes[id])
 		_check_done.call_deferred()
 		return
 	# chặn ở cổng thì tiếng cổng đã kêu lúc va, cổng mở ra sau đó không kêu lại
@@ -638,7 +664,11 @@ func apply_result(result: Dictionary) -> void:
 	var dist := int(result.get("distance", 0))
 	match kind:
 		"exit":
-			_anim_exit(node, dir, seq)
+			# khối kề bị bóc lớp phủ: hình giữ lớp tới khi khối này chạm thanh
+			var strips: Array = result.get("stripped", [])
+			for sid in strips:
+				_cover_hold[sid] = int(_cover_hold.get(sid, 0)) + 1
+			_anim_exit(node, dir, seq, strips)
 		"blocked":
 			_anim_bounce(node, dir, float(dist), dist, str(result.get("blocker", "")), "", seq)
 		"gate_closed":
@@ -647,17 +677,18 @@ func apply_result(result: Dictionary) -> void:
 		"chained":
 			Sfx.play("chain")
 			_anim_chained(node, str(result.get("blocker", "")), seq)
-		"crack":
-			Sfx.play("ice")
-			_anim_pop(node, seq)
 		"peel":
-			Sfx.play("layer")
+			# node.view còn là trạng thái trước lượt này (_sync_states chạy sau)
+			if int(node.view.get("ribbons", 0)) > 0:
+				Sfx.play_or("ribbon", "layer")
+			else:
+				Sfx.play("layer")
 			_anim_pop(node, seq)
 	_after_result(seq)
 	_move_end(seq)
 
 
-## Lớp pudding, xích, sương mù, hộp giấy đổi theo board ngay; hộp giấy bay về thanh thuộc lượt `seq`.
+## Xích, sương mù, hộp giấy đổi theo board ngay (lớp phủ chờ khối kề chạm thanh); hộp giấy bay về thanh thuộc lượt `seq`.
 func _after_result(seq: int) -> void:
 	if _board == null:
 		return
@@ -665,8 +696,8 @@ func _after_result(seq: int) -> void:
 
 
 ## Khối lao nhanh dần, gần tới thanh cùng màu thì chậm lại về tốc độ nghiền (trừ khối cuối trên bàn), chạm mặt trong
-## của thanh rồi trôi qua thanh và bị nghiền thành khối vuông nhỏ.
-func _anim_exit(node: BlockNode, dir: Vector2, seq: int) -> void:
+## của thanh rồi trôi qua thanh và bị nghiền thành khối vuông nhỏ. `strips`: khối kề có lớp phủ vỡ lúc chạm thanh.
+func _anim_exit(node: BlockNode, dir: Vector2, seq: int, strips: Array = []) -> void:
 	_unmap(node.id)
 	_nodes.erase(node.id)
 	node.busy = true
@@ -685,7 +716,7 @@ func _anim_exit(node: BlockNode, dir: Vector2, seq: int) -> void:
 	_suck_wind(node, dir, side, time)
 	var tw := node.create_tween()
 	tw.tween_method(_exit_step.bind(node, node.position, dir, stretch, plan[0], plan[1], plan[2]), 0.0, time, time)
-	tw.finished.connect(_grind.bind(node, dir, side, seq))
+	tw.finished.connect(_grind.bind(node, dir, side, seq, strips))
 
 
 ## Đường lao thoát dài `travel` px: nhanh dần đều trong `dash` giây tới tốc độ cao nhất, rồi chậm dần đều trong
@@ -771,8 +802,9 @@ func _leading_point(lc: Array, dir: Vector2) -> Vector2:
 
 ## Khối trôi đều qua thanh cùng màu: phần đã qua mặt trong của thanh bị cắt đi (lùa dưới thanh),
 ## đổi thành khối vuông nhỏ phun ra phía ngoài thanh, toả hình nón. Toạ độ theo dir tính trong toạ độ của BoardView.
-func _grind(node: BlockNode, dir: Vector2, side: String, seq: int) -> void:
+func _grind(node: BlockNode, dir: Vector2, side: String, seq: int, strips: Array = []) -> void:
 	_gate_reach(seq)
+	_release_covers(strips)
 	var ramp := ThemeKit.block_ramp(str(node.view.get("color", "")))
 	var lc := node.local_cells()
 	var inner := _bar_face(dir)
@@ -1028,7 +1060,9 @@ func _impact(node: BlockNode, dir: Vector2, steps: int, blocker: String, gate_si
 			var b: BlockNode = _nodes[blocker]
 			var bxf := b.get_global_transform()
 			var jiggle := 1.0
-			if int(b.view.get("ice", 0)) > 0:
+			if int(b.view.get("ice", 0)) > 0 and str(b.view.get("cover", "")) == BoardState.COVER_FROST:
+				ObstacleFx.frost_hit(_fx_root, world, -dir, _cell)
+			elif int(b.view.get("ice", 0)) > 0:
 				jiggle = JELLY_JOLT
 				ObstacleFx.jelly_hit(_fx_root, world, -dir, _cell)
 			elif str(b.view.get("inner_color", "")) != "":
@@ -1137,7 +1171,44 @@ func _anim_fogged(node: BlockNode) -> void:
 	tw.finished.connect(_finish_busy.bind(node))
 
 
-## Nảy to rồi về, loé sáng: lớp pudding vỡ, hộp giấy bay đi lộ kẹo bên trong. Hạt do `_sync_states` lo theo chất liệu.
+## Khối còn lớp phủ bị chạm: pudding nén dẹt rồi rung như thạch, băng lắc ngang như khối sương. Không đi, không đổi gì
+## trên bàn.
+func _anim_covered(node: BlockNode) -> void:
+	if str(node.view.get("cover", "")) == BoardState.COVER_FROST:
+		_anim_fogged(node)
+		return
+	if node.busy:
+		return
+	node.busy = true
+	_begin()
+	var lc := node.local_cells()
+	var bottom := -INF
+	for c: Vector2i in lc:
+		bottom = maxf(bottom, float(c.y) + 1.0)
+	node.pivot_offset = Vector2(node.size.x * 0.5, bottom * _cell)
+	node.wobble(Vector2(0, 1), COVER_SQUISH, COVER_SQUISH_TIME)
+	var tw := node.create_tween()
+	tw.tween_interval(COVER_SQUISH_TIME)
+	tw.finished.connect(_finish_busy.bind(node))
+
+
+## Lớp phủ của các khối `ids` vỡ trên hình (khối kề vừa chạm thanh): bỏ một lớp đang giữ rồi đọc lại từ board.
+func _release_covers(ids: Array) -> void:
+	if ids.is_empty():
+		return
+	for sid in ids:
+		if not _cover_hold.has(sid):
+			continue
+		var k := int(_cover_hold[sid]) - 1
+		if k <= 0:
+			_cover_hold.erase(sid)
+		else:
+			_cover_hold[sid] = k
+	if _board != null:
+		_sync_states(true)
+
+
+## Nảy to rồi về, loé sáng: hộp giấy bay đi lộ kẹo bên trong. Hạt do `_sync_states` lo theo chất liệu.
 func _anim_pop(node: BlockNode, seq: int) -> void:
 	node.busy = true
 	node.pivot_offset = node.size * 0.5
@@ -1166,9 +1237,10 @@ func _sync_states(animate: bool, seq: int = 0) -> void:
 		var v := _board.block_view(id)
 		if v.is_empty():
 			continue
+		v["ice"] = int(v["ice"]) + int(_cover_hold.get(id, 0))
 		var old := n.view
 		var changed := false
-		for k in ["color", "ice", "chained", "inner_color", "is_fog_hidden"]:
+		for k in ["color", "ice", "chained", "inner_color", "is_fog_hidden", "ribbons"]:
 			if old.get(k) != v.get(k):
 				changed = true
 		if not changed:
@@ -1191,12 +1263,34 @@ func _sync_states(animate: bool, seq: int = 0) -> void:
 			_spawn_ghost(n, {"chain_only": true}, 1.15, 0.28)
 			_reveal_pop(n)
 		if int(old.get("ice", 0)) > int(v.get("ice", 0)):
-			ObstacleFx.jelly_burst(_fx_root, mid, _cell, span)
-			_spawn_ghost(n, {"ice": 1, "jelly_only": true, "color": old.get("color", "")}, 1.28, 0.3)
+			_cover_burst(n, old, v, mid, span)
 		if str(old.get("inner_color", "")) != "" and str(v.get("inner_color", "")) == "":
 			_box_fly(n, old, seq)
 			BoardFx.sparkles(_fx_root, mid, ThemeKit.block_ramp(str(v.get("color", ""))), Vector2.UP, _cell / 110.0, 6)
+		if int(old.get("ribbons", 0)) > int(v.get("ribbons", 0)):
+			_box_fly(n, old, seq, true)
+			BoardFx.sparkles(_fx_root, mid, ThemeKit.block_ramp(str(v.get("color", ""))), Vector2.UP, _cell / 110.0, 6)
 	_refresh_keys()
+
+
+## Một lớp phủ vỡ (khối kề vừa chạm thanh hoặc bị Phá): pudding bung bọt, băng vỡ mảnh, khối nảy nhẹ. Bóc lớp ngoài
+## của khối 2 lớp thì hiệu ứng nhỏ hơn (COVER_HALF) và tiếng nhỏ hơn (COVER_HALF_DB).
+func _cover_burst(n: BlockNode, old: Dictionary, v: Dictionary, mid: Vector2, span: Vector2) -> void:
+	var frost := str(v.get("cover", "")) == BoardState.COVER_FROST
+	var last := int(v.get("ice", 0)) <= 0
+	var size := 1.0 if last else COVER_HALF
+	var db := 0.0 if last else COVER_HALF_DB
+	if frost:
+		Sfx.play("ice", db)
+		ObstacleFx.frost_burst(_fx_root, mid, _cell, span, size)
+	else:
+		Sfx.play_or("pudding", "ice", db)
+		ObstacleFx.jelly_burst(_fx_root, mid, _cell, span, size)
+	var ghost := {"ice": int(old.get("ice", 1)), "cover": str(v.get("cover", "")), "jelly_only": true,
+		"color": old.get("color", "")}
+	_spawn_ghost(n, ghost, lerpf(1.0, 1.28, size), 0.3)
+	if not n.busy:
+		_reveal_pop(n)
 
 
 ## Bản sao khối ở trạng thái cũ (hoặc chỉ một lớp, xem BlockNode._draw), nằm trên khối thật.
@@ -1226,11 +1320,13 @@ func _spawn_ghost(n: BlockNode, old_view: Dictionary, grow: float, dur: float) -
 
 
 ## Hộp giấy (lớp ngoài) lao về thanh cùng màu như khối thoát, tới thanh thì rách tung thành giấy vụn; kẹo bên trong ở lại.
-## Hộp rách xong thì cổng mới đổi theo lượt `seq`, như khối nghiền qua thanh.
-func _box_fly(n: BlockNode, old_view: Dictionary, seq: int = 0) -> void:
+## Hộp rách xong thì cổng mới đổi theo lượt `seq`, như khối nghiền qua thanh. `ribbon`: lớp ruy băng ngoài (các dải cùng
+## nơ, màu cũ) bay đi thay cho hộp, tới thanh thì bung thành sợi ruy băng.
+func _box_fly(n: BlockNode, old_view: Dictionary, seq: int = 0, ribbon: bool = false) -> void:
 	var box := old_view.duplicate()
 	box["is_key"] = false
 	box["special"] = false
+	box["ribbon_only"] = ribbon
 	var g := _make_ghost(n, box)
 	var color := str(old_view.get("color", ""))
 	var dir := Vector2(LevelData.dir_of(color))
@@ -1244,17 +1340,21 @@ func _box_fly(n: BlockNode, old_view: Dictionary, seq: int = 0) -> void:
 	var tw := g.create_tween().set_parallel(true)
 	tw.tween_property(g, "position", g.position + dir * steps * _cell, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.tween_property(g, "scale", Vector2.ONE + axis * SLIDE_STRETCH - Vector2(axis.y, axis.x) * SLIDE_STRETCH * 0.5, time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tw.chain().tween_callback(_box_burst.bind(g, dir, side, color, seq))
+	tw.chain().tween_callback(_box_burst.bind(g, dir, side, color, seq, ribbon))
 
 
-func _box_burst(g: BlockNode, dir: Vector2, side: String, color: String, seq: int) -> void:
+func _box_burst(g: BlockNode, dir: Vector2, side: String, color: String, seq: int, ribbon: bool = false) -> void:
 	_gate_reach(seq)
 	var mouth := g.get_global_transform() * _leading_point(g.local_cells(), dir)
 	var span := maxf(g.size.x, g.size.y)
 	_hit_bar(side, g, dir, false, 1.0, CandyFrame.SPIN_EXIT)
-	ObstacleFx.paper_burst(_fx_root, mouth, dir, _cell, ThemeKit.block_color(color), span)
-	# paper, not candy: sfx_shatter is the candy grind, so the box keeps sfx_exit until a paper-tear sound exists
-	Sfx.play_or("box_tear", "exit")
+	if ribbon:
+		ObstacleFx.ribbon_burst(_fx_root, mouth, dir, _cell, ThemeKit.block_color(color), span)
+		Sfx.play("exit")
+	else:
+		ObstacleFx.paper_burst(_fx_root, mouth, dir, _cell, ThemeKit.block_color(color), span)
+		# paper, not candy: sfx_shatter is the candy grind, so the box keeps sfx_exit until a paper-tear sound exists
+		Sfx.play_or("box_tear", "exit")
 	var tw := g.create_tween().set_parallel(true)
 	tw.tween_property(g, "modulate:a", 0.0, 0.1)
 	tw.tween_property(g, "scale", g.scale * 1.15, 0.1)

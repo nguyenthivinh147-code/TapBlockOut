@@ -96,7 +96,7 @@ func test_no_lives(t: T) -> void:
 func test_helper_pack(t: T) -> void:
 	_g()
 	var p := _mount("popup_helper_pack")
-	_check(t, _btn(p, "GoldButton"), "900", "gói trợ giúp")
+	_check(t, _btn(p, "GoldButton"), "1,900", "gói trợ giúp: giá cứu lượt lần 1")
 	p.free()
 
 

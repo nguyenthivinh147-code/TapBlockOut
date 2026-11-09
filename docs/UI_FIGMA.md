@@ -1,6 +1,6 @@
 # UI theo Figma "Tapblock"
 
-> Từ nay chỉ Home, bàn chơi và HUD trong level, thanh trên (`hub_top.gd`) và thanh dưới (`hub_nav.gd`) còn theo tài liệu này. Mọi màn và popup khác dựng theo prefab Unity của color-cube-match-puzzle: xem `docs/UI_UNITY.md`. Phần "Màn chưa nối logic" bên dưới (stub, `Config.ui_preview`, dữ liệu mẫu) vẫn áp dụng cho mọi màn.
+> Từ nay chỉ Home, bàn chơi và HUD trong level, thanh trên (`hub_top.gd`) và thanh dưới (`hub_nav.gd`) còn theo tài liệu này. Mọi màn và popup khác dựng theo prefab Unity của color-cube-match-puzzle: xem `docs/UI_UNITY.md`. Phần "Màn dựng theo view" bên dưới (`stub_ui.gd`, `Config.ui_preview`, dữ liệu mẫu) vẫn áp dụng cho mọi màn.
 
 Nguồn: file Figma `Tapblock`. Layout lấy từ page **Overview** (wireframe 11 nhóm, khung 390x844). Màu, chữ, component, icon lấy từ page **02 · Foundations**.
 
@@ -13,7 +13,7 @@ Nguồn: file Figma `Tapblock`. Layout lấy từ page **Overview** (wireframe 1
 - Icon `ic_*` tìm thấy trực tiếp theo tên. Tên cũ ánh xạ sang icon Figma qua `ThemeKit.FIGMA_ICON`, bảng này ưu tiên hơn file trong `assets/ui/`.
 - Popup dựng bằng `src/ui/popup_kit.gd`: nền mờ, khung kem, ribbon tiêu đề, nút X. Chữ trên thân kem dùng `ThemeKit.ink_label` hoặc `PopupKit.text`, số vàng dùng `ThemeKit.gold_label`.
 - Màn có khung hi-fi (frame 886×1920, như node `47:3486`: Setting, Ingame Setting, Language, Profile) dựng bằng `PopupKit.make_fig`: số trong code là px đọc thẳng từ Figma, gốc là góc trên trái popup, cả khối thu theo `PopupKit.FIG_SCALE` (720/886). Đặt phần tử bằng `fig_box`, `fig_text`, `fig_icon`, `fig_button`, `fig_toggle`, `fig_link`. `fig_button` co sprite atlas về đúng cao nút (`UiAtlas.fit_box`) nên đầu tròn không méo, và nới vùng chạm lên 96 px màn hình mà hình nút vẫn đúng cỡ Figma. Chữ dài (tiếng Việt) tự thu cỡ cho vừa.
-- Home, Shop, Road Trip, Leaderboard dùng chung `src/ui/hub_top.gd` (avatar, mạng, vàng, settings) và `src/ui/hub_nav.gd` (Shop, Home, Road Trip; từ 2026-11-05 Bảng xếp hạng là icon ở cột trái Home, màn Leaderboard mở thanh dưới với `active` không khớp tab nào nên không tab nào sáng). Shop và Leaderboard ẩn avatar và settings (`hide_side_buttons()`), chỉ còn mạng và vàng.
+- Home, Shop, Road Trip dùng chung `src/ui/hub_top.gd` (avatar, mạng, vàng, settings) và `src/ui/hub_nav.gd` (Shop, Home, Road Trip; Bảng xếp hạng là icon ở cột trái Home). Từ 2026-11-09 Leaderboard là popup đè lên Home, không có thanh trên hay thanh dưới. Shop ẩn avatar và settings (`hide_side_buttons()`), chỉ còn mạng và vàng.
 - Thanh dưới chia ba ô bằng nhau (886/3, khác Figma 338/274, theo video ref chuyển tab). Mỗi ô có nền tím đứng yên (`ShopPanel`, `HomePanel`, `RoadTripPanel`, nằm ngoài nút), sát mép ô, không khe giữa các ô (`SLOT_INSET` 0), cao 151 (`PANEL_H`). Tab đang mở có một ô sáng vàng cao 189 (`HIGHLIGHT_H`, `Highlight`). Ảnh nền tím và vàng có 11 và 7 hàng trong suốt ở đáy nên hai nền chạy quá đáy thanh (248) đúng chừng đó, không lộ nền màn bên dưới, vẽ trên nền tím, dưới icon; icon 168 nhô lên, chữ dưới icon. Hai tab còn lại icon 96.
 - Chuyển tab (nhịp đo từ video ref): mỗi màn dựng thanh dưới mới, thanh nhớ tab mở trước (`HubNav.last_tab`).
   - Khác tab thì ô sáng trượt ngang 0.33 s (quart ease-out) từ ô cũ sang ô mới, đi qua ô ở giữa nếu cách hai ô.
@@ -38,14 +38,14 @@ Nguồn: file Figma `Tapblock`. Layout lấy từ page **Overview** (wireframe 1
 - Font: Baloo, style theo material TextMeshPro "Baloo Outline - Black" của color-cube-match-puzzle (chữ trắng, viền đen, bóng đen lệch xuống). `assets/fonts/baloo.res` là `FontFile` MSDF dựng từ atlas SDF trong `Baloo Bhaijaan Regular 400 SDF.asset` bằng `tools/gen_baloo_font.gd` (project đó không còn file TTF gốc). Font là mặc định cho mọi chữ qua `gui/theme/custom_font` trong `project.godot` và `ThemeKit.make_theme()`; atlas có đủ chữ Latin (cả tiếng Việt) và Cyrillic. Hindi, Hàn, Nhật lấy từ ba font fallback gắn trong `baloo.res`: `assets/fonts/baloo2.res` (Baloo 2: Devanagari, cùng thiết kế Baloo, kèm dấu câu Baloo thiếu như "·"), `jua.res` (Jua: Hangul), `mplus_rounded.res` (M PLUS Rounded 1c Bold: kana, kanji). TTF gốc và license OFL nằm ở `art/fonts/` (không import); `tools/gen_baloo_font.gd` nhúng TTF vào các `.res` đó. Lý do không import TTF thẳng: fallback phải có ascent/descent đúng bằng Baloo (32 và 11.9 ở cỡ 32), vì `Font.get_height()` lấy font cao nhất trong chuỗi fallback mà `UnityUI` dàn chữ theo chiều cao của Baloo (`GODOT_LINE_HEIGHT`); để metric gốc (Baloo 2 cao 52) thì bàn cờ và chữ TMP lệch đi. Script cũng bỏ các glyph Devanagari, Hangul, kana, kanji lẻ tẻ trong atlas Unity để cả cụm chữ sang fallback (Hindi cần shaping thật). Fallback là MSDF với `msdf_pixel_range=14`, `msdf_size=32` như atlas, nên `src/ui/tmp_text.gdshader` (lấy median RGB, giới hạn bởi A) vẽ viền và bóng giống nhau; mỗi font gắn `language_support` (hi, ko, ja) để TextServer ưu tiên đúng font theo ngôn ngữ. `tests/test_i18n.gd` kiểm mọi ký tự của 14 cột đều có trong Baloo hoặc một fallback. Jua chỉ có khoảng 2.350 âm tiết Hangul thông dụng; thêm chữ Hàn mới thì chạy test này.
 - Viền mặc định `ThemeKit.TEXT_OUTLINE` màu đen; label có viền thêm bóng `ThemeKit.underlay()` (offset dọc bằng nửa viền + 1). `ink_label` không viền, không bóng. Viền màu riêng theo ngữ cảnh (nút theo `BUTTON_STROKE`, ribbon, chữ vàng) giữ nguyên. `Button` của Godot không vẽ bóng chữ nên nút chỉ có viền.
 
-## Màn chưa nối logic
+## Màn dựng theo view
 
-- Script `extends "res://src/ui/stub_ui.gd"`, scene cùng tên trong `scenes/`. Nhận `setup({"view": ...})`; không truyền thì lấy dữ liệu mẫu trong `src/ui/sample_data.gd`.
-- Nút chỉ phát `closed({"action": ...})`, không gọi `Game`, không mua hàng, không chạy quảng cáo. Tiền, giá, tên người chơi trên các màn này là số mẫu từ wireframe.
-- `Config.ui_preview()` chặn lối vào ở bản phát hành: chỉ bật khi `OS.is_debug_build()`, gồm cả APK xuất bằng `tools/export_apk.sh` (`--export-debug`). Bản `tools/export_release.sh` ẩn hết. `tests/test_ui_stubs.gd` kiểm điều này.
-- Lối vào khi xem trước: icon Remove Ads, Win Streak trên Home, các mục Hearts, Helper Packs, Bundles trong Shop, nút Help trong cài đặt ở level, và **Settings > Xem trước UI** liệt kê toàn bộ màn theo số wireframe.
+- Script `extends "res://src/ui/stub_ui.gd"`, scene cùng tên trong `scenes/`. Nhận `setup({"view": ...})`; không truyền thì `_sample()`: màn đã nối logic đọc `Game` ở đó (ví dụ `Game.streak_view()`), màn chưa nối lấy dữ liệu mẫu trong `src/ui/sample_data.gd`.
+- Màn đã nối logic gọi `Game` ngay trong màn (mua, nhận thưởng, kiểm mạng) và mở popup chồng lên bằng `open_over` (qua `Main.open_popup`); kết quả trả qua `closed({"action": ...})`. Màn chưa nối chỉ phát `closed`, không gọi `Game`.
+- Còn chưa nối logic (2026-11-09): mục Hearts trong Shop (6.1), `popup_heart_bundle` (5.2), `popup_heart_support` (5.3), `popup_ads_daily` (2.3, ADS Daily đã nằm trong Shop). `Config.ui_preview()` giữ chúng khỏi bản phát hành: chỉ bật khi `OS.is_debug_build()`, gồm cả APK xuất bằng `tools/export_apk.sh` (`--export-debug`). Bản `tools/export_release.sh` ẩn hết. `tests/test_ui_stubs.gd` kiểm điều này.
+- **Settings > Xem trước UI** (`ui_gallery.gd`, chỉ bản debug) liệt kê mọi màn theo số wireframe để duyệt bố cục; mở từ đây thì nút chỉ đóng màn.
 
-Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, truyền `view` thật, đổi nút từ `closed({"action"})` sang hành động thật, bỏ khoá mẫu và điều kiện `ui_preview` của lối vào, sửa `design.md`.
+Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, đọc `Game` trong `_sample()` hoặc truyền `view` thật, đổi nút sang hành động thật, bỏ khoá mẫu và điều kiện `ui_preview` của lối vào, sửa `design.md`.
 
 ## Trạng thái
 
@@ -58,25 +58,36 @@ Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, tru
 | 3.6, 3.10 | Hộp thoại trong `level.gd` | Xong, có logic. Dùng hộp thoại chung thay vì scene riêng |
 | 4.1, 4.4, 4.5 | `win_card`, `popup_rescue`, `lose_card` | Xong, có logic. Rescue giữ nội dung +3 Lượt của game, không phải "Out of Space" |
 | 5.1 | `no_lives` | Xong, có logic |
-| 6.1, 6.2 | `shop`, `shop_mini` | Gold và gói đặc biệt có logic. Hearts, Helper Packs, Bundles chỉ là UI |
+| 6.1, 6.2 | `shop`, `shop_mini` | Gold, gói đặc biệt, Helper Packs (`helper_great`) có logic; `helper_epic` và Bundles (`bundle_sweet`, `bundle_tasty`, `bundle_yummy`) ẩn khỏi Shop từ 2026-11-09, SKU vẫn trong `Config.SKUS` (design.md mục 7; thẻ là bản sao thẻ bundle, nội dung theo `Config.SKUS`). Mục Hearts chỉ là UI, chỉ hiện ở bản debug |
 | 7.1, 7.2 | `popup_offer` | Xong, có logic |
 | 7.3, 7.4 | `chain_offer` | Xong, có logic. Dạng danh sách bước thay vì lưới 2 cột |
 | 7.6 | `weekly_pass`, `popup_weekly_tutorial` | Xong, có logic. Dạng card, chưa toàn màn hình |
 | 10.1, 10.3 | `profile`, `settings` | Xong, có logic, theo hi-fi node `47:3486`. Settings thêm icon thông báo (Figma có 3 icon), Restore và Privacy là chữ gạch chân; nút Language mở popup Language riêng trong `settings.gd` (14 ngôn ngữ của `Game.LANGS`, đúng 14 ô của prefab, ô sáng là `Game.current_lang()`), không dùng stub 10.4. Profile: ô tên hiện biệt danh đã đặt (chưa đặt thì "Người chơi"), bút chì mở 10.2, dòng UID hiện gold; món chưa có hiện khoá trên ô, nút giá kèm nút video |
 | Ngoài wireframe | `challenge` | Xong, có logic |
 | 1.1 | `splash` | Xong, có logic: màn loading khi mở game, `main.gd` chạy thanh tải trong lúc `Game.boot()` (design.md mục 2) |
-| 1.2 đến 1.6 | `popup_update`, `download_data`, `select_account`, `tutorial_intro`, `popup_no_internet` | Chỉ UI |
+| 1.2 | `popup_update` | Xong, có logic (design.md mục 8 "Cập nhật app"): Remote Config `content_latest_version` / `content_min_version`; bắt buộc thì ẩn Để sau và X, Back không đóng |
+| 1.3 | `download_data` | Bỏ (2026-11-09): game không tải dữ liệu thêm |
+| 1.4 | `select_account` | Xong, có logic (design.md mục 8 "Cloud save"): hai lịch sử chơi khác nhau thì chọn "Máy này" hoặc "Google Play" |
+| 1.5 | `tutorial_intro` | Xong, có logic: một lần trước lần chơi đầu của L1 |
+| 1.6 | `popup_no_internet` | Xong, có logic (design.md mục 6): video hay mua hàng lỗi vì mất mạng; Thử lại kiểm lại mạng |
 | 2.3 | ADS Daily | Xong, có logic, nằm trong Shop (khối `AdsDaily`, dùng video gold `shop_coins`: 5 ô mỗi ngày, mỗi ô 200 gold). Không có lối vào trên Home; `popup_ads_daily` chỉ còn trong danh sách xem trước |
-| 2.4 | `popup_remove_ads` | Chỉ UI |
-| 3.1, 3.3, 3.7, 3.9, 3.11 | `load_transition`, `popup_mechanic`, `booster_soon`, `popup_free_pick`, `speedup_tutorial` | Chỉ UI |
+| 2.4 | `popup_remove_ads` | Xong, có logic (design.md mục 7): icon Remove Ads ở cột phải Home và offer Remove Ads; thẻ bundle bán `remove_ads_bundle`, thẻ thường `remove_ads`, có Restore. Shop có cùng hai thẻ (mục No Ads, ẩn cả mục khi đã có `no_ads`), thẻ bundle dùng chung `Shop.fill_no_ads_bundle` |
+| 3.1 | `load_transition` | Xong, có logic: sang level kế hoặc chơi lại thì mở ra qua lỗ hình bom (`view.open`); Road Trip giữ màn hộp quà |
+| 3.3 | `popup_mechanic` | Bỏ (2026-11-09): giới thiệu cơ chế dùng `booster_unlocked` từ 2026-11-08 |
+| 3.7 | `booster_soon` | Xong, có logic: chạm booster còn khoá; ba ô theo hàng booster, ô khoá hiện ổ khoá, dòng "<Tên> mở ở Level N" |
+| 3.9 | `popup_free_pick` | Xong, có logic: sau popup quà booster, mời dùng thử; Dùng thử thì bàn tay nhấp vào nút booster tới khi bấm. Chữ băng chuyền của wireframe đã thay |
+| 3.11 | `speedup_tutorial` | Bỏ (2026-11-09): game không có tăng tốc |
 | 3.8 | `booster_unlocked` | Xong, có logic (design.md mục 3, quà hướng dẫn). `level.gd` mở khi tặng booster ở level mở, thay hộp thoại "Mới: …" cũ; `view = {kind, count}`. Nút vàng (ClaimButton) ẩn, dòng "Chạm để tiếp tục" dời vào chỗ nút; chạm đâu cũng đóng. Chữ "Capacity", "băng chuyền" của wireframe đã thay bằng tên và lời tặng của booster. Từ 2026-11-08 cũng giới thiệu cơ chế mới ở level dạy: `view = {mech}`, tiêu đề `mech_new_title`, tên, icon và luật của cơ chế, ẩn số lượng, luật dời lên chỗ số lượng |
-| 4.2, 4.3, 4.6, 4.7 | `popup_bonus`, `popup_rate`, `popup_keep_playing`, `popup_helper_pack` | Chỉ UI |
+| 4.2 | `popup_bonus` | Bỏ (2026-11-09): người dùng giữ x2 trên thẻ thắng |
+| 4.3 | `popup_rate` | Xong, có logic: sau thẻ thắng ở level mở Rate us, một lần; Có thì mở hộp đánh giá của store |
+| 4.6 | `popup_keep_playing` | Xong, có logic (design.md mục 3): xác nhận bỏ ván mất mạng (Home, chơi lại, bỏ cứu lượt), thay hộp thoại chung; `view.mode` đổi chữ; dòng ghi chú ẩn |
+| 4.7 | `popup_helper_pack` | Xong, có logic (design.md mục 3 "Khi hết MOVES"): lần cứu đầu khi hết MOVES lần thứ 3 liên tiếp ở level, kho hết +3 Move; dải gói bán `helper_great`, mua thì dùng +3 Move ngay |
 | 5.2, 5.3 | `popup_heart_bundle`, `popup_heart_support` | Chỉ UI |
-| 7.5 | `popup_weekly_upsell` | Chỉ UI |
-| 8.1 đến 8.4 | `leaderboard`, `popup_lb_howto`, `popup_leagues`, `popup_lb_result` | Xong, có logic (design.md mục 7, Leaderboard). Hai tab League và World thay cho giải tuần. Từ 2026-11-05 màn `leaderboard` theo wireframe Leaderboard: banner, thanh tab ở dưới, World là thang 7 giải; `popup_leagues` và `popup_lb_player` không còn mở từ màn này. Phần dùng chung ở `src/ui/lb_kit.gd` |
-| 9.1 đến 9.5 | `popup_streak_intro`, `streak_main`, `popup_streak_rewards`, `popup_streak_end`, `popup_streak_keep` | Chỉ UI |
+| 7.5 | `popup_weekly_upsell` | Xong, có logic (design.md mục 7 "Weekly Pass"): một lần mỗi mùa trên Home khi chưa VIP; ba dòng là quyền lợi VIP của game |
+| 8.1 đến 8.4 | `leaderboard`, `popup_lb_howto`, `popup_leagues`, `popup_lb_result` | Xong, có logic (design.md mục 7, Leaderboard). Hai tab League và World thay cho giải tuần. Từ 2026-11-05 màn `leaderboard` theo wireframe Leaderboard: thanh tab ở dưới, World là thang 7 giải; `popup_leagues` và `popup_lb_player` không còn mở từ màn này. Từ 2026-11-09 `leaderboard` là popup (khung Popup2, X, nút "i" ở góc trái), bỏ banner; PromoBox có huy hiệu giải, đếm ngược tới hết tuần, chạm huy hiệu thì bong bóng thưởng; `popup_lb_result` còn là popup Kết quả tuần. Phần dùng chung ở `src/ui/lb_kit.gd` |
+| 9.1 đến 9.5 | `popup_streak_intro`, `streak_main`, `popup_streak_rewards`, `popup_streak_end`, `popup_streak_keep` | Xong, có logic (design.md mục 7 "Win Streak", theo code Unity). 9.2 có nút Nhận từng mốc và bảng thưởng khi chạm rương; 9.3 là luật "Cách chơi" (ba bước), không còn là danh sách thưởng; 9.4 chỉ tổng kết (chuỗi cuối, thời gian tới lượt sau), ô thưởng ẩn; 9.5 là xác nhận bỏ ván, Chơi tiếp không còn icon video |
 | 10.2 | `popup_change_name` | Xong, có logic (design.md mục 5 "Biệt danh"). Lưu qua `Game.set_profile_name`; tên sai luật hoặc có từ cấm thì hiện toast PopupFeedBack, popup giữ nguyên. Không kiểm trùng tên, nút Buy giữ ẩn |
-| 10.4, 10.5 | `popup_language`, `popup_help` | Chỉ UI |
-| 11.1 đến 11.3, 6.3 | `ad_loading`, `popup_notice`, `popup_reward` | Chỉ UI |
+| 10.4, 10.5 | `popup_language`, `popup_help` | Xong, có logic: Settings mở hai scene này (Language đổi ngôn ngữ ngay; Support mở Help, Gửi mở mail tới bộ phận hỗ trợ) |
+| 11.1 đến 11.3, 6.3 | `ad_loading`, `popup_notice`, `popup_reward` | Xong, có logic (design.md mục 6): lớp chờ video, popup không có video (và "Bạn đã mất chuỗi"), popup thưởng sau khi nhận mốc Win Streak, nhận bước Chain Offer hay mua gói; nút x2 của popup thưởng ẩn |
 
-Một số wireframe 3.9, 3.11, 4.4 mô tả băng chuyền và ô chứa của game gốc; game này không có cơ chế đó nên các màn trên giữ chữ theo wireframe để duyệt bố cục, cần sửa nội dung khi nối logic.
+Một số wireframe 3.9, 3.11, 4.4 mô tả băng chuyền và ô chứa của game gốc; game này không có cơ chế đó: 3.9 đã đổi chữ theo booster, 3.11 đã bỏ.

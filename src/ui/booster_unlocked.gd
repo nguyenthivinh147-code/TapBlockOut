@@ -5,7 +5,9 @@ extends "res://src/ui/stub_ui.gd"
 ## "Chạm để tiếp tục" là bản sao chữ mô tả, đặt vào chỗ nút; chạm đâu cũng đóng.
 ## Cùng khung giới thiệu cơ chế mới ở level dạy (design.md mục 4): tiêu đề "VẬT CẢN MỚI!", tên, icon và luật của cơ
 ## chế; không có số lượng, luật dời lên chỗ số lượng.
-## setup({view}): view = {kind ("hint" | "move" | "smash"), count} hoặc {mech ("stone" | "ice" | ... | "pulse")}.
+## Cũng là hướng dẫn lần đầu của Màn đặc biệt (design.md mục 7): {special: true} hiện quả bom và luật, không số lượng.
+## setup({view}): view = {kind ("hint" | "move" | "smash"), count}, {mech ("stone" | "ice" | ... | "pulse")} hoặc
+## {special: true}.
 ## closed({"action": "close"}).
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
@@ -24,9 +26,13 @@ func _build() -> void:
 	# The booster icon and TapLabel are saved in scenes/booster_unlocked.tscn.
 	ui = UnityUI.build(self, "BoosterTutorialLayer")
 	var mech := str(view.get("mech", ""))
+	var special := bool(view.get("special", false))
 	var qty: Label = ui.label(PANEL + "/BoosterQuantity")
-	if mech != "":
-		_show_item(tr("mech_new_title"), tr("mech_" + mech), "mech_" + mech, tr("mech_%s_desc" % mech))
+	if mech != "" or special:
+		if special:
+			_show_item(tr("special_guide_title"), tr("special_title"), "special_bomb", tr("special_guide_desc"))
+		else:
+			_show_item(tr("mech_new_title"), tr("mech_" + mech), "mech_" + mech, tr("mech_%s_desc" % mech))
 		# No count for a mechanic: the rule's box grows up over the count's place, so a long rule auto sizes larger.
 		qty.visible = false
 		var desc: Label = ui.label(PANEL + "/BoosterDescription")

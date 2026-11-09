@@ -1,5 +1,5 @@
 extends SceneTree
-## Bakes the block body SDF (src/ui/pudding.gd) of every block shape in data/levels and data/road_trip into
+## Bakes the block body SDF (src/ui/pudding.gd) of every block shape in data/levels, data/road_trip and data/special into
 ## data/pudding_sdf.res, so the game does not build them on the main thread when a level opens.
 ## Run again after regenerating levels or changing how Pudding builds the SDF; tests/test_pudding_bank.gd fails
 ## when the bank is out of date.
@@ -9,7 +9,7 @@ extends SceneTree
 const Pudding := preload("res://src/ui/pudding.gd")
 const PuddingBank := preload("res://src/ui/pudding_bank.gd")
 
-const DIRS := ["res://data/levels", "res://data/road_trip"]
+const DIRS := ["res://data/levels", "res://data/road_trip", "res://data/special"]
 const EXTRA_SHAPES := [[Vector2i.ZERO]]  # CandyShards.prewarm() draws a one-cell block
 
 

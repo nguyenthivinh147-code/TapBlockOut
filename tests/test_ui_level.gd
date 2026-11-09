@@ -159,9 +159,17 @@ func test_hud_level1(t: T) -> void:
 		t.eq(lv.booster_caps[k].text, lv.tr("level_title") % int(Config.UNLOCK[k]), "ô khoá ghi level mở %s" % k)
 	var inv_hint := int(g.s.inv.get("hint", 0))
 	lv.booster_buttons.hint.pressed.emit()
-	t.ok(lv.toast_label.visible, "chạm ô khoá hiện thông báo")
-	t.eq(lv.toast_label.text, lv.tr("booster_locked") % int(Config.UNLOCK.hint), "báo level mở")
-	t.eq(lv.state, "playing", "không mở hộp mua")
+	# Wireframe 3.7: the "coming soon" popup names the booster and its level; a tap anywhere closes it.
+	var soon: Control = null
+	for c in lv.get_node("LocalPopups").get_children():
+		if c.scene_file_path == "res://scenes/booster_soon.tscn":
+			soon = c
+	t.ok(soon != null, "chạm ô khoá mở popup booster sắp mở")
+	t.eq(soon.ui.label("GameObject/UnlockPanel/BoosterDescription").text,
+		lv.tr("booster_soon_level") % [lv.tr("booster_hint"), int(Config.UNLOCK.hint)], "báo level mở")
+	t.ok(soon.find_child("BuyButton", true, false) == null or not soon.find_child("BuyButton", true, false).visible, "không mở hộp mua")
+	_tap(soon)
+	t.ok(await _wait_until(_playing.bind(lv)), "chạm thì chơi tiếp")
 	t.eq(int(g.s.inv.get("hint", 0)), inv_hint, "không dùng booster")
 	t.eq(lv.tut_label.text, lv.tr("tut_tap"), "hướng dẫn L1")
 	t.eq(lv.board_view.highlighted_id(), lv.board.hint(), "chỉ khối đi được")
@@ -398,6 +406,14 @@ func _tap(pop: Control) -> void:
 	pop._gui_input(ev)
 
 
+## Popup dùng thử booster (scenes/popup_free_pick.tscn, wireframe 3.9) đang mở, hoặc null.
+func _free_pick_pop(lv: Control) -> Control:
+	for c in lv.get_node("LocalPopups").get_children():
+		if not c.is_queued_for_deletion() and c.scene_file_path == "res://scenes/popup_free_pick.tscn":
+			return c
+	return null
+
+
 ## Popup booster mới (scenes/booster_unlocked.tscn) đang mở, hoặc null.
 func _gift_pop(lv: Control) -> Control:
 	var tap := _pop(lv, "TapLabel")
@@ -419,13 +435,20 @@ func test_booster_gift_and_hint(t: T) -> void:
 	t.ok(not pop.ui.node(P + "ClaimButton").visible, "không có nút vàng: quà không bán kèm")
 	t.eq((_pop(lv, "TapLabel") as Label).text, lv.tr("boot_tap_continue"), "dòng chạm để tiếp tục")
 	_tap(pop)
+	t.ok(await _wait_until(func() -> bool: return _free_pick_pop(lv) != null), "sau quà: popup dùng thử")
+	var fp := _free_pick_pop(lv)
+	t.eq((fp.find_child("Body", true, false) as Label).text, lv.tr("booster_free_pick_body") % lv.tr("booster_hint"), "lời mời dùng thử theo booster")
+	fp.call("_send", "claim")
 	await _wait_until(_playing.bind(lv))
+	t.ok(lv.get_node_or_null("LocalPopups/FreePickHand") != null, "Dùng thử: bàn tay chỉ vào nút gợi ý")
 	t.ok(not lv.booster_locks.hint.visible, "gợi ý mở ở L5")
 	t.eq(lv.booster_caps.hint.text, lv.tr("booster_hint"), "ô mở ghi tên booster")
 	t.ok(lv.booster_locks.move.visible, "+3 Move chưa mở")
 	t.eq(lv.booster_badges.hint.text, lv.tr("booster_count") % 1, "nhãn số còn lại")
 	lv.booster_buttons.hint.pressed.emit()
 	t.eq(int(g.s.inv.hint), 0, "dùng gợi ý")
+	await _tree().process_frame
+	t.ok(lv.get_node_or_null("LocalPopups/FreePickHand") == null, "bấm booster thì bàn tay tắt")
 	t.ok(lv.get_node_or_null("LocalPopups/HintFx") != null, "sao gợi ý bay từ nút")
 	t.eq(lv.board_view.highlighted_id(), "", "chưa nháy khi sao còn bay")
 	lv.booster_buttons.hint.pressed.emit()
@@ -450,6 +473,8 @@ func test_booster_gifts_in_order(t: T) -> void:
 		t.ok(shown, "popup quà " + kind)
 		t.eq(lv.state, "intro", "chưa chơi khi còn popup quà " + kind)
 		_tap(_gift_pop(lv))
+		t.ok(await _wait_until(func() -> bool: return _free_pick_pop(lv) != null), "popup dùng thử " + kind)
+		_free_pick_pop(lv).call("_send", "close")
 	t.ok(await _wait_until(_playing.bind(lv)), "hết quà thì vào chơi")
 	for kind in ["hint", "move", "smash"]:
 		t.eq(int(g.s.inv[kind]), 1, "kho +1 " + kind)
@@ -728,7 +753,7 @@ func test_home_button(t: T) -> void:
 	lv.board_view.block_tapped.emit(lv.board.hint())
 	lv.on_back()
 	await _wait_until(_has_pop(lv, "ConfirmButton"))
-	t.eq((_pop(lv, "BodyLabel") as Label).text, lv.tr("rescue_warn_life"), "cảnh báo mất mạng")
+	t.eq((_pop(lv, "BodyLabel") as Label).text, lv.tr("lose_keep_body"), "cảnh báo mất mạng (popup Chơi tiếp chứ?)")
 	_press(lv, "CancelButton")
 	await _wait_until(_playing.bind(lv))
 	t.ok(not st.has("r"), "huỷ thì ở lại")

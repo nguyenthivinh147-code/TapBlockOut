@@ -14,7 +14,8 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UView := preload("res://src/ui/u_view.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Config := preload("res://src/config.gd")
-const PopupLanguage := preload("res://src/ui/popup_language.gd")
+const LANGUAGE_POPUP := "res://scenes/popup_language.tscn"
+const HELP_POPUP := "res://scenes/popup_help.tscn"
 
 const LAYER := "SettingMainMenuLayer"
 const PANEL := "Panel/PauseMenu"
@@ -60,6 +61,8 @@ var language_button: Button = null
 var version_button: Button = null
 var close_button: Button = null
 var language_panel: Control = null
+## Popup Help (Support), null when closed.
+var help_panel: Control = null
 var tester_panel: Control = null
 var status_label: Label = null
 var last_url: String = ""
@@ -67,7 +70,6 @@ var last_url: String = ""
 var _built: bool = false
 var _rows: Array[Control] = []
 var _version_label: Label = null
-var _lang: Dictionary = {}
 var _version_taps: int = 0
 var _last_tap_ms: int = 0
 var _busy: bool = false
@@ -86,9 +88,19 @@ func version_text() -> String:
 	return str(Config.CONTENT.build)
 
 
-func support_url() -> String:
-	var subject := "%s (%s)" % [tr("settings_support_subject"), str(Config.CONTENT.build)]
-	return "mailto:%s?subject=%s" % [str(Config.CONTENT.support_email), subject.uri_encode()]
+## Mail to support: subject with the topic (popup Help) and the build; body with the message and the player's level,
+## language and app version.
+func support_url(topic: String = "", body: String = "") -> String:
+	var subject := tr("settings_support_subject")
+	if topic != "":
+		subject += " - " + tr(topic)
+	subject = "%s (%s)" % [subject, str(Config.CONTENT.build)]
+	var info := "Level %d · %s · v%s" % [int(Game.s.level), Game.current_lang(), Game.app_version()]
+	var text := (body + "
+
+" if body != "" else "") + "---
+" + info
+	return "mailto:%s?subject=%s&body=%s" % [str(Config.CONTENT.support_email), subject.uri_encode(), text.uri_encode()]
 
 
 func _open_url(url: String) -> void:
@@ -179,7 +191,7 @@ func _apply_texts() -> void:
 	UnityUI.set_text(_version_label, version_text())
 	_layout_rows()
 	if language_panel != null:
-		_fill_language()
+		language_panel.call("fill")
 
 
 ## Link rows under the pills (Privacy, Restore, UI preview) and the restore result, bottom-up like PolicyButton.
@@ -284,38 +296,18 @@ func _on_toggle(key: String) -> void:
 
 # --- Language (SettingLanguage) ---
 
+## Language (wireframe 10.4): scenes/popup_language.tscn over Settings; a pick changes the language at once and the
+## Settings texts follow in place.
 func open_language() -> void:
 	if language_panel != null:
 		return
-	language_panel = Control.new()
+	language_panel = (load(LANGUAGE_POPUP) as PackedScene).instantiate()
 	language_panel.name = "LanguagePanel"
-	language_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(language_panel)
-	var rows: Array = []
-	for code in Game.LANGS:
-		rows.append([code, PopupLanguage.label_key(code)])
-	_lang = PopupLanguage.build_layer(language_panel, rows, true)
-	lang_buttons = _lang.buttons
-	for value in lang_buttons:
-		(lang_buttons[value] as Button).connect("clicked", _on_language.bind(str(value)))
-	var ok: Button = _lang.save
-	ok.name = "LanguageOk"
-	ok.connect("clicked", close_language)
-	for b in _lang.close:
-		(b as Button).connect("clicked", close_language)
-	_fill_language()
-
-
-func _fill_language() -> void:
-	var v: RefCounted = _lang.ui
-	v.text("Panel/PauseMenu/Image/txtHeader", tr("settings_language"))
-	v.text("Panel/PauseMenu/Content/Save/Out", tr("common_ok"))
-	# No "device language" cell (the prefab holds the 14 languages): the device locale applies until one is picked.
-	var cur: String = Game.current_lang()
-	for code in Game.LANGS:
-		var b: Button = lang_buttons[code]
-		UnityUI.set_text(b.get_node("Txt") as Label, tr(PopupLanguage.label_key(code)))
-		b.button_pressed = cur == code
+	language_panel.call("setup", {})
+	lang_buttons = language_panel.get("buttons")
+	language_panel.connect("language_changed", _on_language)
+	language_panel.connect("closed", func(_r: Variant) -> void: close_language())
 
 
 func close_language() -> void:
@@ -323,11 +315,9 @@ func close_language() -> void:
 		language_panel.queue_free()
 		language_panel = null
 		lang_buttons = {}
-		_lang = {}
 
 
-func _on_language(value: String) -> void:
-	Game.set_setting("lang", value)
+func _on_language(_value: String) -> void:
 	_status_text = ""
 	# Texts follow the new language in place; the Language popup stays open.
 	_apply_texts()
@@ -352,8 +342,19 @@ func _on_restore() -> void:
 	_layout_rows()
 
 
+## Support: popup Help (wireframe 10.5); Send opens the mail.
 func _on_support() -> void:
-	_open_url(support_url())
+	if help_panel != null:
+		return
+	help_panel = (load(HELP_POPUP) as PackedScene).instantiate()
+	help_panel.name = "HelpPanel"
+	add_child(help_panel)
+	help_panel.call("setup", {})
+	help_panel.connect("closed", func(r: Variant) -> void:
+		help_panel.queue_free()
+		help_panel = null
+		if r is Dictionary and str(r.get("action", "")) == "send":
+			_open_url(support_url(str(r.get("topic", "")), str(r.get("message", "")))))
 
 
 func _on_version() -> void:

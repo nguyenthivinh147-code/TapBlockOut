@@ -5,7 +5,8 @@ extends "res://src/ui/stub_ui.gd"
 ## "Quick break" text in the middle and a 100-unit loading sign below. Its CanvasGroup is saved at alpha 0, not
 ## blocking; PlayShowAnimation scales the panel 0 -> 1 and fades it in (0.5 s OutBack). Both images point at a
 ## sprite missing from the Unity project; the picture shows Unity's alarm clock (the game's waiting icon), the sign
-## stays hidden (rotateSpeed 0, never animated). A tap anywhere emits "tap", as before. Not wired to logic.
+## stays hidden (rotateSpeed 0, never animated). Main shows it over everything while Game waits for a rewarded video
+## (Game.ad_wait) and removes it when the wait ends; it swallows taps meanwhile.
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 
@@ -34,6 +35,5 @@ func _fit(canvas: Control) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventMouseButton:
 		accept_event()
-		_send("tap")

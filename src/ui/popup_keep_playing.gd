@@ -2,20 +2,34 @@ extends "res://src/ui/stub_ui.gd"
 ## Wireframe 4.6 Keep Playing?: xác nhận bỏ lượt mất mạng. Bố cục PopupKeepPlaying (color-cube-match-puzzle): tim vỡ
 ## nhịp như HeartAnimation, nút Quit ở state 0 của prefab (ImageStateKeeper / TMP_StateHandler: pill đỏ, viền đỏ) và
 ## bản sao ở state 1 (pill xanh lá) cho "Chơi tiếp", hai nút cỡ hàng nút của PopupOkLayer. Hai nút và dòng ghi chú là
-## node trong scenes/popup_keep_playing.tscn; script chỉ điền chữ và nối nút. Chưa nối logic.
+## node trong scenes/popup_keep_playing.tscn; script chỉ điền chữ và nối nút.
+## level.gd mở khi bỏ ván sẽ mất 1 mạng (Home, chơi lại, bỏ cứu lượt; design.md mục 3); chuỗi Win Streak cũng mất thì
+## mở popup_streak_keep thay cho popup này. Chữ theo MODES. Dòng ghi chú ẩn.
+## setup({view}): view = {mode: "home" | "restart" | "give_up"}. closed({"action": "quit" | "keep" | "close"}).
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 
 const ROW := "Panel/Content/Button"
+## mode -> [title key, body key, Quit button key].
+const MODES := {
+	"home": ["lose_keep_title", "lose_keep_body", "lose_keep_quit"],
+	"restart": ["level_restart_confirm_title", "level_restart_confirm_life", "level_restart_yes"],
+	"give_up": ["rescue_confirm_title", "rescue_warn_life", "rescue_confirm_yes"],
+}
 ## HeartAnimation fields of the prefab (intro InBounce, then a Flip loop OutBack).
 const HEART_START := Vector2(1.15, 1.15)
 const HEART_END := Vector2(0.94, 0.85)
 
 
+func _sample() -> Dictionary:
+	return {"mode": "home"}
+
+
 func _build() -> void:
+	var texts: Array = MODES.get(str(view.get("mode", "home")), MODES.home)
 	ui = UnityUI.build(self, "PopupKeepPlaying")
-	ui.text("Panel/GameObject/txtHeader", tr("lose_keep_title"))
-	ui.text("Panel/Content/Description", tr("lose_keep_body"))
+	ui.text("Panel/GameObject/txtHeader", tr(str(texts[0]))).name = "TitleLabel"
+	ui.text("Panel/Content/Description", tr(str(texts[1]))).name = "BodyLabel"
 	for b in ui.field("closeButtons", "PopupKeepPlaying"):
 		(b as Button).connect("clicked", _send.bind("close"))
 
@@ -23,11 +37,13 @@ func _build() -> void:
 	# saves the prefab's Ok in state 0 (Quit: red pill, 280 wide).
 	UnityUI.set_text(%KeepButton.get_node("Out"), tr("level_restart_no"))
 	%KeepButton.connect("clicked", _send.bind("keep"))
-	ui.node(ROW + "/Ok").name = "QuitButton"
-	ui.text(ROW + "/Ok/Out", tr("lose_keep_quit"))
+	# Quit confirms (ConfirmButton), Keep playing cancels (CancelButton), like the level's other dialogs.
+	ui.node(ROW + "/Ok").name = "ConfirmButton"
+	ui.text(ROW + "/Ok/Out", tr(str(texts[2])))
 	ui.on_click(ROW + "/Ok", _send.bind("quit"))
 	ui.relayout(ROW)
-	UnityUI.set_text(%NoteLabel, tr("lose_keep_note"))
+	%NoteLabel.visible = false
+	(%KeepButton as Control).name = "CancelButton"
 	_heart.call_deferred()
 
 

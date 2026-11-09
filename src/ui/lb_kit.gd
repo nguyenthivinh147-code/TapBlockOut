@@ -32,6 +32,9 @@ const ATLAS_EXTRA := {
 }
 ## Rank point icon: the game's piece (lb_piece) in place of Unity's UI_Maincenter_2.
 const PIECE_ICON := "lb_piece"
+## RewardItemSO icons: gold (RewardType.Gold) and unlimited lives (InfiniteHeart).
+const GOLD_SPRITE := "Resources_moved_UI_Maincenter:UI_Maincenter_3"
+const INF_SPRITE := "Resources_moved_UI_Maincenter:UI_Maincenter_16"
 
 ## Màu nền huy hiệu theo league (chưa có ảnh cúp riêng cho từng league).
 const LEAGUE_COLORS := {
@@ -300,6 +303,15 @@ static func fmt_clock(sec: int) -> String:
 	return "%02d:%02d:%02d" % [sec / 3600, (sec % 3600) / 60, sec % 60]
 
 
+## Time left in the leaderboard week: days and hours from 1 day ("6d 23h", lb_time_dh), else fmt_clock.
+static func fmt_week(sec: int) -> String:
+	sec = maxi(sec, 0)
+	if sec < 86400:
+		return fmt_clock(sec)
+	@warning_ignore("integer_division")
+	return TranslationServer.translate("lb_time_dh") % [sec / 86400, (sec % 86400) / 3600]
+
+
 # --- prefab pieces (unity_ui.gd) ---
 
 static func league_sprite(id: String) -> String:
@@ -427,20 +439,44 @@ static func _sub_line(root: Control, name_l: Label, sub: String) -> void:
 ## gold uses RewardItemSO's gold sprite, boosters the game's booster icons, unlimited lives the infinite heart.
 static func reward_items(parent: Control, reward: Dictionary) -> Array:
 	var out: Array = []
+	for e: Dictionary in reward_entries(reward):
+		out.append(_reward_item(parent, str(e.sprite), e.tex, str(e.amount)))
+	return out
+
+
+## One entry per part of a game reward {coins, items, inf_min}, in the order of reward_items:
+## {kind ("gold" | booster | "inf"), sprite (Unity sprite key or ""), tex (Texture2D or null), amount (text)}.
+static func reward_entries(reward: Dictionary) -> Array:
+	var out: Array = []
 	var coins := int(reward.get("coins", 0))
 	if coins > 0:
-		out.append(_reward_item(parent, "Resources_moved_UI_Maincenter:UI_Maincenter_3", null, fmt_int(coins)))
+		out.append({"kind": "gold", "sprite": GOLD_SPRITE, "tex": null, "amount": fmt_int(coins)})
 	var items: Dictionary = reward.get("items", {})
 	for kind in ["hint", "move", "smash"]:
 		var n := int(items.get(kind, 0))
 		if n > 0:
-			out.append(_reward_item(parent, "", ThemeKit.icon("booster_" + kind),
-				TranslationServer.translate("booster_count") % n))
+			out.append({"kind": kind, "sprite": "", "tex": ThemeKit.icon("booster_" + kind),
+				"amount": TranslationServer.translate("booster_count") % n})
 	var inf := int(reward.get("inf_min", 0))
 	if inf > 0:
-		out.append(_reward_item(parent, "Resources_moved_UI_Maincenter:UI_Maincenter_16", null,
-			TranslationServer.translate("weekly_reward_inf") % inf))
+		out.append({"kind": "inf", "sprite": INF_SPRITE, "tex": null,
+			"amount": TranslationServer.translate("weekly_reward_inf") % inf})
 	return out
+
+
+## Fills a Unity image node with a reward_entries entry (sprite key or texture, aspect kept).
+static func set_entry_icon(img_node: Control, e: Dictionary) -> void:
+	if img_node == null:
+		return
+	if str(e.get("sprite", "")) != "":
+		UnityUI.set_sprite(img_node, str(e.sprite))
+	elif e.get("tex") != null:
+		var img := UnityUI.image_of(img_node)
+		if img != null:
+			img.call("set_texture", e.tex)
+	var im := UnityUI.image_of(img_node)
+	if im != null:
+		im.set("preserve_aspect", true)
 
 
 static func _reward_item(parent: Control, key: String, tex: Texture2D, amount: String) -> RefCounted:

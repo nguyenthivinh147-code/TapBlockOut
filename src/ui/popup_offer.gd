@@ -93,10 +93,12 @@ func _booster_name(kind: String) -> String:
 	return kind
 
 
-## Các dòng nội dung gói: gold và booster.
+## Các dòng nội dung gói: bỏ quảng cáo (gói no_ads), gold và booster.
 func contents() -> Array[String]:
 	var info: Dictionary = Config.SKUS.get(sku, {})
 	var out: Array[String] = []
+	if bool(info.get("no_ads", false)):
+		out.append(tr("shop_remove_ads"))
 	var gold := int(info.get("gold", 0))
 	if gold > 0:
 		out.append(tr("shop_gold_pack") % gold)
@@ -313,7 +315,7 @@ func buy() -> void:
 				toast(tr("shop_buy_failed"))
 		"pending":
 			toast(tr("shop_buy_pending"))
-		"cancel":
+		"cancel", "offline":
 			pass
 		"owned":
 			toast(tr("shop_owned"))

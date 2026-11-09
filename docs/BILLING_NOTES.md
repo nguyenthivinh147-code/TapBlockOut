@@ -146,7 +146,7 @@ Quy tắc giao hàng (design.md mục 7): **lưu hàng vào save trước, xác 
 | SKU | Loại | `Platform.iap.finish(p, consumable)` gọi |
 | --- | --- | --- |
 | `gold_pack_1..6` (và `_sale`), `rescue_pack`, `level_pack` | Consumable | `consume_purchase(token)` (đã gồm acknowledge), chờ `consume_purchase_response` |
-| `remove_ads`, `starter_pack` | Non-consumable | `acknowledge_purchase(token)`, chờ `acknowledge_purchase_response`. Chỉ cần nếu `is_acknowledged == false` |
+| `remove_ads`, `remove_ads_bundle`, `starter_pack` | Non-consumable | `acknowledge_purchase(token)`, chờ `acknowledge_purchase_response`. Chỉ cần nếu `is_acknowledged == false` |
 
 - `_sale` là SKU riêng nên cũng consumable.
 - Non-consumable không bao giờ được consume (mất quyền sở hữu và Restore).
@@ -156,7 +156,7 @@ Quy tắc giao hàng (design.md mục 7): **lưu hàng vào save trước, xác 
 ## 7. Restore và đơn treo
 
 - **Mở game / sau `connected`**: `query_purchases(INAPP)`. Với mỗi purchase `purchase_state == 1` và chữ ký đúng: đưa vào `pending()` (Platform trả mảng dictionary `{sku, token, order_id, ...}`; game giao rồi gọi `finish`). Purchase `purchase_state == 2` bỏ qua cho tới khi đổi trạng thái.
-- **Restore (`remove_ads`)**: cũng là `query_purchases(INAPP)`; `remove_ads` đã ack nên vẫn nằm trong danh sách vì chưa từng consume. `restore() -> bool` trả `true` nếu thấy `remove_ads` hợp lệ (game tự đặt cờ, không cộng gold hai lần: token đã có trong `buys` thì bỏ qua phần gold 500). Tương tự `starter_pack` nếu cần.
+- **Restore (`remove_ads`, `remove_ads_bundle`)**: cũng là `query_purchases(INAPP)`; gói đã ack nên vẫn nằm trong danh sách vì chưa từng consume. `restore() -> bool` trả `true` nếu thấy món mua một lần hợp lệ. Game đặt cờ `no_ads` và không giao hai lần: token hoặc SKU đã có trong `buys` thì bỏ qua cả gold lẫn booster của bundle. Bản lưu chưa có đơn (cài lại, không có cloud) thì giao đủ gói (`design.md` mục 7). Tương tự `starter_pack`.
 - Consumable đã consume thì **không** xuất hiện lại trong `query_purchases`; đó là lý do phải ghi token vào `buys` và giao đủ trước khi consume.
 - **Đơn PENDING** (thanh toán tiền mặt/chờ duyệt): `enablePendingPurchases` đã bật cho one-time products. `on_purchase_updated` ban đầu cho `purchase_state == 2`. Không thưởng. Khi hoàn tất, Play phát `on_purchase_updated` mới (nếu app đang chạy) hoặc đơn xuất hiện với `purchase_state == 1` ở lần `query_purchases` sau. Vì vậy cần `query_purchases` mỗi lần mở game và khi app resume.
 - `on_purchase_updated` có thể đến **ngoài** lời gọi `buy` (đơn treo hoàn tất, mua từ nơi khác). Backend nên nối signal vĩnh viễn ở `_init`, đẩy đơn không có `buy` đang đợi vào hàng đợi `pending()`.

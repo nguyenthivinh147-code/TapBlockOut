@@ -10,7 +10,7 @@ const GROUPS: Array[String] = [
 	"common_", "home_", "level_", "rescue_", "win_", "lose_", "no_lives_",
 	"shop_", "daily_", "profile_", "settings_", "offer_", "ads_", "tut_", "mech_",
 	"notif_", "booster_", "challenge_", "feature_", "weekly_", "chain_",
-	"boot_", "hearts_", "lb_", "streak_", "rt_",
+	"boot_", "hearts_", "lb_", "streak_", "rt_", "special_",
 ]
 const REQUIRED: Array[String] = [
 	"APP_NAME", "home_play", "home_challenge_locked", "home_coming_soon",
@@ -19,7 +19,7 @@ const REQUIRED: Array[String] = [
 	"no_lives_title", "shop_title", "daily_title", "profile_title", "settings_title",
 	"booster_hint", "booster_move", "booster_smash", "ads_not_available",
 ]
-const MECHS: Array[String] = ["stone", "ice", "chain", "layer", "fog", "pulse"]
+const MECHS: Array[String] = ["stone", "ice", "chain", "layer", "fog", "pulse", "frost"]
 const BOOSTERS: Array[String] = ["hint", "move", "smash"]
 const NOTIF_KINDS: Array[String] = ["daily_gift", "lives_full", "offer_open", "challenge"]
 const PACKS: Array[String] = ["starter_pack", "level_pack", "rescue_pack", "remove_ads"]
@@ -232,6 +232,12 @@ func test_config_coverage(t: T) -> void:
 		t.ok(Config.UNLOCK.has(m), "Config.UNLOCK có cơ chế " + m)
 		t.ok(d.keys.has("mech_" + m), "mech_" + m)
 		t.ok(d.keys.has("mech_%s_desc" % m), "mech_%s_desc" % m)
+	# Thẻ thắng ghép tên tính năng sắp mở bằng tr("feature_" + khoá), nên mỗi mốc hiện trên thanh phải có chuỗi.
+	const Unlocks := preload("res://src/meta/unlocks.gd")
+	for k in Config.UNLOCK:
+		if str(k) in Unlocks.SILENT:
+			continue
+		t.ok(d.keys.has("feature_" + str(k)), "feature_%s cho thanh tính năng của thẻ thắng" % k)
 	for p in PACKS:
 		t.ok(Config.SKUS.has(p), "Config có SKU " + p)
 		t.ok(d.keys.has("shop_" + p), "shop_" + p)

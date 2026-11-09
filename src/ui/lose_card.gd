@@ -225,7 +225,7 @@ func _on_pack_pressed() -> void:
 			_pack_box.visible = false
 	elif status == "pending":
 		_show_msg(tr("shop_buy_pending"))
-	elif status == "cancel":
+	elif status == "cancel" or status == "offline":
 		_msg.visible = false
 	else:
 		_show_msg(tr("shop_buy_failed"))

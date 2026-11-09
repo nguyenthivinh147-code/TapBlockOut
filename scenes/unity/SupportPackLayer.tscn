@@ -11,13 +11,13 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1ng31"]
 shader = ExtResource("4_fyr1y")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
-shader_parameter/underlay_color = Color(0, 0, 0, 1)
-shader_parameter/face_edge = 0.510714285875
-shader_parameter/outline_half = 0.0
-shader_parameter/underlay_on = false
-shader_parameter/underlay_edge = 0.29107142087500004
-shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/face_edge = 0.446428570625
+shader_parameter/outline_half = 0.1285714305
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.277678570625
+shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_so6x7"]

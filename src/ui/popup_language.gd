@@ -1,7 +1,11 @@
 extends "res://src/ui/stub_ui.gd"
 ## Wireframe 10.4 Language on SettingLanguage (color-cube-match-puzzle): one LanguageCell toggle per language in the
-## scrolling grid (purple when chosen, ToggleAnimator), Save below. Not wired to logic: a cell emits "lang_<code>",
-## Save "save", X and the dim "close". Settings (settings.gd) builds the same layer with build_layer().
+## scrolling grid (purple when chosen, ToggleAnimator), Save below. Settings (settings.gd) opens this scene from its
+## Language button. A cell applies its language at once (Game.set_setting "lang", the 14 Game.LANGS, the current one
+## lit) and the texts here follow; language_changed lets Settings refresh its own. Save, X and the dim close
+## (closed({"action": "close"})). No "device language" cell: the device locale applies until one is picked.
+
+signal language_changed(code: String)
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 
@@ -15,28 +19,47 @@ const CELL_H := 100.0
 const CELL_GAP := 12.0
 const COLS := 2
 
+## Language code -> its cell (Button).
+var buttons: Dictionary = {}
+var _built_layer: Dictionary = {}
+
 
 func _sample() -> Dictionary:
-	return SampleData.LANGUAGES
+	return {"rows": Game.LANGS}
 
 
 func _build() -> void:
 	var codes: Array = []
-	for code in view.get("rows", []):
+	for code in view.get("rows", Game.LANGS):
 		codes.append([str(code), label_key(str(code))])
-	var built := build_layer(self, codes, false)
-	ui = built.ui
-	ui.text("Panel/PauseMenu/Image/txtHeader", tr("settings_language"))
-	ui.text("Panel/PauseMenu/Content/Save/Out", tr("settings_save"))
-	var cur := str(view.get("current", ""))
-	for row in codes:
-		var b: Button = built.buttons[row[0]]
-		UnityUI.set_text(b.get_node("Txt") as Label, tr(str(row[1])))
-		b.button_pressed = str(row[0]) == cur
-		b.connect("clicked", _send.bind("lang_" + str(row[0])))
-	(built.save as Button).connect("clicked", _send.bind("save"))
-	for b in built.close:
+	_built_layer = build_layer(self, codes, true)
+	ui = _built_layer.ui
+	buttons = _built_layer.buttons
+	for code in buttons:
+		(buttons[code] as Button).connect("clicked", _pick.bind(str(code)))
+	var save: Button = _built_layer.save
+	save.name = "LanguageOk"
+	save.connect("clicked", _send.bind("close"))
+	for b in _built_layer.close:
 		(b as Button).connect("clicked", _send.bind("close"))
+	fill()
+
+
+## Texts in the current language; the current language's cell lit.
+func fill() -> void:
+	ui.text("Panel/PauseMenu/Image/txtHeader", tr("settings_language"))
+	ui.text("Panel/PauseMenu/Content/Save/Out", tr("common_ok"))
+	var cur: String = Game.current_lang()
+	for code in buttons:
+		var b: Button = buttons[code]
+		UnityUI.set_text(b.get_node("Txt") as Label, tr(label_key(str(code))))
+		b.button_pressed = cur == code
+
+
+func _pick(code: String) -> void:
+	Game.set_setting("lang", code)
+	fill()
+	language_changed.emit(code)
 
 
 ## Key of a language's own name ("pt_BR" -> settings_language_pt_br: "Português (Brasil)" in every language).

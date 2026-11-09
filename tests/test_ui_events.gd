@@ -218,6 +218,14 @@ func test_chain_layer(t: T) -> void:
 	t.eq(int(g.s.coins), c0 + 300, "nhận bước free")
 	t.eq(node.node_states[0], "claimed", "bước 1 đã nhận")
 	t.eq(node.node_states[1], "claimable", "bước 2 nhận được")
+	var pop: Control = node.reward_popup
+	t.ok(pop != null, "mở popup Reward")
+	t.eq(int(pop.view.reward.coins), 300, "popup hiện thưởng của bước")
+	t.ok(pop.find_child("Reward_gold", true, false) != null, "ô gold trong popup")
+	t.eq(node.toast_text, "", "không lặp lại thưởng dưới đồng hồ")
+	pop.ui.button("Panel/ClaimBtn").pressed.emit()
+	t.ok(node.reward_popup == null, "Claim đóng popup")
+	t.eq(int(g.s.coins), c0 + 300, "đóng popup không cộng thêm")
 	node.queue_free()
 
 
@@ -240,10 +248,19 @@ func test_chain_ad_step(t: T) -> void:
 		return node.ui.node("Panel/Content/ListPack/%s/BG (1)" % slot).region
 	t.eq(bg.call("ChainOfferPack (1)"), bg.call("ChainOfferPack"), "ô đã nhận nền thường")
 	t.ok(bg.call("ChainOfferPack (2)") != bg.call("ChainOfferPack"), "nền vàng theo bước nhận được")
-	t.ok(node.toast_text.begins_with(node.tr("ads_reward_ok")), "báo đã nhận thưởng")
-	t.ok(node.toast_text.contains(node.tr("booster_hint")), "báo tên thưởng")
+	t.ok(node.reward_popup != null, "popup Reward sau video")
+	t.eq(node.reward_popup.view.reward.get("items", {}), {"hint": 1}, "popup hiện booster vừa nhận")
+	t.ok(node.reward_popup.find_child("Reward_hint", true, false) != null, "ô hint trong popup")
 	t.eq(node.claimed_count, 1, "đếm một lần nhận")
 	node.queue_free()
+
+
+func test_chain_pay_step_reward(t: T) -> void:
+	var cls := preload("res://src/ui/chain_offer.gd")
+	var got: Dictionary = cls.got_reward({"type": "pay", "reward": {"coins": 0}}, {"type": "pay", "sku": "chain_pack_2"})
+	t.eq(int(got.coins), 3000, "bước Pay: gold của gói")
+	t.eq(got.items, {"hint": 1, "move": 1}, "bước Pay: booster của gói")
+	t.eq(cls.got_reward({"type": "free", "reward": {"coins": 500}}, {}), {"coins": 500}, "bước free: thưởng trả về")
 
 
 func test_chain_slide_after_last_slot(t: T) -> void:
@@ -256,6 +273,10 @@ func test_chain_slide_after_last_slot(t: T) -> void:
 	await (Engine.get_main_loop() as SceneTree).process_frame
 	t.eq(node.node_states, ["claimed", "claimed", "claimed", "claimed", "claimed", "claimed"], "tích tại chỗ trước khi trượt")
 	t.ok(node.claim_button == null, "chưa có nút nhận lúc giữ")
+	t.ok(node.reward_popup != null, "popup Reward đang mở")
+	await (Engine.get_main_loop() as SceneTree).create_timer(node.SLIDE_DELAY + 0.2).timeout
+	t.eq(node.node_states[5], "claimed", "popup còn mở thì chưa trượt")
+	node.reward_popup.ui.button("Panel/ClaimBtn").pressed.emit()
 	await (Engine.get_main_loop() as SceneTree).create_timer(node.SLIDE_DELAY + 0.2).timeout
 	t.eq(node.node_states, ["claimed", "claimed", "claimed", "claimed", "claimed", "claimable"], "trượt một ô, bước 7 ở ô cuối")
 	t.ok(node.claim_button != null, "có nút nhận bước 7")

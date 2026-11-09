@@ -34,9 +34,10 @@ func _initialize() -> void:
 func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	var names: Array = ALL.duplicate()
-	names.append_array(["lives_hub", "lives_full", "home_l1", "home_hard", "home_very_hard", "weekly_pass", "chain_offer", "challenge", "ingame_settings", "ingame_settings_life",
+	names.append_array(["lives_hub", "lives_full", "home_l1", "home_hard", "home_very_hard", "weekly_pass", "chain_offer", "chain_offer_reward", "challenge", "ingame_settings", "ingame_settings_life",
 		"settings_language", "profile_frames",
-		"leaderboard", "leaderboard_world", "leaderboard_world_rewards", "lb_result", "lb_leagues", "level_lb", "win_lb", "level_booster_all"])
+		"leaderboard", "leaderboard_bubble", "leaderboard_world", "leaderboard_world_rewards", "lb_result", "lb_week",
+		"lb_leagues", "level_lb", "win_lb", "level_booster_all"])
 	for s in Gallery.SCREENS:
 		names.append(s[1])
 	for name in names:
@@ -227,6 +228,13 @@ func _shot(name: String) -> void:
 			g.s.chain = {"active": true, "id": "chain_a", "step": 1, "expires": NOW + 86400, "cooldown_until": 0, "shown": true, "rotation": 1}
 			_main.open_popup("res://scenes/chain_offer.tscn", {})
 			await _settle()
+		"chain_offer_reward":
+			await _fresh(30)
+			g.s.chain = {"active": true, "id": "chain_a", "step": 2, "expires": NOW + 86400, "cooldown_until": 0, "shown": true, "rotation": 1}
+			var chain: Node = _main.open_popup("res://scenes/chain_offer.tscn", {})
+			await _settle()
+			chain.claim()
+			await _settle()
 		"challenge":
 			await _fresh(60)
 			Config.FEATURES.challenge = true
@@ -252,22 +260,30 @@ func _shot(name: String) -> void:
 			await _settle(0.2)
 			_main.current_screen.call("select", "frame_01")
 			await _settle()
-		"leaderboard", "leaderboard_world", "leaderboard_world_rewards":
+		"leaderboard", "leaderboard_world", "leaderboard_world_rewards", "leaderboard_bubble":
 			await _fresh(30)
 			g.lb_refresh()
 			g.lb_claim()
 			Leaderboard.add_points(g.s, 14)
-			_main.go("leaderboard", {"tab": "league" if name == "leaderboard" else "world"})
+			var lb: Node = _main.open_popup("res://scenes/leaderboard.tscn",
+				{"tab": "world" if name.begins_with("leaderboard_world") else "league"})
 			await _settle()
-			if name == "leaderboard_world_rewards":
-				# World ladder in its Rewards mode (the banner switch).
-				_main.current_screen.call("_toggle_rewards")
-				await _settle()
-		"lb_result":
+			if name == "leaderboard_bubble":
+				# The promotion box's badge: the next league's reward.
+				lb.call("_on_badge")
+				await _settle(0.2)
+			elif name == "leaderboard_world_rewards":
+				# A ladder trophy: that league's reward.
+				var ic: Control = lb.find_child("League_platinum", true, false).get_node("LeagueIcon")
+				lb.call("_toggle_bubble", ic, g.lb_leagues_view().rows[2].reward, "Platinum")
+				await _settle(0.2)
+		"lb_result", "lb_week":
 			await _fresh(30)
 			g.lb_refresh()
-			Leaderboard.add_points(g.s, 31)
-			_main.go("leaderboard")
+			Leaderboard.add_points(g.s, 151 if name == "lb_result" else 40)
+			if name == "lb_week":
+				g.test_now = NOW + 8 * 86400
+			_main.open_popup("res://scenes/leaderboard.tscn", {})
 			await _settle()
 		"lb_leagues":
 			await _fresh(30)

@@ -26,6 +26,8 @@ static func defaults() -> Dictionary:
 		"weekly": {
 			"cycle": "", "points": 0, "vip": false, "opened": false, "end_seen": false, "tut_seen": false,
 			"claimed_free": [], "claimed_vip": [], "claimed_bank": [], "pending_end": {},
+			# Mùa (cycle) đã hiện popup Weekly Pass Upsell (Game.weekly_take_upsell).
+			"upsell": "",
 		},
 		"chain": {
 			"active": false, "id": "", "step": 0, "expires": 0, "cooldown_until": 0,
@@ -33,13 +35,23 @@ static func defaults() -> Dictionary:
 		},
 		"challenge": {"day": -1, "won": false},
 		"road_trip": {"level": 1, "boxes": 0, "guide": false},
+		# Màn đặc biệt (src/meta/special_bomb.gd): slot_at = lúc ngăn chờ có vé (0 = có sẵn), bonus = vé ngăn thưởng,
+		# wins = số trận thắng (số bom), board = bàn sẽ chơi, invited / guide = đã tự mời lần đầu / đã xem hướng dẫn.
+		"special": {"slot_at": 0, "bonus": 0, "wins": 0, "board": 1, "invited": false, "guide": false},
+		# Win Streak (src/meta/win_streak.gd): week = mã tuần của lượt (-1 chưa có), started = đã bấm Start,
+		# count = chuỗi, before = chuỗi trước lần đổi gần nhất, claimed = mốc đã nhận.
+		"streak": {"week": -1, "started": false, "auto_shown": false, "count": 0, "before": 0, "claimed": []},
 		"lb": {
 			"joined": false, "points": 0, "league": 0, "seed": 0, "day": -1, "seen_rank": 0,
 			"bots": [], "risen": [], "pending": [],
+			# Tuần BXH (src/meta/leaderboard.gd): t0 = lúc vào (0: bản lưu cũ chưa có), week = chỉ số tuần,
+			# clock = giờ lớn nhất đã thấy, result = kết quả tuần chờ xem ({} nếu không có).
+			"t0": 0, "week": 0, "clock": 0, "result": {},
 		},
 		"notify": {"ignored": 0, "plan": [], "asked": false, "hours": []},
 		"settings": {"sfx": true, "music": true, "haptics": true, "notif": true, "lang": ""},
-		"meta": {"install_at": 0, "sessions": 0, "first_session_done": false, "rated": false, "ftue": []},
+		"meta": {"install_at": 0, "sessions": 0, "first_session_done": false, "rated": false, "ftue": [],
+			"intro_seen": false},
 	}
 
 

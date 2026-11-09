@@ -42,8 +42,8 @@ func test_lose_keeps_timer_when_not_full(t: T) -> void:
 	var s := SaveSchema.defaults()
 	var rg: int = Config.LIVES.regen_sec
 	Lives.lose(s, NOW, FROM)
-	Lives.lose(s, NOW + 300, FROM)
-	t.eq(Lives.count(s, NOW + 300), 8, "còn 8")
+	Lives.lose(s, NOW + rg / 3, FROM)
+	t.eq(Lives.count(s, NOW + rg / 3), 8, "còn 8")
 	t.eq(int(s.lives.next_at), NOW + rg, "mất thêm không dời đồng hồ")
 	t.eq(Lives.count(s, NOW + rg), 9, "hồi 1")
 	t.eq(Lives.seconds_to_next(s, NOW + rg), rg, "mạng kế tiếp sau một chu kỳ nữa")

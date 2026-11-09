@@ -122,7 +122,7 @@ func test_road_trip_uses_gift_curtain(t: T) -> void:
 	var m := (load("res://scenes/main.tscn") as PackedScene).instantiate() as Control
 	_tree().root.add_child(m)
 	t.ok(await _wait_until(func() -> bool: return m.is_booted), "boot xong")
-	g.s.level = 20
+	g.s.level = 80  # Road Trip mở từ L70 (Config.UNLOCK.road_trip)
 	g.s.road_trip.level = 15
 	m.go("road_trip")
 	await _wait_until(func() -> bool: return m.get("_slide_out") == null)

@@ -1,7 +1,9 @@
 extends Control
-## Nền cho màn đã dựng UI theo wireframe nhưng chưa nối logic. Không đụng Game, không tự mua, không tự xem quảng cáo.
-## setup({view}): view là dữ liệu hiển thị; không truyền thì dùng _sample(). Khi nối logic chỉ cần truyền view thật.
-## Nút chỉ phát closed({"action": <tên>}); X phát {"action": "close"}. Màn đè toàn màn hình chạm là đóng ({"action": "tap"}).
+## Nền chung cho các màn dựng theo wireframe (docs/UI_FIGMA.md, mục "Màn dựng theo view").
+## setup({view}): view là dữ liệu hiển thị; không truyền thì dùng _sample() (màn đã nối logic đọc Game ở đó, màn còn
+## lại dùng dữ liệu mẫu của SampleData). Nút phát closed({"action": <tên>}); X phát {"action": "close"}. Màn đè toàn
+## màn hình chạm là đóng ({"action": "tap"}). Màn đã nối logic gọi Game ngay trong màn (mua, nhận thưởng) và mở
+## popup chồng lên bằng open_over.
 
 signal closed(result: Variant)
 
@@ -109,6 +111,25 @@ func _act(action: String) -> void:
 ## Like _act for prefab buttons, which play their own click sound.
 func _send(action: String) -> void:
 	closed.emit({"action": action})
+
+
+## Opens a popup scene over this screen through Main.open_popup (an ancestor), or as a child when the screen runs
+## alone (tests, the UI gallery). Returns the popup (null when the scene is missing).
+func open_over(path: String, args: Dictionary = {}) -> Node:
+	var n := get_parent()
+	while n != null:
+		if n.has_method("open_popup") and n.has_method("add_popup"):
+			return n.call("open_popup", path, args)
+		n = n.get_parent()
+	if not ResourceLoader.exists(path):
+		return null
+	var node := (load(path) as PackedScene).instantiate()
+	add_child(node)
+	if node.has_signal("closed"):
+		node.connect("closed", func(_r: Variant) -> void: node.queue_free())
+	if node.has_method("setup"):
+		node.call("setup", args)
+	return node
 
 
 func _say(content: String, size: int = ThemeKit.FS_SMALL + 4, color: Color = ThemeKit.INK) -> Label:

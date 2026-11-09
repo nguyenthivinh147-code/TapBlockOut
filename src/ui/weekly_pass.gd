@@ -631,7 +631,7 @@ func _on_buy_vip() -> void:
 		"ok":
 			if bool(r.get("granted", false)):
 				Sfx.play("sfx_coin")
-		"cancel":
+		"cancel", "offline":
 			pass
 		"pending":
 			toast_text = tr("shop_buy_pending")

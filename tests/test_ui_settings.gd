@@ -132,10 +132,20 @@ func test_support_mailto_not_really_opened(t: T) -> void:
 	var opened: Array = []
 	var node := _open(opened)
 	node.support_button.pressed.emit()
+	t.eq(opened.size(), 0, "Support mở popup Help trước, chưa gửi mail")
+	var help: Control = node.help_panel
+	t.ok(help != null, "popup Help")
+	# Pick the purchase topic, write a message, Send.
+	(help.find_child("Topic_purchase", true, false).get_node("Pick") as Button).pressed.emit()
+	t.eq(str(help.get("topic")), "settings_help_purchase", "chọn chủ đề")
+	(help.get("message") as TextEdit).text = "Lost my gold"
+	(help.find_child("SaveButton", true, false) as Button).pressed.emit()
 	t.eq(opened.size(), 1, "gọi opener một lần")
 	t.ok(str(opened[0]).begins_with("mailto:" + str(Config.CONTENT.support_email)), "mailto tới email hỗ trợ")
 	t.ok(str(opened[0]).contains("subject="), "có tiêu đề")
-	t.ok(not str(opened[0]).contains(" "), "tiêu đề đã mã hoá")
+	t.ok(str(opened[0]).contains("body=Lost%20my%20gold"), "thân thư có nội dung")
+	t.ok(not str(opened[0]).contains(" "), "đã mã hoá")
+	t.eq(node.help_panel, null, "Gửi đóng popup Help")
 	node.queue_free()
 
 

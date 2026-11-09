@@ -7,15 +7,30 @@ const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const Unlocks := preload("res://src/meta/unlocks.gd")
 const Config := preload("res://src/config.gd")
 const POPUP_DAILY := "res://scenes/popup_daily.tscn"
+## Leaderboard: popup over Home (design.md mục 7 "Leaderboard theo league").
+const LEADERBOARD := "res://scenes/leaderboard.tscn"
 const POPUP_OFFER := "res://scenes/popup_offer.tscn"
 const SETTINGS := "res://scenes/settings.tscn"
 const WEEKLY_PASS := "res://scenes/weekly_pass.tscn"
 const CHAIN_OFFER := "res://scenes/chain_offer.tscn"
 const NO_LIVES := "res://scenes/no_lives.tscn"
 const TESTER := "res://scenes/tester_menu.tscn"
+const STREAK_POPUPS := {"intro": "res://scenes/popup_streak_intro.tscn", "main": "res://scenes/streak_main.tscn",
+	"end": "res://scenes/popup_streak_end.tscn"}
+const STREAK_RULES := "res://scenes/popup_streak_rewards.tscn"
+const REMOVE_ADS := "res://scenes/popup_remove_ads.tscn"
+const WEEKLY_UPSELL := "res://scenes/popup_weekly_upsell.tscn"
+const POPUP_UPDATE := "res://scenes/popup_update.tscn"
+const SELECT_ACCOUNT := "res://scenes/select_account.tscn"
+const POPUP_NOTICE := "res://scenes/popup_notice.tscn"
+const NO_INTERNET := "res://scenes/popup_no_internet.tscn"
+const AD_LOADING := "res://scenes/ad_loading.tscn"
 const TesterMenu := preload("res://src/ui/tester_menu.gd")
 const LevelCurtain := preload("res://src/ui/level_curtain.gd")
 const CandyCurtain := preload("res://src/ui/candy_curtain.gd")
+const BombCurtain := preload("res://src/ui/bomb_curtain.gd")
+## Màn đặc biệt (design.md mục 7): popup mời / chờ vé.
+const POPUP_SPECIAL := "res://scenes/popup_special.tscn"
 const HubNav := preload("res://src/ui/hub_nav.gd")
 const HubTop := preload("res://src/ui/hub_top.gd")
 const TapFx := preload("res://src/ui/tap_fx.gd")
@@ -37,6 +52,8 @@ var _slide_tw: Tween = null
 var _slide_out: Control = null
 var _pinned: Array = []
 var _slide_block: Control = null
+## Lớp "Đang tải video" (ad_loading, wireframe 11.1) khi Game chờ video rewarded; null khi không chờ.
+var ad_loading: Control = null
 
 
 func _ready() -> void:
@@ -44,6 +61,9 @@ func _ready() -> void:
 	var tap_fx := TapFx.new()
 	tap_fx.name = "TapFx"
 	add_child(tap_fx)
+	Game.ad_wait.connect(_on_ad_wait)
+	Game.notice.connect(_on_notice)
+	Game.cloud_conflict.connect(_on_cloud_conflict)
 	_boot()
 
 
@@ -69,13 +89,75 @@ func _boot() -> void:
 	go("level" if boot_to_level() else "home")
 	is_booted = true
 	booted.emit()
-	_chain_autoshow()
+	_boot_popups()
+	_home_autoshow()
 
 
 ## After loading, the game opens on the level when the player can start it: lives (as Play on Home) and a level
 ## to play (the demo ends at demo_max_level). Otherwise Home.
 func boot_to_level() -> bool:
-	return bool(Game.lives_view().get("can_play", true)) and Game.level_exists(int(Game.s.level))
+	# A save conflict (select_account) is settled on Home first: the level would run on the save being replaced.
+	return bool(Game.lives_view().get("can_play", true)) and Game.level_exists(int(Game.s.level)) 		and Game.cloud_conflict_view().is_empty()
+
+
+## Sau khi mở game: chọn bản lưu khi cloud xung đột (1.4), rồi popup cập nhật (1.2).
+func _boot_popups() -> void:
+	_on_cloud_conflict()
+	_show_update()
+
+
+## Popup cập nhật (wireframe 1.2): bắt buộc thì không đóng được; không bắt buộc thì một lần mỗi lần mở game.
+func _show_update() -> void:
+	var st := Game.update_state()
+	if st == "":
+		return
+	Game.mark_update_asked()
+	open_popup(POPUP_UPDATE, {"view": {"force": st == "force"}})
+
+
+## Bản lưu Google Play khác bản trên máy (Game.cloud_conflict): hỏi chọn khi đang ở Home. Lúc tải game thì
+## _boot_popups hỏi (boot_to_level đã chọn Home); đang ở level thì chờ về Home (_home_autoshow).
+func _on_cloud_conflict() -> void:
+	var v := Game.cloud_conflict_view()
+	if v.is_empty() or not is_booted or current_name != "home" or _has_popup(SELECT_ACCOUNT):
+		return
+	var p := open_popup(SELECT_ACCOUNT, {"view": v})
+	if p != null:
+		p.connect("closed", func(r: Variant) -> void:
+			var pick := str((r as Dictionary).get("action", "")) if r is Dictionary else ""
+			Game.resolve_cloud(pick == "select_cloud")
+			if current_name == "home":
+				go("home"))
+
+
+func _has_popup(path: String) -> bool:
+	for c in popup_layer.get_children():
+		if not c.is_queued_for_deletion() and c.scene_file_path == path:
+			return true
+	return false
+
+
+## Game đang chờ video: lớp ad_loading trên cùng, chặn chạm; xong thì gỡ.
+func _on_ad_wait(on: bool) -> void:
+	if on and ad_loading == null:
+		ad_loading = SceneCache.instantiate(AD_LOADING)
+		ad_loading.name = "AdLoading"
+		add_child(ad_loading)
+		if ad_loading.has_method("setup"):
+			ad_loading.call("setup", {})
+	elif not on and ad_loading != null:
+		ad_loading.queue_free()
+		ad_loading = null
+
+
+## Lỗi Game đã phân loại: không có video (popup_notice 11.2) hoặc mất mạng (popup_no_internet 1.6).
+func _on_notice(kind: String) -> void:
+	match kind:
+		"not_ready":
+			open_popup(POPUP_NOTICE, {"view": {"title": "ads_notice_title", "body": "ads_not_available"}})
+		"offline":
+			if not _has_popup(NO_INTERNET):
+				open_popup(NO_INTERNET)
 
 
 ## "v0.1.0" theo application/config/version; trống thì Splash ẩn dòng version.
@@ -84,13 +166,55 @@ func _version() -> String:
 	return "v" + v if v != "" else ""
 
 
-## Chain Offer tự mở đúng một lần mỗi chuỗi, khi người chơi đang ở Home.
-func _chain_autoshow() -> void:
-	if current_name == "home" and Game.chain_take_autoshow():
+## Popup tự mở khi về Home, nhiều nhất một cái mỗi lần: chọn bản lưu (1.4), Chain Offer (một lần mỗi chuỗi), giới
+## thiệu Win Streak (một lần mỗi lượt, khi chưa bấm Start), Weekly Pass Upsell (một lần mỗi mùa).
+func _home_autoshow() -> void:
+	if current_name != "home":
+		return
+	if not Game.cloud_conflict_view().is_empty():
+		_on_cloud_conflict()
+	elif Game.chain_take_autoshow():
 		_popup_then(CHAIN_OFFER, {}, false)
+	elif popup_count() > 0:
+		return
+	elif Game.special_take_invite():
+		_open_special()
+	elif Game.streak_take_auto_intro():
+		_open_streak("intro")
+	elif Game.weekly_take_upsell():
+		var p := open_popup(WEEKLY_UPSELL)
+		if p != null:
+			p.connect("closed", func(r: Variant) -> void:
+				if r is Dictionary and str(r.get("action", "")) == "bought" and current_name == "home":
+					_popup_then(WEEKLY_PASS, {}, false))
 
 
-## screen: "home", "level", "no_lives", "profile", "shop", "challenge", "leaderboard", "road_trip".
+## Win Streak (design.md mục 7): popup theo Game.streak_entry. Intro: Start thì Game.streak_start, luật (9.3) rồi
+## Main (UIPopupWinStreakInstruction.OnStartButtonClicked, luật đóng thì mở Main). Main: Chơi vào level.
+func _open_streak(entry: String) -> void:
+	var path := str(STREAK_POPUPS.get(entry, ""))
+	if path == "":
+		return
+	var host := current_screen
+	var p := open_popup(path)
+	if p == null:
+		return
+	p.connect("closed", func(r: Variant) -> void:
+		var action := str((r as Dictionary).get("action", "")) if r is Dictionary else ""
+		if entry == "intro" and action == "go":
+			Game.streak_start()
+			var rules := open_popup(STREAK_RULES)
+			if rules != null:
+				rules.connect("closed", func(_r: Variant) -> void: _open_streak("main"))
+			return
+		if entry == "main" and action == "play" and host == current_screen:
+			_home_action("play" if bool(Game.lives_view().get("can_play", true)) else "no_lives", {})
+			return
+		if host == current_screen and is_instance_valid(host) and host.has_method("refresh"):
+			host.call("refresh"))
+
+
+## screen: "splash", "home", "level", "no_lives", "profile", "shop", "challenge", "road_trip".
 func go(screen: String, args: Dictionary = {}) -> void:
 	var path := "res://scenes/%s.tscn" % screen
 	if not ResourceLoader.exists(path):
@@ -131,7 +255,7 @@ func go(screen: String, args: Dictionary = {}) -> void:
 		move_child(_slide_block, popup_layer.get_index())
 		get_tree().process_frame.connect(_slide_screens.bind(node, dir), CONNECT_ONE_SHOT)
 	if screen == "home" and is_booted:
-		_chain_autoshow.call_deferred()
+		_home_autoshow.call_deferred()
 
 
 ## Side the new screen comes from when going between hub screens: 1 from the right (a tab further right), -1 from the
@@ -285,7 +409,7 @@ func _on_screen_closed(result: Variant, screen: String, node: Node) -> void:
 				go_curtain("level")
 			else:
 				go("home")
-		"shop", "leaderboard", "road_trip":
+		"shop", "road_trip":
 			if action == "" or action == "home":
 				go("home")
 			else:
@@ -314,22 +438,47 @@ func _home_action(action: String, res: Dictionary) -> void:
 				go("shop", {"source": "home"})
 		"ranking":
 			if Game.lb_open():
-				go("leaderboard")
+				_popup_then(LEADERBOARD, {}, false)
 		"road_trip":
 			if bool(Game.road_trip_view().get("open", false)):
 				go("road_trip")
 		"settings":
 			_popup_then(SETTINGS, {}, true)
-		"preview":
-			_popup_then("res://scenes/%s.tscn" % str(res.get("scene", "")), {}, false)
 		"offer":
-			_popup_then(POPUP_OFFER, {"id": str(res.get("id", ""))}, false)
+			var oid := str(res.get("id", ""))
+			if oid == "remove_ads":
+				_popup_then(REMOVE_ADS, {}, false)
+			else:
+				_popup_then(POPUP_OFFER, {"id": oid}, false)
 		"weekly":
 			_popup_then(WEEKLY_PASS, {}, false)
 		"chain":
 			_popup_then(CHAIN_OFFER, {}, false)
+		"streak":
+			_open_streak(Game.streak_entry())
+		"remove_ads":
+			_popup_then(REMOVE_ADS, {}, false)
+		"special_bomb":
+			if bool(Game.special_view().get("open", false)):
+				_open_special()
 		_:
 			pass
+
+
+## Màn đặc biệt từ Home: popup mời (hết vé thì popup báo thời gian chờ). Bắt đầu thì màn mưa bom rồi vào màn level ở
+## chế độ Special (không cần mạng); đóng thì làm mới Home.
+func _open_special() -> void:
+	var host := current_screen
+	var p := open_popup(POPUP_SPECIAL)
+	if p == null:
+		return
+	p.connect("closed", func(r: Variant) -> void:
+		if host != current_screen or not is_instance_valid(host):
+			return
+		if r is Dictionary and str(r.get("action", "")) == "start":
+			curtain_swap(go.bind("level", {"special": true}), BombCurtain)
+		elif host.has_method("refresh"):
+			host.call("refresh"))
 
 
 ## Mở popup trên Home; đóng thì làm mới Home (hoặc dựng lại, khi đổi ngôn ngữ ở Settings).
@@ -392,6 +541,9 @@ func _notification(what: int) -> void:
 		return
 	var top := _top_popup()
 	if top != null:
+		# A forced update cannot be dismissed.
+		if top.has_method("blocks_back") and bool(top.call("blocks_back")):
+			return
 		if top.has_signal("closed"):
 			top.emit_signal("closed", null)
 		else:

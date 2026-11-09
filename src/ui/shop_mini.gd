@@ -63,11 +63,12 @@ func _build() -> void:
 		var b: Button = tv.button("Button_Purchase")
 		buy_buttons[str(e.sku)] = b
 		b.connect("clicked", buy.bind(str(e.sku)))
-		if bool(e.get("sale", false)) and int(e.get("sale_percent", 0)) > 0:
+		var tag := Shop.sale_tag(e)
+		if tag != "":
 			var s := UnityKit.spec(LAYER, C + "/StarterPack/SellBadge")
 			s.a = true
 			var bv: RefCounted = UnityKit.add(tv.root, s, Rect2(-22, -26, 100, 100))
-			bv.text("SellBadgeTxt", "-%d%%" % int(e.sale_percent))
+			bv.text("SellBadgeTxt", tag)
 		i += 1
 	UnityUI.relayout(grid)
 
@@ -96,7 +97,7 @@ func buy(sku: String) -> void:
 				toast(tr("shop_buy_failed"))
 		"pending":
 			toast(tr("shop_buy_pending"))
-		"cancel":
+		"cancel", "offline":
 			pass
 		_:
 			toast(tr("shop_buy_failed"))

@@ -12,7 +12,7 @@ const Config := preload("res://src/config.gd")
 const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 const TOTAL := 500
-const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse"]
+const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon"]
 
 var _cache: Dictionary = {}  # id -> level
 
@@ -36,15 +36,19 @@ func _mechs(d: Dictionary) -> Dictionary:
 		m["stone"] = 0
 	if not d["pulse_sides"].is_empty():
 		m["pulse"] = 0
+	var cover := "frost" if str(d.get("cover", "")) == "frost" else "ice"
 	for b in d["blocks"]:
 		if int(b["ice"]) > 0:
-			m["ice"] = int(m.get("ice", 0)) + 1
+			m[cover] = int(m.get(cover, 0)) + 1
 		if str(b["chained_by"]) != "":
 			m["chain"] = int(m.get("chain", 0)) + 1
 		if str(b["inner_color"]) != "":
 			m["layer"] = int(m.get("layer", 0)) + 1
 		if bool(b["fog"]):
 			m["fog"] = int(m.get("fog", 0)) + 1
+		var rib: Variant = b.get("ribbons", [])
+		if rib is Array and not (rib as Array).is_empty():
+			m["ribbon"] = int(m.get("ribbon", 0)) + 1
 	return m
 
 
@@ -434,12 +438,11 @@ func test_teaching_levels(t: T) -> void:
 					if b.peek(bid) == "blocked":
 						blocked += 1
 				t.ok(blocked >= 1, "stone: có khối bị chặn phải đi sau")
-			"ice":
-				t.eq(int(r["min_taps"]), n + int(mech["ice"]), "ice: tốn thêm một chạm nứt")
-				var cracked := false
-				for bid in b.block_ids():
-					cracked = cracked or b.peek(bid) == "crack"
-				t.ok(cracked, "ice: lần chạm đầu vào khối băng là nứt")
+			"ice", "frost":
+				t.eq(int(r["min_taps"]), n, "%s: lớp phủ không tốn thêm chạm" % m)
+				t.ok(Gen._teach_ok(d, m), "%s: có khối phủ kề khối thoát được ngay" % m)
+				for bl in d["blocks"]:
+					t.ok(int(bl["ice"]) <= 1, "%s: level dạy chỉ 1 lớp" % m)
 			"chain":
 				var locked := ""
 				for bid in b.block_ids():
@@ -458,6 +461,12 @@ func test_teaching_levels(t: T) -> void:
 				for bid in b.block_ids():
 					peel = peel or b.peek(bid) == "peel"
 				t.ok(peel, "layer: có khối bóc được")
+			"ribbon":
+				var layers := 0
+				for bl in d["blocks"]:
+					layers += (bl.get("ribbons", []) as Array).size()
+				t.eq(int(r["min_taps"]), n + layers, "ribbon: mỗi lớp tốn thêm một chạm bóc")
+				t.ok(Gen._teach_ok(d, m), "ribbon: có khối ruy băng bóc được ngay và một khối 3-4 lớp")
 			"fog":
 				var hidden := 0
 				for bid in b.block_ids():

@@ -21,6 +21,16 @@ const CHAIN_W := 0.03  # bề dày nét thép (ô)
 const CHAIN_MESH_MAX := 64  # số hình xích giữ trong cache (mỗi hình khối và cỡ ô một hình)
 const KEY_SIZE := 0.8  # ảnh chìa giữa một ô của khối chìa, cạnh theo ô
 const FOG_MARK := 0.7  # ảnh `mech_fog` giữa một ô của khối còn trong sương, cạnh theo ô
+const RIBBON_BOW := 1.3  # nơ satin (`ribbon_bow`, xám, tô theo tông khối) giữa khối ruy băng, cạnh ảnh theo ô
+const RIBBON_BOW_DARK := 0.4  # phần tối nhất của nơ (phân vị độ sáng) đậm dần về tông đáy
+const RIBBON_BOW_LIGHT := 0.78  # phần sáng nhất (trên phân vị này) sáng dần thành vệt bóng
+const RIBBON_BOW_SMOOTH := 4  # độ sáng của nơ làm mịn bằng cách thu nhỏ chừng này lần rồi phóng lại
+const RIBBON_BOW_RIM := 0.035  # viền tối quanh nơ, theo cạnh ảnh
+const RIBBON_BOW_RIM_DARK := 0.45  # viền tối hơn tông đáy của khối chừng này
+const RIBBON_BOW_DROP := 0.04  # bóng đổ lệch xuống, theo cạnh ảnh
+const RIBBON_BOW_SHADOW := Color("2A1838")
+const RIBBON_BOW_SHADOW_A := 0.35
+const RIBBON_BOW_SHINE := 0.35  # vệt sáng sáng hơn tông sọc nhạt chừng này
 const LOCK_GOLD := Color("FFC93C")
 const LOCK_GOLD_DARK := Color("C9781A")
 const CRATE_GROW := 0.06  # ảnh thùng sắt vẽ to hơn ô chừng này mỗi phía (ô), bù lề trong suốt của ảnh
@@ -35,6 +45,7 @@ static var _real_icon: Dictionary = {}  # tên -> có file thật?
 static var _sparkle_tex: Texture2D = null
 static var _shrink_curve: Curve = null
 static var _chain_mesh: Dictionary = {}  # "hình|cỡ ô" -> Strokes của cả lớp xích
+static var _bow_parts: Dictionary = {}  # các lớp trắng của nơ ruy băng (bow_parts)
 
 
 ## Ảnh cơ chế thật (`assets/ui/mech_*.png`); null nếu chưa có để nơi gọi vẽ bằng code.
@@ -191,12 +202,16 @@ static func block_ramp(view: Dictionary) -> Dictionary:
 	return ramp
 
 
-## Lớp do shader thân khối vẽ: {"jelly": pudding phủ khối, "paper": hộp giấy (khối hai lớp), "crystal": chất liệu crystal}.
+## Lớp do shader thân khối vẽ: {"jelly": lớp phủ khối (pudding hoặc băng), "thick": lớp phủ 2 lớp, "frost": lớp phủ là
+## băng, "paper": hộp giấy (khối hai lớp), "crystal": chất liệu crystal, "ribbons": số ruy băng còn quấn}.
 static func block_layers(view: Dictionary) -> Dictionary:
 	return {
 		"jelly": 1.0 if int(view.get("ice", 0)) > 0 else 0.0,
+		"thick": 1.0 if int(view.get("ice", 0)) > 1 else 0.0,
+		"frost": 1.0 if str(view.get("cover", "")) == "frost" else 0.0,
 		"paper": 1.0 if str(view.get("inner_color", "")) != "" else 0.0,
 		"crystal": 1.0 if is_crystal(view) else 0.0,
+		"ribbons": float(int(view.get("ribbons", 0))),
 	}
 
 
@@ -226,13 +241,17 @@ static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictiona
 	var fog_hidden: bool = view.get("is_fog_hidden", false)
 	var chained: bool = view.get("chained", false)
 	var is_key: bool = view.get("is_key", false)
-	# hộp giấy mờ không bóng; khối trong sương thì vệt bóng chìm dưới lớp sương
-	if str(view.get("inner_color", "")) == "" and not fog_hidden:
+	var ribbons := int(view.get("ribbons", 0))
+	# hộp giấy mờ không bóng, ruy băng có bóng satin riêng; khối trong sương thì vệt bóng chìm dưới lớp sương
+	if str(view.get("inner_color", "")) == "" and ribbons == 0 and not fog_hidden:
 		if is_crystal(view):
 			draw_crystal_gloss(ci, cells, cell)
 		else:
 			draw_gloss(ci, cells, cell)
 	var taken: Array = []
+	var bow_at := ribbon_center(cells)
+	if ribbons > 0:
+		taken.append(Vector2i(bow_at.floor()))
 	var lock_at := Vector2.ZERO
 	if chained:
 		lock_at = chain_center(cells)
@@ -250,6 +269,108 @@ static func draw_block(ci: CanvasItem, cells: Array, cell: float, view: Dictiona
 		draw_lock(ci, lock_at * cell, cell)
 	if is_key:
 		draw_key(ci, (Vector2(key_cell) + Vector2(0.5, 0.5)) * cell, cell)
+	# nơ không vẽ khi khối còn trong sương (nơ nằm trên lớp sương sẽ lộ khối ruy băng)
+	if ribbons > 0 and not fog_hidden:
+		draw_bow(ci, bow_at * cell, cell, block_ramp(view))
+
+
+## Tâm nơ của khối ruy băng (toạ độ ô của khối): trọng tâm các ô, kéo vào ô gần trọng tâm nhất (khối L, T có trọng tâm
+## nằm ngoài khối).
+static func ribbon_center(cells: Array) -> Vector2:
+	var sum := Vector2.ZERO
+	for c: Vector2i in cells:
+		sum += Vector2(c) + Vector2(0.5, 0.5)
+	var mid := sum / maxf(1.0, float(cells.size()))
+	var near: Vector2i = cells[0]
+	for c: Vector2i in cells:
+		if (Vector2(c) + Vector2(0.5, 0.5)).distance_squared_to(mid) < (Vector2(near) + Vector2(0.5, 0.5)).distance_squared_to(mid):
+			near = c
+	return Vector2(clampf(mid.x, near.x, near.x + 1.0), clampf(mid.y, near.y, near.y + 1.0))
+
+
+## Nơ satin to (ảnh `ribbon_bow` rộng RIBBON_BOW ô) ở `center`, tô theo bốn tông `ramp` của khối: bóng đổ, viền tối,
+## thân màu mặt khối, nếp gấp màu đáy, vệt bóng sáng (`bow_parts`). Thiếu ảnh thì không vẽ (dải chéo vẫn còn).
+static func draw_bow(ci: CanvasItem, center: Vector2, cell: float, ramp: Dictionary) -> void:
+	var parts := bow_parts()
+	if parts.is_empty():
+		return
+	var side := cell * RIBBON_BOW * float(parts["scale"])
+	var rect := Rect2(center - Vector2(side, side) * 0.5, Vector2(side, side))
+	var deep: Color = ramp["deep"]
+	ci.draw_texture_rect(parts["drop"], rect, false, Color(RIBBON_BOW_SHADOW, RIBBON_BOW_SHADOW_A))
+	ci.draw_texture_rect(parts["rim"], rect, false, deep.darkened(RIBBON_BOW_RIM_DARK))
+	ci.draw_texture_rect(parts["base"], rect, false, ramp["face"])
+	ci.draw_texture_rect(parts["dark"], rect, false, deep)
+	ci.draw_texture_rect(parts["light"], rect, false, (ramp["stripe"] as Color).lightened(RIBBON_BOW_SHINE))
+
+
+## Các lớp trắng (chỉ khác alpha) của nơ, dựng một lần từ `ribbon_bow` rồi tô bằng modulate theo từng khối:
+## {"drop", "rim", "base", "dark", "light": Texture2D, "scale": cạnh ảnh lớp / cạnh ảnh gốc}. Ảnh gốc gần như toàn màu
+## sáng nên độ sáng đổi thành phân vị trong thân nơ: dưới RIBBON_BOW_DARK là nếp tối, trên RIBBON_BOW_LIGHT là vệt
+## sáng, giữa là màu mặt khối. Mép alpha mềm
+## của ảnh tách nền được làm cứng lại; viền là thân nơ nở thêm RIBBON_BOW_RIM, bóng đổ là viền dời xuống RIBBON_BOW_DROP
+## (theo cạnh ảnh gốc). {} nếu chưa có ảnh.
+static func bow_parts() -> Dictionary:
+	if not _bow_parts.is_empty():
+		return _bow_parts
+	var tex := mech_tex("ribbon_bow")
+	if tex == null:
+		return {}
+	var src := tex.get_image()
+	if src.is_compressed():
+		src.decompress()
+	src.convert(Image.FORMAT_RGBA8)
+	var n := src.get_width()
+	var rim_px := maxi(1, roundi(n * RIBBON_BOW_RIM))
+	var drop_px := roundi(n * RIBBON_BOW_DROP)
+	var pad := rim_px + drop_px
+	var size := n + pad * 2
+	# Độ sáng làm mịn trước (thu nhỏ rồi phóng lại) để phân vị không phóng to hạt nhiễu của ảnh gốc thành lấm tấm.
+	var soft := src.duplicate() as Image
+	soft.resize(maxi(1, n / RIBBON_BOW_SMOOTH), maxi(1, src.get_height() / RIBBON_BOW_SMOOTH), Image.INTERPOLATE_LANCZOS)
+	soft.resize(n, src.get_height(), Image.INTERPOLATE_BILINEAR)
+	# Độ sáng đổi thành phân vị trong thân nơ (CDF), nên tỉ lệ nếp tối, thân, vệt sáng không phụ thuộc ảnh gốc sáng hay tối.
+	var hist := PackedInt32Array()
+	hist.resize(256)
+	var total := 0
+	for y in src.get_height():
+		for x in n:
+			if src.get_pixel(x, y).a > 0.6:
+				hist[clampi(int(soft.get_pixel(x, y).get_luminance() * 255.0), 0, 255)] += 1
+				total += 1
+	var cdf := PackedFloat32Array()
+	cdf.resize(256)
+	var run := 0
+	for k in 256:
+		run += hist[k]
+		cdf[k] = float(run) / float(maxi(total, 1))
+	var base := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var dark := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var light := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	for y in src.get_height():
+		for x in n:
+			var c := src.get_pixel(x, y)
+			var a := clampf((c.a - 0.15) / 0.55, 0.0, 1.0)
+			if a <= 0.0:
+				continue
+			var t := cdf[clampi(int(soft.get_pixel(x, y).get_luminance() * 255.0), 0, 255)]
+			base.set_pixel(x + pad, y + pad, Color(1, 1, 1, a))
+			dark.set_pixel(x + pad, y + pad, Color(1, 1, 1, a * clampf((RIBBON_BOW_DARK - t) / RIBBON_BOW_DARK, 0.0, 1.0)))
+			light.set_pixel(x + pad, y + pad, Color(1, 1, 1,
+				a * clampf((t - RIBBON_BOW_LIGHT) / (1.0 - RIBBON_BOW_LIGHT), 0.0, 1.0)))
+	var all := Rect2i(0, 0, size, size)
+	var rim := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	for dy in range(-rim_px, rim_px + 1):
+		for dx in range(-rim_px, rim_px + 1):
+			if dx * dx + dy * dy <= rim_px * rim_px:
+				rim.blend_rect(base, all, Vector2i(dx, dy))
+	var drop := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	drop.blend_rect(rim, all, Vector2i(0, drop_px))
+	_bow_parts = {"scale": float(size) / float(n)}
+	for k: String in ["drop", "rim", "base", "dark", "light"]:
+		var img: Image = {"drop": drop, "rim": rim, "base": base, "dark": dark, "light": light}[k]
+		_bow_parts[k] = ImageTexture.create_from_image(img)
+	return _bow_parts
 
 
 ## Lớp sương phủ của thân khối (`pudding.gdshader`): `fog` 0..1; `origin` là ô gốc của khối trên bàn để các khối sương

@@ -84,25 +84,55 @@ func test_fixture_loads_all_mechanics(t: T) -> void:
 	v.queue_free()
 
 
-func test_ice_crack(t: T) -> void:
-	var board := BoardState.new(_lv(5, 5, [_b("b1", "yellow", [[2, 2]], {"ice": 1}), _b("b2", "blue", [[0, 0]])]))
+## Lớp phủ: chạm khối còn phủ thì nhún tại chỗ; khối kề thoát thì lớp phủ vỡ lúc khối kề chạm thanh, không phải lúc
+## chạm, và tới lúc đó khối vẫn tính là còn phủ (cover_held).
+func test_cover_strip(t: T) -> void:
+	for cover in ["pudding", "frost"]:
+		var board := BoardState.new(_lv(5, 5, [_b("n", "yellow", [[2, 1]]), _b("b1", "yellow", [[2, 2]], {"ice": 1}),
+			_b("b2", "blue", [[0, 0]])], {"cover": cover}))
+		var v := _view(board)
+		var burst := "FrostBurst" if cover == "frost" else "JellyBurst"
+		t.eq(v.ghost_count(), 0, "%s: đầu không bóng" % cover)
+		var r := board.tap("b1")
+		t.eq(r["kind"], "covered", "%s: chạm khối còn phủ" % cover)
+		v.apply_result(r)
+		t.ok(await _wait_done(v), "%s: nhún xong" % cover)
+		t.eq(v.block_node("b1").scale, Vector2.ONE, "%s: scale về 1" % cover)
+		r = board.tap("n")
+		t.eq(r["stripped"], ["b1"] as Array[String], "%s: board bóc ngay" % cover)
+		v.apply_result(r)
+		t.eq(v.block_node("b1").view["ice"], 1, "%s: khối kề chưa tới thanh, hình còn phủ" % cover)
+		t.ok(v.cover_held("b1"), "%s: còn tính là phủ" % cover)
+		t.eq(_fx_named(v, burst), 0, "%s: chưa vỡ" % cover)
+		var deadline := Time.get_ticks_msec() + 1500
+		while int(v.block_node("b1").view["ice"]) > 0 and Time.get_ticks_msec() < deadline:
+			await _frames(1)
+		t.eq(v.block_node("b1").view["ice"], 0, "%s: khối kề chạm thanh thì lớp phủ vỡ" % cover)
+		t.ok(not v.cover_held("b1"), "%s: hết giữ" % cover)
+		t.ok(_fx_named(v, burst) >= 1, "%s: hiệu ứng vỡ theo chất liệu" % cover)
+		t.ok(await _wait_done(v), "%s: thoát xong" % cover)
+		t.eq(v.ghost_count(), 0, "%s: bóng đã dọn" % cover)
+		r = board.tap("b1")
+		t.eq(r["kind"], "exit", "%s: hết phủ thì đi" % cover)
+		v.apply_result(r)
+		t.ok(await _wait_done(v), "%s: b1 thoát xong" % cover)
+		t.eq(v.block_count(), 1, "%s: b1 đã đi" % cover)
+		v.queue_free()
+
+
+## Khối 2 lớp: lớp ngoài vỡ nhỏ, hình còn 1 lớp; Phá khối kề cũng làm vỡ lớp (lúc búa gõ).
+func test_cover_two_layers(t: T) -> void:
+	var board := BoardState.new(_lv(5, 5, [_b("n", "yellow", [[2, 1]]), _b("b1", "yellow", [[2, 2]], {"ice": 2}),
+		_b("w", "green", [[1, 2]])]))
 	var v := _view(board)
-	t.eq(v.ghost_count(), 0, "đầu: không bóng")
-	var r := board.tap("b1")
-	t.eq(r["kind"], "crack", "lần 1 nứt")
-	v.apply_result(r)
-	t.eq(v.block_node("b1").view["ice"], 0, "băng hết sau khi nứt")
-	t.ok(v.ghost_count() >= 1, "lớp pudding vỡ bay ra")
-	t.ok(_fx_named(v, "JellyBurst") >= 1, "bọt pudding toả ra")
-	t.eq(v.block_count(), 2, "khối còn nguyên")
-	t.ok(await _wait_done(v), "crack xong")
-	t.eq(v.ghost_count(), 0, "bóng đã dọn")
-	t.eq(v.block_node("b1").scale, Vector2.ONE, "scale về 1")
-	r = board.tap("b1")
-	t.eq(r["kind"], "exit", "lần 2 đi")
-	v.apply_result(r)
-	t.ok(await _wait_done(v), "exit xong")
-	t.eq(v.block_count(), 1, "b1 đã đi")
+	v.apply_result(board.tap("n"))
+	t.ok(await _wait_done(v), "n thoát xong")
+	t.eq(v.block_node("b1").view["ice"], 1, "còn 1 lớp")
+	t.eq(board.tap("b1")["kind"], "covered", "1 lớp vẫn chưa đi")
+	board.smash("w")
+	v.smash_anim("w")
+	t.eq(v.block_node("b1").view["ice"], 0, "búa gõ khối kề thì vỡ nốt")
+	t.ok(await _wait_done(v), "phá xong")
 	v.queue_free()
 
 
@@ -336,7 +366,7 @@ func test_setup_resets_mechanic_state(t: T) -> void:
 func test_mech_assets_optional(t: T) -> void:
 	# thiếu ảnh thật thì vẽ bằng code; có thì dùng. Cả hai phải cho kết quả nhất quán, không lỗi.
 	const BoardFx := preload("res://src/ui/board_fx.gd")
-	for n in ["mech_stone", "mech_ice", "mech_chain", "mech_key", "mech_fog"]:
+	for n in ["mech_stone", "mech_ice", "mech_chain", "mech_key", "mech_fog", "mech_frost"]:
 		var tex := BoardFx.mech_tex(n)
 		var real := ResourceLoader.exists("res://assets/ui/%s.png" % n)
 		t.eq(tex != null, real, "%s: ảnh thật ⇔ có texture" % n)

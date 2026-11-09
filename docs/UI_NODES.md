@@ -50,7 +50,7 @@ UI của mọi màn nằm trong scene (`.tscn`) dưới dạng node, mở trong 
 
 ## Home, thanh hub, main
 
-- `scenes/home.tscn` chứa mọi node của Home; `HubTop`, `NavBar` là instance của `scenes/hub_top.tscn`, `scenes/hub_nav.tscn`. Shop và Leaderboard tạo thanh bằng `HubTop.create()`, `HubNav.create(tab)`. Thẻ thắng cũng tạo `HubTop` (meta `u_rt`), nhưng chỉ khi gold x2 bay lên thanh; trong lúc đó `gold_shown` giữ số gold đang đếm thay cho số trong ví.
+- `scenes/home.tscn` chứa mọi node của Home; `HubTop`, `NavBar` là instance của `scenes/hub_top.tscn`, `scenes/hub_nav.tscn`. Shop tạo thanh bằng `HubTop.create()`, `HubNav.create(tab)` (Leaderboard là popup, không có thanh). Thẻ thắng cũng tạo `HubTop` (meta `u_rt`), nhưng chỉ khi gold x2 bay lên thanh; trong lúc đó `gold_shown` giữ số gold đang đếm thay cho số trong ví.
 - Toạ độ Figma của node FigmaBox nằm trong meta `fb_rect`, `fb_bottom`, `fb_font`; `FigmaBox.adopt(root)` đọc lại và co theo bề rộng thật. Muốn dời node Home hay hub thì sửa meta đó, kéo node trong editor không có tác dụng lúc chạy.
 - `scenes/main.tscn` có `Background` (instance `scenes/background.tscn`) và `PopupLayer`.
 - `main.go()` giữa Shop, Home, Road Trip trượt màn (`docs/UI_FIGMA.md`, mục chuyển tab): màn cũ còn trong cây thêm 0.33 s rồi mới bị xoá. `HubTop`, `HubNav` của màn được ghim tại chỗ, nên mỗi màn phải có đúng script đó trên thanh của mình (tìm theo script).

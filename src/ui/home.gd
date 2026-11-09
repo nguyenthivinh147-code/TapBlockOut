@@ -4,7 +4,7 @@ extends Control
 ## đường level co lại khi màn thấp hơn khung Figma.
 ## Chỉ đọc Game; không tự mở popup. Điều hướng qua closed({"action": ...}):
 ## play, no_lives, lives, profile, gift, shop, ranking (icon Bảng xếp hạng ở cột trái), road_trip (tab dưới), settings,
-## challenge, offer (kèm "id"), preview (kèm "scene": màn đã dựng UI, chưa nối logic; chỉ hiện khi Config.ui_preview).
+## challenge, offer (kèm "id"), streak (icon Win Streak, cột trái), remove_ads (icon Remove Ads, cột phải).
 ## Road Trip vừa mở (Game.road_trip_view().guide): lớp hướng dẫn RoadTripGuide phủ tối Home trừ thanh dưới, bàn tay
 ## chỉ vào tab Road Trip; chạm đâu cũng tắt và không hiện lại.
 ## Mọi node tĩnh nằm trong scenes/home.tscn (toạ độ Figma trong meta fb_rect, fb_font của FigmaBox; thanh trên, thanh dưới
@@ -64,8 +64,6 @@ const TIERS := {
 	"very_hard": {"button": "purple", "stroke": Color("4C0B78"), "node": "hex_purple", "num": Color("4B1073"), "skull": "ui_superhard"},
 }
 const LOCKED_STROKE := Color("787878")
-## Mục mở màn chưa nối logic (chỉ khi Config.ui_preview): [chữ, scene]. Node PreviewItem_<scene> trong scene.
-const PREVIEWS := [["shop_remove_ads", "popup_remove_ads"], ["streak_title", "streak_main"]]
 const SOLVED_STROKE := Color("076F87")
 
 var gold_label: Label = null
@@ -87,6 +85,8 @@ var challenge_btn: Button = null
 var challenge_caption: Label = null
 var leaderboard_btn: Button = null
 var leaderboard_caption: Label = null
+## Chấm đỏ: kết quả tuần chờ xem hoặc thưởng league chờ nhận (Game.lb_badge).
+var leaderboard_dot: Control = null
 ## Lớp hướng dẫn Road Trip vừa mở (null khi không hiện).
 var road_trip_guide: Control = null
 var offer_chip: Button = null
@@ -98,6 +98,15 @@ var weekly_dot: Control = null
 var chain_btn: Button = null
 var chain_dot: Control = null
 var special_btn: Button = null
+## Win Streak (cột trái, design.md mục 7): chữ ribbon là thời gian còn lại, hoặc số mốc chờ nhận.
+var streak_btn: Button = null
+var streak_caption: Label = null
+## Màn đặc biệt (cột trái, design.md mục 7): chấm đỏ ghi số vé khi có vé, ribbon đếm ngược tới vé chờ khi hết vé.
+var bomb_btn: Button = null
+var bomb_caption: Label = null
+var bomb_badge: Control = null
+## Remove Ads (cột phải): ẩn khi đã mua một trong hai gói bỏ quảng cáo.
+var remove_ads_btn: Button = null
 ## Ba mốc trên đường level, từ trên xuống. Mỗi mốc: {"root", "sprite", "num", "badge", "skull"}.
 var path_nodes: Array[Dictionary] = []
 
@@ -125,6 +134,9 @@ var _offer_col: Control = null
 var _weekly_col: Control = null
 var _chain_col: Control = null
 var _special_col: Control = null
+var _streak_col: Control = null
+var _bomb_col: Control = null
+var _remove_ads_col: Control = null
 var _left_items: Array[Control] = []
 var _right_items: Array[Control] = []
 var _special_id: String = ""
@@ -189,21 +201,19 @@ func _path_node(root: Control) -> Dictionary:
 
 
 ## Every static node is in scenes/home.tscn (Figma rects in FigmaBox metas); this finds them, sets the texts and
-## wires the buttons. The preview items are dropped when Config.ui_preview is off.
+## wires the buttons.
 func _build() -> void:
 	if _built:
 		return
 	_built = true
-	for p in PREVIEWS:
-		var item := get_node("%PreviewItem_" + str(p[1])) as Control
-		if not Config.ui_preview():
-			remove_child(item)
-			item.free()
 	_fb.adopt(self)
 
 	_bg = %Background
 	_sparkles = _bg.get_node("Sparkles")
 	_rail = %Rail
+	# _layout_path sets the rail's `cut`: work on a copy, not the material the cached scene shares.
+	if _rail.material != null:
+		_rail.material = _rail.material.duplicate()
 	_glow = %Glow
 	if not UnityUI.baking:
 		# The glow behind the current node breathes around its center.
@@ -223,6 +233,15 @@ func _build() -> void:
 	leaderboard_btn = _side_item(%LeaderboardButton, tr("home_ranking"), false, _on_leaderboard)
 	leaderboard_caption = (%LeaderboardItem as Control).get_node("Caption")
 	_leaderboard_lock = %LeaderboardLock
+	leaderboard_dot = %LeaderboardDot
+	streak_btn = _side_item(%StreakButton, tr("streak_title"), false, _emit.bind("streak"))
+	_streak_col = %StreakItem
+	streak_caption = _streak_col.get_node("Caption")
+	bomb_btn = _side_item(%BombButton, tr("special_title"), false, _emit.bind("special_bomb"))
+	_bomb_col = %BombItem
+	bomb_caption = _bomb_col.get_node("Caption")
+	bomb_badge = %BombBadge
+	(bomb_btn.get_node("Icon") as TextureRect).texture = ThemeKit.icon("special_bomb")
 
 	# cột phải: ưu đãi có hạn, Special Pack, Weekend Sale, Weekly Pass, Chain Offer (ẩn khi chưa đủ điều kiện)
 	offer_chip = _side_item(%OfferChip, "", true, _on_offer)
@@ -242,13 +261,8 @@ func _build() -> void:
 	chain_btn = _side_item(%ChainOfferButton, tr("home_chain"), true, _emit.bind("chain"))
 	_chain_col = %ChainOfferItem
 	chain_dot = %ChainDot
-	if Config.ui_preview():
-		for p in PREVIEWS:
-			var scene := str(p[1])
-			_side_item(get_node("%PreviewItem_" + scene).get_node("Preview_" + scene), tr(str(p[0])), true,
-				func() -> void:
-					Sfx.play("button")
-					closed.emit({"action": "preview", "scene": scene}))
+	remove_ads_btn = _side_item(%RemoveAdsButton, tr("shop_remove_ads"), true, _emit.bind("remove_ads"))
+	_remove_ads_col = %RemoveAdsItem
 
 	# nút Chơi: chữ PLAY, trên đó là độ khó (Hard/Super Hard)
 	play_btn = %PlayButton
@@ -460,6 +474,7 @@ func refresh() -> void:
 	leaderboard_btn.modulate = Color.WHITE if lb_open else Color(0.75, 0.75, 0.82)
 	_leaderboard_lock.visible = not lb_open
 	leaderboard_caption.text = tr("home_ranking") if lb_open else tr("home_play_level") % int(Config.UNLOCK.get("leaderboard", 0))
+	leaderboard_dot.visible = lb_open and Game.lb_badge()
 
 	_refresh_timers()
 	_refresh_guide()
@@ -480,6 +495,24 @@ func _refresh_events() -> void:
 	chain_dot.visible = not cv.is_empty() and int(cv.step) < int(cv.count)
 	_special_id = Game.special_pack_id()
 	_special_col.visible = _special_id != ""
+	_remove_ads_col.visible = Unlocks.is_open("shop", int(Game.s.level)) and not bool(Game.s.get("no_ads", false))
+	var sv: Dictionary = Game.streak_view()
+	_streak_col.visible = bool(sv.visible)
+	if bool(sv.visible):
+		var n := int(sv.claimable)
+		if n > 0:
+			streak_caption.text = "%s (%d)" % [tr("streak_title"), n]
+		elif bool(sv.running):
+			streak_caption.text = fmt_time(int(sv.ends_in))
+		else:
+			streak_caption.text = tr("streak_title")
+	var bv: Dictionary = Game.special_view()
+	_bomb_col.visible = bool(bv.open)
+	if bool(bv.open):
+		var tickets := int(bv.tickets)
+		bomb_badge.visible = tickets > 0
+		(bomb_badge.get_node("Count") as Label).text = str(tickets)
+		bomb_caption.text = tr("special_title") if tickets > 0 else fmt_time(int(bv.wait_sec))
 
 
 ## Đếm hồi mạng và hạn offer; gọi mỗi giây.

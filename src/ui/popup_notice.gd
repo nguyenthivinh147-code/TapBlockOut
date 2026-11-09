@@ -1,6 +1,8 @@
 extends "res://src/ui/stub_ui.gd"
 ## Wireframe 11.2 Ad Not Available: one-button notice. Layout of PopupOkLayer (color-cube-match-puzzle),
-## the cancel button hidden like PopupOkLayerData.IsHideCancelButton. Not wired to logic.
+## the cancel button hidden like PopupOkLayerData.IsHideCancelButton. Main opens it when no rewarded video is
+## available (Game.notice "not_ready"); level.gd for "You lost your streak." (ShowPopupNotifyLayer of
+## ME_WinStreak). setup({view}): {title, body} (translation keys). closed({"action": "ok" | "close"}).
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 

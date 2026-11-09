@@ -1,9 +1,10 @@
 extends RefCounted
-## Solver và tính MOVES. Mọi nước có ích (thoát, nứt pudding, bóc hộp giấy, dội vào cổng nhịp khoá) đều phải làm đúng
-## một lần dù đi theo thứ tự nào: khối rời bàn chỉ mở thêm đường cho khối khác, còn cổng nhịp chỉ đổi khi khối của cạnh
-## đó chạm tới (dội vào thì mở, qua thì khoá), nên số cú dội của một cạnh luôn là số lần qua cạnh đó, trừ 1 nếu cổng mở
-## sẵn. Khối còn trong sương mù không đi được (chạm không tốn gì) và chỉ lộ khi khối kề rời đi, nên sương chỉ làm chậm
-## lại chứ không đổi số chạm. Vì vậy đi tham lam là tối ưu và không có nước "chờ".
+## Solver và tính MOVES. Mọi nước có ích (thoát, bóc hộp giấy, dội vào cổng nhịp khoá) đều phải làm đúng một lần dù đi
+## theo thứ tự nào: khối rời bàn chỉ mở thêm đường cho khối khác, còn cổng nhịp chỉ đổi khi khối của cạnh đó chạm tới
+## (dội vào thì mở, qua thì khoá), nên số cú dội của một cạnh luôn là số lần qua cạnh đó, trừ 1 nếu cổng mở sẵn. Khối
+## còn trong sương mù hay còn lớp phủ (pudding, băng) không đi được (chạm không tốn gì) và chỉ lộ hay bóc lớp khi khối
+## kề rời đi, nên hai cơ chế này chỉ làm chậm lại chứ không đổi số chạm. Vì vậy đi tham lam là tối ưu và không có nước
+## "chờ".
 
 const BoardState := preload("res://src/core/board_state.gd")
 const Config := preload("res://src/config.gd")
@@ -11,7 +12,7 @@ const Config := preload("res://src/config.gd")
 const BIG_MOVES := 100000
 const GUARD := 20000  # chặn vòng lặp tham lam, xa hơn mọi level thật
 ## Thứ tự ưu tiên của tham lam theo kết quả chạm.
-const RANK := ["exit", "crack", "peel", "gate_closed"]
+const RANK := ["exit", "peel", "gate_closed"]
 
 
 ## {ok, min_taps, order}. Không giải được: ok=false, min_taps=-1.
@@ -45,9 +46,10 @@ static func slack_for(level: Dictionary) -> int:
 	return int(c["slack_normal"])
 
 
-## Clear rounds (design.md section 4): each round taps every block that can act right now (exit, crack the pudding,
-## peel the box, knock a locked pulse gate open), in block order, re-checking each one first; repeat until the board
-## is empty. -1 if the board cannot be cleared. Equals the depth of the blocking chain on a board without mechanics.
+## Clear rounds (design.md section 4): each round taps every block that can act right now (exit, peel the box, knock a
+## locked pulse gate open), in block order, re-checking each one first; repeat until the board is empty. A covered
+## block (pudding, ice) waits for its neighbours to leave. -1 if the board cannot be cleared. Equals the depth of the
+## blocking chain on a board without mechanics.
 static func clear_rounds(level: Dictionary) -> int:
 	var b := BoardState.new(level)
 	b.add_moves(BIG_MOVES)
@@ -67,7 +69,7 @@ static func clear_rounds(level: Dictionary) -> int:
 
 
 static func _acts(kind: String) -> bool:
-	return kind == "exit" or kind == "crack" or kind == "peel" or kind == "gate_closed"
+	return kind == "exit" or kind == "peel" or kind == "gate_closed"
 
 
 ## min_taps + dư; -1 nếu level không giải được.
@@ -78,7 +80,7 @@ static func compute_moves(level: Dictionary) -> int:
 	return int(r["min_taps"]) + slack_for(level)
 
 
-## Tham lam: thoát trước, rồi nứt pudding, bóc hộp giấy, cuối cùng dội vào cổng nhịp khoá. Thứ tự không đổi tổng số
+## Tham lam: thoát trước, rồi bóc hộp giấy, cuối cùng dội vào cổng nhịp khoá. Thứ tự không đổi tổng số
 ## chạm (xem đầu file), chỉ để lời giải gọn: cổng chỉ mở khi không còn gì khác để làm.
 static func _greedy(b: BoardState) -> Dictionary:
 	var order: Array[String] = []

@@ -38,11 +38,14 @@ var retry_button: Button = null
 var help_button: Button = null
 
 var _life_cost: bool = false
+## Màn đặc biệt không có Chơi lại ({"no_retry": true}): nút Retry ẩn.
+var _no_retry: bool = false
 var _built: bool = false
 
 
 func setup(args: Dictionary = {}) -> void:
 	_life_cost = bool(args.get("life_cost", false))
+	_no_retry = bool(args.get("no_retry", false))
 	_build()
 
 
@@ -70,6 +73,7 @@ func _build() -> void:
 	retry_button = ui.on_click(GROUP + "/RetryButton", _finish.bind("retry"))
 	ui.text(GROUP + "/HomeButton/Text (TMP)", tr("level_home"))
 	ui.text(GROUP + "/RetryButton/Text (TMP)", tr("level_restart"))
+	retry_button.visible = not _no_retry
 	_badges()
 	_help_row()
 

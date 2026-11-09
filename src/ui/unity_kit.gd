@@ -9,13 +9,14 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 
 const FRAME := "PopupOkLayer"
-## Pill buttons in Resources_moved/Sprites/UI_Maincenter.png with the TMP material their prefabs use.
+## Pill buttons in Resources_moved/Sprites/UI_Maincenter.png with the TMP material their prefabs use. Text on the
+## yellow (gold) pill uses "Baloo Outline - Yellow", like the prefabs' GoldBtn, ClaimBtn and BuyButton.
 const BUTTONS := {
 	"green": ["Resources_moved_UI_Maincenter:UI_Maincenter_48", "Baloo Outline - Green"],
 	"blue": ["Resources_moved_UI_Maincenter:UI_Maincenter_51", "Baloo Outline - Blue"],
 	"cyan": ["Resources_moved_UI_Maincenter:UI_Maincenter_52", "Baloo Outline - Blue"],
 	"red": ["Resources_moved_UI_Maincenter:UI_Maincenter_49", "Baloo Outline - Red"],
-	"yellow": ["Resources_moved_UI_Maincenter:UI_Maincenter_50", "Baloo Outline - Orange"],
+	"yellow": ["Resources_moved_UI_Maincenter:UI_Maincenter_50", "Baloo Outline - Yellow"],
 	"purple": ["Resources_moved_UI_Maincenter:UI_Maincenter_79", "Baloo Outline - Purple"],
 	"gray": ["Resources_moved_UI_Maincenter:UI_Maincenter_74", "Baloo Outline - Gray"],
 }

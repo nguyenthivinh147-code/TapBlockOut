@@ -1,8 +1,10 @@
 extends RefCounted
 ## Leaderboard theo league (design.md mục 7). Logic thuần: giờ truyền vào (now: unix giây).
-## Ghi vào s.lb {joined, points, league, seed, day, seen_rank, bots, risen, pending}.
+## Ghi vào s.lb {joined, points, league, seed, day, seen_rank, bots, risen, pending, t0, week, clock, result}.
+## Tuần: t0 là lúc vào BXH (mở khoá), tuần k chạy [t0 + k * week_len, t0 + (k + 1) * week_len). Hết tuần thì điểm về
+## 0, league về đầu, BXH mới (roll); clock là giờ lớn nhất đã thấy, để đồng hồ lùi không làm tuần chạy ngược.
 ## Bot: {n: tên, a: avatar, f: frame, c: mã cờ, p: điểm}. Người chơi không nằm trong `bots`: BXH = bots + người chơi.
-## Module không cộng hàng: claim trả thưởng {coins, items, inf_min} để Game cộng.
+## Module không cộng hàng: claim, claim_result trả thưởng {coins, items, inf_min} để Game cộng.
 
 const Config := preload("res://src/config.gd")
 
@@ -77,6 +79,15 @@ static func reward_of(i: int) -> Dictionary:
 		"inf_min": int(raw.get("inf_min", 0))}
 
 
+## League `i` có thưởng khi vào (league đầu thường không có).
+static func has_reward(i: int) -> bool:
+	var r := reward_of(i)
+	var n := int(r.coins) + int(r.inf_min)
+	for k in r.items:
+		n += int(r.items[k])
+	return n > 0
+
+
 static func _empty() -> Dictionary:
 	return {"coins": 0, "items": {}, "inf_min": 0}
 
@@ -106,6 +117,43 @@ static func seconds_to_grow(now: int) -> int:
 	return (day_of(now) + 1) * DAY_SEC - (now + _shift())
 
 
+## Độ dài một tuần BXH (giây): week_days ngày.
+static func week_len() -> int:
+	return maxi(int(Config.LEADERBOARD.get("week_days", 7)), 1) * DAY_SEC
+
+
+## Giờ tính tuần: không nhỏ hơn giờ lớn nhất đã thấy (đồng hồ lùi thì tuần đứng yên). Ghi lại giờ đó.
+static func _clock(s: Dictionary, now: int) -> int:
+	var b := _lb(s)
+	var t := maxi(now, int(b.clock))
+	b["clock"] = t
+	return t
+
+
+## Chỉ số tuần (0 = tuần đầu) chứa thời điểm t.
+static func week_at(s: Dictionary, t: int) -> int:
+	return maxi(floori(float(t - int(_lb(s).t0)) / float(week_len())), 0)
+
+
+## Chỉ số tuần hiện tại (0 = tuần đầu).
+static func week(s: Dictionary) -> int:
+	return int(_lb(s).week)
+
+
+## Lúc tuần hiện tại kết thúc (unix giây).
+static func week_end(s: Dictionary) -> int:
+	var b := _lb(s)
+	return int(b.t0) + (int(b.week) + 1) * week_len()
+
+
+## Giây tới lúc tuần hiện tại kết thúc, trong [0, week_len]; đồng hồ lùi thì tính từ giờ lớn nhất đã thấy.
+static func seconds_to_week_end(s: Dictionary, now: int) -> int:
+	var b := _lb(s)
+	if not bool(b.joined):
+		return week_len()
+	return clampi(week_end(s) - maxi(now, int(b.clock)), 0, week_len())
+
+
 # --- trạng thái ---
 
 static func _lb(s: Dictionary) -> Dictionary:
@@ -115,8 +163,10 @@ static func _lb(s: Dictionary) -> Dictionary:
 	for k in ["bots", "risen", "pending"]:
 		if not (b.get(k) is Array):
 			b[k] = []
-	for k in ["points", "seed", "seen_rank"]:
+	for k in ["points", "seed", "seen_rank", "t0", "week", "clock"]:
 		b[k] = int(b.get(k, 0))
+	if not (b.get("result") is Dictionary):
+		b["result"] = {}
 	b["day"] = int(b.get("day", -1))
 	b["joined"] = bool(b.get("joined", false))
 	b["league"] = clampi(int(b.get("league", 0)), 0, maxi(leagues().size() - 1, 0))
@@ -141,8 +191,8 @@ static func _rng(parts: Array) -> RandomNumberGenerator:
 	return r
 
 
-## Vào BXH lần đầu: league theo điểm hiện có (bình thường là league đầu, 0 điểm), BXH mới, thưởng league chờ nhận.
-## Trả true nếu vừa vào.
+## Vào BXH lần đầu (lúc mở khoá): tuần đầu bắt đầu lúc này (t0), league theo điểm hiện có (bình thường là league
+## đầu, 0 điểm), BXH mới; league có thưởng thì chờ nhận. Trả true nếu vừa vào.
 static func join(s: Dictionary, now: int) -> bool:
 	var b := _lb(s)
 	if bool(b.joined) or not enabled():
@@ -150,12 +200,62 @@ static func join(s: Dictionary, now: int) -> bool:
 	b["joined"] = true
 	b["seed"] = hash(["lb", now])
 	b["day"] = day_of(now)
+	b["t0"] = now
+	b["week"] = 0
+	b["clock"] = now
 	var li := league_for(int(b.points))
 	for k in li + 1:
-		(b.pending as Array).append(k)
+		if has_reward(k):
+			(b.pending as Array).append(k)
 	b["risen"] = []
 	_enter(s, li)
 	return true
+
+
+## Bản lưu trước khi có tuần (đã vào BXH, t0 = 0): tuần đầu bắt đầu lúc này. League tính lại theo ngưỡng hiện tại
+## (không thêm thưởng), BXH dựng lại; điểm và thưởng chờ giữ nguyên. Trả true nếu vừa chuyển.
+static func ensure_week(s: Dictionary, now: int) -> bool:
+	var b := _lb(s)
+	if not bool(b.joined) or int(b.t0) > 0:
+		return false
+	b["t0"] = now
+	b["week"] = 0
+	b["clock"] = now
+	b["day"] = day_of(now)
+	b["risen"] = []
+	_enter(s, league_for(int(b.points)))
+	return true
+
+
+## Hết tuần (theo _clock): bot được bù điểm tới lúc hết tuần rồi chốt hạng; tuần vừa hết có điểm (hoặc còn thưởng
+## league chờ) thì ghi `result` {week, league, points, rank, reward}, reward gồm thưởng league còn chờ và thưởng của
+## kết quả cũ chưa nhận (không mất thưởng). Rồi điểm về 0, league về đầu, BXH mới, thưởng league nhận lại được.
+## Vắng nhiều tuần chỉ tính một lần; tuần không điểm không có kết quả. Trả kết quả vừa ghi; {} nếu tuần chưa hết
+## hoặc tuần vừa hết không có kết quả (vẫn reset).
+static func roll(s: Dictionary, now: int) -> Dictionary:
+	var b := _lb(s)
+	if not bool(b.joined) or int(b.t0) <= 0:
+		return {}
+	var t := _clock(s, now)
+	var w := week_at(s, t)
+	if w <= int(b.week):
+		return {}
+	grow(s, week_end(s) - 1)
+	var out: Dictionary = {}
+	if int(b.points) > 0 or not (b.pending as Array).is_empty():
+		var old: Dictionary = b.result
+		var prev: Dictionary = old.get("reward", _empty()) if old.get("reward") is Dictionary else _empty()
+		out = {"week": int(b.week), "league": int(b.league), "points": int(b.points), "rank": rank(s),
+			"reward": _merge(prev, pending_reward(s))}
+		b["result"] = out
+		b["pending"] = []
+	b["week"] = w
+	b["points"] = 0
+	b["seed"] = hash(["lb", int(b.seed), w])
+	b["day"] = day_of(t)
+	b["risen"] = []
+	_enter(s, 0)
+	return out.duplicate(true)
 
 
 static func _enter(s: Dictionary, li: int) -> void:
@@ -299,8 +399,8 @@ static func pick_specials(ids: Array, n: int, seed: int) -> Array[String]:
 	return out
 
 
-## Cộng `n` mảnh của level vừa thắng. Chạm min league mới thì lên hạng (có thể qua nhiều league một lúc): thưởng
-## mỗi league vào `pending`, BXH dựng lại cho league mới. Trả {added, before, after, rank_before, rank_after,
+## Cộng `n` mảnh của level vừa thắng vào tuần hiện tại. Chạm min league mới thì lên hạng (có thể qua nhiều league
+## một lúc): thưởng mỗi league có thưởng vào `pending`, BXH dựng lại cho league mới. Trả {added, before, after, rank_before, rank_after,
 ## league_before, league_after, promoted (mảng chỉ số league vừa lên)}; {} nếu chưa vào BXH hoặc n <= 0.
 static func add_points(s: Dictionary, n: int) -> Dictionary:
 	var b := _lb(s)
@@ -315,7 +415,8 @@ static func add_points(s: Dictionary, n: int) -> Dictionary:
 	if li > li_before:
 		for k in range(li_before + 1, li + 1):
 			promoted.append(k)
-			(b.pending as Array).append(k)
+			if has_reward(k):
+				(b.pending as Array).append(k)
 		_enter(s, li)
 	return {"added": n, "before": before, "after": int(b.points), "rank_before": rank_before, "rank_after": rank(s),
 		"league_before": li_before, "league_after": int(b.league), "promoted": promoted}
@@ -415,12 +516,12 @@ static func mark_seen(s: Dictionary) -> void:
 
 # --- World Ranking ---
 
-## World Ranking mô phỏng: world_size người đứng đầu (đổi theo ngày BXH), điểm trên trần bot của league cuối.
-## Người chơi đủ điểm thì chen vào danh sách; không thì hạng ước tính từ players_above (ít nhất world_size + 1).
-## Trả {rows, rank, top_percent, total}; mỗi hàng như standings, thêm `league` (id).
+## World Ranking mô phỏng: world_size người đứng đầu (sinh lại mỗi tuần, đổi theo ngày BXH), điểm trên trần bot
+## của league cuối. Người chơi đủ điểm thì chen vào danh sách; không thì hạng ước tính từ players_above (ít nhất
+## world_size + 1). Trả {rows, rank, top_percent, total}; mỗi hàng như standings, thêm `league` (id).
 static func world(s: Dictionary, now: int) -> Dictionary:
 	var n := maxi(int(Config.LEADERBOARD.get("world_size", 50)), 1)
-	var rng := _rng(["world", day_of(now)])
+	var rng := _rng(["world", week(s), day_of(now)])
 	var top := maxi(leagues().size() - 1, 0)
 	var p := range_of(top).y + rng.randi_range(1, 50)
 	@warning_ignore("integer_division")
@@ -471,3 +572,19 @@ static func claim(s: Dictionary) -> Dictionary:
 	var total := pending_reward(s)
 	b["pending"] = []
 	return total
+
+
+## Kết quả tuần chờ xem {week (0 = tuần đầu), league (chỉ số), points, rank, reward}; {} nếu không có.
+static func result(s: Dictionary) -> Dictionary:
+	return (_lb(s).result as Dictionary).duplicate(true)
+
+
+## Xem xong kết quả tuần: xoá kết quả, trả thưởng của nó (có thể rỗng); {} nếu không có kết quả.
+static func claim_result(s: Dictionary) -> Dictionary:
+	var b := _lb(s)
+	var r: Dictionary = b.result
+	if r.is_empty():
+		return {}
+	b["result"] = {}
+	var reward: Variant = r.get("reward")
+	return _merge(_empty(), reward if reward is Dictionary else _empty())

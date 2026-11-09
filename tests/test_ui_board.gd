@@ -248,12 +248,12 @@ func test_mechanics_states(t: T) -> void:
 	v.setup(board, Vector2(720, 900))
 	t.eq(v.block_node("b2").view["chained"], true, "b2 bị xích")
 	t.eq(v.block_node("b3").view["ice"], 1, "b3 có băng")
-	# chạm b3: nứt
+	# chạm b3: còn pudding, chỉ nhún tại chỗ
 	var r := board.tap("b3")
-	t.eq(r["kind"], "crack", "nứt")
+	t.eq(r["kind"], "covered", "còn pudding")
 	v.apply_result(r)
-	t.eq(v.block_node("b3").view["ice"], 0, "view cập nhật băng")
-	t.ok(await _wait_done(v), "crack xong")
+	t.eq(v.block_node("b3").view["ice"], 1, "view vẫn phủ")
+	t.ok(await _wait_done(v), "nhún xong")
 	# chạm b2: bị xích
 	r = board.tap("b2")
 	t.eq(r["kind"], "chained", "xích")
@@ -266,7 +266,7 @@ func test_mechanics_states(t: T) -> void:
 	v.apply_result(r)
 	t.eq(v.block_node("b4").view["color"], "yellow", "đổi sang màu lớp trong")
 	t.ok(await _wait_done(v), "peel xong")
-	# b1 vàng: nứt, xích, bóc lớp ở cạnh khác không đổi cổng up, nên up vẫn khoá: b1 dội vào cho cổng mở rồi mới thoát
+	# b1 vàng: chạm khối phủ, xích, bóc lớp ở cạnh khác không đổi cổng up, nên up vẫn khoá: b1 dội vào cho cổng mở rồi mới thoát
 	r = board.tap("b1")
 	t.eq(r["kind"], "gate_closed", "b1 dội cổng khoá")
 	v.apply_result(r)

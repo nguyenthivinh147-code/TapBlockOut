@@ -368,10 +368,10 @@ func _on_video(id: String) -> void:
 		Game.cos_equip(id)
 	elif Game.last_ad_reason == "closed":
 		_say(tr("ads_closed_early"))
-	elif Game.last_ad_reason == "error":
-		_say(tr("ads_failed"))
+	elif Game.notice_shown(Game.last_ad_reason):
+		_say("")  # Main đã báo bằng popup (Game.notice)
 	else:
-		_say(tr("ads_not_available"))
+		_say(tr("ads_failed"))
 
 
 func _close() -> void:
