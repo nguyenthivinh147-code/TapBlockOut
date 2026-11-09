@@ -1,6 +1,6 @@
 {
 	"id": 216, "w": 14, "h": 18, "hard": false, "difficulty": 1,
-	"min_taps": 52, "moves": 60, "source": "MoreColorLevel10216",
+	"min_taps": 52, "moves": 60,
 	"stones": [],
 	"pulse_sides": [],
 	"gates": {
@@ -34,7 +34,7 @@
 		{"id":"b22","color":"brown","dir":"left","cells":[[3,5]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b23","color":"green","dir":"up","cells":[[3,2],[4,2],[5,2],[5,3]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b24","color":"pink","dir":"left","cells":[[2,7],[3,7],[3,8],[4,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b25","color":"orange","dir":"right","cells":[[11,9],[10,10],[11,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b25","color":"blue","dir":"down","cells":[[11,9],[10,10],[11,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b26","color":"pink","dir":"left","cells":[[3,9],[2,10],[3,10],[2,11]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b27","color":"purple","dir":"right","cells":[[9,12],[10,12],[11,12],[10,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b28","color":"blue","dir":"down","cells":[[7,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},

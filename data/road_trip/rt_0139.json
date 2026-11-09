@@ -1,6 +1,6 @@
 {
 	"id": 139, "w": 14, "h": 18, "hard": false, "difficulty": 1,
-	"min_taps": 36, "moves": 39, "source": "MoreColorLevel10139",
+	"min_taps": 36, "moves": 39,
 	"stones": [],
 	"pulse_sides": [],
 	"gates": {
@@ -27,14 +27,14 @@
 		{"id":"b15","color":"teal","dir":"up","cells":[[4,5],[4,6]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b16","color":"yellow","dir":"left","cells":[[2,10],[3,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b17","color":"teal","dir":"up","cells":[[6,5],[6,6]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b18","color":"brown","dir":"left","cells":[[1,8],[2,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b18","color":"teal","dir":"up","cells":[[1,8],[2,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b19","color":"teal","dir":"up","cells":[[4,8],[4,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b20","color":"yellow","dir":"left","cells":[[2,9],[3,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b21","color":"teal","dir":"up","cells":[[1,9],[1,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b22","color":"purple","dir":"down","cells":[[0,10],[0,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b23","color":"yellow","dir":"left","cells":[[4,17],[5,17]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b24","color":"green","dir":"up","cells":[[7,11],[7,12],[8,12]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b25","color":"yellow","dir":"left","cells":[[4,16],[5,16]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b25","color":"purple","dir":"down","cells":[[4,16],[5,16]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b26","color":"blue","dir":"right","cells":[[8,0],[9,0]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b27","color":"orange","dir":"right","cells":[[8,11],[9,11],[9,12]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b28","color":"red","dir":"down","cells":[[10,11]],"ice":0,"chained_by":"","inner_color":"","fog":false},
@@ -43,7 +43,7 @@
 		{"id":"b31","color":"brown","dir":"left","cells":[[6,3],[7,3],[8,3]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b32","color":"red","dir":"down","cells":[[9,2],[9,3],[9,4],[9,5]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b33","color":"purple","dir":"down","cells":[[6,13],[6,14],[6,15]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b34","color":"brown","dir":"left","cells":[[8,1],[9,1],[7,2],[8,2]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b34","color":"green","dir":"up","cells":[[8,1],[9,1],[7,2],[8,2]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b35","color":"purple","dir":"down","cells":[[4,10],[4,11],[5,11],[4,12],[4,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b36","color":"teal","dir":"up","cells":[[3,6],[2,7],[3,7],[3,8]],"ice":0,"chained_by":"","inner_color":"","fog":false}
 	]

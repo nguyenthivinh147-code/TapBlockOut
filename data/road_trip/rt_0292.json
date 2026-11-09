@@ -1,6 +1,6 @@
 {
 	"id": 292, "w": 14, "h": 18, "hard": true, "difficulty": 2,
-	"min_taps": 69, "moves": 72, "source": "MoreColorLevel10292",
+	"min_taps": 69, "moves": 72,
 	"stones": [],
 	"pulse_sides": [],
 	"gates": {

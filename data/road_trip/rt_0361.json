@@ -1,6 +1,6 @@
 {
 	"id": 361, "w": 14, "h": 18, "hard": false, "difficulty": 1,
-	"min_taps": 54, "moves": 57, "source": "MoreColorLevel10361",
+	"min_taps": 54, "moves": 57,
 	"stones": [],
 	"pulse_sides": [],
 	"gates": {
@@ -14,7 +14,7 @@
 		{"id":"b2","color":"yellow","dir":"left","cells":[[7,13],[7,14],[7,15]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b3","color":"red","dir":"left","cells":[[1,1],[1,2],[1,3]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b4","color":"cream","dir":"right","cells":[[12,1],[11,2],[12,2]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b5","color":"orange","dir":"up","cells":[[9,1],[10,1],[11,1]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b5","color":"cream","dir":"right","cells":[[9,1],[10,1],[11,1]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b6","color":"cream","dir":"right","cells":[[8,1],[8,2]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b7","color":"orange","dir":"up","cells":[[9,3],[9,4],[10,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b8","color":"pink","dir":"up","cells":[[6,2],[5,3],[6,3]],"ice":0,"chained_by":"","inner_color":"","fog":false},
@@ -29,7 +29,7 @@
 		{"id":"b17","color":"green","dir":"down","cells":[[10,12],[10,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b18","color":"teal","dir":"right","cells":[[8,14],[9,14],[8,15]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b19","color":"purple","dir":"down","cells":[[1,15],[2,15],[1,16]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b20","color":"licorice","dir":"down","cells":[[7,16],[8,16]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b20","color":"teal","dir":"right","cells":[[7,16],[8,16]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b21","color":"yellow","dir":"left","cells":[[2,14],[3,14],[3,15]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b22","color":"yellow","dir":"left","cells":[[2,13],[3,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b23","color":"red","dir":"left","cells":[[7,6]],"ice":0,"chained_by":"","inner_color":"","fog":false},
@@ -48,7 +48,7 @@
 		{"id":"b36","color":"purple","dir":"down","cells":[[5,16],[6,16]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b37","color":"indigo","dir":"up","cells":[[7,1],[7,2],[7,3],[8,3],[8,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b38","color":"red","dir":"left","cells":[[1,7],[1,8],[2,8],[3,8],[4,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b39","color":"yellow","dir":"left","cells":[[1,12],[2,12],[1,13],[1,14]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b39","color":"pink","dir":"up","cells":[[1,12],[2,12],[1,13],[1,14]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b40","color":"blue","dir":"left","cells":[[5,9],[5,10],[4,11],[5,11]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b41","color":"blue","dir":"left","cells":[[6,9],[6,10],[6,11],[5,12],[6,12]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b42","color":"teal","dir":"right","cells":[[11,13],[10,14],[11,14],[12,14],[12,15]],"ice":0,"chained_by":"","inner_color":"","fog":false},
@@ -62,7 +62,7 @@
 		{"id":"b50","color":"orange","dir":"up","cells":[[9,2],[10,2],[10,3],[11,3],[12,3],[12,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b51","color":"red","dir":"left","cells":[[2,3],[1,4],[2,4],[3,4],[3,5],[3,6]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b52","color":"red","dir":"left","cells":[[2,6],[2,7],[3,7],[4,7],[5,7],[5,8]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b53","color":"brown","dir":"right","cells":[[7,9],[8,9],[9,9],[10,9],[11,9],[12,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b53","color":"blue","dir":"left","cells":[[7,9],[8,9],[9,9],[10,9],[11,9],[12,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b54","color":"blue","dir":"left","cells":[[4,9],[3,10],[4,10],[1,11],[2,11],[3,11]],"ice":0,"chained_by":"","inner_color":"","fog":false}
 	]
 }

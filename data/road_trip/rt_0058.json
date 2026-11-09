@@ -1,6 +1,6 @@
 {
 	"id": 58, "w": 14, "h": 18, "hard": false, "difficulty": 1,
-	"min_taps": 40, "moves": 43, "source": "MoreColorLevel10058",
+	"min_taps": 40, "moves": 43,
 	"stones": [],
 	"pulse_sides": [],
 	"gates": {
@@ -30,11 +30,11 @@
 		{"id":"b18","color":"yellow","dir":"left","cells":[[3,15],[4,15],[3,16]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b19","color":"yellow","dir":"left","cells":[[4,16]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b20","color":"teal","dir":"right","cells":[[5,2]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b21","color":"red","dir":"up","cells":[[6,1],[6,2]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b22","color":"yellow","dir":"left","cells":[[2,9],[3,9],[4,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b21","color":"teal","dir":"right","cells":[[6,1],[6,2]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b22","color":"red","dir":"up","cells":[[2,9],[3,9],[4,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b23","color":"yellow","dir":"left","cells":[[2,10],[2,11],[3,11],[2,12]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b24","color":"brown","dir":"down","cells":[[9,11],[9,12],[9,13],[9,14]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b25","color":"blue","dir":"right","cells":[[11,10],[11,11],[11,12],[11,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b25","color":"brown","dir":"down","cells":[[11,10],[11,11],[11,12],[11,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b26","color":"yellow","dir":"left","cells":[[2,13],[2,14],[2,15],[2,16]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b27","color":"yellow","dir":"left","cells":[[4,11],[5,11],[3,12],[4,12],[3,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b28","color":"blue","dir":"right","cells":[[9,15],[10,15],[11,15],[11,16]],"ice":0,"chained_by":"","inner_color":"","fog":false},

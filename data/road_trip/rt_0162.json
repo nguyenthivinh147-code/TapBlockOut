@@ -1,6 +1,6 @@
 {
 	"id": 162, "w": 14, "h": 18, "hard": false, "difficulty": 1,
-	"min_taps": 38, "moves": 41, "source": "MoreColorLevel10162",
+	"min_taps": 38, "moves": 41,
 	"stones": [],
 	"pulse_sides": [],
 	"gates": {
@@ -29,12 +29,12 @@
 		{"id":"b17","color":"yellow","dir":"down","cells":[[10,4],[11,4],[11,5],[11,6]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b18","color":"green","dir":"up","cells":[[13,8],[13,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b19","color":"yellow","dir":"down","cells":[[12,9],[11,10],[12,10]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b20","color":"teal","dir":"right","cells":[[10,11],[11,11]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b20","color":"yellow","dir":"down","cells":[[10,11],[11,11]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b21","color":"red","dir":"left","cells":[[11,12],[11,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b22","color":"red","dir":"left","cells":[[6,15],[7,15]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b23","color":"red","dir":"left","cells":[[6,12],[5,13],[6,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b24","color":"orange","dir":"down","cells":[[4,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
-		{"id":"b25","color":"red","dir":"left","cells":[[2,11],[2,12]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b24","color":"red","dir":"left","cells":[[4,13]],"ice":0,"chained_by":"","inner_color":"","fog":false},
+		{"id":"b25","color":"blue","dir":"up","cells":[[2,11],[2,12]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b26","color":"orange","dir":"down","cells":[[0,8],[0,9]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b27","color":"purple","dir":"right","cells":[[6,4],[7,4],[6,5]],"ice":0,"chained_by":"","inner_color":"","fog":false},
 		{"id":"b28","color":"yellow","dir":"down","cells":[[8,4],[9,4]],"ice":0,"chained_by":"","inner_color":"","fog":false},
