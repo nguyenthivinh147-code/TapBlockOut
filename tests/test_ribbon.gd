@@ -133,11 +133,11 @@ func test_validate(t: T) -> void:
 
 func test_unlock_and_plan(t: T) -> void:
 	var u := int(Config.UNLOCK["ribbon"])
-	t.eq(u, 130, "ribbon opens at L130")
-	t.eq(Gen.teach_mech(u), "ribbon", "L130 teaches ribbon")
+	t.eq(u, 350, "ribbon opens at L350")
+	t.eq(Gen.teach_mech(u), "ribbon", "L350 teaches ribbon")
 	t.eq(Gen.mech_plan(u), ["ribbon"] as Array[String], "teaching level only has ribbon")
-	t.ok(not Gen.mechanics_for(u - 1).has("ribbon"), "closed before L130")
-	t.eq(Unlocks.pending_mech({"mech_seen": []}, u), "ribbon", "popup at L130")
+	t.ok(not Gen.mechanics_for(u - 1).has("ribbon"), "closed before L350")
+	t.eq(Unlocks.pending_mech({"mech_seen": []}, u), "ribbon", "popup at L350")
 	t.ok(Unlocks.MECHS.has("ribbon"), "Unlocks knows ribbon")
 	for id in range(u + 1, u + Config.LEVEL_MECH_FRESH + 1):
 		if Gen.is_rest(id) or Gen.teach_mech(id) != "":
@@ -157,7 +157,7 @@ func _ribbons_of(lvl: Dictionary) -> Array:
 func test_teaching_level(t: T) -> void:
 	var u := int(Config.UNLOCK["ribbon"])
 	var lvl := Gen.generate(u, 1)
-	t.ok(not lvl.is_empty(), "L130 generates")
+	t.ok(not lvl.is_empty(), "L350 generates")
 	if lvl.is_empty():
 		return
 	t.eq(LevelData.validate(lvl), [] as Array[String], "valid")

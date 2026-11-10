@@ -13,6 +13,7 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const RoadTripMap := preload("res://src/ui/road_trip_map.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 
 const PANEL := Vector2(724, 820)
 const WELL := Rect2(52, 150, 620, 470)
@@ -51,6 +52,12 @@ func setup(args: Dictionary = {}) -> void:
 	_build()
 	if not UnityUI.baking:
 		_play.call_deferred()
+		if _mode == "win":
+			# The booster is in the inventory already: its button keeps the old count until the tile flies there as
+			# the popup closes (Claim or Back); a tile not shown yet does not fly.
+			RewardFly.hold(self, _fly_reward())
+			closed.connect(func(_r: Variant) -> void:
+				RewardFly.launch(self, _fly_reward(), {str(_args.get("reward", "hint")): reward_tile}), CONNECT_ONE_SHOT)
 
 
 func _build() -> void:
@@ -152,6 +159,7 @@ func _on_x2() -> void:
 	if not ok:
 		return  # Không có video: Main báo bằng popup (Game.notice).
 	_x2_taken = true
+	RewardFly.hold(self, _fly_reward())
 	if is_instance_valid(x2_button):
 		x2_button.visible = false
 	UnityUI.set_text(count_label, "x2")
@@ -167,6 +175,11 @@ func _on_claim() -> void:
 	_closed = true
 	Sfx.play("button")
 	closed.emit({"action": "claim", "x2_taken": _x2_taken})
+
+
+## Win: the booster and its x2 copy.
+func _fly_reward() -> Dictionary:
+	return {"items": {str(_args.get("reward", "hint")): 2 if _x2_taken else 1}}
 
 
 func _send(action: String) -> void:

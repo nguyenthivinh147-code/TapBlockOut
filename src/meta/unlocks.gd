@@ -9,12 +9,12 @@ const ALWAYS_OPEN := ["rescue", "avatar", "frame"]
 ## Booster được tặng một lần khi tới level mở, theo thứ tự.
 const GIFT_ORDER := ["hint", "move", "smash"]
 ## Cơ chế, mỗi cái có một level dạy (design.md mục 4); popup cơ chế mới hiện một lần ở level đó.
-const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon"]
+const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon", "choco", "pop"]
 ## Không hiện như một "tính năng mới" trên thanh tiến trình của thẻ thắng.
 const SILENT := ["starter", "review"]
-## Mở màn/nút mới ở Home: thắng xong dẫn người chơi về Home để thấy. Road Trip không có ở đây (thắng L69 vào thẳng
-## L70, level dạy Sương mù); hướng dẫn Road Trip hiện lần đầu người chơi về Home. Weekly Pass, Level Pack, Chain Offer
-## cũng không kéo về Home.
+## Mở màn/nút mới ở Home: thắng xong dẫn người chơi về Home để thấy. Road Trip không có ở đây (thắng L94 vào thẳng
+## L95); hướng dẫn Road Trip hiện lần đầu người chơi về Home. Weekly Pass, Level Pack, Chain Offer cũng không kéo về
+## Home.
 const HOME_FEATURES := ["daily_gift", "shop", "challenge", "lives", "leaderboard", "win_streak", "special_bomb"]
 
 
@@ -27,8 +27,8 @@ static func enabled(feature: String) -> bool:
 
 ## Every unlock mark for the win-card progress bar (design.md mục 4 "Mở khoá theo level"): Config.UNLOCK plus the
 ## features whose mark lives in their own config, as the level the player is on when it opens (same as Config.UNLOCK):
-## weekly_pass after the `unlock_hard_index`-th HARD level, level_pack after the first `every_levels` milestone,
-## chain_offer at CHAIN.level_unlock.
+## weekly_pass after the `unlock_hard_index`-th HARD level, level_pack at its `first_level`, chain_offer at
+## CHAIN.level_unlock.
 static func levels() -> Dictionary:
 	var out: Dictionary = Config.UNLOCK.duplicate()
 	var weekly := weekly_level()
@@ -36,7 +36,7 @@ static func levels() -> Dictionary:
 		out["weekly_pass"] = weekly
 	var pack: Dictionary = Config.OFFERS.get("level_pack", {})
 	if not pack.is_empty():
-		out["level_pack"] = maxi(int(pack.get("every_levels", 50)), 1) + 1
+		out["level_pack"] = maxi(int(pack.get("first_level", maxi(int(pack.get("every_levels", 50)), 1) + 1)), 1)
 	if not (Config.CHAIN.get("sequences", []) as Array).is_empty():
 		out["chain_offer"] = int(Config.CHAIN.get("level_unlock", 100))
 	return out

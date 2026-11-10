@@ -1,7 +1,8 @@
 extends RefCounted
 ## Road Trip (design.md mục 7 "Road Trip"): tiến độ trên đường level riêng, hộp quà, bố cục bản đồ. Logic thuần.
 ## Bản lưu s.road_trip = {"level": level đang chơi (1..levels+1, levels+1 là đã đi hết), "boxes": số hộp đã nhận,
-## "guide": đã hiện hướng dẫn mở khoá}. Cộng vật phẩm vào kho do Game làm (Wallet.inv_add).
+## "guide": đã hiện hướng dẫn mở khoá}. Cộng vật phẩm vào kho (Wallet.inv_add) và mở avatar, frame của hộp
+## (Cosmetics.unlock) do Game làm.
 
 const Config := preload("res://src/config.gd")
 
@@ -70,10 +71,17 @@ static func reward(i: int) -> Dictionary:
 	return (r[i] as Dictionary).duplicate()
 
 
+## Avatar hoặc frame tặng thêm ở hộp thứ i (0..15), "" khi hộp không có (Config.ROAD_TRIP_COSMETICS đếm hộp từ 1).
+static func cosmetic(i: int) -> String:
+	return str(Config.ROAD_TRIP_COSMETICS.get(i + 1, ""))
+
+
 ## Thắng level `level` của Road Trip. Chỉ level đang chơi mới tiến. Trả {advanced, box (chỉ số hộp vừa qua hoặc -1),
-## reward, before (tiến độ trước khi thắng), after}. Hộp chưa nhận ở level vừa qua thì tăng s.road_trip.boxes.
+## reward, cos (avatar hoặc frame của hộp, "" khi không có; Game mở cho người chơi), before (tiến độ trước khi thắng),
+## after}. Hộp chưa nhận ở level vừa qua thì tăng s.road_trip.boxes.
 static func win(s: Dictionary, level: int) -> Dictionary:
-	var res := {"advanced": false, "box": -1, "reward": {}, "before": progress(level), "after": progress(level)}
+	var res := {"advanced": false, "box": -1, "reward": {}, "cos": "", "before": progress(level),
+		"after": progress(level)}
 	if level != current(s) or is_done(s):
 		return res
 	var rt: Dictionary = s.road_trip
@@ -84,6 +92,7 @@ static func win(s: Dictionary, level: int) -> Dictionary:
 		rt["boxes"] = bi + 1
 		res.box = bi
 		res.reward = reward(bi)
+		res.cos = cosmetic(bi)
 	# Tiến độ ngay sau khi thắng, vẫn theo khoảng của hộp vừa nhắm (thanh chạy tới đầy khi vừa qua hộp).
 	var p: Vector2i = res.before
 	res.after = Vector2i(mini(p.x + 1, p.y), p.y)

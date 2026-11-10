@@ -148,6 +148,9 @@ func test_bomb_explodes(t: T) -> void:
 	lv.bombs._bombs[id]["left"] = 0.05
 	t.ok(await _wait_until(func() -> bool: return lv.state == "over", 2000), "bom nổ: thua")
 	t.ok(not lv.board_view.input_enabled, "chặn chạm")
+	var cracked := func() -> bool:
+		return (lv._overlay as Control).get_children().any(func(n: Node) -> bool: return n.name == "GlassCrack")
+	t.ok(cracked.call(), "kính màn hình vỡ")
 	t.ok(await _wait_until(func() -> bool: return _pop(lv, "LevelButton") != null, 4000), "popup Bùm")
 	t.eq(SpecialBomb.wins(g.s), 0, "không tính thắng")
 	t.eq(SpecialBomb.board(g.s), 1, "lần sau gặp lại bàn 1")
@@ -155,6 +158,8 @@ func test_bomb_explodes(t: T) -> void:
 	_press(lv, "LevelButton")
 	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and not bool(lv.attempt.get("special", false))),
 		"Level N vào level chính")
+	await _tree().process_frame
+	t.ok(not cracked.call(), "level chính không còn kính vỡ")
 	lv.free()
 
 

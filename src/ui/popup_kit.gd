@@ -32,7 +32,7 @@ const FIG_TITLE_STROKE := Color("5519B7")
 const FIG_TAB_STROKE := Color("5E45BA")
 ## Sprite nút -> màu viền chữ trên nút đó.
 const FIG_BUTTON_STROKE := {
-	"pill_green": Color("004E00"),
+	"pill_green": Color("2E8B00"),
 	"pill_red": Color("8C1830"),
 	"pill_gray": Color("6E6E6E"),
 	"pill_purple": Color("3A1C6E"),

@@ -157,6 +157,97 @@ func test_claim(t: T) -> void:
 	t.eq(Leaderboard.claim(s), {}, "nhận lần hai rỗng")
 
 
+## Từ Platinum mỗi league tặng thêm 1 avatar/frame random trong 08-12: chọn lúc vào league, khác nhau, chưa có.
+func test_cos_reward(t: T) -> void:
+	var s := _joined()
+	var pool := Leaderboard.cosmetics()
+	t.eq(pool.size(), 10, "5 avatar + 5 frame")
+	t.eq(Leaderboard.cos_from(), 2, "từ Platinum")
+	t.eq(int(Leaderboard.reward_of(1).cos_random), 0, "Gold không có")
+	t.eq(int(Leaderboard.reward_of(2).cos_random), 1, "Platinum 1 món")
+	t.eq(int(Leaderboard.reward_of(6).cos_random), 1, "One Above All 1 món")
+	Leaderboard.add_points(s, 150)
+	t.eq(Leaderboard.pending_reward(s).cos, [], "Gold: không có món")
+	Leaderboard.add_points(s, 1000)
+	var cos: Array = Leaderboard.pending_reward(s).cos
+	t.eq(cos.size(), 5, "Platinum tới One Above All: 5 món")
+	var uniq := {}
+	for id in cos:
+		t.ok(pool.has(id), "%s nằm trong 08-12" % id)
+		uniq[id] = true
+	t.eq(uniq.size(), 5, "món khác nhau")
+	t.eq(Leaderboard.cos_left(s).size(), 5, "món chờ không random lại")
+	t.eq(Leaderboard.pending_reward(s).cos, cos, "mở lại vẫn đúng món")
+	var got := Leaderboard.claim(s)
+	t.eq(got.cos, cos, "nhận đúng món đã chọn")
+	t.eq(s.lb.pending_cos, [], "hết món chờ")
+	var s2 := _joined()
+	Leaderboard.add_points(s2, 1150)
+	t.eq(Leaderboard.pending_reward(s2).cos, cos, "cùng seed cùng món")
+
+
+## Đã có món nào thì không random ra món đó; hết món thì league chỉ còn gold, booster và ô xem trước ẩn đi.
+func test_cos_reward_runs_out(t: T) -> void:
+	var s := _joined()
+	for id in Leaderboard.cosmetics():
+		if id != "frame_10":
+			(s.cos.owned as Array).append(id)
+	t.eq(Leaderboard.cos_left(s), ["frame_10"], "còn một món")
+	t.eq(int(Leaderboard.preview_reward(s, 6).cos_random), 1, "xem trước: còn món")
+	Leaderboard.add_points(s, 1000)
+	t.eq(Leaderboard.pending_reward(s).cos, ["frame_10"], "chỉ món chưa có, một lần")
+	t.eq(Leaderboard.cos_left(s), [], "món cuối đang chờ: hết món")
+	t.eq(int(Leaderboard.preview_reward(s, 6).cos_random), 0, "xem trước: hết món thì ẩn")
+	t.eq(int(Leaderboard.preview_reward(s, 6).coins), 5000, "xem trước vẫn có gold")
+	t.ok(Leaderboard.has_reward(6), "league vẫn có thưởng")
+
+
+## Món còn chờ lúc hết tuần vào kết quả tuần; tuần mới random lại nhưng không trùng món của kết quả chưa nhận.
+func test_cos_reward_week_roll(t: T) -> void:
+	var s := _joined()
+	Leaderboard.add_points(s, 300)
+	var c1: Array = Leaderboard.pending_reward(s).cos
+	t.eq(c1.size(), 1, "Platinum: 1 món")
+	var r := Leaderboard.roll(s, NOW + 7 * D)
+	t.eq(r.reward.cos, c1, "món chờ vào kết quả tuần")
+	t.eq(s.lb.pending_cos, [], "hết món chờ")
+	t.ok(not Leaderboard.cos_left(s).has(c1[0]), "món của kết quả chưa nhận không random lại")
+	Leaderboard.add_points(s, 300)
+	var c2: Array = Leaderboard.pending_reward(s).cos
+	t.eq(c2.size(), 1, "tuần mới nhận lại")
+	t.ok(c2[0] != c1[0], "khác món còn trong kết quả")
+	t.eq(Leaderboard.claim_result(s).cos, c1, "nhận món của kết quả")
+
+
+## Bản lưu trước khi có món league: league đang chờ không được bù món.
+func test_cos_reward_old_save(t: T) -> void:
+	var s := _joined()
+	s.lb.pending = [3]
+	s.lb.erase("pending_cos")
+	t.eq(Leaderboard.pending_reward(s).cos, [], "không bù món")
+	t.eq(int(Leaderboard.claim(s).coins), 800, "vẫn nhận gold")
+
+
+## Bot ở Silver, Gold không đeo avatar/frame 08-12; từ Platinum đeo được.
+func test_bot_cosmetics_by_league(t: T) -> void:
+	Config.reset()
+	Config.LEADERBOARD["bot_avatar_default_pct"] = 0
+	Config.LEADERBOARD["bot_frame_default_pct"] = 0
+	var pool := Leaderboard.cosmetics()
+	for li in [0, 1]:
+		var n := 0
+		for b in Leaderboard.make_board(li, 7):
+			if pool.has(str(b.a)) or pool.has(str(b.f)):
+				n += 1
+		t.eq(n, 0, "bot league %d không đeo món league" % li)
+	var high := 0
+	for b in Leaderboard.make_board(2, 7):
+		if pool.has(str(b.a)) or pool.has(str(b.f)):
+			high += 1
+	t.ok(high > 0, "bot Platinum đeo được món league (%d)" % high)
+	Config.reset()
+
+
 func test_gain_formula(t: T) -> void:
 	Config.reset()
 	Config.LEADERBOARD["bot_rand"] = [2, 2]
@@ -231,9 +322,9 @@ func test_pick_specials(t: T) -> void:
 		t.ok(ids.has(id), "khối có thật")
 	t.eq(Leaderboard.pick_specials(["b1"], 3, 1).size(), 1, "không quá số khối")
 	t.eq(Leaderboard.pick_specials(ids, 0, 1).size(), 0, "0 khối")
-	t.eq(Leaderboard.pieces_for(""), 2, "normal 2 mảnh")
-	t.eq(Leaderboard.pieces_for("hard"), 3, "hard 3 mảnh")
-	t.eq(Leaderboard.pieces_for("very_hard"), 4, "very hard 4 mảnh")
+	t.eq(Leaderboard.pieces_for(""), 1, "normal 1 mảnh")
+	t.eq(Leaderboard.pieces_for("hard"), 2, "hard 2 mảnh")
+	t.eq(Leaderboard.pieces_for("very_hard"), 3, "very hard 3 mảnh")
 
 
 func test_world(t: T) -> void:
@@ -373,15 +464,15 @@ func _clear(g: Node, attempt: Dictionary) -> int:
 
 
 func test_game_flow(t: T) -> void:
-	var g := _game(7)
-	t.eq(g.lb_open(), false, "L7 chưa mở")
+	var g := _game(69)
+	t.eq(g.lb_open(), false, "L69 chưa mở")
 	var a: Dictionary = g.start_attempt()
 	t.eq((a.specials as Array).size(), 0, "chưa mở thì không có khối đặc biệt")
-	var g8 := _game(8)
-	t.ok(g8.lb_open(), "mở ở L8")
+	var g8 := _game(70)
+	t.ok(g8.lb_open(), "mở ở L70")
 	a = g8.start_attempt()
 	t.ok(Leaderboard.joined(g8.s), "bắt đầu level thì vào BXH")
-	var want := Leaderboard.pieces_for(g8.difficulty_of(8))
+	var want := Leaderboard.pieces_for(g8.difficulty_of(70))
 	t.eq((a.specials as Array).size(), mini(want, (a.board as BoardState).remaining_count()), "số khối đặc biệt theo độ khó")
 	var got := _clear(g8, a)
 	t.eq(got, (a.specials as Array).size(), "phá hết khối đặc biệt được đủ mảnh")
@@ -406,18 +497,35 @@ func test_game_flow(t: T) -> void:
 	t.ok(not g8.lb_badge(), "hết chấm đỏ")
 
 
+## Nhận thưởng league: avatar/frame vào đồ đã có, không tự đeo. Thang giải ẩn ô random khi hết món.
+func test_game_claim_unlocks_cos(t: T) -> void:
+	var g := _game(70)
+	g.start_attempt()
+	Leaderboard.add_points(g.s, 300)
+	var cos: Array = g.lb_pending_view().reward.cos
+	t.eq(cos.size(), 1, "Platinum có 1 món")
+	t.eq(int(g.lb_leagues_view().rows[3].reward.cos_random), 1, "thang giải: Emerald có ô random")
+	g.lb_claim()
+	t.ok((g.s.cos.owned as Array).has(cos[0]), "nhận: món vào đồ đã có")
+	t.eq([g.s.cos.avatar, g.s.cos.frame], ["avatar_00", "frame_00"], "không tự đeo")
+	for id in Leaderboard.cosmetics():
+		if not (g.s.cos.owned as Array).has(id):
+			(g.s.cos.owned as Array).append(id)
+	t.eq(int(g.lb_leagues_view().rows[3].reward.cos_random), 0, "hết món: ẩn ô random")
+
+
 func test_game_unlock_starts_week(t: T) -> void:
-	var g := _game(7)
+	var g := _game(69)
 	var a: Dictionary = g.start_attempt()
-	t.ok(not Leaderboard.joined(g.s), "L7 chưa vào BXH")
+	t.ok(not Leaderboard.joined(g.s), "L69 chưa vào BXH")
 	g.test_now = NOW + 3600
 	g.on_level_won(a)
-	t.ok(Leaderboard.joined(g.s), "thắng L7 mở khoá: vào BXH")
+	t.ok(Leaderboard.joined(g.s), "thắng L69 mở khoá: vào BXH")
 	t.eq(int(g.s.lb.t0), NOW + 3600, "t0 là lúc mở khoá")
 
 
 func test_game_week_result(t: T) -> void:
-	var g := _game(8)
+	var g := _game(70)
 	var a: Dictionary = g.start_attempt()
 	_clear(g, a)
 	g.on_level_won(a)

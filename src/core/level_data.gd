@@ -125,6 +125,8 @@ static func validate(d: Dictionary) -> Array[String]:
 					errs.append("pulse_sides: open phải là bool")
 	if d.has("gates"):
 		errs.append_array(_validate_gates(d["gates"], w, h))
+	if d.has("choco_sides"):
+		errs.append_array(_validate_choco(d))
 	var ids := {}
 	var parent := {}
 	for b in d["blocks"]:
@@ -154,6 +156,8 @@ static func validate(d: Dictionary) -> Array[String]:
 			errs.append("khối %s: ice phải trong 0..%d" % [id, Config.COVER_MAX_LAYERS])
 		if b.has("fog") and typeof(b["fog"]) != TYPE_BOOL:
 			errs.append("khối %s: fog phải là bool" % id)
+		if b.has("pop"):
+			errs.append_array(_validate_pop(id, b))
 		var cells = b.get("cells", null)
 		if not (cells is Array) or cells.is_empty():
 			errs.append("khối %s: thiếu ô" % id)
@@ -182,6 +186,8 @@ static func validate(d: Dictionary) -> Array[String]:
 			parent[id] = key
 	for id in parent:
 		var key: String = parent[id]
+		if ids.has(key) and bool(ids[key].get("pop", false)):
+			errs.append("khối %s: bom kẹo không làm chìa" % key)
 		if key == id:
 			errs.append("khối %s tự xích chính nó" % id)
 		elif not ids.has(key):
@@ -195,6 +201,23 @@ static func validate(d: Dictionary) -> Array[String]:
 			if cur == id:
 				errs.append("chu trình xích qua khối %s" % id)
 				break
+	return errs
+
+
+## `pop` (bom kẹo): bool; khối bom kẹo không có cơ chế nào khác (lớp phủ, sương, xích, hộp giấy, ruy băng, dir; không
+## làm chìa, kiểm ở `validate`).
+static func _validate_pop(id: String, b: Dictionary) -> Array[String]:
+	var errs: Array[String] = []
+	if typeof(b["pop"]) != TYPE_BOOL:
+		errs.append("khối %s: pop phải là bool" % id)
+		return errs
+	if not bool(b["pop"]):
+		return errs
+	var rib: Variant = b.get("ribbons", [])
+	if int(b.get("ice", 0)) > 0 or bool(b.get("fog", false)) or str(b.get("chained_by", "")) != "" \
+			or str(b.get("inner_color", "")) != "" or (rib is Array and not (rib as Array).is_empty()) \
+			or str(b.get("dir", "")) != "":
+		errs.append("khối %s: bom kẹo không chung khối với lớp phủ, sương, xích, hộp giấy, ruy băng hay dir" % id)
 	return errs
 
 
@@ -224,6 +247,35 @@ static func _validate_ribbons(id: String, b: Dictionary) -> Array[String]:
 	if str(b.get("inner_color", "")) != "" or int(b.get("ice", 0)) > 0 or str(b.get("chained_by", "")) != "" \
 			or str(b.get("dir", "")) != "":
 		errs.append("khối %s: ruy băng không chung khối với hộp giấy, lớp phủ, xích hay dir" % id)
+	return errs
+
+
+## `choco_sides`: [{side, layers}], mỗi cạnh tối đa một lần, layers 1..Config.CHOCO_MAX_LAYERS, không chung cạnh với cổng
+## nhịp (`pulse_sides`).
+static func _validate_choco(d: Dictionary) -> Array[String]:
+	var errs: Array[String] = []
+	if not (d["choco_sides"] is Array):
+		errs.append("choco_sides phải là mảng")
+		return errs
+	var pulse := {}
+	if d.get("pulse_sides", []) is Array:
+		for p in d.get("pulse_sides", []):
+			if p is Dictionary:
+				pulse[str(p.get("side", ""))] = true
+	var seen := {}
+	for p in d["choco_sides"]:
+		if not (p is Dictionary) or not p.has("side") or not SIDES.has(str(p["side"])):
+			errs.append("choco_sides: cạnh sai")
+			continue
+		var side := str(p["side"])
+		if seen.has(side):
+			errs.append("choco_sides: cạnh trùng %s" % side)
+		seen[side] = true
+		if pulse.has(side):
+			errs.append("choco_sides: cạnh %s đã có cổng nhịp" % side)
+		if not p.has("layers") or not _is_int(p["layers"]) \
+				or int(p["layers"]) < 1 or int(p["layers"]) > Config.CHOCO_MAX_LAYERS:
+			errs.append("choco_sides: số lớp sai ở cạnh %s" % side)
 	return errs
 
 

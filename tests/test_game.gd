@@ -2,6 +2,7 @@ extends RefCounted
 const T := preload("res://tests/t.gd")
 const Config := preload("res://src/config.gd")
 const GameScript := preload("res://src/game/game.gd")
+const Unlocks := preload("res://src/meta/unlocks.gd")
 const MockAds := preload("res://src/platform/mock_ads.gd")
 const MockIap := preload("res://src/platform/mock_iap.gd")
 
@@ -51,7 +52,8 @@ func _win(g: Node, attempt: Dictionary) -> void:
 		guard += 1
 
 
-func test_win_gives_gold_level_and_free_x2(t: T) -> void:
+## L1–10 (dưới ECON.win_card_from_level): gold vào ví, không thẻ thắng, không x2, không hỏi đánh giá.
+func test_win_below_card_level_has_no_card(t: T) -> void:
 	var g := _g()
 	var a: Dictionary = g.start_attempt()
 	t.ok(not a.is_empty(), "có level 1")
@@ -60,13 +62,55 @@ func test_win_gives_gold_level_and_free_x2(t: T) -> void:
 	var left: int = a.board.moves_left()
 	t.ok(left > 0, "L1 dư MOVES")
 	var r: Dictionary = g.on_level_won(a)
+	t.eq(r.card, false, "L1 không có thẻ thắng")
+	t.eq(r.coins, 40 + 10 * left, "gold thắng + MOVES thừa")
+	t.eq(int(g.s.coins), 1040 + 10 * left, "ví")
+	t.eq(int(g.s.level), 2, "lên level 2")
+	t.eq(r.x2_available, false, "không mời x2")
+	t.eq(r.x2_free, false, "không x2 miễn phí")
+	t.eq(await g.claim_x2(), false, "không nhận được x2")
+	t.eq(_p().an.count("rv_offer"), 0, "không ghi rv_offer")
+	g.s.meta["rated"] = false
+	g.s.level = 10
+	var b: Dictionary = g.start_attempt()
+	_win(g, b)
+	var r10: Dictionary = g.on_level_won(b)
+	t.eq(r10.card, false, "L10 không có thẻ thắng")
+	t.eq(r10.rate_prompt, false, "L10 chưa hỏi đánh giá")
+	t.eq(g.next_after_win(r10, false), "level", "thắng L10 vào thẳng L11")
+	t.ok(Unlocks.opens_home(r10.unlocked), "thắng L10 mở shop, tính năng ở Home")
+	g.s.level = 9
+	var c: Dictionary = g.start_attempt()
+	_win(g, c)
+	var r4: Dictionary = g.on_level_won(c)
+	t.ok(Unlocks.opens_home(r4.unlocked), "thắng L9 mở mạng, tính năng ở Home")
+	t.eq(g.next_after_win(r4, false), "level", "không có thẻ thì vẫn vào thẳng level kế")
+	g.s.level = 11
+	var e: Dictionary = g.start_attempt()
+	_win(g, e)
+	var r11: Dictionary = g.on_level_won(e)
+	t.eq(r11.card, true, "L11 có thẻ thắng")
+	t.eq(r11.rate_prompt, true, "hỏi đánh giá ở thẻ thắng đầu tiên")
+
+
+func test_win_gives_gold_level_and_free_x2(t: T) -> void:
+	var g := _g()
+	g.s.level = 11
+	var a: Dictionary = g.start_attempt()
+	t.ok(not a.is_empty(), "có level 11")
+	_win(g, a)
+	t.ok(a.board.is_won(), "thắng L11")
+	var left: int = a.board.moves_left()
+	t.ok(left > 0, "L11 dư MOVES")
+	var r: Dictionary = g.on_level_won(a)
 	var mc := 10 * left
+	t.eq(r.card, true, "L11 có thẻ thắng")
 	t.eq(r.move_coins, mc, "10 gold mỗi MOVES thừa")
 	t.eq(r.coins, 40 + mc, "gold thắng + MOVES thừa")
-	t.eq(r.x2_free, true, "L1 x2 miễn phí")
+	t.eq(r.x2_free, true, "L11 (thẻ đầu tiên) x2 miễn phí")
 	t.eq(r.x2_available, true, "x2 có")
 	t.eq(int(g.s.coins), 1040 + mc, "ví")
-	t.eq(int(g.s.level), 2, "lên level 2")
+	t.eq(int(g.s.level), 12, "lên level 12")
 	t.eq(int(g.s.runs), 1, "runs")
 	t.eq(await g.claim_x2(), true, "nhận x2 free")
 	t.eq(int(g.s.coins), 1080 + 2 * mc, "ví sau x2 (nhân đôi cả MOVES thừa)")
@@ -204,12 +248,12 @@ func test_rescue_inventory_then_gold(t: T) -> void:
 
 func test_x2_needs_video_and_retry(t: T) -> void:
 	var g := _g()
-	g.s.level = 2
+	g.s.level = 12
 	var a: Dictionary = g.start_attempt()
 	_win(g, a)
 	var r: Dictionary = g.on_level_won(a)
 	var won: int = r.coins
-	t.eq(r.x2_free, false, "L2 x2 cần video")
+	t.eq(r.x2_free, false, "L12 x2 cần video")
 	_p().ads.simulate("closed")
 	t.eq(await g.claim_x2(), false, "đóng sớm")
 	t.eq(int(g.s.coins), 1000 + won, "không thưởng")
@@ -427,7 +471,9 @@ func test_booster_video_repeatable(t: T) -> void:
 func test_daily_gift_and_next(t: T) -> void:
 	var g := _g()
 	t.eq(g.daily_claim(), {}, "chưa mở ở L1")
-	g.s.level = 4
+	g.s.level = 13
+	t.eq(g.daily_claim(), {}, "chưa mở ở L13")
+	g.s.level = 14
 	var r: Dictionary = g.daily_claim()
 	t.eq(int(r.coins), 50, "ô 1")
 	t.eq(int(g.s.coins), 1050, "ví")

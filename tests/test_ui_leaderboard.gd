@@ -5,6 +5,7 @@ const T := preload("res://tests/t.gd")
 const Config := preload("res://src/config.gd")
 const Leaderboard := preload("res://src/meta/leaderboard.gd")
 const LbKit := preload("res://src/ui/lb_kit.gd")
+const LbUI := preload("res://src/ui/leaderboard.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 
 const DIR := "user://test_ui_leaderboard"
@@ -15,7 +16,7 @@ func _tree() -> SceneTree:
 	return Engine.get_main_loop() as SceneTree
 
 
-func _g(level: int = 30) -> Node:
+func _g(level: int = 80) -> Node:
 	DirAccess.make_dir_recursive_absolute(DIR)
 	var g: Node = _tree().root.get_node("Game")
 	g.reset_for_test(DIR + "/save.json")
@@ -71,13 +72,13 @@ func _check_ui(t: T, node: Node, what: String) -> void:
 
 ## Bảng xếp hạng là icon ở cột trái Home (không còn là tab của thanh dưới).
 func test_ranking_icon_unlock(t: T) -> void:
-	_g(5)
+	_g(69)
 	var home := _mount("home")
-	t.ok(home.find_child("LeaderboardButton", true, false).disabled, "L5 chưa mở Ranking")
+	t.ok(home.find_child("LeaderboardButton", true, false).disabled, "L69 chưa mở Ranking")
 	home.free()
-	var g := _g(8)
+	var g := _g(70)
 	home = _mount("home")
-	t.ok(not home.find_child("LeaderboardButton", true, false).disabled, "L8 mở Ranking")
+	t.ok(not home.find_child("LeaderboardButton", true, false).disabled, "L70 mở Ranking")
 	t.ok(not _shown(home, "LeaderboardDot"), "không có gì chờ: không chấm đỏ")
 	home.free()
 	Leaderboard.add_points(g.s, 10)
@@ -185,8 +186,52 @@ func test_league_tab_top_league(t: T) -> void:
 	t.eq((node.find_child("PromoTitle", true, false) as Label).text, top, "giải cuối")
 	t.ok(_shown(node, "PromoBox") and _shown(node, "CountdownPill"), "giải cao nhất vẫn có PromoBox và đếm ngược")
 	(node.find_child("PromoBadge", true, false) as Button).pressed.emit()
-	t.eq(_bubble_items(node), 5, "thưởng của chính giải cuối")
+	t.eq(_bubble_items(node), 6, "thưởng của chính giải cuối: gold, 3 booster, mạng vô hạn, avatar/khung (còn 5 món)")
 	t.eq(_bubble_caption(node), node.tr("lb_reward_claimed"), "đánh dấu đã nhận")
+	node.free()
+
+
+## Khung popup nằm sẵn trong scene (2026-11-10): lòng khung InnerMask (nền BG_Winstreak) phủ phần kem của Popup2 nên
+## không còn dải kem dưới ribbon, không lấn viền tím; nội dung bắt đầu dưới ribbon, sát hai bên và đáy lòng khung.
+## Thanh tab: Line của prefab ở trên, tab treo dưới Line (nền lật, cạnh hở quay lên), TabBand từ Line tới đáy lòng
+## khung. Danh sách và thang mờ dần ở hai mép; hàng ghim nằm ngoài vùng mờ.
+func test_popup_frame_layout(t: T) -> void:
+	_g(int(Config.UNLOCK.get("leaderboard", 8)))
+	var node := _mount("leaderboard")
+	await _wait_until(func() -> bool: return false, 100)
+	var fc := node.get_node_or_null("FrameCanvas") as Control
+	t.ok(fc != null and fc.scene_file_path.ends_with("PopupOkLayer.tscn"), "khung PopupOkLayer nằm sẵn trong scene")
+	var panel := fc.get_node("PopupOkLayer/Panel") as Control
+	var s := panel.get_global_transform().get_scale().x
+	var pr := panel.get_global_rect()
+	var mask := node.find_child("InnerMask", true, false) as Control
+	var mr := mask.get_global_rect()
+	var near := func(a: float, b: float) -> bool: return absf(a - b) <= 1.0
+	t.ok(near.call(mr.position.x, pr.position.x + LbUI.BORDER * s) and near.call(mr.end.x, pr.end.x - LbUI.BORDER * s)
+		and near.call(mr.position.y, pr.position.y + LbUI.BORDER * s)
+		and near.call(mr.end.y, pr.end.y - LbUI.BORDER_BOTTOM * s), "lòng khung trùng phần kem của Popup2")
+	t.ok(mask.clip_children == CanvasItem.CLIP_CHILDREN_ONLY, "lòng khung cắt con theo góc bo")
+	t.eq((node.find_child("InnerBg", true, false) as Control).get_global_rect(), mr, "nền BG_Winstreak phủ cả lòng khung")
+	var cr := (node.get_node("Canvas") as Control).get_global_rect()
+	t.ok(near.call(cr.position.x, mr.position.x) and near.call(cr.end.x, mr.end.x) and near.call(cr.end.y, mr.end.y),
+		"nội dung sát hai bên và đáy lòng khung")
+	var ribbon := fc.get_node("PopupOkLayer/Panel/Image") as Control
+	var ribbon_end: Vector2 = ribbon.get_global_transform() * (ribbon.call("drawn_rect") as Rect2).end
+	t.ok(cr.position.y >= ribbon_end.y - 1.0 and cr.position.y < ribbon_end.y + 30.0 * s, "nội dung bắt đầu ngay dưới ribbon")
+	var line := node.get_node("Canvas/LeaderboardLayer/BG/Line") as Control
+	var lr := line.get_global_rect()
+	var br := (node.find_child("TabBand", true, false) as Control).get_global_rect()
+	t.ok(line.is_visible_in_tree() and near.call(br.position.y, lr.position.y) and near.call(br.end.y, mr.end.y)
+		and near.call(lr.position.x, mr.position.x) and near.call(lr.end.x, mr.end.x), "Line và TabBand làm thanh tab")
+	for id in ["league", "world"]:
+		var tab := node.find_child("Tab_" + id, true, false) as Control
+		var tab_r := tab.get_global_rect()
+		t.ok(tab_r.position.y > lr.position.y and tab_r.position.y < lr.end.y and tab_r.end.y < br.end.y,
+			"tab %s treo dưới Line" % id)
+		t.ok((tab.get_node("Background") as Control).scale.y < 0.0, "nền tab %s lật, cạnh hở quay lên" % id)
+	var vp := (node.find_child("Rows", true, false) as Control).get_parent() as Control
+	t.ok(vp.get("tex") is GradientTexture2D and vp.clip_children == CanvasItem.CLIP_CHILDREN_ONLY, "danh sách mờ dần ở mép")
+	t.ok((node.find_child("MeRow", true, false) as Control).get_parent() != vp, "hàng ghim ngoài vùng mờ")
 	node.free()
 
 
@@ -256,18 +301,56 @@ func test_world_tab_ladder(t: T) -> void:
 	t.eq((ladder.get_node("League_silver/Players") as Label).text, "48K", "số người chơi mô phỏng")
 	_check_ui(t, node, "leaderboard world")
 	_tap(ladder.get_node("League_platinum/LeagueIcon"))
-	t.eq(_bubble_items(node), 2, "chạm Platinum: 500 gold, 1 Move")
+	t.eq(_bubble_items(node), 3, "chạm Platinum: 500 gold, 1 Move, avatar/khung ngẫu nhiên")
+	var bubble := node.find_child("RewardBubble", true, false) as Control
+	t.eq(bubble.find_children("CosIcon", "", true, false).size(), 1, "ô avatar/khung ngẫu nhiên có ảnh avatar trong khung")
+	t.eq(bubble.find_children("RandomMark", "", true, false).size(), 1, "ô ngẫu nhiên có dấu ?")
+	var bt: Array = []
+	_texts(bubble, bt)
+	t.eq(bt.count(node.tr("booster_count") % 1), 2, "Move và ô ngẫu nhiên ghi x1")
 	t.eq(_bubble_caption(node), node.tr("lb_reward_next") % (node.tr("lb_league") % node.tr("lb_league_platinum")),
 		"giải chưa tới")
+	var next_cap := node.tr("lb_reward_next") % (node.tr("lb_league") % node.tr("lb_league_platinum"))
 	_tap(ladder.get_node("League_gold/LeagueIcon"))
-	t.eq(_bubble_caption(node), node.tr("lb_reward_claimed"), "giải đã vào trong tuần: đã nhận")
+	t.eq(_bubble_caption(node), next_cap, "cúp giải hiện tại: thưởng của giải kế")
+	t.eq(_bubble_items(node), 3, "cúp giải hiện tại: thưởng Platinum")
 	_tap(ladder.get_node("League_gold/LeagueIcon"))
 	t.eq(_bubble_items(node), 0, "chạm lần nữa thì ẩn")
+	_tap(node.find_child("CardLeagueIcon", true, false))
+	t.eq(_bubble_caption(node), next_cap, "icon giải trên thẻ người chơi: thưởng của giải kế")
+	t.eq(_bubble_items(node), 3, "icon thẻ người chơi: thưởng Platinum")
+	_tap(node.find_child("CardLeagueIcon", true, false))
+	t.eq(_bubble_items(node), 0, "icon thẻ người chơi: chạm lần nữa thì ẩn")
 	_tap(ladder.get_node("League_silver/LeagueIcon"))
 	t.eq(_bubble_items(node), 0, "Silver không có thưởng")
 	t.ok(ladder.get_node_or_null("League_platinum/Players") != null, "luôn ghi số người chơi")
 	(node.find_child("Tab_league", true, false) as Button).pressed.emit()
 	t.ok(_shown(node, "PromoBox") and not _shown(node, "PlayerCard"), "đổi về tab League")
+	node.free()
+
+
+## Giải cao nhất không có giải kế: icon giải của người chơi (thẻ, cúp hiện tại) hiện thưởng của chính nó, "Đã nhận";
+## cúp giải đã qua cũng "Đã nhận"; bong bóng dùng lại bỏ ô avatar/khung của lần trước.
+func test_world_icons_top_league(t: T) -> void:
+	var g := _g()
+	Leaderboard.add_points(g.s, 1000)
+	g.lb_claim()
+	var node := _mount("leaderboard", {"tab": "world"})
+	var claimed := node.tr("lb_reward_claimed")
+	_tap(node.find_child("CardLeagueIcon", true, false))
+	t.eq(_bubble_caption(node), claimed, "icon thẻ người chơi ở giải cuối: đã nhận")
+	t.eq(_bubble_items(node), 6, "thưởng của chính giải cuối")
+	var ladder := node.find_child("Ladder", true, false)
+	_tap(ladder.get_node("League_one_above_all/LeagueIcon"))
+	t.eq(_bubble_caption(node), claimed, "cúp giải cuối: đã nhận")
+	t.eq(_bubble_items(node), 6, "cúp giải cuối: thưởng của chính nó")
+	_tap(ladder.get_node("League_diamond/LeagueIcon"))
+	var bubble := node.find_child("RewardBubble", true, false) as Control
+	t.eq(_bubble_caption(node), claimed, "giải đã qua: đã nhận")
+	t.eq(bubble.find_children("CosIcon", "", true, false).size(), 1, "Diamond có ô avatar/khung")
+	_tap(ladder.get_node("League_gold/LeagueIcon"))
+	t.eq(_bubble_caption(node), claimed, "Gold đã qua: đã nhận")
+	t.eq(bubble.find_children("CosIcon", "", true, false).size(), 0, "bong bóng dùng lại: bỏ ô avatar/khung cũ")
 	node.free()
 
 
@@ -337,6 +420,24 @@ func test_result_close_still_claims(t: T) -> void:
 	node.free()
 
 
+## Từ Platinum: popup Lên giải có ô avatar/khung (món đã chọn, avatar trong khung), chạm nhận thì vào đồ đã có.
+func test_promo_popup_shows_cosmetic(t: T) -> void:
+	var g := _g()
+	Leaderboard.add_points(g.s, 300)
+	var cos: Array = g.lb_pending_view().reward.cos
+	t.eq(cos.size(), 1, "Platinum: 1 món")
+	var node := _mount("popup_lb_result")
+	t.eq(node.find_children("CosIcon", "", true, false).size(), 1, "một ô avatar/khung")
+	var texts: Array = []
+	_texts(node, texts)
+	var key := "lb_reward_frame" if str(cos[0]).begins_with("frame_") else "lb_reward_avatar"
+	t.ok(texts.has(node.tr(key)), "chữ dưới ô: " + node.tr(key))
+	_check_ui(t, node, "popup_lb_result có avatar/khung")
+	(node.find_child("ClaimButton", true, false) as Button).pressed.emit()
+	t.ok((g.s.cos.owned as Array).has(cos[0]), "nhận: món vào đồ đã có")
+	node.free()
+
+
 func test_leagues_popup(t: T) -> void:
 	var g := _g()
 	Leaderboard.add_points(g.s, 160)
@@ -352,11 +453,15 @@ func test_leagues_popup(t: T) -> void:
 	node.free()
 	var how := _mount("popup_lb_howto")
 	_check_ui(t, how, "popup_lb_howto")
+	for i in 3:
+		var tex: Texture2D = how.ui.node("Panel/LeaguesDesc/Step%d" % (i + 1)).get("tex")
+		t.eq(tex.resource_path if tex != null else "", "res://assets/ui/lb_howto_%d.png" % (i + 1),
+			"bước %d dùng ảnh vẽ từ UI game" % (i + 1))
 	how.free()
 
 
 func test_win_card_lb_row(t: T) -> void:
-	var g := _g(8)
+	var g := _g(70)
 	var a: Dictionary = g.start_attempt()
 	for id in (a.board as BoardState).block_ids():
 		g.smash_block(a, id)
@@ -386,7 +491,7 @@ func test_win_card_lb_row(t: T) -> void:
 
 
 func test_level_hud_and_piece(t: T) -> void:
-	var g := _g(9)
+	var g := _g(71)
 	g.s.inv["smash"] = 3
 	var lv := (load("res://scenes/level.tscn") as PackedScene).instantiate() as Control
 	_tree().root.add_child(lv)
@@ -414,4 +519,48 @@ func test_level_hud_and_piece(t: T) -> void:
 	lv.setup({})
 	t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "vào chơi L5")
 	t.ok(not lv.piece_chip.visible, "chưa mở leaderboard thì không có chip")
+	lv.free()
+
+
+func _mount_level() -> Control:
+	var lv := (load("res://scenes/level.tscn") as PackedScene).instantiate() as Control
+	_tree().root.add_child(lv)
+	lv.setup({})
+	return lv
+
+
+## Popup Cách hoạt động đang mở trên màn level, hoặc null.
+func _howto_in(lv: Control) -> Control:
+	for c in lv.get_node("LocalPopups").get_children():
+		if not c.is_queued_for_deletion() and c.name == "PopupLbHowto":
+			return c
+	return null
+
+
+## Level có khối crystal đầu tiên (L70, lúc mở Leaderboard): vào màn thì hiện popup Cách hoạt động một lần.
+func test_first_crystal_level_shows_howto(t: T) -> void:
+	var g := _g(5)
+	g.s.lb["guide"] = false
+	var lv := _mount_level()
+	t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "L5 vào chơi ngay")
+	t.eq(_howto_in(lv), null, "chưa mở Leaderboard: không có popup")
+	t.eq(bool(g.s.lb.guide), false, "chưa đánh dấu đã xem")
+	lv.free()
+	g = _g(70)
+	g.s.lb["guide"] = false
+	lv = _mount_level()
+	t.ok(await _wait_until(func() -> bool: return _howto_in(lv) != null), "L70 mở popup Cách hoạt động")
+	t.ok(not (lv.attempt.specials as Array).is_empty(), "level có khối crystal")
+	t.eq(lv.state, "intro", "chưa chơi khi đọc hướng dẫn")
+	t.eq(bool(g.s.lb.guide), true, "đã ghi xem hướng dẫn")
+	var how := _howto_in(lv)
+	t.eq(how.ui.label("Panel/LeaguesDesc/txtHeader").text, lv.tr("lb_howto_title"), "tiêu đề Cách hoạt động")
+	_check_ui(t, how, "popup_lb_howto trong level")
+	(how.find_child("OkButton", true, false) as Button).pressed.emit()
+	t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "chạm thì vào chơi")
+	t.eq(_howto_in(lv), null, "popup đã đóng")
+	lv.free()
+	lv = _mount_level()
+	t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "chơi lại L70: vào chơi ngay")
+	t.eq(_howto_in(lv), null, "không hiện lại")
 	lv.free()

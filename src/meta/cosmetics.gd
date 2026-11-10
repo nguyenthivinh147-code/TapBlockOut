@@ -27,13 +27,32 @@ static func is_owned(s: Dictionary, id: String) -> bool:
 	return (s.cos.owned as Array).has(id)
 
 
+## Số thứ tự hộp Road Trip (đếm từ 1) tặng món `id`; 0 khi món không thuộc Road Trip (Config.ROAD_TRIP_COSMETICS).
+static func road_trip_box(id: String) -> int:
+	for box in Config.ROAD_TRIP_COSMETICS:
+		if str(Config.ROAD_TRIP_COSMETICS[box]) == id:
+			return int(box)
+	return 0
+
+
+## Món chỉ có từ thưởng league của Leaderboard (Config.LEADERBOARD.cosmetics).
+static func league_only(id: String) -> bool:
+	var raw: Variant = Config.LEADERBOARD.get("cosmetics", [])
+	return raw is Array and (raw as Array).has(id)
+
+
+## Mua bằng gold hoặc mở bằng video được: món có trong catalog, không chỉ có từ Road Trip hay thưởng league.
+static func for_sale(id: String) -> bool:
+	return kind_of(id) != "" and road_trip_box(id) == 0 and not league_only(id)
+
+
 static func equipped(s: Dictionary, kind: String) -> String:
 	return str(s.cos.get(kind, ""))
 
 
-## Mua bằng gold: trừ thẳng s.coins. Sai khi id lạ, đã có, hoặc thiếu gold.
+## Mua bằng gold: trừ thẳng s.coins. Sai khi id lạ, chỉ có từ Road Trip, đã có, hoặc thiếu gold.
 static func buy(s: Dictionary, id: String) -> bool:
-	if kind_of(id) == "" or is_owned(s, id):
+	if not for_sale(id) or is_owned(s, id):
 		return false
 	var price := Config.cosmetic_price(id)
 	if int(s.coins) < price:
@@ -43,7 +62,8 @@ static func buy(s: Dictionary, id: String) -> bool:
 	return true
 
 
-## Mở bằng video (Game đã xem xong): không trừ gold. Sai khi id lạ hoặc đã có.
+## Mở không trả gold (video Game đã xem xong, hoặc hộp Road Trip): sai khi id lạ hoặc đã có. Món chỉ có từ Road
+## Trip thì Game không mở bằng video (for_sale).
 static func unlock(s: Dictionary, id: String) -> bool:
 	if kind_of(id) == "" or is_owned(s, id):
 		return false

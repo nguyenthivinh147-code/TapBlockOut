@@ -11,6 +11,7 @@ const SHEETS := {
 	"winlose": "atlas_winlose.png",
 	"shop": "atlas_shop.png",
 	"winstreak": "res://assets/ui/cc/UI_Winstreak_Atlas.png",
+	"maincenter": "res://assets/ui/cc/Resources_moved_UI_Maincenter.png",
 }
 
 ## tên -> [sheet, Rect2(x, y, w, h)]
@@ -103,6 +104,9 @@ const REGIONS := {
 	"gift_red": ["winstreak", Rect2(26, 874, 149, 149)],
 	"gift_blue": ["winstreak", Rect2(224, 856, 161, 161)],
 	"gift_purple": ["winstreak", Rect2(418, 839, 181, 181)],
+	# Unity atlas: blue tile with a flat top and a rounded lip at the bottom (bounds measured by alpha).
+	# Road Trip chip turns it with box_cw so the flat edge sits on the screen's right edge.
+	"tile_blue_mc": ["maincenter", Rect2(1100, 1332, 168, 150)],
 }
 
 static var _sheet_cache: Dictionary = {}
@@ -191,6 +195,44 @@ static func box(region: String, margin: Vector4, content: Vector4 = Vector4(-1, 
 		s.content_margin_right = content.z
 		s.content_margin_bottom = content.w
 	return s
+
+
+## 9-slice from a sprite turned 90° clockwise (the sprite's top edge ends up on the right).
+## margin = (left, top, right, bottom) in the turned sprite's pixels. If the atlas pixels can't be read
+## (e.g. a renderer that keeps no images), falls back to the unturned sprite with the margins mapped back.
+static func box_cw(region: String, margin: Vector4) -> StyleBoxTexture:
+	var key := region + "@cw"
+	var t: Texture2D = _tex_cache.get(key)
+	if t == null:
+		var img := _region_image(region)
+		if img == null:
+			return box(region, Vector4(margin.y, margin.z, margin.w, margin.x))
+		img.rotate_90(CLOCKWISE)
+		t = ImageTexture.create_from_image(img)
+		_tex_cache[key] = t
+	var s := StyleBoxTexture.new()
+	s.texture = t
+	s.texture_margin_left = margin.x
+	s.texture_margin_top = margin.y
+	s.texture_margin_right = margin.z
+	s.texture_margin_bottom = margin.w
+	return s
+
+
+## Decompressed copy of a sprite's pixels, or null when the name is wrong or the atlas can't be read.
+static func _region_image(region: String) -> Image:
+	var r: Array = REGIONS.get(region, [])
+	if r.is_empty():
+		return null
+	var sheet := _sheet(str(r[0]))
+	if sheet == null:
+		return null
+	var full := sheet.get_image()
+	if full == null or full.is_empty():
+		return null
+	if full.is_compressed():
+		full.decompress()
+	return full.get_region(Rect2i(r[1]))
 
 
 ## Sprite co đều về cao h (giữ tỉ lệ), 9-slice chỉ theo chiều ngang với hai đầu bằng nửa chiều cao.

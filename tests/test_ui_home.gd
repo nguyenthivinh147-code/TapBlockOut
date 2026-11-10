@@ -57,7 +57,7 @@ func test_early_levels_hide_lives_gift_shop(t: T) -> void:
 	t.ok(not h.lives_panel.visible, "L1 không hiện mạng")
 	t.ok(not h.gift_btn.get_parent().visible, "L1 ẩn quà")
 	t.ok(h.shop_btn.disabled, "L1 shop khoá")
-	t.ok(h.shop_caption.text.contains("5"), "shop khoá ghi Level 5")
+	t.ok(h.shop_caption.text.contains("11"), "shop khoá ghi Level 11")
 	t.ok(not h.challenge_btn.get_parent().visible, "Daily Challenge tắt (Config.FEATURES) thì ẩn icon")
 	t.ok(h.leaderboard_btn.get_parent().visible, "Bảng xếp hạng vẫn hiện")
 	t.ok(not h.offer_chip.get_parent().visible, "không có offer thì không hiện icon offer")
@@ -70,10 +70,14 @@ func test_early_levels_hide_lives_gift_shop(t: T) -> void:
 
 
 func test_shop_unlock_and_gift_badge(t: T) -> void:
-	var g := _g(5)
+	var g := _g(11)
 	var h := _home()
-	t.ok(not h.shop_btn.disabled, "L5 shop mở")
-	t.ok(h.gift_btn.get_parent().visible, "L5 có icon quà")
+	t.ok(not h.shop_btn.disabled, "L11 shop mở")
+	t.ok(not h.gift_btn.get_parent().visible, "L11 chưa có icon quà")
+	h.queue_free()
+	g.s.level = 14
+	h = _home()
+	t.ok(h.gift_btn.get_parent().visible, "L14 có icon quà")
 	t.ok(h.gift_badge.visible, "chưa nhận quà thì có chấm đỏ")
 	t.eq(_press(h, h.shop_btn).get("action", ""), "shop", "bấm shop")
 	t.eq(_press(h, h.gift_btn).get("action", ""), "gift", "bấm quà")

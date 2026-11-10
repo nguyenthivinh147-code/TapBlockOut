@@ -16,6 +16,8 @@ const SuckWind := preload("res://src/ui/suck_wind.gd")
 const ObstacleFx := preload("res://src/ui/obstacle_fx.gd")
 const CrystalGrind := preload("res://src/ui/crystal_grind.gd")
 const HintGlitter := preload("res://src/ui/hint_glitter.gd")
+const ChocoCover := preload("res://src/ui/choco_cover.gd")
+const PopFuse := preload("res://src/ui/pop_fuse.gd")
 const Config := preload("res://src/config.gd")
 
 ## Khối chạm vào (đã là ô của khối, không phải đá hay ô trống).
@@ -51,6 +53,8 @@ const GRIND_GOLDEN := 0.618034  # dãy tỉ lệ vàng: khối vuông kế tiế
 const GRIND_SPARKS := 6
 const GRIND_SPARK_SCALE := 110.0
 const GRIND_SETTLE := 0.25  # giây sau khi nghiền xong thì báo xong; vụn còn lại vẫn bay tiếp
+const GRIND_HAPTIC_EVERY := 0.05  # giây: suốt lúc khối qua thanh, máy rung một nhịp Sfx.HAPTIC_MS["grind"] sau mỗi chừng này
+const GRIND_HAPTIC_GAP := 0.04  # giây: nhiều khối cùng nghiền vẫn chung một nhịp, nhịp sát nhịp trước hơn chừng này thì bỏ
 const SHAKE_SMASH := 0.2  # bàn rung theo búa gõ, theo ô
 const FLASH_SMASH := 3.0
 const SPARKS_SMASH := 10
@@ -70,6 +74,11 @@ const COVER_SQUISH_TIME := 0.5
 const COVER_HALF := 0.5  # bóc lớp ngoài của khối 2 lớp: hiệu ứng vỡ cỡ chừng này lần lúc bóc lớp cuối
 const COVER_HALF_DB := -6.0  # và tiếng nhỏ hơn chừng này dB
 const BOX_FLY_MIN := 0.22  # giây ngắn nhất hộp giấy bay tới thanh
+const CHOCO_NUDGE := 0.12  # chạm khối hướng về thanh còn socola: nhích về phía thanh chừng này ô rồi về
+const CHOCO_CHIP_DB := -4.0  # bớt một lớp socola (chưa phải lớp cuối) kêu nhỏ hơn lớp cuối chừng này dB
+const CHOCO_CHIPS := 9  # vụn socola lúc bớt một lớp
+const CHOCO_BREAK_CHIPS := 5  # vụn mỗi đoạn dài một ô dọc thanh lúc lớp cuối vỡ
+const CHOCO_CHIP_CELL := 0.8  # vụn socola cỡ như vụn của khối rộng chừng này ô
 const HINT_POP := 1.22  # khối được Gợi ý nảy to chừng này lúc sao chạm
 const HINT_POP_GLOW := 3.0  # độ loé trắng lúc chạm, tắt dần về mức nhấp nháy (1)
 const GHOST_NAME := "Ghost"
@@ -202,12 +211,25 @@ var _hl_id: String = ""
 var _hl_tween: Tween = null
 var _hl_glitter: Control = null  # sao lấp lánh phủ khối được Gợi ý bằng booster (HintGlitter)
 var _shake_tw: Tween = null
+var _grind_buzz_ms: int = -1000000  # Time.get_ticks_msec() của nhịp rung nghiền gần nhất
 var _rng := RandomNumberGenerator.new()
 var _specials: Dictionary = {}  # id -> true: khối đặc biệt của leaderboard (vẽ bằng chất liệu crystal)
 var _knocked: Dictionary = {}  # Vector2i -> true: ô thùng sắt đang rung (vẽ bằng node riêng)
 ## id -> số lớp phủ board đã bóc mà hình chưa bóc: khối kề đã thoát nhưng chưa chạm thanh. Trong lúc đó khối vẫn tính là
 ## còn phủ (cover_held), lớp vỡ lúc khối kề chạm thanh (_release_covers).
 var _cover_hold: Dictionary = {}
+## Socola trên thanh: board bớt lớp ngay lúc chạm, hình bớt khi thứ đi qua thanh khác chạm tới thanh đó (hoặc lúc búa
+## gõ). Trong lúc đó khối hướng về thanh vẫn tính là còn socola (choco_held).
+var _choco_shown: Dictionary = {}  # cạnh -> số lớp đang hiện
+var _choco_due: Dictionary = {}  # lượt -> các cạnh sẽ bớt 1 lớp khi thứ của lượt đó chạm thanh
+var _choco_nodes: Dictionary = {}  # cạnh -> ChocoCover
+## Bom kẹo: board gỡ lớp phủ, sương của khối trong vùng nổ ngay lúc chạm (hoặc lúc Phá), hình chỉ gỡ lúc bom kẹo chạm
+## thanh (hoặc lúc búa gõ), lần lượt từ gần ra xa. Trong lúc đó khối vẫn hiện và tính như cũ (pop_held).
+var _pop_hold: Dictionary = {}  # id -> {"ice": số lớp đang hiện, "fog": còn sương trên hình}
+var _pop_due: Dictionary = {}  # lượt -> {"cells": ô của bom kẹo, "ids": khối bị nổ}: nổ khi bom kẹo của lượt đó chạm thanh
+var _pop_gen: int = 0  # tăng khi setup: lời gọi hẹn giờ của bàn cũ bỏ qua
+var _sfx_db: float = 0.0  # tiếng vỡ lớp phủ, sương tan nhỏ hơn chừng này dB (lúc bom kẹo nổ)
+var _sfx_mute: bool = false  # bỏ tiếng vỡ (bom kẹo nổ đã đủ Config.POP_SFX_MAX tiếng)
 
 static var _fx_prewarmed: bool = false
 
@@ -249,10 +271,20 @@ func setup(board: BoardState, area: Vector2 = Vector2.ZERO) -> void:
 	for id in _nodes:
 		if bool((_nodes[id] as BlockNode).view.get("is_fog_hidden", false)):
 			_blocks_root.move_child(_nodes[id], -1)
+	# Ngòi bom kẹo chĩa ra ngoài khối: khối bom kẹo vẽ sau cùng để ngòi đè lên khối bên cạnh (và lên sương).
+	for id in _nodes:
+		if bool((_nodes[id] as BlockNode).view.get("pop", false)):
+			_blocks_root.move_child(_nodes[id], -1)
 	_box = _content_box()
 	_gate_state = board.gates()
 	_gate_shown = _gate_state.duplicate()
 	_set_gate_progress_now()
+	_choco_shown = board.choco()
+	for side in _choco_shown:
+		var c := ChocoCover.new()
+		c.setup(str(side), int(_choco_shown[side]))
+		_frame.add_child(c)
+		_choco_nodes[side] = c
 	_refresh_keys()
 	_layout()
 	queue_redraw()
@@ -286,6 +318,7 @@ func refresh() -> void:
 		return
 	_sync_states(false)
 	_sync_gates_now()
+	_sync_choco(false)
 
 
 func cell_size() -> float:
@@ -361,8 +394,32 @@ func _cell_at(pos: Vector2) -> Vector2i:
 
 
 ## Khối còn lớp phủ trên hình mà board đã bóc (khối kề đang lao tới thanh): chạm vào tính là khối còn phủ.
+## Khối hướng về thanh mà hình còn socola (board có thể đã bớt hết nhưng thứ làm tan lớp cuối chưa tới thanh): chạm vào
+## chỉ nhích, như khi board còn socola. Khối còn trong sương thì không (chạm vào lắc như sương mù).
+func choco_held(id: String) -> bool:
+	var n: BlockNode = _nodes.get(id, null)
+	if n == null or bool(n.view.get("is_fog_hidden", false)):
+		return false
+	return _choco_shown.has(LevelData.block_side(n.view))
+
+
+## Thanh còn socola trên hình -> số lớp đang hiện.
+func choco_shown() -> Dictionary:
+	return _choco_shown.duplicate()
+
+
 func cover_held(id: String) -> bool:
 	return _cover_hold.has(id) and _nodes.has(id)
+
+
+## Khối trong vùng nổ của bom kẹo chưa chạm thanh: hình vẫn còn sương ("fog") hoặc lớp phủ ("covered"); "" nếu không.
+func pop_held(id: String) -> String:
+	if not _pop_hold.has(id) or not _nodes.has(id):
+		return ""
+	var h: Dictionary = _pop_hold[id]
+	if bool(h["fog"]):
+		return "fog"
+	return "covered" if int(h["ice"]) > 0 else ""
 
 
 func is_animating() -> bool:
@@ -423,6 +480,16 @@ func _clear() -> void:
 	_gate_shown_seq = _gate_seq
 	_knocked.clear()
 	_cover_hold.clear()
+	_pop_hold.clear()
+	_pop_due.clear()
+	_pop_gen += 1
+	_sfx_db = 0.0
+	_sfx_mute = false
+	for side in _choco_nodes:
+		(_choco_nodes[side] as Node).queue_free()
+	_choco_nodes.clear()
+	_choco_shown.clear()
+	_choco_due.clear()
 	for ch in _fx_root.get_children():
 		ch.queue_free()
 	_blocks_root.position = Vector2.ZERO
@@ -447,6 +514,8 @@ func _add_block(id: String) -> void:
 	_shadow_root.add_child(sh)
 	_blocks_root.add_child(n)
 	_nodes[id] = n
+	if bool(v.get("pop", false)):
+		n.add_child(PopFuse.new())
 
 
 func _unmap(id: String) -> void:
@@ -519,6 +588,8 @@ func _layout() -> void:
 		n.queue_redraw()
 	_frame.layout(_area, _unit)
 	_layout_gate_segments()
+	for side in _choco_nodes:
+		(_choco_nodes[side] as ChocoCover).layout(CandyFrame.bar_rect(str(side), _area, _unit), _unit, _cell)
 	queue_redraw()
 
 
@@ -645,16 +716,22 @@ func apply_result(result: Dictionary) -> void:
 	var kind := str(result.get("kind", "rejected"))
 	var id := str(result.get("id", ""))
 	clear_highlight()
-	if kind == "rejected" or kind == "fog" or kind == "covered":
+	if kind == "rejected" or kind == "fog" or kind == "covered" or kind == "choco":
 		if kind == "fog" and _nodes.has(id):
 			_anim_fogged(_nodes[id])
 		elif kind == "covered" and _nodes.has(id):
 			_anim_covered(_nodes[id])
+		elif kind == "choco" and _nodes.has(id):
+			_anim_choco(_nodes[id])
 		_check_done.call_deferred()
 		return
 	# chặn ở cổng thì tiếng cổng đã kêu lúc va, cổng mở ra sau đó không kêu lại
 	var seq := _gate_move(kind != "gate_closed")
+	var melts: Array = result.get("choco", [])
+	if not melts.is_empty():
+		_choco_due[seq] = melts.duplicate()
 	if not _nodes.has(id):
+		_choco_reach(seq)
 		_after_result(seq)
 		_move_end(seq)
 		_check_done.call_deferred()
@@ -668,6 +745,11 @@ func apply_result(result: Dictionary) -> void:
 			var strips: Array = result.get("stripped", [])
 			for sid in strips:
 				_cover_hold[sid] = int(_cover_hold.get(sid, 0)) + 1
+			# bom kẹo: khối trong vùng nổ giữ hình tới lúc bom kẹo chạm thanh
+			if bool(node.view.get("pop", false)):
+				var popped: Array = result.get("popped", [])
+				_hold_pops(popped)
+				_pop_due[seq] = {"cells": node.cells.duplicate(), "ids": popped.duplicate()}
 			_anim_exit(node, dir, seq, strips)
 		"blocked":
 			_anim_bounce(node, dir, float(dist), dist, str(result.get("blocker", "")), "", seq)
@@ -805,6 +887,11 @@ func _leading_point(lc: Array, dir: Vector2) -> Vector2:
 func _grind(node: BlockNode, dir: Vector2, side: String, seq: int, strips: Array = []) -> void:
 	_gate_reach(seq)
 	_release_covers(strips)
+	_choco_reach(seq)
+	if _pop_due.has(seq):
+		var due: Dictionary = _pop_due[seq]
+		_pop_due.erase(seq)
+		_pop_blast(due["cells"], due["ids"], node)
 	var ramp := ThemeKit.block_ramp(str(node.view.get("color", "")))
 	var lc := node.local_cells()
 	var inner := _bar_face(dir)
@@ -822,7 +909,8 @@ func _grind(node: BlockNode, dir: Vector2, side: String, seq: int, strips: Array
 		_crystal_grind(node, dir, inner, outer, to_go / (GRIND_SPEED * _cell))
 	var bits := CandyShards.grinder(_fx_root, lc, _cell, ramp, crystal) as CandyShards
 	var counts := _grind_counts(lc, dir)
-	var state := {"done": 0.0, "passed": {}, "bits": counts.x, "small": counts.y, "spawned": 0, "spawned_small": 0, "phase": _rng.randf()}
+	var buzz := GRIND_HAPTIC_EVERY * GRIND_SPEED * _cell
+	var state := {"done": 0.0, "passed": {}, "bits": counts.x, "small": counts.y, "spawned": 0, "spawned_small": 0, "phase": _rng.randf(), "buzz": buzz, "buzz_step": buzz}
 	var tw := node.create_tween()
 	tw.tween_method(_grind_step.bind(node, lc, dir, inner, outer, bits, node.position, state), 0.0, to_go, to_go / (GRIND_SPEED * _cell))
 	tw.finished.connect(_end_grind.bind(clip, bits, seq))
@@ -877,7 +965,7 @@ func _grind_counts(lc: Array, dir: Vector2) -> Vector2i:
 	return Vector2i(roundi(float(GRIND_BITS) * k), roundi(float(GRIND_SMALL) * k))
 
 
-## Một bước nghiền: dời khối, rồi các ô vừa vắt qua mặt trong của thanh phun mảnh to và mảnh nhỏ.
+## Một bước nghiền: dời khối, rung theo nhịp, rồi các ô vừa vắt qua mặt trong của thanh phun mảnh to và mảnh nhỏ.
 ## Cả khối ra state["bits"] mảnh to và state["small"] mảnh nhỏ (_grind_counts()): tới lúc này đã ra chừng ấy nhân phần
 ## diện tích khối đã qua thanh. Mảnh rải đều theo bề ngang các ô đang qua thanh bằng dãy tỉ lệ vàng, không chụm một chỗ.
 func _grind_step(v: float, node: BlockNode, lc: Array, dir: Vector2, inner: float, outer: float, bits: CandyShards, start: Vector2, state: Dictionary) -> void:
@@ -885,6 +973,10 @@ func _grind_step(v: float, node: BlockNode, lc: Array, dir: Vector2, inner: floa
 	if v <= float(state["done"]):
 		return
 	state["done"] = v
+	if v >= float(state["buzz"]):
+		while v >= float(state["buzz"]):
+			state["buzz"] = float(state["buzz"]) + float(state["buzz_step"])
+		_grind_buzz()
 	var passed: Dictionary = state["passed"]
 	var to_view := get_global_transform().affine_inverse() * node.get_global_transform()
 	var to_canvas := get_global_transform()
@@ -932,11 +1024,22 @@ func _grind_step(v: float, node: BlockNode, lc: Array, dir: Vector2, inner: floa
 		bits.bit(at, to_canvas * pos, dir, _rng, i >= due)
 
 
+## Một nhịp rung lúc khối đang nghiền qua thanh (nhịp đầu là rung của sfx_shatter lúc chạm thanh). Nhiều khối cùng
+## nghiền thì giữ một nhịp chung: nhịp sát nhịp trước hơn GRIND_HAPTIC_GAP thì bỏ.
+func _grind_buzz() -> void:
+	var now := Time.get_ticks_msec()
+	if now - _grind_buzz_ms < roundi(GRIND_HAPTIC_GAP * 1000.0):
+		return
+	_grind_buzz_ms = now
+	Sfx.pulse("grind")
+
+
 ## Khối đã qua hết thanh: giờ cổng mới đổi theo lượt này (cổng nhịp khoá lại sau khối).
 func _end_grind(clip: Control, bits: CandyShards, seq: int) -> void:
 	clip.queue_free()
 	bits.close()
-	# Bàn hết khối: báo xong ngay để thẻ thắng hiện liền, vụn vẫn bay tiếp dưới thẻ; cổng không đổi nữa.
+	# Bàn hết khối: báo xong ngay (level tự chờ Config.CONTENT.win_card_delay_sec rồi hiện thẻ thắng), vụn vẫn bay
+	# tiếp dưới thẻ; cổng không đổi nữa.
 	if _nodes.is_empty():
 		_end()
 	else:
@@ -1192,6 +1295,195 @@ func _anim_covered(node: BlockNode) -> void:
 	tw.finished.connect(_finish_busy.bind(node))
 
 
+## Khối hướng về thanh còn socola bị chạm: nhích về phía thanh rồi về chỗ, socola trên thanh nhún. Không đi, không đổi gì
+## trên bàn, kể cả khi đường đang bị khối khác chặn.
+func _anim_choco(node: BlockNode) -> void:
+	var side := LevelData.block_side(node.view)
+	var cover: ChocoCover = _choco_nodes.get(side, null)
+	if cover != null:
+		cover.poke()
+	if node.busy:
+		return
+	node.busy = true
+	_begin()
+	var dir := Vector2(LevelData.side_dir(side))
+	var home := _origin + Vector2(node.origin_cell) * _cell
+	var tw := node.create_tween()
+	tw.tween_property(node, "position", home + dir * _cell * CHOCO_NUDGE, 0.07).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(node, "position", home, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.finished.connect(_finish_busy.bind(node))
+
+
+## Thứ của lượt `seq` vừa chạm thanh của nó: các thanh còn socola bớt một lớp trên hình.
+func _choco_reach(seq: int) -> void:
+	if not _choco_due.has(seq):
+		return
+	var sides: Array = _choco_due[seq]
+	_choco_due.erase(seq)
+	for side in sides:
+		_chip_choco(str(side), true)
+
+
+## Hình theo board (búa gõ, refresh): thanh nào hiện nhiều lớp hơn board cộng phần còn chờ chạm thanh thì bớt cho khớp.
+func _sync_choco(animate: bool) -> void:
+	var now := _board.choco()
+	var pending := {}
+	for seq in _choco_due:
+		for side in _choco_due[seq]:
+			pending[side] = int(pending.get(side, 0)) + 1
+	for side in _choco_shown.keys():
+		var want := int(now.get(side, 0)) + int(pending.get(side, 0))
+		while int(_choco_shown.get(side, 0)) > want:
+			_chip_choco(str(side), animate)
+
+
+## Bớt một lớp socola trên hình ở thanh `side`: mảng socola bong ra rơi vào bàn, số nảy. Lớp cuối thì socola vỡ tung,
+## thanh nảy và sóng sáng chạy dọc thanh.
+func _chip_choco(side: String, animate: bool) -> void:
+	if not _choco_shown.has(side):
+		return
+	var left := int(_choco_shown[side]) - 1
+	var cover: ChocoCover = _choco_nodes.get(side, null)
+	var at := Vector2.ZERO
+	if cover != null:
+		at = cover.inner_point(_rng.randf_range(0.25, 0.75) if left > 0 else 0.5)
+	if left > 0:
+		_choco_shown[side] = left
+		if cover != null:
+			cover.set_layers(left, animate)
+	else:
+		_choco_shown.erase(side)
+		_choco_nodes.erase(side)
+		if cover != null:
+			if animate:
+				_begin()
+				cover.melt_away(_end)
+			else:
+				cover.queue_free()
+	if not animate or cover == null:
+		return
+	Sfx.play_or("choco", "layer", 0.0 if left <= 0 else CHOCO_CHIP_DB)
+	var out := cover.out_dir()
+	var xf := get_global_transform()
+	if left > 0:
+		_choco_chips(xf * at, out, CHOCO_CHIPS)
+		BoardFx.sparkles(_fx_root, xf * at, ChocoCover.RAMP, -out, _cell / SPARK_SCALE_BUMP, SPARKS_BUMP)
+		return
+	# lớp cuối: cả lớp socola vỡ thành vụn dọc thanh, loé sáng, thanh nảy và sóng sáng chạy dọc thanh
+	for p in cover.body_points(_cell):
+		_choco_chips(xf * p, out, CHOCO_BREAK_CHIPS)
+	BoardFx.impact_flash(_fx_root, xf * at, ChocoCover.SHINE, _cell * FLASH_BUMP * 1.5, 0.3, 0.7)
+	BoardFx.sparkles(_fx_root, xf * at, ChocoCover.RAMP, -out, _cell / SPARK_SCALE_BUMP, SPARKS_SMASH)
+	var bar := CandyFrame.bar_rect(side, _area, _unit)
+	var along := bar.size.x if side == "up" or side == "down" else bar.size.y
+	_frame.hit(side, bar.get_center(), along, 1.0, CandyFrame.SPIN_EXIT)
+
+
+## Vụn socola (CandyShards, màu ChocoCover.RAMP) ở điểm `at` (toạ độ canvas), rơi vào trong bàn (ngược hướng `out`).
+func _choco_chips(at: Vector2, out: Vector2, amount: int) -> void:
+	var c := _cell * CHOCO_CHIP_CELL
+	var xf := Transform2D(0.0, at - Vector2(0.5, 0.5) * c)
+	CandyShards.chips(_fx_root, [Vector2i.ZERO], c, ChocoCover.RAMP, xf, Vector2(0.5, 0.5), out, amount, _rng)
+
+
+## Bom kẹo vừa rời bàn trên board: các khối `ids` trong vùng nổ giữ nguyên hình (lớp phủ đang hiện, kể cả lớp còn chờ khối
+## kề chạm thanh, và sương) tới lúc nổ.
+func _hold_pops(ids: Array) -> void:
+	for pid in ids:
+		var n: BlockNode = _nodes.get(pid, null)
+		if n == null:
+			continue
+		_pop_hold[pid] = {"ice": int(n.view.get("ice", 0)), "fog": bool(n.view.get("is_fog_hidden", false))}
+		_cover_hold.erase(pid)
+
+
+## Bom kẹo nổ (chạm thanh hoặc bị búa gõ): đầu ngòi loé, tiếng lách tách, sóng vuông phủ vùng nổ toả từ chỗ khối vừa
+## rời; khối trong vùng vỡ lần lượt theo bậc khoảng cách (khoảng cách từ tâm ô gần nhất của khối tới tâm ô gần nhất của
+## bom kẹo, mỗi giá trị khác nhau là một bậc), mỗi bậc trễ Config.POP_STAGGER giây. `cells`: ô của bom kẹo trên bàn.
+func _pop_blast(cells: Array, ids: Array, node: BlockNode = null) -> void:
+	var xf := get_global_transform()
+	if node != null and is_instance_valid(node):
+		var fuse := node.get_node_or_null("PopFuse") as PopFuse
+		if fuse != null:
+			var tip := fuse.get_global_transform() * fuse.tip()
+			BoardFx.impact_flash(_fx_root, tip, Color(1.0, 0.9, 0.55), _cell * FLASH_BUMP * 1.6, 0.32, 0.8)
+			BoardFx.sparkles(_fx_root, tip, ThemeKit.block_ramp("yellow"), Vector2.UP, _cell / SPARK_SCALE_BUMP, SPARKS_SMASH)
+			fuse.burning = false
+			fuse.hide()
+	Sfx.play_or("pop", "shatter")
+	# Bậc khoảng cách của mọi ô trong vùng nổ (trong lưới), cả ô trống.
+	var own := {}
+	for c: Vector2i in cells:
+		own[c] = true
+	var r := Config.POP_RADIUS
+	var dist := {}  # ô -> khoảng cách
+	for c: Vector2i in cells:
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				var q := c + Vector2i(dx, dy)
+				if own.has(q) or q.x < 0 or q.y < 0 or q.x >= _board.width() or q.y >= _board.height():
+					continue
+				var d := Vector2(dx, dy).length()
+				dist[q] = minf(float(dist.get(q, INF)), d)
+	var levels: Array = []
+	for q in dist:
+		if not levels.has(dist[q]):
+			levels.append(dist[q])
+	levels.sort()
+	var wave: Array = []
+	var scale_k := xf.get_scale()
+	for q: Vector2i in dist:
+		var rect := Rect2(xf * (_origin + Vector2(q) * _cell), Vector2(_cell, _cell) * scale_k)
+		wave.append([rect, levels.find(dist[q])])
+	var w := PopFuse.Wave.new()
+	w.setup(wave, _cell * scale_k.x)
+	_fx_root.add_child(w)
+	# Khối trong vùng nổ: bậc = bậc của ô gần bom kẹo nhất.
+	var tiers := {}  # bậc -> [id]
+	for pid in ids:
+		var n: BlockNode = _nodes.get(pid, null)
+		if n == null:
+			_pop_hold.erase(pid)
+			continue
+		var best := INF
+		for c: Vector2i in n.cells:
+			best = minf(best, float(dist.get(c, INF)))
+		var k := levels.find(best) if best < INF else 0
+		if not tiers.has(k):
+			tiers[k] = []
+		tiers[k].append(pid)
+	var budget := {"left": Config.POP_SFX_MAX}
+	var keys := tiers.keys()
+	keys.sort()
+	for k in keys:
+		_begin()
+		var delay := float(k) * Config.POP_STAGGER
+		if delay <= 0.0:
+			_release_pops(_pop_gen, tiers[k], budget)
+		else:
+			get_tree().create_timer(delay).timeout.connect(_release_pops.bind(_pop_gen, tiers[k], budget))
+
+
+## Một bậc của cú nổ: các khối `ids` hết giữ hình nên vỡ lớp phủ hoặc tan sương theo board; tiếng vỡ nhỏ hơn
+## Config.POP_SFX_DB, cả cú nổ tối đa Config.POP_SFX_MAX tiếng (`budget`); rung một nhịp "pop_hit" mỗi bậc.
+func _release_pops(gen: int, ids: Array, budget: Dictionary) -> void:
+	if gen != _pop_gen:
+		return
+	Sfx.pulse("pop_hit")
+	for pid in ids:
+		if not _pop_hold.has(pid):
+			continue
+		_pop_hold.erase(pid)
+		_sfx_db = Config.POP_SFX_DB
+		_sfx_mute = int(budget["left"]) <= 0
+		if _board != null:
+			_sync_states(true)
+		budget["left"] = int(budget["left"]) - 1
+	_sfx_db = 0.0
+	_sfx_mute = false
+	_end()
+
+
 ## Lớp phủ của các khối `ids` vỡ trên hình (khối kề vừa chạm thanh): bỏ một lớp đang giữ rồi đọc lại từ board.
 func _release_covers(ids: Array) -> void:
 	if ids.is_empty():
@@ -1238,6 +1530,9 @@ func _sync_states(animate: bool, seq: int = 0) -> void:
 		if v.is_empty():
 			continue
 		v["ice"] = int(v["ice"]) + int(_cover_hold.get(id, 0))
+		if _pop_hold.has(id):
+			v["ice"] = int(_pop_hold[id]["ice"])
+			v["is_fog_hidden"] = bool(_pop_hold[id]["fog"])
 		var old := n.view
 		var changed := false
 		for k in ["color", "ice", "chained", "inner_color", "is_fog_hidden", "ribbons"]:
@@ -1251,7 +1546,8 @@ func _sync_states(animate: bool, seq: int = 0) -> void:
 		if not animate:
 			continue
 		if bool(old.get("is_fog_hidden", false)) and not bool(v.get("is_fog_hidden", false)):
-			Sfx.play("fog")
+			if not _sfx_mute:
+				Sfx.play("fog", _sfx_db)
 			_reveal_pop(n)
 			_spawn_ghost(n, {"fog_only": true}, FOG_LIFT_GROW, FOG_LIFT_TIME)
 		var xf := n.get_global_transform()
@@ -1279,12 +1575,14 @@ func _cover_burst(n: BlockNode, old: Dictionary, v: Dictionary, mid: Vector2, sp
 	var frost := str(v.get("cover", "")) == BoardState.COVER_FROST
 	var last := int(v.get("ice", 0)) <= 0
 	var size := 1.0 if last else COVER_HALF
-	var db := 0.0 if last else COVER_HALF_DB
+	var db := (0.0 if last else COVER_HALF_DB) + _sfx_db
 	if frost:
-		Sfx.play("ice", db)
+		if not _sfx_mute:
+			Sfx.play("ice", db)
 		ObstacleFx.frost_burst(_fx_root, mid, _cell, span, size)
 	else:
-		Sfx.play_or("pudding", "ice", db)
+		if not _sfx_mute:
+			Sfx.play_or("pudding", "ice", db)
 		ObstacleFx.jelly_burst(_fx_root, mid, _cell, span, size)
 	var ghost := {"ice": int(old.get("ice", 1)), "cover": str(v.get("cover", "")), "jelly_only": true,
 		"color": old.get("color", "")}
@@ -1345,6 +1643,7 @@ func _box_fly(n: BlockNode, old_view: Dictionary, seq: int = 0, ribbon: bool = f
 
 func _box_burst(g: BlockNode, dir: Vector2, side: String, color: String, seq: int, ribbon: bool = false) -> void:
 	_gate_reach(seq)
+	_choco_reach(seq)
 	var mouth := g.get_global_transform() * _leading_point(g.local_cells(), dir)
 	var span := maxf(g.size.x, g.size.y)
 	_hit_bar(side, g, dir, false, 1.0, CandyFrame.SPIN_EXIT)
@@ -1419,8 +1718,12 @@ func _move_begin(seq: int) -> void:
 ## trong số đó; lượt trước còn chạy thì lượt sau chờ.
 func _move_end(seq: int) -> void:
 	if not _gate_moves.has(seq):
+		_choco_reach(seq)
 		return
 	_gate_moves[seq]["left"] = int(_gate_moves[seq]["left"]) - 1
+	# lưới an toàn: lượt đã xong hết hoạt ảnh mà thứ của nó chưa báo chạm thanh thì socola vẫn bớt
+	if int(_gate_moves[seq]["left"]) <= 0:
+		_choco_reach(seq)
 	var to := _gate_shown_seq
 	while _gate_moves.has(to + 1) and int(_gate_moves[to + 1]["left"]) <= 0:
 		to += 1
@@ -1572,9 +1875,12 @@ func _strike_cell(n: BlockNode) -> Vector2:
 
 
 ## Phá khối (búa kẹo mút gõ): khối vỡ tung thành mảnh kẹo đúng chất liệu, loé sáng, sao bắn, bàn rung mạnh.
-## Gọi sau (hoặc trước) board.smash(id).
-func smash_anim(id: String) -> void:
+## Gọi sau (hoặc trước) board.smash(id). `popped`: bom kẹo bị Phá thì các khối trong vùng nổ (Game.smash_block), vỡ
+## lần lượt như lúc bom kẹo chạm thanh.
+func smash_anim(id: String, popped: Array = []) -> void:
 	if not _nodes.has(id):
+		if _board != null:
+			_sync_choco(true)
 		_check_done.call_deferred()
 		return
 	if _hl_id == id:
@@ -1601,5 +1907,11 @@ func smash_anim(id: String) -> void:
 	var tw := n.create_tween()
 	tw.tween_interval(SMASH_SETTLE)
 	tw.finished.connect(_finish_exit.bind(n))
+	var bomb := bool(n.view.get("pop", false))
+	if bomb:
+		_hold_pops(popped)
 	if _board != null:
 		_sync_states(true)
+		_sync_choco(true)
+	if bomb:
+		_pop_blast(n.cells, popped, n)

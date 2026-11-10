@@ -34,7 +34,7 @@ func _states(node: Control) -> Array:
 
 
 func test_seven_cells_and_claim(t: T) -> void:
-	var g := _game(4)
+	var g := _game(14)
 	var node := _open()
 	t.eq(node.cell_nodes.size(), 7, "7 ô")
 	t.eq(_states(node), ["current", "locked", "locked", "locked", "locked", "locked", "locked"], "trạng thái ô")
@@ -55,7 +55,7 @@ func test_seven_cells_and_claim(t: T) -> void:
 
 
 func test_video_next_cell(t: T) -> void:
-	var g := _game(4)
+	var g := _game(14)
 	var node := _open()
 	node.claim_button.pressed.emit()
 	var coins1 := int(g.s.coins)
@@ -75,7 +75,7 @@ func test_video_next_cell(t: T) -> void:
 
 
 func test_video_closed_gives_nothing(t: T) -> void:
-	var g := _game(4)
+	var g := _game(14)
 	var node := _open()
 	node.claim_button.pressed.emit()
 	var coins1 := int(g.s.coins)
@@ -89,7 +89,7 @@ func test_video_closed_gives_nothing(t: T) -> void:
 
 
 func test_booster_cell_and_week_two(t: T) -> void:
-	var g := _game(4)
+	var g := _game(14)
 	g.s.daily.idx = 7
 	var node := _open()
 	t.eq(node.cell_nodes.size(), 7, "tuần 2 có 7 ô")
@@ -107,7 +107,7 @@ func test_booster_cell_and_week_two(t: T) -> void:
 
 
 func test_locked_before_unlock_level(t: T) -> void:
-	var g := _game(3)
+	var g := _game(13)
 	var node := _open()
 	t.ok(not node.claim_button.visible, "chưa mở: không có nút nhận")
 	t.ok(not node.video_button.visible, "chưa mở: không có video")
@@ -116,7 +116,7 @@ func test_locked_before_unlock_level(t: T) -> void:
 
 
 func test_close_signal_result(t: T) -> void:
-	_game(4)
+	_game(14)
 	var node := _open()
 	var got: Array = []
 	node.closed.connect(func(r: Variant) -> void: got.append(r))

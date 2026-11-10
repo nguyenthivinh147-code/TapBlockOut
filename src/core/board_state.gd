@@ -1,7 +1,7 @@
 extends RefCounted
 ## Trạng thái một bàn cờ (kế hoạch mục 1.7). Logic thuần, không Node, không Platform.
 ## Khối trượt cứng theo hướng màu tới khi rời hẳn bàn. Quy ước ưu tiên khi chạm:
-## sương mù > xích > lớp phủ > đường bị chặn > cổng nhịp đóng > thoát (hoặc bóc lớp ngoài).
+## sương mù > socola > xích > lớp phủ > đường bị chặn > cổng nhịp đóng > thoát (hoặc bóc lớp ngoài).
 ## Khối còn trong sương (chưa lộ màu) chạm vào không đi, không tốn MOVES, không đổi gì (`fog`).
 ## Lớp phủ (pudding, hoặc băng ở level có `cover` = "frost"; trường `ice` là số lớp, 0..COVER_MAX_LAYERS): khối còn phủ
 ## chạm vào không đi, không tốn MOVES (`covered`). Mỗi khối kề (chung cạnh) rời bàn, tức thoát hoặc bị Phá, bóc 1 lớp;
@@ -10,9 +10,15 @@ extends RefCounted
 ## qua cổng mở thì cổng khoá lại. Chạm khác (khối cạnh khác, bị chặn, xích, khối còn phủ) không đổi cổng.
 ## Ruy băng (`ribbons` trong dữ liệu, ngoài vào trong; `color` là màu kẹo): màu của khối là màu ruy băng ngoài cùng; chạm
 ## khi đường thông thì ruy băng đó bay đi như vỏ hộp giấy (`peel`) và lộ lớp kế. Lớp chưa lộ nằm trong `under`.
+## Socola (`choco_sides`: [{side, layers}]): thanh bị phủ không nhận gì. Khối (hoặc ruy băng, vỏ hộp) đang hướng về thanh
+## đó chạm vào không đi, không tốn MOVES (`choco`), kể cả khi đường đang bị chặn. Mỗi lần có thứ đi qua một thanh khác
+## (thoát, bóc vỏ hộp hoặc ruy băng) hay một khối bị Phá, mỗi thanh còn socola bớt 1 lớp; hết lớp thì thanh dùng lại.
+## Bom kẹo (`pop` trong dữ liệu): khối bom kẹo rời bàn (thoát hoặc bị Phá) thì mọi khối có ô cách một ô của nó tối đa
+## Config.POP_RADIUS ô (theo cả hai trục) mất hết lớp phủ và lộ khỏi sương (`popped`); không nổ dây chuyền.
 
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
+const Config := preload("res://src/config.gd")
 
 const STONE := "stone"
 const STEP_CAP := 256
@@ -26,13 +32,15 @@ var _h: int = 0
 var _cover: String = COVER_PUDDING
 var _moves_left: int = 0
 var _won: bool = false
-var _blocks: Dictionary = {}  # id -> {color, cells, ice, chained_by, inner_color, under, fog, revealed}
+var _blocks: Dictionary = {}  # id -> {color, cells, ice, chained_by, inner_color, under, fog, revealed, pop}
 var _order: Array[String] = []
 var _stones: Array[Vector2i] = []
 var _occ: Dictionary = {}  # Vector2i -> id khối, hoặc STONE
 var _vacated: Dictionary = {}  # ô từng có khối, nay đã trống
 var _gates: Dictionary = {}  # cạnh -> đang mở?
 var _gate_segs: Dictionary = {}  # level nhiều cổng: cạnh -> [[màu, từ, tới), ...] (chỉ để vẽ khung)
+var _choco: Dictionary = {}  # cạnh -> số lớp socola còn lại (> 0)
+var _last_popped: Array[String] = []  # khối vừa được bom kẹo gỡ ở lần `smash` gần nhất
 
 
 func _init(level: Dictionary) -> void:
@@ -71,12 +79,17 @@ func _init(level: Dictionary) -> void:
 			"inner_color": str(bd.get("inner_color", "")),
 			"fog": fog,
 			"revealed": not fog,
+			"pop": bool(bd.get("pop", false)),
 		}
 		_order.append(id)
 		for c in cells:
 			_occ[c] = id
 	for p in level.get("pulse_sides", []):
 		_gates[str(p.get("side", ""))] = bool(p.get("open", false))
+	for p in level.get("choco_sides", []):
+		var n := int(p.get("layers", 0))
+		if n > 0:
+			_choco[str(p.get("side", ""))] = n
 	var segs: Variant = level.get("gates", {})
 	if segs is Dictionary:
 		for side in segs:
@@ -103,6 +116,7 @@ func clone() -> BoardState:
 	c._vacated = _vacated.duplicate()
 	c._gates = _gates.duplicate()
 	c._gate_segs = _gate_segs
+	c._choco = _choco.duplicate()
 	return c
 
 
@@ -136,6 +150,24 @@ func gate_open(side: String) -> bool:
 ## mỗi cạnh). Chỉ để vẽ khung, luật chạm dùng `dir` của khối.
 func gate_segments() -> Dictionary:
 	return _gate_segs
+
+
+## Cạnh còn socola -> số lớp còn lại (thanh hết socola không có trong dict).
+func choco() -> Dictionary:
+	return _choco.duplicate()
+
+
+func choco_layers(side: String) -> int:
+	return int(_choco.get(side, 0))
+
+
+## Bớt 1 lớp socola ở cạnh `side` (nếu còn), như khi có thứ nghiền qua thanh khác. Bộ sinh dùng để gỡ bàn kẹt.
+func melt_choco(side: String) -> void:
+	if not _choco.has(side):
+		return
+	_choco[side] = int(_choco[side]) - 1
+	if int(_choco[side]) <= 0:
+		_choco.erase(side)
 
 
 func moves_left() -> int:
@@ -180,6 +212,7 @@ func block_view(block_id: String) -> Dictionary:
 		"ribbons": (b["under"] as Array).size(),
 		"fog": b["fog"],
 		"is_fog_hidden": b["fog"] and not b["revealed"],
+		"pop": b["pop"],
 	}
 
 
@@ -191,7 +224,7 @@ func peek(block_id: String) -> String:
 
 
 ## Như `peek` nhưng trả đủ {kind, distance, blocker}: `blocker` là khối chặn đầu tiên trên đường đi ("blocked"), chìa
-## ("chained") hoặc "gate". Khối bị chặn chỉ đổi kết quả khi `blocker` rời bàn; bộ sinh dùng để khỏi tính lại mọi khối.
+## ("chained"), "gate" hoặc "choco" (thanh còn socola). Khối bị chặn chỉ đổi kết quả khi `blocker` rời bàn; bộ sinh dùng để khỏi tính lại mọi khối.
 func inspect(block_id: String) -> Dictionary:
 	if _won or _moves_left <= 0 or not _blocks.has(block_id):
 		return {"kind": "rejected", "distance": 0, "blocker": ""}
@@ -215,8 +248,14 @@ func first_exit() -> String:
 	return ""
 
 
-## Gợi ý: khối thoát được ngay; không có thì khối dội vào cổng nhịp đang khoá (để mở cổng). "" nếu không có cả hai.
+## Gợi ý: bom kẹo thoát được ngay mà vùng nổ còn khối phủ hoặc ẩn; không có thì khối thoát được ngay; không có nữa thì
+## khối dội vào cổng nhịp đang khoá (để mở cổng). "" nếu không có.
 func hint() -> String:
+	if _won:
+		return ""
+	for bid in _order:
+		if _blocks[bid]["pop"] and can_exit(bid) and not pop_targets(bid).is_empty():
+			return bid
 	var id := first_exit()
 	if id != "" or _won:
 		return id
@@ -227,15 +266,19 @@ func hint() -> String:
 
 
 ## Trả {kind, id, distance, blocker, moves_left, won, revealed (khối vừa lộ khỏi sương), stripped (khối kề vừa bị bóc
-## 1 lớp phủ vì khối này rời bàn)}. `fog` và `covered`: khối không đi, không tốn MOVES.
+## 1 lớp phủ vì khối này rời bàn), popped (bom kẹo vừa thoát: khối trong vùng nổ vừa mất hết lớp phủ hoặc lộ khỏi sương;
+## không nằm trong `stripped` hay `revealed`), choco (cạnh vừa bớt 1 lớp socola vì lượt này đi qua thanh khác)}. `fog`,
+## `covered` và `choco`: khối không đi, không tốn MOVES.
 func tap(block_id: String) -> Dictionary:
 	var res := {"kind": "rejected", "id": block_id, "distance": 0, "blocker": "",
-		"moves_left": _moves_left, "won": _won, "revealed": [] as Array[String], "stripped": [] as Array[String]}
+		"moves_left": _moves_left, "won": _won, "revealed": [] as Array[String], "stripped": [] as Array[String],
+		"popped": [] as Array[String], "choco": [] as Array[String]}
 	if _won or _moves_left <= 0 or not _blocks.has(block_id):
 		return res
 	var ev := _evaluate(block_id)
-	if ev["kind"] == "fog" or ev["kind"] == "covered":
+	if ev["kind"] == "fog" or ev["kind"] == "covered" or ev["kind"] == "choco":
 		res["kind"] = ev["kind"]
+		res["blocker"] = ev["blocker"]
 		return res
 	_moves_left -= 1
 	var b: Dictionary = _blocks[block_id]
@@ -251,13 +294,17 @@ func tap(block_id: String) -> Dictionary:
 				b["color"] = under[0]
 				b["under"] = under.slice(1)
 		"exit":
-			res["stripped"] = _remove(block_id)
+			var gone := _remove(block_id)
+			res["stripped"] = gone["stripped"]
+			res["popped"] = gone["popped"]
 	if _gates.has(side):
 		match ev["kind"]:
 			"gate_closed":
 				_gates[side] = true
 			"exit", "peel":
 				_gates[side] = false
+	if ev["kind"] == "exit" or ev["kind"] == "peel":
+		res["choco"] = _melt_all()
 	res["kind"] = ev["kind"]
 	res["distance"] = ev["distance"]
 	res["blocker"] = ev["blocker"]
@@ -281,11 +328,14 @@ func strip(block_id: String) -> void:
 
 
 ## Phá khối: xoá hẳn (còn lớp phủ cũng vậy), không tốn MOVES, không đổi cổng nhịp. Đá không chọn được. Khối rời bàn
-## nên bóc 1 lớp phủ của mỗi khối kề, như khi thoát.
+## nên bóc 1 lớp phủ của mỗi khối kề và bớt 1 lớp socola của mỗi thanh, như khi thoát; bom kẹo bị Phá thì nổ
+## (`last_popped`).
 func smash(block_id: String) -> bool:
+	_last_popped = [] as Array[String]
 	if _won or not _blocks.has(block_id):
 		return false
-	_remove(block_id)
+	_last_popped = _remove(block_id)["popped"]
+	_melt_all()
 	_update_reveal()
 	_won = _blocks.is_empty()
 	return true
@@ -301,28 +351,79 @@ func state_key() -> String:
 	sides.sort()
 	for s in sides:
 		parts.append("%s=%d" % [s, 1 if _gates[s] else 0])
+	var melts := _choco.keys()
+	melts.sort()
+	for s in melts:
+		parts.append("%s~%d" % [s, int(_choco[s])])
 	return "|".join(parts)
 
 
-## Xoá khối khỏi bàn; mỗi khối kề còn phủ bị bóc 1 lớp. Trả id các khối vừa bị bóc (theo thứ tự khối).
-func _remove(id: String) -> Array[String]:
+## Mỗi thanh còn socola bớt 1 lớp. Trả các cạnh vừa bớt (theo LevelData.SIDES).
+func _melt_all() -> Array[String]:
+	var out: Array[String] = []
+	for s in LevelData.SIDES:
+		if _choco.has(s):
+			out.append(s)
+			melt_choco(s)
+	return out
+
+
+## Bom kẹo vừa bị Phá (lần gọi `smash` gần nhất): các khối trong vùng nổ vừa mất hết lớp phủ hoặc lộ khỏi sương.
+func last_popped() -> Array[String]:
+	return _last_popped.duplicate()
+
+
+## Khối trong vùng nổ của `block_id` (mọi khối có ô cách một ô của nó tối đa Config.POP_RADIUS ô theo cả hai trục) còn
+## lớp phủ hoặc còn trong sương, theo thứ tự khối. Tính cho mọi khối, không cần là bom kẹo.
+func pop_targets(block_id: String) -> Array[String]:
+	var out: Array[String] = []
+	if not _blocks.has(block_id):
+		return out
+	var zone := {}
+	var r := Config.POP_RADIUS
+	for c: Vector2i in _blocks[block_id]["cells"]:
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				var o: String = _occ.get(c + Vector2i(dx, dy), "")
+				if o != "" and o != STONE and o != block_id:
+					zone[o] = true
+	for bid in _order:
+		if zone.has(bid):
+			var b: Dictionary = _blocks[bid]
+			if int(b["ice"]) > 0 or (b["fog"] and not b["revealed"]):
+				out.append(bid)
+	return out
+
+
+## Xoá khối khỏi bàn; mỗi khối kề còn phủ bị bóc 1 lớp; bom kẹo thì mọi khối trong vùng nổ mất hết lớp phủ và lộ khỏi
+## sương. Trả {stripped: id khối vừa bị bóc 1 lớp, popped: id khối trong vùng nổ vừa được gỡ} theo thứ tự khối.
+func _remove(id: String) -> Dictionary:
 	var near := {}
 	for c in _blocks[id]["cells"]:
 		for dv in ADJ:
 			var o: String = _occ.get(c + dv, "")
 			if o != "" and o != id and o != STONE and int(_blocks[o]["ice"]) > 0:
 				near[o] = true
+	var blast := {}
+	if _blocks[id]["pop"]:
+		for bid in pop_targets(id):
+			blast[bid] = true
 	for c in _blocks[id]["cells"]:
 		_occ.erase(c)
 		_vacated[c] = true
 	_blocks.erase(id)
 	_order.erase(id)
-	var out: Array[String] = []
+	var stripped: Array[String] = []
+	var popped: Array[String] = []
 	for bid in _order:
-		if near.has(bid):
+		if blast.has(bid):
+			_blocks[bid]["ice"] = 0
+			_blocks[bid]["revealed"] = true
+			popped.append(bid)
+		elif near.has(bid):
 			_blocks[bid]["ice"] = int(_blocks[bid]["ice"]) - 1
-			out.append(bid)
-	return out
+			stripped.append(bid)
+	return {"stripped": stripped, "popped": popped}
 
 
 func _in_bounds(c: Vector2i) -> bool:
@@ -334,6 +435,8 @@ func _evaluate(id: String) -> Dictionary:
 	var b: Dictionary = _blocks[id]
 	if b["fog"] and not b["revealed"]:
 		return {"kind": "fog", "distance": 0, "blocker": ""}
+	if _choco.has(LevelData.block_side(b)):
+		return {"kind": "choco", "distance": 0, "blocker": "choco"}
 	var key: String = b["chained_by"]
 	if key != "" and _blocks.has(key):
 		return {"kind": "chained", "distance": 0, "blocker": key}

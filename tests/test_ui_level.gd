@@ -177,25 +177,54 @@ func test_hud_level1(t: T) -> void:
 	lv.free()
 
 
-func test_win_l1_then_next_level(t: T) -> void:
+## Đợi level `n` vào chơi; offer bật sau thẻ thắng thì bấm Để sau.
+func _reach(lv: Control, n: int) -> bool:
+	return await _wait_until(func() -> bool:
+		if _offer_popup(lv) != null:
+			_offer_popup(lv).later_button.pressed.emit()
+		return lv.state == "playing" and int(lv.attempt.level) == n)
+
+
+## L1–10 (dưới Config.ECON.win_card_from_level): thắng là sang thẳng level kế, không có thẻ thắng.
+func test_win_l1_goes_straight_to_l2(t: T) -> void:
 	var g := _g(1)
 	var lv := _mount()
 	await _wait_until(_playing.bind(lv))
 	_solve(lv)
 	t.ok(lv.board.is_won(), "thắng")
-	t.ok(await _wait_until(_has_pop(lv, "ContinueButton")), "hiện thẻ thắng")
+	var left: int = lv.board.moves_left()
+	var seen_card := [false]
+	t.ok(await _wait_until(func() -> bool:
+		if _pop(lv, "ContinueButton") != null:
+			seen_card[0] = true
+		return lv.state == "playing" and int(lv.attempt.level) == 2), "sang level 2")
+	t.ok(not seen_card[0], "không hiện thẻ thắng")
 	t.eq(int(g.s.level), 2, "lên level 2")
-	t.eq(int(g.s.coins), 1040 + 10 * int(lv.board.moves_left()), "+40 gold và 10 gold mỗi MOVES thừa")
-	_press(lv, "ContinueButton")
-	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and int(lv.attempt.level) == 2), "sang level 2")
+	t.eq(int(g.s.coins), 1040 + 10 * left, "+40 gold và 10 gold mỗi MOVES thừa vẫn vào ví")
 	t.eq(lv.title_label.text, lv.tr("level_title") % 2, "tên level 2")
 	t.eq(int(g.s.runs), 1, "một lượt xong")
 	lv.free()
 
 
-## Thẻ thắng nạp nền từ lúc vào màn và hiện ngay khi khối cuối rời bàn, không nghỉ thêm nhịp nào.
-func test_win_card_shows_right_after_the_last_block(t: T) -> void:
-	_g(1)
+func test_win_l11_card_then_next_level(t: T) -> void:
+	var g := _g(11)
+	var lv := _mount()
+	await _wait_until(_playing.bind(lv))
+	_solve(lv)
+	t.ok(lv.board.is_won(), "thắng")
+	t.ok(await _wait_until(_has_pop(lv, "ContinueButton")), "L11 hiện thẻ thắng")
+	t.eq(int(g.s.level), 12, "lên level 12")
+	t.eq(int(g.s.coins), 1040 + 10 * int(lv.board.moves_left()), "+40 gold và 10 gold mỗi MOVES thừa")
+	_press(lv, "ContinueButton")
+	t.ok(await _reach(lv, 12), "sang level 12")
+	t.eq(lv.title_label.text, lv.tr("level_title") % 12, "tên level 12")
+	t.eq(int(g.s.runs), 1, "một lượt xong")
+	lv.free()
+
+
+## Thẻ thắng nạp nền từ lúc vào màn; khối cuối rời bàn thì chờ Config.CONTENT.win_card_delay_sec rồi hiện.
+func test_win_card_waits_after_the_last_block(t: T) -> void:
+	_g(11)
 	var lv := _mount()
 	t.ok(ResourceLoader.load_threaded_get_status(lv.WIN_CARD) != ResourceLoader.THREAD_LOAD_INVALID_RESOURCE,
 		"thẻ thắng nạp nền từ lúc vào màn")
@@ -204,12 +233,15 @@ func test_win_card_shows_right_after_the_last_block(t: T) -> void:
 	t.ok(await _wait_until(func() -> bool: return not lv.board_view.is_animating()), "khối cuối rời bàn")
 	var t0 := Time.get_ticks_msec()
 	t.ok(await _wait_until(_has_pop(lv, "ContinueButton"), 1000), "hiện thẻ thắng")
-	t.ok(Time.get_ticks_msec() - t0 < 100, "không chờ thêm sau khi khối cuối rời bàn (%d ms)" % (Time.get_ticks_msec() - t0))
+	var gap := Time.get_ticks_msec() - t0
+	var wait := int(float(Config.CONTENT.win_card_delay_sec) * 1000.0)
+	t.ok(gap >= wait - 20, "chờ win_card_delay_sec sau khi khối cuối rời bàn (%d ms, cần %d)" % [gap, wait])
+	t.ok(gap < wait + 150, "rồi hiện, không chờ quá lâu (%d ms)" % gap)
 	lv.free()
 
 
 func test_win_move_gold_flies_from_moves_chip(t: T) -> void:
-	var g := _g(1)
+	var g := _g(11)
 	var lv := _mount()
 	await _wait_until(_playing.bind(lv))
 	_solve(lv)
@@ -227,13 +259,13 @@ func test_win_move_gold_flies_from_moves_chip(t: T) -> void:
 		"bay xong thì chip lượt về dưới nền tối")
 	t.eq(int(g.s.coins), 1040 + 10 * left, "ví chỉ cộng một lần")
 	_press(lv, "ContinueButton")
-	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and int(lv.attempt.level) == 2), "sang level 2")
-	t.eq(lv.moves_label.text, str(lv.board.moves_left()), "level 2 hiện đủ lượt")
+	t.ok(await _reach(lv, 12), "sang level 12")
+	t.eq(lv.moves_label.text, str(lv.board.moves_left()), "level 12 hiện đủ lượt")
 	lv.free()
 
 
 func test_win_move_gold_skipped_by_continue(t: T) -> void:
-	var g := _g(1)
+	var g := _g(11)
 	var lv := _mount()
 	await _wait_until(_playing.bind(lv))
 	_solve(lv)
@@ -244,8 +276,8 @@ func test_win_move_gold_skipped_by_continue(t: T) -> void:
 	_press(lv, "ContinueButton")
 	t.eq(reward.text, lv.tr("win_reward") % (40 + 10 * left), "Tiếp tục ngay thì ô gold hiện đủ")
 	t.eq(int(g.s.coins), 1040 + 10 * left, "ví chỉ cộng một lần")
-	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and int(lv.attempt.level) == 2), "sang level 2")
-	t.eq(lv.moves_label.text, str(lv.board.moves_left()), "level 2 hiện đủ lượt, không trừ lượt đã đổi")
+	t.ok(await _reach(lv, 12), "sang level 12")
+	t.eq(lv.moves_label.text, str(lv.board.moves_left()), "level 12 hiện đủ lượt, không trừ lượt đã đổi")
 	lv.free()
 
 
@@ -406,14 +438,6 @@ func _tap(pop: Control) -> void:
 	pop._gui_input(ev)
 
 
-## Popup dùng thử booster (scenes/popup_free_pick.tscn, wireframe 3.9) đang mở, hoặc null.
-func _free_pick_pop(lv: Control) -> Control:
-	for c in lv.get_node("LocalPopups").get_children():
-		if not c.is_queued_for_deletion() and c.scene_file_path == "res://scenes/popup_free_pick.tscn":
-			return c
-	return null
-
-
 ## Popup booster mới (scenes/booster_unlocked.tscn) đang mở, hoặc null.
 func _gift_pop(lv: Control) -> Control:
 	var tap := _pop(lv, "TapLabel")
@@ -435,20 +459,16 @@ func test_booster_gift_and_hint(t: T) -> void:
 	t.ok(not pop.ui.node(P + "ClaimButton").visible, "không có nút vàng: quà không bán kèm")
 	t.eq((_pop(lv, "TapLabel") as Label).text, lv.tr("boot_tap_continue"), "dòng chạm để tiếp tục")
 	_tap(pop)
-	t.ok(await _wait_until(func() -> bool: return _free_pick_pop(lv) != null), "sau quà: popup dùng thử")
-	var fp := _free_pick_pop(lv)
-	t.eq((fp.find_child("Body", true, false) as Label).text, lv.tr("booster_free_pick_body") % lv.tr("booster_hint"), "lời mời dùng thử theo booster")
-	fp.call("_send", "claim")
-	await _wait_until(_playing.bind(lv))
-	t.ok(lv.get_node_or_null("LocalPopups/FreePickHand") != null, "Dùng thử: bàn tay chỉ vào nút gợi ý")
+	t.ok(await _wait_until(_playing.bind(lv)), "chạm scene giới thiệu là vào chơi, không có popup dùng thử")
 	t.ok(not lv.booster_locks.hint.visible, "gợi ý mở ở L5")
 	t.eq(lv.booster_caps.hint.text, lv.tr("booster_hint"), "ô mở ghi tên booster")
 	t.ok(lv.booster_locks.move.visible, "+3 Move chưa mở")
-	t.eq(lv.booster_badges.hint.text, lv.tr("booster_count") % 1, "nhãn số còn lại")
+	# The gift's icon flies from the popup into the button (RewardFly); the badge counts it as it lands.
+	t.ok(await _wait_until(func() -> bool: return lv.booster_badges.hint.text == lv.tr("booster_count") % 1),
+		"nhãn số còn lại khi quà bay tới nút")
 	lv.booster_buttons.hint.pressed.emit()
 	t.eq(int(g.s.inv.hint), 0, "dùng gợi ý")
 	await _tree().process_frame
-	t.ok(lv.get_node_or_null("LocalPopups/FreePickHand") == null, "bấm booster thì bàn tay tắt")
 	t.ok(lv.get_node_or_null("LocalPopups/HintFx") != null, "sao gợi ý bay từ nút")
 	t.eq(lv.board_view.highlighted_id(), "", "chưa nháy khi sao còn bay")
 	lv.booster_buttons.hint.pressed.emit()
@@ -473,8 +493,6 @@ func test_booster_gifts_in_order(t: T) -> void:
 		t.ok(shown, "popup quà " + kind)
 		t.eq(lv.state, "intro", "chưa chơi khi còn popup quà " + kind)
 		_tap(_gift_pop(lv))
-		t.ok(await _wait_until(func() -> bool: return _free_pick_pop(lv) != null), "popup dùng thử " + kind)
-		_free_pick_pop(lv).call("_send", "close")
 	t.ok(await _wait_until(_playing.bind(lv)), "hết quà thì vào chơi")
 	for kind in ["hint", "move", "smash"]:
 		t.eq(int(g.s.inv[kind]), 1, "kho +1 " + kind)
@@ -912,6 +930,8 @@ func test_main_navigation(t: T) -> void:
 	m.current_screen.on_back()
 	await _wait_until(func() -> bool: return m.current_name == "home")
 	t.eq(m.current_name, "home", "Home từ level")
+	# Back waits for the screen change (a fade, UiTween.FADE_SEC) to end, like a tab slide.
+	await _wait_until(func() -> bool: return m.get_node_or_null("SlideBlock") == null)
 	# popup settings, Back đóng
 	m.current_screen.find_child("SettingsButton", true, false).pressed.emit()
 	t.eq(m.popup_count(), 1, "mở Settings")

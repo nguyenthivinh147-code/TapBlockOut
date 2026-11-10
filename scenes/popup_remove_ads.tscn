@@ -87,8 +87,8 @@ spacing_glyph = -1
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ahonq"]
 shader = ExtResource("5_wwygf")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
-shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/outline_color = Color(0.18039216, 0.54509807, 0, 1)
+shader_parameter/underlay_color = Color(0.12156863, 0.4392157, 0, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.1285714305
 shader_parameter/underlay_on = true
@@ -138,8 +138,8 @@ base_font = ExtResource("6_0b2o7")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_x7gn3"]
 shader = ExtResource("5_wwygf")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.011764706, 0.16862746, 0, 1)
-shader_parameter/underlay_color = Color(0.011764706, 0.16862746, 0, 1)
+shader_parameter/outline_color = Color(0.18039216, 0.54509807, 0, 1)
+shader_parameter/underlay_color = Color(0.12156863, 0.4392157, 0, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.1285714305
 shader_parameter/underlay_on = true

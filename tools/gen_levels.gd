@@ -193,7 +193,8 @@ static func write_level(dir: String, d: Dictionary) -> bool:
 	return true
 
 
-## Cùng khuôn dạng các file level 1-20: đầu level nhiều dòng, mỗi khối một dòng. Level băng có thêm dòng `cover`.
+## Cùng khuôn dạng các file level 1-20: đầu level nhiều dòng, mỗi khối một dòng. Level băng có thêm dòng `cover`, level
+## socola có thêm dòng `choco_sides` sau `pulse_sides`.
 static func format_level(d: Dictionary) -> String:
 	var lines: Array[String] = []
 	for b in d["blocks"]:
@@ -202,8 +203,11 @@ static func format_level(d: Dictionary) -> String:
 		var rib: Array = b.get("ribbons", [])
 		if not rib.is_empty():
 			row["ribbons"] = rib  # chỉ khối có ruy băng, nên file level cũ không đổi
+		if bool(b.get("pop", false)):
+			row["pop"] = true  # chỉ khối bom kẹo
 		lines.append("\t\t" + JSON.stringify(row, "", false))
 	var cover := "\t\"cover\": %s,\n" % JSON.stringify(d["cover"]) if d.has("cover") else ""
-	return "{\n\t\"id\": %d, \"w\": %d, \"h\": %d, \"hard\": %s,\n\t\"min_taps\": %d, \"moves\": %d, \"seed\": %d,\n%s\t\"stones\": %s,\n\t\"pulse_sides\": %s,\n\t\"blocks\": [\n%s\n\t]\n}\n" % [
+	var choco := "\t\"choco_sides\": %s,\n" % JSON.stringify(d["choco_sides"], "", false) if d.has("choco_sides") else ""
+	return "{\n\t\"id\": %d, \"w\": %d, \"h\": %d, \"hard\": %s,\n\t\"min_taps\": %d, \"moves\": %d, \"seed\": %d,\n%s\t\"stones\": %s,\n\t\"pulse_sides\": %s,\n%s\t\"blocks\": [\n%s\n\t]\n}\n" % [
 		d["id"], d["w"], d["h"], str(d["hard"]).to_lower(), d["min_taps"], d["moves"], d["seed"], cover,
-		JSON.stringify(d["stones"]), JSON.stringify(d["pulse_sides"], "", false), ",\n".join(lines)]
+		JSON.stringify(d["stones"]), JSON.stringify(d["pulse_sides"], "", false), choco, ",\n".join(lines)]

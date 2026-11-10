@@ -20,6 +20,7 @@ const HubTop := preload("res://src/ui/hub_top.gd")
 const HubNav := preload("res://src/ui/hub_nav.gd")
 const FigmaBox := preload("res://src/ui/figma_box.gd")
 const UiMotion := preload("res://src/ui/ui_motion.gd")
+const UiTween := preload("res://src/ui/ui_tween.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 
 const DESIGN_W := 886.0
@@ -54,6 +55,10 @@ const PLAY_SHINE_DELAY := 0.8
 const NAV_TOP := 1552.0
 ## Tab bên của thanh dưới (cao 146, đỉnh 1654): đáy của cột icon không chạm xuống đây.
 const NAV_SIDE_TOP := 1654.0
+## Lúc vào Home (không phải trượt tab): nút Chơi rồi các mục cột bật vào lần lượt từ trên xuống, nút Chơi sau ENTER_DELAY s.
+const ENTER_DELAY := 0.05
+## Icon cột nhún lần đầu sau IDLE_DELAY s (qua lúc bật vào), các icon lệch nhau UiMotion.NUDGE_GAP s.
+const IDLE_DELAY := 0.9
 
 # Nền (mọi độ khó như khung Hard: dải #3454AC -> #DEE1F2, phủ TopShade), hoạ tiết kẹo chìm (lớp sáng lệch 2 px xuống,
 # lớp #F2C2D2 trên, độ mờ 7%), ray kẹo mờ hai đầu, viền chữ ribbon #9E4D0F: lưu trong scenes/home.tscn.
@@ -140,6 +145,8 @@ var _remove_ads_col: Control = null
 var _left_items: Array[Control] = []
 var _right_items: Array[Control] = []
 var _special_id: String = ""
+## Win Streak có mốc chờ nhận (icon lắc thay vì nhún).
+var _streak_claim: bool = false
 
 
 ## 75 -> "1:15", 3725 -> "1:02:05", từ 1 ngày: "1d 3h".
@@ -293,6 +300,64 @@ func _build() -> void:
 	_tick = %Tick
 	_tick.timeout.connect(_refresh_timers)
 	_tick.start()
+
+	if not UnityUI.baking:
+		_attach_idle()
+		_enter_pop.call_deferred()
+
+
+## Icon cột: mỗi lúc một icon nhún nhẹ, lần lượt xen kẽ trái phải từ trên xuống (UiMotion.NUDGE); mục có thông báo
+## thì lắc (_refresh_idle). Chấm đỏ đập nhẹ như nhịp tim (UiMotion.BADGE).
+func _attach_idle() -> void:
+	var slot := 0
+	for i in maxi(_left_items.size(), _right_items.size()):
+		for items: Array[Control] in [_left_items, _right_items]:
+			if i >= items.size():
+				continue
+			var icon := _side_icon(items[i])
+			if icon != null:
+				icon.pivot_offset_ratio = Vector2(0.5, 0.5)
+				UiMotion.attach(icon, UiMotion.NUDGE, IDLE_DELAY + slot * UiMotion.NUDGE_GAP)
+			slot += 1
+	for dot: Control in [gift_badge, leaderboard_dot, weekly_dot, chain_dot, bomb_badge]:
+		dot.pivot_offset_ratio = Vector2(0.5, 0.5)
+		UiMotion.attach(dot, UiMotion.BADGE, IDLE_DELAY)
+
+
+## Icon trong nút của một mục cột.
+static func _side_icon(col: Control) -> Control:
+	for b in col.get_children():
+		if b is Button:
+			return b.get_node_or_null("Icon") as Control
+	return null
+
+
+## Mục có thông báo (chấm đỏ, quà, vé, mốc chờ nhận) thì icon lắc, không thì nhún.
+func _refresh_idle() -> void:
+	var notice := [[gift_btn, gift_badge.visible], [leaderboard_btn, leaderboard_dot.visible],
+		[weekly_btn, weekly_dot.visible], [chain_btn, chain_dot.visible], [bomb_btn, bomb_badge.visible],
+		[streak_btn, _streak_claim]]
+	for pair: Array in notice:
+		var icon: Node = (pair[0] as Node).get_node_or_null("Icon")
+		var m: Node = icon.get_node_or_null(UiMotion.NODE_NAME) if icon != null else null
+		if m != null:
+			m.call("set_kind", UiMotion.WOBBLE if bool(pair[1]) else UiMotion.NUDGE)
+
+
+## Vào Home (không phải trượt tab, lúc đó Main đặt Home lệch ngoài màn): nút Chơi bật vào trước, rồi các mục cột đang
+## hiện lần lượt từ trên xuống.
+func _enter_pop() -> void:
+	if not is_inside_tree() or position.x != 0.0:
+		return
+	var items: Array[Control] = []
+	for c in _left_items + _right_items:
+		if c.visible:
+			items.append(c)
+	items.sort_custom(func(a: Control, b: Control) -> bool:
+		return a.position.y < b.position.y or (a.position.y == b.position.y and a.position.x < b.position.x))
+	# Play first: the main button is never gone for long.
+	items.push_front(play_btn)
+	UiTween.stagger(items, ENTER_DELAY)
 
 
 func _layout() -> void:
@@ -498,6 +563,7 @@ func _refresh_events() -> void:
 	_remove_ads_col.visible = Unlocks.is_open("shop", int(Game.s.level)) and not bool(Game.s.get("no_ads", false))
 	var sv: Dictionary = Game.streak_view()
 	_streak_col.visible = bool(sv.visible)
+	_streak_claim = bool(sv.visible) and int(sv.claimable) > 0
 	if bool(sv.visible):
 		var n := int(sv.claimable)
 		if n > 0:
@@ -532,6 +598,7 @@ func _refresh_timers() -> void:
 		offer_chip.tooltip_text = tr("offer_%s_title" % _offer_id)
 		offer_caption.text = fmt_time(int(o.until) - Game.now())
 	_layout()
+	_refresh_idle()
 
 
 func _emit(action: String) -> void:

@@ -12,8 +12,8 @@ const D := 86400
 func test_activate_conditions(t: T) -> void:
 	Config.reset()
 	var s := SaveSchema.defaults()
-	t.eq(ChainOffer.try_activate(s, T0, 99), false, "chưa tới level 100")
-	t.eq(ChainOffer.try_activate(s, T0, 100), true, "level 100 bật")
+	t.eq(ChainOffer.try_activate(s, T0, 129), false, "chưa tới level 130")
+	t.eq(ChainOffer.try_activate(s, T0, 130), true, "level 130 bật")
 	t.eq(s.chain.id, "chain_a", "chuỗi đầu")
 	t.eq(s.chain.expires, T0 + D, "sống 1 ngày")
 	t.eq(s.chain.shown, false, "chưa hiện")
@@ -104,7 +104,9 @@ func test_pack_conditions(t: T) -> void:
 	t.eq(PackConditions.first_visible(s, 16), "special_pack", "gói đầu tiên")
 	t.eq(PackConditions.first_visible(s, 10), "", "level thấp")
 	s.buys.append({"token": "b", "sku": "special_pack"})
-	t.eq(PackConditions.can_show(s, "special_pack", 40), true, "không giới hạn số lần mua")
+	t.eq(PackConditions.can_show(s, "special_pack", 40), false, "mặc định mua một lần (2026-11-10)")
+	Config.PACKS["special_pack"]["purchase_limit"] = 0
+	t.eq(PackConditions.can_show(s, "special_pack", 40), true, "limit 0: không giới hạn số lần mua")
 	Config.PACKS["special_pack"]["purchase_limit"] = 2
 	s.buys.append({"token": "c", "sku": "special_pack_sale"})
 	t.eq(PackConditions.purchases(s, "special_pack"), 2, "bản sale tính như gói gốc")

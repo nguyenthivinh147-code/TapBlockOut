@@ -12,7 +12,7 @@ const Config := preload("res://src/config.gd")
 const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 const TOTAL := 500
-const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon"]
+const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon", "choco", "pop"]
 
 var _cache: Dictionary = {}  # id -> level
 
@@ -36,6 +36,8 @@ func _mechs(d: Dictionary) -> Dictionary:
 		m["stone"] = 0
 	if not d["pulse_sides"].is_empty():
 		m["pulse"] = 0
+	if not (d.get("choco_sides", []) as Array).is_empty():
+		m["choco"] = 0
 	var cover := "frost" if str(d.get("cover", "")) == "frost" else "ice"
 	for b in d["blocks"]:
 		if int(b["ice"]) > 0:
@@ -49,6 +51,8 @@ func _mechs(d: Dictionary) -> Dictionary:
 		var rib: Variant = b.get("ribbons", [])
 		if rib is Array and not (rib as Array).is_empty():
 			m["ribbon"] = int(m.get("ribbon", 0)) + 1
+		if bool(b.get("pop", false)):
+			m["pop"] = int(m.get("pop", 0)) + 1
 	return m
 
 
@@ -403,7 +407,12 @@ func test_teaching_levels(t: T) -> void:
 		if d.is_empty():
 			continue
 		var mech := _mechs(d)
-		t.eq(mech.keys(), [m], "L%d chỉ có đúng cơ chế mới %s" % [id, m])
+		# Bom kẹo đứng một mình không có tác dụng: level dạy có thêm Config.POP_TEACH_WITH.
+		var want: Array = [Config.POP_TEACH_WITH, m] if m == "pop" else [m]
+		var got: Array = mech.keys()
+		got.sort()
+		want.sort()
+		t.eq(got, want, "L%d chỉ có đúng cơ chế mới %s" % [id, m])
 		t.ok(not bool(d["hard"]), "L%d không HARD" % id)
 		# Level dạy sinh to như level thường (từ L14 xếp theo hình), không còn bảng làm tay nhỏ.
 		var n: int = d["blocks"].size()
@@ -438,6 +447,10 @@ func test_teaching_levels(t: T) -> void:
 					if b.peek(bid) == "blocked":
 						blocked += 1
 				t.ok(blocked >= 1, "stone: có khối bị chặn phải đi sau")
+			"pop":
+				t.eq(int(mech["pop"]), 1, "pop: một bom kẹo")
+				t.eq(int(r["min_taps"]), n, "pop: lớp phủ và bom kẹo không tốn thêm chạm")
+				t.ok(Gen._teach_ok(d, m), "pop: bom kẹo thoát được ngay, vùng nổ có đủ khối phủ (có khối 2 lớp)")
 			"ice", "frost":
 				t.eq(int(r["min_taps"]), n, "%s: lớp phủ không tốn thêm chạm" % m)
 				t.ok(Gen._teach_ok(d, m), "%s: có khối phủ kề khối thoát được ngay" % m)
@@ -467,6 +480,9 @@ func test_teaching_levels(t: T) -> void:
 					layers += (bl.get("ribbons", []) as Array).size()
 				t.eq(int(r["min_taps"]), n + layers, "ribbon: mỗi lớp tốn thêm một chạm bóc")
 				t.ok(Gen._teach_ok(d, m), "ribbon: có khối ruy băng bóc được ngay và một khối 3-4 lớp")
+			"choco":
+				t.eq(int(r["min_taps"]), n, "choco: socola không tốn thêm chạm")
+				t.ok(Gen._teach_ok(d, m), "choco: socola 2 lớp, có khối chờ thanh socola và đủ khối thoát qua thanh khác")
 			"fog":
 				var hidden := 0
 				for bid in b.block_ids():

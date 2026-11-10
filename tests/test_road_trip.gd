@@ -9,11 +9,13 @@ const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const RoadTrip := preload("res://src/meta/road_trip.gd")
 const SaveSchema := preload("res://src/meta/save_schema.gd")
+const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const UiTween := preload("res://src/ui/ui_tween.gd")
 
 const DIR := "user://test_road_trip"
 const NOW := 1800000000
-## Main level for tests that need Road Trip open (Config.UNLOCK.road_trip = 70 since 2026-11-09).
-const MAIN := 80
+## Main level for tests that need Road Trip open (Config.UNLOCK.road_trip = 95 since 2026-11-10, 70 before).
+const MAIN := 100
 ## Blocks blocked at the start over all 400 levels before harder levels (18591 of 23061, 80.6%); now at least
 ## HARDEN_PERCENT % of that (design.md mục 7 "Road Trip", tools/import_road_trip.gd).
 const BLOCKED_BEFORE := 18591
@@ -214,6 +216,22 @@ func test_progress_and_boxes(t: T) -> void:
 		for k in r:
 			total[k] = int(total[k]) + int(r[k])
 	t.eq(total, {"hint": 12, "smash": 10, "move": 8}, "tổng 12 Hint, 10 Búa, 8 Bước")
+	var cos: Array[String] = []
+	for i in 16:
+		cos.append(RoadTrip.cosmetic(i))
+	t.eq(cos, ["", "", "avatar_05", "", "", "avatar_06", "", "", "avatar_07", "", "", "frame_06", "", "", "", "frame_07"],
+		"hộp 3, 6, 9: avatar 05-07; hộp 12, 16: frame 06-07")
+
+
+func test_win_box_gives_cosmetic(t: T) -> void:
+	var s := SaveSchema.defaults()
+	s.road_trip.level = 69
+	var r := RoadTrip.win(s, 69)
+	t.eq([r.box, r.cos], [2, "avatar_05"], "level 69: hộp 3 có avatar_05")
+	r = RoadTrip.win(s, 70)
+	t.eq(r.cos, "", "level không có hộp: không món")
+	s.road_trip.level = 15
+	t.eq(RoadTrip.win(s, 15).cos, "", "hộp 1: không món")
 
 
 func test_win_advances_and_grants_box_once(t: T) -> void:
@@ -272,17 +290,17 @@ func test_layout(t: T) -> void:
 
 # --- Game ---
 
-func test_unlock_at_level_70(t: T) -> void:
-	var g := _g(69)
-	t.eq(g.road_trip_view().open, false, "L69 chưa mở")
+func test_unlock_at_level_95(t: T) -> void:
+	var g := _g(94)
+	t.eq(g.road_trip_view().open, false, "L94 chưa mở")
 	t.eq(g.start_road_trip(), {}, "khoá thì không chơi")
-	g.s.level = 70
+	g.s.level = 95
 	var v: Dictionary = g.road_trip_view()
-	t.eq(v.open, true, "mở từ L70")
-	t.eq(int(v.unlock_level), 70, "Config.UNLOCK.road_trip = 70")
+	t.eq(v.open, true, "mở từ L95")
+	t.eq(int(v.unlock_level), 95, "Config.UNLOCK.road_trip = 95")
 	t.eq(int(v.level), 1, "bắt đầu từ level 1")
 	t.eq(v.progress, Vector2i(0, 15), "0/15")
-	t.eq(Config.UNLOCK.road_trip, 70, "unlock trong Config")
+	t.eq(Config.UNLOCK.road_trip, 95, "unlock trong Config")
 
 
 func test_attempt_uses_step_limit(t: T) -> void:
@@ -316,6 +334,52 @@ func test_win_no_coins_box_to_inventory(t: T) -> void:
 	t.eq(int(g.s.level), main0, "level chính không đổi")
 	t.eq(_plat().an.count("rt_end"), 1, "log rt_end")
 	t.eq(_plat().an.count("rt_box"), 1, "log rt_box")
+	t.eq(str(res.cos), "", "hộp 1 không có avatar, frame")
+	t.eq(_plat().an.count("cos_buy"), 0, "không log cos_buy")
+
+
+## Thắng level clear bằng greedy; trả kết quả on_level_won.
+func _win_rt(g: Node) -> Dictionary:
+	var a: Dictionary = g.start_road_trip()
+	for id in _greedy((a.board as BoardState).clone()):
+		g.tap(a, id)
+	return g.on_level_won(a)
+
+
+func test_win_box_unlocks_cosmetic(t: T) -> void:
+	var g := _g(MAIN, 69)
+	var move0 := int(g.s.inv.move)
+	var res := _win_rt(g)
+	t.eq(int(res.box), 2, "hộp 3")
+	t.eq(str(res.cos), "avatar_05", "kết quả có avatar_05")
+	t.ok((g.s.cos.owned as Array).has("avatar_05"), "đã có avatar_05")
+	t.eq(g.s.cos.avatar, "avatar_05", "đeo luôn")
+	t.eq(g.s.cos.frame, "frame_00", "frame giữ nguyên")
+	t.eq(int(g.s.inv.move), move0 + 1, "vẫn nhận booster của hộp (1 Bước)")
+	t.eq(_plat().an.count("cos_buy"), 1, "log cos_buy")
+
+
+func test_win_box_skips_owned_cosmetic(t: T) -> void:
+	var g := _g(MAIN, 400)
+	g.s.road_trip.boxes = 15
+	(g.s.cos.owned as Array).append("frame_07")
+	var hint0 := int(g.s.inv.hint)
+	var res := _win_rt(g)
+	t.eq(int(res.box), 15, "hộp 16")
+	t.eq(str(res.cos), "", "đã có frame_07: bỏ qua")
+	t.eq((g.s.cos.owned as Array).count("frame_07"), 1, "không trùng")
+	t.eq(int(g.s.inv.hint), hint0 + 1, "chỉ nhận booster")
+	t.eq(_plat().an.count("cos_buy"), 0, "không log cos_buy")
+
+
+func test_road_trip_cosmetic_not_for_sale(t: T) -> void:
+	var g := _g()
+	g.s.coins = 1000
+	t.ok(not g.cos_buy("avatar_06"), "không mua bằng gold")
+	t.eq(int(g.s.coins), 1000, "không trừ gold")
+	t.ok(not await g.cos_unlock_video("frame_06"), "không mở bằng video")
+	t.eq(_plat().ads.calls.size(), 0, "không gọi quảng cáo")
+	t.ok(not (g.s.cos.owned as Array).has("frame_06"), "chưa có")
 
 
 func test_lose_costs_no_life(t: T) -> void:
@@ -413,19 +477,19 @@ func _mount(scene: String, args: Dictionary = {}) -> Control:
 
 
 func test_nav_tabs(t: T) -> void:
-	_g(69)
+	_g(94)
 	var home := _mount("home")
 	var nav: Control = home.find_child("NavBar", true, false)
 	t.ok(home.find_child("RankingTab", true, false) == null, "không còn tab Ranking")
 	var rt: Button = home.find_child("RoadTripTab", true, false)
 	t.ok(rt != null, "có tab Road Trip")
-	t.ok(rt.disabled, "L69: Road Trip khoá")
-	t.eq(nav.road_trip_caption.text, "Unlocked at Level 70", "chữ mở ở L70")
+	t.ok(rt.disabled, "L94: Road Trip khoá")
+	t.eq(nav.road_trip_caption.text, "Unlocked at Level 95", "chữ mở ở L95")
 	home.free()
-	_g(70)
+	_g(95)
 	home = _mount("home")
 	rt = home.find_child("RoadTripTab", true, false)
-	t.ok(not rt.disabled, "L70: Road Trip mở")
+	t.ok(not rt.disabled, "L95: Road Trip mở")
 	var got := []
 	home.closed.connect(func(r: Variant) -> void: got.append(r))
 	rt.pressed.emit()
@@ -434,15 +498,15 @@ func test_nav_tabs(t: T) -> void:
 
 
 func test_home_leaderboard_icon(t: T) -> void:
-	_g(5)
+	_g(69)
 	var home := _mount("home")
-	t.ok(home.leaderboard_btn.disabled, "L5: Bảng xếp hạng khoá")
+	t.ok(home.leaderboard_btn.disabled, "L69: Bảng xếp hạng khoá")
 	t.ok(home.find_child("LeaderboardLock", true, false).visible, "có ổ khoá")
-	t.eq(home.leaderboard_caption.text, "Level 8", "ghi level mở")
+	t.eq(home.leaderboard_caption.text, "Level 70", "ghi level mở")
 	home.free()
-	_g(8)
+	_g(70)
 	home = _mount("home")
-	t.ok(not home.leaderboard_btn.disabled, "L8 mở")
+	t.ok(not home.leaderboard_btn.disabled, "L70 mở")
 	t.eq(home.leaderboard_caption.text, "Ranking", "chữ Ranking")
 	var got := []
 	home.closed.connect(func(r: Variant) -> void: got.append(r))
@@ -452,7 +516,7 @@ func test_home_leaderboard_icon(t: T) -> void:
 
 
 func test_home_guide_once(t: T) -> void:
-	var g := _g(70)
+	var g := _g(95)
 	g.s.road_trip.guide = false
 	var home := _mount("home")
 	t.ok(home.road_trip_guide != null, "Road Trip vừa mở: có hướng dẫn")
@@ -491,10 +555,17 @@ func test_main_routes(t: T) -> void:
 	t.ok(lb != null, "popup Bảng xếp hạng")
 	await _settle(m)
 	lb.emit_signal("closed", null)
-	t.ok(lb.is_queued_for_deletion(), "đóng popup thì về Home")
+	t.ok(UiTween.closing(lb), "đóng popup thì về Home")
 	await _tree().process_frame
 	m.current_screen.find_child("RoadTripTab", true, false).pressed.emit()
 	t.eq(m.current_name, "road_trip", "từ Home sang Road Trip")
+	# Profile: nút Road Trip dưới món chỉ có từ hộp Road Trip thì sang màn Road Trip.
+	await _settle(m)
+	m.go("profile")
+	await _settle(m)
+	m.current_screen.call("select", "avatar_05")
+	(m.current_screen.get("road_trip_button") as Button).pressed.emit()
+	t.eq(m.current_name, "road_trip", "nút Road Trip ở Profile")
 	m.free()
 
 
@@ -520,6 +591,17 @@ func test_screen(t: T) -> void:
 	map.tapped.emit(15, true)
 	t.ok(rt.bubble != null, "bong bóng thưởng")
 	t.ok(rt.bubble.find_children("*", "TextureRect", true, false).size() == 1, "một vật phẩm")
+	t.ok(rt.bubble.find_child("CosIcon", true, false) == null, "hộp 1 không có avatar, frame")
+	# Hộp 69 (hộp 3): 1 Bước và avatar_05.
+	map.tapped.emit(69, true)
+	var cos := rt.bubble.find_child("CosIcon", true, false) as TextureRect
+	t.ok(cos != null, "bong bóng hộp 3 có avatar")
+	t.eq(cos.texture, ThemeKit.icon("avatar_05"), "chỉ ảnh avatar_05")
+	t.eq(cos.get_child_count(), 0, "không ghép frame đang đeo")
+	# Hộp 400 (hộp 16): chỉ ảnh frame_07.
+	map.tapped.emit(400, true)
+	cos = rt.bubble.find_child("CosIcon", true, false) as TextureRect
+	t.eq(cos.texture, ThemeKit.icon("frame_07"), "chỉ ảnh frame_07")
 	rt.free()
 	_g(MAIN, 401)
 	rt = _mount("road_trip")
@@ -615,6 +697,25 @@ func test_screen_plays_and_wins_box(t: T) -> void:
 	t.eq(rt.chip_label.text, "0/20", "chip 0/20")
 	t.eq(int(g.lives_view().count), lives0, "không mất mạng")
 	rt.free()
+
+
+func test_win_popup_shows_cosmetic(t: T) -> void:
+	_g(MAIN, 70)
+	var args := {"level": 400, "box": 15, "reward": {"hint": 1, "smash": 1, "move": 1}, "cos": "frame_07",
+		"before": Vector2i(20, 21), "after": Vector2i(21, 21), "done": true}
+	var p := _mount("popup_road_trip_win", args)
+	var tile: Control = p.find_child("Reward_cos", true, false)
+	t.ok(tile != null, "ô frame_07")
+	t.eq(p.reward_tiles.size(), 4, "3 booster + frame")
+	var ic: Control = tile.find_child("CosIcon", true, false)
+	t.eq((ic.get_node("Frame") as TextureRect).texture, ThemeKit.icon("frame_07"), "khung frame_07")
+	t.eq((ic.get_node("Avatar") as TextureRect).texture, ThemeKit.icon("avatar_00"), "quanh avatar đang đeo")
+	p.free()
+	args.cos = ""
+	p = _mount("popup_road_trip_win", args)
+	t.ok(p.find_child("Reward_cos", true, false) == null, "đã có món: không có ô")
+	t.eq(p.reward_tiles.size(), 3, "chỉ booster")
+	p.free()
 
 
 func test_screen_out_of_moves_revive_then_give_up(t: T) -> void:

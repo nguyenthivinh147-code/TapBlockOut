@@ -479,7 +479,7 @@ func _mount_level(g: Node, lvn: int) -> Control:
 
 func test_teaching_levels_show_one_line_hint(t: T) -> void:
 	var g := _g(1)
-	var want := {14: "stone", 30: "ice", 40: "chain", 55: "layer", 70: "fog", 90: "pulse", 110: "frost"}
+	var want := {14: "stone", 30: "ice", 45: "chain", 65: "layer", 85: "fog", 115: "pulse", 165: "frost"}
 	for lvn in want:
 		var lv := _mount_level(g, lvn)
 		var m: String = want[lvn]
@@ -530,10 +530,11 @@ func test_booster_buttons_follow_unlocks(t: T) -> void:
 				"L%d nút %s" % [lvn, kinds[i]])
 		lv.free()
 	# quà 28 ngày, shop, mạng
-	var g2 := _g(3)
-	t.eq(g2.daily_view().open, false, "L3 chưa có quà")
-	g2.s.level = 4
-	t.eq(g2.daily_view().open, true, "L4 có quà")
-	t.eq(g2.lives_view().open, false, "L4 chưa có mạng")
+	var g2 := _g(9)
+	t.eq(g2.lives_view().open, false, "L9 chưa có mạng")
 	g2.s.level = 10
 	t.eq(g2.lives_view().open, true, "L10 có mạng")
+	g2.s.level = 13
+	t.eq(g2.daily_view().open, false, "L13 chưa có quà")
+	g2.s.level = 14
+	t.eq(g2.daily_view().open, true, "L14 có quà")

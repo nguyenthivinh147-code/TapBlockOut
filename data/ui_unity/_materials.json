@@ -189,8 +189,8 @@
 		"face_dilate": 0,
 		"outline_width": 0.3,
 		"outline_softness": 0,
-		"outline_color": "032b00ff",
-		"underlay_color": "032b00ff",
+		"outline_color": "2e8b00ff",
+		"underlay_color": "1f7000ff",
 		"underlay_offset": [
 			0,
 			-0.24

@@ -31,10 +31,11 @@ const MAX_TRIES := 60
 ## Cứ mỗi COUNT_RELAX_EVERY lần thử hỏng thì bớt 1 khối mục tiêu (`_target_count`).
 const COUNT_RELAX_EVERY := 20
 ## Bàn có cổng nhịp giữ ít khối (mỗi khối qua cổng khoá tốn thêm một cú dội), nên `mech_plan` chỉ cho cổng nhịp vào
-## level có số khối mục tiêu tới GATE_MAX_BLOCKS. Từ GATE2_FROM bàn tới GATE2_MAX_BLOCKS khối có 2 cổng.
+## level có số khối mục tiêu tới GATE_MAX_BLOCKS. Từ GATE2_FROM (40 level sau level dạy cổng nhịp, Config.UNLOCK.pulse)
+## bàn tới GATE2_MAX_BLOCKS khối có 2 cổng.
 const GATE_MAX_BLOCKS := 52
 const GATE2_MAX_BLOCKS := 40
-const GATE2_FROM := 130
+const GATE2_FROM := 155
 ## Lần thử từ MECH_DROP_AT bỏ mọi cơ chế, từ GATE_DROP_AT bỏ cổng nhịp (trừ level dạy).
 const MECH_DROP_AT := 40
 const GATE_DROP_AT := 24
@@ -57,9 +58,12 @@ const DEPTH_FREE := 0.3
 const STONE_TRIES := 3
 ## Bước nhảy trong Motifs.KINDS giữa hai level liền nhau (nguyên tố cùng nhau với số hình), để hình kế tiếp khác nhóm.
 const MOTIF_STRIDE := 8
-const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon"]
+const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon", "choco", "pop"]
 ## Lớp phủ: pudding (`ice`) và băng (`frost`) cùng luật, không bao giờ cùng một level.
 const COVERS := ["ice", "frost"]
+## Các cặp cơ chế không cùng một level: `mech_plan` chỉ giữ loại đứng trước trong thứ tự rút. Cổng nhịp và socola đều
+## đổi luật của thanh nên không chung level.
+const EXCLUSIVE := [COVERS, ["pulse", "choco"]]
 const NEIGHBORS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 ## Kiểu cắt khối theo hình học (`cut_style`): "rows" dải ngang, "cols" dải dọc, "rings" vòng theo viền hình,
 ## "weave" đan rổ (ô WEAVE_TILE x WEAVE_TILE, dải ngang và dọc xen kẽ), "bricks" gạch xây so le dài BRICK_LEN.
@@ -111,11 +115,16 @@ static func is_rest(id: int) -> bool:
 ## Cơ chế của level `id`, theo id (không theo seed): level dạy chỉ có cơ chế mới; chưa mở cơ chế nào hoặc level nghỉ thì
 ## không có; level khác rút 1..Config.LEVEL_MECH_MAX loại trong các cơ chế đã mở theo Config.LEVEL_MECH_WEIGHTS, và cơ
 ## chế vừa mở (trong Config.LEVEL_MECH_FRESH level sau level dạy) luôn có mặt. Cổng nhịp chỉ ở level có số khối mục tiêu
-## tới GATE_MAX_BLOCKS. Pudding và băng (COVERS) không cùng level: chỉ giữ loại đứng trước trong thứ tự rút.
+## tới GATE_MAX_BLOCKS. Pudding và băng, cổng nhịp và socola (EXCLUSIVE) không cùng level: chỉ giữ loại đứng trước trong
+## thứ tự rút. Bom kẹo chỉ đi cùng một loại trong Config.POP_PARTNERS: thiếu thì thêm loại đó đứng sớm nhất trong thứ tự
+## rút (đủ Config.LEVEL_MECH_MAX loại thì thay loại cuối), không có thì bỏ bom kẹo; level dạy bom kẹo đi cùng
+## Config.POP_TEACH_WITH.
 static func mech_plan(id: int) -> Array[String]:
 	var out: Array[String] = []
 	var teach := teach_mech(id)
 	if teach != "":
+		if teach == "pop":
+			out.append(Config.POP_TEACH_WITH)
 		out.append(teach)
 		return out
 	var open := mechanics_for(id)
@@ -140,15 +149,39 @@ static func mech_plan(id: int) -> Array[String]:
 	if fresh != "":
 		pool.erase(fresh)
 		pool.push_front(fresh)
-	var cover_seen := false
-	for m in pool.duplicate():
-		if COVERS.has(m):
-			if cover_seen:
-				pool.erase(m)
-			cover_seen = true
-	for m in pool.slice(0, mini(want, Config.LEVEL_MECH_MAX)):
+	for group: Array in EXCLUSIVE:
+		var seen := false
+		for m in pool.duplicate():
+			if group.has(m):
+				if seen:
+					pool.erase(m)
+				seen = true
+	var take := mini(want, Config.LEVEL_MECH_MAX)
+	for m in pool.slice(0, take):
 		out.append(m)
+	if out.has("pop") and not _has_pop_partner(out):
+		var partner := ""
+		for m in pool.slice(take):
+			if Config.POP_PARTNERS.has(m):
+				partner = m
+				break
+		if partner == "":
+			out.erase("pop")
+		else:
+			if out.size() >= Config.LEVEL_MECH_MAX:
+				for k in range(out.size() - 1, -1, -1):
+					if out[k] != "pop":
+						out.remove_at(k)
+						break
+			out.append(partner)
 	return out
+
+
+static func _has_pop_partner(mechs: Array[String]) -> bool:
+	for m in mechs:
+		if Config.POP_PARTNERS.has(m):
+			return true
+	return false
 
 
 ## Cơ chế bật ở lần thử `attempt`: theo `mech_plan`, bỏ hết từ lần MECH_DROP_AT và bỏ cổng nhịp từ lần GATE_DROP_AT;
@@ -308,7 +341,7 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 	var aim := want
 	var shift := _centering(groups, stones)
 	var plain: bool = not (feats["ice"] or feats["frost"] or feats["chain"] or feats["layer"] or feats["fog"] \
-		or feats["pulse"] or feats["ribbon"])
+		or feats["pulse"] or feats["ribbon"] or feats["choco"] or feats["pop"])
 	var level := {}
 	var near := {}  # bàn có số lượt gần nhất (giữ khi không `strict`)
 	var near_err := 1 << 20
@@ -323,11 +356,15 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 		if not strict or absi(rounds - want) <= tol or (not plain and (feats["pulse"] or rounds < want)):
 			var mech := _mechanics(id, feats, groups, asg, rng)
 			var cand := _build(id, s, hard, _shifted(stones, shift), _shifted_groups(groups, shift), asg, mech)
-			if not mech["fog"].is_empty() or not mech["ice"].is_empty():
+			if not mech["fog"].is_empty() or not mech["ice"].is_empty() or not mech["choco"].is_empty():
 				_unstick(cand)
-			# Cổng nhịp khoá có thể chặn hết khối đi được lúc đầu (cú dội không tính); level dạy cổng cần khối dội vào được ngay.
-			if not mech["pulse"].is_empty():
-				if not Solver.immediate_exit_exists(cand) or (teach == "pulse" and not _teach_ok(cand, teach)):
+			# Bom kẹo đặt sau cùng, theo thứ tự giải của bàn đã gỡ kẹt; không có khối đủ điều kiện thì gán hướng lại.
+			if feats["pop"] and not _pops(id, cand, rng):
+				continue
+			# Cổng nhịp khoá hay thanh phủ socola có thể chặn hết khối đi được lúc đầu (cú dội không tính); level dạy cổng
+			# cần khối dội vào được ngay, level dạy socola cần đủ khối thoát qua thanh khác.
+			if not mech["pulse"].is_empty() or not mech["choco"].is_empty():
+				if not Solver.immediate_exit_exists(cand) or ((teach == "pulse" or teach == "choco") and not _teach_ok(cand, teach)):
 					continue
 			if not plain:
 				rounds = Solver.clear_rounds(cand)
@@ -367,13 +404,16 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 ## Khối còn trong sương hay còn lớp phủ không đi được và chỉ lộ hay bóc lớp khi khối kề rời đi, nên rải ngẫu nhiên có
 ## thể làm bàn kẹt (khối thường chờ khối sương hay khối phủ, khối đó lại chờ khối thường). Đi tham lam như Solver; mỗi
 ## lần kẹt thì bỏ sương của khối ẩn đầu tiên (theo thứ tự khối) sẽ đi được nếu lộ; không có thì bóc 1 lớp phủ của khối
-## phủ đầu tiên sẽ đi được nếu hết phủ; lặp tới khi dọn hết bàn hoặc không còn khối như vậy (bàn kẹt vì lý do khác,
-## Solver loại sau). Lộ sớm hay ít lớp hơn chỉ mở thêm nước đi nên bàn đã sửa vẫn giải được. Không dùng rng.
+## phủ đầu tiên sẽ đi được nếu hết phủ; không có nữa thì bớt 1 lớp socola ở thanh đầu tiên (theo LevelData.SIDES) mà
+## hết socola thì có khối đi được (socola về 0 thì bỏ khỏi level); lặp tới khi dọn hết bàn hoặc không còn khối như vậy
+## (bàn kẹt vì lý do khác, Solver loại sau). Lộ sớm hay ít lớp hơn chỉ mở thêm nước đi nên bàn đã sửa vẫn giải được.
+## Không dùng rng.
 static func _unstick(level: Dictionary) -> void:
 	var b := BoardState.new(level)
 	b.add_moves(Solver.BIG_MOVES)
 	var lifted := {}
 	var stripped := {}  # id -> số lớp đã bỏ
+	var melted := {}  # cạnh -> số lớp socola đã bỏ
 	var guard := 0
 	while not b.is_won() and guard < Solver.GUARD:
 		guard += 1
@@ -405,26 +445,146 @@ static func _unstick(level: Dictionary) -> void:
 			if Solver.RANK.has(c.peek(bid)):
 				peel = bid
 				break
-		if peel == "":
+		if peel != "":
+			b.strip(peel)
+			stripped[peel] = int(stripped.get(peel, 0)) + 1
+			continue
+		var melt := _melt_side(b)
+		if melt == "":
 			break
-		b.strip(peel)
-		stripped[peel] = int(stripped.get(peel, 0)) + 1
+		b.melt_choco(melt)
+		melted[melt] = int(melted.get(melt, 0)) + 1
 	for bd in level["blocks"]:
 		var k := str(bd["id"])
 		if lifted.has(k):
 			bd["fog"] = false
 		if stripped.has(k):
 			bd["ice"] = maxi(0, int(bd["ice"]) - int(stripped[k]))
+	if melted.is_empty():
+		return
+	var kept: Array = []
+	for p: Dictionary in level.get("choco_sides", []):
+		var left := int(p["layers"]) - int(melted.get(str(p["side"]), 0))
+		if left > 0:
+			kept.append({"side": p["side"], "layers": left})
+	if kept.is_empty():
+		level.erase("choco_sides")
+	else:
+		level["choco_sides"] = kept
+
+
+## Thanh còn socola (theo LevelData.SIDES) mà tan hết thì có khối đi được ngay; "" nếu không có.
+static func _melt_side(b: BoardState) -> String:
+	var sides := b.choco()
+	for side in LevelData.SIDES:
+		if not sides.has(side):
+			continue
+		var c := b.clone()
+		for _k in int(sides[side]):
+			c.melt_choco(side)
+		for bid in c.block_ids():
+			if Solver.RANK.has(c.peek(bid)):
+				return side
+	return ""
+
+
+## Đặt bom kẹo (`"pop": true`) lên khối "sạch" (không lớp phủ, sương, xích hay chìa, hộp giấy, ruy băng) của `level`
+## đã gỡ kẹt. Level thường: khối không đi được ở lượt dọn đầu tiên và, đi theo lượt dọn bàn (`_pop_scores`), lúc nó thoát
+## vùng nổ còn ít nhất Config.POP_MIN_TARGETS khối phủ hoặc ẩn; 1 khối tới Config.POP_COUNT_ONE_UNTIL, sau đó
+## 1..Config.POP_COUNT_MAX, các bom kẹo không chung khối bị nổ (cú nổ trước không làm bom sau mất khối). Level dạy: 1 khối
+## thoát được ngay, vùng nổ có ít nhất Config.POP_TEACH_TARGETS khối phủ, trong đó một khối 2 lớp. Chọn ngẫu nhiên trong
+## các khối đạt. Trả false nếu không đặt được khối nào.
+static func _pops(id: int, level: Dictionary, rng: RandomNumberGenerator) -> bool:
+	var teach := teach_mech(id) == "pop"
+	var cnt := 1
+	if not teach and id > Config.POP_COUNT_ONE_UNTIL:
+		cnt = rng.randi_range(1, Config.POP_COUNT_MAX)
+	var keys := {}
+	for bd in level["blocks"]:
+		if str(bd.get("chained_by", "")) != "":
+			keys[str(bd["chained_by"])] = true
+	var score := _pop_scores(level, teach)
+	var cand: Array = []
+	for bd in level["blocks"]:
+		var bid := str(bd["id"])
+		var rib: Array = bd.get("ribbons", [])
+		if bool(bd.get("pop", false)) or keys.has(bid) or int(bd.get("ice", 0)) > 0 or bool(bd.get("fog", false)) \
+				or str(bd.get("chained_by", "")) != "" or str(bd.get("inner_color", "")) != "" or not rib.is_empty():
+			continue
+		if score.has(bid):
+			cand.append(bd)
+	var used := {}  # khối đã thuộc vùng nổ của bom kẹo chọn trước
+	var placed := 0
+	while placed < cnt and not cand.is_empty():
+		var bd: Dictionary = cand[rng.randi_range(0, cand.size() - 1)]
+		cand.erase(bd)
+		var tg: Array = score[str(bd["id"])]
+		var shared := false
+		for x in tg:
+			shared = shared or used.has(x)
+		if shared:
+			continue
+		bd["pop"] = true
+		for x in tg:
+			used[x] = true
+		placed += 1
+	return placed > 0
+
+
+## Khối đủ điều kiện làm bom kẹo của `_pops` -> các khối phủ hoặc ẩn trong vùng nổ lúc nó thoát (chưa lọc khối "sạch").
+## Level thường: đi theo lượt dọn bàn như Solver.clear_rounds (mỗi lượt chạm mọi khối đang đi được, theo thứ tự khối),
+## bỏ các khối đi được ở lượt đầu. Level dạy: chỉ xét lúc đầu.
+static func _pop_scores(level: Dictionary, teach: bool) -> Dictionary:
+	var out := {}
+	var b := BoardState.new(level)
+	b.add_moves(Solver.BIG_MOVES)
+	if teach:
+		for bid in b.block_ids():
+			if b.peek(bid) != "exit":
+				continue
+			var t := b.pop_targets(bid)
+			var dbl := false
+			for x in t:
+				dbl = dbl or int(b.block_view(x)["ice"]) >= 2
+			if t.size() >= Config.POP_TEACH_TARGETS and dbl:
+				out[bid] = t
+		return out
+	var rounds := 0
+	while not b.is_won() and rounds < Solver.GUARD:
+		var act: Array[String] = []
+		for bid in b.block_ids():
+			var k := b.peek(bid)
+			if k == "exit" or k == "peel" or k == "gate_closed":
+				act.append(bid)
+		if act.is_empty():
+			break
+		rounds += 1
+		for bid in act:
+			var k := b.peek(bid)
+			if k == "exit" and rounds > 1:
+				var tg := b.pop_targets(bid)
+				if tg.size() >= Config.POP_MIN_TARGETS:
+					out[bid] = tg
+			if k == "exit" or k == "peel" or k == "gate_closed":
+				b.tap(bid)
+	return out
 
 
 ## Level dạy có cho chạm thử cơ chế `mech` ngay lúc đầu không: Đá có ít nhất 2 viên; Pudding, Băng có khối kề một khối
 ## thoát được ngay, và khối đó thoát thì hết phủ; Xích có khối bị xích mà chìa thoát được ngay và bỏ chìa thì khối đó đi
 ## được; Hai lớp có khối bóc được; Sương mù có khối ẩn màu; Cổng nhịp có cổng khoá lúc đầu và khối dội vào được cổng đó
-## ngay; Ruy băng có khối ruy băng bóc được ngay và một khối từ Config.RIBBON_TEACH_BIG.x lớp.
+## ngay; Ruy băng có khối ruy băng bóc được ngay và một khối từ Config.RIBBON_TEACH_BIG.x lớp; Socola còn đủ
+## Config.CHOCO_TEACH_LAYERS lớp, có khối chạm vào thanh socola và ít nhất Config.CHOCO_TEACH_FREE khối thoát được ngay;
+## Bom kẹo có bom kẹo thoát được ngay mà vùng nổ có ít nhất Config.POP_TEACH_TARGETS khối phủ, trong đó một khối 2 lớp.
 static func _teach_ok(level: Dictionary, mech: String) -> bool:
 	var b := BoardState.new(level)
 	b.add_moves(Solver.BIG_MOVES)
 	match mech:
+		"pop":
+			var scores := _pop_scores(level, true)
+			for bid in b.block_ids():
+				if bool(b.block_view(bid)["pop"]) and scores.has(bid):
+					return true
 		"stone":
 			return level["stones"].size() >= 2
 		"ice", "frost":
@@ -468,6 +628,17 @@ static func _teach_ok(level: Dictionary, mech: String) -> bool:
 			for bid in b.block_ids():
 				if b.peek(bid) == "gate_closed":
 					return true
+		"choco":
+			var sides := b.choco()
+			if sides.size() != 1 or int(sides.values()[0]) < Config.CHOCO_TEACH_LAYERS:
+				return false
+			var free := 0
+			var held := false
+			for bid in b.block_ids():
+				var k := b.peek(bid)
+				free += int(k == "exit" or k == "peel")
+				held = held or k == "choco"
+			return held and free >= Config.CHOCO_TEACH_FREE
 	return false
 
 
@@ -1219,8 +1390,45 @@ static func _mechanics(id: int, feats: Dictionary, groups: Array, asg: Dictionar
 		for k in mini(want, cols.size()):
 			var open := rng.randf() < 0.5 and teach_mech(id) != "pulse"
 			pulse.append({"side": LevelData.SIDES[int(cols[k])], "open": open})
+	var choco := _choco(id, feats, asg, pos, layer, ribbon, rng)
 	return {"ice": ice, "cover": "frost" if cover == "frost" else "", "chain": chain, "layer": layer, "fog": fog,
-		"pulse": pulse, "ribbon": ribbon}
+		"pulse": pulse, "ribbon": ribbon, "choco": choco}
+
+
+## Socola: [{side, layers}] (tối đa một thanh) hoặc []. Thanh phủ là cạnh mà lần qua đầu tiên (khối, vỏ hộp giấy hay
+## ruy băng mang màu đó) đến sớm nhất trong thứ tự giải, nên socola cản ngay từ đầu; bỏ màu của khối đầu tiên trong thứ
+## tự giải để vẫn có khối thoát được ngay. Bằng nhau thì ngẫu nhiên. Số lớp: level dạy Config.CHOCO_TEACH_LAYERS, level
+## khác rút trong Config.CHOCO_LAYERS_MIN..mini(CHOCO_MAX_LAYERS, CHOCO_LAYERS_START + (id - mốc mở) /
+## CHOCO_LAYERS_EVERY). Bàn kẹt thì `_unstick` bớt lớp sau.
+static func _choco(id: int, feats: Dictionary, asg: Dictionary, pos: Dictionary, layer: Dictionary, ribbon: Dictionary,
+		rng: RandomNumberGenerator) -> Array:
+	if not feats["choco"]:
+		return []
+	var order: Array = asg["order"]
+	var first := {}  # màu -> vị trí lần qua đầu tiên trong thứ tự giải
+	for i: int in order:
+		var cols: Array = [int(asg["color"][i])]
+		if layer.has(i):
+			cols.append(int(layer[i]))
+		if ribbon.has(i):
+			cols.append_array(ribbon[i])
+		for col: int in cols:
+			if not first.has(col):
+				first[col] = int(pos[i])
+	first.erase(int(asg["color"][order[0]]))
+	if first.is_empty():
+		return []
+	var cols: Array = first.keys()
+	cols.sort()
+	_shuffle(cols, rng)
+	cols.sort_custom(func(a: int, b: int) -> bool: return int(first[a]) < int(first[b]))
+	var layers := Config.CHOCO_TEACH_LAYERS
+	if teach_mech(id) != "choco":
+		@warning_ignore("integer_division")
+		var cap := mini(Config.CHOCO_MAX_LAYERS,
+			Config.CHOCO_LAYERS_START + (id - int(Config.UNLOCK["choco"])) / Config.CHOCO_LAYERS_EVERY)
+		layers = rng.randi_range(Config.CHOCO_LAYERS_MIN, maxi(Config.CHOCO_LAYERS_MIN, cap))
+	return [{"side": LevelData.SIDES[int(cols[0])], "layers": layers}]
 
 
 ## Ruy băng: idx -> [màu ruy băng ngoài, ..., màu kẹo] (chỉ số màu). Lớp ngoài là màu gán của khối lúc mô phỏng, các lớp
@@ -1386,4 +1594,6 @@ static func _build(id: int, s: int, hard: bool, stones: Array[Vector2i], groups:
 	}
 	if str(mech.get("cover", "")) != "" and not mech["ice"].is_empty():
 		out["cover"] = mech["cover"]
+	if not (mech.get("choco", []) as Array).is_empty():
+		out["choco_sides"] = (mech["choco"] as Array).duplicate(true)
 	return out

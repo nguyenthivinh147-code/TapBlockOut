@@ -77,6 +77,38 @@ func test_equip(t: T) -> void:
 	t.ok(not Cosmetics.equip(s, "nope"), "id lạ")
 
 
+## Avatar 05-07, frame 06-07 chỉ có từ hộp Road Trip (Config.ROAD_TRIP_COSMETICS): không mua bằng gold.
+func test_road_trip_only(t: T) -> void:
+	var s := SaveSchema.defaults()
+	s.coins = 1000
+	t.eq([Cosmetics.road_trip_box("avatar_05"), Cosmetics.road_trip_box("frame_07")], [3, 16], "số hộp")
+	t.eq(Cosmetics.road_trip_box("avatar_04"), 0, "món thường")
+	t.ok(not Cosmetics.for_sale("avatar_06"), "không bán")
+	t.ok(Cosmetics.for_sale("frame_05"), "món thường bán được")
+	t.ok(not Cosmetics.for_sale("hat_01"), "id lạ")
+	t.ok(not Cosmetics.buy(s, "frame_06"), "không mua được")
+	t.eq(int(s.coins), 1000, "không trừ gold")
+	t.ok(Cosmetics.unlock(s, "frame_06"), "hộp Road Trip mở được")
+	t.ok(Cosmetics.is_owned(s, "frame_06"), "đã có")
+	t.ok(Cosmetics.equip(s, "frame_06"), "đeo được")
+
+
+## Avatar, frame 08-12 chỉ có từ thưởng league (Config.LEADERBOARD.cosmetics): không mua bằng gold, không video.
+func test_league_only(t: T) -> void:
+	Config.reset()
+	var s := SaveSchema.defaults()
+	s.coins = 1000
+	for id in ["avatar_08", "avatar_12", "frame_08", "frame_12"]:
+		t.ok(Cosmetics.league_only(id), "%s chỉ có từ league" % id)
+		t.ok(not Cosmetics.for_sale(id), "%s không bán" % id)
+	t.ok(not Cosmetics.league_only("avatar_07"), "món Road Trip không phải món league")
+	t.ok(not Cosmetics.league_only("frame_05") and Cosmetics.for_sale("frame_05"), "món thường bán được")
+	t.ok(not Cosmetics.buy(s, "avatar_09"), "không mua được")
+	t.eq(int(s.coins), 1000, "không trừ gold")
+	t.ok(Cosmetics.unlock(s, "avatar_09"), "thưởng league mở được")
+	t.ok(Cosmetics.equip(s, "avatar_09"), "đeo được")
+
+
 func test_remote_config_count(t: T) -> void:
 	Config.reset()
 	Config.COSMETICS.avatar_count = 3

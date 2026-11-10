@@ -7,6 +7,7 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const ShopFx := preload("res://src/ui/shop_fx.gd")
 const MockIap := preload("res://src/platform/mock_iap.gd")
 const MockAds := preload("res://src/platform/mock_ads.gd")
+const Offers := preload("res://src/meta/offers.gd")
 const ShopScene := preload("res://scenes/shop.tscn")
 
 const DIR := "user://test_test_ui_shop_fx"
@@ -246,13 +247,17 @@ func test_shop_gold_flies_to_chip(t: T) -> void:
 
 
 func test_shop_owned_pops(t: T) -> void:
-	_g()
+	var g := _g()
+	# The Shop sells the Starter Pack only while its offer is open (Offers.in_shop).
+	g.s.level = 11
+	Offers.shown(g.s, "starter_pack", {"now": MONDAY, "day": 0, "runs": 0, "level": 11})
 	var shop := _open()
-	# Starter Pack: one-time, with gold (a bought No Ads pack hides its whole section instead).
+	# Starter Pack: one-time, with gold. Bought, its card hides like a bought No Ads section (2026-11-10) while its
+	# gold flies from the card to the chip.
 	var label: Label = shop.price_labels["starter_pack"]
 	t.eq(label.scale, Vector2.ONE, "giá đứng yên trước khi mua")
 	await shop.buy("starter_pack")
-	t.ok(label.scale.x > 1.0, "Owned nảy lên")
+	t.ok(not (shop.find_child("StarterPack", true, false) as Control).visible, "mua xong: ẩn thẻ")
 	t.ok(shop.fx.flying(), "gold của gói bay lên chip")
 	var price: Label = shop.price_labels["gold_pack_1"]
 	t.eq(price.scale, Vector2.ONE, "gói khác không nảy")

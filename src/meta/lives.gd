@@ -40,12 +40,21 @@ static func count(s: Dictionary, now: int) -> int:
 	return int(s.lives.count)
 
 
-## Đang trong thời gian mạng vô hạn (s.lives.inf_until, unix giây; 0 = không có).
+## Đang có mạng vô hạn: vĩnh viễn (s.lives.inf_forever) hoặc còn hạn (s.lives.inf_until, unix giây; 0 = không có).
 static func infinite(s: Dictionary, now: int) -> bool:
-	return int((s.get("lives", {}) as Dictionary).get("inf_until", 0)) > now
+	return forever(s) or int((s.get("lives", {}) as Dictionary).get("inf_until", 0)) > now
 
 
-## Số giây mạng vô hạn còn lại; 0 khi hết hoặc không có.
+## Mạng vô hạn vĩnh viễn (gói `inf_forever` trong Config.SKUS: Starter Pack, Great Pack).
+static func forever(s: Dictionary) -> bool:
+	return bool((s.get("lives", {}) as Dictionary).get("inf_forever", false))
+
+
+static func grant_forever(s: Dictionary) -> void:
+	(s.lives as Dictionary)["inf_forever"] = true
+
+
+## Số giây mạng vô hạn có hạn còn lại; 0 khi hết hoặc không có (không tính `forever`).
 static func infinite_left(s: Dictionary, now: int) -> int:
 	return maxi(0, int((s.get("lives", {}) as Dictionary).get("inf_until", 0)) - now)
 

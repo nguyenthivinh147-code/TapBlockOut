@@ -482,14 +482,14 @@
     "prompt_id": "7b2d04be-a37e-44f8-9efd-87548b91e009",
     "source": "art/images/icon_app_candy.png",
     "source_sha256": "ba7c2c975882b5312f715a24e6efc29fc62dcb0e4176ee02c5a77258ac1d34f1",
-    "concepts": "art/concepts/concept_icon_app_v1.png, v2_L, v3_bg, v4_streak (nguoi dung chon cot 2 cua v4_streak)",
+    "concepts": "art/concepts/concept_icon_app_v1.png, v2_L, v3_bg, v4_streak (nguoi dung chon cot 2 cua v4_streak), v5_zoom (2026-11-10, chu the nho qua: nguoi dung chon cot 3, zoom 1,35x)",
     "file": "assets/icon_app.png",
-    "file_sha256": "4c202f804a37c7b3c172cbda434bb162fd2db311b36ceb61e62cd10b98ce2c53",
+    "file_sha256": "ce801d2ff5fe5776536e42fbfad1c42968f35cea3f4dd0dfbea8b98835fb0109",
     "file_size": [
       512,
       512
     ],
-    "note": "Chuoi tao (file trung gian o D:/GameProjects/candy_icon): t2i seed 31013 (khoi S bay khoi khay, nen hong) -> edit 31023 (khoi T) -> 31033 (L vang lien khoi, lay chat lieu tu icon_b_pop_T) -> 31041 (dung hinh chu L, chan o duoi) -> 31051 (L hong dam to hon, khay nho nhat mo, bo vien hong) -> 31071 (vet trang truot duoi khoi). tools/make_app_icon.gd --mono sinh icon_app 512, icon_main_192, icon_adaptive_bg_432 (gradient mau mep anh), icon_adaptive_fg_432 (ca anh 272 px giua lop, mep mo dan) va icon_adaptive_mono_432 (L phang ve bang SDF)"
+    "note": "Chuoi tao (file trung gian o D:/GameProjects/candy_icon): t2i seed 31013 (khoi S bay khoi khay, nen hong) -> edit 31023 (khoi T) -> 31033 (L vang lien khoi, lay chat lieu tu icon_b_pop_T) -> 31041 (dung hinh chu L, chan o duoi) -> 31051 (L hong dam to hon, khay nho nhat mo, bo vien hong) -> 31071 (vet trang truot duoi khoi). Tu 2026-11-10 cat vuong 750 px tu (187, 5) cua anh goc (--crop=187,5,750 --fg=288, bo khay, khoi L cao ~77% icon). tools/make_app_icon.gd --mono sinh icon_app 512, icon_main_192, icon_adaptive_bg_432 (gradient mau mep anh), icon_adaptive_fg_432 (vung cat 288 px giua lop = vung 72 dp nhin thay, mep mo dan) va icon_adaptive_mono_432 (L phang ve bang SDF)"
   },
   {
     "manifest": "images",
@@ -1090,57 +1090,67 @@
     "manifest": "images",
     "name": "avatar_11",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=icon)",
-    "workflow": "image_qwen_image_2_1_t2i",
+    "tool": "mcp comfyui edit_game_image (anh 1 avatar_08 lam mau phong cach va bo cuc)",
+    "workflow": "image_qwen_image_2_1_image_edit",
     "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A cute round baby dragon face avatar, purple (#9B51E0) with small horns, tiny teal spikes and big friendly eyes, head only, centered",
-    "style_prompt": "Glossy casual mobile game avatar icon, cute chunky rounded shapes, vivid saturated colors, soft highlights, gentle drop shadow, head only, no body, no text, no logo, no watermark, clean uncluttered",
-    "seed": 3011,
+    "prompt": "Use <image1> as the style and layout reference. Create a new avatar icon in exactly the same style: one glossy 3D kawaii candy character centered on a flat pastel rounded-square background that fills the canvas, the same big shiny black eyes with white highlights, small pink blush cheeks and a tiny smiling mouth, the same soft studio lighting and soft contact shadow. Replace the purple wrapped candy with a cute cupcake character: a swirl of glossy pink strawberry frosting with colorful rainbow sprinkles and a shiny red cherry on top, sitting in a chocolate-brown fluted paper cup; the kawaii face is on the front of the paper cup. Change the background to a soft lilac pink color.",
+    "negative_prompt": "purple wrapped candy, text, letters, watermark, logo, border, frame, outline, multiple characters, hands, arms, body",
+    "input_paths": [
+      "assets/avatars/avatar_08.png"
+    ],
+    "reference_resolution": 1024,
+    "seed": 1101,
     "steps": 25,
     "cfg": 1,
     "use_reprompt": false,
-    "transparent_background": true,
+    "transparent_background": false,
     "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "b37af5fe-c7c5-485b-8d72-e404dd71e72d",
+    "source": "art/images/avatar_11.png",
+    "source_sha256": "ff8c0d2366d6eb7f5ab7836bb1f374fae8835c7abf8c32d7329cef88b9d8fb4f",
+    "file": "assets/avatars/avatar_11.png",
+    "file_sha256": "d6f0dad0284444bdd3318a0dc65028009585de2341f757797bb7dac521bed18c",
+    "file_size": [
       512,
       512
     ],
-    "prompt_id": "55757d09-cd10-43de-b2a0-4eb14a437642",
-    "source": "art/images/avatar_11.png",
-    "source_sha256": "e0d83ce9019de61a249684aeebb8e6c8d9fbe349ebde52aa6a207ec2ae5eeb0b",
-    "file": "assets/avatars/avatar_11.png",
-    "file_sha256": "68e7c7984e8b3939bee8ab9ca8b7296b5a9841c85a3889726292a3c1a5d7588c",
-    "file_size": [
-      256,
-      256
-    ]
+    "note": "2026-11-10: bo keo (cupcake kem dau, cherry), thay rong tim cu. Xu ly: alpha=255, Pillow LANCZOS 1024->512, alpha lay tu assets/avatars/avatar_10.png (o vuong bo goc r~130/512; mask r~113 cua avatar_08 de lo goc trang). Ban thu khac: D:/GameProjects/candy_avatar/avatar_11_b.png (macaron hong, nen xanh troi); bang so sanh art/concepts/concept_avatars_11_12.png"
   },
   {
     "manifest": "images",
     "name": "avatar_12",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=icon)",
-    "workflow": "image_qwen_image_2_1_t2i",
+    "tool": "mcp comfyui edit_game_image (anh 1 avatar_08 lam mau phong cach va bo cuc)",
+    "workflow": "image_qwen_image_2_1_image_edit",
     "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A cute round unicorn face avatar, white with a pastel rainbow mane, a golden spiral horn and sparkly eyes, head only, centered",
-    "style_prompt": "Glossy casual mobile game avatar icon, cute chunky rounded shapes, vivid saturated colors, soft highlights, gentle drop shadow, head only, no body, no text, no logo, no watermark, clean uncluttered",
-    "seed": 3012,
+    "prompt": "Use <image1> as the style and layout reference. Create a new avatar icon in exactly the same style: one glossy 3D kawaii candy character centered on a flat pastel rounded-square background that fills the canvas, the same big shiny black eyes with white highlights, small pink blush cheeks and a tiny smiling mouth, the same soft studio lighting and soft contact shadow. Replace the purple wrapped candy with a cute heart-shaped lollipop character: a glossy translucent cherry-red hard candy heart with a white candy stick below it and a small pink satin bow tied where the stick meets the heart; the kawaii face is on the heart. Change the background to a soft mint-to-aqua color.",
+    "negative_prompt": "purple wrapped candy, text, letters, watermark, logo, border, frame, outline, multiple characters, hands, arms, body",
+    "input_paths": [
+      "assets/avatars/avatar_08.png"
+    ],
+    "reference_resolution": 1024,
+    "seed": 1201,
     "steps": 25,
     "cfg": 1,
     "use_reprompt": false,
-    "transparent_background": true,
+    "transparent_background": false,
     "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "e94f3e8d-d392-477a-9dc8-596c10707905",
+    "source": "art/images/avatar_12.png",
+    "source_sha256": "de0abad42218baa84b3fb43709a1c3c13f8ab2c5ed9a063a933baf4c4e185e25",
+    "file": "assets/avatars/avatar_12.png",
+    "file_sha256": "90b3f52e521aa29a25140d6be5e9525accbc38afa4461792fa5b8033365a9b70",
+    "file_size": [
       512,
       512
     ],
-    "prompt_id": "bea72953-c6d5-4da3-bd7f-1a0878075678",
-    "source": "art/images/avatar_12.png",
-    "source_sha256": "8cbf06e0db8351205cdbec4209c60cf9634ecbd90be680bb0965caaf0c41ba55",
-    "file": "assets/avatars/avatar_12.png",
-    "file_sha256": "2343b178b2fc03a58ee7c89a25d1b0b203e7873cd15ebb139bc133e37003da8e",
-    "file_size": [
-      256,
-      256
-    ]
+    "note": "2026-11-10: bo keo (keo mut trai tim do, no hong), thay ky lan cu. Xu ly nhu avatar_11 (mask avatar_10). Ban thu khac: D:/GameProjects/candy_avatar/avatar_12_b.png (truffle socola coc giay vang, nen cam dao); bang so sanh art/concepts/concept_avatars_11_12.png"
   },
   {
     "manifest": "images",
@@ -2707,6 +2717,48 @@
   },
   {
     "manifest": "images",
+    "name": "lb_howto_1",
+    "status": "used",
+    "tool": "tools/render_lb_howto.gd (ve trong Godot tu art cua game, khong AI)",
+    "source": "art/images/lb_piece_cube.png; khoi keo va khoi crystal ve bang scenes/board_view.tscn",
+    "file": "assets/ui/lb_howto_1.png",
+    "file_sha256": "f421c4cf23bd44e670b50a28ded4d9b862fbd4235f016ac40dd3c0758bf039f5",
+    "file_size": [
+      512,
+      512
+    ],
+    "note": "2026-11-10: anh buoc 1 popup Cach hoat dong cua Leaderboard (popup_lb_howto), thay ic_league1 cua prefab Unity. Khay ban 4x2 o, khoi crystal hang tren, manh (lb_piece) bat ra tu khoi crystal. Ve 1024 roi thu 512, WebP lossy 0.9 (tools/compress_textures.gd)"
+  },
+  {
+    "manifest": "images",
+    "name": "lb_howto_2",
+    "status": "used",
+    "tool": "tools/render_lb_howto.gd (ve trong Godot tu art cua game, khong AI)",
+    "source": "art/images/lb_piece_cube.png; chu +1 bang font assets/fonts/baloo.res",
+    "file": "assets/ui/lb_howto_2.png",
+    "file_sha256": "b458c88d3ea6171b480e7cb4dd0c4177290ae8e909e0b6eee734913c8a1b24df",
+    "file_size": [
+      512,
+      512
+    ],
+    "note": "2026-11-10: anh buoc 2 popup Cach hoat dong, thay ic_league3. Manh (lb_piece) va +1: moi manh 1 diem xep hang"
+  },
+  {
+    "manifest": "images",
+    "name": "lb_howto_3",
+    "status": "used",
+    "tool": "tools/render_lb_howto.gd (ve trong Godot tu art cua game, khong AI)",
+    "source": "assets/ui/cc/ic_Silver.png, assets/ui/cc/ic_Gold.png, Resources_moved_UI_Maincenter:UI_Maincenter_3 (gold), assets/ui/booster_hint.png",
+    "file": "assets/ui/lb_howto_3.png",
+    "file_sha256": "1fc347668d806d51b7d7370f12116087b4671bb46df9a50e1349d5cf039c138b",
+    "file_size": [
+      512,
+      512
+    ],
+    "note": "2026-11-10: anh buoc 3 popup Cach hoat dong, thay ic_league2. Cup Bac, cup Vang voi mui ten len, thuong giai Vang nhu popup Len giai (gold, Goi y). Hinh nam tren ~83% chieu cao vi chu cua buoc de len day anh"
+  },
+  {
+    "manifest": "images",
     "name": "lb_banner",
     "status": "superseded",
     "tool": "mcp comfyui start_game_image (asset_type=background, style=3d_render)",
@@ -3626,5 +3678,205 @@
     "file_sha256": "e59e806573b2e7a6986dda54915e39fc480e91d01fa4fd4fee3479f7de18f931",
     "file_size": [192, 192],
     "note": "2026-11-09: icon Win Streak o cot trai Home (scenes/home.tscn, thay ic_star1) va o khung tinh nang ke tiep cua the thang (win_card FEATURE_ICONS). Phuong an A ngon lua keo (seed 9201), C keo mut boc lua (seed 9203) o D:/GameProjects/candy_home_icons. tools/fit_icon.gd --size=192 --margin=0.02"
-  }
+  },
+  {
+    "manifest": "images",
+    "name": "art_level_pack",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (anh 1 LimitedPack, anh 2-4 booster_hint, booster_move, booster_smash)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Edit <image1>. Keep the big blue gift box with the orange ribbon bow and the pile of gold coins exactly as they are: same camera, composition, size, position, colors and glossy painted cartoon style. Remove the red-blue horseshoe magnet with the yellow arrow tile, remove the pink keypad block, and remove the red heart with the infinity sign. In their places put the three game boosters, redrawn in the same glossy painted style as the gift box and coins of <image1> so they blend into the scene: on the left in front of the box, the yellow light bulb with pink screw base and short rays from <image2>; on the right in front of the box, the lime green gummy candy \"+3\" from <image3>; in the front center, leaning on the coins, the pink swirl lollipop hammer from <image4>. Each booster about as big as the removed items, slightly overlapping the coins. No other new objects, no text other than the \"+3\".",
+    "negative_prompt": "magnet, horseshoe magnet, keypad, calculator, heart, infinity sign, arrow tile, extra text, letters, watermark, background scene, blurry, cropped, duplicate boosters",
+    "input_paths": ["assets/ui/cc/LimitedPack.png", "assets/ui/booster_hint.png", "assets/ui/booster_move.png", "assets/ui/booster_smash.png"],
+    "seed": 9401,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [1024, 1024],
+    "prompt_id": "5330bb4a-123a-4f02-b640-b3dae1c56e5e",
+    "source": "art/images/level_pack_popup_ai.png",
+    "source_sha256": "542f3135cf4bb00e8c1418a125732b3c9342eaa56921d7d56df8d13a39247b87",
+    "reference": "assets/ui/cc/LimitedPack.png (bo cuc), assets/ui/booster_*.png (booster)",
+    "file": "assets/ui/art_level_pack.png",
+    "file_sha256": "7c544c33a619f3135f74c55d8c68a4c086f9b103f2be7adb2487b6ebe7ad018a",
+    "file_size": [512, 512],
+    "note": "2026-11-10: anh popup Level Pack (PopupFlashPack Panel/Content/Image, popup_offer.gd PACK_ART), thay booster Unity bang 3 booster cua game. Phuong an B (seed 9402, bua keo to hon o truoc) o D:/GameProjects/candy_level_pack. tools/fit_icon.gd --size=512 --margin=0.02, roi tools/recolor_outline.gd -- assets/ui/art_level_pack.png assets/ui/art_level_pack.png hammer:195,245,160,170 plus3:280,150,195,180 bulb:60,135,135,210 (vien booster den / xanh dam / do man doi sang nau #5A2A0A nhu vien gold va hop qua; nguoi dung yeu cau). Thu edit_game_image to lai vien (seed 9421, 9431) thi AI doi ca mau to (de bong den thanh nau), bo"
+  },
+  {
+    "manifest": "images",
+    "name": "art_level_pack_shop",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (anh 1 Resources_moved_SpecialPack, anh 2-4 booster_hint, booster_move, booster_smash)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Edit <image1>. Keep the purple shopping bag full of gold coins and the pile of gold coins around it exactly as they are: same camera, composition, size, position, colors and glossy painted cartoon style. Remove the red-blue horseshoe magnet with the yellow arrow tile, remove the pink keypad block, and remove the red heart with the infinity sign. In their places put the three game boosters, redrawn in the same glossy painted style as the bag and coins of <image1> so they blend into the scene: on the left in front of the bag, the yellow light bulb with pink screw base and short rays from <image2>; on the right in front of the bag, the lime green gummy candy \"+3\" from <image3>; in the front center, leaning on the coins, the pink swirl lollipop hammer from <image4>. Each booster about as big as the removed items, slightly overlapping the coins. No other new objects, no text other than the \"+3\".",
+    "negative_prompt": "magnet, horseshoe magnet, keypad, calculator, heart, infinity sign, arrow tile, extra text, letters, watermark, background scene, blurry, cropped, duplicate boosters",
+    "input_paths": ["assets/ui/cc/Resources_moved_SpecialPack.png", "assets/ui/booster_hint.png", "assets/ui/booster_move.png", "assets/ui/booster_smash.png"],
+    "seed": 9411,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [1024, 1024],
+    "prompt_id": "1cd86233-f9f0-4d5c-b0bc-d7fa3f047c9c",
+    "source": "art/images/level_pack_shop_ai.png",
+    "source_sha256": "0be61cd0a21f286098a1b7afd2d356b0f417accd231326386c7ac93779460c49",
+    "reference": "assets/ui/cc/Resources_moved_SpecialPack.png (bo cuc), assets/ui/booster_*.png (booster)",
+    "file": "assets/ui/art_level_pack_shop.png",
+    "file_sha256": "b44fb24933604f47985e01ff3162484270555c811598d57b0a620412a5ea1f2a",
+    "file_size": [512, 512],
+    "note": "2026-11-10: anh the Level Pack trong Shop (ShopCashLayer SpecialPack/Image (2), shop.gd PACK_ART), thay booster Unity bang 3 booster cua game. tools/fit_icon.gd --size=512 --margin=0.02, roi tools/recolor_outline.gd -- assets/ui/art_level_pack_shop.png assets/ui/art_level_pack_shop.png hammer:130,215,170,170 plus3:280,180,195,175 bulb:60,135,140,210 (vien booster doi sang nau #5A2A0A nhu vien gold va tui tim)"
+  },
+  {
+    "manifest": "images",
+    "name": "art_starter_pack",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (anh 1 StarterPack, anh 2-4 booster_hint, booster_move, booster_smash)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Edit <image1>. Keep the blue gift box with the big orange bow and the pile of gold coins around it exactly as they are: same camera, composition, size, position, colors and glossy painted cartoon style. Remove the red-blue horseshoe magnet with the lightning sparks and the yellow arrow tile on the left, remove the pink keypad block on the right, and remove the red heart with the infinity sign in the front. In their places put the three game boosters, redrawn in the same glossy painted style as the box and coins of <image1> so they blend into the scene: on the left in front of the box, the yellow light bulb with pink screw base and three short rays from <image2>; on the right in front of the box, the lime green gummy candy \"+3\" from <image3>; in the front center, leaning on the coins, the pink candy hammer from <image4>: a pink-and-white swirl striped candy mallet head with a small pink bow, on a white stick handle. Each booster about as big as the removed items, slightly overlapping the coins. No other new objects, no text other than the \"+3\".",
+    "negative_prompt": "magnet, horseshoe magnet, keypad, calculator, heart, infinity sign, arrow tile, lightning, extra text, letters, watermark, background scene, blurry, cropped, duplicate boosters",
+    "input_paths": [
+      "assets/ui/cc/StarterPack.png",
+      "assets/ui/booster_hint.png",
+      "assets/ui/booster_move.png",
+      "assets/ui/booster_smash.png"
+    ],
+    "seed": 9501,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "4149b61e-b324-4a4b-be58-b51ce7f5ade0",
+    "source": "art/images/starter_pack_shop_ai.png",
+    "source_sha256": "fdca988e8b76d79d183017bb1bab56fb6159dc24ca8c672d21191adfa26a4077",
+    "reference": "assets/ui/cc/StarterPack.png (bo cuc), assets/ui/booster_*.png (booster)",
+    "file": "assets/ui/art_starter_pack.png",
+    "file_sha256": "5ce34e31bffb01c4caa454e81c6ef0eadd91bfe771acb2a1cb76140ed59bc97e",
+    "postprocess": "tools/recolor_outline.gd -- assets/ui/art_starter_pack.png assets/ui/art_starter_pack.png hammer:155,240,150,180 plus3:310,215,175,160 bulb:35,160,155,200 (sau fit_icon; vien booster doi sang nau #5A2A0A nhu vien gold va hop qua, 2026-11-10). Roi dan tim vo han Resources_moved_UI_Maincenter:UI_Maincenter_16 (cat tu assets/ui/cc/Resources_moved_UI_Maincenter.png, x 0 y 259 tu tren, 256x256, cung icon o dong thuong) thu nho 145x145 (LANCZOS), tam (425,155), goc phai tren canh no: goi co mang vo han vinh vien (inf_forever, 2026-11-10); file truoc khi dan sha256 1ea28406...",
+    "file_size": [
+      512,
+      512
+    ],
+    "note": "2026-11-10: anh the Starter Pack trong Shop (ShopCashLayer StarterPack/Image (2), shop.gd PACK_ART), thay nam cham, the khoi, tim vo cuc cua Unity bang 3 booster cua game. Phuong an B (seed 9502, booster to hon) o D:/GameProjects/candy_pack_art. tools/fit_icon.gd --size=512 --margin=0.02"
+  },
+  {
+    "manifest": "images",
+    "name": "art_no_ads_bundle",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (anh 1 NoAdsPack, anh 2-4 booster_hint, booster_move, booster_smash)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Edit <image1>. Keep the red \"no ADS\" prohibition sign with the big white ADS letters and the pile of gold coins exactly as they are: same camera, composition, size, position, colors and glossy painted cartoon style. Remove the red-blue horseshoe magnet with the lightning sparks on the upper left, remove the pink keypad block on the upper right, and remove the yellow arrow tile on the lower right. In their places put the three game boosters, redrawn in the same glossy painted style as the sign and coins of <image1> so they blend into the scene: on the upper left behind the sign, the yellow light bulb with pink screw base and three short rays from <image2>; on the upper right on top of the coin pile, the lime green gummy candy \"+3\" from <image3>, well away from the ADS letters; on the lower right in front of the coins, lying diagonally, the pink candy hammer from <image4>: a pink-and-white swirl striped candy mallet head with a small pink bow, on a white stick handle. Each booster about as big as the removed items, slightly overlapping the coins, the sign stays in front and fully visible. No other new objects, no text other than \"ADS\" and \"+3\".",
+    "negative_prompt": "magnet, horseshoe magnet, keypad, calculator, heart, infinity sign, arrow tile, lightning, extra text, letters, watermark, background scene, blurry, cropped, duplicate boosters, +3 next to ADS",
+    "input_paths": [
+      "assets/ui/cc/NoAdsPack.png",
+      "assets/ui/booster_hint.png",
+      "assets/ui/booster_move.png",
+      "assets/ui/booster_smash.png"
+    ],
+    "seed": 9514,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "reference_resolution": 1024,
+    "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "bfab73b8-9bc9-49ed-b975-7e15472a9b14",
+    "source": "art/images/no_ads_bundle_ai.png",
+    "source_sha256": "9d4a092df52a18aa0c2e196be440a189afb5035f42df45da00f1410da9c95be1",
+    "reference": "assets/ui/cc/NoAdsPack.png (bo cuc), assets/ui/booster_*.png (booster)",
+    "file": "assets/ui/art_no_ads_bundle.png",
+    "file_sha256": "f1497a92c6de04b4e10e43a76e01b6e45a5ad37cefa3cfd846a979e7cd247398",
+    "postprocess": "tools/recolor_outline.gd -- assets/ui/art_no_ads_bundle.png assets/ui/art_no_ads_bundle.png hammer:308,235,197,190 plus3:265,60,180,170 bulb:55,90,120,190 (sau fit_icon; vien booster doi sang nau #5A2A0A nhu vien gold, bien ADS giu nguyen, 2026-11-10)",
+    "file_size": [
+      512,
+      512
+    ],
+    "note": "2026-11-10: anh the No Ads Bundle (Shop_RemoveAdsBundle/Image (2) trong ShopCashLayer va PopupRemoveAds, shop.gd PACK_ART qua fill_no_ads_bundle), thay nam cham, the khoi, the mui ten cua Unity bang 3 booster cua game. \"+3\" dat tren dong gold, xa chu ADS (ban dau dat canh chu S doc thanh \"ADS+3\"; seed 9511, 9512 o D:/GameProjects/candy_pack_art). tools/fit_icon.gd --size=512 --margin=0.02"
+  },
+  {
+    "manifest": "images",
+    "name": "concept_choco_v1",
+    "status": "concept",
+    "tool": "mcp comfyui edit_game_image (thanh tren cat tu art/concepts/ref_board_scale.png, icon theo style booster_hint) + Pillow ghep sheet",
+    "file": "art/concepts/concept_choco_v1.png",
+    "note": "2026-11-10: co che Socola (L150). 3 bien the kieu (a) socola long nho giot: A sua, B den bong, C sua + caramel; moi cot co thanh 2 lop, 4 lop, huy hieu so, icon 3 co. Nguoi dung chon A. Anh goc o D:/GameProjects/candy_choco/, ban thu nho o art/concepts/choco/"
+  },
+  {
+    "manifest": "images",
+    "name": "mech_choco",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (style booster_hint)",
+    "source": "art/images/mech_choco.png",
+    "source_sha256": "0751d51b397ee8cbcfcd3f3cc650a35de639fd3d4d47f3a4b169f175d9ed195f",
+    "file": "assets/ui/mech_choco.png",
+    "file_sha256": "026e4c6669c65d3475d395e367ba22284ff092f9adb4897ed10058fbb3a97d86",
+    "file_size": [128, 128],
+    "note": "2026-11-10: icon popup co che Socola (L150): vien keo vang phu socola sua chay giot, bien the A cua concept_choco_v1 (icon_a o D:/GameProjects/candy_choco/). tools/fit_icon.gd --size=128 --margin=0.06 --floor=12 (nen con lop mo alpha 5-8 o goc tren trai)"
+  },
+  {
+    "manifest": "audio",
+    "id": "sfx_choco",
+    "tool": "comfyui MCP start_game_audio/collect_game_audio",
+    "workflow": "audio_stable_audio_3_medium_base (Stable Audio 3 Medium Base)",
+    "category": "SFX",
+    "seconds_generated": 2,
+    "seed": 4152,
+    "steps": 50,
+    "use_reprompt": false,
+    "prompt": "crisp chocolate shell cracking, a quick brittle snap followed by tiny crumbs, satisfying ASMR, close microphone, short, no music, no reverb",
+    "negative_prompt": "harsh, loud, noisy, distorted, music, speech, long tail, glass, metal, wood, paper, tearing, explosion",
+    "prompt_id": "be8fb2fe-dee9-47a8-b1bd-8763175cdc82",
+    "source": "art/audio/sfx_choco.mp3",
+    "source_format": "mp3",
+    "source_sha256": "630262aec204f39427aa8db90e72b2b8594c4c7c0dd6d942ff937fcbfc5ad446",
+    "output": "assets/sfx/sfx_choco.wav",
+    "output_sha256": "13c834a2611a8b0468a3614505800636bdf4a6dc90b8931ab0d2498f51e98377",
+    "output_bytes": 26504,
+    "processing": {"format": "wav mono 44.1kHz 16-bit", "seconds": 0.3, "max_seconds": 0.3, "peak_db": -3.0,
+      "rms_db": -27.42, "steps": "tools/process_sfx.gd --max=0.3: trim silence, cap length, fade, normalize peak -3 dBFS"},
+    "note": "2026-11-10: socola bot mot lop (BoardView._chip_choco, Sfx.play_or(\"choco\", \"layer\"), lop chua phai lop cuoi nho hon 4 dB). Ban c trong 3 seed 4150-4152 (b la tieng on deu, a nhieu cum roi rac); lay cu be dau tien 0,3 s. Chua nghe bang tai"
+  },
+  {
+    "manifest": "images",
+    "name": "lb_promo_box",
+    "status": "used",
+    "tool": "mcp comfyui edit_game_image (tham chieu art/images/hud_moves_panel_ai.png)",
+    "workflow": "image_qwen_image_2_1_image_edit",
+    "model": "qwen_image_2.1_int8_convrot",
+    "prompt": "Using the exact glossy jelly-candy style of <image1>, draw one very wide empty panel, 4:1, for a casual candy puzzle game leaderboard. Shape: a long rounded rectangle with straight edges and rounded corners (corner radius about 1/4 of the panel height), filling the canvas width with a small even margin. Rim: a thick glossy golden caramel candy rim all the way around, honey-gold with a bright highlight on top and a warm amber shade at the bottom, its thickness about 1/8 of the panel height. Inside the rim: one smooth glossy midnight-blue jelly panel like the jelly of <image1>, navy-to-indigo gradient from top to bottom, slightly recessed, small soft white glossy highlight in the upper left corner, completely plain and empty for text, no texture, no noise. The panel looks the same all along its length so it can be stretched horizontally. Front view, transparent background, no text.",
+    "negative_prompt": "text, letters, icons, trophies, stars, sprinkles, pattern inside, noise, grid, seams, background",
+    "seed": 8103,
+    "steps": 25,
+    "cfg": 1,
+    "use_reprompt": false,
+    "transparent_background": true,
+    "custom_size": true,
+    "generated_size": [2048, 512],
+    "prompt_id": "c0d3ef28-b64b-4ed0-890a-bf0c86257745",
+    "source": "art/images/lb_promo_box_c.png",
+    "source_sha256": "c67a44644d6790e0b7e952caf062f1247fa210624e2f9e2ef909b0f655685b7d",
+    "file": "assets/ui/lb_promo_box.png",
+    "file_sha256": "ad351c60755a2d05e3f16a69d65f685ad0773f02119c78f8a50939f7b654d441",
+    "file_size": [248, 240],
+    "note": "2026-11-10: nen BoxBg cua PromoBox (tab League) va the nguoi choi (tab World) trong popup Leaderboard, thay o navy UI_Leaderboard_Atlas_10. Nguoi dung chon c (thach xanh dem vien caramel) trong art/concepts/concept_lb_promo_box_v1.png; a (thach nho tim, seed 8101) va b (vien keo gay trang xanh, seed 8102, tham chieu them warn_frame_hard) chi con o D:/GameProjects/lb_promo_box/. uv run -q --with pillow --with numpy python tools/make_lb_promo_box.py: lap alpha long panel, cat, cao 240, lam min van long thach (mo chi tinh diem thach), dung 9-slice hai dau 120 px + cot giua trung vi. Border trong scene (120, 119, 120, 119), border_scale 0.75 (PromoBox cao 180) va 0.875 (the cao 210)."
+  },
+  {"manifest": "images", "name": "concept_pop_v1", "status": "concept", "tool": "mcp comfyui start_game_image (asset_type=icon, transparent) + Pillow ghep len ban that (scratch BoardView)", "file": "art/concepts/concept_pop_v1.png", "note": "2026-11-10: Bom keo (L220). 3 phuong an ngoi: A cam thao do xoan tia phao que, B cam thao phu duong hat keo no, C ong cam thao dau sang; ban dau cua B ra hinh moc keo gay nen tao lai (fuse_b2). Nguoi dung chon A. Anh goc o art/concepts/pop/fuse_a.png, fuse_b.png, fuse_c.png va D:/GameProjects/candy_pop/"},
+  {"manifest": "images", "name": "concept_pop_v2", "status": "concept", "tool": "mcp comfyui edit_game_image (tham chieu art/concepts/pop/fuse_a.png) + Pillow ghep len ban that", "file": "art/concepts/concept_pop_v2.png", "note": "2026-11-10: ngoi A to va ngan hon, dat o goc tren trai cua khoi (nua dau ngoi lan ra ngoai), co 1,3 va 1,6 o. A1 ve san dang nghieng (art/concepts/pop/fuse_a_lean.png), A2 dang dung xoay 35 do trong code (art/concepts/pop/fuse_a_short.png). Nguoi dung chon A2, cao 1,6 o."},
+  {"manifest": "images", "name": "pop_fuse", "status": "used", "tool": "mcp comfyui edit_game_image (tham chieu art/concepts/pop/fuse_a_short.png)", "workflow": "image_qwen_image_2_1_image_edit", "prompt": "Keep the candy fuse from <image1> exactly the same (same twisted glossy red licorice rope, same round dark-red collar base, same shape, size, angle, colors and lighting), but REMOVE all the sparkler sparks, spark streaks and glints above the tip. The open tip of the licorice rope ends with a small warm glowing orange-yellow ember, softly lit, with nothing flying out of it. Single isolated asset, centered, plain background.", "negative_prompt": "sparks, spark streaks, fireworks, sparkler, glints, stars, flame, smoke, bomb, text", "transparent_background": true, "reference_resolution": 1024, "prompt_id": "b4ff482e-cdce-4c82-81b4-df174f22942f", "source": "art/images/pop_fuse.png", "source_sha256": "b200b235c412dcd79c753b6f04501c4b9ee5f0fe81049be91d39eaad23ccba8d", "file": "assets/ui/pop_fuse.png", "file_sha256": "e1ef86c399fc915a4233a20fb084afdae6a88cf7ae59c4fc5aee4ce32292a5c9", "file_size": [91, 256], "note": "2026-11-10: ngoi bom keo tren ban (src/ui/pop_fuse.gd, ban A2 cua concept_pop_v2): anh dang dung, xoa tia co san vi tia ve bang code. Pillow: cat sat alpha > 24, cao 256. Dau ngoi o (0,675; 0,02) theo ti le anh (PopFuse.TIP)."},
+  {"manifest": "images", "name": "mech_pop", "status": "used", "tool": "mcp comfyui edit_game_image (<image1> art/images/mech_choco.png lay style, <image2> art/concepts/pop/fuse_a_short.png)", "workflow": "image_qwen_image_2_1_image_edit", "prompt": "In the exact glossy 3D candy style, camera angle and lighting of <image1>, draw one plump glossy yellow hard-candy cube with soft rounded edges and a bright highlight, WITHOUT any chocolate. Stick a BIG chunky twisted red licorice fuse like <image2> into the top-left corner of the candy cube: the fuse is about as tall as the candy cube itself and thick, leaning toward the upper-left, with its round red collar sitting on the candy. The fuse tip burns with a bright golden-white sparkler spray of thin sparks. The candy and fuse together fill the frame, centered, transparent background, no text.", "prompt_id": "ae010194-04ba-4374-91ce-72f735e72b30", "source": "art/images/mech_pop.png", "source_sha256": "e0e193cbc525257361eb983cab3421a9a75c21cb4889ccb5b55fbd8bb7de2f59", "file": "assets/ui/mech_pop.png", "file_sha256": "7c4984d6ae042a32ceed2043dca4783d44e535a34cfcb8d7cb2f828c4a30ff5b", "file_size": [128, 128], "note": "2026-11-10: icon popup BOM KEO! (L220) va the thang. Ban b (ngoi to) trong 2 ban o D:/GameProjects/candy_pop/ (icon_a ngoi nho). tools/fit_icon.gd --size=128 --margin=0.06 --floor=12"},
+  {"manifest": "audio", "id": "sfx_pop", "tool": "comfyui MCP start_game_audio/collect_game_audio", "workflow": "audio_stable_audio_3_medium_base (Stable Audio 3 Medium Base)", "category": "SFX", "seconds_generated": 2, "seed": 2202, "steps": 50, "use_reprompt": false, "prompt": "popping candy crackle: one soft candy pop followed by a quick fizzy crackle of tiny sugar crystals popping and sizzling, like pop rocks candy on the tongue, bright and playful, satisfying ASMR, close microphone, short, no music, no reverb", "negative_prompt": "explosion, bomb, gunshot, harsh, loud, distorted, music, speech, long tail, glass shattering, metal, firework whistle", "prompt_id": "28f3905d-ff1c-409e-875b-13ea5acc5574", "source": "art/audio/sfx_pop.mp3", "source_format": "mp3", "source_sha256": "7a4c929df858d5bb9c2efaf7798eb01458553ac2b8648d34a1d826c6f99c3ebf", "output": "assets/sfx/sfx_pop.wav", "output_sha256": "f4d8fe60443b91188f3aef24b7c63ed9f7b26d6a9895e1d4530e6be2400907aa", "processing": {"format": "wav mono 44.1kHz 16-bit", "seconds": 1.0, "max_seconds": 1.0, "peak_db": -3.0, "rms_db": -32.3, "steps": "tools/process_sfx.gd --max=1.0: trim silence, cap length, fade, normalize peak -3 dBFS"}, "note": "2026-11-10: bom keo no (BoardView._pop_blast, Sfx.play_or(\"pop\", \"shatter\"), rung HAPTIC_MS.pop 25 ms). Ban b trong 3 seed 2201-2203: mot tieng bop roi lach tach rai rac (a phai 0,3 s moi keu, c co khoang lang giua). Chua nghe bang tai"}
 ]

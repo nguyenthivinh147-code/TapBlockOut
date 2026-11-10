@@ -19,6 +19,7 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const UButton := preload("res://src/ui/u_button.gd")
 const UiMotion := preload("res://src/ui/ui_motion.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 
 const LOSS := "Panel/LossPanel"
 ## The art_lose icon inside the frame (scenes/lose_card.tscn); its child %Tear is the tear tools/split_tear.gd took off.
@@ -222,6 +223,8 @@ func _on_pack_pressed() -> void:
 	if status == "ok" and bool(r.get("granted", false)):
 		_show_msg(tr("shop_buy_ok"))
 		if _pack_box != null:
+			# The pack's booster flies from its picture to its button on the level behind (RewardFly).
+			RewardFly.launch(self, RewardFly.sku_reward("rescue_pack"), {"move": _pack_box.get_node_or_null("Image (2)")})
 			_pack_box.visible = false
 	elif status == "pending":
 		_show_msg(tr("shop_buy_pending"))

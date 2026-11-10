@@ -5,10 +5,12 @@ extends Node
 ## khung được đếm (đang chơi, không popup, không búa hay sao Gợi ý đang bay, app không ở nền).
 ## Số trên bom = làm tròn lên số giây còn lại, chỉ đổi khi sang số nguyên khác. Còn warn_sec giây: ngòi toé lửa, bom
 ## phồng nhịp và đỏ dần, tiếng tích tắc mỗi giây. Gỡ (khối mang bom rời bàn): quả đó tắt hẳn, số ẩn, tiếng tách và
-## lấp lánh. Nổ: explode(id) ẩn bom, toé mảnh kẹo, loé sáng, rung bàn và rung máy.
+## lấp lánh. Nổ: explode(id) ẩn bom, mặt kính màn hình nứt vỡ (glass_crack.gd), toé mảnh kẹo, loé sáng, rung bàn và
+## rung máy.
 
 const Config := preload("res://src/config.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const GlassCrack := preload("res://src/ui/glass_crack.gd")
 
 const BOMB_TEX := "res://assets/ui/special_bomb.png"
 ## Đầu ngòi (ngôi sao) trong ảnh bom, theo tỉ lệ khung ảnh.
@@ -188,8 +190,8 @@ func stop_all() -> void:
 			(b.sparks as CPUParticles2D).emitting = false
 
 
-## Quả `id` nổ: ẩn bom và số, toé mảnh kẹo và loé sáng ở chỗ bom trên `fx_parent` (lớp phủ của màn), rung `shake`
-## (khung bàn) và rung máy.
+## Quả `id` nổ: ẩn bom và số; trên `fx_parent` (lớp phủ của màn) mặt kính nứt toả ra từ chỗ bom, giữ tới lúc popup
+## "Bùm!" hiện (boom_popup_sec) rồi mờ dần, toé mảnh kẹo và loé sáng; rung `shake` (khung bàn) và rung máy.
 func explode(id: String, fx_parent: Control, shake: Control) -> void:
 	if not _bombs.has(id):
 		return
@@ -204,6 +206,10 @@ func explode(id: String, fx_parent: Control, shake: Control) -> void:
 	if fx_parent == null:
 		return
 	var local := fx_parent.get_global_transform().affine_inverse() * center
+	# Under the flash and debris, so the blast shines over the cracked glass.
+	var crack := GlassCrack.new()
+	crack.setup(fx_parent.size, local, float(Config.SPECIAL.boom_popup_sec))
+	fx_parent.add_child(crack)
 	var flash := BoomFlash.new()
 	flash.position = local
 	flash.radius = side * 2.4

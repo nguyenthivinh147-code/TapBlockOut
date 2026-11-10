@@ -20,6 +20,8 @@ const HubNav := preload("res://src/ui/hub_nav.gd")
 const RoadTrip := preload("res://src/meta/road_trip.gd")
 const RoadTripMap := preload("res://src/ui/road_trip_map.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UiTween := preload("res://src/ui/ui_tween.gd")
+const UiMotion := preload("res://src/ui/ui_motion.gd")
 const LevelScene := preload("res://scenes/level.tscn")
 ## Màn chuyển cảnh nắp hộp quà khi vào level và về bản đồ (main.gd curtain_swap).
 const GiftCurtain := preload("res://src/ui/gift_curtain.gd")
@@ -40,8 +42,32 @@ const TIERS := {
 }
 const CHIP_FILL := Color("7BD43A")
 const CHIP_TRACK := Color("4A2C7A")
+## 9-slice margins of the turned blue tile (150x168): rounded lip on the left, flat right edge against the screen edge.
+const CHIP_BG_MARGIN := Vector4(36, 32, 4, 32)
 ## Bong bóng thưởng của hộp: tự ẩn sau BUBBLE_SEC.
 const BUBBLE_SEC := 2.5
+## Mở màn (_enter, design.md mục 7 "Road Trip"): bản đồ cuộn từ SCROLL_FROM chiều cao vùng bản đồ phía dưới lên tới mốc
+## hiện tại trong SCROLL_SEC (chậm dần); nút Level bật vào sau PLAY_POP_DELAY s; hộp đang nhắm bật vào sau
+## BOX_APPEAR_DELAY s (RoadTripMap.appear). Chip tiến độ chờ ngoài mép phải tới CHIP_DELAY s (qua lúc trượt tab, để thấy
+## nó tự trượt), trượt vào trong CHIP_SLIDE_SEC, chạm chỗ thì dẹt ra CHIP_LAND quanh mép màn rồi nảy về trong
+## CHIP_LAND_SEC; sau đó thanh chạy từ 0 tới tiến độ trong CHIP_FILL_SEC, chạy xong thì icon hộp nảy CHIP_ICON_POP.
+## Vệt sáng quét nút Level lần đầu sau PLAY_SHINE_DELAY s; icon hộp trong chip lắc (UiMotion.WOBBLE) lần đầu sau
+## CHIP_WOBBLE_DELAY s.
+const SCROLL_FROM := 0.6
+const SCROLL_SEC := 0.7
+const PLAY_POP_DELAY := 0.15
+const BOX_APPEAR_DELAY := 0.45
+const CHIP_DELAY := 0.4
+const CHIP_SLIDE_SEC := 0.5
+const CHIP_LAND := 0.14
+const CHIP_LAND_SEC := 0.35
+const CHIP_FILL_SEC := 0.5
+const CHIP_ICON_POP := 1.3
+const PLAY_SHINE_DELAY := 1.0
+const CHIP_WOBBLE_DELAY := 2.0
+## Về bản đồ sau level (_close_level): màn chuyển cảnh mở ra rồi (chừng RETURN_DELAY s) thì thanh trên, thanh dưới trượt
+## vào, thanh chip chạy từ tiến độ cũ tới mới; vừa mở hộp thì hộp kế bật vào.
+const RETURN_DELAY := 0.35
 const BOOSTER_ICON := {"hint": "booster_hint", "smash": "booster_smash", "move": "booster_move"}
 
 var map: Control = null
@@ -67,12 +93,15 @@ var _view: Dictionary = {}
 var _bubble_token: int = 0
 ## Level đang chơi lúc mở level (để mũi tên trượt khi quay về).
 var _from_level: int = 0
+## Tỉ lệ thanh chip đang vẽ trong lúc nó chạy (_run_chip); -1 là theo tiến độ thật.
+var _chip_shown: float = -1.0
+var _chip_tw: Tween = null
 
 
 func setup(_args: Dictionary = {}) -> void:
 	_build()
 	refresh()
-	_scroll_to_current.call_deferred()
+	_enter.call_deferred()
 
 
 func _ready() -> void:
@@ -106,7 +135,7 @@ func _build() -> void:
 	_chip_fill = %ChipFill
 	(%ChipTrack as Panel).add_theme_stylebox_override("panel", _round_box(CHIP_TRACK, 20))
 	_chip_fill.add_theme_stylebox_override("panel", _round_box(CHIP_FILL, 20))
-	(chip as Panel).add_theme_stylebox_override("panel", UiAtlas.box("panel_purple_star", Vector4(30, 30, 30, 24)))
+	(chip as Panel).add_theme_stylebox_override("panel", UiAtlas.box_cw("tile_blue_mc", CHIP_BG_MARGIN))
 	play_button = %PlayButton
 	play_button.pressed.connect(_on_play)
 	play_label = %PlayLabel
@@ -116,6 +145,11 @@ func _build() -> void:
 	_top.action.connect(_act)
 	_nav = %NavBar as HubNav
 	_nav.tab.connect(_on_tab)
+	if not UnityUI.baking:
+		# A light band sweeps the Level button like Play on Home; the box in the chip wobbles now and then.
+		UiMotion.attach(play_button, UiMotion.SHINE, PLAY_SHINE_DELAY)
+		chip_icon.pivot_offset_ratio = Vector2(0.5, 0.5)
+		UiMotion.attach(chip_icon, UiMotion.WOBBLE, CHIP_WOBBLE_DELAY)
 	for sig in [Game.coins_changed, Game.lives_changed, Game.inv_changed]:
 		(sig as Signal).connect(_on_game_changed)
 
@@ -177,14 +211,87 @@ func refresh() -> void:
 	_layout()
 
 
-## Thanh trong chip theo tỉ lệ đã qua / khoảng.
+## Thanh trong chip theo tỉ lệ đã qua / khoảng (hoặc tỉ lệ đang chạy, _chip_shown).
 func _layout_chip() -> void:
-	var p: Vector2i = _view.get("progress", Vector2i.ZERO)
 	var track := %ChipTrack as Control
-	var f := clampf(float(p.x) / float(p.y), 0.0, 1.0) if p.y > 0 else 0.0
+	var f := _chip_shown if _chip_shown >= 0.0 else _chip_ratio(_view.get("progress", Vector2i.ZERO))
 	_chip_fill.position = Vector2.ZERO
 	_chip_fill.size = Vector2(maxf(track.size.x * f, track.size.y if f > 0.0 else 0.0), track.size.y)
 	_chip_fill.visible = f > 0.0
+
+
+static func _chip_ratio(p: Vector2i) -> float:
+	return clampf(float(p.x) / float(p.y), 0.0, 1.0) if p.y > 0 else 0.0
+
+
+## Thanh chip chạy từ tỉ lệ `from` tới tiến độ thật sau `delay` s (chậm dần, CHIP_FILL_SEC); chạy xong thì icon hộp nảy.
+func _run_chip(from: float, delay: float) -> void:
+	if _chip_tw != null:
+		_chip_tw.kill()
+	_chip_shown = from
+	_layout_chip()
+	_chip_tw = create_tween()
+	_chip_tw.tween_method(_set_chip_shown, from, _chip_ratio(_view.get("progress", Vector2i.ZERO)), CHIP_FILL_SEC) \
+		.set_delay(delay).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_chip_tw.tween_callback(_set_chip_shown.bind(-1.0))
+	_chip_tw.tween_callback(func() -> void: UiTween.bump(chip_icon, CHIP_ICON_POP))
+
+
+## Chip vào từ mép phải sau `delay` s: trượt (không vượt, chip sát mép màn), chạm chỗ thì dẹt ra quanh mép màn rồi nảy
+## về; rồi thanh chạy từ `from`.
+func _chip_in(delay: float, from: float) -> void:
+	UiTween.slide_in_from(chip, Vector2.RIGHT, CHIP_SLIDE_SEC, delay, Tween.TRANS_CUBIC)
+	chip.pivot_offset_ratio = Vector2(1.0, 0.5)
+	var land := chip.create_tween()
+	land.tween_interval(delay + CHIP_SLIDE_SEC * 0.85)
+	land.tween_property(chip, "scale", Vector2(1.0 + CHIP_LAND, 1.0 - CHIP_LAND * 0.6), 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	land.tween_property(chip, "scale", Vector2.ONE, CHIP_LAND_SEC).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_run_chip(from, delay + CHIP_SLIDE_SEC + 0.05)
+
+
+func _set_chip_shown(f: float) -> void:
+	_chip_shown = f
+	_layout_chip()
+
+
+## Mở màn: bản đồ cuộn từ dưới lên tới mốc hiện tại; nút Level bật vào; hộp đang nhắm bật vào; chip trượt vào từ mép
+## phải, thanh chạy từ 0.
+func _enter() -> void:
+	if not is_inside_tree():
+		return
+	if UnityUI.baking:
+		_scroll_to_current()
+		return
+	_scroll_in()
+	if play_button.visible:
+		UiTween.pop_in(play_button, PLAY_POP_DELAY)
+	map.call("appear", BOX_APPEAR_DELAY)
+	if chip.visible:
+		_chip_in(CHIP_DELAY, 0.0)
+
+
+## Cuộn tới mốc hiện tại, bắt đầu từ SCROLL_FROM chiều cao vùng bản đồ phía dưới (không quá đáy bản đồ). Kéo bản đồ
+## giữa chừng thì dừng cuộn.
+func _scroll_in() -> void:
+	_scroll_to_current()
+	var target := map_scroll.scroll_vertical
+	map_scroll.scroll_vertical = target + int(map_scroll.size.y * SCROLL_FROM)
+	var from := map_scroll.scroll_vertical
+	if from <= target:
+		return
+	var st := {"at": from}
+	var tw := create_tween()
+	tw.tween_method(_scroll_step.bind(st, from, target), 0.0, 1.0, SCROLL_SEC).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	st["tween"] = tw
+
+
+func _scroll_step(f: float, st: Dictionary, from: int, target: int) -> void:
+	if map_scroll.scroll_vertical != int(st["at"]):
+		# The player scrolled: leave the map where they put it.
+		(st["tween"] as Tween).kill()
+		return
+	map_scroll.scroll_vertical = roundi(lerpf(float(from), float(target), f))
+	st["at"] = map_scroll.scroll_vertical
 
 
 ## Pill btn_play như Home: cả sprite co theo nút.
@@ -225,12 +332,14 @@ func _on_map_tapped(n: int, is_box: bool) -> void:
 		_on_play()
 
 
-## Bong bóng trên hộp ở level n: icon và số của từng vật phẩm, tự ẩn sau BUBBLE_SEC (wireframe S3).
+## Bong bóng trên hộp ở level n: icon và số của từng vật phẩm, rồi avatar hoặc frame của hộp (nếu có), tự ẩn sau
+## BUBBLE_SEC (wireframe S3).
 func _show_box_bubble(n: int) -> void:
 	Sfx.play("button")
 	if bubble != null and is_instance_valid(bubble):
 		bubble.queue_free()
 	var reward := RoadTrip.reward(RoadTrip.box_index(n))
+	var cos := RoadTrip.cosmetic(RoadTrip.box_index(n))
 	var k: float = map.get("k")
 	var panel := PanelContainer.new()
 	panel.name = "BoxBubble"
@@ -239,17 +348,23 @@ func _show_box_bubble(n: int) -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", roundi(16 * k))
 	panel.add_child(row)
-	for kind in reward:
+	var kinds: Array = reward.keys()
+	if cos != "":
+		kinds.append(cos)
+	for kind in kinds:
 		var cell := VBoxContainer.new()
 		cell.add_theme_constant_override("separation", 0)
+		# The avatar or frame shows alone (its own picture, not on the worn one).
 		var ic := TextureRect.new()
-		ic.texture = ThemeKit.icon(str(BOOSTER_ICON.get(kind, "ui_gift")))
-		ic.custom_minimum_size = Vector2(84, 84) * k
+		ic.texture = ThemeKit.icon(cos if kind == cos else str(BOOSTER_ICON.get(kind, "ui_gift")))
 		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		if kind == cos:
+			ic.name = "CosIcon"
+		ic.custom_minimum_size = Vector2(84, 84) * k
 		cell.add_child(ic)
 		var l := Label.new()
-		l.text = "x%d" % int(reward[kind])
+		l.text = "x%d" % (1 if kind == cos else int(reward[kind]))
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.add_theme_font_size_override("font_size", roundi(34 * k))
 		l.add_theme_color_override("font_color", ThemeKit.INK)
@@ -265,9 +380,13 @@ func _show_box_bubble(n: int) -> void:
 	panel.size = sz
 	var x := clampf(c.x - sz.x * 0.5, 8.0, _content.size.x - sz.x - 8.0)
 	var y := c.y - half - sz.y
-	if y < map_scroll.position.y:
+	var below := y < map_scroll.position.y
+	if below:
 		y = c.y + half
 	panel.position = Vector2(x, y)
+	# Pops out of the box: grows from its edge next to the box.
+	panel.pivot_offset_ratio = Vector2(clampf((c.x - x) / sz.x, 0.0, 1.0), 0.0 if below else 1.0)
+	UiTween.pop_in(panel)
 	_bubble_token += 1
 	var token := _bubble_token
 	get_tree().create_timer(BUBBLE_SEC).timeout.connect(func() -> void:
@@ -335,9 +454,22 @@ func _close_level() -> void:
 	Game.set_in_level(false)
 	Sfx.music(Sfx.MUSIC_HOME)
 	_content.visible = true
+	var before: Vector2i = _view.get("progress", Vector2i.ZERO)
+	var box_before: int = map.call("target_box")
 	refresh()
 	_scroll_to_current()
 	map.call("slide_markers", _from_level)
+	if UnityUI.baking:
+		return
+	# Once the curtain opened: the bars slide in, the chip bar runs on from where it was (from 0 after a box, when the
+	# next stretch starts); a box just opened brings the next one in.
+	UiTween.bars_in(_top, _nav, RETURN_DELAY)
+	if int(map.call("target_box")) != box_before:
+		map.call("appear", RETURN_DELAY + 0.2)
+	if chip.visible:
+		var after: Vector2i = _view.progress
+		var from := _chip_ratio(before) if before.y == after.y and before.x <= after.x else 0.0
+		_run_chip(from, RETURN_DELAY)
 
 
 # --- điều hướng ---

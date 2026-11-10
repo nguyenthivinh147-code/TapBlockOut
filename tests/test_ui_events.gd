@@ -217,7 +217,8 @@ func test_chain_layer(t: T) -> void:
 	await (Engine.get_main_loop() as SceneTree).process_frame
 	t.eq(int(g.s.coins), c0 + 300, "nhận bước free")
 	t.eq(node.node_states[0], "claimed", "bước 1 đã nhận")
-	t.eq(node.node_states[1], "claimable", "bước 2 nhận được")
+	t.eq(node.node_states[1], "locked", "bước 2 còn khoá khi popup Reward đang mở")
+	t.ok(node.claim_button == null, "chưa có nút nhận khi popup đang mở")
 	var pop: Control = node.reward_popup
 	t.ok(pop != null, "mở popup Reward")
 	t.eq(int(pop.view.reward.coins), 300, "popup hiện thưởng của bước")
@@ -226,6 +227,8 @@ func test_chain_layer(t: T) -> void:
 	pop.ui.button("Panel/ClaimBtn").pressed.emit()
 	t.ok(node.reward_popup == null, "Claim đóng popup")
 	t.eq(int(g.s.coins), c0 + 300, "đóng popup không cộng thêm")
+	t.eq(node.node_states[1], "claimable", "đóng popup thì bước 2 mở")
+	t.ok(node.claim_button != null, "có nút nhận bước 2")
 	node.queue_free()
 
 
@@ -242,17 +245,70 @@ func test_chain_ad_step(t: T) -> void:
 		await (Engine.get_main_loop() as SceneTree).process_frame
 	t.eq(int(g.s.chain.step), 2, "sang bước 3")
 	t.eq(int(g.s.inv.get("hint", 0)), hint0 + 1, "nhận thưởng bước video")
-	# The window stays put: the tick lands on the pack that was tapped.
-	t.eq(node.node_states, ["claimed", "claimed", "claimable", "locked", "locked", "locked"], "tích ngay ô bước 2")
-	var bg := func(slot: String) -> Rect2:
-		return node.ui.node("Panel/Content/ListPack/%s/BG (1)" % slot).region
-	t.eq(bg.call("ChainOfferPack (1)"), bg.call("ChainOfferPack"), "ô đã nhận nền thường")
-	t.ok(bg.call("ChainOfferPack (2)") != bg.call("ChainOfferPack"), "nền vàng theo bước nhận được")
+	# The window stays put: the tick lands on the pack that was tapped. The next pack waits for the popup.
+	t.eq(node.node_states, ["claimed", "claimed", "locked", "locked", "locked", "locked"], "tích ngay ô bước 2")
 	t.ok(node.reward_popup != null, "popup Reward sau video")
 	t.eq(node.reward_popup.view.reward.get("items", {}), {"hint": 1}, "popup hiện booster vừa nhận")
 	t.ok(node.reward_popup.find_child("Reward_hint", true, false) != null, "ô hint trong popup")
 	t.eq(node.claimed_count, 1, "đếm một lần nhận")
+	node.reward_popup.ui.button("Panel/ClaimBtn").pressed.emit()
+	t.eq(node.node_states, ["claimed", "claimed", "claimable", "locked", "locked", "locked"], "đóng popup thì bước 3 mở")
+	var bg := func(slot: String) -> Rect2:
+		return node.ui.node("Panel/Content/ListPack/%s/BG (1)" % slot).region
+	t.eq(bg.call("ChainOfferPack (1)"), bg.call("ChainOfferPack"), "ô đã nhận nền thường")
+	t.ok(bg.call("ChainOfferPack (2)") != bg.call("ChainOfferPack"), "nền vàng theo bước nhận được")
 	node.queue_free()
+
+
+## Packs open one by one: a locked pack only says to claim the one before it (Unity OnTextPleaseUnlock).
+func test_chain_locked_pack(t: T) -> void:
+	var g := _game(24)
+	g.s.chain = {"active": true, "id": "chain_a", "step": 2, "expires": g.test_now + D,
+		"cooldown_until": 0, "shown": true, "rotation": 1}
+	var node := _open("res://scenes/chain_offer.tscn")
+	var c0 := int(g.s.coins)
+	var buys := (g.s.buys as Array).size()
+	var lock: Button = node.ui.button("Panel/Content/ListPack/ChainOfferPack (3)/Button_Purchase_Lock")
+	t.ok(lock.is_visible_in_tree(), "bước 4 (Pay) hiện nút giá khoá")
+	lock.pressed.emit()
+	await (Engine.get_main_loop() as SceneTree).process_frame
+	t.eq(int(g.s.chain.step), 2, "bấm gói khoá không sang bước")
+	t.eq((g.s.buys as Array).size(), buys, "không mua gói khoá")
+	t.eq(int(g.s.coins), c0, "không cộng gì")
+	t.ok(node.status_label.visible, "dòng dưới đồng hồ hiện")
+	t.eq(node.status_label.text, tr("chain_unlock_first"), "nhắc nhận gói trước")
+	node.queue_free()
+
+
+## Every pack button takes the taps over its art: the next card's shine (BlurredBorder/Blurred, 800 units long)
+## hangs past its Mask and used to catch them, so the claim needed several taps.
+func test_chain_buttons_take_taps(t: T) -> void:
+	var g := _game(24)
+	for step in [0, 1]:
+		g.s.chain = {"active": true, "id": "chain_a", "step": step, "expires": g.test_now + D,
+			"cooldown_until": 0, "shown": true, "rotation": 1}
+		var node := _open("res://scenes/chain_offer.tscn")
+		await (Engine.get_main_loop() as SceneTree).create_timer(0.8).timeout
+		for b in node.find_children("*", "Button", true, false):
+			var btn := b as Button
+			if not btn.is_visible_in_tree() or btn.disabled or not btn.get_parent().name.begins_with("Node"):
+				continue
+			var art := btn.get_global_rect()
+			var missed := 0
+			for iy in 4:
+				for ix in 4:
+					var p := art.position + Vector2((ix + 0.5) / 4.0 * art.size.x, (iy + 0.5) / 4.0 * art.size.y)
+					var mv := InputEventMouseMotion.new()
+					mv.position = p
+					mv.global_position = p
+					_root().push_input(mv, true)
+					await (Engine.get_main_loop() as SceneTree).process_frame
+					var hov := _root().gui_get_hovered_control()
+					if hov == null or not (hov == btn or btn.is_ancestor_of(hov)):
+						missed += 1
+			t.eq(missed, 0, "bước %d: %s/%s nhận mọi cú chạm" % [step, btn.get_parent().name, btn.name])
+		node.queue_free()
+		await (Engine.get_main_loop() as SceneTree).process_frame
 
 
 func test_chain_pay_step_reward(t: T) -> void:

@@ -13,6 +13,7 @@ const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Shop := preload("res://src/ui/shop.gd")
 const LbKit := preload("res://src/ui/lb_kit.gd")
 const Config := preload("res://src/config.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 
 ## Config.ECON.helper_pack_sku (helper_great).
 var SKU: String = str(Config.ECON.get("helper_pack_sku", "helper_great"))
@@ -21,12 +22,15 @@ const CARD := "Scroll View/Viewport/Content/Helper_Pack"
 ## The strip's reward texts are white on its white inner panel (unfinished in the prefab): the shop's item outline.
 const ITEM_MAT := "Baloo Outline - DarkBlue"
 const RP := CARD + "/Right_Panel"
-## Reward slots of the card for the pack's contents, in LbKit.reward_entries order.
-const SLOTS := [RP + "/Row(Clone)/ShopRewardItem(Clone)", RP + "/Row(Clone)#2/ShopRewardItem(Clone)",
+## Reward slots of the card for the pack's contents: the first row's single slot (the prefab's gold) takes gold or
+## unlimited lives, the second row the boosters (_entries).
+const SLOTS :=[RP + "/Row(Clone)/ShopRewardItem(Clone)", RP + "/Row(Clone)#2/ShopRewardItem(Clone)",
 	RP + "/Row(Clone)#2/ShopRewardItem(Clone)#2", RP + "/Row(Clone)#2/ShopRewardItem(Clone)#3"]
 
 var strip: RefCounted = null
 var _busy: bool = false
+## RewardFly part -> its slot on the pack card.
+var _icons: Dictionary = {}
 
 
 func _sample() -> Dictionary:
@@ -70,22 +74,53 @@ func _build_strip() -> void:
 	strip.on_click(CARD + "/Bottom_Group/Button", _on_buy).name = "BuyPackButton"
 	strip.sprite(CARD + "/Bg/Icon", "HelperOffer")
 	(UnityUI.image_of(strip.node(CARD + "/Bg/Icon")) as Control).set("preserve_aspect", true)
-	var info: Dictionary = Config.SKUS.get(SKU, {})
-	var entries := LbKit.reward_entries({"coins": int(info.get("gold", 0)), "items": info.get("inv", {}),
-		"inf_min": int(info.get("inf_min", 0))})
+	var entries := _entries()
+	# Boosters only (no gold, no unlimited lives): they take the second row and the first row goes.
+	var top := not entries.is_empty() and str(entries[0].kind) in ["gold", "inf"]
+	var first := 0 if top else 1
+	strip.show(RP + "/Row(Clone)", top)
+	if not top:
+		# The rows sit at fixed spots in Right_Panel (no layout group): the lone second row moves to its middle.
+		var row: Control = strip.node(RP + "/Row(Clone)#2")
+		var r: Dictionary = (row.get_meta("u_rect") as Dictionary).duplicate()
+		var panel: Dictionary = strip.node(RP).get_meta("u_rect")
+		r.pos = Vector2((r.pos as Vector2).x, -(panel.size as Vector2).y * 0.5)
+		row.set_meta("u_rect", r)
+		UnityUI.apply_rect(row)
 	for i in SLOTS.size():
 		var p: String = SLOTS[i]
 		if not strip.has(p):
 			continue
-		var on := i < entries.size()
+		var k := i - first
+		var on := k >= 0 and k < entries.size()
 		strip.show(p, on)
 		if on:
-			_item(p, entries[i])
-	strip.show(RP + "/Row(Clone)#2/Plus(Clone)#2", entries.size() > 3)
+			_item(p, entries[k])
+			_icons[str(entries[k].kind)] = strip.node(p)
+	strip.show(RP + "/Row(Clone)#2/Plus(Clone)#2", strip.has(SLOTS[3]) and strip.node(SLOTS[3]).visible)
 	strip.relayout("Scroll View/Viewport/Content")
 	var sc: Node = strip.node("Scroll View").get_node_or_null("ScrollRect")
 	if sc != null:
 		sc.call("set_content_position", Vector2.ZERO)
+
+
+## LbKit.reward_entries of the pack, unlimited lives moved before the boosters (after gold, if any) with the short
+## amount text of the shop items ("Forever", "15m") that fits the slot (Shop.set_inf_label). A player who already has
+## unlimited lives for good gains nothing from them: that part is left out (user request 2026-11-10).
+func _entries() -> Array:
+	var info: Dictionary = Config.SKUS.get(SKU, {})
+	var entries := LbKit.reward_entries(RewardFly.sku_reward(SKU))
+	var forever := bool(Game.lives_view().get("infinite_forever", false))
+	for i in entries.size():
+		if str(entries[i].kind) == "inf":
+			var e: Dictionary = entries.pop_at(i)
+			if forever:
+				break
+			e.amount = Shop.inf_text(Shop.sku_inf(info))
+			e.inf = Shop.sku_inf(info)
+			entries.insert(1 if not entries.is_empty() and str(entries[0].kind) == "gold" else 0, e)
+			break
+	return entries
 
 
 func _item(p: String, e: Dictionary) -> void:
@@ -93,6 +128,8 @@ func _item(p: String, e: Dictionary) -> void:
 	var l: Label = strip.text(p + "/Text (TMP)", str(e.amount))
 	if l != null:
 		l.material = UnityUI.text_material(ITEM_MAT, false)
+		if e.has("inf"):
+			Shop.set_inf_label(l, int(e.inf))
 
 
 func _on_gold() -> void:
@@ -126,7 +163,14 @@ func _on_buy() -> void:
 		return
 	_busy = false
 	if str(r.get("status", "")) == "ok" and bool(r.get("granted", false)):
-		Sfx.play("sfx_coin")
+		# The pack's boosters fly from the card to their buttons (RewardFly); one +3 Move rescues at once, so it does
+		# not fly.
+		var reward := RewardFly.sku_reward(SKU)
+		var items: Dictionary = (reward.get("items", {}) as Dictionary).duplicate()
+		items["move"] = maxi(int(items.get("move", 0)) - 1, 0)
+		reward["items"] = items
+		if RewardFly.launch(self, reward, _icons) == 0:
+			Sfx.play("sfx_coin")
 		await _accept("inventory")
 
 

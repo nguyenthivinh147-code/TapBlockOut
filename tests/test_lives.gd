@@ -156,3 +156,16 @@ func test_infinite(t: T) -> void:
 	t.eq(Lives.lose(s, NOW + 3000, FROM), true, "hết hạn thì mất mạng lại")
 	Lives.grant_infinite(s, 0, NOW)
 	t.eq(Lives.infinite_left(s, NOW + 3000), 0, "cấp 0 giây không đổi gì")
+
+
+func test_infinite_forever(t: T) -> void:
+	var s := SaveSchema.defaults()
+	t.eq(Lives.forever(s), false, "mặc định không vĩnh viễn")
+	Lives.grant_forever(s)
+	t.eq(Lives.forever(s), true, "đã cấp vĩnh viễn")
+	t.eq(Lives.infinite(s, NOW + 100 * 365 * 86400), true, "vô hạn mãi")
+	t.eq(Lives.infinite_left(s, NOW), 0, "không có đồng hồ")
+	t.eq(Lives.lose(s, NOW, FROM), false, "không mất mạng")
+	t.eq(Lives.count(s, NOW), 10, "mạng giữ nguyên")
+	var old := {"lives": {"count": 3, "next_at": 0}}
+	t.eq(Lives.forever(old), false, "bản lưu cũ thiếu khoá: không vĩnh viễn")

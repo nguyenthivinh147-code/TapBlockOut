@@ -15,12 +15,24 @@ signal closed(result: Variant)
 const Config := preload("res://src/config.gd")
 const LbKit := preload("res://src/ui/lb_kit.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 
 const P := "WeekResultPanel/"
+## RewardGroup/Rewards is a HorizontalLayoutGroup over ROW_W with spacing -300 and child force expand (it only adds
+## room, never squeezes): n items of ITEM_W sit (ROW_W + spacing) / n apart, 195 for 3. Above ROW_FIT items (several
+## leagues at once, avatars and frames) the spacing is set so the items fill the row less ROW_MARGIN, and they shrink
+## to keep ITEM_STEP between centres, their amount text boxes narrowed to that step so the words do not touch.
+const ROW_W := 886.0
+const ITEM_W := 150.0
+const ROW_FIT := 4
+const ROW_MARGIN := 40.0
+const ITEM_STEP := 172.0
 
 var view: Dictionary = {}
 var week: Dictionary = {}
 var ui: RefCounted = null
+## RewardFly part -> icon of its reward item.
+var _icons: Dictionary = {}
 var _built: bool = false
 var _done: bool = false
 
@@ -54,6 +66,8 @@ func setup(args: Dictionary = {}) -> void:
 	LbKit.set_league_icon(ui.node(P + "Image#2"), league)
 	ui.node(P + "Image#2").name = "LeagueBadge"
 	var items := LbKit.reward_items(ui.node(P + "RewardGroup/Rewards"), view.get("reward", {}))
+	_icons = LbKit.reward_icons(items, view.get("reward", {}))
+	_fit_rewards(items)
 	ui.show(P + "RewardGroup", not items.is_empty())
 	ui.text(P + "RewardGroup/NextLeagueTxt (1)", tr("lb_result_reward"))
 	ui.relayout(P + "RewardGroup")
@@ -67,11 +81,35 @@ func _ready() -> void:
 	setup.call_deferred()
 
 
+## Many reward items: spread over the row and shrunk so icons and amounts do not overlap (see ROW_FIT).
+func _fit_rewards(items: Array) -> void:
+	var n := items.size()
+	if n <= ROW_FIT:
+		return
+	var row: Control = ui.node(P + "RewardGroup/Rewards")
+	var lay: Dictionary = (row.get_meta("u") as Dictionary).lay
+	var sp := (ROW_W - ROW_MARGIN - n * ITEM_W) / float(n - 1)
+	lay["sp"] = sp
+	var k := minf(1.0, (ITEM_W + sp + ROW_MARGIN / n) / ITEM_STEP)
+	for v: RefCounted in items:
+		var c := v.get("root") as Control
+		var sz: Vector2 = (c.get_meta("u_rect") as Dictionary).get("size", c.size) if c.has_meta("u_rect") else c.size
+		c.pivot_offset = sz * 0.5
+		c.scale = Vector2(k, k)
+		var txt := v.call("node", "RewardText") as Label
+		if txt != null and txt.has_meta("u_rect"):
+			var tr_rect: Dictionary = txt.get_meta("u_rect")
+			tr_rect.size = Vector2(minf((tr_rect.size as Vector2).x, ITEM_STEP - 12.0), (tr_rect.size as Vector2).y)
+			UnityUI.apply_rect(txt)
+			UnityUI.fit_text(txt)
+
+
 func _claim() -> void:
 	if _done:
 		return
 	_done = true
 	var r: Dictionary = Game.lb_week_claim() if not week.is_empty() else Game.lb_claim()
-	if int(r.get("coins", 0)) > 0 or not (r.get("items", {}) as Dictionary).is_empty() or int(r.get("inf_min", 0)) > 0:
+	# The reward flies from its items to the counters (RewardFly); the coin sound plays here when nothing flies.
+	if RewardFly.launch(self, r, _icons) == 0 and not RewardFly.parts(r).is_empty():
 		Sfx.play("sfx_coin")
 	closed.emit({"action": "claim", "reward": r})

@@ -11,6 +11,7 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const Shop := preload("res://src/ui/shop.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 const Config := preload("res://src/config.gd")
 
 const BOOSTER_ORDER := ["hint", "move", "smash"]
@@ -24,6 +25,9 @@ const SLOT_ICONS := {"hint": "ImgBoosterMagnet", "move": "ImgBoosterStorage", "s
 const GROUP := "Panel/Content/Preview/Bottom/Group"
 ## PackTimeCounter of PopupStarterPack, copied into prefabs that have no timer of their own.
 const TIMER_SPEC := ["PopupStarterPack", "Panel/Content/Preview/Platform/Time"]
+## Card art swapped in at build time (assets/ui/<name>.png): the prefab's art shows the Unity game's boosters.
+const PACK_ART := {"level_pack": "art_level_pack"}
+const PACK_ART_IMAGE := "Panel/Content/Image"
 
 var offer_id: String = ""
 var sku: String = ""
@@ -38,6 +42,8 @@ var _until: int = 0
 var _busy: bool = false
 var _closed: bool = false
 var _toast_tween: Tween = null
+## RewardFly part -> its icon on the card: bought, the pack's contents fly from there to their counters.
+var _icons: Dictionary = {}
 
 
 func setup(args: Dictionary) -> void:
@@ -93,7 +99,7 @@ func _booster_name(kind: String) -> String:
 	return kind
 
 
-## Các dòng nội dung gói: bỏ quảng cáo (gói no_ads), gold và booster.
+## Các dòng nội dung gói: bỏ quảng cáo (gói no_ads), gold, mạng vô hạn và booster.
 func contents() -> Array[String]:
 	var info: Dictionary = Config.SKUS.get(sku, {})
 	var out: Array[String] = []
@@ -102,6 +108,10 @@ func contents() -> Array[String]:
 	var gold := int(info.get("gold", 0))
 	if gold > 0:
 		out.append(tr("shop_gold_pack") % gold)
+	if bool(info.get("inf_forever", false)):
+		out.append(tr("shop_lives_forever"))
+	elif int(info.get("inf_min", 0)) > 0:
+		out.append(tr("weekly_reward_inf") % int(info.inf_min))
 	var inv: Dictionary = info.get("inv", {})
 	for k in BOOSTER_ORDER:
 		if int(inv.get(k, 0)) > 0:
@@ -151,6 +161,9 @@ func _build_pack(layer: String) -> void:
 		else "Panel/Content/Preview/Platform/Time"
 	ui.show(timer, _until > 0)
 	time_label = ui.label(timer + "/Text (TMP)")
+	var art := str(PACK_ART.get(offer_id, ""))
+	if art != "" and ui.has(PACK_ART_IMAGE) and ThemeKit.has_real_icon(art):
+		ui.texture(PACK_ART_IMAGE, ThemeKit.icon(art))
 	_fill_slots()
 	buy_button = ui.button("Panel/Content/GameObject/FreeBtn")
 	buy_button.connect("clicked", buy)
@@ -172,11 +185,12 @@ func _build_pack(layer: String) -> void:
 		UnityKit.add(ui.node("Panel/Content/Preview"), s)
 
 
-## Bottom/Group slots: gold and the game's boosters; empty slots hidden, the rest spread over the slots' span.
+## Bottom/Group slots: gold, unlimited lives (Shop.sku_inf) and the game's boosters; empty slots hidden, the rest spread
+## over the slots' span.
 func _fill_slots() -> void:
 	var info: Dictionary = Config.SKUS.get(sku, {})
 	var inv: Dictionary = info.get("inv", {})
-	var amounts := {"gold": int(info.get("gold", 0)), "heart": 0}
+	var amounts := {"gold": int(info.get("gold", 0)), "heart": Shop.sku_inf(info)}
 	for k in BOOSTER_ORDER:
 		amounts[k] = int(inv.get(k, 0))
 	var lo := INF
@@ -189,16 +203,21 @@ func _fill_slots() -> void:
 		lo = minf(lo, x)
 		hi = maxf(hi, x)
 		var amount := int(amounts[kind])
-		n.visible = amount > 0
-		if amount <= 0:
+		n.visible = amount != 0
+		if amount == 0:
 			continue
 		shown.append(n)
 		if kind == "gold":
 			ui.text(p + "/Text (TMP)", Shop.fmt_n0(amount))
+			_icons["gold"] = n
+		elif kind == "heart":
+			Shop.set_inf_label(ui.label(p + "/Text (TMP)"), amount)
+			_icons["inf"] = ui.node(p + "/ImgVoHanTim")
 		else:
 			ui.texture(p + "/" + str(SLOT_ICONS[kind]), ThemeKit.icon("booster_" + kind))
 			ui.text(p + "/Text (TMP)", tr("booster_count") % amount)
-	# Ordered left to right like the prefab: gold, then hint, move, smash.
+			_icons[kind] = ui.node(p + "/" + str(SLOT_ICONS[kind]))
+	# Ordered left to right like the prefab: gold, unlimited lives, then hint, move, smash.
 	for i in shown.size():
 		var r: Dictionary = shown[i].get_meta("u_rect")
 		var t := 0.5 if shown.size() == 1 else float(i) / float(shown.size() - 1)
@@ -216,6 +235,7 @@ func _build_booster() -> void:
 	var items := Shop.sku_items(sku)
 	var kind := str(items[items.size() - 1][0]) if not items.is_empty() else "move"
 	ui.texture(p + "/Content/Preview/Content/Icon", ThemeKit.icon("booster_" + kind if kind != "gold" else "ui_gold"))
+	_icons[kind] = ui.node(p + "/Content/Preview/Content/Icon")
 	later_button = ui.button(p + "/Top/btnTurnOff")
 	for b in ui.field("closeButtons", "PopupOfferUICoreLayer"):
 		(b as Button).connect("clicked", close)
@@ -309,7 +329,10 @@ func buy() -> void:
 	match str(r.get("status", "error")):
 		"ok":
 			if bool(r.granted):
-				Sfx.play("sfx_coin")
+				# Unity's PopupOffer: the contents fly to their counters (RewardFly); the coin sound plays here
+				# when nothing flies.
+				if RewardFly.launch(self, RewardFly.sku_reward(sku), _icons) == 0:
+					Sfx.play("sfx_coin")
 				_finish(true)
 			else:
 				toast(tr("shop_buy_failed"))

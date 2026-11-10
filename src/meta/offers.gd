@@ -75,10 +75,34 @@ static func due(s: Dictionary, ctx: Dictionary) -> String:
 	return ""
 
 
-static func _eligible(s: Dictionary, id: String, ctx: Dictionary) -> bool:
-	var cfg: Dictionary = Config.OFFERS.get(id, {})
-	if cfg.is_empty():
+## Offer có trong Config.OFFERS và không bị tắt (`enabled` false). Shop ẩn thẻ của offer tắt.
+static func enabled(id: String) -> bool:
+	var cfg: Variant = Config.OFFERS.get(id)
+	return cfg is Dictionary and bool((cfg as Dictionary).get("enabled", true))
+
+
+## Thẻ gói của offer có được bán trong Shop lúc `now` không (design.md mục 7): offer bật, gói mua một lần chưa mua;
+## offer có hạn (`hours`: starter_pack, level_pack) chỉ trong lúc đang mở như icon offer ở Home, mua xong hay hết hạn
+## thì không; rescue_pack khi đang thua liền đủ `fail_streak` lần. Offer khác không có điều kiện riêng.
+static func in_shop(s: Dictionary, id: String, now: int) -> bool:
+	if not enabled(id):
 		return false
+	var cfg: Dictionary = Config.OFFERS[id]
+	var it := _item(s, id)
+	if _once(id) and int(it.bought) > 0:
+		return false
+	if int(cfg.get("hours", 0)) > 0:
+		return int(it.until) > now
+	if id == "rescue_pack":
+		var fs: Variant = s.get("fail_streak", {})
+		return fs is Dictionary and int((fs as Dictionary).get("count", 0)) >= int(cfg.fail_streak)
+	return true
+
+
+static func _eligible(s: Dictionary, id: String, ctx: Dictionary) -> bool:
+	if not enabled(id):
+		return false
+	var cfg: Dictionary = Config.OFFERS[id]
 	var now: int = int(ctx.get("now", 0))
 	var it := _item(s, id)
 	if int(it.until) > now:
@@ -109,10 +133,14 @@ static func _eligible(s: Dictionary, id: String, ctx: Dictionary) -> bool:
 	return false
 
 
-## Mốc level đã qua chia cho every_levels (every_levels 50: level sắp chơi 51 nghĩa là đã qua mốc 50).
+## Số mốc đã tới: mốc 1 ở level sắp chơi first_level, rồi cứ every_levels level thêm một mốc (first_level 60,
+## every_levels 50: L60 là 1, L110 là 2). Dưới first_level là 0.
 static func _milestone(cfg: Dictionary, level: int) -> int:
+	var first := maxi(int(cfg.get("first_level", int(cfg.every_levels) + 1)), 1)
+	if level < first:
+		return 0
 	@warning_ignore("integer_division")
-	return maxi(level - 1, 0) / maxi(int(cfg.every_levels), 1)
+	return 1 + (level - first) / maxi(int(cfg.every_levels), 1)
 
 
 static func _once(id: String) -> bool:

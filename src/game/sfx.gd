@@ -17,7 +17,9 @@ const SFX_DB := 0.0
 const MUSIC_DB := -8.0
 const MUSIC_FADE_DB := -30.0
 ## Rung nhẹ (ms) theo tên hiệu ứng; không có trong bảng thì không rung.
-const HAPTIC_MS := {"tap": 10, "blocked": 25, "bump": 25, "shatter": 15, "box_tear": 15, "smash": 30, "life_lost": 30}
+## "grind" không có tiếng: nhịp rung lặp lại suốt lúc khối nghiền qua thanh (BoardView.GRIND_HAPTIC_EVERY), gọi bằng pulse().
+const HAPTIC_MS := {"tap": 10, "blocked": 25, "bump": 25, "shatter": 15, "grind": 12, "box_tear": 15, "smash": 30, "life_lost": 30,
+	"choco": 15, "pop": 25, "pop_hit": 10}
 
 var sfx_on: bool = true
 var music_on: bool = true
@@ -25,6 +27,7 @@ var haptics_on: bool = true
 ## Quan sát được từ test.
 var last_played: String = ""
 var music_name: String = ""
+var haptic_count: int = 0
 
 var _pool: Array[AudioStreamPlayer] = []
 var _music_player: AudioStreamPlayer = null
@@ -109,8 +112,7 @@ func play(sfx_name: String, volume_db: float = 0.0) -> void:
 	if sfx_name == "":
 		return
 	setup()
-	if haptics_on and HAPTIC_MS.has(sfx_name.trim_prefix("sfx_")):
-		Platform.haptic(HAPTIC_MS[sfx_name.trim_prefix("sfx_")])
+	pulse(sfx_name)
 	if not sfx_on or _ad_paused:
 		return
 	var stream := _load_sfx(sfx_name)
@@ -129,12 +131,19 @@ func play_or(sfx_name: String, fallback: String, volume_db: float = 0.0) -> void
 	if _load_sfx(sfx_name) != null:
 		play(sfx_name, volume_db)
 		return
-	if haptics_on and HAPTIC_MS.has(sfx_name):
-		Platform.haptic(HAPTIC_MS[sfx_name])
+	pulse(sfx_name)
 	var was_haptics := haptics_on
 	haptics_on = false
 	play(fallback, volume_db)
 	haptics_on = was_haptics
+
+
+## Chỉ rung theo bảng HAPTIC_MS, không phát tiếng; tắt rung trong cài đặt hoặc tên không có trong bảng thì thôi.
+func pulse(sfx_name: String) -> void:
+	var key := sfx_name.trim_prefix("sfx_")
+	if haptics_on and HAPTIC_MS.has(key):
+		haptic_count += 1
+		Platform.haptic(HAPTIC_MS[key])
 
 
 func music(music_track: String) -> void:

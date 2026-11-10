@@ -9,6 +9,7 @@ const UImage := preload("res://src/ui/u_image.gd")
 const UButton := preload("res://src/ui/u_button.gd")
 const UAnim := preload("res://src/ui/u_anim.gd")
 const UiMotion := preload("res://src/ui/ui_motion.gd")
+const UiTween := preload("res://src/ui/ui_tween.gd")
 const UScroll := preload("res://src/ui/u_scroll.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const SceneCache := preload("res://src/ui/scene_cache.gd")
@@ -23,7 +24,8 @@ static var baking := false
 ## One scene per layout, made by tools/bake_unity_ui.gd: the source of truth for every prefab layout.
 const BAKED := "res://scenes/unity/"
 ## Metas adopt() sets on nodes; a copied subtree drops them before it is wired again.
-const RUNTIME_METAS := ["u_built", "u_slider", "u_input", "u_placeholder", "u_scale_loop", "u_fitting"]
+const RUNTIME_METAS := ["u_built", "u_slider", "u_input", "u_placeholder", "u_scale_loop", "u_fitting", "u_fit_group",
+		"u_fit_best", "u_fit_key", "u_fit_fs"]
 ## Prefab names of the popups' close X buttons (_grow_close). Code may rename the node; the prefab name stays in meta u.
 const CLOSE_NAMES := ["btnTurnOff", "ExitButton", "ExitBtn", "CloseButton"]
 const REF := Vector2(886, 1920)
@@ -151,6 +153,8 @@ static func build(owner: Control, layer: String, opts: Dictionary = {}) -> UView
 	if baking:
 		return v
 	if not v.reveal_cfg.is_empty() and bool(opts.get("reveal", true)):
+		# The same dictionary: play_reveal adds its tween, a popup's close (UiTween.close_popup) plays it backwards.
+		owner.set_meta(UiTween.META_REVEAL, v.reveal_cfg)
 		_reveal_start(v)
 		play_reveal.call_deferred(v)
 	# UICoreLayer.SetShow runs OnDisplayLayout, then ShowLayer runs OnShowLayer (PlayAnimation, set_enabled...).
@@ -334,6 +338,10 @@ static func _wire(c: Control, v: UView, path: String) -> void:
 			(c as UButton).image = img
 		if not baking and CLOSE_NAMES.has(str(spec.get("n", ""))):
 			_grow_close(c as UButton)
+	# A Unity Mask also clips raycasts to its rect; clip_children only clips drawing. Without this, a masked child that
+	# hangs past the mask (the packs' Blurred shine strip, 800 units long) still takes taps meant for nearby buttons.
+	if not baking and spec.has("mask") and c.clip_children != CanvasItem.CLIP_CHILDREN_DISABLED:
+		c.clip_contents = true
 	if c is Label and c.has_meta("u_txt") and ((c.get_meta("u_txt") as Dictionary).get("auto") != null or _in_button(c)) and not baking:
 		var fit := fit_text.bind(c)
 		if not c.resized.is_connected(fit):
@@ -821,6 +829,15 @@ static func fit_text(l: Label) -> void:
 	# Text on a button shrinks until its longest word fits a line rather than breaking inside it, and a one-line
 	# text that overflows even at the smallest size goes onto lines (meta u_wrapped) instead.
 	var caption := room.has("h")
+	# The same text in the same room as the last fit, its size still on the label: the search would land there
+	# again. A built prefab fits each label several times (set_text, the deferred pass after wiring, each resize),
+	# all in the frame the popup opens.
+	var wrap_mode := TextServer.AUTOWRAP_OFF if l.has_meta("u_wrapped") else l.autowrap_mode
+	var key := [text, avail, lo, hi, caption, wrap_mode, (l.get_meta("u_txt") as Dictionary).hash()]
+	var cache := not baking and not l.has_meta("u_fit_group")
+	if cache and l.get_meta("u_fit_key", []) == key and l.get_theme_font_size("font_size") == int(l.get_meta("u_fit_fs", -1)):
+		l.remove_meta("u_fitting")
+		return
 	if l.has_meta("u_wrapped"):
 		l.autowrap_mode = TextServer.AUTOWRAP_OFF
 		l.remove_meta("u_wrapped")
@@ -835,14 +852,47 @@ static func fit_text(l: Label) -> void:
 			lo = mid + 1
 		else:
 			hi = mid - 1
-	_text_size(l, float(best))
+	if l.has_meta("u_fit_group"):
+		l.set_meta("u_fit_best", best)
+		_fit_group_apply(l.get_meta("u_fit_group"))
+	else:
+		_text_size(l, float(best))
+	if cache:
+		l.set_meta("u_fit_key", key)
+		l.set_meta("u_fit_fs", l.get_theme_font_size("font_size"))
 	l.remove_meta("u_fitting")
 
 
+## Labels that share one font size (a list of options, e.g. the language names): each auto sizes as usual, then all
+## take the smallest size among them. A member that refits (new text, resize) sets the group again.
+static func fit_group(labels: Array) -> void:
+	var g: Array = labels.duplicate()
+	for l in g:
+		(l as Label).set_meta("u_fit_group", g)
+		(l as Label).remove_meta("u_fit_best")
+	for l in g:
+		fit_text(l)
+
+
+static func _fit_group_apply(g: Array) -> void:
+	var size := -1
+	for o in g:
+		if is_instance_valid(o) and (o as Label).has_meta("u_fit_best"):
+			var b := int((o as Label).get_meta("u_fit_best"))
+			size = b if size < 0 else mini(size, b)
+	if size < 0:
+		return
+	for o in g:
+		if is_instance_valid(o) and (o as Label).has_meta("u_fit_best"):
+			_text_size(o, float(size))
+
+
+## Measures with the font and spacing _text_size would set, without setting them: each override change makes the
+## label shape its whole text again, and fit_text tries several sizes before it sets the one that fits.
 static func _fits(l: Label, text: String, size: int, avail: Vector2, whole_words: bool = false) -> bool:
-	_text_size(l, float(size))
-	var font := l.get_theme_font("font")
-	var line := float(l.get_theme_constant("line_spacing"))
+	var m := _text_metrics(l.get_meta("u_txt"), float(size))
+	var font: Font = m.font
+	var line := float(m.line)
 	var lh := font.get_height(size) + line
 	if l.autowrap_mode == TextServer.AUTOWRAP_OFF:
 		var lines := text.split("\n")
@@ -1160,6 +1210,8 @@ static func _cutout(c: Control) -> void:
 			push_warning("UnityUI: Mask '%s' có con thường cạnh CutoutMaskUI, con đó không bị cắt" % p.name)
 			break
 	p.clip_children = CanvasItem.CLIP_CHILDREN_DISABLED
+	# The cutout draws outside the mask, so the rect clip _wire set goes too.
+	p.clip_contents = false
 	if not bool(ps.mask.get("show", true)):
 		mask.self_modulate.a = 0.0
 	var sm := ShaderMaterial.new()
@@ -1513,6 +1565,10 @@ static func play_reveal(v: UView) -> void:
 		tw.tween_property(panel, "scale", Vector2.ONE, dur)
 	if dim != null:
 		tw.tween_property(dim, "modulate:a", 1.0, dur)
+	v.reveal_cfg["tween"] = tw
+	# Buttons and list items pop in one after another while the panel grows (not when the panel is the whole layer).
+	if panel != null and panel != dim:
+		UiTween.stagger(UiTween.panel_items(panel), UiTween.REVEAL_LEAD)
 
 
 ## LitMotion Ease -> [Tween.TransitionType, Tween.EaseType].

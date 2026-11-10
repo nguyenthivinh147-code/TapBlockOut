@@ -19,8 +19,16 @@ uniform float underlay_edge = 0.5;
 uniform vec2 underlay_offset = vec2(0.0);
 // Atlas texels spanned by alpha 0..1 (FontFile.msdf_pixel_range).
 uniform float px_range = 14.0;
+// Optional vertical face gradient (not a TMP feature; load_transition.gd sets grad_y0/1): the face color is multiplied
+// by grad_top at label-local y grad_y0 blending to grad_bottom at grad_y1.
+uniform bool grad_on = false;
+uniform vec4 grad_top : source_color = vec4(1.0);
+uniform vec4 grad_bottom : source_color = vec4(1.0);
+uniform float grad_y0 = 0.0;
+uniform float grad_y1 = 100.0;
 
 varying vec4 vcolor;
+varying float local_y;
 
 float dist(vec4 t) {
 	return min(max(min(t.r, t.g), min(max(t.r, t.g), t.b)), t.a);
@@ -28,6 +36,7 @@ float dist(vec4 t) {
 
 void vertex() {
 	vcolor = COLOR;
+	local_y = VERTEX.y;
 }
 
 void fragment() {
@@ -38,6 +47,10 @@ void fragment() {
 	float opacity = vcolor.a;
 
 	vec4 face = vec4(vcolor.rgb, opacity) * face_color;
+	if (grad_on) {
+		float g = clamp((local_y - grad_y0) / max(grad_y1 - grad_y0, 1.0), 0.0, 1.0);
+		face *= mix(grad_top, grad_bottom, g);
+	}
 	face.rgb *= face.a;
 	vec4 line = outline_color;
 	line.a *= opacity;

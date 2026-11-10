@@ -113,7 +113,23 @@ func test_remove_ads(t: T) -> void:
 	t.eq(Offers.due(s3, _ctx({"inter_today": 5})), "", "đã mua")
 
 
+## rescue_pack is off by default (Config.OFFERS.rescue_pack.enabled, 2026-11-10): no offer after any fail streak.
+func test_rescue_off_by_default(t: T) -> void:
+	var s := SaveSchema.defaults()
+	for i in 5:
+		Offers.note_fail(s, 7)
+	t.eq(Offers.enabled("rescue_pack"), false, "rescue tắt")
+	t.eq(Offers.due(s, _ctx({"on_lose": true})), "", "thua 5 lần liền vẫn không hiện")
+	t.eq(Offers.due(s, _ctx({"on_lose": true, "level": 11})), "", "màn thua không xét gói khác")
+	t.eq(Offers.enabled("starter_pack"), true, "offer không có cờ là bật")
+	t.eq(Offers.enabled("no_such_offer"), false, "id lạ")
+	Config.apply_remote({"offers_rescue_pack_enabled": "true"})
+	t.eq(Offers.due(s, _ctx({"on_lose": true})), "rescue_pack", "Remote Config bật lại")
+	Config.reset()
+
+
 func test_rescue(t: T) -> void:
+	Config.OFFERS.rescue_pack.enabled = true
 	var s := SaveSchema.defaults()
 	Offers.note_fail(s, 7)
 	Offers.note_fail(s, 7)
@@ -133,6 +149,7 @@ func test_rescue(t: T) -> void:
 	Offers.note_win(s, 8)
 	t.eq(s.fail_streak.count, 0, "thắng xoá chuỗi")
 	t.eq(Offers.due(s, _ctx({"on_lose": true, "runs": 99, "now": T0 + 99 * H})), "", "sau thắng")
+	Config.reset()
 
 
 func test_level_pack(t: T) -> void:
@@ -142,19 +159,56 @@ func test_level_pack(t: T) -> void:
 	Offers.shown(s, "starter_pack", _ctx({"level": 11, "runs": 1}))
 	Offers.bought(s, "starter_pack", T0)
 	t.eq(Offers.due(s, _ctx({"level": 11, "runs": 10})), "", "qua 10 level chưa có")
-	t.eq(Offers.due(s, _ctx({"level": 50, "runs": 10})), "", "mới qua 49 level")
-	t.eq(Offers.due(s, _ctx({"level": 51, "runs": 10})), "level_pack", "qua 50 level")
-	Offers.shown(s, "level_pack", _ctx({"level": 51, "runs": 10}))
-	t.eq(Offers.due(s, _ctx({"level": 75, "runs": 20})), "", "đang mở / cùng mốc")
+	# Mốc đầu ở L60 (first_level), rồi mỗi 50 level: L110, L160 (2026-11-10).
+	t.eq(Offers.due(s, _ctx({"level": 51, "runs": 10})), "", "L51 chưa tới mốc đầu")
+	t.eq(Offers.due(s, _ctx({"level": 59, "runs": 10})), "", "L59 chưa tới mốc đầu")
+	t.eq(Offers.due(s, _ctx({"level": 60, "runs": 10})), "level_pack", "mốc đầu L60")
+	Offers.shown(s, "level_pack", _ctx({"level": 60, "runs": 10}))
+	t.eq(Offers.due(s, _ctx({"level": 85, "runs": 20})), "", "đang mở / cùng mốc")
 	t.eq(Offers.open_offers(s, T0 + 71 * H).size(), 1, "mở 72 giờ")
 	t.eq(Offers.open_offers(s, T0 + 72 * H).size(), 0, "hết hạn")
-	t.eq(Offers.due(s, _ctx({"level": 100, "runs": 30, "now": T0 + 80 * H})), "", "hết hạn vẫn cùng mốc")
-	t.eq(Offers.due(s, _ctx({"level": 101, "runs": 30, "now": T0 + 80 * H})), "level_pack", "mốc 100")
-	Offers.shown(s, "level_pack", _ctx({"level": 101, "runs": 30, "now": T0 + 80 * H}))
+	t.eq(Offers.due(s, _ctx({"level": 109, "runs": 30, "now": T0 + 80 * H})), "", "hết hạn vẫn cùng mốc")
+	t.eq(Offers.due(s, _ctx({"level": 110, "runs": 30, "now": T0 + 80 * H})), "level_pack", "mốc L110")
+	Offers.shown(s, "level_pack", _ctx({"level": 110, "runs": 30, "now": T0 + 80 * H}))
 	Offers.bought(s, "level_pack", T0 + 81 * H)
 	t.eq(Offers.open_offers(s, T0 + 82 * H).size(), 0, "mua xong đóng")
-	t.eq(Offers.due(s, _ctx({"level": 130, "runs": 40, "now": T0 + 90 * H})), "", "chưa tới mốc 150")
-	t.eq(Offers.due(s, _ctx({"level": 151, "runs": 40, "now": T0 + 90 * H})), "level_pack", "mua rồi vẫn có mốc sau")
+	t.eq(Offers.due(s, _ctx({"level": 159, "runs": 40, "now": T0 + 90 * H})), "", "chưa tới mốc L160")
+	t.eq(Offers.due(s, _ctx({"level": 160, "runs": 40, "now": T0 + 90 * H})), "level_pack", "mua rồi vẫn có mốc sau")
+	Config.apply_remote({"offers_level_pack_first_level": "30"})
+	var s2 := SaveSchema.defaults()
+	Offers.bought(s2, "starter_pack", T0)
+	t.eq(Offers.due(s2, _ctx({"level": 30, "runs": 10})), "level_pack", "Remote Config offers_level_pack_first_level")
+	Config.reset()
+
+
+## Shop pack cards follow their offer: Starter, Level Pack only while open; Rescue while the lose streak holds.
+func test_in_shop(t: T) -> void:
+	Config.reset()
+	var s := SaveSchema.defaults()
+	for id in ["starter_pack", "level_pack", "rescue_pack"]:
+		t.eq(Offers.in_shop(s, id, T0), false, "người chơi mới: không bán " + id)
+	t.eq(Offers.in_shop(s, "unknown", T0), false, "id lạ")
+	Offers.shown(s, "starter_pack", _ctx({"level": 11}))
+	t.eq(Offers.in_shop(s, "starter_pack", T0 + 47 * H), true, "starter đang mở")
+	t.eq(Offers.in_shop(s, "starter_pack", T0 + 48 * H), false, "starter hết hạn")
+	Offers.shown(s, "level_pack", _ctx({"level": 60}))
+	t.eq(Offers.in_shop(s, "level_pack", T0 + 71 * H), true, "level pack đang mở")
+	Offers.bought(s, "level_pack", T0 + H)
+	t.eq(Offers.in_shop(s, "level_pack", T0 + 2 * H), false, "level pack mua xong")
+	var s2 := SaveSchema.defaults()
+	Offers.shown(s2, "starter_pack", _ctx({"level": 11}))
+	Offers.bought(s2, "starter_pack", T0 + H)
+	t.eq(Offers.in_shop(s2, "starter_pack", T0 + 2 * H), false, "starter mua một lần")
+	for i in 3:
+		Offers.note_fail(s2, 7)
+	t.eq(Offers.in_shop(s2, "rescue_pack", T0), false, "rescue tắt trong Config")
+	Config.OFFERS.rescue_pack.enabled = true
+	t.eq(Offers.in_shop(s2, "rescue_pack", T0), true, "thua liền 3 lần")
+	Offers.note_win(s2, 7)
+	t.eq(Offers.in_shop(s2, "rescue_pack", T0), false, "thắng thì thôi")
+	var s3: Dictionary = JSON.parse_string(JSON.stringify(s))
+	t.eq(Offers.in_shop(s3, "starter_pack", T0 + H), true, "sau JSON")
+	Config.reset()
 
 
 func test_gates(t: T) -> void:
@@ -177,6 +231,7 @@ func test_gates(t: T) -> void:
 
 
 func test_priority_and_roundtrip(t: T) -> void:
+	Config.OFFERS.rescue_pack.enabled = true
 	var s := SaveSchema.defaults()
 	Offers.note_fail(s, 3)
 	Offers.note_fail(s, 3)
@@ -192,6 +247,7 @@ func test_priority_and_roundtrip(t: T) -> void:
 	t.eq(Offers.open_offers(s2, T0 + H).size(), 1, "open sau JSON")
 	Offers.bought(s2, "starter_pack", T0 + H)
 	t.eq(Offers.open_offers(s2, T0 + 2 * H).size(), 0, "bought sau JSON")
+	Config.reset()
 
 
 func test_remote_config(t: T) -> void:

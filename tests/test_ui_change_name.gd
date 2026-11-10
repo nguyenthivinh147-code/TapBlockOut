@@ -35,7 +35,12 @@ func _popup(args: Dictionary = {}) -> Control:
 func test_rename_from_profile(t: T) -> void:
 	var g := _g()
 	var p := _profile()
-	t.eq(p.name_label.text, p.tr("profile_name_default"), "chưa đặt tên: hiện tên mặc định")
+	var code: String = g.profile_name()
+	t.ok(code.begins_with(Config.NAME_CODE) and code.length() == Config.NAME_CODE.length() + Config.NAME_CODE_DIGITS,
+		"chưa đặt tên: mã mặc định " + code)
+	t.eq(str(g.s.profile.name), code, "mã ghi vào s.profile")
+	t.eq(g.profile_name(), code, "gọi lại vẫn mã đó")
+	t.eq(p.name_label.text, code, "Profile hiện mã mặc định")
 	var edit := p.find_child("EditNameButton", true, false) as Button
 	t.ok(edit != null, "có nút đổi tên")
 	edit.pressed.emit()
@@ -43,7 +48,7 @@ func test_rename_from_profile(t: T) -> void:
 	t.ok(pop != null, "mở popup đổi tên")
 	edit.pressed.emit()
 	t.eq(p.get_children().filter(func(c: Node) -> bool: return c.has_method("_save")).size(), 1, "chạm hai lần chỉ mở một popup")
-	t.eq(pop.name_input.text, "", "ô trống, hiện Placeholder")
+	t.eq(pop.name_input.text, code, "điền sẵn mã mặc định")
 	pop.name_input.text = "  Mint_Pop "
 	pop.save_button.pressed.emit()
 	t.eq(g.profile_name(), "Mint_Pop", "đã lưu, bỏ khoảng trắng")
@@ -59,12 +64,13 @@ func test_rename_from_profile(t: T) -> void:
 func test_rejected_names_keep_popup_open(t: T) -> void:
 	var g := _g()
 	var pop := _popup()
+	var code: String = g.profile_name()
 	var got: Array = []
 	pop.closed.connect(func(r: Variant) -> void: got.append(r))
 	pop.name_input.text = "f.u.c.k"
 	pop.save_button.pressed.emit()
 	t.eq(pop.toast_text, pop.tr("profile_name_banned"), "từ cấm: báo không được dùng")
-	t.eq(g.profile_name(), "", "từ cấm: không lưu")
+	t.eq(g.profile_name(), code, "từ cấm: không lưu, giữ mã mặc định")
 	pop.name_input.text = "ab"
 	pop.save_button.pressed.emit()
 	t.eq(pop.toast_text, pop.tr("profile_name_invalid"), "quá ngắn: báo sai quy định")

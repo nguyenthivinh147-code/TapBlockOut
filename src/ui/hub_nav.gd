@@ -18,6 +18,7 @@ const Unlocks := preload("res://src/meta/unlocks.gd")
 const Config := preload("res://src/config.gd")
 const FigmaBox := preload("res://src/ui/figma_box.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 
 const SCENE_PATH := "res://scenes/hub_nav.tscn"
 const DESIGN_W := 886.0
@@ -92,6 +93,13 @@ var _press_tw: Dictionary = {}
 func _init(active_tab: String = "home") -> void:
 	name = "NavBar"
 	active = active_tab
+	add_to_group(RewardFly.GROUP)
+
+
+## RewardFly: boosters received outside a level fly into the Home tab's icon (Unity's HomeTabPosition).
+func reward_target(kind: String) -> Control:
+	_bind()
+	return _icons.get("home") if RewardFly.BOOSTERS.has(kind) else null
 
 
 ## The bar as an instance of its scene, with active_tab open.

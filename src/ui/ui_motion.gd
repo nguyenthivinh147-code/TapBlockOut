@@ -9,13 +9,17 @@ extends Node
 ## WOBBLE: a badge (the Shop's -50% sale badges) rocks side to side and swells for a moment, then rests.
 ## SHINE: a light band sweeps across the host's drawing (shine.gdshader, set as its material), then rests; a host that
 ## is, or whose parent is, a disabled button (owned, busy, no videos left, no level to play) does not shine.
+## NUDGE: an icon (Home's side columns) gives a small hop now and then: it stretches up as it rises, squashes as it
+## lands, then rests; Home offsets the icons so one hop runs down the columns at a time.
+## BADGE: a notice dot (Home's red dots) swells for a moment, then rests, like a slow heartbeat.
+## set_kind switches a motion in place (Home: an icon with a notice wobbles instead of nudging).
 ## The motion is added on top of the control's own position, scale and rotation: a value written by someone else
 ## (layout, a SimpleUIRotator spin, a press pulse) becomes the new base, so it never drifts. While the control is
 ## hidden the motion pauses with the base restored. UnityUI adds PULSE and AD_HOP by sprite (kind_for_sprite), screens
 ## add the others themselves; never while baking. attach's delay (s) offsets the first cycle, so neighbours that share
 ## a kind move in a ripple instead of together.
 
-enum { PULSE, AD_HOP, SOB, TEAR, FLOAT, WOBBLE, SHINE }
+enum { PULSE, AD_HOP, SOB, TEAR, FLOAT, WOBBLE, SHINE, NUDGE, BADGE }
 
 const SCRIPT_PATH := "res://src/ui/ui_motion.gd"
 const NODE_NAME := "Motion"
@@ -80,6 +84,20 @@ const WOBBLE_POP := 0.1
 const SHINE_PERIOD := 3.2
 const SHINE_SWEEP := 0.65
 const SHINE_SHADER := "res://src/ui/shine.gdshader"
+## NUDGE: one hop every NUDGE_PERIOD s. Until NUDGE_AIR s it rises NUDGE_LIFT of its height and back, stretched up by
+## up to NUDGE_STRETCH (scale x + q, y - q with q < 0); until NUDGE_LAND it squashes by up to NUDGE_SQUASH, bottom edge
+## planted; then it rests. Neighbours start NUDGE_GAP s apart (attach's delay).
+const NUDGE_PERIOD := 4.0
+const NUDGE_GAP := 0.4
+const NUDGE_AIR := 0.36
+const NUDGE_LAND := 0.52
+const NUDGE_LIFT := 0.06
+const NUDGE_STRETCH := 0.04
+const NUDGE_SQUASH := 0.06
+## BADGE: scale 1 -> 1 + BADGE_SCALE -> 1 over BADGE_BEAT s (sine), once every BADGE_PERIOD s.
+const BADGE_PERIOD := 1.6
+const BADGE_BEAT := 0.45
+const BADGE_SCALE := 0.18
 
 var kind := PULSE
 var time := 0.0
@@ -162,9 +180,24 @@ func _process(delta: float) -> void:
 		_shine(-1.0 if off else shine_progress(maxf(time, 0.0)))
 		_moved = true
 		return
+	# A locked item (its button disabled) does not invite a tap.
+	if kind == NUDGE and _host.get_parent() is BaseButton and (_host.get_parent() as BaseButton).disabled:
+		_rest()
+		return
 	_sync()
 	if kind == PULSE:
 		_host.scale = _base_scale * (1.0 + PULSE_SCALE * (0.5 - 0.5 * cos(TAU * time / PULSE_SEC)))
+	elif kind == BADGE:
+		_host.scale = _base_scale * (1.0 + badge_swell(maxf(time, 0.0)))
+	elif kind == NUDGE:
+		var pose := nudge_pose(maxf(time, 0.0))
+		var s := Vector2(1.0 + float(pose[1]), 1.0 - float(pose[1]))
+		_host.scale = _base_scale * s
+		# Height from the icon's drawn size; a squash or stretch keeps the bottom edge planted (pivot at its center).
+		var h := _host.size.y * absf(_base_scale.y)
+		_host.position = _base_pos + Vector2(0.0, -float(pose[0]) * h + h * 0.5 * (1.0 - s.y))
+		_set_pos = _host.position
+		_set_rot = _host.rotation
 	elif kind == TEAR:
 		var tear := tear_pose(maxf(time, 0.0))
 		_host.scale = _base_scale * Vector2(float(tear[1]), float(tear[2]))
@@ -265,6 +298,33 @@ static func wobble_pose(t: float) -> Array:
 	return [WOBBLE_DEG * sin(TAU * WOBBLE_SWINGS * u) * (1.0 - u), WOBBLE_POP * sin(PI * u)]
 
 
+## [lift (share of height), squash q (scale x + q, y - q)] at t s from the first hop.
+static func nudge_pose(t: float) -> Array:
+	var p := fposmod(t, NUDGE_PERIOD)
+	if p < NUDGE_AIR:
+		var u := p / NUDGE_AIR
+		return [NUDGE_LIFT * sin(PI * u), -NUDGE_STRETCH * sin(PI * u)]
+	if p < NUDGE_LAND:
+		return [0.0, NUDGE_SQUASH * sin(PI * (p - NUDGE_AIR) / (NUDGE_LAND - NUDGE_AIR))]
+	return [0.0, 0.0]
+
+
+## Swell (scale + q, 0 .. BADGE_SCALE) at t s from the first beat.
+static func badge_swell(t: float) -> float:
+	var p := fposmod(t, BADGE_PERIOD)
+	if p >= BADGE_BEAT:
+		return 0.0
+	return BADGE_SCALE * sin(PI * p / BADGE_BEAT)
+
+
+## Switches to kind k in place: the host first goes back to its base, the clock runs on.
+func set_kind(k: int) -> void:
+	if k == kind:
+		return
+	_rest()
+	kind = k
+
+
 ## Band position across the host (0 -> 1) at t s from the first sweep; -1 while resting.
 static func shine_progress(t: float) -> float:
 	var p := fposmod(t, SHINE_PERIOD)
@@ -291,7 +351,7 @@ func _shine(progress: float) -> void:
 func _sync() -> void:
 	if not _host.scale.is_equal_approx(_set_scale):
 		_base_scale = _host.scale
-	if kind != PULSE:
+	if kind != PULSE and kind != BADGE:
 		if not _host.position.is_equal_approx(_set_pos):
 			_base_pos = _host.position
 		if not is_equal_approx(_host.rotation, _set_rot):
@@ -309,7 +369,7 @@ func _rest() -> void:
 	_sync()
 	_host.scale = _base_scale
 	_set_scale = _host.scale
-	if kind != PULSE:
+	if kind != PULSE and kind != BADGE:
 		_host.position = _base_pos
 		_host.rotation = _base_rot
 		_set_pos = _host.position

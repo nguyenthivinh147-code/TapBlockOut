@@ -3,8 +3,10 @@ extends RefCounted
 ## theo thứ tự nào: khối rời bàn chỉ mở thêm đường cho khối khác, còn cổng nhịp chỉ đổi khi khối của cạnh đó chạm tới
 ## (dội vào thì mở, qua thì khoá), nên số cú dội của một cạnh luôn là số lần qua cạnh đó, trừ 1 nếu cổng mở sẵn. Khối
 ## còn trong sương mù hay còn lớp phủ (pudding, băng) không đi được (chạm không tốn gì) và chỉ lộ hay bóc lớp khi khối
-## kề rời đi, nên hai cơ chế này chỉ làm chậm lại chứ không đổi số chạm. Vì vậy đi tham lam là tối ưu và không có nước
-## "chờ".
+## kề rời đi, nên hai cơ chế này chỉ làm chậm lại chứ không đổi số chạm. Socola trên thanh cũng vậy: khối hướng về thanh
+## còn socola không đi được (chạm không tốn gì), mỗi nước có ích bớt 1 lớp. Bom kẹo rời bàn chỉ gỡ lớp phủ và sương (thứ
+## không tốn chạm) trong vùng nổ, nên cũng không đổi số chạm, chỉ làm số lượt dọn bàn ít đi. Vì vậy đi tham lam là tối ưu
+## và không có nước "chờ".
 
 const BoardState := preload("res://src/core/board_state.gd")
 const Config := preload("res://src/config.gd")
@@ -48,7 +50,7 @@ static func slack_for(level: Dictionary) -> int:
 
 ## Clear rounds (design.md section 4): each round taps every block that can act right now (exit, peel the box, knock a
 ## locked pulse gate open), in block order, re-checking each one first; repeat until the board is empty. A covered
-## block (pudding, ice) waits for its neighbours to leave. -1 if the board cannot be cleared. Equals the depth of the
+## block (pudding, ice) waits for its neighbours to leave, a block heading to a chocolate bar for the chocolate to melt. -1 if the board cannot be cleared. Equals the depth of the
 ## blocking chain on a board without mechanics.
 static func clear_rounds(level: Dictionary) -> int:
 	var b := BoardState.new(level)

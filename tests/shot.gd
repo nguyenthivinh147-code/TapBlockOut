@@ -165,7 +165,8 @@ func _shot(name: String) -> void:
 			_main.open_popup("res://scenes/popup_rescue.tscn", o)
 			await _settle()
 		"win":
-			await _fresh(8)
+			# L1–10 have no win card (Config.ECON.win_card_from_level).
+			await _fresh(12)
 			_main.go("level")
 			await _settle()
 			var att: Dictionary = g.start_attempt()
@@ -298,7 +299,7 @@ func _shot(name: String) -> void:
 			_main.go("level")
 			await _settle()
 		"win_lb":
-			await _fresh(9)
+			await _fresh(12)
 			_main.go("level")
 			await _settle()
 			var att: Dictionary = g.start_attempt()

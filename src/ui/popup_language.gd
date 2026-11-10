@@ -50,10 +50,17 @@ func fill() -> void:
 	ui.text("Panel/PauseMenu/Image/txtHeader", tr("settings_language"))
 	ui.text("Panel/PauseMenu/Content/Save/Out", tr("common_ok"))
 	var cur: String = Game.current_lang()
+	var names: Array = []
 	for code in buttons:
 		var b: Button = buttons[code]
-		UnityUI.set_text(b.get_node("Txt") as Label, tr(label_key(str(code))))
+		var l := b.get_node("Txt") as Label
+		l.text = tr(label_key(str(code)))
+		# A name of several words goes onto two lines (whole words) rather than shrinking the whole list.
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		names.append(l)
 		b.button_pressed = cur == code
+	# Every language name at one size: the smallest any name needs.
+	UnityUI.fit_group(names)
 
 
 func _pick(code: String) -> void:

@@ -4,11 +4,18 @@ extends "res://src/ui/stub_ui.gd"
 ## (PopupRewardItem: gold, boosters, minutes of unlimited lives). ClaimBtn and the X, the dim or Back close it.
 ## The x2 video action (a copy of ClaimBtn on the blue pill, saved in scenes/popup_reward.tscn) stays hidden: the
 ## game doubles no reward here, so the economy does not change.
-## setup({view}): view = {reward: {coins, items, inf_min}, title (key, default "ads_reward_title")}.
+## While it shows, the counters behind keep the numbers before the reward (RewardFly.hold); closed any way (Claim, X,
+## dim, Back), each part flies from its tile to its counter, as PopupRewardUICoreLayer.CloseLayer does.
+## setup({view}): view = {reward: {coins, items, inf_min}, title (key, default "ads_reward_title"), flown (parts that
+## already flew, e.g. ["gold"] after the Shop's gold flight)}.
 ## closed({"action": "claim" | "close"}).
 
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 const LbKit := preload("res://src/ui/lb_kit.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
+
+## RewardFly part -> icon of its tile.
+var _icons: Dictionary = {}
 
 
 func _sample() -> Dictionary:
@@ -29,7 +36,14 @@ func _build() -> void:
 		item.root.name = "Reward_" + str(e.kind)
 		LbKit.set_entry_icon(item.node("Icon Item"), e)
 		item.text("Quantity", str(e.amount))
+		_icons[str(e.kind)] = item.node("Icon Item")
 	%ClaimX2.visible = false
 	ui.relayout("Panel")
 	if not UnityUI.baking:
 		Sfx.play("coin")
+		RewardFly.hold(self, view.get("reward", {}), view.get("flown", []))
+		closed.connect(_fly_out, CONNECT_ONE_SHOT)
+
+
+func _fly_out(_r: Variant) -> void:
+	RewardFly.launch(self, view.get("reward", {}), _icons, view.get("flown", []))

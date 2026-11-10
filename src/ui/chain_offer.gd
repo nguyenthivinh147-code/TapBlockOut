@@ -5,7 +5,9 @@ extends Control
 ## Dựng theo PopupChainOffer (color-cube-match-puzzle): 6 ô ChainOfferPack nối bằng tia UIRay theo hình rắn,
 ## mỗi ô một bước của cửa sổ. Trạng thái ô như ChainOfferPackItem.UpdateStatusPack: Locked -> nút khoá,
 ## Available -> nút nhận / giá, Claimed -> BGClaim + nút xám.
-## Nhận xong mở popup Reward (PopupRewardLayer) với thưởng của bước; cửa sổ chỉ trượt sau khi popup đóng.
+## Nhận xong mở popup Reward (PopupRewardLayer) với thưởng của bước; gói kế vẫn khoá tới khi popup đóng (Unity gọi
+## OnSlotClaimed sau popup), cửa sổ cũng chỉ trượt sau đó. Bấm gói đang khoá: dòng dưới đồng hồ nhắc nhận gói trước
+## (ChainOfferPackItem.OnTextPleaseUnlock).
 
 signal closed(result: Variant)
 
@@ -43,6 +45,8 @@ var view: Dictionary = {}
 var claim_button: Button = null
 var close_button: Button = null
 var time_label: Label = null
+## Line under the timer: the game's status text (done, expired, error, locked tap).
+var status_label: Label = null
 var toast_text: String = ""
 var claimed_count: int = 0
 var node_states: Array[String] = []  # "claimed" | "claimable" | "locked", theo thứ tự đang hiện
@@ -55,6 +59,8 @@ var _first: int = -1  # first step on screen; -1 before the first build
 var _timer: Timer = null
 var _busy: bool = false
 var _closed: bool = false
+## The Reward popup of the step before is open: the current step still shows locked.
+var _hold: bool = false
 
 
 func setup(_args: Dictionary = {}) -> void:
@@ -132,9 +138,10 @@ func _rebuild(keep: int = -1) -> void:
 	# its centre to point at the next step.
 	for a in ui.node(RAY).get_children():
 		(a as Control).rotation += PI
-	# Line under the timer: the game's status text (done, expired, error), hidden otherwise.
+	# Line under the timer: the game's status text (done, expired, error, locked tap), hidden otherwise.
 	var status: Label = ui.label("Panel/Top/Text (TMP)#2")
 	status.name = "StatusLabel"
+	status_label = status
 
 	if view.is_empty():
 		UnityUI.set_text(status, tr("chain_expired"))
@@ -172,7 +179,7 @@ func _rebuild(keep: int = -1) -> void:
 ## One ChainOfferPack: reward row and the button of its state.
 func _slot(slot: String, i: int, st: Dictionary, current: int) -> void:
 	var p := LIST + "/" + slot
-	var state := "claimed" if i < current else ("claimable" if i == current else "locked")
+	var state := "claimed" if i < current else ("claimable" if i == current and not _hold else "locked")
 	node_states.append(state)
 	ui.node(p).name = "Node%d" % i
 	ui.sprite(p + "/BG (1)", BG_CURRENT if state == "claimable" else BG_PLAIN)
@@ -205,6 +212,8 @@ func _slot(slot: String, i: int, st: Dictionary, current: int) -> void:
 		b.connect("clicked", claim)
 	elif state == "claimed":
 		b.call("set_interactable", false)
+	else:
+		b.connect("clicked", locked_tap)
 	ui.relayout(bp)
 	if state == "claimable" and type == "ad":
 		# Video step: the TV icon of the game's video buttons at the left edge, added after the layout pass
@@ -268,8 +277,9 @@ func claim() -> void:
 	var popup := RewardText.text(reward) != "" and ResourceLoader.exists(POPUP_REWARD)
 	# Without the popup the line under the timer says the reward came in.
 	toast_text = "" if popup else tr("ads_reward_ok")
-	# Same window first, so the tick lands on the pack the player tapped.
+	# Same window first, so the tick lands on the pack the player tapped. The next pack opens once the popup closes.
 	var held := _first
+	_hold = popup
 	_rebuild(held)
 	if not popup:
 		Sfx.play("sfx_coin")
@@ -282,19 +292,33 @@ func claim() -> void:
 		_after_reward(held), CONNECT_ONE_SHOT)
 
 
-## After the Reward popup: slide after a beat when the next step is off screen.
+## After the Reward popup: the next pack opens in place, or the window slides after a beat when it is off screen.
 func _after_reward(held: int) -> void:
+	var was_held := _hold
+	_hold = false
 	if not is_inside_tree() or _closed:
 		_busy = false
 		return
 	var v := Game.chain_view()
 	if v.is_empty() or window_start(int(v.step), int(v.count), _size()) == held:
 		_busy = false
+		if was_held:
+			_rebuild(held)
 		return
 	await get_tree().create_timer(SLIDE_DELAY).timeout
 	_busy = false
 	if is_inside_tree() and not _closed:
 		_rebuild()
+
+
+## ChainOfferPackItem.OnTextPleaseUnlock: a locked pack says to claim the one before it first.
+func locked_tap() -> void:
+	if _closed or status_label == null or not is_instance_valid(status_label):
+		return
+	toast_text = tr("chain_unlock_first")
+	status_label.name = "ToastLabel"
+	status_label.visible = true
+	UnityUI.set_text(status_label, toast_text)
 
 
 ## What the step just gave: {coins, items}; a Pay step's goods come with its SKU.

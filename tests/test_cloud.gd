@@ -211,6 +211,7 @@ func test_conflict_waits_for_choice(t: T) -> void:
 	t.eq(int(g.s.level), 5, "chưa chọn thì giữ bản máy")
 	var v: Dictionary = g.cloud_conflict_view()
 	t.eq(int(v.local.level), 5, "ô Máy này")
+	t.ok(str(v.local.name).begins_with("CD_"), "boot ghi mã mặc định cho bản máy")
 	t.eq(int(v.cloud.level), 30, "ô Google Play")
 	g.resolve_cloud(true)
 	t.eq(int(g.s.level), 30, "chọn Google Play")

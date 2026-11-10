@@ -28,7 +28,7 @@ Bảng này chỉ ghi chỗ khác, không phải danh sách việc phải làm. 
 | Gợi ý chọn khối nào | Ngẫu nhiên trong các khối thoát được | Luôn lấy khối thoát được đầu tiên theo thứ tự ([board_state.gd:151](../src/core/board_state.gd#L151)) |
 | Nhắc Gợi ý khi đứng yên | 10 giây | 15 giây (`CONTENT.idle_hint_sec`) |
 | Khối 2 lớp | Ở bộ Colorful, đường của lớp trong đã thông thì khối ra luôn trong 1 chạm | Luôn bóc lớp ngoài trước; khối 2 lớp mở ở L55 |
-| Vật cản | Bom đếm ngược, chỉ ở level Special | Level chính không có bom (bom chỉ ở Màn đặc biệt). Có 6 vật cản game gốc không có: thùng sắt (L14), pudding (L30), xích (L40), sương mù (L70), cổng nhịp (L90), băng (L110; cùng luật pudding, không cùng level) |
+| Vật cản | Bom đếm ngược, chỉ ở level Special | Level chính không có bom đếm ngược (bom đếm ngược chỉ ở Màn đặc biệt; Bom kẹo L220 có ngòi cháy nhưng không đếm giờ và giúp người chơi). Có 6 vật cản game gốc không có: thùng sắt (L14), pudding (L30), xích (L45), sương mù (L85), cổng nhịp (L115), băng (L165; cùng luật pudding, không cùng level); mốc từ 2026-11-10 |
 | Màu và cạnh bàn | Bộ MoreColor có 12 màu, mỗi cạnh nhiều đoạn màu | 4 màu, mỗi cạnh một cổng liền. Road Trip: mỗi cạnh 2 cổng (8 màu, L1–200) hoặc 3 cổng (12 màu, L201–400), khối mang màu cổng nó thoát qua |
 | Lưới | 20×28, 28×36, 32×32 | Tối đa 14×18 (Road Trip cao tới 24); cỡ ô đổi theo hình của level |
 | Khối | Khối đặc, chia 4 cánh kiểu chong chóng | Polyomino 1–7 ô (khoảng 3 ô mỗi khối); từ L5 xếp theo 27 hình vẽ tay, cắt theo kiểu đối xứng, hình học hoặc vùng vẽ |
@@ -55,9 +55,9 @@ Bảng tính "số level để đủ tiền" dùng thưởng một level chơi h
 | Số level để đủ tiền 1 món | Gợi ý 9,3 · +bước 11,6 · Búa 13,9 | Gợi ý 11 · +3 Move 24 · Phá khối 36 (đắt hơn 1,2 / 2 / 2,6 lần) |
 | Video lấy booster | +1 món, báo cáo không thấy giới hạn | +1 món, 1 lần mỗi lượt chơi |
 | Thưởng thắng | 5 coin + 10 coin mỗi bước còn lại | 40 gold + 10 gold mỗi MOVES còn lại |
-| Nút x2 | Chỉ khi level > 50 và còn ≥ 3 bước | Mọi level; L1 miễn phí |
+| Nút x2 | Chỉ khi level > 50 và còn ≥ 3 bước | Từ L11 (L1–10 không có thẻ thắng, sang thẳng level kế); L11 miễn phí |
 | Video đổi gold | Không có | Shop: 200 gold mỗi video, tối đa 5 video/ngày |
-| Quà hằng ngày | Daily Win từ L100: thắng 7 ngày liên tiếp được 2 Gợi ý + 1 bước + 1 Búa | Lịch quà 28 ngày từ L4, lỡ ngày không mất chuỗi. Win Streak mới có giao diện, **chưa nối logic** |
+| Quà hằng ngày | Daily Win từ L100: thắng 7 ngày liên tiếp được 2 Gợi ý + 1 bước + 1 Búa | Lịch quà 28 ngày từ L14, lỡ ngày không mất chuỗi. Win Streak mới có giao diện, **chưa nối logic** |
 | Avatar, frame | 30 avatar; frame nhận từ thưởng Challenge và Rank | 12 avatar + 12 frame, mua 50 / 75 / 100 gold hoặc 1 video |
 | Biệt danh | 3–15 ký tự, 4.991 từ cấm | 3–14 ký tự, từ cấm 14 ngôn ngữ cộng tên dành riêng, đổi miễn phí. Tên chỉ hiện ở Profile |
 
@@ -78,9 +78,9 @@ Bảng tính "số level để đủ tiền" dùng thưởng một level chơi h
 | Mục | Game gốc | Candy Away |
 |---|---|---|
 | Daily Challenge | Mở L51. Lịch tháng, chơi được mọi ngày đã qua. Bàn khoảng 103 khối, dư 6,8 bước. Đủ tháng được frame. Thua thì hồi sinh bằng video | Mở L50. Chỉ chơi bàn hôm nay, sinh theo level hiện tại. Thắng lần đầu trong ngày +100 gold. Thua mất mạng |
-| Road Trip | Mở L61. Sự kiện có hạn chót (2026-10-29/30, giờ +08:00). Level MoreColor 12 màu. Thắng 0 coin cơ bản + 10 coin mỗi bước còn lại (trung bình 35,8) | Mở L70 (từ 2026-11-09, trước là L2), không hạn chót. 400 level nhập từ bộ MoreColor của game gốc, chia lại cổng (8 hoặc 12 màu), đổi hướng một phần khối cho thêm 10% khối bị chặn lúc đầu. Thắng không có gold. Không tốn mạng. Hết bước: video +5 bước, tối đa 3 lần |
+| Road Trip | Mở L61. Sự kiện có hạn chót (2026-10-29/30, giờ +08:00). Level MoreColor 12 màu. Thắng 0 coin cơ bản + 10 coin mỗi bước còn lại (trung bình 35,8) | Mở L95 (từ 2026-11-10; 2026-11-09 là L70, trước đó L2), không hạn chót. 400 level nhập từ bộ MoreColor của game gốc, chia lại cổng (8 hoặc 12 màu), đổi hướng một phần khối cho thêm 10% khối bị chặn lúc đầu. Thắng không có gold. Không tốn mạng. Hết bước: video +5 bước, tối đa 3 lần |
 | Special (level có bom) | Mở L41. Mời 1 lần/ngày sau 1–3 lần thắng level Hard | Màn đặc biệt, mở L50 (từ 2026-11-09, trước là L41). Vé: ngăn chờ 2 giờ (không cộng dồn) và +1 vé mỗi lần thắng Hard / VeryHard, không giới hạn. 100 bàn tự sinh hình chữ nhật lát kín. 1 bom, thêm 1 sau mỗi 20 trận thắng, tối đa 6. Thắng được 1 booster ngẫu nhiên, x2 bằng video |
-| Xếp hạng | Rank từ L70, chu kỳ 24 giờ. Điểm theo chuỗi thắng (x1 / x2 / x4), thưởng top 6 | Leaderboard từ L8 (icon ở cột trái Home, mở popup). 7 league theo điểm tuần, chỉ lên trong tuần; hết tuần (7 ngày từ lúc mở khoá) về 0 điểm và Silver. Điểm từ khối crystal, bot tăng điểm mỗi ngày |
+| Xếp hạng | Rank từ L70, chu kỳ 24 giờ. Điểm theo chuỗi thắng (x1 / x2 / x4), thưởng top 6 | Leaderboard từ L70 (từ 2026-11-10, trước là L8; icon ở cột trái Home, mở popup). 7 league theo điểm tuần, chỉ lên trong tuần; hết tuần (7 ngày từ lúc mở khoá) về 0 điểm và Silver. Điểm từ khối crystal, bot tăng điểm mỗi ngày |
 | Thu thập Lego | Có | Không có |
 | Chỉ Candy Away có | | Weekly Pass, Chain Offer, Special Pack, Rescue Pack, Level Pack, sale cuối tuần |
 
@@ -131,7 +131,7 @@ Các chỗ này trước đó khác game gốc nhiều hơn:
 - Level HARD dư 3, ít hơn level thường (4). Game gốc cho level khó dư nhiều hơn.
 - Ở L11–32 số khối tăng nhanh hơn game gốc khoảng 2,3 lần.
 - Tính theo số level phải thắng, booster đắt hơn 1,2–2,6 lần.
-- Road Trip mở ở L70 (game gốc L61; trước 2026-11-09 là L2) và thắng không có gold (game gốc khoảng 36 coin mỗi level).
+- Road Trip mở ở L95 (game gốc L61; 2026-11-09 là L70, trước đó L2) và thắng không có gold (game gốc khoảng 36 coin mỗi level).
 
 ## `design.md` còn tự mâu thuẫn
 

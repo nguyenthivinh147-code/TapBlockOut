@@ -6,16 +6,20 @@ extends Control
 ##   (podium top 3 rồi tối đa 50 người quanh người chơi, chỉ xem), hàng người chơi ghim trên hoặc dưới khi cuộn ra ngoài.
 ## - Tab World: thẻ người chơi (giải, avatar, điểm, Top %, hạng thế giới) và thang 7 giải từ cao xuống thấp, mỗi giải
 ##   ghi số người chơi mô phỏng; giải hiện tại sáng và có avatar.
-## Chạm huy hiệu (PromoBox, hoặc một giải có thưởng trên thang) thì bong bóng thưởng như GiftPanelController: PromoBox
-## hiện thưởng của giải kế (giải cao nhất: thưởng của chính nó, "Đã nhận"); thang hiện thưởng của giải đó, "Đã nhận" nếu
-## đã vào trong tuần. Chạm lần nữa, chạm chỗ khác hay cuộn thì bong bóng đóng.
+## Chạm icon giải thì bong bóng thưởng như GiftPanelController. Icon giải của người chơi (huy hiệu PromoBox, icon trên
+## thẻ người chơi, cúp của giải hiện tại trên thang) hiện thưởng của giải kế (giải cao nhất: thưởng của chính nó,
+## "Đã nhận"); cúp của giải khác có thưởng hiện thưởng của giải đó, "Đã nhận" nếu đã vào trong tuần. Chạm lần nữa, chạm
+## chỗ khác hay cuộn thì bong bóng đóng.
 ## setup({tab}): "league" (mặc định) | "world". Có kết quả tuần chờ xem thì tự mở popup kết quả tuần, rồi tới popup lên
 ## giải nếu còn thưởng league chờ. Đồng hồ về 0 khi đang mở: chốt tuần rồi dựng lại. closed(null).
-## Layout: LeaderboardLayer (color-cube-match-puzzle) gives the panel, the two toggles, the league list
-## (PlayerScrollParent with its sticky anchors, PlayerLeaderboardItem rows), the world ScrollRect that holds the ladder,
-## the RankBadge (copied into PromoBox) and its reward bubble RewardsParent (one copy, shared by the badge and the
-## ladder). Tab strip, promotion box, player card, info button and the Tick timer are nodes of scenes/leaderboard.tscn;
-## the frame, list rows and ladder steps are built at runtime.
+## Layout: two canvases in scenes/leaderboard.tscn. FrameCanvas (PopupOkLayer) is the frame: Popup2, header ribbon,
+## X, and under the ribbon InnerMask (Popup2's cream inside, rounded) holding InnerBg (BG_Winstreak) and TabBand (the
+## tab bar's band). Canvas (LeaderboardLayer, color-cube-match-puzzle) sits on the inside below the ribbon with a
+## see-through BG: the two toggles hanging from the prefab's Line at the bottom, the league list (PlayerScrollParent
+## with its sticky anchors, PlayerLeaderboardItem rows), the world ScrollRect that holds the ladder, the RankBadge
+## (copied into PromoBox) and its reward bubble RewardsParent (one copy, shared by the badge and the ladder).
+## Promotion box, player card, info button and the Tick timer are nodes of the scene too; list rows and ladder steps
+## are built at runtime.
 
 signal closed(result: Variant)
 
@@ -24,6 +28,7 @@ const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const LbKit := preload("res://src/ui/lb_kit.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
+const UiTween := preload("res://src/ui/ui_tween.gd")
 
 const POPUP_HOWTO := "res://scenes/popup_lb_howto.tscn"
 const POPUP_RESULT := "res://scenes/popup_lb_result.tscn"
@@ -40,14 +45,17 @@ const PLATE := LC + "TimeRemainBG/TimeRemain"
 const BADGE := LC + "RankProgressBG/RankProgress/RankBadge"
 const BUBBLE := BADGE + "/RankImage/RewardImage/RewardsParent"
 const OUTLINE := "Baloo Outline - Blue 1"
-## Frame: margin from the screen edge (units at the 886-wide reference screen), height share of the screen, and the
-## content area inside Popup2 (frame canvas units): under the header strip, at the sides and the bottom.
+## Frame: margin from the screen edge (units at the 886-wide reference screen), height share of the screen.
 const REF_W := 886.0
 const FRAME_MARGIN := 16.0
 const FRAME_H := 0.85
-const INSET_TOP := 112.0
-const INSET_SIDE := 22.0
-const INSET_BOTTOM := 26.0
+## Popup2's cream inside starts BORDER in from the art's sides and top, BORDER_BOTTOM from its bottom (frame canvas
+## units); InnerMask covers it (Win Streak's rounded mask UI_Maincenter_10 at ppu x0.55: corners of about 51 units, like
+## Popup2's inner bottom corners). The content canvas starts CONTENT_TOP below the frame's top edge, clear of the header
+## ribbon (its art ends about 66 down), so InnerBg shows around the ribbon instead of a cream strip.
+const BORDER := 32.0
+const BORDER_BOTTOM := 36.0
+const CONTENT_TOP := 80.0
 ## LeaderboardLayer's canvas scales down when the content area is narrower than a row and this padding.
 const CONTENT_MIN_W := 840.0
 ## The info button mirrors the frame's X (Panel/Top/btnTurnOff); its art is smaller than the X's.
@@ -55,16 +63,30 @@ const INFO_SIZE := 96.0
 ## Canvas units of LeaderboardLayer.
 const ROW_W := 800.0
 const ROW_H := 150.0
-const LIST_PAD := 20.0
 const GAP := 14.0
+## The list and the ladder fade out over FADE units at the top and bottom of their viewport (_add_fade), so a row
+## scrolled under the promotion box or toward the tab bar melts away instead of being cut. LIST_PAD (the content's
+## padding at both ends) is at least FADE: scrolled to an end, the first or last row is clear.
+const FADE := 36.0
+const LIST_PAD := 40.0
 ## Promotion box (League) and player card (World) above the list.
 const PROMO_H := 180.0
 const BOX_H := 210.0
-## RankBadge (134 x 137) in PromoBox, from the box's top-left.
-const BADGE_RECT := Rect2(28, 21, 134, 137)
-## Tab strip: the two toggles (prefab 369 x 108) at the bottom of the content area.
+## RankBadge (134 x 137) in PromoBox: its centre from the box's top-left and its scale. Big so the league cup stands
+## out (the cup art fills only ~70% x 55% of its sprite); the glow spills past the box, so the badge draws above the
+## list (z 1) and the reward bubble above it (z 2). Title and countdown start at x 330 in the scene, so the group
+## (cup from about x 90 to the countdown's right end at 710) sits centred in the 800-wide box.
+const BADGE_SIZE := Vector2(134, 137)
+const BADGE_CENTER := Vector2(210, 90)
+const BADGE_SCALE := 1.8
+## Tab bar at the bottom of the content (LeaderboardLayer units): the prefab's Line (dark, light, dark rows) on top,
+## the toggles (prefab 369 x 108, open on one side) hang from it with their open side flipped up so they run into the
+## Line's light row, TAB_BOTTOM under them. TabBand fills the bar from the Line down in the frame.
 const TAB_H := 108.0
-const TAB_PAD := 10.0
+const LINE_H := 32.0
+const TAB_TOP := 6.0
+const TAB_BOTTOM := 14.0
+const BAR_H := TAB_TOP + TAB_H + TAB_BOTTOM
 ## Ladder steps (World): height, gap, left of the player count, league icon.
 const STEP_H := 150.0
 const STEP_GAP := 12.0
@@ -121,7 +143,18 @@ func setup(args: Dictionary = {}) -> void:
 	_build()
 	# Not while tools/bake_screen.gd saves the scene: the popup would be saved with it.
 	if not UnityUI.baking:
+		_enter.call_deferred()
 		_show_pending.call_deferred()
+
+
+## Opening (no prefab reveal: frame and content are two canvases): the popup fades in and the rows (or ladder steps)
+## pop in top to bottom.
+func _enter() -> void:
+	if not is_inside_tree():
+		return
+	UiTween.fade_in(self)
+	if content != null and is_instance_valid(content):
+		UiTween.stagger(content.get_children(), UiTween.REVEAL_LEAD)
 
 
 func _ready() -> void:
@@ -137,10 +170,11 @@ func _build() -> void:
 		var tpl: Control = ui.node(p)
 		tpl.get_parent().remove_child(tpl)
 		tpl.queue_free()
-	# Prefab parts the popup drops: the strip above the safe area (BG/Image, it would cover the frame's header), tab
-	# line, league card (now the promotion box), league badge row (its RankBadge is copied into the promotion box),
-	# last week's podium and the world title; the world list's sticky row (the ladder has the player's step).
-	for p in ["BG/Image", "BG/Line", LC + "Line (1)", LC + "TimeRemainBG", LC + "RankProgressBG", RC + "LastWeekLeaders",
+	# Prefab parts the popup drops: the strip above the safe area (BG/Image, it would cover the frame's header), the
+	# league card's line, the league card (now the promotion box), league badge row (its RankBadge is copied into the
+	# promotion box), last week's podium and the world title; the world list's sticky row (the ladder has the player's
+	# step). BG/Line stays: the tab bar's top edge.
+	for p in ["BG/Image", LC + "Line (1)", LC + "TimeRemainBG", LC + "RankProgressBG", RC + "LastWeekLeaders",
 			RC + "WeekResults/Title", WLIST + "Viewport/PlayerLeaderboardItem"]:
 		ui.show(p, false)
 	# The lists' Mask (clip_children) clips drawing only: rows scrolled below a list still took the taps meant for the
@@ -151,11 +185,19 @@ func _build() -> void:
 		# Renaming an instanced node while baking would break the scene's paths to it.
 		ui.node(LIST + "Viewport/Content").name = "Rows"
 		ui.node(WLIST + "Viewport/Content").name = "Ladder"
-		ui.node(LIST + "Viewport/PlayerLeaderboardItem").name = "MeRow"
+		var me: Control = ui.node(LIST + "Viewport/PlayerLeaderboardItem")
+		me.name = "MeRow"
+		# The pinned card sits on the list's edges, above the fade: out of the Mask, over the same rect.
+		me.reparent(ui.node(LIST.trim_suffix("/")), false)
+		for p in [LIST + "Viewport", WLIST + "Viewport"]:
+			_add_fade(ui.node(p))
 	countdown_label = %CountdownLabel
 	(%InfoButton as Button).connect("clicked", _open.bind(POPUP_HOWTO, {}))
 	_build_promo()
 	_build_bubble()
+	var card_icon := %CardLeagueIcon as Control
+	card_icon.mouse_filter = Control.MOUSE_FILTER_STOP
+	card_icon.gui_input.connect(_on_icon_input.bind(_toggle_next_reward.bind(card_icon)))
 
 	for id in ["league", "world"]:
 		var b: Button = ui.button(TABS + ("Leagues" if id == "league" else "Ranking"))
@@ -195,8 +237,9 @@ func _build_promo() -> void:
 	root.reparent(%PromoBox, false)
 	root.name = "PromoBadge"
 	root.set_meta("u_rt", true)
-	_rect(root, [0, 1, 0, 1, BADGE_RECT.position.x + BADGE_RECT.size.x * 0.5,
-		-(BADGE_RECT.position.y + BADGE_RECT.size.y * 0.5), BADGE_RECT.size.x, BADGE_RECT.size.y, 0.5, 0.5])
+	_rect(root, [0, 1, 0, 1, BADGE_CENTER.x, -BADGE_CENTER.y, BADGE_SIZE.x, BADGE_SIZE.y, 0.5, 0.5])
+	root.scale = Vector2.ONE * BADGE_SCALE
+	root.z_index = 1
 	_badge.show("Arrow", false)
 	_badge.show("RankImage/RewardImage/RewardsParent", false)
 	root.connect("clicked", _on_badge)
@@ -211,6 +254,8 @@ func _build_bubble() -> void:
 	root.name = "RewardBubble"
 	root.set_meta("u_rt", true)
 	root.scale = Vector2.ONE * BUBBLE_SCALE
+	# Above the PromoBox badge (z 1).
+	root.z_index = 2
 	# Own copy of the spec: the padding changes per reward (_show_bubble).
 	var u: Dictionary = (root.get_meta("u") as Dictionary).duplicate(true)
 	root.set_meta("u", u)
@@ -237,9 +282,10 @@ static func _rect(c: Control, r: Array) -> void:
 	UnityUI.apply_rect(c)
 
 
-## Frame centred with FRAME_MARGIN at the sides and FRAME_H of the height; LeaderboardLayer's canvas fills the frame's
-## content area (scaled down on narrow screens); the info button sits in the frame's top-left corner; tab strip at the
-## bottom, the tab's box and list above it (LeaderboardLayer units).
+## Frame centred with FRAME_MARGIN at the sides and FRAME_H of the height; InnerMask on Popup2's cream inside;
+## LeaderboardLayer's canvas covers that inside from under the ribbon down (scaled down on narrow screens); the info
+## button sits in the frame's top-left corner; tab bar at the bottom, the tab's box and list above it
+## (LeaderboardLayer units).
 func _layout() -> void:
 	if size.x <= 0.0 or size.y <= 0.0 or ui == null or frame == null:
 		return
@@ -251,9 +297,11 @@ func _layout() -> void:
 	var fh := ch * FRAME_H
 	UnityKit.set_size(frame.node("Panel"), Vector2(fw, fh))
 	UnityKit.set_size(frame.node("Panel/Bg"), Vector2(fw, fh))
+	# Stretched over Panel/Bg, BORDER in at the sides and top, BORDER_BOTTOM at the bottom.
+	_rect(%InnerMask, [0, 0, 1, 1, 0, (BORDER_BOTTOM - BORDER) * 0.5, -BORDER * 2.0, -(BORDER + BORDER_BOTTOM), 0.5, 0.5])
 	var corner := Vector2((cw - fw) * 0.5, (ch - fh) * 0.5)
-	var inner := Rect2(corner + Vector2(INSET_SIDE, INSET_TOP),
-		Vector2(fw - INSET_SIDE * 2.0, fh - INSET_TOP - INSET_BOTTOM))
+	var inner := Rect2(corner + Vector2(BORDER, CONTENT_TOP),
+		Vector2(fw - BORDER * 2.0, fh - CONTENT_TOP - BORDER_BOTTOM))
 	var k := minf(1.0, inner.size.x / CONTENT_MIN_W)
 	var canvas: Control = ui.canvas
 	canvas.scale = Vector2.ONE * s * k
@@ -261,15 +309,17 @@ func _layout() -> void:
 	canvas.size = inner.size / k
 	_place_info.call_deferred(k)
 	_set_rect(ui.node("BG/Panel"), 0.0, 0.0)
-	_set_rect(%TabStrip, 0.0)
+	# The bar: Line's top edge BAR_H above the bottom, the band from there down (frame units: content units x k).
+	_rect(ui.node("BG/Line"), [0, 0, 1, 0, 0, BAR_H, 0, LINE_H, 0.5, 1])
+	_rect(%TabBand, [0, 0, 1, 0, 0, 0, 0, BAR_H * k, 0.5, 0])
 	for id in tab_buttons:
 		var r: Dictionary = (tab_buttons[id] as Control).get_meta("u_rect")
 		r.amin = Vector2(0.5, 0)
 		r.amax = Vector2(0.5, 0)
 		r.pivot = Vector2((r.pivot as Vector2).x, 0)
-		r.pos = Vector2((r.pos as Vector2).x, TAB_PAD)
+		r.pos = Vector2((r.pos as Vector2).x, TAB_BOTTOM)
 		UnityUI.apply_rect(tab_buttons[id])
-	var bottom := TAB_H + TAB_PAD * 2.0 + GAP
+	var bottom := BAR_H + GAP
 	var top := GAP + (PROMO_H + GAP if (%PromoBox as Control).visible else 0.0)
 	_set_rect(ui.node(LIST.trim_suffix("/")), -top, -(top + bottom))
 	var wtop := GAP + BOX_H + GAP
@@ -373,7 +423,7 @@ func _fill_league() -> void:
 		if bool(r.me):
 			me_row = c
 		y += ROW_H
-	_set_height(content, y)
+	_set_height(content, y + LIST_PAD)
 	var delta := int(view.delta)
 	var sub := tr("lb_rank") % [int(view.rank), ("▲ %d" % delta) if delta > 0 else (("▼ %d" % -delta) if delta < 0 else "")]
 	_pinned_row = ui.node(LIST + "Viewport/PlayerLeaderboardItem")
@@ -421,21 +471,25 @@ func _fill_promo() -> void:
 	UnityUI.set_text(%PromoTitle as Label, tr("lb_league") % LbKit.league_name(league))
 
 
-## The badge's bubble: the next league's reward, or the top league's own (already received this week).
 func _on_badge() -> void:
-	var nxt := str(view.get("next_league", ""))
-	if nxt == "":
-		var cur := str(view.get("league", ""))
-		_toggle_bubble(_badge.root, _league_reward(cur), tr("lb_reward_claimed"))
+	_toggle_next_reward(_badge.root)
+
+
+## A tap on the player's own league icon (PromoBox badge, player card, the player's step of the ladder) toggles the
+## bubble with the next league's reward, "Lên Giải X nhận:"; in the top league, its own reward, marked received.
+func _toggle_next_reward(target: Control) -> void:
+	var rows: Array = Game.lb_leagues_view().get("rows", [])
+	if rows.is_empty():
+		return
+	var cur := 0
+	for i in rows.size():
+		if bool(rows[i].current):
+			cur = i
+	if cur + 1 < rows.size():
+		var nxt := str(rows[cur + 1].id)
+		_toggle_bubble(target, rows[cur + 1].reward, tr("lb_reward_next") % (tr("lb_league") % LbKit.league_name(nxt)))
 	else:
-		_toggle_bubble(_badge.root, _league_reward(nxt), tr("lb_reward_next") % (tr("lb_league") % LbKit.league_name(nxt)))
-
-
-static func _league_reward(id: String) -> Dictionary:
-	for r in Game.lb_leagues_view().get("rows", []):
-		if str(r.id) == id:
-			return r.reward
-	return {}
+		_toggle_bubble(target, rows[cur].reward, tr("lb_reward_claimed"))
 
 
 # --- tab World ---
@@ -486,7 +540,8 @@ func _fill_ladder() -> void:
 
 
 ## One league step: plate with its name, trophy, players; the player's league gets the green row, a glow and the
-## player's avatar. A league with a reward: its trophy opens the bubble.
+## player's avatar. The player's trophy opens the next league's reward (like the PromoBox badge); another league with
+## a reward opens its own.
 func _step(parent: Control, r: Dictionary, i: int, cur: int, rect: Rect2) -> Control:
 	var id := str(r.id)
 	var owner_row := i == cur
@@ -508,10 +563,11 @@ func _step(parent: Control, r: Dictionary, i: int, cur: int, rect: Rect2) -> Con
 	var ic := UnityKit.sprite(root, "ic_Silver", Rect2(icon_x, 15.0, STEP_ICON, STEP_ICON))
 	ic.name = "LeagueIcon"
 	LbKit.set_league_icon(ic, id)
-	if bool(r.get("has_reward", false)):
+	if owner_row or bool(r.get("has_reward", false)):
 		# PASS: a drag that starts on the trophy still scrolls the ladder.
 		ic.mouse_filter = Control.MOUSE_FILTER_PASS
-		ic.gui_input.connect(_on_icon_input.bind(ic, r))
+		var on_tap := _toggle_next_reward.bind(ic) if owner_row else _toggle_league_reward.bind(ic, r)
+		ic.gui_input.connect(_on_icon_input.bind(on_tap))
 	var players := 0
 	var lg: Array = Config.LEADERBOARD.get("leagues", [])
 	if i < lg.size():
@@ -539,8 +595,8 @@ static func _step_icon_x() -> float:
 	return STEP_INFO_X - STEP_ICON - 14.0
 
 
-## A tap (press and release without a drag) on a ladder trophy toggles its bubble.
-func _on_icon_input(event: InputEvent, ic: Control, r: Dictionary) -> void:
+## A tap (press and release without a drag) on a league icon that is not a button (player card, ladder trophies).
+func _on_icon_input(event: InputEvent, on_tap: Callable) -> void:
 	var mb := event as InputEventMouseButton
 	if mb == null or mb.button_index != MOUSE_BUTTON_LEFT:
 		return
@@ -550,6 +606,11 @@ func _on_icon_input(event: InputEvent, ic: Control, r: Dictionary) -> void:
 	if _press_at == Vector2.INF or mb.global_position.distance_to(_press_at) > TAP_SLOP:
 		return
 	_press_at = Vector2.INF
+	on_tap.call()
+
+
+## Another league's trophy on the ladder: that league's reward, "Đã nhận" when reached this week.
+func _toggle_league_reward(ic: Control, r: Dictionary) -> void:
 	var id := str(r.id)
 	var caption := tr("lb_reward_claimed") if bool(r.get("reached", false)) \
 		else tr("lb_reward_next") % (tr("lb_league") % LbKit.league_name(id))
@@ -635,14 +696,39 @@ func _input(event: InputEvent) -> void:
 
 # --- chung ---
 
+## Soft top and bottom edges on a list viewport: its Mask (clip_children, prefab Mask with showMaskGraphic off)
+## multiplies the rows by the alpha of a vertical gradient, opaque but for FADE units at each end; the stops follow
+## the viewport's height.
+func _add_fade(vp: Control) -> void:
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.1, 0.9, 1.0])
+	g.colors = PackedColorArray([Color(1, 1, 1, 0), Color.WHITE, Color.WHITE, Color(1, 1, 1, 0)])
+	var t := GradientTexture2D.new()
+	t.gradient = g
+	t.width = 1
+	t.height = 256
+	t.fill_to = Vector2(0, 1)
+	vp.call("set_texture", t)
+	vp.resized.connect(_fit_fade.bind(vp))
+	_fit_fade(vp)
+
+
+func _fit_fade(vp: Control) -> void:
+	var t := vp.get("tex") as GradientTexture2D
+	if t == null:
+		return
+	var e := clampf(FADE / maxf(vp.size.y, 1.0), 0.0, 0.5)
+	t.gradient.offsets = PackedFloat32Array([0.0, e, 1.0 - e, 1.0])
+
+
 func _clear(c: Control) -> void:
 	for ch in c.get_children():
 		c.remove_child(ch)
 		ch.queue_free()
 
 
-## DynamicScrollViewData content height (padding top 20, rows of 150, no spacing). The content spans the
-## viewport width and rows are centred in it: u_scroll.gd pins content narrower than the viewport to the left
+## Content height (LIST_PAD at both ends, rows of 150 with no spacing, like DynamicScrollViewData). The content spans
+## the viewport width and rows are centred in it: u_scroll.gd pins content narrower than the viewport to the left
 ## edge even on the axis it does not scroll (Unity leaves that axis alone).
 func _set_height(c: Control, h: float) -> void:
 	var r: Dictionary = c.get_meta("u_rect")
@@ -702,7 +788,7 @@ func _process(_delta: float) -> void:
 
 
 ## UILeaguePanel.UpdateStickyCardVisibility: the player's card sticks to the top or bottom of the list while their
-## row is out of view (always at the bottom when the list does not have it).
+## row is out of view or fading at an edge (always at the bottom when the list does not have it).
 func _update_pinned() -> void:
 	if _pinned_row == null or not is_instance_valid(_pinned_row) or _scroll_host == null:
 		return
@@ -710,9 +796,9 @@ func _update_pinned() -> void:
 	var where := "bottom"
 	if _me_in_list != null and is_instance_valid(_me_in_list) and content != null:
 		var y := content.position.y + _row_y(_me_in_list)
-		if y >= -0.5 and y + ROW_H <= vp.size.y + 0.5:
+		if y >= FADE - 0.5 and y + ROW_H <= vp.size.y - FADE + 0.5:
 			where = ""
-		elif y < 0.0:
+		elif y < FADE:
 			where = "top"
 	_pinned_row.visible = where != ""
 	if where != "":

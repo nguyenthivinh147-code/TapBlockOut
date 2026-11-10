@@ -25,11 +25,12 @@ const Unlocks := preload("res://src/meta/unlocks.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const HintFx := preload("res://src/ui/hint_fx.gd")
 const MoveFx := preload("res://src/ui/move_fx.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 const SmashFx := preload("res://src/ui/smash_fx.gd")
 const CrystalFly := preload("res://src/ui/crystal_fly.gd")
+const GlassCrack := preload("res://src/ui/glass_crack.gd")
 const PraiseFx := preload("res://src/ui/praise_fx.gd")
 const Pudding := preload("res://src/ui/pudding.gd")
-const UImage := preload("res://src/ui/u_image.gd")
 const HUD_TONE := preload("res://src/ui/hud_tone.gdshader")
 const SpecialBombs := preload("res://src/ui/special_bombs.gd")
 const SpecialBoard := preload("res://src/core/special_board.gd")
@@ -44,13 +45,13 @@ const SHOP_MINI := "res://scenes/shop_mini.tscn"
 const BOOSTER_UNLOCKED := "res://scenes/booster_unlocked.tscn"
 const INGAME_SETTINGS := "res://scenes/popup_ingame_settings.tscn"
 const POPUP_LB_RESULT := "res://scenes/popup_lb_result.tscn"
+const POPUP_LB_HOWTO := "res://scenes/popup_lb_howto.tscn"
 const POPUP_RT_WIN := "res://scenes/popup_road_trip_win.tscn"
 const POPUP_KEEP := "res://scenes/popup_keep_playing.tscn"
 const POPUP_STREAK_KEEP := "res://scenes/popup_streak_keep.tscn"
 const POPUP_NOTICE := "res://scenes/popup_notice.tscn"
 const POPUP_RATE := "res://scenes/popup_rate.tscn"
 const BOOSTER_SOON := "res://scenes/booster_soon.tscn"
-const FREE_PICK := "res://scenes/popup_free_pick.tscn"
 const HELPER_PACK := "res://scenes/popup_helper_pack.tscn"
 const LOAD_TRANSITION := "res://scenes/load_transition.tscn"
 const TUTORIAL_INTRO := "res://scenes/tutorial_intro.tscn"
@@ -58,10 +59,6 @@ const POPUP_SPECIAL := "res://scenes/popup_special.tscn"
 const POPUP_SPECIAL_END := "res://scenes/popup_special_end.tscn"
 ## Bom chỉ trừ tối đa chừng này giây mỗi khung (khung giật, máy chậm không làm bom nhảy cóc).
 const BOMB_MAX_STEP := 0.25
-## Bàn tay chỉ vào nút booster sau popup dùng thử (wireframe 3.9): HandSprite của SpeedUpTutorialLayer.
-const HAND_TEX := "res://assets/ui/cc/Resources_UI_Maincenter.png"
-const HAND_REGION := Rect2(766, 264, 256, 256)
-const HAND_PX := 130.0
 ## Candy-cane frame and skull badge of the difficulty banner, by tier ("hard", "very_hard"); the layer scene holds the
 ## Hard pair. Built by tools/make_warn_banner_art.py, both tiers the same size.
 const WARN_ART := "res://assets/ui/warn_banner/warn_%s_%s.png"
@@ -183,6 +180,9 @@ class Dialog extends Control:
 class Waiter extends RefCounted:
 	signal done(result: Variant)
 
+	func fire() -> void:
+		done.emit(null)
+
 
 ## Trạng thái: intro (chưa chơi) | playing | dialog | resolving | over | left.
 var state: String = "intro"
@@ -229,9 +229,6 @@ var _level: int = 0
 var _smash_mode: bool = false
 var _caption_max_w: float = 0.0  # caption bubble wraps past this width (the board frame's), 0 = not laid out yet
 var _offer_id: String = ""
-## Booster vừa tặng mà người chơi chọn dùng thử (popup 3.9): bàn tay chỉ vào nút tới khi bấm.
-var _free_pick: String = ""
-var _hand: Control = null
 var _overlay: Control = null
 var _hint_fx: Control = null  # sao Gợi ý đang bay; còn bay thì bấm Gợi ý không làm gì
 var _moves_pending: int = 0  # lượt +Move đã cộng vào bàn nhưng dấu "+" chưa bay tới chip lượt
@@ -279,6 +276,7 @@ func _build() -> void:
 	if _built:
 		return
 	_built = true
+	add_to_group(RewardFly.GROUP)
 	# Background, top bar (moves, title, difficulty, restart, settings, piece chip), board holder with BoardView and
 	# the overlay labels, booster row and LocalPopups are nodes of scenes/level.tscn.
 	# The top bar and booster row alone take height, so the cell size stays the same across levels.
@@ -352,6 +350,18 @@ func _build() -> void:
 
 
 func _on_game_changed(_v: Variant = null) -> void:
+	_refresh_hud()
+
+
+## RewardFly: a booster received in the level flies into its button (an unlocked one).
+func reward_target(kind: String) -> Control:
+	if not _built or not booster_buttons.has(kind) or not (booster_badges[kind] as Control).visible:
+		return null
+	return booster_buttons[kind]
+
+
+## RewardFly: a booster landed, its badge counts on.
+func reward_refresh() -> void:
 	_refresh_hud()
 
 
@@ -455,12 +465,12 @@ func on_back() -> void:
 func _start_level(warn: bool = true) -> void:
 	_set_state("intro")
 	_set_smash_mode(false)
-	_drop_hand()
 	_moves_pending = 0
 	_moves_cashed = 0
 	_pieces_pending = 0
 	for ch in _overlay.get_children():
-		if ch.get_script() == CrystalFly:
+		# A bomb's cracked glass may still be fading when "Level N" starts the next level in place.
+		if ch.get_script() == CrystalFly or ch.get_script() == GlassCrack:
 			ch.queue_free()
 	# Daily Challenge sinh trong game: màn chờ ngắn, vẽ xong mới sinh.
 	if _challenge and Game.challenge_needs_generation():
@@ -512,21 +522,19 @@ func _start_level(warn: bool = true) -> void:
 		var kind := Game.claim_gift()
 		if kind == "":
 			break
-		# Quà đã vào kho: popup booster mới (wireframe 3.8) với số trong kho; chạm đâu hoặc Back thì đi tiếp.
+		# Quà đã vào kho: scene giới thiệu booster mới (wireframe 3.8) với số trong kho; chạm đâu hoặc Back thì đi tiếp.
 		await _popup_scene(BOOSTER_UNLOCKED, {"view": {"kind": kind, "count": int(Game.s.inv.get(kind, 0))}})
 		if _left:
 			return
-		# Mời dùng thử ngay (wireframe 3.9): Nhận thì bàn tay chỉ vào nút booster khi vào chơi.
-		if Unlocks.is_open(kind, _unlock_ref()):
-			var fr: Variant = await _popup_scene(FREE_PICK, {"view": {"kind": kind}})
-			if _left:
-				return
-			if fr is Dictionary and str(fr.get("action", "")) == "claim":
-				_free_pick = kind
 	# Level dạy cơ chế của level chính: cùng popup đó giới thiệu cơ chế mới, một lần; chạm đâu hoặc Back thì đi tiếp.
 	var mech := "" if _challenge or _road_trip or _special else Game.claim_mech_intro(_level)
 	if mech != "":
 		await _popup_scene(BOOSTER_UNLOCKED, {"view": {"mech": mech}})
+		if _left:
+			return
+	# Level có khối crystal đầu tiên (mở Leaderboard, Config.UNLOCK.leaderboard): popup Cách hoạt động (popup nút "i" của Leaderboard); một lần.
+	if Game.lb_take_guide(attempt):
+		await _popup_scene(POPUP_LB_HOWTO)
 		if _left:
 			return
 	# Màn đặc biệt lần đầu: hướng dẫn (khung popup vật cản mới) với quả bom và luật; một lần.
@@ -542,50 +550,39 @@ func _start_level(warn: bool = true) -> void:
 		await _show_difficulty_banner(very_hard)
 		if _left:
 			return
-	# Hướng dẫn lần đầu (wireframe 1.5): trước khi chơi L1 lần đầu, chạm để vào chơi.
+	# Hướng dẫn lần đầu (wireframe 1.5): trước khi chơi L1 lần đầu, bàn tay chỉ vào một ô của khối gợi ý; chạm khối
+	# đó là nước đi đầu tiên.
+	var intro_tap := ""
 	if _level == 1 and not _road_trip and not _challenge and not _special and Game.take_intro():
 		_set_state("dialog")
-		await _popup_scene(TUTORIAL_INTRO)
+		var aim := board.hint()
+		if aim != "":
+			board_view.highlight(aim)
+		var r: Variant = await _popup_scene(TUTORIAL_INTRO, {"view": _intro_view(aim)} if aim != "" else {})
 		if _left:
 			return
+		if aim != "" and r is Dictionary and str(r.get("action", "")) == "tap":
+			intro_tap = aim
 	_set_state("playing")
 	_reset_think()
-	if _level == 1 and not _road_trip and not _special:
+	if intro_tap != "":
+		Sfx.play("tap")
+		_on_block_tapped(intro_tap)
+	elif _level == 1 and not _road_trip and not _special:
 		_set_tut(tr("tut_tap"))
 		board_view.highlight(board.hint())
-	if _free_pick != "":
-		_point_booster(_free_pick)
 
 
-## Bàn tay nhấp vào nút booster vừa tặng (TutController_Step1 của SpeedUpTutorialLayer), tới khi bấm nút đó.
-func _point_booster(kind: String) -> void:
-	_drop_hand()
-	var btn: Control = booster_buttons.get(kind)
-	if btn == null or UnityUI.baking:
-		_free_pick = ""
-		return
-	_hand = UImage.new()
-	_hand.name = "FreePickHand"
-	_hand.set("tex", load(HAND_TEX))
-	_hand.set("region", HAND_REGION)
-	_hand.set("preserve_aspect", true)
-	_hand.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_overlay.add_child(_hand)
-	var s: float = btn.get_global_transform().get_scale().x / _overlay.get_global_transform().get_scale().x
-	_hand.size = Vector2.ONE * HAND_PX * s
-	_hand.pivot_offset = _hand.size * 0.5
-	var r := btn.get_global_rect()
-	var at := _overlay.get_global_transform().affine_inverse() * (r.get_center() + Vector2(r.size.x * 0.15, r.size.y * 0.2))
-	_hand.position = at
-	var tw := _hand.create_tween().set_loops()
-	tw.tween_property(_hand, "scale", Vector2.ONE * 0.85, 0.35).set_trans(Tween.TRANS_SINE)
-	tw.tween_property(_hand, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_SINE)
-
-
-func _drop_hand() -> void:
-	if is_instance_valid(_hand):
-		_hand.queue_free()
-	_hand = null
+## View of tutorial_intro for block `id`: aim() is the global rect of the cell the hand pokes (the block's cell nearest
+## its centre, as strike_point), hit(p) whether the global point p is on that block.
+func _intro_view(id: String) -> Dictionary:
+	return {
+		"aim": func() -> Rect2:
+			var s: float = board_view.cell_size() * board_view.get_global_transform().get_scale().x
+			return Rect2(board_view.strike_point(id) - Vector2(s, s) * 0.5, Vector2(s, s)),
+		"hit": func(p: Vector2) -> bool:
+			return board_view.block_at(board_view.get_global_transform().affine_inverse() * p) == id,
+	}
 
 
 ## Bỏ ván mất mạng hoặc làm chuỗi Win Streak tụt: hỏi bằng popup 4.6, hoặc 9.5 khi chuỗi tụt (design.md mục 7
@@ -690,7 +687,7 @@ func _fly_skull(root: Control, skull: Control, fallback: Control) -> void:
 	tw.chain().tween_callback(root.queue_free)
 
 
-## Level dạy cơ chế (14, 30, 40, 55, 70, 90, 110, 130): một dòng "Tên: luật" ở đầu level. Challenge không có.
+## Level dạy cơ chế (14, 30, 40, 55, 70, 90, 110, 130, 150): một dòng "Tên: luật" ở đầu level. Challenge không có.
 func _mech_hint() -> String:
 	if _challenge or _road_trip or _special:
 		return ""
@@ -732,7 +729,7 @@ func _refresh_hud() -> void:
 		(booster_caps[kind] as Label).text = tr("booster_" + kind) if open else tr("level_title") % _unlock_level(kind)
 		var badge: Label = booster_badges[kind]
 		badge.visible = open
-		var n := int(Game.s.inv.get(kind, 0))
+		var n := maxi(int(Game.s.inv.get(kind, 0)) - RewardFly.held(kind), 0)
 		badge.text = (tr("booster_count") % n) if n > 0 else ""
 		badge.add_theme_stylebox_override("normal", _badge_box(n > 0))
 
@@ -833,6 +830,15 @@ func _on_block_tapped(id: String) -> void:
 	if board_view.cover_held(id):
 		board_view.apply_result({"kind": "covered", "id": id})
 		return
+	# Socola tương tự: board đã tan lớp cuối nhưng thứ làm tan chưa tới thanh, hình vẫn còn socola.
+	if board_view.choco_held(id):
+		board_view.apply_result({"kind": "choco", "id": id})
+		return
+	# Bom kẹo đã gỡ khối này trên board nhưng chưa chạm thanh: hình vẫn còn sương hoặc lớp phủ.
+	var held: String = board_view.pop_held(id)
+	if held != "":
+		board_view.apply_result({"kind": held, "id": id})
+		return
 	var idle_ms := Time.get_ticks_msec() - think_start_ms
 	var from := _block_center(id)
 	var res: Dictionary = Game.tap(attempt, id)
@@ -840,8 +846,8 @@ func _on_block_tapped(id: String) -> void:
 	if kind == "rejected":
 		return
 	board_view.apply_result(res)
-	if kind == "fog" or kind == "covered":
-		return  # khối còn trong sương hay còn phủ chỉ nhún, lắc tại chỗ: không tốn MOVES, không tính là nước đi
+	if kind == "fog" or kind == "covered" or kind == "choco":
+		return  # khối còn trong sương, còn phủ hay hướng về thanh socola chỉ nhún, lắc tại chỗ: không tốn MOVES, không tính là nước đi
 	if _special:
 		_bomb_touch(id, kind == "exit")
 	if bool(res.get("piece", false)):
@@ -870,20 +876,36 @@ func _tutorial_after(kind: String) -> void:
 		board_view.highlight(board.hint())
 
 
-## Đợi hoạt ảnh bàn và mảnh crystal đang bay xong (tối đa vài giây). Hết MOVES thì nghỉ thêm một nhịp trước popup
-## cứu; thắng thì không: thẻ thắng hiện ngay khi khối cuối rời bàn.
-func _settle(pause: bool) -> void:
+## Đợi hoạt ảnh bàn và mảnh crystal đang bay xong (tối đa vài giây), rồi nghỉ thêm `pause` giây: hết MOVES thì một
+## nhịp trước popup cứu, thắng thì Config.CONTENT.win_card_delay_sec cho vụn của khối cuối bắn ra trước khi thẻ hiện.
+func _settle(pause: float) -> void:
 	var t0 := Time.get_ticks_msec()
 	while (board_view.is_animating() or _pieces_pending > 0) and Time.get_ticks_msec() - t0 < 2500:
-		await get_tree().process_frame
-	if pause:
-		await get_tree().create_timer(0.25).timeout
+		if _pieces_pending > 0:
+			await get_tree().process_frame
+		else:
+			await _board_done(2500 - (Time.get_ticks_msec() - t0))
+	if pause > 0.0:
+		await get_tree().create_timer(pause).timeout
+
+
+## Đợi bàn báo xong (animation_done), tối đa `ms`. Bàn báo lúc xử lý tween: nhịp nghỉ sau đó tính đúng từ lúc khối
+## cuối nghiền xong (đợi process_frame thì trễ thêm một frame).
+func _board_done(ms: int) -> void:
+	var w := Waiter.new()
+	_waiters.append(w)
+	board_view.animation_done.connect(w.fire, CONNECT_ONE_SHOT)
+	get_tree().create_timer(maxf(float(ms), 1.0) / 1000.0).timeout.connect(w.fire)
+	await w.done
+	_waiters.erase(w)
+	if is_instance_valid(board_view) and board_view.animation_done.is_connected(w.fire):
+		board_view.animation_done.disconnect(w.fire)
 
 
 func _resolve() -> void:
 	_set_state("resolving")
 	_set_smash_mode(false)
-	await _settle(not board.is_won())
+	await _settle(float(Config.CONTENT.win_card_delay_sec) if board.is_won() else 0.25)
 	if _left:
 		return
 	if board.is_won():
@@ -1040,21 +1062,26 @@ func _win_flow() -> void:
 		if not _left:
 			_leave("home")
 		return
-	# Gold MOVES thừa bay từ chip lượt vào ô gold của thẻ; mỗi đồng rời chip thì số lượt giảm.
-	var card := res.duplicate()
-	card["moves_chip"] = moves_chip
-	card["moves_left"] = board.moves_left()
-	card["on_move_cashed"] = _cash_moves
-	var wr: Variant = await _popup_scene(WIN_CARD, card)
-	if _left:
-		return
 	var x2_offered := bool(res.get("x2_available", false))
 	var x2_taken := false
 	var rate := bool(res.get("rate_prompt", false))
-	if wr is Dictionary:
-		x2_offered = bool(wr.get("x2_offered", x2_offered))
-		x2_taken = bool(wr.get("x2_taken", false))
-		rate = bool(wr.get("rate_prompt", rate))
+	if bool(res.get("card", true)):
+		# Gold MOVES thừa bay từ chip lượt vào ô gold của thẻ; mỗi đồng rời chip thì số lượt giảm.
+		var card := res.duplicate()
+		card["moves_chip"] = moves_chip
+		card["moves_left"] = board.moves_left()
+		card["on_move_cashed"] = _cash_moves
+		var wr: Variant = await _popup_scene(WIN_CARD, card)
+		if _left:
+			return
+		if wr is Dictionary:
+			x2_offered = bool(wr.get("x2_offered", x2_offered))
+			x2_taken = bool(wr.get("x2_taken", false))
+			rate = bool(wr.get("rate_prompt", rate))
+	else:
+		# Below Config.ECON.win_card_from_level: no win card, the gold is already in the wallet; straight to the next
+		# level (Game.next_after_win never sends these wins Home).
+		Sfx.play("sfx_win")
 	# Vừa lên league: popup nhận thưởng. Thưởng league đầu (lúc mới mở khoá) chờ tới khi mở màn Leaderboard.
 	var lb: Dictionary = res.get("lb", {})
 	var promo := Game.lb_pending_view()
@@ -1224,9 +1251,6 @@ func _on_booster_pressed(kind: String) -> void:
 		_set_state("playing")
 		_reset_think()
 		return
-	if kind == _free_pick:
-		_free_pick = ""
-		_drop_hand()
 	if kind == "hint" and is_instance_valid(_hint_fx):
 		return
 	if _smash_mode:
@@ -1393,7 +1417,7 @@ func _do_smash(id: String) -> void:
 	fx.start(target, board_view.cell_size(), func() -> void:
 		if _left or not is_same(attempt, a):
 			return
-		board_view.smash_anim(id)
+		board_view.smash_anim(id, r.get("popped", []))
 		if bool(r.piece):
 			_fly_piece(from)
 		if state == "smashing":
@@ -1408,6 +1432,7 @@ func _booster_dialog(kind: String) -> void:
 	_set_state("dialog")
 	var message := ""
 	var got := false
+	var from := Rect2()
 	for i in 8:
 		var price := int(Config.ECON.booster_price.get(kind, 0))
 		var can_afford := int(Game.s.coins) >= price
@@ -1422,6 +1447,10 @@ func _booster_dialog(kind: String) -> void:
 		var r: Variant = await _ask(dlg)
 		if _left:
 			return
+		# Where the booster's picture was: a bought booster flies from there (the dialog is gone after a video).
+		var art := dlg.find_child("Art", true, false) as Control
+		if art != null:
+			from = art.get_global_rect()
 		var choice := str(r) if r is String else ""
 		if choice == "buy":
 			if Game.buy_booster(kind):
@@ -1443,6 +1472,13 @@ func _booster_dialog(kind: String) -> void:
 					message = tr("ads_failed")
 		else:
 			break
+	if got:
+		# Unity's PopUpBuyMore: the booster flies into its button (badge counts on), then it is used.
+		var fx := RewardFly.fly(null, {"items": {kind: 1}}, {kind: from})
+		if not fx.is_empty():
+			await Signal(fx[0], "arrived")
+			if _left:
+				return
 	_set_state("playing")
 	_reset_think()
 	if got:

@@ -145,8 +145,8 @@ Quy tắc giao hàng (design.md mục 7): **lưu hàng vào save trước, xác 
 
 | SKU | Loại | `Platform.iap.finish(p, consumable)` gọi |
 | --- | --- | --- |
-| `gold_pack_1..6` (và `_sale`), `rescue_pack`, `level_pack` | Consumable | `consume_purchase(token)` (đã gồm acknowledge), chờ `consume_purchase_response` |
-| `remove_ads`, `remove_ads_bundle`, `starter_pack` | Non-consumable | `acknowledge_purchase(token)`, chờ `acknowledge_purchase_response`. Chỉ cần nếu `is_acknowledged == false` |
+| `gold_pack_1..6` (và `_sale`), `level_pack`, `weekly_pass`, `chain_pack_1`, `chain_pack_2`, `helper_great` | Consumable | `consume_purchase(token)` (đã gồm acknowledge), chờ `consume_purchase_response` |
+| `remove_ads`, `remove_ads_bundle`, `starter_pack`, `special_pack` (và `_sale`), `rescue_pack`, `helper_epic`, `bundle_sweet`, `bundle_tasty`, `bundle_yummy` (gói mua một lần, 2026-11-10) | Non-consumable | `acknowledge_purchase(token)`, chờ `acknowledge_purchase_response`. Chỉ cần nếu `is_acknowledged == false` |
 
 - `_sale` là SKU riêng nên cũng consumable.
 - Non-consumable không bao giờ được consume (mất quyền sở hữu và Restore).

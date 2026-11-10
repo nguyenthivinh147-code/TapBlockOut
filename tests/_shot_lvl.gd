@@ -112,7 +112,8 @@ func _scenario(name: String) -> void:
 	var g := _g()
 	match name:
 		"win_free", "win_msg":
-			await _fresh(1 if name == "win_free" else 2)
+			# L11 is the first win card (free x2); L1–10 have none.
+			await _fresh(11 if name == "win_free" else 12)
 			_main.go("level")
 			await _wait(0.5)
 			var att: Dictionary = g.start_attempt()

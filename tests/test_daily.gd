@@ -13,8 +13,8 @@ func _sum(r: Dictionary, acc: Dictionary) -> void:
 
 func test_first_claim(t: T) -> void:
 	var s := SaveSchema.defaults()
-	var v := DailyCalendar.view(s, 100, 5)
-	t.ok(v.open, "mở ở L5")
+	var v := DailyCalendar.view(s, 100, 14)
+	t.ok(v.open, "mở ở L14")
 	t.ok(v.can_claim, "có thể nhận")
 	t.ok(v.badge, "chấm đỏ")
 	t.ok(not v.can_ad_next, "chưa nhận thì chưa có video")
@@ -28,7 +28,7 @@ func test_first_claim(t: T) -> void:
 	t.eq(s.daily.claim_day, 100, "ghi ngày")
 	t.ok(DailyCalendar.claim(s, 100).is_empty(), "không nhận hai lần trong ngày")
 	t.eq(s.daily.idx, 1, "idx giữ nguyên")
-	v = DailyCalendar.view(s, 100, 5)
+	v = DailyCalendar.view(s, 100, 14)
 	t.ok(not v.can_claim and not v.badge, "hết chấm đỏ")
 	t.ok(v.can_ad_next, "được xem video")
 	t.eq(v.cells[0].state, "claimed", "ô 1 đã nhận")
@@ -51,12 +51,12 @@ func test_ad_next(t: T) -> void:
 	t.eq(s.daily.idx, 2, "tiến thêm một ô")
 	t.eq(s.daily.ad_day, 100, "ghi ngày video")
 	t.ok(DailyCalendar.claim_next_ad(s, 100).is_empty(), "video 1 lần/ngày")
-	t.ok(not DailyCalendar.view(s, 100, 5).can_ad_next, "hết video")
+	t.ok(not DailyCalendar.view(s, 100, 14).can_ad_next, "hết video")
 	# Ngày mai có ô mới (ô 3).
-	t.ok(DailyCalendar.view(s, 101, 5).can_claim, "ngày mai nhận được")
+	t.ok(DailyCalendar.view(s, 101, 14).can_claim, "ngày mai nhận được")
 	var r2 := DailyCalendar.claim(s, 101)
 	t.eq(r2.items.get("hint", 0), 1, "ô 3 là 1 Gợi ý")
-	t.ok(DailyCalendar.view(s, 101, 5).can_ad_next, "video ngày mới")
+	t.ok(DailyCalendar.view(s, 101, 14).can_ad_next, "video ngày mới")
 
 
 func test_missed_days_no_reset(t: T) -> void:
@@ -71,20 +71,20 @@ func test_missed_days_no_reset(t: T) -> void:
 func test_clock_rewind(t: T) -> void:
 	var s := SaveSchema.defaults()
 	DailyCalendar.claim(s, 50)
-	var v := DailyCalendar.view(s, 49, 5)
+	var v := DailyCalendar.view(s, 49, 14)
 	t.ok(not v.can_claim, "giờ lùi không nhận")
 	t.ok(not v.can_ad_next, "giờ lùi không xem video")
 	t.ok(DailyCalendar.claim(s, 49).is_empty(), "claim trả rỗng")
 	t.ok(DailyCalendar.claim_next_ad(s, 49).is_empty(), "video trả rỗng")
-	t.ok(not DailyCalendar.view(s, 50, 5).can_claim, "đúng mốc chưa nhận")
-	t.ok(DailyCalendar.view(s, 51, 5).can_claim, "vượt mốc nhận lại")
+	t.ok(not DailyCalendar.view(s, 50, 14).can_claim, "đúng mốc chưa nhận")
+	t.ok(DailyCalendar.view(s, 51, 14).can_claim, "vượt mốc nhận lại")
 
 
 func test_full_cycle(t: T) -> void:
 	var s := SaveSchema.defaults()
 	var acc := {"coins": 0, "items": {}}
 	for d in range(28):
-		var v := DailyCalendar.view(s, 200 + d, 5)
+		var v := DailyCalendar.view(s, 200 + d, 14)
 		t.eq(v.week, d / 7, "tuần ngày %d" % d)
 		var r := DailyCalendar.claim(s, 200 + d)
 		t.ok(not r.is_empty(), "nhận ngày %d" % d)
@@ -95,12 +95,12 @@ func test_full_cycle(t: T) -> void:
 	t.eq(acc.items.get("smash", 0), 4, "4 smash")
 	t.eq(s.daily.idx, 0, "về ô 1")
 	# Ngày vừa nhận ô 28: vẫn hiện tuần 4, tất cả đã nhận.
-	var v2 := DailyCalendar.view(s, 227, 5)
+	var v2 := DailyCalendar.view(s, 227, 14)
 	t.eq(v2.week, 3, "giữ tuần 4 sau khi nhận ô 28")
 	for c in v2.cells:
 		t.eq(c.state, "claimed", "ô %d đã nhận" % c.day)
 	# Vòng mới.
-	var v3 := DailyCalendar.view(s, 228, 5)
+	var v3 := DailyCalendar.view(s, 228, 14)
 	t.eq(v3.week, 0, "vòng mới tuần 1")
 	t.eq(v3.cells[0].state, "current", "ô 1 vòng mới")
 	t.eq(DailyCalendar.claim(s, 228).coins, 50, "ô 1 lặp lại")
@@ -124,7 +124,7 @@ func test_ad_wraps(t: T) -> void:
 func test_week_cells_follow_idx(t: T) -> void:
 	var s := SaveSchema.defaults()
 	s.daily.idx = 9
-	var v := DailyCalendar.view(s, 5, 5)
+	var v := DailyCalendar.view(s, 5, 14)
 	t.eq(v.week, 1, "tuần 2")
 	t.eq(v.cells[0].day, 8, "bắt đầu ô 8")
 	t.eq(v.cells[0].state, "claimed", "ô 8 đã qua")

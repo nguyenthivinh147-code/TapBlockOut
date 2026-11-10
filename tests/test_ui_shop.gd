@@ -13,6 +13,23 @@ const MiniScene := preload("res://scenes/shop_mini.tscn")
 const OfferScene := preload("res://scenes/popup_offer.tscn")
 const Shop := preload("res://src/ui/shop.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const Offers := preload("res://src/meta/offers.gd")
+
+
+## A purchase whose store sheet stays open until the test emits `released` (then the player cancels).
+class HeldIap extends "res://src/platform/mock_iap.gd":
+	signal released
+	var started: int = 0
+
+	func buy(sku: String) -> Dictionary:
+		started += 1
+		await released
+		return {"status": "cancel", "sku": sku, "token": "", "order_id": ""}
+
+	func restore() -> bool:
+		started += 1
+		await released
+		return false
 
 
 func _root() -> Window:
@@ -34,6 +51,13 @@ func _p() -> Node:
 	return _root().get_node("Platform")
 
 
+## The player at `level` with the Starter and Level Pack offers open, as their popups leave them.
+func _offers_open(g: Node, level: int = 51) -> void:
+	g.s.level = level
+	for id in ["starter_pack", "level_pack"]:
+		Offers.shown(g.s, id, {"now": int(g.test_now), "day": 0, "runs": 0, "level": level})
+
+
 func _open(scene: PackedScene, args: Dictionary = {}) -> Node:
 	var n: Node = scene.instantiate()
 	_root().add_child(n)
@@ -48,19 +72,108 @@ func _free(n: Node) -> void:
 
 func test_shop_lists_gold_packs_and_others(t: T) -> void:
 	var g := _g()
+	_offers_open(g)
 	var shop := _open(ShopScene, {"source": "test"})
 	for i in range(1, 7):
 		t.ok(shop.buy_buttons.has("gold_pack_%d" % i), "gói gold %d" % i)
 		t.ok(not shop.buy_buttons.has("gold_pack_%d_sale" % i), "không sale ngày thường")
 	t.eq(_text(shop.buy_buttons["gold_pack_1"]), "$1.99", "giá hiển thị")
-	for sku in ["starter_pack", "level_pack", "rescue_pack", "remove_ads", "remove_ads_bundle"]:
+	for sku in ["starter_pack", "level_pack", "remove_ads", "remove_ads_bundle"]:
 		t.ok(shop.buy_buttons.has(sku), "gói " + sku)
+	# rescue_pack is switched off in Config.OFFERS (2026-11-10): its BundleSweet card is hidden.
+	t.ok(not shop.buy_buttons.has("rescue_pack"), "không bán gói rescue")
+	t.ok(not (shop.find_child("BundleSweet", true, false) as Control).visible, "ẩn thẻ rescue")
 	t.ok(shop.restore_button != null, "có Restore")
 	t.ok(shop.video_button != null and not shop.video_button.disabled, "video bật")
 	t.eq(_p().an.named("shop_open").size(), 1, "log shop_open")
 	t.eq(_p().an.named("rv_offer").size(), 1, "rv_offer khi hiện nút video")
 	for b in shop.buy_buttons.values():
 		t.ok(_hit_h(b) >= 96 - 0.01, "nút đủ cao")
+	_free(shop)
+
+
+## Shop.PACK_ART replaces the prefab art of the pack cards (Unity boosters) with the game's boosters.
+func test_shop_pack_art(t: T) -> void:
+	var g := _g()
+	_offers_open(g)
+	var shop := _open(ShopScene, {"source": "test"})
+	var content: Node = shop.find_child("Content", true, false)
+	var cards := {"StarterPack": "art_starter_pack", "SpecialPack": "art_level_pack_shop",
+		"Shop_RemoveAdsBundle": "art_no_ads_bundle"}
+	for card in cards:
+		var art := str(cards[card])
+		t.ok(ThemeKit.has_real_icon(art), "có file " + art)
+		t.ok(Shop.PACK_ART.values().has(art), "PACK_ART có " + art)
+		var tex: Texture2D = content.get_node(str(card) + "/Image (2)").get("tex")
+		t.eq(tex, ThemeKit.icon(art), "thẻ %s dùng %s" % [card, art])
+	_free(shop)
+
+
+## Remote Config offers_rescue_pack_enabled switches the rescue pack back on: its card shows and sells it while the
+## player has lost the same level 3 times in a row.
+func test_shop_rescue_pack_back_on(t: T) -> void:
+	var g := _g()
+	Config.apply_remote({"offers_rescue_pack_enabled": "true"})
+	var calm := _open(ShopScene, {"source": "test"})
+	t.ok(not calm.buy_buttons.has("rescue_pack"), "chưa thua liền: chưa bán")
+	_free(calm)
+	g.s.fail_streak = {"level": 1, "count": 3}
+	var shop := _open(ShopScene, {"source": "test"})
+	t.ok(shop.buy_buttons.has("rescue_pack"), "bán lại gói rescue")
+	t.ok((shop.find_child("BundleSweet", true, false) as Control).visible, "thẻ rescue hiện")
+	t.ok((shop.find_child("BundleTitle", true, false) as Control).visible, "tiêu đề gói khác hiện")
+	_free(shop)
+	Config.reset()
+
+
+## Pack cards show only while their offer is open (design.md mục 7): none for a new player, Starter and Level Pack
+## during their 48 / 72 hour windows; a bought Starter (one-time) or Level Pack hides its card at once, and the title
+## goes with the last card (user request 2026-11-10). helper_great is not sold in the Shop at any level: only the
+## out-of-moves popup sells it.
+func test_shop_packs_follow_offers(t: T) -> void:
+	var g := _g()
+	g.s.level = 16
+	var shop := _open(ShopScene, {"source": "test"})
+	for sku in ["starter_pack", "level_pack", "rescue_pack", "helper_great"]:
+		t.ok(not shop.buy_buttons.has(sku), "chưa đủ điều kiện: không bán " + sku)
+	for card in ["StarterPack", "SpecialPack", "BundleSweet", "BundleTitle"]:
+		t.ok(not (shop.find_child(card, true, false) as Control).visible, "ẩn " + card)
+	t.ok(shop.find_child("Pack_helper_great", true, false) == null, "L16: không có Helper Pack")
+	t.ok(not _has_label(shop, shop.tr("shop_section_helpers")), "L16: không có tiêu đề Helper Packs")
+	t.ok(shop.buy_buttons.has("remove_ads") and shop.buy_buttons.has("gold_pack_1"), "No Ads, gold vẫn bán")
+	_free(shop)
+
+	g.s.level = 40
+	shop = _open(ShopScene, {"source": "test"})
+	t.ok(not shop.buy_buttons.has("helper_great"), "L40: Shop vẫn không bán Great Pack")
+	t.ok(not _has_label(shop, shop.tr("shop_section_helpers")), "L40: không có tiêu đề Helper Packs")
+	_free(shop)
+
+	_offers_open(g)
+	shop = _open(ShopScene, {"source": "test"})
+	for card in ["StarterPack", "SpecialPack", "BundleTitle"]:
+		t.ok((shop.find_child(card, true, false) as Control).visible, "offer mở: hiện " + card)
+	await shop.buy("starter_pack")
+	t.ok(not (shop.find_child("StarterPack", true, false) as Control).visible, "Starter vừa mua: ẩn thẻ")
+	t.ok((shop.find_child("BundleTitle", true, false) as Control).visible, "còn Level Pack: giữ tiêu đề")
+	await shop.buy("level_pack")
+	t.ok(not (shop.find_child("SpecialPack", true, false) as Control).visible, "Level Pack mua xong: ẩn")
+	t.ok(not (shop.find_child("BundleTitle", true, false) as Control).visible, "hết thẻ: ẩn tiêu đề")
+	_free(shop)
+
+	shop = _open(ShopScene, {"source": "test"})
+	t.ok(not shop.buy_buttons.has("starter_pack"), "mở lại: Starter đã mua thì ẩn")
+	t.ok(not (shop.find_child("BundleTitle", true, false) as Control).visible, "mở lại: không còn gói, ẩn tiêu đề")
+	_free(shop)
+
+	# Expired window: a new save with the offers opened 72 hours ago.
+	g.reset_for_test(DIR + "/save3.json")
+	g.test_now = MONDAY - 72 * 3600
+	_offers_open(g)
+	g.test_now = MONDAY
+	shop = _open(ShopScene, {"source": "test"})
+	t.ok(not shop.buy_buttons.has("starter_pack"), "Starter hết hạn: ẩn")
+	t.ok(not shop.buy_buttons.has("level_pack"), "Level Pack hết hạn: ẩn")
 	_free(shop)
 
 
@@ -103,6 +216,44 @@ func test_shop_buy_gold_pack(t: T) -> void:
 	t.eq(closed_log.size(), 1, "đóng một lần")
 	t.eq(closed_log[0].bought, true, "kết quả bought")
 	_free(shop)
+
+
+## While one pack's purchase is open only its button greys out; the other packs, the video and Restore keep their
+## look (Unity StoreItem locks nothing else), and a second purchase waits for the first.
+func test_shop_buy_dims_only_pressed_button(t: T) -> void:
+	_g()
+	var iap := HeldIap.new()
+	_p().iap = iap
+	var shop := _open(ShopScene)
+	var held: Button = shop.buy_buttons["gold_pack_1"]
+	shop.buy("gold_pack_1")
+	t.ok(held.disabled, "nút vừa bấm khoá trong lúc mua")
+	_check_others_live(t, shop.buy_buttons, "gold_pack_1", shop)
+	t.ok(not shop.video_button.disabled, "video không khoá theo")
+	t.ok(not shop.restore_button.disabled, "Restore không khoá theo")
+	shop.buy("gold_pack_2")
+	t.eq(iap.started, 1, "gói khác chờ giao dịch đang mở")
+	iap.released.emit()
+	await _root().get_tree().process_frame
+	t.ok(not held.disabled, "xong thì nút mở lại")
+	shop.restore()
+	t.ok(shop.restore_button.disabled, "Restore khoá chính nó")
+	_check_others_live(t, shop.buy_buttons, "", shop)
+	iap.released.emit()
+	await _root().get_tree().process_frame
+	t.ok(not shop.restore_button.disabled, "Restore mở lại")
+	_free(shop)
+
+
+func _check_others_live(t: T, buttons: Dictionary, held_sku: String, shop: Node = null) -> void:
+	for sku in buttons:
+		if sku == held_sku or (shop != null and shop.is_owned(sku)):
+			continue
+		var b: Button = buttons[sku]
+		t.ok(not b.disabled, sku + " không khoá theo")
+		var tint: CanvasItem = b.get("tint_target")
+		if tint != null:
+			t.eq(tint.self_modulate, (b.get("tint_colors") as Array)[0], sku + " giữ màu thường")
 
 
 ## The hearts' + opens a popup over the Shop (main.gd): the Shop must still leave by its tabs afterwards.
@@ -256,6 +407,35 @@ func test_shop_ads_daily(t: T) -> void:
 	_free(shop)
 
 
+## Pack names, buy buttons and prices stay inside their cards, and the ADS Daily progress inside its pill, in the
+## language with the longest strings here (scenes/shop.tscn once saved these nodes snapped to the card corners).
+func test_shop_cards_hold_their_text(t: T) -> void:
+	_offers_open(_g())
+	TranslationServer.set_locale("vi")
+	var shop := _open(ShopScene, {"source": "test"})
+	var content: Node = shop.find_child("Content", true, false)
+	for card in ["Shop_RemoveAdsBundle", "Shop_RemoveAds", "StarterPack", "SpecialPack"]:
+		var c: Control = content.get_node(card)
+		# Inset like the prefab (26 units at least), not flush with the frame.
+		var box := c.get_global_rect().grow(-20.0)
+		for part in ["PackName", "Button_Purchase"]:
+			t.ok(box.encloses((c.get_node(part) as Control).get_global_rect()), "%s/%s trong thẻ" % [card, part])
+	for sku in shop.price_labels:
+		var l: Label = shop.price_labels[sku]
+		t.eq(l.get_line_count(), 1, "giá %s một dòng" % sku)
+		t.ok(l.get_parent().get_global_rect().grow(1.0).encloses(l.get_global_rect()), "giá %s trong nút" % sku)
+	var pill: Rect2 = (shop.find_child("AdsDaily", true, false).get_node("Image") as Control).get_global_rect()
+	# The prefab's text rect pokes a little past the pill; its margins keep the text inside.
+	var vl: Label = shop._video_text
+	var box: StyleBox = vl.get_theme_stylebox("normal")
+	var k := vl.get_global_transform().get_scale().x
+	var text: Rect2 = vl.get_global_rect()
+	t.ok(text.position.x + box.get_margin(SIDE_LEFT) * k >= pill.position.x
+		and text.end.x - box.get_margin(SIDE_RIGHT) * k <= pill.end.x, "chữ ADS Daily trong viên nền")
+	_free(shop)
+	TranslationServer.set_locale("en")
+
+
 ## Prefab buttons (unity_ui.gd) draw their text in a child TMP label.
 func _text(b: Node) -> String:
 	if b is Button and (b as Button).text != "":
@@ -303,7 +483,14 @@ func test_shop_mini(t: T) -> void:
 	mini.closed.connect(func(r: Variant) -> void: res.append(r))
 	await mini.buy("gold_pack_1")
 	t.eq(int(g.s.coins), 2000, "mua trong shop mini")
-	t.eq(coins.text, Shop.fmt_n0(2000), "khung gold cập nhật sau khi mua")
+	# The gold flies from the pack's tile to the chip (RewardFly), which counts on as the coins land.
+	t.eq(coins.text, Shop.fmt_n0(1000), "khung giữ số cũ lúc gold bay")
+	var fx := mini.find_children("RewardGoldFx", "", false, false)
+	t.eq(fx.size(), 1, "gold bay lên khung gold của popup")
+	for i in 40:
+		if not fx.is_empty() and is_instance_valid(fx[0]):
+			fx[0].call("_process", 0.05)
+	t.eq(coins.text, Shop.fmt_n0(2000), "khung gold cập nhật sau khi gold bay tới")
 	mini.close_button.pressed.emit()
 	mini.close()
 	t.eq(res.size(), 1, "đóng một lần")
@@ -317,6 +504,23 @@ func test_shop_mini(t: T) -> void:
 	_free(mini2)
 
 
+func test_shop_mini_buy_dims_only_pressed_button(t: T) -> void:
+	_g()
+	var iap := HeldIap.new()
+	_p().iap = iap
+	var mini := _open(MiniScene, {"source": "rescue"})
+	var held: Button = mini.buy_buttons["gold_pack_1"]
+	mini.buy("gold_pack_1")
+	t.ok(held.disabled, "nút vừa bấm khoá trong lúc mua")
+	_check_others_live(t, mini.buy_buttons, "gold_pack_1")
+	mini.buy("gold_pack_2")
+	t.eq(iap.started, 1, "gói khác chờ giao dịch đang mở")
+	iap.released.emit()
+	await _root().get_tree().process_frame
+	t.ok(not held.disabled, "xong thì nút mở lại")
+	_free(mini)
+
+
 func test_offer_popup(t: T) -> void:
 	var g := _g()
 	g.s.level = 11
@@ -324,7 +528,11 @@ func test_offer_popup(t: T) -> void:
 	t.eq(id, "starter_pack", "starter mở")
 	var pop := _open(OfferScene, {"id": id})
 	t.eq(pop.sku, "starter_pack", "sku")
-	t.eq(pop.contents().size(), 4, "gold + 3 booster")
+	t.eq(pop.contents().size(), 5, "gold + mạng vô hạn + 3 booster")
+	var heart: Control = pop.ui.node(pop.GROUP + "/" + str(pop.SLOTS.heart))
+	t.ok(heart.visible, "ô mạng vô hạn hiện")
+	t.eq((heart.get_node("Text (TMP)") as Label).text, pop.tr("shop_heart_forever"), "chữ Vĩnh viễn")
+	t.ok(pop.contents().has(pop.tr("shop_lives_forever")), "dòng mạng vô hạn vĩnh viễn")
 	t.eq(_text(pop.buy_button), "$6.99", "chỉ giá trên nút")
 	t.ok(pop.time_label.visible, "đếm ngược khi có hạn")
 	t.eq(pop.time_label.text, pop.tr("offer_time_left") % "48:00:00", "còn 48 giờ")
@@ -334,6 +542,8 @@ func test_offer_popup(t: T) -> void:
 	await _root().get_tree().process_frame
 	t.eq(int(g.s.coins), 7000, "6.000 gold")
 	t.eq(int(g.s.inv.hint), 1, "booster")
+	t.ok(bool(g.lives_view().infinite_forever), "mạng vô hạn vĩnh viễn")
+	t.eq(g.lives_view().infinite, true, "đang vô hạn")
 	t.eq(res.size(), 1, "đóng sau mua")
 	t.eq(res[0].bought, true, "bought")
 	t.eq(res[0].id, "starter_pack", "id")

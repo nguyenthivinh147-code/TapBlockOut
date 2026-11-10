@@ -1,5 +1,6 @@
 extends Control
-## Profile (wireframe 10.1) on ProfileLayer of color-cube-match-puzzle: worn avatar and frame, nickname (the saved one or
+## Profile (wireframe 10.1) on ProfileLayer of color-cube-match-puzzle: avatar and frame preview (the picked cells, the
+## worn ones on open), nickname (the saved one or
 ## the default "Player"; the pencil opens popup_change_name), Avatar | Frame
 ## tabs (ToggleAnimator swaps the grid and its button group), 3-column grids of Profile_AvtCells / Profile_FrameCells
 ## clones with the game's avatar and frame pictures. The button under the grid follows ProfileUICoreLayer: Used (worn),
@@ -15,6 +16,9 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const UView := preload("res://src/ui/u_view.gd")
 const Config := preload("res://src/config.gd")
+const Cosmetics := preload("res://src/meta/cosmetics.gd")
+const Leaderboard := preload("res://src/meta/leaderboard.gd")
+const UiTween := preload("res://src/ui/ui_tween.gd")
 
 const CHANGE_NAME := "res://scenes/popup_change_name.tscn"
 const KINDS: Array[String] = ["avatar", "frame"]
@@ -35,6 +39,11 @@ const PARTS := {
 ## Buy and video side by side: 286-wide pills 20 apart (SettingMainMenuLayer's two pills sit 20 apart).
 const PAIR_X := 153.0
 const BTN_Y := -364.0
+## "Unlocked at Level N" line in place of Buy and video (items only Road Trip gives, Road Trip still locked).
+const RT_LABEL := Vector2(640, 110)
+## Items only league rewards give: "Reach Platinum League ... to get it" where Buy sits (left), the Leaderboard button
+## or "Unlocked at Level N" where video sits (right). No room for a line between the grid and the buttons.
+const LB_NOTE := Vector2(300, 120)
 
 var gold_label: Label = null
 var name_label: Label = null
@@ -46,6 +55,10 @@ var tab_buttons: Dictionary = {}
 var use_button: Button = null
 var buy_button: Button = null
 var video_button: Button = null
+## Road Trip button of the shown tab (item only a Road Trip box gives, Road Trip open); null otherwise.
+var road_trip_button: Button = null
+## Leaderboard button of the shown tab (item only league rewards give, Leaderboard open); null otherwise.
+var league_button: Button = null
 ## id -> {"panel": Button, "ring": Control, "check": Control, "lock": Control}
 var cells: Dictionary = {}
 
@@ -104,6 +117,14 @@ static func make_avatar(avatar_id: String, frame_id: String, px: int, inset: flo
 	fr.name = "Frame"
 	root.add_child(fr)
 	return root
+
+
+## Icon of an avatar or frame reward (Road Trip box): a new avatar inside the worn frame, or a new frame around the
+## worn avatar, so it shows the way it will look. `worn` is s.cos.
+static func reward_icon(id: String, worn: Dictionary, px: int) -> Control:
+	if id.begins_with("frame_"):
+		return make_avatar(str(worn.get("avatar", "avatar_00")), id, px)
+	return make_avatar(id, str(worn.get("frame", "frame_00")), px)
 
 
 func _ready() -> void:
@@ -176,7 +197,7 @@ func _wire_info() -> void:
 	preview = ui.node(INFO + "/CurrentAvt")
 	preview.name = "Preview"
 	ui.text(INFO + "/Label", tr("profile_nickname"))
-	name_label = ui.text(INFO + "/PlayerName/Placeholder", tr("profile_name_default"))
+	name_label = ui.text(INFO + "/PlayerName/Placeholder", "")
 	name_label.name = "NameLabel"
 	ui.on_click(INFO + "/Editname", _on_edit_name).name = "EditNameButton"
 	ui.text(UID, "")
@@ -220,6 +241,64 @@ func _wire_kind(kind: String) -> void:
 	if coin.get_index() > price.get_index():
 		buy.move_child(coin, price.get_index())
 	_actions[kind] = {"save": save, "used": used, "buy": buy, "video": _video_button(g)}
+	_actions[kind].merge(_road_trip_parts(g))
+	_actions[kind].merge(_league_parts(g))
+
+
+## Where Buy and video sit, for an item only a Road Trip box gives (Cosmetics.road_trip_box): a green Road Trip button
+## that opens the Road Trip screen, or "Unlocked at Level N" while Road Trip is still locked.
+func _road_trip_parts(group: String) -> Dictionary:
+	var save: Dictionary = (ui.node(group + "/SaveButton") as Control).get_meta("u_rect")
+	var b: Control = UnityKit.button(ui.node(group), "green", tr("rt_title"), Rect2(Vector2.ZERO, save.size),
+		_on_road_trip).root
+	b.name = "RoadTripButton"
+	var l := UnityKit.label(ui.node(group), "", Rect2(0, 0, RT_LABEL.x, RT_LABEL.y), 40.0, "ffffffff",
+		"Baloo Outline - Purple")
+	l.name = "RoadTripLocked"
+	for c: Control in [b, l]:
+		var r: Dictionary = c.get_meta("u_rect")
+		r.amin = save.amin
+		r.amax = save.amax
+		r.pivot = Vector2(0.5, 0.5)
+		r.pos = Vector2(0, BTN_Y)
+		UnityUI.apply_rect(c)
+		c.visible = false
+	return {"rt": b, "rt_locked": l}
+
+
+## Road Trip button: leave the Profile for the Road Trip screen (Main routes the action).
+func _on_road_trip() -> void:
+	closed.emit({"action": "road_trip"})
+
+
+## Where Buy and video sit, for an item only league rewards give (Cosmetics.league_only): the line "Reach Platinum
+## League or higher in the Leaderboard to get it" (Buy's place) beside a green Leaderboard button that opens the
+## Leaderboard popup over Home, or "Unlocked at Level N" in the button's place while the Leaderboard is locked.
+func _league_parts(group: String) -> Dictionary:
+	var save: Dictionary = (ui.node(group + "/SaveButton") as Control).get_meta("u_rect")
+	var b: Control = UnityKit.button(ui.node(group), "green", tr("lb_title"), Rect2(Vector2.ZERO, save.size),
+		_on_league).root
+	b.name = "LeagueButton"
+	var l := UnityKit.label(ui.node(group), "", Rect2(Vector2.ZERO, LB_NOTE), 36.0, "ffffffff",
+		"Baloo Outline - Purple")
+	l.name = "LeagueLocked"
+	var note := UnityKit.label(ui.node(group), "", Rect2(Vector2.ZERO, LB_NOTE), 32.0, "ffffffff",
+		"Baloo Outline - Purple")
+	note.name = "LeagueNote"
+	for c: Control in [b, l, note]:
+		var r: Dictionary = c.get_meta("u_rect")
+		r.amin = save.amin
+		r.amax = save.amax
+		r.pivot = Vector2(0.5, 0.5)
+		r.pos = Vector2(-PAIR_X if c == note else PAIR_X, BTN_Y)
+		UnityUI.apply_rect(c)
+		c.visible = false
+	return {"lb": b, "lb_locked": l, "lb_note": note}
+
+
+## Leaderboard button: leave the Profile for Home with the Leaderboard popup (Main routes the action).
+func _on_league() -> void:
+	closed.emit({"action": "ranking"})
 
 
 ## The game's video unlock (VideoButton in the scene): SaveButton copy on the blue pill, TV left of the text like
@@ -243,11 +322,13 @@ func refresh() -> void:
 	var av_id := str(cosm.get("avatar", "avatar_00"))
 	var fr_id := str(cosm.get("frame", "frame_00"))
 	var owned: Array = cosm.owned
-	gold_label.text = str(int(Game.s.coins))
-	var nick := Game.profile_name()
-	UnityUI.set_text(name_label, nick if nick != "" else tr("profile_name_default"))
-	ui.texture(INFO + "/CurrentAvt", ThemeKit.icon(av_id))
-	ui.texture(INFO + "/CurrentFrame", ThemeKit.icon(fr_id))
+	# Spending on a cosmetic counts the wallet down instead of jumping.
+	UiTween.roll(gold_label, int(Game.s.coins))
+	UnityUI.set_text(name_label, Game.profile_name())
+	# ProfileUICoreLayer.OnAvatarSelected / OnFrameSelected: the big picture previews the picked cell, owned or not;
+	# leaving without OK/Buy keeps the worn one (it is what Home and the leaderboard show).
+	ui.texture(INFO + "/CurrentAvt", ThemeKit.icon(str(_sel.get("avatar", av_id))))
+	ui.texture(INFO + "/CurrentFrame", ThemeKit.icon(str(_sel.get("frame", fr_id))))
 	for id in cells:
 		var e: Dictionary = cells[id]
 		var kind := _kind_of(str(id))
@@ -268,20 +349,40 @@ func _refresh_actions(kind: String, owned: Array, worn: String) -> void:
 	var id := str(_sel.get(kind, ""))
 	var have := owned.has(id)
 	var on := id == worn
+	var rt_only := not have and Cosmetics.road_trip_box(id) > 0
+	var lb_only := not have and Cosmetics.league_only(id)
+	var sale := not have and not rt_only and not lb_only
+	var rt_view: Dictionary = Game.road_trip_view() if rt_only else {}
+	var rt_open := rt_only and bool(rt_view.get("open", false))
+	var lb_open := lb_only and Game.lb_open()
 	(a.used as Control).visible = on
 	(a.save as Control).visible = have and not on
-	(a.buy as Control).visible = not have
-	(a.video as Control).visible = not have
+	(a.buy as Control).visible = sale
+	(a.video as Control).visible = sale
+	(a.rt as Control).visible = rt_open
+	(a.rt_locked as Control).visible = rt_only and not rt_open
+	if rt_only and not rt_open:
+		UnityUI.set_text(a.rt_locked as Label, tr("common_locked_level") % int(rt_view.get("unlock_level", 0)))
+	(a.lb as Control).visible = lb_open
+	(a.lb_locked as Control).visible = lb_only and not lb_open
+	(a.lb_note as Control).visible = lb_only
+	if lb_only:
+		UnityUI.set_text(a.lb_note as Label, tr("profile_league_only") % tr("lb_league_" +
+			Leaderboard.league_id(maxi(Leaderboard.cos_from(), 0))))
+		if not lb_open:
+			UnityUI.set_text(a.lb_locked as Label, tr("common_locked_level") % int(Config.UNLOCK.get("leaderboard", 0)))
 	var group := str(PARTS[kind].group)
-	if not have:
+	if sale:
 		ui.text(group + "/BuyButton/Text (TMP)", str(Config.cosmetic_price(id)))
 		_place(a.buy, -PAIR_X)
 		_place(a.video, PAIR_X)
 		ui.relayout(group + "/BuyButton")
 	if kind == _tab:
 		use_button = (a.used if on else a.save) if have else null
-		buy_button = null if have else a.buy
-		video_button = null if have else a.video
+		buy_button = a.buy if sale else null
+		video_button = a.video if sale else null
+		road_trip_button = a.rt if rt_open else null
+		league_button = a.lb if lb_open else null
 
 
 func _place(b: Control, x: float) -> void:

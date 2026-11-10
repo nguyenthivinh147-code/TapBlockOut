@@ -11,6 +11,8 @@ signal action(action_name: String)
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const Profile := preload("res://src/ui/profile.gd")
 const FigmaBox := preload("res://src/ui/figma_box.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
+const UiTween := preload("res://src/ui/ui_tween.gd")
 
 const SCENE_PATH := "res://scenes/hub_top.tscn"
 const DESIGN_W := 886.0
@@ -63,6 +65,8 @@ var _lives_icon: TextureRect = null
 var _fb := FigmaBox.new()
 var _bar_boxes: Array[StyleBoxFlat] = []
 var _bound: bool = false
+## Lives number on the heart (-1 before the first, or while unlimited): a change bumps the heart.
+var _lives_shown: int = -1
 
 
 ## 75 -> "1:15", 3725 -> "1:02:05", từ 1 ngày: "1d 3h".
@@ -81,6 +85,7 @@ static func fmt_time(sec: int) -> String:
 # Only the name (the scene's root has the same one): other built-in properties come from the scene.
 func _init() -> void:
 	name = "HubTop"
+	add_to_group(RewardFly.GROUP)
 
 
 ## The bar as an instance of its scene.
@@ -154,7 +159,7 @@ func _on_game_changed(_v: Variant = null) -> void:
 
 func refresh() -> void:
 	_bind()
-	_show_gold()
+	_show_gold(true)
 	if _avatar != null:
 		profile_btn.remove_child(_avatar)
 		_avatar.queue_free()
@@ -168,8 +173,32 @@ func refresh() -> void:
 	refresh_lives()
 
 
-func _show_gold() -> void:
-	gold_label.text = str(int(Game.s.coins) if gold_shown < 0 else gold_shown)
+## animate (a wallet change from Game, refresh()): the number counts to its new value (UiTween.roll; the first one
+## shows at once). Otherwise it shows at once: coins landing on the chip (RewardFly, gold_shown) step it themselves.
+func _show_gold(animate: bool = false) -> void:
+	var v := maxi(int(Game.s.coins) - RewardFly.held("gold"), 0) if gold_shown < 0 else gold_shown
+	if animate:
+		UiTween.roll(gold_label, v)
+	else:
+		UiTween.set_number(gold_label, v)
+
+
+## RewardFly: gold lands on the gold icon, lives and unlimited lives on the heart.
+func reward_target(kind: String) -> Control:
+	_bind()
+	match kind:
+		"gold":
+			return gold_icon
+		"lives", "inf":
+			return _lives_icon if lives_panel.visible else null
+	return null
+
+
+## RewardFly: a part landed or stopped flying.
+func reward_refresh() -> void:
+	if is_inside_tree():
+		_show_gold()
+		refresh_lives()
 
 
 func refresh_lives() -> void:
@@ -182,10 +211,17 @@ func refresh_lives() -> void:
 	if bool(lv.get("infinite", false)):
 		_lives_icon.texture = ThemeKit.icon("ic_lives")
 		lives_label.text = ""
-		lives_timer_label.text = fmt_time(int(lv.get("infinite_left", 0)))
+		_lives_shown = -1
+		lives_timer_label.text = tr("home_lives_forever") if bool(lv.get("infinite_forever", false)) \
+			else fmt_time(int(lv.get("infinite_left", 0)))
 	else:
 		_lives_icon.texture = ThemeKit.icon("ui_heart")
-		lives_label.text = str(int(lv.count))
+		var n := maxi(int(lv.count) - RewardFly.held("lives"), 0)
+		lives_label.text = str(n)
+		# A life lost or won bumps the heart (a RewardFly landing bumps it too, sharing the tween).
+		if _lives_shown >= 0 and n != _lives_shown and _lives_icon.is_visible_in_tree():
+			UiTween.bump(_lives_icon)
+		_lives_shown = n
 		var wait := int(lv.get("seconds_to_next", 0))
 		lives_timer_label.text = tr("home_lives_full") if wait <= 0 else fmt_time(wait)
 	if size.x > 0.0:

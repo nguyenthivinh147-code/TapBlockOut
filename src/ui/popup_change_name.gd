@@ -3,7 +3,8 @@ extends Control
 ## LineEdit in its Text Area, styled like its Text and Placeholder), SaveButton as OK, closeButtons close. BuyButton
 ## stays inactive: renaming is free. OK or Enter saves through Game.set_profile_name; a rejected name keeps the popup
 ## open and shows the PopupFeedBack toast, as Unity's ShowPopupFeedBackLayer does.
-## setup(args): args.name fills the field (default: the saved nickname, empty shows the Placeholder).
+## setup(args): args.name fills the field (default: the current nickname, the CD_ code until renamed; empty shows the
+## Placeholder).
 ## closed({"action": "ok", "name": String}) after a save; closed({"action": "close"}) on X, the dim or Back.
 
 signal closed(result: Variant)

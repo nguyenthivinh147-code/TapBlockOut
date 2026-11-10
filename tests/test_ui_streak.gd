@@ -15,7 +15,7 @@ func _tree() -> SceneTree:
 	return Engine.get_main_loop() as SceneTree
 
 
-func _g(level: int = 45) -> Node:
+func _g(level: int = 47) -> Node:  # Win Streak opens at L45, which also teaches chains (mechanic popup)
 	DirAccess.make_dir_recursive_absolute(DIR)
 	var g: Node = _tree().root.get_node("Game")
 	g.reset_for_test(DIR + "/save.json")

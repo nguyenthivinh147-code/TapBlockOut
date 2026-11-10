@@ -14,7 +14,7 @@ static func defaults() -> Dictionary:
 		"gifted": {"hint": false, "move": false, "smash": false},
 		"mech_seen": [],
 		"level": 1, "runs": 0, "play_ms": 0, "fail_streak": {"level": 0, "count": 0},
-		"lives": {"count": 10, "next_at": 0, "bonus": 0, "inf_until": 0},
+		"lives": {"count": 10, "next_at": 0, "bonus": 0, "inf_until": 0, "inf_forever": false},
 		"daily": {"idx": 0, "claim_day": -1, "ad_day": -1},
 		"shop": {"day": -1, "videos": 0},
 		"cos": {"owned": ["avatar_00", "frame_00"], "avatar": "avatar_00", "frame": "frame_00"},
@@ -43,10 +43,12 @@ static func defaults() -> Dictionary:
 		"streak": {"week": -1, "started": false, "auto_shown": false, "count": 0, "before": 0, "claimed": []},
 		"lb": {
 			"joined": false, "points": 0, "league": 0, "seed": 0, "day": -1, "seen_rank": 0,
-			"bots": [], "risen": [], "pending": [],
+			"bots": [], "risen": [], "pending": [], "pending_cos": [],
 			# Tuần BXH (src/meta/leaderboard.gd): t0 = lúc vào (0: bản lưu cũ chưa có), week = chỉ số tuần,
 			# clock = giờ lớn nhất đã thấy, result = kết quả tuần chờ xem ({} nếu không có).
 			"t0": 0, "week": 0, "clock": 0, "result": {},
+			# guide = đã hiện popup Cách hoạt động ở level có khối crystal đầu tiên (không reset theo tuần).
+			"guide": false,
 		},
 		"notify": {"ignored": 0, "plan": [], "asked": false, "hours": []},
 		"settings": {"sfx": true, "music": true, "haptics": true, "notif": true, "lang": ""},

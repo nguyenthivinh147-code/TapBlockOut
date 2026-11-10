@@ -19,7 +19,7 @@ const REQUIRED: Array[String] = [
 	"no_lives_title", "shop_title", "daily_title", "profile_title", "settings_title",
 	"booster_hint", "booster_move", "booster_smash", "ads_not_available",
 ]
-const MECHS: Array[String] = ["stone", "ice", "chain", "layer", "fog", "pulse", "frost"]
+const MECHS: Array[String] = ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon", "choco", "pop"]
 const BOOSTERS: Array[String] = ["hint", "move", "smash"]
 const NOTIF_KINDS: Array[String] = ["daily_gift", "lives_full", "offer_open", "challenge"]
 const PACKS: Array[String] = ["starter_pack", "level_pack", "rescue_pack", "remove_ads"]

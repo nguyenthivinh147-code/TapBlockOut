@@ -36,6 +36,16 @@ func _label_text(b: Node) -> String:
 	return (l[0] as Label).text if not l.is_empty() else ""
 
 
+## Distinct font sizes of the language names (Txt of each cell).
+func _name_sizes(buttons: Dictionary) -> Array:
+	var sizes: Array = []
+	for code in buttons:
+		var s := (buttons[code].get_node("Txt") as Label).get_theme_font_size("font_size")
+		if not sizes.has(s):
+			sizes.append(s)
+	return sizes
+
+
 func _open(opened: Array) -> Control:
 	var node := (load("res://scenes/settings.tscn") as PackedScene).instantiate() as Control
 	node.opener = func(url: String) -> void: opened.append(url)
@@ -77,7 +87,9 @@ func test_language(t: T) -> void:
 	t.eq(lit, [g.current_lang()], "chưa chọn: sáng ô ngôn ngữ của máy")
 	t.eq(_label_text(node.lang_buttons["ja"]), "日本語", "tên ngôn ngữ viết bằng chính nó")
 	t.eq(_label_text(node.lang_buttons["pt_BR"]), "Português (Brasil)", "tên pt_BR")
+	t.eq(_name_sizes(node.lang_buttons).size(), 1, "mọi tên ngôn ngữ cùng một cỡ chữ")
 	node.lang_buttons["vi"].pressed.emit()
+	t.eq(_name_sizes(node.lang_buttons).size(), 1, "đổi ngôn ngữ: tên vẫn cùng cỡ")
 	t.ok(node.language_panel != null, "đổi ngôn ngữ vẫn mở popup")
 	t.eq(_label_text(node.language_button), "Ngôn ngữ", "chữ đổi theo ngôn ngữ mới")
 	t.eq(str(g.s.settings.lang), "vi", "lưu lang vi")

@@ -85,12 +85,12 @@ func test_view_arg_overrides_sample(t: T) -> void:
 
 
 func test_hidden_in_release(t: T) -> void:
-	var g := _g(45)
+	var g := _g(70)
 	Config.ui_preview_override = 0
 	var home := _open("home")
 	t.ok(not home.find_child("LeaderboardButton", true, false).disabled, "Bảng xếp hạng đã nối logic: mở theo level, không theo bản build")
 	t.ok(home.find_child("RemoveAdsItem", true, false).visible, "Remove Ads đã nối logic: có ở bản phát hành")
-	t.ok(home.find_child("StreakItem", true, false).visible, "Win Streak đã nối logic: mở từ L40")
+	t.ok(home.find_child("StreakItem", true, false).visible, "Win Streak đã nối logic: mở từ L45")
 	var labels: Array = []
 	_walk_labels(home, labels)
 	t.ok(not labels.has(home.tr("home_ads_daily")), "không có ADS Daily")
@@ -102,9 +102,9 @@ func test_hidden_in_release(t: T) -> void:
 	var shop_labels: Array = []
 	_walk_labels(shop, shop_labels)
 	t.ok(not shop_labels.has(shop.tr("shop_section_bundles")), "Bundles ẩn khỏi Shop")
-	t.ok(shop_labels.has(shop.tr("shop_section_helpers")), "Shop bán Helper Packs")
-	t.ok(shop.find_child("Pack_helper_great", true, false) != null, "Helper Packs còn helper_great")
-	for sku in ["helper_epic", "bundle_sweet", "bundle_tasty", "bundle_yummy"]:
+	# helper_great is sold only in the out-of-moves popup (2026-11-10): the Helper Packs section is gone.
+	t.ok(not shop_labels.has(shop.tr("shop_section_helpers")), "Helper Packs ẩn khỏi Shop")
+	for sku in ["helper_great", "helper_epic", "bundle_sweet", "bundle_tasty", "bundle_yummy"]:
 		t.ok(shop.find_child("Pack_" + sku, true, false) == null, "%s ẩn khỏi Shop" % sku)
 	t.ok(not shop_labels.has(shop.tr("shop_section_hearts")), "Hearts chưa có logic: ẩn ở bản phát hành")
 	shop.free()
@@ -116,7 +116,7 @@ func test_hidden_in_release(t: T) -> void:
 
 
 func test_entry_points_in_preview(t: T) -> void:
-	_g()
+	_g(70)
 	Config.ui_preview_override = 1
 	var home := _open("home")
 	t.ok(not home.find_child("LeaderboardButton", true, false).disabled, "Bảng xếp hạng mở")
@@ -136,7 +136,8 @@ func test_entry_points_in_preview(t: T) -> void:
 	var shop := _open("shop", {"source": "test"})
 	var shop_labels: Array = []
 	_walk_labels(shop, shop_labels)
-	t.ok(shop_labels.has(shop.tr("shop_section_hearts")), "bản debug: mục Hearts xem trước")
+	t.ok(not shop_labels.has(shop.tr("shop_section_hearts")), "mục Hearts (gói mạng) tắt cả ở bản debug")
+	t.ok(shop.find_child("HeartPacks", true, false) == null, "không có thẻ gói mạng")
 	shop.free()
 	Config.ui_preview_override = -1
 

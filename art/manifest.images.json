@@ -465,14 +465,14 @@
     "prompt_id": "7b2d04be-a37e-44f8-9efd-87548b91e009",
     "source": "art/images/icon_app_candy.png",
     "source_sha256": "ba7c2c975882b5312f715a24e6efc29fc62dcb0e4176ee02c5a77258ac1d34f1",
-    "concepts": "art/concepts/concept_icon_app_v1.png, v2_L, v3_bg, v4_streak (nguoi dung chon cot 2 cua v4_streak)",
+    "concepts": "art/concepts/concept_icon_app_v1.png, v2_L, v3_bg, v4_streak (nguoi dung chon cot 2 cua v4_streak), v5_zoom (2026-11-10, chu the nho qua: nguoi dung chon cot 3, zoom 1,35x)",
     "file": "assets/icon_app.png",
-    "file_sha256": "4c202f804a37c7b3c172cbda434bb162fd2db311b36ceb61e62cd10b98ce2c53",
+    "file_sha256": "ce801d2ff5fe5776536e42fbfad1c42968f35cea3f4dd0dfbea8b98835fb0109",
     "file_size": [
       512,
       512
     ],
-    "note": "Chuoi tao (file trung gian o D:/GameProjects/candy_icon): t2i seed 31013 (khoi S bay khoi khay, nen hong) -> edit 31023 (khoi T) -> 31033 (L vang lien khoi, lay chat lieu tu icon_b_pop_T) -> 31041 (dung hinh chu L, chan o duoi) -> 31051 (L hong dam to hon, khay nho nhat mo, bo vien hong) -> 31071 (vet trang truot duoi khoi). tools/make_app_icon.gd --mono sinh icon_app 512, icon_main_192, icon_adaptive_bg_432 (gradient mau mep anh), icon_adaptive_fg_432 (ca anh 272 px giua lop, mep mo dan) va icon_adaptive_mono_432 (L phang ve bang SDF)"
+    "note": "Chuoi tao (file trung gian o D:/GameProjects/candy_icon): t2i seed 31013 (khoi S bay khoi khay, nen hong) -> edit 31023 (khoi T) -> 31033 (L vang lien khoi, lay chat lieu tu icon_b_pop_T) -> 31041 (dung hinh chu L, chan o duoi) -> 31051 (L hong dam to hon, khay nho nhat mo, bo vien hong) -> 31071 (vet trang truot duoi khoi). Tu 2026-11-10 cat vuong 750 px tu (187, 5) cua anh goc (--crop=187,5,750 --fg=288, bo khay, khoi L cao ~77% icon). tools/make_app_icon.gd --mono sinh icon_app 512, icon_main_192, icon_adaptive_bg_432 (gradient mau mep anh), icon_adaptive_fg_432 (vung cat 288 px giua lop = vung 72 dp nhin thay, mep mo dan) va icon_adaptive_mono_432 (L phang ve bang SDF)"
   },
   {
     "name": "block_surface",
@@ -1022,56 +1022,66 @@
   {
     "name": "avatar_11",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=icon)",
-    "workflow": "image_qwen_image_2_1_t2i",
+    "tool": "mcp comfyui edit_game_image (anh 1 avatar_08 lam mau phong cach va bo cuc)",
+    "workflow": "image_qwen_image_2_1_image_edit",
     "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A cute round baby dragon face avatar, purple (#9B51E0) with small horns, tiny teal spikes and big friendly eyes, head only, centered",
-    "style_prompt": "Glossy casual mobile game avatar icon, cute chunky rounded shapes, vivid saturated colors, soft highlights, gentle drop shadow, head only, no body, no text, no logo, no watermark, clean uncluttered",
-    "seed": 3011,
+    "prompt": "Use <image1> as the style and layout reference. Create a new avatar icon in exactly the same style: one glossy 3D kawaii candy character centered on a flat pastel rounded-square background that fills the canvas, the same big shiny black eyes with white highlights, small pink blush cheeks and a tiny smiling mouth, the same soft studio lighting and soft contact shadow. Replace the purple wrapped candy with a cute cupcake character: a swirl of glossy pink strawberry frosting with colorful rainbow sprinkles and a shiny red cherry on top, sitting in a chocolate-brown fluted paper cup; the kawaii face is on the front of the paper cup. Change the background to a soft lilac pink color.",
+    "negative_prompt": "purple wrapped candy, text, letters, watermark, logo, border, frame, outline, multiple characters, hands, arms, body",
+    "input_paths": [
+      "assets/avatars/avatar_08.png"
+    ],
+    "reference_resolution": 1024,
+    "seed": 1101,
     "steps": 25,
     "cfg": 1,
     "use_reprompt": false,
-    "transparent_background": true,
+    "transparent_background": false,
     "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "b37af5fe-c7c5-485b-8d72-e404dd71e72d",
+    "source": "art/images/avatar_11.png",
+    "source_sha256": "ff8c0d2366d6eb7f5ab7836bb1f374fae8835c7abf8c32d7329cef88b9d8fb4f",
+    "file": "assets/avatars/avatar_11.png",
+    "file_sha256": "d6f0dad0284444bdd3318a0dc65028009585de2341f757797bb7dac521bed18c",
+    "file_size": [
       512,
       512
     ],
-    "prompt_id": "55757d09-cd10-43de-b2a0-4eb14a437642",
-    "source": "art/images/avatar_11.png",
-    "source_sha256": "e0d83ce9019de61a249684aeebb8e6c8d9fbe349ebde52aa6a207ec2ae5eeb0b",
-    "file": "assets/avatars/avatar_11.png",
-    "file_sha256": "68e7c7984e8b3939bee8ab9ca8b7296b5a9841c85a3889726292a3c1a5d7588c",
-    "file_size": [
-      256,
-      256
-    ]
+    "note": "2026-11-10: bo keo (cupcake kem dau, cherry), thay rong tim cu. Xu ly: alpha=255, Pillow LANCZOS 1024->512, alpha lay tu assets/avatars/avatar_10.png (o vuong bo goc r~130/512; mask r~113 cua avatar_08 de lo goc trang). Ban thu khac: D:/GameProjects/candy_avatar/avatar_11_b.png (macaron hong, nen xanh troi); bang so sanh art/concepts/concept_avatars_11_12.png"
   },
   {
     "name": "avatar_12",
     "status": "used",
-    "tool": "mcp comfyui start_game_image (asset_type=icon)",
-    "workflow": "image_qwen_image_2_1_t2i",
+    "tool": "mcp comfyui edit_game_image (anh 1 avatar_08 lam mau phong cach va bo cuc)",
+    "workflow": "image_qwen_image_2_1_image_edit",
     "model": "qwen_image_2.1_int8_convrot",
-    "prompt": "A cute round unicorn face avatar, white with a pastel rainbow mane, a golden spiral horn and sparkly eyes, head only, centered",
-    "style_prompt": "Glossy casual mobile game avatar icon, cute chunky rounded shapes, vivid saturated colors, soft highlights, gentle drop shadow, head only, no body, no text, no logo, no watermark, clean uncluttered",
-    "seed": 3012,
+    "prompt": "Use <image1> as the style and layout reference. Create a new avatar icon in exactly the same style: one glossy 3D kawaii candy character centered on a flat pastel rounded-square background that fills the canvas, the same big shiny black eyes with white highlights, small pink blush cheeks and a tiny smiling mouth, the same soft studio lighting and soft contact shadow. Replace the purple wrapped candy with a cute heart-shaped lollipop character: a glossy translucent cherry-red hard candy heart with a white candy stick below it and a small pink satin bow tied where the stick meets the heart; the kawaii face is on the heart. Change the background to a soft mint-to-aqua color.",
+    "negative_prompt": "purple wrapped candy, text, letters, watermark, logo, border, frame, outline, multiple characters, hands, arms, body",
+    "input_paths": [
+      "assets/avatars/avatar_08.png"
+    ],
+    "reference_resolution": 1024,
+    "seed": 1201,
     "steps": 25,
     "cfg": 1,
     "use_reprompt": false,
-    "transparent_background": true,
+    "transparent_background": false,
     "generated_size": [
+      1024,
+      1024
+    ],
+    "prompt_id": "e94f3e8d-d392-477a-9dc8-596c10707905",
+    "source": "art/images/avatar_12.png",
+    "source_sha256": "de0abad42218baa84b3fb43709a1c3c13f8ab2c5ed9a063a933baf4c4e185e25",
+    "file": "assets/avatars/avatar_12.png",
+    "file_sha256": "90b3f52e521aa29a25140d6be5e9525accbc38afa4461792fa5b8033365a9b70",
+    "file_size": [
       512,
       512
     ],
-    "prompt_id": "bea72953-c6d5-4da3-bd7f-1a0878075678",
-    "source": "art/images/avatar_12.png",
-    "source_sha256": "8cbf06e0db8351205cdbec4209c60cf9634ecbd90be680bb0965caaf0c41ba55",
-    "file": "assets/avatars/avatar_12.png",
-    "file_sha256": "2343b178b2fc03a58ee7c89a25d1b0b203e7873cd15ebb139bc133e37003da8e",
-    "file_size": [
-      256,
-      256
-    ]
+    "note": "2026-11-10: bo keo (keo mut trai tim do, no hong), thay ky lan cu. Xu ly nhu avatar_11 (mask avatar_10). Ban thu khac: D:/GameProjects/candy_avatar/avatar_12_b.png (truffle socola coc giay vang, nen cam dao); bang so sanh art/concepts/concept_avatars_11_12.png"
   },
   {
     "name": "frame_00",

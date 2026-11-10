@@ -19,6 +19,7 @@ signal closed(result: Variant)
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Config := preload("res://src/config.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 const VIDEO_PLACEMENT := "refill_life"
 const LAYER := "PopupMoreHeartLayer"
 
@@ -182,22 +183,34 @@ func _set_busy(v: bool) -> void:
 func _on_gold_pressed() -> void:
 	if _busy:
 		return
+	var before := int(Game.lives_view().count)
 	if not Game.refill_gold():
 		_show_msg(tr("no_lives_not_enough_gold"))
 		return
-	Sfx.play("sfx_coin")
+	if not _fly_lives(before):
+		Sfx.play("sfx_coin")
 	_finish("refilled")
+
+
+## The lives just added fly from the big heart to the top bar's lives chip (from the hub; RewardFly). False when
+## nothing flies.
+func _fly_lives(before: int) -> bool:
+	var gained := int(Game.lives_view().count) - before
+	var heart: Control = ui.node("Panel/Content/Preview/Content/HeartIcon")
+	return gained > 0 and RewardFly.launch(self, {"lives": gained}, {"lives": heart}) > 0
 
 
 func _on_video_pressed() -> void:
 	if _busy:
 		return
 	_set_busy(true)
+	var before := int(Game.lives_view().count)
 	var ok: bool = await Game.refill_video()
 	if not is_inside_tree():
 		return
 	_set_busy(false)
 	if ok:
+		_fly_lives(before)
 		_finish("refilled")
 		return
 	match Game.last_ad_reason:

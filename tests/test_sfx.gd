@@ -95,6 +95,25 @@ func test_grind_and_box_sounds(t: T) -> void:
 	s.queue_free()
 
 
+## pulse() only vibrates: it follows the haptics setting and HAPTIC_MS, and plays no sound.
+func test_pulse_vibrates_without_sound(t: T) -> void:
+	var s := _make()
+	t.ok(SfxScript.HAPTIC_MS.has("grind"), "có nhịp rung nghiền")
+	s.pulse("grind")
+	t.eq(s.haptic_count, 1, "rung một nhịp")
+	t.eq(s.last_played, "", "không phát tiếng")
+	s.pulse("khong_co")
+	t.eq(s.haptic_count, 1, "tên không có trong bảng thì không rung")
+	s.apply_settings({"haptics": false})
+	s.pulse("grind")
+	s.play("tap")
+	t.eq(s.haptic_count, 1, "tắt rung thì không rung")
+	s.apply_settings({"haptics": true})
+	s.play("tap")
+	t.eq(s.haptic_count, 2, "play() rung qua pulse()")
+	s.queue_free()
+
+
 func test_music_pause_resume(t: T) -> void:
 	var s := _make()
 	var wav := AudioStreamWAV.new()

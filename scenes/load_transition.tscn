@@ -10,14 +10,17 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_p7vh0"]
 shader = ExtResource("5_0d128")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
-shader_parameter/underlay_color = Color(0, 0, 0, 1)
-shader_parameter/face_edge = 0.510714285875
-shader_parameter/outline_half = 0.0
-shader_parameter/underlay_on = false
-shader_parameter/underlay_edge = 0.29107142087500004
-shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
+shader_parameter/outline_color = Color(0.5411765, 0.24705882, 0.9882353, 1)
+shader_parameter/underlay_color = Color(0.24313726, 0.08235294, 0.5019608, 1)
+shader_parameter/face_edge = 0.38
+shader_parameter/outline_half = 0.13
+shader_parameter/underlay_on = true
+shader_parameter/underlay_edge = 0.25
+shader_parameter/underlay_offset = Vector2(0, -2.2)
 shader_parameter/px_range = 14.0
+shader_parameter/grad_on = true
+shader_parameter/grad_top = Color(1, 1, 1, 1)
+shader_parameter/grad_bottom = Color(0.8509804, 0.72156864, 1, 1)
 
 [sub_resource type="FontVariation" id="FontVariation_1f0mq"]
 base_font = ExtResource("6_ov5tw")
@@ -153,10 +156,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -172.5
-offset_top = -93.4507
-offset_right = 172.5
-offset_bottom = 93.4507
+offset_left = -450.0
+offset_top = -160.0
+offset_right = 450.0
+offset_bottom = 160.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
@@ -166,7 +169,7 @@ theme_override_constants/line_spacing = -11
 theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
 theme_override_fonts/font = SubResource("FontVariation_1f0mq")
-theme_override_font_sizes/font_size = 72
+theme_override_font_sizes/font_size = 150
 theme_override_styles/normal = SubResource("StyleBoxEmpty_w35co")
 text = "Level 2"
 horizontal_alignment = 1
@@ -184,10 +187,10 @@ metadata/u_rect = {
 "amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0.5, 0.5),
 "pos": Vector2(0, 0),
-"size": Vector2(345, 186.9014)
+"size": Vector2(900, 320)
 }
 metadata/u_txt = {
-"auto": [18.0, 72.0],
+"auto": [40.0, 150.0],
 "cs": 0.0,
 "fs": 64.45,
 "ls": -3.0,

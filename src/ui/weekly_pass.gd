@@ -18,6 +18,7 @@ const RewardText := preload("res://src/ui/reward_text.gd")
 const UScroll := preload("res://src/ui/u_scroll.gd")
 const WeeklyPass := preload("res://src/meta/weekly_pass.gd")
 const Config := preload("res://src/config.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 const TutorialScene := preload("res://scenes/weekly_pass_tutorial.tscn")
 const HOWTO_SCENE := "res://scenes/popup_weekly_tutorial.tscn"
 
@@ -30,8 +31,14 @@ const STREAK_MILESTONE := STREAK_CONTENT + "/Progress/MilestoneContainer/Milesto
 const DAILY_MILESTONE := "Panel/Content/Preview/Bottom/Slider/MilestonesParent/Milestone/ScaleMilestone/ChildScaleMilestone"
 ## Milestone diamonds (ImageStateKeeper of Milestone/Level): 0 not reached, 1 the milestone reached last, 2 passed.
 const DIAMOND := "UI_Winstreak_Atlas:UI_Winstreak_Atlas_14"
-const CARD_FREE := "Resources_moved_UI_Maincenter:UI_Maincenter_62"
-const CARD_VIP := "Resources_moved_UI_Maincenter:UI_Maincenter_63"
+## Main Tree cards: the shop pack frames of UI_Shop_Packs_Atlas (340x304 px), pink for free, yellow for VIP. Icons and
+## amounts sit on the cream panel (CARD_CREAM_PX), the Claim pill on the coloured band below it.
+const CARD_FREE := "UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_8"
+const CARD_VIP := "UI_Shop_Packs_Atlas:UI_Shop_Packs_Atlas_9"
+const CARD_PX := Vector2(340, 304)
+const CARD_CREAM_PX := Rect2(16, 17, 306, 169)
+## Quantity of a Main Tree reward moved this much further down than the prefab's, under its icon.
+const AMOUNT_DROP := 18.0
 const LOCK := "Resources_moved_UI_Maincenter:UI_Maincenter_18"
 ## RewardItemSO icons: gold (RewardType 1) and unlimited lives (RewardType 5).
 const GOLD_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_3"
@@ -48,11 +55,12 @@ const PANEL_DROP := 84.0
 ## message is 60 taller than the prefab's 660 to keep the well's size.
 const MESSAGE := Vector2(724, 720)
 const LIST := Rect2(55, 370, 690, 940)
-## UI_EWStreakProgress.milestoneSpacingY.
-const ROW_STEP := 200.0
+## UI_EWStreakProgress.milestoneSpacingY was 200; the cards keep CARD_PX's aspect at the FreeTab / VipTab width (280),
+## so a row is that tall plus a 20 gap.
+const ROW_STEP := 270.0
 const LIST_PAD := 10.0
 const TRACK_X := 54.0
-const CELL := Vector2(280, 180)
+const CELL := Vector2(280, 250)
 const FREE_X := 110.0
 const VIP_X := 400.0
 ## PopupRewardLayer/Panel/Content grid: cell 148, spacing 32.
@@ -370,27 +378,41 @@ func _reward_card(list: Control, kind: String, row: Dictionary, rect: Rect2) -> 
 	var claimed := bool(row[kind + "_claimed"])
 	var claimable := bool(row[kind + "_claimable"])
 	var b := _card(list, CARD_FREE if kind == "free" else CARD_VIP, "%s%d" % [kind.capitalize(), int(row.index)], rect)
-	_rewards(b, row[kind], rect.size, claimable)
+	_rewards(b, row[kind], _cream(rect.size).grow(-6.0), true)
 	_state(b, rect.size, claimed, claimable, kind == "vip" and not bool(view.vip))
 	b.disabled = not claimable
 	return b
 
 
-## RewardsParent of DailyRewardAdLayer's milestone: one ItemReward (icon + quantity) per reward, laid out in a row.
-func _rewards(card: Control, reward: Dictionary, size: Vector2, pill: bool) -> void:
+## The frame's cream panel in a card of this size.
+func _cream(size: Vector2) -> Rect2:
+	var k := size / CARD_PX
+	return Rect2(CARD_CREAM_PX.position * k, CARD_CREAM_PX.size * k)
+
+
+## RewardsParent of DailyRewardAdLayer's milestone: one ItemReward (icon + quantity) per reward, laid out in a row,
+## scaled (up to 1.2) to the width of `box` and centred in it. main (Main Tree card): the quantity sits under its
+## icon (AMOUNT_DROP) and the height of `box` limits the scale too.
+func _rewards(card: Control, reward: Dictionary, box: Rect2, main: bool) -> void:
 	var s := UnityKit.spec(DAILY_AD, DAILY_MILESTONE + "/RewardsParent")
 	var item: Dictionary = s.ch[1]
 	s.ch = []
+	if main:
+		s.r[7] = float(s.r[7]) + AMOUNT_DROP
+		item.ch[1].r[5] = float(item.ch[1].r[5]) - AMOUNT_DROP
 	var icons: Array = []
 	var coins := int(reward.get("coins", 0))
 	if coins > 0:
-		icons.append([GOLD_ICON, null, LbKit.fmt_int(coins)])
+		icons.append([GOLD_ICON, null, LbKit.fmt_int(coins), "gold"])
 	var items: Dictionary = reward.get("items", {})
 	for k in RewardText.BOOSTER_ORDER:
 		if int(items.get(k, 0)) > 0:
-			icons.append(["", ThemeKit.icon("booster_" + k), tr("booster_count") % int(items[k])])
+			icons.append(["", ThemeKit.icon("booster_" + k), tr("booster_count") % int(items[k]), k])
 	if int(reward.get("inf_min", 0)) > 0:
-		icons.append([INF_ICON, null, tr("weekly_reward_min") % int(reward.inf_min)])
+		icons.append([INF_ICON, null, tr("weekly_reward_min") % int(reward.inf_min), "inf"])
+	# RewardFly part -> icon, for the flight when the card is claimed.
+	var fly := {}
+	card.set_meta("icons", fly)
 	for e in icons:
 		var it: Dictionary = item.duplicate(true)
 		it.ch[0].img.sp = e[0] if e[0] != "" else null
@@ -405,16 +427,21 @@ func _rewards(card: Control, reward: Dictionary, size: Vector2, pill: bool) -> v
 			var tex: Variant = icons[n][1]
 			if tex != null:
 				v.texture(str(p) + "/Icon Item", tex)
+			fly[icons[n][3]] = v.node(str(p) + "/Icon Item")
 			n += 1
 	var w := float((v.root.get_meta("u_rect") as Dictionary).size.x)
 	var h := float((v.root.get_meta("u_rect") as Dictionary).size.y)
-	var k := minf(1.2, (size.x - 20.0) / maxf(1.0, w))
-	var room := size.y - (66.0 if pill else 20.0)
-	UnityKit.place(v.root, Rect2((size.x - w) * 0.5, maxf(0.0, (room - h * k) * 0.5) + (h * k - h), w, h))
+	var k := minf(1.2, box.size.x / maxf(1.0, w))
+	if main:
+		k = minf(k, box.size.y / maxf(1.0, h))
+	# The pivot is the bottom centre: scaling grows the row upwards and keeps it centred across.
+	var top := box.position.y + maxf(0.0, (box.size.y - h * k) * 0.5)
+	UnityKit.place(v.root, Rect2(box.position.x + (box.size.x - w) * 0.5, top + (h * k - h), w, h))
 	v.root.scale = Vector2(k, k)
 	UnityUI.relayout(v.root)
 
 
+## Claimed: veil and tick; claimable: Claim pill centred on the frame's coloured band; VIP not bought: lock.
 func _state(card: Control, size: Vector2, claimed: bool, claimable: bool, locked: bool) -> void:
 	if claimed:
 		# ObjTick of DailyRewardAdLayer's milestone: dark veil and the green tick.
@@ -424,18 +451,19 @@ func _state(card: Control, size: Vector2, claimed: bool, claimable: bool, locked
 		s.ch[1].r = [0.5, 0.5, 0.5, 0.5, 0, 0, 85, 85, 0.5, 0.5]
 		UnityKit.add(card, s).root.name = "Claimed"
 	elif claimable:
-		_claim_pill(card, size, 1.0)
+		# The band runs from the cream panel to the frame's bottom outline (about 6 units).
+		_claim_pill(card, Vector2(size.x * 0.5, (_cream(size).end.y + size.y - 6.0) * 0.5), 1.0)
 	elif locked:
 		UnityKit.sprite(card, LOCK, Rect2(size.x - 58.0, 4, 54, 54)).name = "Lock"
 
 
-## ClaimBtn of PopupWinStreakMain's milestone as art only: the whole card is the button.
-func _claim_pill(card: Control, size: Vector2, k: float) -> void:
+## ClaimBtn of PopupWinStreakMain's milestone as art only, centred on `at`: the whole card is the button.
+func _claim_pill(card: Control, at: Vector2, k: float) -> void:
 	var s := UnityKit.spec(STREAK, STREAK_MILESTONE + "/ Info/ClaimBtn")
 	s.erase("btn")
 	s.n = "Claim"
 	s.ch[0].txt.s = tr("weekly_claim")
-	var v := UnityKit.add(card, s, Rect2((size.x - 160.0) * 0.5, size.y - 66.0, 160, 60))
+	var v := UnityKit.add(card, s, Rect2(at.x - 80.0, at.y - 30.0, 160, 60))
 	v.root.scale = Vector2(k, k)
 
 
@@ -454,11 +482,12 @@ func _build_bank(list: Control, y: float) -> float:
 		@warning_ignore("integer_division")
 		var rect := Rect2(x0 + (BANK_CELL + BANK_SP) * (i % BANK_COLS), y + (BANK_CELL + BANK_SP) * (i / BANK_COLS), BANK_CELL, BANK_CELL)
 		var btn := _card(list, UnityKit.WELL, "Bank%d" % int(b.index), rect)
-		_rewards(btn, {"coins": int(b.coins)}, rect.size, bool(b.claimable))
+		var room := rect.size.y - (66.0 if bool(b.claimable) else 20.0)
+		_rewards(btn, {"coins": int(b.coins)}, Rect2(10, 0, rect.size.x - 20.0, room), false)
 		if bool(b.claimed):
 			_state(btn, rect.size, true, false, false)
 		elif bool(b.claimable):
-			_claim_pill(btn, rect.size, 0.8)
+			_claim_pill(btn, Vector2(rect.size.x * 0.5, rect.size.y - 36.0), 0.8)
 		elif not bool(b.reached):
 			UnityKit.sprite(btn, LOCK, Rect2(BANK_CELL - 50.0, 4, 46, 46)).name = "Lock"
 		btn.disabled = not bool(b.claimable)
@@ -594,28 +623,43 @@ func open_howto() -> Control:
 func _on_claim(kind: String, i: int) -> void:
 	if _busy or _closed:
 		return
-	Sfx.play("sfx_coin")
-	if kind == "free":
-		Game.weekly_claim_free(i)
-	else:
-		Game.weekly_claim_vip(i)
+	var card: Control = main_buttons.get("%s_%d" % [kind, i])
+	_fly(Game.weekly_claim_free(i) if kind == "free" else Game.weekly_claim_vip(i), [card])
 	_rebuild()
 
 
 func _on_claim_bank(i: int) -> void:
 	if _busy or _closed:
 		return
-	Sfx.play("sfx_coin")
-	Game.weekly_claim_bank(i)
+	var cards: Array = bank_buttons.filter(func(b: Button) -> bool: return str(b.name) == "Bank%d" % i)
+	_fly(Game.weekly_claim_bank(i), cards)
 	_rebuild()
 
 
 func _on_claim_all() -> void:
 	if _busy or _closed:
 		return
-	Sfx.play("sfx_coin")
-	Game.weekly_claim_all()
+	var cards: Array = main_buttons.values() + bank_buttons
+	_fly(Game.weekly_claim_all(), cards.filter(func(b: Variant) -> bool:
+		return b is Button and is_instance_valid(b) and not (b as Button).disabled))
 	_rebuild()
+
+
+## Each part of a claimed reward flies to its counter from the first of `cards` showing it (before _rebuild frees
+## them); the coin sound plays here when nothing flies.
+func _fly(reward: Dictionary, cards: Array) -> void:
+	if reward.is_empty():
+		return
+	var icons := {}
+	for c: Variant in cards:
+		if not (c is Control and is_instance_valid(c)):
+			continue
+		var m: Dictionary = (c as Control).get_meta("icons", {})
+		for k: String in m:
+			if not icons.has(k):
+				icons[k] = m[k]
+	if RewardFly.launch(self, reward, icons) == 0:
+		Sfx.play("sfx_coin")
 
 
 func _on_buy_vip() -> void:

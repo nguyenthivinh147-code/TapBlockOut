@@ -65,8 +65,8 @@ func test_bomb_count(t: T) -> void:
 	t.eq(SpecialBoard.bomb_count(500), 6, "500 thắng: trần")
 
 
-## Gỡ bom theo thứ tự kế hoạch, mỗi lần chạm một khối cần thiết: quả thứ k gỡ xong ở lần chạm |union 1..k| và còn
-## đúng bomb_base_sec giây dư (nhịp 1 lần chạm mỗi giây).
+## Gỡ bom theo thứ tự kế hoạch, mỗi lần chạm một khối cần thiết: quả thứ k gỡ xong ở lần chạm |union 1..k|, có
+## bomb_seconds(|union 1..k|) giây và vẫn kịp với nhịp 1 lần chạm mỗi giây.
 func test_bomb_plan(t: T) -> void:
 	var sp: Dictionary = Config.SPECIAL
 	for i in [1, 2, 9]:
@@ -84,7 +84,7 @@ func test_bomb_plan(t: T) -> void:
 				t.eq(int(b.taps), int(taps[b.id]), "taps khớp")
 				t.ok(int(b.taps) >= int(sp.bomb_min_taps) and int(b.taps) <= maxi(int(sp.bomb_min_taps),
 					floori(n * float(sp.bomb_max_share))), "taps trong khoảng")
-				t.ok(int(b.seconds) >= int(sp.bomb_base_sec) + int(b.taps), "đủ giây cho riêng quả này")
+				t.ok(int(b.seconds) >= SpecialBoard.bomb_seconds(int(b.taps)), "đủ giây cho riêng quả này")
 				t.ok(int(b.seconds) >= last_sec, "giây tăng dần")
 				last_sec = int(b.seconds)
 				var on_block := false
@@ -96,7 +96,17 @@ func test_bomb_plan(t: T) -> void:
 			t.eq(ids.size(), plan.size(), "bom khác khối")
 			_check_feasible(t, d, plan, "bàn %d %d bom" % [i, count])
 	var one := SpecialBoard.bomb_plan(SpecialBoard.generate(1, 1000), 1, 3)
-	t.eq(int(one[0].seconds), int(sp.bomb_base_sec) + int(one[0].taps), "1 bom: 19 + số lần chạm")
+	t.eq(int(one[0].seconds), SpecialBoard.bomb_seconds(int(one[0].taps)), "1 bom: 0,8 x (19 + số lần chạm)")
+
+
+## Số giây: 0,8 x (19 + số khối phải chạm), làm tròn lên; ngắn nhất (4 lần chạm) 19 giây, trước là 23.
+func test_bomb_seconds(t: T) -> void:
+	t.eq(SpecialBoard.bomb_seconds(4), 19, "4 lần chạm: ceil(18,4)")
+	t.eq(SpecialBoard.bomb_seconds(6), 20, "6 lần chạm: đúng 20, không bị float đẩy lên 21")
+	t.eq(SpecialBoard.bomb_seconds(21), 32, "21 lần chạm: đúng 32")
+	t.eq(SpecialBoard.bomb_seconds(30), 40, "30 lần chạm: ceil(39,2)")
+	for need in range(1, 65):
+		t.ok(SpecialBoard.bomb_seconds(need) > need, "%d lần chạm: kịp với 1 lần chạm mỗi giây" % need)
 
 
 func _check_feasible(t: T, d: Dictionary, plan: Array, tag: String) -> void:
@@ -113,8 +123,8 @@ func _check_feasible(t: T, d: Dictionary, plan: Array, tag: String) -> void:
 				return
 			board.tap(pick)
 			used += 1
-		t.ok(used + int(Config.SPECIAL.bomb_base_sec) <= int(b.seconds), "%s: %s kịp (%d lần chạm, %d giây)" % [
-			tag, b.id, used, int(b.seconds)])
+		t.ok(SpecialBoard.bomb_seconds(used) <= int(b.seconds) and used < int(b.seconds),
+			"%s: %s kịp (%d lần chạm, %d giây)" % [tag, b.id, used, int(b.seconds)])
 
 
 func test_urgent_hint(t: T) -> void:

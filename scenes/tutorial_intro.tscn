@@ -33,18 +33,6 @@ content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_yqsm1"]
-shader = ExtResource("7_tlc1s")
-shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0, 0, 0, 1)
-shader_parameter/underlay_color = Color(0, 0, 0, 1)
-shader_parameter/face_edge = 0.446428570625
-shader_parameter/outline_half = 0.1285714305
-shader_parameter/underlay_on = true
-shader_parameter/underlay_edge = 0.277678570625
-shader_parameter/underlay_offset = Vector2(0, -1.26)
-shader_parameter/px_range = 14.0
-
 [sub_resource type="FontVariation" id="FontVariation_2c3ba"]
 base_font = ExtResource("8_x4te0")
 spacing_glyph = -1
@@ -496,57 +484,6 @@ metadata/u_txt = {
 "st": 0.0,
 "ws": 0.0
 }
-
-[node name="Hint" type="Label" parent="Canvas/MainTutorialLayer/GameObject/Step1" index="2" unique_id=810119825]
-unique_name_in_owner = true
-material = SubResource("ShaderMaterial_yqsm1")
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -366.2
-offset_top = -308.0
-offset_right = 366.2
-offset_bottom = -236.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/line_spacing = -5
-theme_override_constants/outline_size = 0
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_5r1s7")
-theme_override_font_sizes/font_size = 44
-theme_override_styles/normal = SubResource("StyleBoxEmpty_f0wya")
-text = "Tap to continue"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/u = {
-"id": "1123739710269370327",
-"n": "Hint",
-"txt": {
-"rt": false
-}
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 0),
-"amin": Vector2(0.5, 0),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 272),
-"size": Vector2(732.4, 72)
-}
-metadata/u_txt = {
-"auto": [18.0, 44.0],
-"cs": 0.0,
-"fs": 44.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"st": 0.0,
-"ws": 0.0
-}
-metadata/u_sub = true
 
 [node name="Step2" parent="Canvas/MainTutorialLayer/GameObject" index="2" unique_id=1405398127]
 visible = false

@@ -87,8 +87,9 @@ func _solve(lv: Control) -> void:
 		await _tree().process_frame
 
 
+## Rate us mở từ L10 nhưng hỏi sau thẻ thắng, mà L1–10 không có thẻ: lần hỏi đầu là thẻ thắng L11.
 func test_rate_popup_before_store_review(t: T) -> void:
-	var g := _g(10)
+	var g := _g(11)
 	g.s.meta.rated = false
 	var plugin := FakePlugin.new()
 	_plat()._plugin = plugin
@@ -117,11 +118,24 @@ func test_intro_before_first_l1(t: T) -> void:
 	var lv := _mount_level()
 	t.ok(await _wait_until(func() -> bool: return _popup(lv, "tutorial_intro") != null), "hướng dẫn lần đầu")
 	t.eq(lv.state, "dialog", "chưa chơi")
+	var intro: Control = _popup(lv, "tutorial_intro")
+	t.ok(intro.find_child("Hint", true, false) == null, "không có dòng chạm để tiếp tục")
+	var aim: String = lv.board.hint()
+	await lv.get_tree().process_frame
+	var tip: Vector2 = intro.call("aim_point")
+	t.eq(lv.board_view.block_at(lv.board_view.get_global_transform().affine_inverse() * tip), aim, "tay chỉ vào ô của khối gợi ý")
 	var ev := InputEventMouseButton.new()
 	ev.pressed = true
 	ev.button_index = MOUSE_BUTTON_LEFT
-	_popup(lv, "tutorial_intro").call("_gui_input", ev)
-	t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "chạm thì vào chơi")
+	ev.position = Vector2(-1000, -1000)
+	intro.call("_gui_input", ev)
+	await lv.get_tree().process_frame
+	t.eq(lv.state, "dialog", "chạm chỗ khác không đi tiếp")
+	ev.position = intro.get_global_transform().affine_inverse() * tip
+	intro.call("_gui_input", ev)
+	t.ok(await _wait_until(func() -> bool: return lv.state == "playing"), "chạm khối thì vào chơi")
+	t.eq(int(lv.attempt.taps), 1, "cú chạm đó là nước đi đầu")
+	t.ok(not lv.board.block_ids().has(aim), "khối gợi ý đã rời bàn")
 	t.ok(bool(g.s.meta.intro_seen), "ghi đã xem")
 	lv.free()
 	lv = _mount_level()
@@ -152,6 +166,10 @@ func test_helper_pack_buy_rescues(t: T) -> void:
 	var offer: Dictionary = g.rescue_offer(attempt).duplicate()
 	offer["attempt"] = attempt
 	var p := _open("popup_helper_pack", offer)
+	var inf_slot: Control = p.strip.node(p.SLOTS[0])
+	t.ok(inf_slot.visible, "hàng trên của thẻ: mạng vô hạn")
+	t.eq((inf_slot.get_node("Text (TMP)") as Label).text, p.tr("shop_heart_forever"), "chữ Vĩnh viễn")
+	t.ok(p.strip.node(p.SLOTS[3]).visible, "hàng dưới đủ 3 booster")
 	var got: Array = []
 	p.closed.connect(func(r: Variant) -> void: got.append(r))
 	(p.find_child("BuyPackButton", true, false) as Button).pressed.emit()
@@ -160,6 +178,31 @@ func test_helper_pack_buy_rescues(t: T) -> void:
 	t.eq(attempt.board.moves_left(), moves0 + int(Config.ECON.rescue_moves), "+3 MOVES")
 	t.eq(int(g.s.inv.hint), 2, "phần còn lại vào kho: 2 Gợi ý")
 	t.eq(int(g.s.inv.smash), 1, "1 Phá khối")
+	t.ok(bool(g.lives_view().infinite_forever), "mạng vô hạn vĩnh viễn")
+	p.free()
+
+
+## Great Pack is bought again and again (2026-11-10). With unlimited lives for good already owned, its heart is left
+## out: the three boosters fill the second row and the first row goes.
+func test_helper_pack_again_with_forever_lives(t: T) -> void:
+	var g := _g(25)
+	g.s.lives["inf_forever"] = true
+	var attempt: Dictionary = g.start_attempt()
+	var offer: Dictionary = g.rescue_offer(attempt).duplicate()
+	offer["attempt"] = attempt
+	g.s.buys.append({"token": "old", "sku": "helper_great"})
+	var p := _open("popup_helper_pack", offer)
+	t.ok(not p.strip.node(p.SLOTS[0]).visible, "không có ô mạng vô hạn")
+	t.ok(not p.strip.node(p.RP + "/Row(Clone)").visible, "ẩn hàng trên")
+	for i in range(1, 4):
+		t.ok(p.strip.node(p.SLOTS[i]).visible, "hàng dưới: booster %d" % i)
+	t.ok(not p._icons.has("inf"), "không có ô tim để bay")
+	var got: Array = []
+	p.closed.connect(func(r: Variant) -> void: got.append(r))
+	(p.find_child("BuyPackButton", true, false) as Button).pressed.emit()
+	t.ok(await _wait_until(func() -> bool: return not got.is_empty()), "mua lại được")
+	t.eq(got[0], "inventory", "cứu bằng +3 Move của gói")
+	t.eq(int(g.s.inv.hint), 2, "booster vào kho")
 	p.free()
 
 

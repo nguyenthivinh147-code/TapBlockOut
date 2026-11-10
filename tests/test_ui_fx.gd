@@ -116,6 +116,31 @@ func test_grind_bit_count_follows_the_exit_side(t: T) -> void:
 	v.queue_free()
 
 
+## Máy rung suốt lúc khối nghiền qua thanh, không chỉ một lần lúc chạm thanh; khối dài theo hướng đi rung lâu hơn.
+func test_grind_vibrates_while_the_block_passes(t: T) -> void:
+	var sfx: Node = _tree().root.get_node("Sfx")
+	var was_on: bool = sfx.haptics_on
+	sfx.haptics_on = true
+	var counts: Array[int] = []
+	# khối thoát lên trên: 1 ô, rồi 3 ô dọc (qua thanh lâu gấp 3)
+	for cells: Array in [[[2, 4]], [[2, 3], [2, 4], [2, 5]]]:
+		var board := BoardState.new(_lv([_b("a", "yellow", cells)]))
+		var v := _make(board)
+		await _frames()
+		var before: int = sfx.haptic_count
+		v.apply_result(board.tap("a"))
+		t.ok(await _wait_done(v), "báo xong hoạt ảnh (khối %d ô)" % cells.size())
+		counts.append(int(sfx.haptic_count) - before)
+		v.queue_free()
+		await _frames(1)
+	sfx.haptics_on = was_on
+	# 1 ô qua thanh 1 / GRIND_SPEED giây: rung lúc chạm thanh (sfx_shatter) và thêm nhịp trong lúc qua
+	t.ok(counts[0] >= 2, "khối 1 ô rung hơn một lần (%d)" % counts[0])
+	# trôi qua thanh hơn 3 ô một chút (mặt trong thanh nằm ngoài mép bàn); không rung mỗi khung
+	var most := 2 + ceili(3.5 / BoardView.GRIND_SPEED / BoardView.GRIND_HAPTIC_EVERY)
+	t.ok(counts[1] >= counts[0] + 2 and counts[1] <= most, "khối 3 ô dọc rung suốt lúc qua thanh (%d, tối đa %d)" % [counts[1], most])
+
+
 ## Giây nhanh dần của khối cách thanh `steps` ô, như _anim_exit().
 func _dash(steps: float) -> float:
 	return clampf(BoardView.SLIDE_MIN + BoardView.SLIDE_PER_CELL * steps, BoardView.SLIDE_MIN, BoardView.SLIDE_TIME)

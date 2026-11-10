@@ -3,7 +3,9 @@ extends Control
 ## Bố cục theo RoadTrip.layout: hàng chạy 6 ô đổi chiều qua lại, hàng nối một mốc ở rìa; hộp quà rộng hai ô.
 ## Cả đường vẽ bằng _draw của một node (không tạo node theo mốc). Mốc: lục giác xám (khoá), xanh dương có dấu tích
 ## (đã qua), mốc hiện tại to hơn theo độ khó (xanh lá, đỏ Hard, tím Super Hard) với quầng sáng thở và mũi tên nhún
-## (node con Glow, Arrow). Hộp: chưa tới nguyên màu, hộp đang nhắm có quầng sáng, đã mở mờ đi kèm dấu tích.
+## (node con Glow, Arrow). Hộp: chưa tới nguyên màu, đã mở mờ đi kèm dấu tích. Hộp đang nhắm (2026-11-10) là node con
+## TargetBox (vẽ hộp và số một lần, bản đồ không vẽ nó), sau nó là tia kẹo hồng tím TargetRays (candy_rays.gdshader,
+## vẽ sau bản đồ) xoay chậm, quầng giữa thở; appear() cho hộp bật vào và tia nở ra. Không vẽ lại bản đồ mỗi khung.
 ## Chạm (không kéo) một mốc hay hộp thì phát tapped(n, is_box). Toạ độ là px thiết kế khung rộng DESIGN_W, nhân k.
 ## Nằm trong ScrollContainer: mouse_filter PASS để kéo vẫn cuộn. ScrollContainer chỉ tự kéo khi có cảm ứng; không có
 ## (desktop, chạy từ editor) thì bản đồ tự cuộn cha theo chuột kéo (_gui_input).
@@ -50,6 +52,17 @@ const ARROW_OVERLAP := 24.0
 const ARROW_BOB := 8.0
 ## Kéo quá chừng này (px màn) thì không tính là chạm.
 const TAP_SLOP := 24.0
+## Tia kẹo sau hộp đang nhắm: đường kính so với hộp.
+const RAYS_SHADER := "res://src/ui/candy_rays.gdshader"
+const RAYS_K := 1.7
+## appear(): hộp bật từ cỡ 0 (nảy) trong APPEAR_SEC, rồi lắc APPEAR_WOBBLE_DEG giảm dần (2 lượt) trong APPEAR_WOBBLE_SEC,
+## quanh điểm APPEAR_PIVOT của hộp (gần đáy); tia nở từ cỡ 0 trong APPEAR_RAYS_SEC, trễ APPEAR_RAYS_AT s so với hộp.
+const APPEAR_SEC := 0.45
+const APPEAR_WOBBLE_DEG := 10.0
+const APPEAR_WOBBLE_SEC := 0.5
+const APPEAR_PIVOT := Vector2(0.5, 0.8)
+const APPEAR_RAYS_SEC := 0.6
+const APPEAR_RAYS_AT := 0.1
 
 ## Level đang chơi (levels + 1: đã đi hết), độ khó của nó, hệ số px thiết kế -> px màn.
 var cur: int = 1
@@ -69,7 +82,11 @@ var _glow: TextureRect = null
 var _arrow_holder: Control = null
 var _arrow: TextureRect = null
 var _arrow_tw: Tween = null
-var _glow_tex: Texture2D = null
+## Hộp đang nhắm (n, 0 khi không còn hộp), node vẽ nó, tia sau nó, tween của appear().
+var _target_n: int = 0
+var _target_box: Control = null
+var _target_rays: ColorRect = null
+var _appear_tw: Tween = null
 
 
 func _init() -> void:
@@ -95,7 +112,57 @@ func setup(current: int, current_tier: String, scale_k: float) -> void:
 	size = custom_minimum_size
 	_ensure_markers()
 	_place_markers(cur)
+	_place_target()
 	queue_redraw()
+
+
+## Hộp đang nhắm: n của nó (0 khi đã mở hết hộp).
+func target_box() -> int:
+	for it in items:
+		if bool(it.box) and RoadTrip.node_state(int(it.n), cur, true) == "target":
+			return int(it.n)
+	return 0
+
+
+## Node hộp đang nhắm và tia sau nó ở chỗ của hộp; ẩn khi không còn hộp.
+func _place_target() -> void:
+	_target_n = target_box()
+	_target_box.visible = _target_n > 0
+	_target_rays.visible = _target_n > 0
+	if _target_n == 0:
+		return
+	var c := center_of(_target_n)
+	var px := BOX * k
+	_target_box.size = Vector2(px, px)
+	_target_box.position = c - _target_box.size * 0.5
+	_target_box.pivot_offset_ratio = APPEAR_PIVOT
+	var rs := px * RAYS_K
+	_target_rays.size = Vector2(rs, rs)
+	_target_rays.position = c - _target_rays.size * 0.5
+	_target_rays.pivot_offset_ratio = Vector2(0.5, 0.5)
+	_target_box.queue_redraw()
+
+
+## Hộp đang nhắm bật vào sau `delay` s: từ cỡ 0 nảy lên, lắc nhẹ hai lượt; tia sau nó nở ra theo. Trước lúc bật thì hộp
+## và tia ẩn (cỡ 0).
+func appear(delay: float = 0.0) -> void:
+	if _target_n == 0 or not is_inside_tree() or UnityUI.baking:
+		return
+	if _appear_tw != null:
+		_appear_tw.kill()
+	_target_box.scale = Vector2.ZERO
+	_target_box.rotation = 0.0
+	_target_rays.scale = Vector2.ZERO
+	_appear_tw = create_tween().set_parallel(true)
+	_appear_tw.tween_property(_target_box, "scale", Vector2.ONE, APPEAR_SEC).set_delay(delay) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_appear_tw.tween_method(_wobble_target, 0.0, 1.0, APPEAR_WOBBLE_SEC).set_delay(delay + APPEAR_SEC * 0.6)
+	_appear_tw.tween_property(_target_rays, "scale", Vector2.ONE, APPEAR_RAYS_SEC).set_delay(delay + APPEAR_RAYS_AT) \
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+
+func _wobble_target(u: float) -> void:
+	_target_box.rotation = deg_to_rad(APPEAR_WOBBLE_DEG * sin(TAU * 2.0 * u) * (1.0 - u))
 
 
 ## Chiều cao bản đồ (px thiết kế).
@@ -135,8 +202,6 @@ func _draw() -> void:
 	for it in items:
 		pts.append(_center(it))
 	_draw_road(pts)
-	if _glow_tex == null and ResourceLoader.exists(GLOW_TEX):
-		_glow_tex = load(GLOW_TEX) as Texture2D
 	for it in items:
 		if bool(it.box):
 			_draw_box(it)
@@ -183,15 +248,15 @@ func _draw_node(it: Dictionary) -> void:
 		draw_texture_rect(ThemeKit.icon("ui_check"), Rect2(r.end - Vector2(ck, ck) * 0.85, Vector2(ck, ck)), false)
 
 
+## Hộp chưa tới hoặc đã mở; hộp đang nhắm là node TargetBox (_draw_target_box).
 func _draw_box(it: Dictionary) -> void:
 	var n := int(it.n)
 	var st := RoadTrip.node_state(n, cur, true)
+	if st == "target":
+		return
 	var px := BOX * k
 	var c := _center(it)
 	var r := Rect2(c - Vector2(px, px) * 0.5, Vector2(px, px))
-	if st == "target" and _glow_tex != null:
-		var g := px * 1.6
-		draw_texture_rect(_glow_tex, Rect2(c - Vector2(g, g) * 0.5, Vector2(g, g)), false, Color(1, 1, 1, 0.85))
 	var tex := box_tex(RoadTrip.box_index(n))
 	draw_texture_rect(tex, r, false, Color(1, 1, 1, 0.5) if st == "open" else Color.WHITE)
 	if st == "open":
@@ -201,19 +266,30 @@ func _draw_box(it: Dictionary) -> void:
 	_draw_number(str(n), Vector2(c.x, r.end.y - 6.0 * k), roundi(NUM_FONT * 0.75 * k), OUTLINE.locked if st != "open" else OUTLINE.done)
 
 
+## Hộp đang nhắm lên node TargetBox (toạ độ của node): ảnh hộp và số level dưới đáy, như _draw_box. Chỉ vẽ lại khi
+## hộp hay cỡ đổi; bật vào, lắc là transform của node.
+func _draw_target_box() -> void:
+	if _target_n == 0:
+		return
+	var px := BOX * k
+	_target_box.draw_texture_rect(box_tex(RoadTrip.box_index(_target_n)), Rect2(0, 0, px, px), false)
+	_draw_number(str(_target_n), Vector2(px * 0.5, px - 6.0 * k), roundi(NUM_FONT * 0.75 * k), OUTLINE.locked, _target_box)
+
+
 ## Ảnh hộp quà thứ box_i (RoadTrip.box_index; âm thì như hộp đầu). Dùng chung cho bản đồ, chip, popup thắng.
 static func box_tex(box_i: int) -> Texture2D:
 	return UiAtlas.tex(str(BOX_ICONS[maxi(box_i, 0) % BOX_ICONS.size()]))
 
 
-## Số giữa tại tâm c: chữ trắng viền màu outline.
-func _draw_number(text: String, c: Vector2, fs: int, outline: Color) -> void:
+## Số giữa tại tâm c: chữ trắng viền màu outline, lên ci (mặc định bản đồ).
+func _draw_number(text: String, c: Vector2, fs: int, outline: Color, ci: CanvasItem = null) -> void:
+	var on: CanvasItem = ci if ci != null else self
 	var font: Font = ThemeKit.FONT
 	var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 	var base := Vector2(c.x - w * 0.5, c.y + (font.get_ascent(fs) - font.get_descent(fs)) * 0.5)
 	var ol := maxi(roundi(fs * 0.16), 2)
-	draw_string_outline(font, base, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, ol, outline)
-	draw_string(font, base, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color.WHITE)
+	on.draw_string_outline(font, base, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, ol, outline)
+	on.draw_string(font, base, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color.WHITE)
 
 
 # --- mốc hiện tại: quầng sáng và mũi tên ---
@@ -221,6 +297,20 @@ func _draw_number(text: String, c: Vector2, fs: int, outline: Color) -> void:
 func _ensure_markers() -> void:
 	if _glow != null:
 		return
+	# Target box: rays behind the map (under road and nodes), the box above it; both move by transform only.
+	_target_rays = ColorRect.new()
+	_target_rays.name = "TargetRays"
+	_target_rays.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_target_rays.show_behind_parent = true
+	var mat := ShaderMaterial.new()
+	mat.shader = load(RAYS_SHADER)
+	_target_rays.material = mat
+	add_child(_target_rays)
+	_target_box = Control.new()
+	_target_box.name = "TargetBox"
+	_target_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_target_box.draw.connect(_draw_target_box)
+	add_child(_target_box)
 	_glow = TextureRect.new()
 	_glow.name = "Glow"
 	_glow.texture = load(GLOW_TEX) as Texture2D if ResourceLoader.exists(GLOW_TEX) else null

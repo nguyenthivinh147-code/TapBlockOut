@@ -137,15 +137,15 @@ func test_claim_and_season_end(t: T) -> void:
 
 func test_chain_on_lose(t: T) -> void:
 	var g := _g()
-	g.s.level = 99
+	g.s.level = 129
 	var a: Dictionary = g.start_attempt()
 	g.on_level_lost(a)
-	t.eq(g.chain_view().is_empty(), true, "L99 chưa bật")
-	g.s.level = 100
+	t.eq(g.chain_view().is_empty(), true, "L129 chưa bật")
+	g.s.level = 130
 	var b: Dictionary = g.start_attempt()
 	g.on_level_lost(b)
 	var v: Dictionary = g.chain_view()
-	t.eq(v.id, "chain_a", "bật ở L100 sau ván thua")
+	t.eq(v.id, "chain_a", "bật ở L130 sau ván thua")
 	t.eq(g.chain_take_autoshow(), true, "tự mở một lần")
 	t.eq(g.chain_take_autoshow(), false, "không mở lại")
 	# bước 0: free
@@ -232,6 +232,14 @@ func test_special_pack_flow(t: T) -> void:
 	var r: Dictionary = await g.offer_buy("special_pack")
 	t.eq(r.granted, true, "mua bản sale")
 	t.eq(int(g.s.coins), coins + 12000, "nội dung gói")
-	t.eq(g.special_pack_id(), "special_pack", "mua nhiều lần được")
+	# One-time (2026-11-10): the sale copy counts as the pack, the icon goes and neither SKU sells again.
+	t.eq(g.special_pack_id(), "", "mua rồi: ẩn icon Special Pack")
 	var r2: Dictionary = await g.offer_buy("special_pack")
-	t.eq(r2.granted, true, "mua lần nữa")
+	t.eq(r2.status, "owned", "không bán lại bản sale")
+	t.eq(r2.granted, false, "không cộng lần hai")
+	g.test_now = MON + 2 * D  # thứ Tư: giá thường
+	var r3: Dictionary = await g.buy_sku("special_pack")
+	t.eq(r3.status, "owned", "đã có bản sale: không bán bản thường")
+	t.eq(g.grant_purchase({"token": "tok_restore", "sku": "special_pack", "status": "ok"}), false,
+		"đơn bản thường về sau (Restore) không cộng lần hai")
+	t.eq(int(g.s.coins), coins + 12000, "gold không cộng thêm")

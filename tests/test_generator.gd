@@ -215,7 +215,7 @@ func test_unstick_covers(t: T) -> void:
 ## xích, hộp giấy.
 func test_covers_in_generated_levels(t: T) -> void:
 	var doubles := {"ice": 0, "frost": 0}
-	for id in range(int(Config.UNLOCK["ice"]), 200):
+	for id in range(int(Config.UNLOCK["ice"]), int(Config.UNLOCK["frost"]) + 60):
 		var d := Gen.generate(id, 0, false)
 		var plan := Gen.mech_plan(id)
 		t.ok(not (plan.has("ice") and plan.has("frost")), "L%d: pudding và băng không cùng level" % id)
@@ -279,7 +279,7 @@ func test_cut_styles_alternate(t: T) -> void:
 
 
 func test_deterministic(t: T) -> void:
-	for id in [14, 30, 40, 55, 70, 90, 100, 150, 301, 777]:
+	for id in [14, 30, 45, 65, 85, 100, 115, 165, 300, 350, 777]:
 		for sd in [0, 5, 12345]:
 			var a := Gen.generate(id, sd)
 			var b := Gen.generate(id, sd)
@@ -314,11 +314,13 @@ func test_hard_and_early_ids(t: T) -> void:
 func test_mechanics_for(t: T) -> void:
 	t.eq(Gen.mechanics_for(13).size(), 0, "L13 chưa cơ chế")
 	t.eq(Gen.mechanics_for(14), ["stone"] as Array[String], "L14")
-	t.eq(Gen.mechanics_for(90).size(), 6, "L90 đủ 6")
-	t.ok(Gen.mechanics_for(110).has("frost"), "L110 mở băng")
+	t.eq(Gen.mechanics_for(int(Config.UNLOCK.pulse)).size(), 6, "L115 đủ 6")
+	t.ok(not Gen.mechanics_for(int(Config.UNLOCK.frost) - 1).has("frost"), "L164 chưa có băng")
+	t.ok(Gen.mechanics_for(int(Config.UNLOCK.frost)).has("frost"), "L165 mở băng")
 
 
-## mech_plan: level dạy chỉ cơ chế mới; trước L14 và level nghỉ không có; còn lại 1..LEVEL_MECH_MAX cơ chế đã mở,
+## mech_plan: level dạy chỉ cơ chế mới (bom kẹo thì cùng pudding); trước L14 và level nghỉ không có; còn lại
+## 1..LEVEL_MECH_MAX cơ chế đã mở,
 ## cơ chế vừa mở luôn có, cổng nhịp chỉ ở bàn tới GATE_MAX_BLOCKS khối; cùng id cùng kết quả.
 func test_mech_plan(t: T) -> void:
 	var sizes := {}
@@ -326,6 +328,10 @@ func test_mech_plan(t: T) -> void:
 		var plan := Gen.mech_plan(id)
 		t.eq(plan, Gen.mech_plan(id), "L%d xác định" % id)
 		var teach := Gen.teach_mech(id)
+		if teach == "pop":
+			# Bom kẹo đứng một mình không có tác dụng: dạy cùng Config.POP_TEACH_WITH.
+			t.eq(plan, [Config.POP_TEACH_WITH, teach] as Array[String], "L%d dạy %s cùng pudding" % [id, teach])
+			continue
 		if teach != "":
 			t.eq(plan, [teach] as Array[String], "L%d dạy %s" % [id, teach])
 			continue
@@ -340,14 +346,17 @@ func test_mech_plan(t: T) -> void:
 			t.ok(DifficultyCurve.block_count(id) <= Gen.GATE_MAX_BLOCKS, "L%d: cổng nhịp trên bàn nhỏ" % id)
 	t.eq(sizes.size(), Config.LEVEL_MECH_MAX, "có level 1, 2 và 3 cơ chế")
 	t.ok(Gen.is_rest(15) and not Gen.is_rest(16), "L15 nghỉ, L16 không")
-	t.ok(not Gen.is_rest(55), "L55 là level dạy, không nghỉ")
+	# L115 chia 4 dư 3 nhưng là level dạy cổng nhịp.
+	t.ok(not Gen.is_rest(int(Config.UNLOCK.pulse)), "L115 là level dạy, không nghỉ")
 
 
 ## Cổng nhịp đặt ở cạnh có ít lần qua nhất (khối theo màu, hộp giấy tính cả màu vỏ lẫn màu trong), vì mỗi lần qua cổng
-## khoá tốn một cú dội; lúc đầu luôn có khối thoát được ngay. L90 (level dạy) khoá sẵn và có khối dội vào được ngay.
+## khoá tốn một cú dội; lúc đầu luôn có khối thoát được ngay. Level dạy (Config.UNLOCK.pulse, L115) khoá sẵn và có
+## khối dội vào được ngay.
 func test_pulse_on_least_used_side(t: T) -> void:
 	var gated := 0
-	for id in range(90, 220):
+	var u := int(Config.UNLOCK.pulse)
+	for id in range(u, u + 130):
 		if not Gen.mech_plan(id).has("pulse"):
 			continue
 		var d := Gen.generate(id, 0, false)
@@ -369,14 +378,14 @@ func test_pulse_on_least_used_side(t: T) -> void:
 		t.eq(got, counts.slice(0, got.size()), "L%d: cổng ở cạnh ít lần qua nhất %s" % [id, str(passes)])
 		t.ok(Solver.immediate_exit_exists(d), "L%d có khối thoát ngay" % id)
 	t.ok(gated >= 5, "đủ level có cổng (%d)" % gated)
-	var teach := Gen.generate(90, 0, false)
-	var b90 := BoardState.new(teach)
-	t.eq(b90.gate_open(str(teach["pulse_sides"][0]["side"])), false, "L90 cổng khoá lúc đầu")
+	var teach := Gen.generate(u, 0, false)
+	var bt := BoardState.new(teach)
+	t.eq(bt.gate_open(str(teach["pulse_sides"][0]["side"])), false, "L%d cổng khoá lúc đầu" % u)
 	var bump := ""
-	for bid in b90.block_ids():
-		if b90.peek(bid) == "gate_closed":
+	for bid in bt.block_ids():
+		if bt.peek(bid) == "gate_closed":
 			bump = bid
-	t.ok(bump != "", "L90 có khối dội vào cổng được ngay")
+	t.ok(bump != "", "L%d có khối dội vào cổng được ngay" % u)
 
 
 func test_gen_tool_roundtrip(t: T) -> void:
@@ -399,3 +408,16 @@ func test_gen_tool_roundtrip(t: T) -> void:
 	t.eq(str(opt["out"]), "user://x", "out")
 	t.eq(int(opt["seed"]), 3, "seed")
 	t.eq(str(GenTool.parse_args(PackedStringArray())["out"]), "user://gen_out", "mặc định ghi user://gen_out")
+
+
+## Level dạy socola (Config.UNLOCK.choco): file ghi ra phải giữ `choco_sides`, nếu không thanh socola mất khỏi game.
+func test_gen_tool_keeps_choco(t: T) -> void:
+	var dir := "user://test_test_generator/choco"
+	var id := int(Config.UNLOCK["choco"])
+	t.eq(int(GenTool.generate_range(id, id, 0, dir)["bad"]), 0, "không lỗi")
+	var name := "level_%04d.json" % id
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(dir + "/" + name))
+	t.ok(parsed is Dictionary and not (parsed.get("choco_sides", []) as Array).is_empty(), "%s có choco_sides" % name)
+	if parsed is Dictionary:
+		var again: Variant = JSON.parse_string(JSON.stringify(Gen.generate(id, 0)))
+		t.eq(JSON.stringify(parsed), JSON.stringify(again), "%s khớp generate" % name)

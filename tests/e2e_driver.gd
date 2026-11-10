@@ -6,6 +6,7 @@ const Solver := preload("res://src/core/solver.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const MockIap := preload("res://src/platform/mock_iap.gd")
 const Config := preload("res://src/config.gd")
+const UiTween := preload("res://src/ui/ui_tween.gd")
 
 const NOW := 1800000000
 ## Tăng tốc tween và timer để E2E gọn; begin() đặt, finish() trả về 1.
@@ -16,9 +17,10 @@ var offers_seen: int = 0
 var gifts_seen: int = 0
 ## Popup cơ chế mới (cùng scene booster_unlocked) ở level dạy cơ chế.
 var mechs_seen: int = 0
-## Popup dùng thử booster (3.9) sau quà booster, popup Rate us (4.3).
-var free_picks_seen: int = 0
+## Popup Rate us (4.3).
 var rates_seen: int = 0
+## Lần thắng gần nhất (win_level) không có thẻ thắng: continue_to không bấm Tiếp tục.
+var no_card: bool = false
 
 
 func tree() -> SceneTree:
@@ -52,8 +54,8 @@ func begin(dir: String, level: int = 1, coins: int = -1, gifted: bool = false, d
 	offers_seen = 0
 	gifts_seen = 0
 	mechs_seen = 0
-	free_picks_seen = 0
 	rates_seen = 0
+	no_card = false
 	main = (load("res://scenes/main.tscn") as PackedScene).instantiate() as Control
 	tree().root.add_child(main)
 	await wait_until(func() -> bool: return main.is_booted)
@@ -87,7 +89,7 @@ func wait_until(cond: Callable, ms: int = 10000) -> bool:
 ## Popup còn sống trong lớp popup của main chứa node `node_name`; null nếu không có.
 func popup(node_name: String) -> Node:
 	for c in main.popup_layer.get_children():
-		if c.is_queued_for_deletion():
+		if UiTween.closing(c):
 			continue
 		var n: Node = c.find_child(node_name, true, false)
 		if n != null:
@@ -98,7 +100,7 @@ func popup(node_name: String) -> Node:
 ## Popup còn sống có thuộc tính `prop` (nhận diện popup theo script).
 func popup_with(prop: String) -> Node:
 	for c in main.popup_layer.get_children():
-		if not c.is_queued_for_deletion() and prop in c:
+		if not UiTween.closing(c) and prop in c:
 			return c
 	return null
 
@@ -122,7 +124,7 @@ func dismiss_strays(keep: String = "") -> void:
 	if main == null or main.popup_layer == null:
 		return
 	for c in main.popup_layer.get_children():
-		if c.is_queued_for_deletion():
+		if UiTween.closing(c):
 			continue
 		if keep != "" and c.find_child(keep, true, false) != null:
 			continue
@@ -143,14 +145,18 @@ func dismiss_strays(keep: String = "") -> void:
 		elif script != null:
 			var file := script.resource_path.get_file()
 			match file:
-				"tutorial_intro.gd", "booster_soon.gd":
+				"tutorial_intro.gd":
+					# Only a tap on the block under the hand continues; the level then plays that tap.
+					var tap := InputEventMouseButton.new()
+					tap.pressed = true
+					tap.button_index = MOUSE_BUTTON_LEFT
+					tap.position = c.get_global_transform().affine_inverse() * (c.call("aim_point") as Vector2)
+					c.call("_gui_input", tap)
+				"booster_soon.gd":
 					var tap := InputEventMouseButton.new()
 					tap.pressed = true
 					tap.button_index = MOUSE_BUTTON_LEFT
 					c.call("_gui_input", tap)
-				"popup_free_pick.gd":
-					free_picks_seen += 1
-					c.call("_send", "close")
 				"popup_rate.gd":
 					# Yes: the store's review opens (Platform.review), as the old direct call did.
 					rates_seen += 1
@@ -212,16 +218,31 @@ func solve_level() -> bool:
 	return lv.board.is_won()
 
 
-## Giải level rồi đợi thẻ thắng.
+## Giải level rồi đợi thẻ thắng. Level chính dưới ECON.win_card_from_level không có thẻ: giải xong là xong,
+## continue_to chỉ đợi level kế.
 func win_level() -> bool:
+	var lv := level_screen()
+	var attempt: Dictionary = lv.attempt if lv != null else {}
 	if not await solve_level():
 		return false
+	no_card = _no_card(attempt)
+	if no_card:
+		# Không có thẻ để đợi: đợi Game.on_level_won chốt lượt (cộng gold, tăng level).
+		return await wait_until(func() -> bool: return bool(attempt.get("ended", false)))
 	return await wait_popup("ContinueButton")
 
 
-## Bấm Tiếp tục ở thẻ thắng, đợi level kế (next > 0) vào trạng thái playing.
+## Lượt này thắng thì không có thẻ thắng (Game.on_level_won: card = false).
+func _no_card(attempt: Dictionary) -> bool:
+	for k in ["challenge", "road_trip", "special"]:
+		if bool(attempt.get(k, false)):
+			return false
+	return int(attempt.get("level", 0)) < int(Config.ECON.win_card_from_level)
+
+
+## Bấm Tiếp tục ở thẻ thắng (không có thẻ thì thôi), đợi level kế (next > 0) vào trạng thái playing.
 func continue_to(next: int) -> bool:
-	if not press("ContinueButton"):
+	if not no_card and not press("ContinueButton"):
 		return false
 	return await _after_win_card(next)
 

@@ -22,7 +22,7 @@ Dành cho người duyệt bản thử. Không cần biết lập trình.
 
 - Chơi được **Level 1 đến 20**. Sau Level 20 màn hình hiện "Sắp có level mới".
 - **Daily Challenge** đang tắt (`Config.FEATURES.challenge`), Home không có nút này. Khi bật lại, bản demo hiện nút khoá ("Unlocked at Level 50").
-- Mở khoá theo level: quà 28 ngày sau khi thắng Level 3; gợi ý, +3 Move, phá khối ở Level 4, 6, 9; shop và video gold ở Level 5; mạng và Starter Pack từ Level 10. Popup A và B, avatar và frame có từ đầu.
+- Mở khoá theo level: quà 28 ngày từ Level 14 (thắng Level 13 thì về Home); gợi ý, +3 Move, phá khối ở Level 5, 12, 17; mạng và Starter Pack từ Level 10; shop và video gold ở Level 11 (từ 2026-11-10, trước là Level 5). Bảng xếp hạng mở ở Level 70 nên bản demo không có (trước 2026-11-10 mở ở Level 8). Popup A và B, avatar và frame có từ đầu.
 - Chưa có cơ chế mới (đá, băng, xích, hai lớp, sương mù, cổng nhịp): thuộc bản phát hành sau.
 - Không có banner, nhiệm vụ ngày hay quà quay lại (đã bỏ khỏi thiết kế).
 

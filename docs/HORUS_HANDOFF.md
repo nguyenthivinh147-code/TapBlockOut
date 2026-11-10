@@ -32,20 +32,20 @@ Nguồn: `src/config.gd` (`Config.SKUS`). Giá USD là giá gốc; Play tự quy
 | `gold_pack_5_sale` | 24.99 | consumable | 50.000 gold |
 | `gold_pack_6_sale` | 49.99 | consumable | 120.000 gold |
 | `remove_ads` | 5.99 | **không consumable** (có Restore) | chỉ bỏ interstitial (đổi 2026-11-09, trước là 4.99 + 500 gold) |
-| `starter_pack` | 6.99 | **không consumable** (mua một lần) | 6.000 gold + 1 hint, 1 move, 1 smash |
-| `rescue_pack` | 0.99 | consumable | 1 booster +3 Move |
+| `starter_pack` | 6.99 | **không consumable** (mua một lần) | 6.000 gold + 1 hint, 1 move, 1 smash + mạng vô hạn vĩnh viễn (2026-11-10) |
+| `rescue_pack` | 0.99 | **không consumable** (mua một lần, 2026-11-10) | 1 booster +3 Move. Offer đang tắt (2026-11-10), game không bán; vẫn tạo SKU nếu muốn bật lại bằng Remote Config |
 | `level_pack` | 4.99 | consumable | 3.000 gold + 2 hint, 2 move, 2 smash (2026-11-09, trước là 2.000 gold + 1 mỗi loại) |
 | `weekly_pass` | 4.99 | consumable (mua lại mỗi tuần) | VIP của chu kỳ Weekly Pass hiện tại: thưởng VIP + 3 mạng tối đa |
-| `special_pack` | 10.99 | consumable | 12.000 gold + 2 hint, 2 move, 2 smash |
-| `special_pack_sale` | 5.49 | consumable | như `special_pack`, dùng lúc weekend sale |
+| `special_pack` | 10.99 | **không consumable** (mua một lần, tính chung bản sale; 2026-11-10) | 12.000 gold + 2 hint, 2 move, 2 smash |
+| `special_pack_sale` | 5.49 | **không consumable** (như `special_pack`) | như `special_pack`, dùng lúc weekend sale |
 | `chain_pack_1` | 0.99 | consumable | 1.500 gold (bước Pay của Chain Offer) |
 | `chain_pack_2` | 2.99 | consumable | 3.000 gold + 1 hint, 1 move (bước Pay của Chain Offer) |
 | `remove_ads_bundle` | 9.99 | **không consumable** (có Restore) | bỏ interstitial + 3.000 gold + 3 hint, 3 move, 3 smash (thêm 2026-11-09) |
-| `helper_great` | 3.99 | consumable | 2 hint, 2 move, 1 smash (2026-11-09, trước là 1 move; Shop Helper Packs, popup hết MOVES kèm Helper Pack; thêm 2026-11-09) |
-| `helper_epic` | 4.99 | consumable | 3 hint, 2 move, 1 smash (thêm 2026-11-09; đang ẩn khỏi Shop) |
-| `bundle_sweet` | 4.99 | consumable | 3.000 gold + 1 hint, 1 move, 1 smash + 60 phút mạng vô hạn (thêm 2026-11-09; đang ẩn khỏi Shop) |
-| `bundle_tasty` | 9.99 | consumable | 7.000 gold + 2 hint, 2 move, 2 smash + 180 phút mạng vô hạn (thêm 2026-11-09; đang ẩn khỏi Shop) |
-| `bundle_yummy` | 14.99 | consumable | 12.000 gold + 3 hint, 3 move, 3 smash + 360 phút mạng vô hạn (thêm 2026-11-09; đang ẩn khỏi Shop) |
+| `helper_great` | 3.99 | consumable (mua nhiều lần; chỉ bán ở popup hết MOVES, không bán trong Shop từ 2026-11-10) | 2 hint, 2 move, 1 smash + mạng vô hạn vĩnh viễn (2026-11-10) (2026-11-09, trước là 1 move; Shop Helper Packs, popup hết MOVES kèm Helper Pack; thêm 2026-11-09) |
+| `helper_epic` | 4.99 | **không consumable** (mua một lần, 2026-11-10) | 3 hint, 2 move, 1 smash (thêm 2026-11-09; đang ẩn khỏi Shop) |
+| `bundle_sweet` | 4.99 | **không consumable** (mua một lần, 2026-11-10) | 3.000 gold + 1 hint, 1 move, 1 smash + 60 phút mạng vô hạn (thêm 2026-11-09; đang ẩn khỏi Shop) |
+| `bundle_tasty` | 9.99 | **không consumable** (mua một lần, 2026-11-10) | 7.000 gold + 2 hint, 2 move, 2 smash + 180 phút mạng vô hạn (thêm 2026-11-09; đang ẩn khỏi Shop) |
+| `bundle_yummy` | 14.99 | **không consumable** (mua một lần, 2026-11-10) | 12.000 gold + 3 hint, 3 move, 3 smash + 360 phút mạng vô hạn (thêm 2026-11-09; đang ẩn khỏi Shop) |
 
 Giao hàng: game cộng hàng và lưu trước, rồi mới consume (consumable) hoặc acknowledge (không consumable). Mỗi `purchase token` giao một lần; lúc mở game giao hết đơn còn treo; `remove_ads` và `remove_ads_bundle` có nút Restore. Game kiểm chữ ký đơn bằng `billing_public_key`; đơn sai chữ ký bị coi là `invalid`, không thưởng.
 
@@ -67,6 +67,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `econ_start_coins` | 1000 |
 | `econ_win_coins` | 40 |
 | `econ_win_move_coins` (gold mỗi MOVES thừa lúc thắng) | 10 |
+| `econ_win_card_from_level` (level chính dưới mốc này thắng không có thẻ thắng, sang thẳng level kế; thẻ ở mốc có x2 miễn phí) | 11 |
 | `econ_booster_price_hint` / `_move` / `_smash` | 900 / 1900 / 2900 |
 | `econ_refill_coins` | 900 |
 | `econ_refill_lives` | 5 |
@@ -83,8 +84,10 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `ads_session_warmup` (giây) | 90 |
 | `ads_rewarded_grace` (giây) | 45 |
 | `ads_first_session_block_until_level` | 10 |
-| `unlock_daily_gift`, `unlock_hint`, `unlock_shop`, `unlock_move`, `unlock_smash`, `unlock_lives`, `unlock_starter`, `unlock_review`, `unlock_challenge`, `unlock_stone`, `unlock_ice`, `unlock_chain`, `unlock_layer`, `unlock_fog`, `unlock_pulse`, `unlock_win_streak` | 4, 5, 5, 12, 17, 10, 10, 10, 50, 14, 30, 40, 55, 70, 90, 40 (level mở khoá) |
-| `unlock_road_trip`, `unlock_special_bomb` (đổi 2026-11-09, trước là 2, 41) | 70, 50 |
+| `unlock_daily_gift`, `unlock_hint`, `unlock_shop`, `unlock_move`, `unlock_smash`, `unlock_lives`, `unlock_starter`, `unlock_review`, `unlock_challenge`, `unlock_leaderboard`, `unlock_win_streak` | 14, 5, 11, 12, 17, 10, 10, 10, 50, 70, 45 (level mở khoá; đổi 2026-11-10, trước shop 5, leaderboard 8, win_streak 40) |
+| `unlock_stone`, `unlock_ice`, `unlock_chain`, `unlock_layer`, `unlock_fog`, `unlock_pulse`, `unlock_frost`, `unlock_pop`, `unlock_choco`, `unlock_ribbon` | 14, 30, 45, 65, 85, 115, 165, 220, 300, 350 (level dạy cơ chế; đổi 2026-11-10, trước 14, 30, 40, 55, 70, 90, 110, 150, 130; Bom kẹo `pop` thêm 2026-11-10). Đổi mốc cơ chế qua Remote Config chỉ dời popup giới thiệu, không đổi level đã đóng gói |
+| `features_pop` (bật/tắt Bom kẹo, "1" hoặc "0"; tắt thì khối bom kẹo thành khối thường, MOVES không đổi) | true |
+| `unlock_road_trip`, `unlock_special_bomb` (đổi 2026-11-10, trước là 70, 50; 2026-11-09 trước là 2, 41) | 95, 50 |
 | `features_win_streak` (bật/tắt Win Streak, "1" hoặc "0") | true |
 | `win_streak_active_days` (ngày Active, 0 = Chủ nhật, 6 = thứ Bảy; ngày khác chỉ nhận quà) | 5,6,0 |
 | `econ_helper_pack_fail`, `econ_helper_pack_sku` (popup hết MOVES kèm Helper Pack từ lần hết MOVES thứ N liên tiếp ở một level) | 3, helper_great |
@@ -95,8 +98,8 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `offers_min_secs` / `offers_gap_runs` | 300 / 3 |
 | `offers_starter_pack_sku`, `_after_level`, `_at_run`, `_hours` | starter_pack, 10, 12, 48 |
 | `offers_remove_ads_sku`, `_after_inter_today`, `_per_day`, `_max_total` | remove_ads, 3, 1, 3 |
-| `offers_rescue_pack_sku`, `_fail_streak`, `_cooldown_hours` | rescue_pack, 3, 24 |
-| `offers_level_pack_sku`, `_every_levels`, `_hours` | level_pack, 50, 72 |
+| `offers_rescue_pack_enabled`, `_sku`, `_fail_streak`, `_cooldown_hours` | false, rescue_pack, 3, 24 |
+| `offers_level_pack_sku`, `_first_level`, `_every_levels`, `_hours` | level_pack, 60, 50, 72 (mốc L60, L110, L160…; `_first_level` thêm 2026-11-10) |
 | `notif_first_week_days`, `_first_week_per_day`, `_lead_min`, `_daily_until_day` | 7, 3, 15, 14 |
 | `notif_sparse_days` | 16,18,21,24,27,30 |
 | `notif_earliest_hour`, `_latest_hour`, `_quiet_after_ignored`, `_ask_after_run` | 8, 22, 9, 2 |
@@ -110,7 +113,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `weekly_enabled`, `weekly_sku`, `weekly_unlock_hard_index`, `weekly_start_hour`, `weekly_vip_bonus_hearts` | true, weekly_pass, 2, 6, 3 |
 | `weekly_points_normal`, `_points_hard`, `_points_very_hard` | 1, 3, 5 |
 | `weekly_bank_step`, `weekly_bank_max`, `weekly_bank_reward_coins` | 15, 10, 400 |
-| `chain_days_to_existence`, `chain_days_to_reset`, `chain_level_unlock`, `chain_require_lose` (-1 = sau mọi ván), `chain_window` | 1, 3, 100, -1, 6 |
+| `chain_days_to_existence`, `chain_days_to_reset`, `chain_level_unlock`, `chain_require_lose` (-1 = sau mọi ván), `chain_window` | 1, 3, 130, -1, 6 (`chain_level_unlock` đổi 2026-11-10, trước là 100) |
 | `sale_weekdays` (0 = Chủ nhật, 6 = thứ Bảy) | 5,6,0 |
 | `weekend_sale_mode` (1 = mọi người, 2 = chỉ người chưa mua gói nào, 3 = tắt) | 1 |
 | `sale_percent` (số % trên nhãn sale, chỉ hiển thị) | 50 |
@@ -155,7 +158,7 @@ Tên và tham số chữ thường, `snake_case`, phẳng. Mọi sự kiện do 
 | `rescue_show` | level, price, remaining, index |
 | `rescue_use` | level, method, price, index |
 | `daily_claim` | idx, coins, next (0/1) |
-| `cos_buy` | id, price, how (gold/video) |
+| `cos_buy` | id, price, how (gold/video/road_trip) |
 | `shop_open` | source, level |
 | `offer_show` | id, level |
 | `offer_buy` | id, sku |

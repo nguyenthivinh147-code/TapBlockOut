@@ -48,6 +48,10 @@ func setup(h: Control, vp: Control, c: Control, cfg: Dictionary) -> void:
 		else:
 			host.mouse_filter = Control.MOUSE_FILTER_PASS
 	target.gui_input.connect(_on_input)
+	# A Unity Mask clips raycasts to its rect; clip_children only clips drawing. Without this, content scrolled out of
+	# the viewport stays tappable and covers what lies around it (Profile's tab row above the avatar grid).
+	if viewport != host and viewport.clip_children != CanvasItem.CLIP_CHILDREN_DISABLED:
+		viewport.clip_contents = true
 
 
 ## Scroll so content's top-left is at `pos` (viewport local units); stops motion.

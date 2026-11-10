@@ -10,7 +10,7 @@ const FRI := MON + 4 * 86400
 const SUN := MON + 6 * 86400
 const H := 3600
 const D := 86400
-const LV := 40
+const LV := 45
 
 
 func _s() -> Dictionary:

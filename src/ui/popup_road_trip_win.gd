@@ -1,9 +1,10 @@
 extends Control
 ## Popup thắng level Road Trip (wireframe Road Trip S4, S5): hộp quà đang nhắm nảy lên, thanh tiến độ chạy từ
 ## "trước" tới "sau" (Game.on_level_won của level road_trip: before, after). Level vừa thắng là level có hộp: thanh
-## đầy, hộp rung rồi bật mở, từng vật phẩm nảy ra (đã cộng vào kho từ Game), nút Nhận; không thì nút Tiếp tục.
-## Đi hết đường (done) thì thêm dòng chúc mừng.
-## setup(args): kết quả Game.on_level_won ({level, box, reward, before, after, done}). closed("ok"); Back cũng đóng.
+## đầy, hộp rung rồi bật mở, từng vật phẩm nảy ra (đã cộng vào kho từ Game), rồi avatar hoặc frame của hộp nếu vừa
+## mở, nút Nhận; không thì nút Tiếp tục. Đi hết đường (done) thì thêm dòng chúc mừng.
+## setup(args): kết quả Game.on_level_won ({level, box, reward, cos, before, after, done}). closed("ok"); Back cũng
+## đóng.
 ## No Unity prefab of its own: PopupOkLayer's frame (header, cream well, pill button) like Daily Challenge, built at
 ## runtime (UnityKit.popup); the bar and reward tiles are game sprites placed in canvas units.
 
@@ -14,6 +15,8 @@ const UnityKit := preload("res://src/ui/unity_kit.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const RoadTrip := preload("res://src/meta/road_trip.gd")
 const RoadTripMap := preload("res://src/ui/road_trip_map.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
+const Profile := preload("res://src/ui/profile.gd")
 
 ## Panel and pieces in canvas units (PopupOkLayer frame, header strip 130).
 const PANEL := Vector2(724, 860)
@@ -53,6 +56,22 @@ func setup(args: Dictionary) -> void:
 	_build()
 	if not UnityUI.baking:
 		_play.call_deferred()
+		# The box's boosters are in the inventory already: the counters keep the old numbers until the tiles fly
+		# to them as the popup closes (Claim or Back); tiles not shown yet do not fly.
+		RewardFly.hold(self, _fly_reward())
+		closed.connect(func(_r: Variant) -> void:
+			RewardFly.launch(self, _fly_reward(), _tile_icons()), CONNECT_ONE_SHOT)
+
+
+func _fly_reward() -> Dictionary:
+	return {"items": _args.get("reward", {})}
+
+
+func _tile_icons() -> Dictionary:
+	var out := {}
+	for t in reward_tiles:
+		out[str(t.name).trim_prefix("Reward_")] = t
+	return out
 
 
 func _build() -> void:
@@ -101,16 +120,31 @@ func _build() -> void:
 	button.name = "OkButton"
 
 
+## Booster tiles, then the box's avatar or frame (args.cos, already unlocked by Game; "" when none or already owned).
+## The avatar/frame tile (Reward_cos) does not fly: RewardFly only moves booster kinds.
 func _build_rewards(content: Control) -> void:
 	var reward: Dictionary = _args.get("reward", {})
+	var cos := str(_args.get("cos", ""))
 	var keys := reward.keys()
+	if cos != "":
+		keys.append("cos")
 	var total := keys.size() * TILE + maxi(keys.size() - 1, 0) * TILE_GAP
 	var x := (PANEL.x - total) * 0.5
 	for k in keys:
-		var tile := UnityKit.sprite(content, "", Rect2(x, REWARDS_Y, TILE, TILE), ThemeKit.icon(str(BOOSTER_ICON.get(k, "ui_gift"))))
+		var is_cos: bool = k == "cos"
+		var tile := UnityKit.sprite(content, "", Rect2(x, REWARDS_Y, TILE, TILE),
+			null if is_cos else ThemeKit.icon(str(BOOSTER_ICON.get(k, "ui_gift"))))
 		tile.name = "Reward_" + str(k)
-		var l := UnityKit.label(content, "x%d" % int(reward[k]), Rect2(x - 20, REWARDS_Y + TILE - 6, TILE + 40, 60), 40.0,
-			"ffffffff", "Baloo Outline - Purple")
+		if is_cos:
+			# A sprite node without a sprite draws a white rect; only the avatar child shows.
+			tile.self_modulate = Color(1, 1, 1, 0)
+			var ic := Profile.reward_icon(cos, Game.s.cos, roundi(TILE))
+			ic.name = "CosIcon"
+			ic.custom_minimum_size = Vector2.ZERO
+			tile.add_child(ic)
+			ic.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		var l := UnityKit.label(content, "x%d" % (1 if is_cos else int(reward[k])),
+			Rect2(x - 20, REWARDS_Y + TILE - 6, TILE + 40, 60), 40.0, "ffffffff", "Baloo Outline - Purple")
 		l.name = "RewardCount_" + str(k)
 		tile.visible = false
 		l.visible = false

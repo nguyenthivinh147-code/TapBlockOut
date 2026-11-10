@@ -5,8 +5,8 @@ extends RefCounted
 ##   bảo đảm giải được); số lượt dọn bàn nhắm `rounds_share` x số khối. moves = số khối + dư (`slack`, đôi khi +1 / +2).
 ## - `bomb_plan(level, count, seed)`: chọn khối mang bom và số giây. "Số lần chạm để gỡ" một khối = số khối phải rời bàn
 ##   trước nó (cả chuỗi chặn, tính trên bàn đầy) + 1. Khoảng [bomb_min_taps, bomb_max_share x số khối] chia `count` tầng
-##   đều nhau, mỗi tầng một khối. Bom xếp từ nông tới sâu; quả thứ k có bomb_base_sec + bomb_sec_per_tap x (số khối khác
-##   nhau phải chạm để gỡ hết quả 1..k) giây, nên chạm 1 lần mỗi giây theo thứ tự đó luôn kịp.
+##   đều nhau, mỗi tầng một khối. Bom xếp từ nông tới sâu; quả thứ k có `bomb_seconds(số khối khác nhau phải chạm để
+##   gỡ hết quả 1..k)` giây, nên chạm 1 lần mỗi giây theo thứ tự đó luôn kịp (bàn tối đa 64 khối).
 ## - `urgent_hint(board, bombs)`: khối thoát được ngay nằm trong chuỗi chặn của quả bom gấp nhất.
 
 const Config := preload("res://src/config.gd")
@@ -212,6 +212,14 @@ static func bomb_count(wins: int) -> int:
 	return mini(n, int(sp.bombs_max))
 
 
+## Số giây của quả bom khi phải chạm `need` khối khác nhau: bomb_time_share x (bomb_base_sec + bomb_sec_per_tap x need),
+## làm tròn lên (trừ một chút để sai số float không đẩy số chẵn lên thêm 1 giây).
+static func bomb_seconds(need: int) -> int:
+	var sp: Dictionary = Config.SPECIAL
+	var raw := float(sp.bomb_time_share) * (float(sp.bomb_base_sec) + float(sp.bomb_sec_per_tap) * need)
+	return ceili(raw - 0.001)
+
+
 ## Bom của bàn: [{id, cell: Vector2i, taps, seconds}] xếp theo số giây tăng dần. Ít khối hợp lệ hơn `count` thì ít bom
 ## hơn. Cùng (level, count, seed) cho cùng kết quả.
 static func bomb_plan(level: Dictionary, count: int, seed_value: int) -> Array[Dictionary]:
@@ -263,8 +271,8 @@ static func bomb_plan(level: Dictionary, count: int, seed_value: int) -> Array[D
 	for id in picked:
 		union.merge(_closure(bl, id))
 		union[id] = true
-		var secs := int(sp.bomb_base_sec) + ceili(float(sp.bomb_sec_per_tap) * union.size())
-		out.append({"id": id, "cell": bomb_cell(shape[id]["cells"]), "taps": int(taps[id]), "seconds": secs})
+		out.append({"id": id, "cell": bomb_cell(shape[id]["cells"]), "taps": int(taps[id]),
+			"seconds": bomb_seconds(union.size())})
 	return out
 
 

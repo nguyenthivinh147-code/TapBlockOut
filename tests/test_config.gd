@@ -37,7 +37,7 @@ func test_defaults(t: T) -> void:
 	t.eq(Config.ECON.rescue_video_max, 4, "video cả 4 lần")
 	t.eq(Config.LIVES.max, 10, "mạng")
 	t.eq(Config.LIVES.regen_sec, 300, "hồi mạng")
-	t.eq(Config.UNLOCK.pulse, 90, "pulse")
+	t.eq(Config.UNLOCK.pulse, 115, "pulse")
 	t.eq(Config.CONTENT.demo_max_level, 20, "demo")
 	t.eq(Config.CONTENT.ftue_steps.size(), 8, "ftue")
 	t.eq(Config.SALE_WEEKDAYS, [5, 6, 0], "sale")
@@ -75,7 +75,12 @@ func test_skus(t: T) -> void:
 	t.near(Config.SKUS.gold_pack_1_sale.usd, 1.99, 0.0001, "sale 1 giữ giá")
 	t.eq(Config.SKUS.remove_ads.consumable, false, "remove_ads một lần")
 	t.eq(Config.SKUS.starter_pack.consumable, false, "starter một lần")
-	t.eq(Config.SKUS.rescue_pack.consumable, true, "rescue dùng hết")
+	# One-time packs (2026-11-10); level_pack, helper_great, chain packs, weekly_pass stay repeatable.
+	for sku in ["rescue_pack", "special_pack", "special_pack_sale", "helper_epic", "bundle_sweet", "bundle_tasty",
+			"bundle_yummy"]:
+		t.eq(Config.SKUS[sku].consumable, false, sku + " một lần")
+	for sku in ["level_pack", "helper_great", "chain_pack_1", "chain_pack_2", "weekly_pass"]:
+		t.eq(Config.SKUS[sku].consumable, true, sku + " mua lại được")
 
 
 func test_cosmetics(t: T) -> void:

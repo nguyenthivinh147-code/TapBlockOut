@@ -36,6 +36,7 @@ const HubTop := preload("res://src/ui/hub_top.gd")
 const TapFx := preload("res://src/ui/tap_fx.gd")
 const Pudding := preload("res://src/ui/pudding.gd")
 const SceneCache := preload("res://src/ui/scene_cache.gd")
+const UiTween := preload("res://src/ui/ui_tween.gd")
 ## Hub screens left to right, as on the bottom bar: going between two of them slides the screens (_slide_screens).
 const HUB_SCREENS := ["shop", "home", "road_trip"]
 
@@ -132,7 +133,7 @@ func _on_cloud_conflict() -> void:
 
 func _has_popup(path: String) -> bool:
 	for c in popup_layer.get_children():
-		if not c.is_queued_for_deletion() and c.scene_file_path == path:
+		if not UiTween.closing(c) and c.scene_file_path == path:
 			return true
 	return false
 
@@ -224,7 +225,8 @@ func go(screen: String, args: Dictionary = {}) -> void:
 	_end_slide()
 	var out: Control = null
 	if current_screen != null:
-		if dir != 0 and current_screen is Control:
+		# Hub tabs slide; any other change fades, unless a curtain covers it.
+		if current_screen is Control and (dir != 0 or curtain == null):
 			out = current_screen
 		else:
 			current_screen.queue_free()
@@ -244,16 +246,22 @@ func go(screen: String, args: Dictionary = {}) -> void:
 	if node.has_method("setup"):
 		node.call("setup", args)
 	if out != null:
-		# Off-screen until the slide starts next frame, once containers have placed the new screen's bars (their
-		# sorts are deferred and may queue more); the old screen keeps its bars for that frame.
 		_slide_out = out
-		(node as Control).position.x = dir * size.x
 		_slide_block = Control.new()
 		_slide_block.name = "SlideBlock"
 		_slide_block.set_anchors_preset(Control.PRESET_FULL_RECT)
 		add_child(_slide_block)
 		move_child(_slide_block, popup_layer.get_index())
-		get_tree().process_frame.connect(_slide_screens.bind(node, dir), CONNECT_ONE_SHOT)
+		if dir == 0:
+			_fade_screens(node)
+		else:
+			# Off-screen until the slide starts next frame, once containers have placed the new screen's bars (their
+			# sorts are deferred and may queue more); the old screen keeps its bars for that frame.
+			(node as Control).position.x = dir * size.x
+			get_tree().process_frame.connect(_slide_screens.bind(node, dir), CONNECT_ONE_SHOT)
+	# Not a tab switch (its bars stay put) and not under a curtain: the bars slide in once the screen is laid out.
+	if dir == 0 and curtain == null:
+		_bars_in.call_deferred(node)
 	if screen == "home" and is_booted:
 		_home_autoshow.call_deferred()
 
@@ -282,6 +290,31 @@ func _slide_screens(into: Control, dir: int) -> void:
 	_slide_tw.finished.connect(_end_slide)
 
 
+## A screen opened by a fade (or the first one): its HubTop's chips slide down and its HubNav slides up
+## (UiTween.bars_in).
+func _bars_in(screen: Node) -> void:
+	if screen != current_screen or not is_instance_valid(screen):
+		return
+	var top: Control = null
+	var nav: Control = null
+	for bar in _bars(screen):
+		if bar.get_script() == HubTop:
+			top = bar
+		else:
+			nav = bar
+	UiTween.bars_in(top, nav, UiTween.BAR_DELAY)
+
+
+## Any other screen change (not under a curtain): the new screen fades in over the old one (_slide_out), which fades
+## out behind it, over UiTween.FADE_SEC; touch and Back wait for the end, like a slide.
+func _fade_screens(into: Control) -> void:
+	into.modulate.a = 0.0
+	_slide_tw = create_tween().set_parallel(true)
+	_slide_tw.tween_property(into, "modulate:a", 1.0, UiTween.FADE_SEC).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_slide_tw.tween_property(_slide_out, "modulate:a", 0.0, UiTween.FADE_SEC).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_slide_tw.finished.connect(_end_slide)
+
+
 func _slide_step(k: float, dir: int) -> void:
 	if is_instance_valid(_slide_out):
 		_slide_out.position.x = -dir * size.x * k
@@ -299,7 +332,7 @@ func _slide_step(k: float, dir: int) -> void:
 		p.set = bar.position
 
 
-## Ends a screen slide at once (also before the next go()): screen and bars in place, the old screen freed.
+## Ends a screen slide or fade at once (also before the next go()): screen and bars in place, the old screen freed.
 func _end_slide() -> void:
 	if _slide_tw != null:
 		_slide_tw.kill()
@@ -313,6 +346,7 @@ func _end_slide() -> void:
 		return
 	if current_screen is Control:
 		(current_screen as Control).position = Vector2.ZERO
+		(current_screen as Control).modulate.a = 1.0
 	if is_instance_valid(_slide_out):
 		_slide_out.queue_free()
 	_slide_out = null
@@ -351,10 +385,11 @@ func curtain_swap(swap: Callable, kind: GDScript = LevelCurtain) -> void:
 
 
 ## Đưa một node popup đã dựng sẵn vào lớp popup; nó phải có signal closed (Back đóng được).
+## Đóng thì popup thu lại, mờ đi rồi mới bị gỡ (UiTween.close_popup); lúc đó nó không còn tính là popup.
 func add_popup(node: Node) -> Node:
 	popup_layer.add_child(node)
 	if node.has_signal("closed"):
-		node.connect("closed", func(_r: Variant) -> void: node.queue_free())
+		node.connect("closed", func(_r: Variant) -> void: UiTween.close_popup(node))
 	return node
 
 
@@ -371,7 +406,7 @@ func open_popup(scene_path: String, args: Dictionary = {}) -> Node:
 func popup_count() -> int:
 	var n := 0
 	for c in popup_layer.get_children():
-		if not c.is_queued_for_deletion():
+		if not UiTween.closing(c):
 			n += 1
 	return n
 
@@ -379,7 +414,7 @@ func popup_count() -> int:
 func _top_popup() -> Node:
 	for i in range(popup_layer.get_child_count() - 1, -1, -1):
 		var c := popup_layer.get_child(i)
-		if not c.is_queued_for_deletion():
+		if not UiTween.closing(c):
 			return c
 	return null
 
@@ -414,6 +449,16 @@ func _on_screen_closed(result: Variant, screen: String, node: Node) -> void:
 				go("home")
 			else:
 				_home_action(action, result as Dictionary if result is Dictionary else {})
+		"profile":
+			# Road Trip button under an item only a Road Trip box gives, Leaderboard button under an item only league
+			# rewards give (profile.gd: Home, then the Leaderboard popup over it); X and Back go home.
+			if action == "road_trip":
+				_home_action(action, {})
+			elif action == "ranking":
+				go("home")
+				_home_action(action, {})
+			else:
+				go("home")
 		_:
 			go("home")
 
@@ -508,7 +553,7 @@ func toggle_tester() -> Node:
 	if not is_booted:
 		return null
 	for open in get_tree().get_nodes_in_group(TesterMenu.GROUP):
-		if not open.is_queued_for_deletion():
+		if not UiTween.closing(open):
 			open.emit_signal("closed", null)
 			return null
 	var p := open_popup(TESTER)

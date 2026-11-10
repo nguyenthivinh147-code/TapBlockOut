@@ -38,6 +38,44 @@ func test_change_saves_trimmed(t: T) -> void:
 	t.eq(Nickname.current(old), "Bob", "tạo profile")
 
 
+func test_default_code(t: T) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	var bad: Array[String] = []
+	var seen := {}
+	for i in 500:
+		var n := Nickname.make_default(rng)
+		seen[n] = true
+		if not n.begins_with("CD_") or n.length() != 9 or not n.substr(3).is_valid_int() or Nickname.check(n) != "":
+			bad.append(n)
+	t.eq(bad, [] as Array[String], "500 mã đều dạng CD_ + 6 chữ số, hợp lệ")
+	t.ok(seen.size() > 490, "mã ngẫu nhiên, hiếm trùng")
+	for n in ["CD_000000", "CD_455455", "CD_555555", "CD_123456", "CD_808080", "CD_133700", "CD_999999"]:
+		t.eq(Nickname.check(n), "", "chữ số ở cuối không đọc thành chữ: " + n)
+	var a := RandomNumberGenerator.new()
+	a.seed = 42
+	var b := RandomNumberGenerator.new()
+	b.seed = 42
+	t.eq(Nickname.make_default(a), Nickname.make_default(b), "cùng seed cùng mã")
+
+
+func test_ensure_gives_code_once(t: T) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 3
+	var s := SaveSchema.defaults()
+	t.ok(Nickname.ensure(s, rng), "chưa có tên: ghi mã")
+	var code := Nickname.current(s)
+	t.ok(code.begins_with("CD_"), "mã mặc định " + code)
+	t.ok(not Nickname.ensure(s, rng), "đã có mã: không ghi lại")
+	t.eq(Nickname.current(s), code, "giữ mã cũ")
+	t.eq(Nickname.change(s, "Bob"), "", "đổi tên")
+	t.ok(not Nickname.ensure(s, rng), "đã đặt tên: không ghi mã")
+	t.eq(Nickname.current(s), "Bob", "giữ tên người chơi đặt")
+	var old := {"version": 1}
+	t.ok(Nickname.ensure(old, rng), "bản lưu cũ không có profile: ghi mã")
+	t.ok(Nickname.current(old).begins_with("CD_"), "tạo profile với mã")
+
+
 func test_banned_variants(t: T) -> void:
 	var bad := [
 		"fuck", "FUCK", "fuuuuck", "f.u.c.k", "f_u_c_k", "fuckyou", "MotherFucker", "sh1t", "5h1thead", "5hit", "b1tch",

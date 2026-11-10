@@ -94,14 +94,14 @@ const RIBBON_STROKE := Color("3A1C6E")
 
 ## Màu viền chữ trên nút (cột "label stroke" của Button ramp).
 const BUTTON_STROKE := {
-	"primary": Color("0B4F0F"),
+	"primary": Color("2E8B00"),
 	"secondary": Color("2D3650"),
 	"video": Color("0E2F6D"),
 	"danger": Color("4F0606"),
 	"gold": Color("6B2C07"),
 	"purple": Color("3A1C6E"),
 	"icon": Color("123F86"),
-	"booster": Color("0B4F0F"),
+	"booster": Color("2E8B00"),
 	"ghost": Color("1A1C3A"),
 }
 ## kind -> sprite nút trong ui_atlas.gd (ghost vẽ phẳng, không có sprite).

@@ -75,26 +75,28 @@ func _won(g: Node, level: int) -> Dictionary:
 
 # --- win card ---
 
-func test_win_l1_free_x2(t: T) -> void:
+## L11 là thẻ thắng đầu tiên (L1–10 không có thẻ, Config.ECON.win_card_from_level): x2 miễn phí để biết nút.
+func test_win_l11_free_x2(t: T) -> void:
 	var g := _g()
-	var res := _won(g, 1)
+	var res := _won(g, 11)
 	var won := 40 + int(res.move_coins)
 	t.ok(int(res.move_coins) > 0, "gold MOVES thừa")
 	t.eq(int(res.coins), won, "+40 và MOVES thừa")
 	t.eq(int(g.s.coins), 1000 + won, "thắng vào ví")
-	t.ok(res.x2_free, "L1 x2 miễn phí")
+	t.ok(res.card, "L11 có thẻ thắng")
+	t.ok(res.x2_free, "L11 x2 miễn phí")
 	var p := _mount("win_card", res)
 	var st := _watch(p)
 	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % won, "hiện tổng gold")
 	t.eq(_btn_text(_btn(p, "X2Button")), p.tr("win_x2_free"), "nút x2 miễn phí")
-	t.ok(_lbl(p, "X2HintLabel") != null, "gợi ý L1")
+	t.ok(_lbl(p, "X2HintLabel") != null, "gợi ý x2 ở thẻ đầu tiên")
 	t.ok(p.find_child("HubTop", true, false) == null, "chưa x2 thì không có thanh trên")
 	_btn(p, "X2Button").pressed.emit()
 	await _wait_until(func() -> bool: return _btn_text(_btn(p, "X2Button")) == p.tr("win_x2_done"))
 	t.eq(int(g.s.coins), 1000 + 2 * won, "x2 cộng thêm một lần nữa")
 	t.eq(_lbl(p, "RewardLabel").text, p.tr("win_reward") % (2 * won), "hiện gấp đôi")
 	t.ok(_btn(p, "X2Button").disabled, "x2 một lần")
-	t.eq(_plat().ads.calls.size(), 0, "L1 không xem quảng cáo")
+	t.eq(_plat().ads.calls.size(), 0, "L11 không xem quảng cáo")
 	# Gold x2 bay lên chip gold của thanh trên, chip đếm từ ví trước lúc thắng; xong thì thẻ tự đóng.
 	var top: Control = p.find_child("HubTop", true, false)
 	t.ok(top != null, "x2 xong thì thanh trên hiện")
@@ -111,9 +113,9 @@ func test_win_l1_free_x2(t: T) -> void:
 
 func test_win_x2_video_closed_then_ok(t: T) -> void:
 	var g := _g()
-	var res := _won(g, 2)
+	var res := _won(g, 12)
 	var won := int(res.coins)
-	t.ok(res.x2_available and not res.x2_free, "L2 x2 qua video")
+	t.ok(res.x2_available and not res.x2_free, "L12 x2 qua video")
 	var p := _mount("win_card", res)
 	var st := _watch(p)
 	t.eq(_btn_text(_btn(p, "X2Button")), p.tr("win_x2"), "nút x2")
@@ -143,7 +145,7 @@ func _wait_ms(cond: Callable, ms: int = 4000) -> bool:
 ## Màn level truyền chip lượt: gold MOVES thừa bay vào ô gold, nút x2 đếm theo; bấm x2 giữa chừng thì cộng nốt rồi x2.
 func test_win_move_gold_then_x2_mid_flight(t: T) -> void:
 	var g := _g()
-	g.s.level = 2
+	g.s.level = 12
 	var attempt: Dictionary = g.start_attempt()
 	var res: Dictionary = g.on_level_won(attempt)
 	var moves: int = attempt.board.moves_left()
@@ -188,7 +190,7 @@ func test_win_move_gold_then_x2_mid_flight(t: T) -> void:
 func test_win_no_x2_without_ads(t: T) -> void:
 	var g := _g()
 	_plat().ads.set_ready(false, false)
-	var res := _won(g, 2)
+	var res := _won(g, 12)
 	_plat().ads.set_ready(true, true)
 	t.ok(not res.x2_available, "không có video thì không mời x2")
 	var p := _mount("win_card", res)
@@ -207,6 +209,37 @@ func test_win_rate_prompt_passthrough(t: T) -> void:
 	_btn(p, "ContinueButton").pressed.emit()
 	t.eq(st.get("r").rate_prompt, true, "chuyển rate_prompt cho level")
 	p.free()
+
+
+## Weekly Pass Active và đã xem tutorial: dải phần thưởng có ô "+N key" (icon chìa) ngay sau ô gold; chưa xem thì không.
+func test_win_weekly_key_reward(t: T) -> void:
+	var g := _g()
+	var res := _won(g, 30)
+	t.eq(int(res.weekly_points), 0, "chưa xem tutorial thì không có key")
+	var p := _mount("win_card", res)
+	t.ok(p.find_child("WeeklyKeyReward", true, false) == null, "không có ô key")
+	p.free()
+	g.weekly_mark_tutorial_seen()
+	var res2 := _won(g, 30)
+	t.eq(int(res2.weekly_points), 1, "level thường +1 key")
+	var p2 := _mount("win_card", res2)
+	var cell := p2.find_child("WeeklyKeyReward", true, false) as Control
+	t.ok(cell != null and cell.visible, "có ô key")
+	if cell != null:
+		t.eq((cell.get_node("RewardLabel") as Label).text, p2.tr("weekly_key_reward_one"), "+1 key")
+		var icon: Control = cell.get_node("CoinIcon")
+		t.eq(icon.get("region").size, (icon.get("tex") as Texture2D).get_size(), "icon chìa vẽ cả ảnh, không giữ vùng cắt gold")
+		var gold := p2.find_child("GoldReward", true, false) as Control
+		t.eq(cell.get_index(), gold.get_index() + 1, "ngay sau ô gold")
+	p2.free()
+	var p3 := _mount("win_card", {"coins": 40, "weekly_points": 3, "special_tickets": 1})
+	var c3 := p3.find_child("WeeklyKeyReward", true, false) as Control
+	t.ok(c3 != null, "Hard: có ô key")
+	if c3 != null:
+		t.eq((c3.get_node("RewardLabel") as Label).text, p3.tr("weekly_key_reward") % 3, "+3 key")
+		var ticket := p3.find_child("SpecialTicketReward", true, false) as Control
+		t.eq(ticket.get_index(), c3.get_index() + 1, "ô vé sau ô key")
+	p3.free()
 
 
 # --- lose card ---
@@ -420,15 +453,16 @@ func test_result_layout_rules(t: T) -> void:
 
 func test_win_feature_progress(t: T) -> void:
 	var g := _g()
-	var res := _won(g, 3)
-	t.eq(res.unlocked, ["daily_gift"] as Array[String], "thắng L3 mở quà ngày")
+	var res := _won(g, 13)
+	t.eq(res.unlocked, ["daily_gift", "stone"] as Array[String], "thắng L13 mở quà ngày (và Thùng sắt)")
 	t.eq(g.next_after_win(res, false), "home", "mở tính năng Home thì về Home")
 	var p := _mount("win_card", res)
 	t.ok(_lbl(p, "FeatureLabel").text.contains(p.tr("feature_daily_gift")), "tên tính năng")
 	await _wait_until(func() -> bool: return _lbl(p, "FeaturePercent").text == "100%")
 	t.eq(_lbl(p, "FeaturePercent").text, "100%", "thanh chạy tới 100%")
-	await _wait_until(func() -> bool: return _lbl(p, "FeatureLabel").text == p.tr("feature_unlocked") % p.tr("feature_daily_gift"))
-	t.ok(_lbl(p, "FeatureLabel").text == p.tr("feature_unlocked") % p.tr("feature_daily_gift"), "báo đã mở")
+	var done: String = p.tr("feature_unlocked") % (p.tr("feature_daily_gift") + ", " + p.tr("feature_stone"))
+	await _wait_until(func() -> bool: return _lbl(p, "FeatureLabel").text == done)
+	t.eq(_lbl(p, "FeatureLabel").text, done, "báo đã mở")
 	p.free()
 	var res2 := _won(g, 6)
 	t.eq(g.next_after_win(res2, false), "level", "không mở gì thì vào level kế")

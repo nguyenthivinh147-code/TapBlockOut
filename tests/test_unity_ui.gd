@@ -167,12 +167,23 @@ func test_input_field(t: T) -> void:
 	o.free()
 
 
+## A Unity Mask clips raycasts to its rect: a masked child hanging past it (the pack shine) takes no taps outside.
+func test_mask_clips_taps(t: T) -> void:
+	var o := _owner()
+	var v := UnityUI.build(o, "PopupChainOffer", {"reveal": false})
+	var border := v.node("Panel/Content/ListPack/ChainOfferPack/BG (1)/BlurredBorder")
+	t.ok(border.clip_children != CanvasItem.CLIP_CHILDREN_DISABLED, "BlurredBorder là Mask")
+	t.ok(border.clip_contents, "Mask cắt cả vùng nhận chạm")
+	o.free()
+
+
 func test_cutout(t: T) -> void:
 	var o := _owner()
 	var v := UnityUI.build(o, "LoadLevelProcessVer2", {"reveal": false})
 	var icon := v.node("icon")
 	var bg := v.node("icon/Background")
 	t.eq(icon.clip_children, CanvasItem.CLIP_CHILDREN_DISABLED, "Mask không cắt con CutoutMaskUI")
+	t.eq(icon.clip_contents, false, "con CutoutMaskUI vẽ ra ngoài khung Mask")
 	t.eq(icon.self_modulate.a, 0.0, "showMaskGraphic tắt")
 	var m := bg.material as ShaderMaterial
 	t.ok(m != null and bool(m.get_shader_parameter("has_mask_tex")), "shader cắt theo sprite của Mask")

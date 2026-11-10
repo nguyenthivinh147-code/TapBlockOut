@@ -8,6 +8,9 @@ signal closed(result: Variant)
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 
 const DESC := "Panel/LeaguesDesc/"
+## Step pictures drawn from the game's art (tools/render_lb_howto.gd) in place of the prefab's ic_league1..3:
+## crystal block -> piece, piece = +1 rank point, Silver -> Gold league with its reward.
+const ART := "res://assets/ui/lb_howto_%d.png"
 ## LeaderboarDescriptionAnim: _step1.._step4, OutBack scale 0 -> 1.
 const STEPS := ["Step1", "Step2", "Step3", "Desc"]
 const ANIM_DUR := 0.8
@@ -26,6 +29,10 @@ func setup(_args: Dictionary = {}) -> void:
 	ui.text(DESC + "txtHeader", tr("lb_howto_title"))
 	for i in 3:
 		ui.text(DESC + "Step%d/Desc" % (i + 1), tr("lb_howto_%d" % (i + 1)))
+		var img := UnityUI.image_of(ui.node(DESC + "Step%d" % (i + 1)))
+		if img != null:
+			img.call("set_texture", load(ART % (i + 1)) as Texture2D)
+			img.set("preserve_aspect", true)
 	ui.text(DESC + "Desc", tr("lb_howto_4"))
 	ui.text("Panel/TapToContinueTxt", tr("boot_tap_continue"))
 	var ok: Button = ui.on_click("Panel", _close)

@@ -2,8 +2,10 @@ extends Control
 ## Thẻ thắng: +gold, x2 (L1 miễn phí), Tiếp tục. Bố cục WinPanel của EndGameUILayer (color-cube-match-puzzle):
 ## cúp và kèn, ribbon tiêu đề, thẻ người chơi trên bảng xếp hạng, thanh tính năng kế tiếp, dải phần thưởng, hàng nút.
 ## Ô thưởng gold và dòng thông báo là node trong scenes/win_card.tscn; dòng gợi ý x2 thêm lúc chạy khi có. Dải phần
-## thưởng chỉ có gold: điểm xếp hạng chỉ hiện ở thẻ người chơi (tổng điểm đếm dần), không có ô "+N điểm xếp hạng".
-## setup(args): kết quả Game.on_level_won ({coins, move_coins, x2_available, x2_free, rate_prompt, progress, lb});
+## thưởng có gold, thêm ô "+N key" (args.weekly_points, icon chìa Weekly Pass) và ô "+N vé" (args.special_tickets)
+## khi có; điểm xếp hạng chỉ hiện ở thẻ người chơi (tổng điểm đếm dần), không có ô "+N điểm xếp hạng".
+## setup(args): kết quả Game.on_level_won ({coins, move_coins, x2_available, x2_free, rate_prompt, progress, lb,
+## weekly_points, special_tickets});
 ## ô gold hiện coins (đã gồm gold MOVES thừa). Màn level thêm moves_chip (chip lượt), moves_left và
 ## on_move_cashed(lượt): khi đó ô gold bắt đầu từ coins - move_coins, đồng gold bay từ chip vào ô (CoinFx), mỗi đồng
 ## rời chip thì gọi on_move_cashed, chạm ô thì số gold (cả số trên nút x2) tăng dần. Bấm x2 hay Tiếp tục thì cộng nốt.
@@ -140,27 +142,52 @@ func _build_rewards() -> void:
 	# out: rank points show only on the player's leaderboard card.
 	_reward = %GoldReward.get_node("RewardLabel")
 	UnityUI.set_text(_reward, tr("win_reward") % _shown)
-	_build_special_ticket()
+	# Weekly Pass keys (args.weekly_points > 0: season Active and tutorial seen), then Special Bomb tickets.
+	var keys := int(_args.get("weekly_points", 0))
+	if keys > 0:
+		var kt := tr("weekly_key_reward_one") if keys == 1 else tr("weekly_key_reward") % keys
+		_add_reward("WeeklyKeyReward", "mech_key", kt)
+	var tickets := int(_args.get("special_tickets", 0))
+	if tickets > 0:
+		_add_reward("SpecialTicketReward", "special_bomb", tr("special_ticket_reward") % tickets)
+	_space_rewards()
 	ui.relayout(REWARDS)
 
 
-## Thắng Hard / VeryHard khi Màn đặc biệt đã mở (args.special_tickets > 0): ô thứ hai cạnh gold, icon bom và "+N vé".
-func _build_special_ticket() -> void:
-	var n := int(_args.get("special_tickets", 0))
-	if n <= 0:
+## The prefab strip (expanded width, spacing -300) puts the centres of two cells (W + spacing) / 2 apart; with more
+## cells that gap shrinks below the label width, so the spacing is set to keep the two-cell gap.
+func _space_rewards() -> void:
+	var row: Control = ui.node(REWARDS)
+	var n := 0
+	for ch in row.get_children():
+		if ch is Control and (ch as Control).visible and ch.has_meta("u"):
+			n += 1
+	if n <= 2:
 		return
+	var u: Dictionary = (row.get_meta("u") as Dictionary).duplicate(true)
+	var w := row.size.x
+	var gap := (w + float(u.lay.get("sp", 0.0))) / 2.0
+	u.lay["sp"] = gap * n - w
+	row.set_meta("u", u)
+
+
+## Another cell after the gold one in the reward strip: a copy of GoldReward without its light, `icon` in place of the
+## coin, `text` as its label.
+func _add_reward(node_name: String, icon_name: String, text: String) -> Control:
 	var gold: Control = %GoldReward
 	var r := gold.duplicate() as Control
-	r.name = "SpecialTicketReward"
+	r.name = node_name
 	r.unique_name_in_owner = false
 	gold.get_parent().add_child(r)
 	var light := r.get_node_or_null("Light") as Control
 	if light != null:
 		light.visible = false
+	# set_texture, not tex: the coin's region is a cell of the gold atlas and would crop the new texture to nothing.
 	var icon := UnityUI.image_of(r.get_node("CoinIcon"))
-	icon.tex = ThemeKit.icon("special_bomb")
+	icon.set_texture(ThemeKit.icon(icon_name))
 	icon.preserve_aspect = true
-	UnityUI.set_text(r.get_node("RewardLabel") as Label, tr("special_ticket_reward") % n)
+	UnityUI.set_text(r.get_node("RewardLabel") as Label, text)
+	return r
 
 
 # --- leaderboard card (UILeaderboardUserCard of the player) ---

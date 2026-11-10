@@ -7,8 +7,9 @@ extends SceneTree
 ##     so it melts into the bg layer; --fg 272 keeps the subject inside the circle mask (72 dp viewport).
 ##   --mono: icon_adaptive_mono_432.png, a flat L tetromino with candy stripes and speed streaks (Android 13 themed
 ##     icon, alpha only), drawn by SDF inside the 66 dp safe zone.
+##   --crop=x,y,size: cut that square out of the source first (zooms the subject in every output).
 ## Run: tools/godot.sh --headless --path . -s res://tools/make_app_icon.gd -- <src.png> [--out=res://assets]
-##      [--fg=272] [--dy=0] [--feather-x=0.1] [--feather-y=0.035] [--mono]
+##      [--crop=x,y,size] [--fg=272] [--dy=0] [--feather-x=0.1] [--feather-y=0.035] [--mono]
 
 const ADAPTIVE := 432
 const EDGE_W := 16
@@ -17,6 +18,7 @@ const EDGE_W := 16
 func _initialize() -> void:
 	var src_path := ""
 	var out_dir := "res://assets"
+	var crop := PackedInt32Array()
 	var fg_size := 272
 	var dy := 0
 	var feather_x := 0.1
@@ -25,6 +27,8 @@ func _initialize() -> void:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--out="):
 			out_dir = a.substr(6)
+		elif a.begins_with("--crop="):
+			crop = PackedInt32Array(Array(a.substr(7).split(",")).map(func(s: String) -> int: return int(s)))
 		elif a.begins_with("--fg="):
 			fg_size = int(a.substr(5))
 		elif a.begins_with("--dy="):
@@ -42,6 +46,13 @@ func _initialize() -> void:
 		push_error("Need a square source PNG: " + src_path)
 		quit(1)
 		return
+	if not crop.is_empty():
+		var rect := Rect2i(crop[0], crop[1], crop[2], crop[2]) if crop.size() == 3 else Rect2i()
+		if rect.size.x <= 0 or not Rect2i(Vector2i.ZERO, src.get_size()).encloses(rect):
+			push_error("--crop=x,y,size must lie inside the %dx%d source" % [src.get_width(), src.get_height()])
+			quit(1)
+			return
+		src = src.get_region(rect)
 	src.convert(Image.FORMAT_RGB8)
 	var ok := true
 	ok = ok and _save(_scaled(src, 512), out_dir.path_join("icon_app.png"))

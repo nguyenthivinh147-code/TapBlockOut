@@ -1,10 +1,12 @@
 extends RefCounted
 ## Leaderboard theo league (design.md mục 7). Logic thuần: giờ truyền vào (now: unix giây).
-## Ghi vào s.lb {joined, points, league, seed, day, seen_rank, bots, risen, pending, t0, week, clock, result}.
+## Ghi vào s.lb {joined, points, league, seed, day, seen_rank, bots, risen, pending, pending_cos, t0, week, clock,
+## result}. pending_cos: avatar, frame (Config.LEADERBOARD.cosmetics) đã chọn cho các league đang chờ; chỉ đọc s.cos.
+## s.lb.guide (popup Cách hoạt động lần đầu) do Game.lb_take_guide ghi.
 ## Tuần: t0 là lúc vào BXH (mở khoá), tuần k chạy [t0 + k * week_len, t0 + (k + 1) * week_len). Hết tuần thì điểm về
 ## 0, league về đầu, BXH mới (roll); clock là giờ lớn nhất đã thấy, để đồng hồ lùi không làm tuần chạy ngược.
 ## Bot: {n: tên, a: avatar, f: frame, c: mã cờ, p: điểm}. Người chơi không nằm trong `bots`: BXH = bots + người chơi.
-## Module không cộng hàng: claim, claim_result trả thưởng {coins, items, inf_min} để Game cộng.
+## Module không cộng hàng: claim, claim_result trả thưởng {coins, items, inf_min, cos: [id avatar/frame]} để Game cộng.
 
 const Config := preload("res://src/config.gd")
 
@@ -71,34 +73,98 @@ static func range_of(i: int) -> Vector2i:
 	return Vector2i(lo, maxi(next_min(i) - 1, lo))
 
 
+## Thưởng cấu hình của league `i`: {coins, items, inf_min, cos: [], cos_random (số avatar/frame random khi vào)}.
 static func reward_of(i: int) -> Dictionary:
 	var raw: Variant = _league(i).get("reward", {})
 	if not (raw is Dictionary):
 		return _empty()
 	return {"coins": int(raw.get("coins", 0)), "items": (raw.get("items", {}) as Dictionary).duplicate(),
-		"inf_min": int(raw.get("inf_min", 0))}
+		"inf_min": int(raw.get("inf_min", 0)), "cos": [], "cos_random": int(raw.get("cos_random", 0))}
 
 
 ## League `i` có thưởng khi vào (league đầu thường không có).
 static func has_reward(i: int) -> bool:
 	var r := reward_of(i)
-	var n := int(r.coins) + int(r.inf_min)
+	var n := int(r.coins) + int(r.inf_min) + int(r.cos_random)
 	for k in r.items:
 		n += int(r.items[k])
 	return n > 0
 
 
+## Thưởng của league `i` để xem trước (bong bóng, thang giải): cos_random không quá số món còn random được, nên
+## hết món thì không còn ô avatar/khung ngẫu nhiên.
+static func preview_reward(s: Dictionary, i: int) -> Dictionary:
+	var r := reward_of(i)
+	r["cos_random"] = mini(int(r.cos_random), cos_left(s).size())
+	return r
+
+
 static func _empty() -> Dictionary:
-	return {"coins": 0, "items": {}, "inf_min": 0}
+	return {"coins": 0, "items": {}, "inf_min": 0, "cos": []}
 
 
+## Cộng hai phần thưởng; cos (món đã chọn) nối lại, cos_random (cấu hình) bỏ đi.
 static func _merge(a: Dictionary, b: Dictionary) -> Dictionary:
 	var items: Dictionary = (a.get("items", {}) as Dictionary).duplicate()
 	var bi: Dictionary = b.get("items", {})
 	for k in bi:
 		items[k] = int(items.get(k, 0)) + int(bi[k])
+	var cos: Array = []
+	for src: Dictionary in [a, b]:
+		var c: Variant = src.get("cos", [])
+		if c is Array:
+			for id in c:
+				if not cos.has(str(id)):
+					cos.append(str(id))
 	return {"coins": int(a.get("coins", 0)) + int(b.get("coins", 0)), "items": items,
-		"inf_min": int(a.get("inf_min", 0)) + int(b.get("inf_min", 0))}
+		"inf_min": int(a.get("inf_min", 0)) + int(b.get("inf_min", 0)), "cos": cos}
+
+
+# --- avatar, frame của thưởng league ---
+
+## Avatar, frame chỉ có từ thưởng league (Config.LEADERBOARD.cosmetics).
+static func cosmetics() -> Array:
+	var raw: Variant = Config.LEADERBOARD.get("cosmetics", [])
+	return (raw as Array).duplicate() if raw is Array else []
+
+
+## League đầu tiên có avatar/frame random; -1 khi không league nào có. Bot ở league dưới không đeo các món này.
+static func cos_from() -> int:
+	for i in leagues().size():
+		if int(reward_of(i).cos_random) > 0:
+			return i
+	return -1
+
+
+## Món còn random được: chưa có (s.cos.owned), chưa nằm trong thưởng chờ hay kết quả tuần chưa nhận.
+static func cos_left(s: Dictionary) -> Array:
+	var b := _lb(s)
+	var cos: Variant = s.get("cos")
+	var owned: Variant = (cos as Dictionary).get("owned", []) if cos is Dictionary else []
+	var taken: Array = (b.pending_cos as Array).duplicate()
+	var res: Dictionary = b.result
+	if res.get("reward") is Dictionary and (res.reward as Dictionary).get("cos") is Array:
+		taken.append_array(res.reward.cos)
+	var out: Array = []
+	for id in cosmetics():
+		if not (owned is Array and (owned as Array).has(id)) and not taken.has(id):
+			out.append(id)
+	return out
+
+
+## Chọn avatar/frame cho league `li` vừa vào: reward.cos_random món khác nhau trong cos_left, ghi vào pending_cos.
+## Xác định theo seed của BXH, tuần và league. Hết món thì thôi, không có gì thay.
+static func _roll_cos(s: Dictionary, li: int) -> void:
+	var b := _lb(s)
+	var n := int(reward_of(li).cos_random)
+	if n <= 0:
+		return
+	var rng := _rng(["cos", int(b.seed), int(b.week), li, (b.pending_cos as Array).size()])
+	for k in n:
+		var left := cos_left(s)
+		if left.is_empty():
+			return
+		(b.pending_cos as Array).append(str(left[rng.randi_range(0, left.size() - 1)]))
 
 
 # --- thời gian ---
@@ -160,7 +226,7 @@ static func _lb(s: Dictionary) -> Dictionary:
 	if not (s.get("lb") is Dictionary):
 		s["lb"] = {}
 	var b: Dictionary = s.lb
-	for k in ["bots", "risen", "pending"]:
+	for k in ["bots", "risen", "pending", "pending_cos"]:
 		if not (b.get(k) is Array):
 			b[k] = []
 	for k in ["points", "seed", "seen_rank", "t0", "week", "clock"]:
@@ -207,6 +273,7 @@ static func join(s: Dictionary, now: int) -> bool:
 	for k in li + 1:
 		if has_reward(k):
 			(b.pending as Array).append(k)
+			_roll_cos(s, k)
 	b["risen"] = []
 	_enter(s, li)
 	return true
@@ -249,6 +316,7 @@ static func roll(s: Dictionary, now: int) -> Dictionary:
 			"reward": _merge(prev, pending_reward(s))}
 		b["result"] = out
 		b["pending"] = []
+		b["pending_cos"] = []
 	b["week"] = w
 	b["points"] = 0
 	b["seed"] = hash(["lb", int(b.seed), w])
@@ -286,7 +354,7 @@ static func make_board(li: int, seed: int, carry: Array = []) -> Array:
 		out.append(bot)
 	var fresh := need - out.size()
 	for k in fresh:
-		var bot := make_bot(rng)
+		var bot := make_bot(rng, li)
 		@warning_ignore("integer_division")
 		bot["p"] = band_points(li, 1 + k * need / maxi(fresh, 1), rng)
 		out.append(bot)
@@ -302,19 +370,30 @@ static func band_points(li: int, band: int, rng: RandomNumberGenerator) -> int:
 	return clampi(r.x + floori((float(band) + rng.randf()) * width), r.x, r.y)
 
 
-static func make_bot(rng: RandomNumberGenerator) -> Dictionary:
-	return {"n": _bot_name(rng), "a": _cosmetic(rng, "avatar"), "f": _cosmetic(rng, "frame"),
+## Bot mới của league `li` (-1: không theo league, đeo được mọi món).
+static func make_bot(rng: RandomNumberGenerator, li: int = -1) -> Dictionary:
+	return {"n": _bot_name(rng), "a": _cosmetic(rng, "avatar", li), "f": _cosmetic(rng, "frame", li),
 		"c": FLAGS[rng.randi_range(0, FLAGS.size() - 1)], "p": 0}
 
 
-## Avatar hoặc frame theo tỉ lệ: bot_<kind>_default_pct% dùng món mặc định, còn lại random đều trong catalog.
-static func _cosmetic(rng: RandomNumberGenerator, kind: String) -> String:
+## Avatar hoặc frame theo tỉ lệ: bot_<kind>_default_pct% dùng món mặc định, còn lại random đều trong catalog. Bot ở
+## league dưới cos_from không đeo món của thưởng league (Config.LEADERBOARD.cosmetics).
+static func _cosmetic(rng: RandomNumberGenerator, kind: String, li: int = -1) -> String:
 	var pct := int(Config.LEADERBOARD.get("bot_%s_default_pct" % kind, 80))
 	var n := int(Config.COSMETICS.get(kind + "_count", 0))
 	var def := str(Config.COSMETICS.get("default_" + kind, "%s_00" % kind))
 	if n <= 0 or rng.randi_range(1, 100) <= pct:
 		return def
-	return "%s_%02d" % [kind, rng.randi_range(1, n)]
+	var from := cos_from()
+	var hide: Array = cosmetics() if li >= 0 and from >= 0 and li < from else []
+	var ids: Array = []
+	for k in range(1, n + 1):
+		var id := "%s_%02d" % [kind, k]
+		if not hide.has(id):
+			ids.append(id)
+	if ids.is_empty():
+		return def
+	return str(ids[rng.randi_range(0, ids.size() - 1)])
 
 
 static func _bot_name(rng: RandomNumberGenerator) -> String:
@@ -365,7 +444,7 @@ static func grow(s: Dictionary, now: int) -> int:
 			bot["p"] = int(bot.get("p", 0)) + gain_for(li, rng)
 			if nxt >= 0 and int(bot.p) >= nxt:
 				risen.push_front(bot)
-				var fresh := make_bot(rng)
+				var fresh := make_bot(rng, li)
 				fresh["p"] = band_points(li, 0, rng)
 				bots[i] = fresh
 	b["risen"] = (risen + (b.risen as Array)).slice(0, maxi(int(Config.LEADERBOARD.get("carry_max", 10)), 0))
@@ -417,6 +496,7 @@ static func add_points(s: Dictionary, n: int) -> Dictionary:
 			promoted.append(k)
 			if has_reward(k):
 				(b.pending as Array).append(k)
+				_roll_cos(s, k)
 		_enter(s, li)
 	return {"added": n, "before": before, "after": int(b.points), "rank_before": rank_before, "rank_after": rank(s),
 		"league_before": li_before, "league_after": int(b.league), "promoted": promoted}
@@ -528,7 +608,7 @@ static func world(s: Dictionary, now: int) -> Dictionary:
 	var step := maxi(int(Config.LEADERBOARD.get("top_span", 1000)) / 50, 2)
 	var bots: Array = []
 	for k in n:
-		var bot := make_bot(rng)
+		var bot := make_bot(rng, top)
 		p += rng.randi_range(1, step)
 		bot["p"] = p
 		bots.push_front(bot)
@@ -556,12 +636,13 @@ static func pending(s: Dictionary) -> Array:
 	return (_lb(s).pending as Array).duplicate()
 
 
-## Thưởng gộp của mọi league đang chờ (chưa nhận).
+## Thưởng gộp của mọi league đang chờ (chưa nhận), cos là các món đã chọn lúc vào league.
 static func pending_reward(s: Dictionary) -> Dictionary:
+	var b := _lb(s)
 	var total := _empty()
-	for li in _lb(s).pending:
+	for li in b.pending:
 		total = _merge(total, reward_of(int(li)))
-	return total
+	return _merge(total, {"cos": b.pending_cos})
 
 
 ## Nhận thưởng của mọi league đang chờ, xoá danh sách chờ. Trả thưởng gộp ({} nếu không có gì chờ).
@@ -571,6 +652,7 @@ static func claim(s: Dictionary) -> Dictionary:
 		return {}
 	var total := pending_reward(s)
 	b["pending"] = []
+	b["pending_cos"] = []
 	return total
 
 

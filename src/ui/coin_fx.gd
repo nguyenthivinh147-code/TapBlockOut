@@ -7,6 +7,9 @@ extends Control
 
 const BoardFx := preload("res://src/ui/board_fx.gd")
 
+## The last coin landed (also when the effect leaves the tree before that).
+signal arrived
+
 const POP := 0.1  # đồng nở ra ở chip trước khi bay
 const FLY := 0.55
 const GAP := 0.075  # đồng sau rời chip trễ hơn đồng trước
@@ -25,6 +28,8 @@ const AMBER := Color("FF9F1A")
 
 var on_launch: Callable = Callable()
 var on_land: Callable = Callable()
+## Size of the last landing's flash, glow and two rings, as a part of the default (ItemFx lands smaller).
+var finale_k := 1.0
 var _from := Vector2.ZERO
 var _to := Vector2.ZERO
 var _size := 64.0  # cạnh icon gold của thẻ (toạ độ canvas)
@@ -36,6 +41,7 @@ var _t: float = 0.0
 var _last_hit: float = -1.0  # lúc đồng cuối chạm; < 0 là chưa
 var _hit_age: float = 99.0  # giây kể từ đồng gần nhất chạm, cho quầng ở ô gold
 var _solid: Control = null  # đồng gold vẽ màu đặc (không cộng sáng), nằm trên vệt
+var _arrived := false
 
 
 func _init() -> void:
@@ -52,16 +58,18 @@ func _init() -> void:
 	add_child(_solid)
 
 
-## `from` là nguồn (chip lượt, hoặc icon gold của thẻ), `to` là đích (icon gold của thẻ, hoặc của thanh trên), `tex` là
-## hình đồng gold (null thì vẽ đồng tròn). `moves` lượt và `gold` gold chia đều cho tối đa MAX_COINS đồng (không gắn với
-## lượt thì truyền MAX_COINS làm `moves`). Cỡ đồng theo icon đích. Gọi sau khi đã add_child.
-func start(from: Control, to: Control, tex: Texture2D, moves: int, gold: int, launch: Callable = Callable(),
+## `from` là nguồn (chip lượt, hoặc icon gold của thẻ; Control, hoặc Rect2 toạ độ canvas), `to` là đích (icon gold của
+## thẻ, hoặc của thanh trên), `tex` là hình đồng gold (null thì vẽ đồng tròn). `moves` lượt và `gold` gold chia đều cho
+## tối đa MAX_COINS đồng (không gắn với lượt thì truyền MAX_COINS làm `moves`). Cỡ đồng theo icon đích. Gọi sau khi
+## đã add_child.
+func start(from: Variant, to: Control, tex: Texture2D, moves: int, gold: int, launch: Callable = Callable(),
 		land: Callable = Callable()) -> void:
 	on_launch = launch
 	on_land = land
 	global_position = Vector2.ZERO
 	_tex = tex
-	_from = from.get_global_rect().get_center()
+	var src: Rect2 = from if from is Rect2 else (from as Control).get_global_rect()
+	_from = src.get_center()
 	var dest := to.get_global_rect()
 	_to = dest.get_center()
 	_size = minf(dest.size.x, dest.size.y)
@@ -85,6 +93,11 @@ func start(from: Control, to: Control, tex: Texture2D, moves: int, gold: int, la
 		dust.position = _from
 		_coins.append({"p": [_from, _inside(p1, vp), _inside(p2, vp), _to] as Array[Vector2], "start": GAP * i,
 			"moves": m, "gold": g, "launched": false, "landed": false, "dust": dust, "spin": randf() * TAU})
+
+
+## Holds the first coin at its source for `sec` s (RewardFly staggers the parts of one reward). Call after start().
+func wait(sec: float) -> void:
+	_t = -maxf(sec, 0.0)
 
 
 func _inside(p: Vector2, vp: Rect2) -> Vector2:
@@ -127,13 +140,25 @@ func _land(c: Dictionary) -> void:
 	var last := _coins.all(func(o: Dictionary) -> bool: return bool(o.landed))
 	if last:
 		_last_hit = _t
-		BoardFx.impact_flash(self, _to, GOLD, _size * 3.4, 0.5, 1.0)
+		BoardFx.impact_flash(self, _to, GOLD, _size * 3.4 * finale_k, 0.5, 1.0)
 		add_child(_make_burst(_to, 30, 1.0))
 	else:
 		BoardFx.impact_flash(self, _to, GOLD, _size * 2.0, 0.3, 0.6)
 		add_child(_make_burst(_to, 10, 0.6))
 	if on_land.is_valid():
 		on_land.call(int(c.gold), last)
+	if last:
+		_arrive()
+
+
+func _exit_tree() -> void:
+	_arrive()
+
+
+func _arrive() -> void:
+	if not _arrived:
+		_arrived = true
+		arrived.emit()
 
 
 ## Vị trí đồng `f` giây sau lúc rời chip: đứng ở chip lúc nở, rồi theo đường bay.
@@ -195,12 +220,12 @@ func _draw_star(at: Vector2, px: float, rot: float, col: Color) -> void:
 func _draw_finale(a: float) -> void:
 	var p := clampf(a / AFTER, 0.0, 1.0)
 	var fade := (1.0 - p) * (1.0 - p)
-	draw_circle(_to, _size * (0.4 + 0.5 * (1.0 - pow(1.0 - p, 3.0))), Color(CORE, 0.35 * fade))
+	draw_circle(_to, _size * finale_k * (0.4 + 0.5 * (1.0 - pow(1.0 - p, 3.0))), Color(CORE, 0.35 * fade))
 	for r in 2:
 		var q := clampf((a - r * 0.1) / (AFTER * 0.6), 0.0, 1.0)
 		if q <= 0.0 or q >= 1.0:
 			continue
-		var rad := _size * (0.3 + 1.3 * (1.0 - pow(1.0 - q, 2.5)))
+		var rad := _size * finale_k * (0.3 + 1.3 * (1.0 - pow(1.0 - q, 2.5)))
 		draw_arc(_to, rad, 0.0, TAU, 56, Color(GOLD if r == 0 else AMBER, 0.85 * (1.0 - q)), maxf(1.0, 10.0 * (1.0 - q)), true)
 
 

@@ -1,6 +1,9 @@
 extends RefCounted
 const T := preload("res://tests/t.gd")
 const Config := preload("res://src/config.gd")
+const ThemeKit := preload("res://src/ui/theme_kit.gd")
+const UnityUI := preload("res://src/ui/unity_ui.gd")
+const UiTween := preload("res://src/ui/ui_tween.gd")
 
 const DIR := "user://test_ui_profile"
 const SCENE := "res://scenes/profile.tscn"
@@ -65,13 +68,13 @@ func test_grid_counts_and_defaults(t: T) -> void:
 func test_tabs_keep_selection(t: T) -> void:
 	_g()
 	var p := _profile()
-	p.select("avatar_05")
+	p.select("avatar_03")
 	p.tab_buttons["frame"].pressed.emit()
 	t.ok(p.find_child("Grid_frame", true, false).visible, "tab Frame")
 	t.eq(_txt(p.use_button), "Equipped", "frame mặc định đang đeo")
 	p.tab_buttons["avatar"].pressed.emit()
-	t.ok(p.cells["avatar_05"].ring.visible, "quay lại tab Avatar vẫn giữ ô đã chọn")
-	t.ok(p.buy_button != null, "nút mua avatar_05")
+	t.ok(p.cells["avatar_03"].ring.visible, "quay lại tab Avatar vẫn giữ ô đã chọn")
+	t.ok(p.buy_button != null, "nút mua avatar_03")
 	p.queue_free()
 
 
@@ -116,6 +119,31 @@ func test_tab_tap_through_viewport(t: T) -> void:
 	p.queue_free()
 
 
+## Scrolled to the end, the top avatar rows sit above the Viewport (masked out) over the tab row: they must not take
+## the tap meant for the Frame tab.
+func test_tab_tap_after_scroll_to_end(t: T) -> void:
+	_g()
+	var p := _profile()
+	await (Engine.get_main_loop() as SceneTree).process_frame
+	var host: Control = p.find_child("Grid_avatar", true, false)
+	host.get_node("ScrollRect").call("set_vertical_normalized", 0.0)
+	await (Engine.get_main_loop() as SceneTree).process_frame
+	var tab: Control = p.tab_buttons["frame"]
+	var hidden := 0
+	var vp_rect: Rect2 = (host.get_node("Viewport") as Control).get_global_rect()
+	for id in p.cells:
+		var b: Control = p.cells[id].panel
+		if str(id).begins_with("avatar_") and b.get_global_rect().intersects(tab.get_global_rect()) \
+				and not vp_rect.encloses(b.get_global_rect()):
+			hidden += 1
+	t.ok(hidden > 0, "cuộn hết: có ô avatar nằm dưới tab Frame, ngoài khung cuộn")
+	await _mouse(tab, tab.size * 0.5, true)
+	await _mouse(tab, tab.size * 0.5, false)
+	t.ok(p.find_child("Grid_frame", true, false).visible, "cuộn hết lưới avatar vẫn chạm được tab Frame")
+	t.ok(p.cells["avatar_00"].ring.visible, "ô avatar khuất không bị chọn")
+	p.queue_free()
+
+
 func test_prefab_size_and_touch(t: T) -> void:
 	_g()
 	var p := _profile()
@@ -127,6 +155,30 @@ func test_prefab_size_and_touch(t: T) -> void:
 		var s: Vector2 = b.hit_size()
 		t.ok(s.x >= 95.9 and s.y >= 95.9, "%s chạm được ít nhất 96 px" % (b as Node).name)
 	p.queue_free()
+
+
+## Texture on the big avatar ("Preview", prefab CurrentAvt) or frame (CurrentFrame).
+func _big(p: Control, node_name: String) -> Texture2D:
+	var img: Control = UnityUI.image_of(p.find_child(node_name, true, false) as Control)
+	return img.get("tex") as Texture2D
+
+
+func test_preview_on_click(t: T) -> void:
+	var g := _g()
+	var p := _profile()
+	t.eq(_big(p, "Preview"), ThemeKit.icon("avatar_00"), "mở màn: avatar đang đeo")
+	t.eq(_big(p, "CurrentFrame"), ThemeKit.icon("frame_00"), "mở màn: frame đang đeo")
+	p.cells["avatar_06"].panel.pressed.emit()
+	t.eq(_big(p, "Preview"), ThemeKit.icon("avatar_06"), "bấm avatar chưa có: xem trước ngay")
+	t.eq(g.s.cos.avatar, "avatar_00", "xem trước không đổi món đang đeo")
+	p.cells["frame_04"].panel.pressed.emit()
+	t.eq(_big(p, "CurrentFrame"), ThemeKit.icon("frame_04"), "bấm frame: xem trước khung")
+	t.eq(_big(p, "Preview"), ThemeKit.icon("avatar_06"), "sang tab Frame vẫn giữ avatar đang xem")
+	t.eq(g.s.cos.frame, "frame_00", "frame đang đeo giữ nguyên")
+	p.queue_free()
+	var p2 := _profile()
+	t.eq(_big(p2, "Preview"), ThemeKit.icon("avatar_00"), "đóng không mua: mở lại thấy món đang đeo")
+	p2.queue_free()
 
 
 func test_equip_owned(t: T) -> void:
@@ -155,7 +207,7 @@ func test_buy_with_gold(t: T) -> void:
 	t.eq(int(g.s.coins), 45, "trừ 75 gold")
 	t.ok((g.s.cos.owned as Array).has("avatar_02"), "đã sở hữu")
 	t.eq(g.s.cos.avatar, "avatar_02", "mua xong đeo luôn")
-	t.eq(p.gold_label.text, "45", "ví cập nhật")
+	t.eq(UiTween.roll_target(p.gold_label), 45, "ví cập nhật (số đếm lùi tới 45)")
 	t.ok(p.buy_button == null, "không còn nút mua")
 	t.ok(p.use_button != null and p.use_button.disabled, "nút đang đeo")
 	p.queue_free()
@@ -194,12 +246,96 @@ func test_video_closed_no_reward(t: T) -> void:
 	var g := _g()
 	_root().get_node("Platform").ads.simulate({"ok": false, "reason": "closed"})
 	var p := _profile()
-	p.select("avatar_07")
+	p.select("avatar_03")
 	p.video_button.pressed.emit()
 	for i in 10:
 		await (Engine.get_main_loop() as SceneTree).process_frame
-	t.ok(not (g.s.cos.owned as Array).has("avatar_07"), "đóng sớm thì không mở")
+	t.ok(not (g.s.cos.owned as Array).has("avatar_03"), "đóng sớm thì không mở")
 	t.eq(p.status_label.text, "Watch the whole video to get the reward.", "báo xem hết video")
+	p.queue_free()
+
+
+## Avatar 05-07, frame 06-07 chỉ có từ hộp Road Trip: không nút mua hay video. Road Trip chưa mở: dòng "Unlocked at
+## Level 95"; đã mở: nút Road Trip (đóng Profile với action road_trip). Có rồi thì đeo được.
+func test_road_trip_only(t: T) -> void:
+	var g := _g()  # level 5: Road Trip còn khoá
+	var p := _profile()
+	p.select("avatar_06")
+	t.eq(p.buy_button, null, "không nút mua")
+	t.eq(p.video_button, null, "không nút video")
+	t.eq(p.use_button, null, "không nút đeo")
+	t.eq(p.road_trip_button, null, "Road Trip khoá: không nút")
+	var l: Label = p.find_child("AvatarButtonGroup", true, false).find_child("RoadTripLocked", true, false)
+	t.ok(l != null and l.visible, "dòng mở khoá")
+	t.eq(l.text, "Unlocked at Level 95", "mở ở Level 95")
+	t.ok(p.cells["avatar_06"].lock.visible, "ô vẫn khoá")
+	p.select("avatar_04")
+	t.ok(not l.visible, "món thường: ẩn dòng mở khoá")
+	t.ok(p.buy_button != null, "món thường: có nút mua")
+	p.queue_free()
+	g.s.level = 95
+	p = _profile()
+	p.select("frame_07")
+	t.ok(p.road_trip_button != null and p.road_trip_button.visible, "Road Trip mở: nút Road Trip")
+	t.eq(_txt(p.road_trip_button), "Road Trip", "chữ nút")
+	t.ok(not (p.find_child("FrameButtonGroup", true, false).find_child("RoadTripLocked", true, false) as Label).visible,
+		"ẩn dòng mở khoá")
+	var got := {"r": null}
+	p.closed.connect(func(r: Variant) -> void: got["r"] = r)
+	p.road_trip_button.pressed.emit()
+	t.eq((got["r"] as Dictionary).get("action", ""), "road_trip", "bấm nút: sang Road Trip")
+	p.queue_free()
+	(g.s.cos.owned as Array).append("avatar_06")
+	p = _profile()
+	p.select("avatar_06")
+	t.eq(_txt(p.use_button), "Equip", "đã nhận từ hộp: đeo được")
+	t.eq(p.road_trip_button, null, "đã có: không nút Road Trip")
+	p.queue_free()
+
+
+## Avatar, frame 08-12 chỉ có từ thưởng league: không nút mua hay video, dòng "Reach Platinum League ..." trên nút
+## Leaderboard (đóng Profile với action ranking). Leaderboard chưa mở (L70): dòng "Unlocked at Level 70" thay nút.
+func test_league_only(t: T) -> void:
+	var g := _g()  # level 5: Leaderboard còn khoá
+	var p := _profile()
+	p.select("avatar_10")
+	t.eq(p.buy_button, null, "không nút mua")
+	t.eq(p.video_button, null, "không nút video")
+	t.eq(p.use_button, null, "không nút đeo")
+	t.eq(p.league_button, null, "Leaderboard khoá: không nút")
+	var grp: Node = p.find_child("AvatarButtonGroup", true, false)
+	var locked: Label = grp.find_child("LeagueLocked", true, false)
+	var note: Label = grp.find_child("LeagueNote", true, false)
+	t.ok(locked != null and locked.visible, "dòng mở khoá")
+	t.eq(locked.text, "Unlocked at Level 70", "mở ở Level 70")
+	t.ok(note != null and note.visible, "dòng nhận ở Bảng xếp hạng")
+	t.eq(note.text, "Reach Platinum League or higher in the Leaderboard to get it", "chữ dòng nhận")
+	t.ok(p.cells["avatar_10"].lock.visible, "ô vẫn khoá")
+	p.select("avatar_04")
+	t.ok(not locked.visible and not note.visible, "món thường: ẩn hai dòng")
+	t.ok(p.buy_button != null, "món thường: có nút mua")
+	p.queue_free()
+	g.s.level = 70
+	p = _profile()
+	p.select("frame_12")
+	t.ok(p.league_button != null and p.league_button.visible, "Leaderboard mở: nút Bảng xếp hạng")
+	t.eq(_txt(p.league_button), "Leaderboard", "chữ nút")
+	grp = p.find_child("FrameButtonGroup", true, false)
+	t.ok(not (grp.find_child("LeagueLocked", true, false) as Label).visible, "ẩn dòng mở khoá")
+	t.ok((grp.find_child("LeagueNote", true, false) as Label).visible, "vẫn có dòng nhận")
+	t.ok(not (grp.find_child("RoadTripLocked", true, false) as Label).visible, "không lẫn dòng Road Trip")
+	var got := {"r": null}
+	p.closed.connect(func(r: Variant) -> void: got["r"] = r)
+	p.league_button.pressed.emit()
+	t.eq((got["r"] as Dictionary).get("action", ""), "ranking", "bấm nút: sang Bảng xếp hạng")
+	p.queue_free()
+	(g.s.cos.owned as Array).append("frame_12")
+	p = _profile()
+	p.select("frame_12")
+	t.eq(_txt(p.use_button), "Equip", "đã nhận từ thưởng league: đeo được")
+	t.eq(p.league_button, null, "đã có: không nút Bảng xếp hạng")
+	t.ok(not (p.find_child("FrameButtonGroup", true, false).find_child("LeagueNote", true, false) as Label).visible,
+		"đã có: ẩn dòng nhận")
 	p.queue_free()
 
 

@@ -15,7 +15,6 @@ const SCREENS := [
 	["1.5", "tutorial_intro"], ["1.6", "popup_no_internet"],
 	["2.3", "popup_ads_daily"], ["2.4", "popup_remove_ads"],
 	["3.1", "load_transition"], ["3.7", "booster_soon"], ["3.8", "booster_unlocked"],
-	["3.9", "popup_free_pick"],
 	["4.3", "popup_rate"], ["4.6", "popup_keep_playing"], ["4.7", "popup_helper_pack"],
 	["5.2", "popup_heart_bundle"], ["5.3", "popup_heart_support"],
 	["7.5", "popup_weekly_upsell"],

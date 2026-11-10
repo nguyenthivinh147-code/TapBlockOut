@@ -1,6 +1,6 @@
 extends RefCounted
-## Player nickname (design.md mục 5 "Biệt danh"). Reads and writes s.profile only. "" means none set yet; the Profile
-## then shows the translated default ("Player").
+## Player nickname (design.md mục 5 "Biệt danh"). Reads and writes s.profile only. "" means none set yet; Game then
+## gives the save its default code (ensure, "CD_042917").
 ## Rules: Config.NAME_MIN..NAME_MAX characters after trimming spaces at both ends, only English letters, digits, "_",
 ## "." and "-", at least one letter or digit, no banned word (name_filter.gd). Free, no limit on changes.
 
@@ -41,7 +41,28 @@ static func change(s: Dictionary, raw: String) -> String:
 	var err := check(raw)
 	if err != "":
 		return err
+	_write(s, raw.strip_edges())
+	return ""
+
+
+## Default nickname: Config.NAME_CODE then Config.NAME_CODE_DIGITS random digits ("CD_042917"). Always passes check():
+## name_filter.gd reads a trailing digit run as digits, not letters.
+static func make_default(rng: RandomNumberGenerator) -> String:
+	var n := Config.NAME_CODE
+	for i in Config.NAME_CODE_DIGITS:
+		n += str(rng.randi_range(0, 9))
+	return n
+
+
+## Gives `s` a make_default() nickname when it has none. True when it wrote one.
+static func ensure(s: Dictionary, rng: RandomNumberGenerator) -> bool:
+	if current(s) != "":
+		return false
+	_write(s, make_default(rng))
+	return true
+
+
+static func _write(s: Dictionary, n: String) -> void:
 	if not (s.get("profile") is Dictionary):
 		s["profile"] = {}
-	s.profile["name"] = raw.strip_edges()
-	return ""
+	s.profile["name"] = n

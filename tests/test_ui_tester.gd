@@ -155,7 +155,8 @@ func _f1() -> InputEventKey:
 
 func _menu() -> Node:
 	for n in _root().get_tree().get_nodes_in_group("tester_menu"):
-		if not n.is_queued_for_deletion():
+		# A closed popup stays a moment for its close animation (UiTween.close_popup).
+		if not n.is_queued_for_deletion() and not n.has_meta("ui_closing"):
 			return n
 	return null
 

@@ -90,6 +90,7 @@ var _session_start: int = 0
 var _first_session: bool = false
 var _in_ad: bool = false
 var _flush_timer: Timer = null
+var _name_rng := RandomNumberGenerator.new()  # default nickname code (profile_name)
 var _offered: Dictionary = {}  # placement -> true (đã log rv_offer)
 var _last_win_level: int = 0
 var _last_attempt_level: int = 0
@@ -180,6 +181,7 @@ func boot() -> void:
 	meta["sessions"] = int(meta.sessions) + 1
 	_first_session = not bool(meta.first_session_done)
 	meta["first_session_done"] = true
+	profile_name()  # a save without a nickname gets its CD_ code now, saved below
 	NotifPlan.note_open(s, t, _tz())
 	NotifPlan.note_return(s, t, "", Platform.enabled())
 	weekly_refresh()
@@ -214,6 +216,8 @@ func reset_for_test(path: String) -> void:
 	# reloads the save file; tests of those clear the flags.
 	s.meta["intro_seen"] = true
 	s.meta["rated"] = true
+	# Also past the Leaderboard how-to on the first crystal level (lb_take_guide); its tests clear the flag.
+	s.lb["guide"] = true
 	save_now()
 	_session_start = now()
 	_first_session = false
@@ -454,8 +458,7 @@ func _regrant(entry: Dictionary) -> void:
 				n += 1
 		if n > 1:
 			return
-	_give({"coins": int(info.get("gold", 0)), "items": info.get("inv", {}), "inf_min": int(info.get("inf_min", 0))},
-		"iap_" + sku)
+	_give(_sku_reward(info), "iap_" + sku)
 	if bool(info.get("no_ads", false)):
 		s["no_ads"] = true
 
@@ -554,6 +557,11 @@ func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bo
 	# MOVES follow the current slack config (Remote Config can change it), not the number baked into the file.
 	if not road_trip and not special and int(data.get("min_taps", 0)) > 0:
 		data["moves"] = int(data["min_taps"]) + Solver.slack_for(data)
+	# Bom kẹo tắt từ xa (features_pop = "0"): khối bom kẹo thành khối thường; MOVES không đổi vì số chạm không đổi.
+	if not Unlocks.enabled("pop"):
+		for bd in data.get("blocks", []):
+			if bd is Dictionary:
+				(bd as Dictionary).erase("pop")
 	var board := BoardState.new(data)
 	var side := challenge or road_trip or special
 	var attempt := {
@@ -573,7 +581,12 @@ func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bo
 		return attempt
 	if not challenge and lb_open():
 		lb_refresh()
-		var sp := Leaderboard.pick_specials(board.block_ids(), Leaderboard.pieces_for(difficulty_of(level)), level)
+		# Khối crystal không phải bom kẹo (khối bom kẹo không mang cơ chế khác).
+		var plain_ids: Array[String] = []
+		for bid in board.block_ids():
+			if not bool(board.block_view(bid).get("pop", false)):
+				plain_ids.append(bid)
+		var sp := Leaderboard.pick_specials(plain_ids, Leaderboard.pieces_for(difficulty_of(level)), level)
 		attempt["specials"] = sp
 		attempt["special_left"] = sp.duplicate()
 	if not challenge:
@@ -592,17 +605,19 @@ func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bo
 ## Khối đặc biệt rời bàn thì res.piece = true (+1 mảnh leaderboard, cộng khi thắng).
 func tap(attempt: Dictionary, block_id: String) -> Dictionary:
 	var res: Dictionary = (attempt.board as BoardState).tap(block_id)
-	if res.kind != "rejected" and res.kind != "fog" and res.kind != "covered":
+	if res.kind != "rejected" and res.kind != "fog" and res.kind != "covered" and res.kind != "choco":
 		attempt["taps"] = int(attempt.taps) + 1
 		ftue("first_tap")
 	res["piece"] = res.kind == "exit" and _take_piece(attempt, block_id)
 	return res
 
 
-## Phá khối bằng Smash (UI đã trừ booster qua use_booster). Trả {ok, piece}: khối đặc biệt vẫn cho mảnh.
+## Phá khối bằng Smash (UI đã trừ booster qua use_booster). Trả {ok, piece, popped}: khối đặc biệt vẫn cho mảnh;
+## `popped`: bom kẹo bị Phá thì các khối trong vùng nổ vừa được gỡ (BoardState.last_popped).
 func smash_block(attempt: Dictionary, block_id: String) -> Dictionary:
-	var ok := (attempt.board as BoardState).smash(block_id)
-	return {"ok": ok, "piece": ok and _take_piece(attempt, block_id)}
+	var b := attempt.board as BoardState
+	var ok := b.smash(block_id)
+	return {"ok": ok, "piece": ok and _take_piece(attempt, block_id), "popped": b.last_popped()}
 
 
 func _take_piece(attempt: Dictionary, block_id: String) -> bool:
@@ -647,12 +662,13 @@ func _finish_attempt(attempt: Dictionary, won: bool, coins: int) -> void:
 	log_event(ev, params)
 
 
-## {coins, move_coins, x2_available, x2_free, rate_prompt, progress, unlocked}. Cộng gold, tăng level, tăng s.runs,
-## lưu ngay. coins = thưởng thắng + move_coins (MOVES còn lại x win_move_coins), x2 nhân đôi cả hai.
+## {coins, move_coins, card, x2_available, x2_free, rate_prompt, progress, unlocked}. Cộng gold, tăng level, tăng
+## s.runs, lưu ngay. coins = thưởng thắng + move_coins (MOVES còn lại x win_move_coins), x2 nhân đôi cả hai.
+## card = false (level chính dưới ECON.win_card_from_level): không thẻ thắng, không x2, không hỏi đánh giá.
 func on_level_won(attempt: Dictionary) -> Dictionary:
 	if bool(attempt.get("ended", false)):
-		return {"coins": 0, "move_coins": 0, "x2_available": false, "x2_free": false, "rate_prompt": false,
-			"progress": {}, "unlocked": [] as Array[String]}
+		return {"coins": 0, "move_coins": 0, "card": true, "x2_available": false, "x2_free": false,
+			"rate_prompt": false, "progress": {}, "unlocked": [] as Array[String]}
 	if bool(attempt.get("road_trip", false)):
 		return _road_trip_won(attempt)
 	if bool(attempt.get("special", false)):
@@ -695,26 +711,29 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 			log_event("streak_up", {"level": level, "streak": WinStreak.count(s)})
 	lb_refresh()
 	_last_win_level = level
-	_x2_pending = coins
-	_x2_free = level == 1
+	var card_from := maxi(int(Config.ECON.win_card_from_level), 1)
+	var card := is_challenge or level >= card_from
+	_x2_pending = coins if card else 0
+	# The first win card teaches the x2 button for free.
+	_x2_free = card and not is_challenge and level == card_from
 	ftue("first_win")
 	if int(s.level) >= 10:
 		ftue("level_10")
-	var rate := not is_challenge and Unlocks.is_open("review", level) and not bool(s.meta.rated)
+	var rate := card and not is_challenge and Unlocks.is_open("review", level) and not bool(s.meta.rated)
 	if rate:
 		s.meta["rated"] = true
 	if not is_challenge:
 		_chain_check(false, level)
 	save_now()
-	var avail := coins > 0 and (_x2_free or Platform.ready_rewarded())
+	var avail := card and coins > 0 and (_x2_free or Platform.ready_rewarded())
 	if avail:
 		log_event("rv_offer", {"pl": "x2_coins"})
 		_offered["x2_coins"] = true
 	var progress: Dictionary = {}
 	if not is_challenge:
 		progress = Unlocks.feature_progress(level, _content_cap())
-	return {"coins": coins, "move_coins": move_coins, "x2_available": avail, "x2_free": _x2_free, "rate_prompt": rate,
-		"progress": progress, "unlocked": progress.get("unlocked", [] as Array[String]),
+	return {"coins": coins, "move_coins": move_coins, "card": card, "x2_available": avail, "x2_free": _x2_free,
+		"rate_prompt": rate, "progress": progress, "unlocked": progress.get("unlocked", [] as Array[String]),
 		"weekly_points": weekly_pts, "lb": lb, "streak_up": streak_up, "special_tickets": sp_tickets}
 
 
@@ -722,9 +741,12 @@ func _content_cap() -> int:
 	return int(Config.CONTENT.demo_max_level) if Config.is_demo() else 0
 
 
-## Màn sau thẻ thắng: "home" khi vừa mở tính năng ở Home hoặc vừa thắng Daily Challenge, còn lại "level".
+## Màn sau thẻ thắng: "home" khi thẻ vừa báo mở tính năng ở Home hoặc vừa thắng Daily Challenge, còn lại "level".
+## Thắng không có thẻ (res.card = false, L1–10) luôn vào level kế: tính năng Home mở lặng lẽ, thấy khi về Home.
 func next_after_win(res: Dictionary, challenge: bool) -> String:
-	if challenge or Unlocks.opens_home(res.get("unlocked", [])):
+	if challenge:
+		return "home"
+	if bool(res.get("card", true)) and Unlocks.opens_home(res.get("unlocked", [])):
 		return "home"
 	return "level"
 
@@ -1075,7 +1097,24 @@ func _give(reward: Dictionary, source: String) -> void:
 	var inf_min := int(reward.get("inf_min", 0))
 	if inf_min > 0:
 		Lives.grant_infinite(s, inf_min * 60, now())
+	if bool(reward.get("inf_forever", false)):
+		Lives.grant_forever(s)
+	if inf_min > 0 or bool(reward.get("inf_forever", false)):
 		lives_changed.emit()
+	# Avatars and frames (league rewards): unlocked, not equipped; one already owned is skipped.
+	var cos: Variant = reward.get("cos", [])
+	var got_cos := false
+	if cos is Array:
+		for id in cos:
+			got_cos = Cosmetics.unlock(s, str(id)) or got_cos
+	if got_cos:
+		cos_changed.emit()
+
+
+## The reward a store SKU grants (Config.SKUS): {coins, items, inf_min, inf_forever}.
+static func _sku_reward(info: Dictionary) -> Dictionary:
+	return {"coins": int(info.get("gold", 0)), "items": info.get("inv", {}), "inf_min": int(info.get("inf_min", 0)),
+		"inf_forever": bool(info.get("inf_forever", false))}
 
 
 func daily_claim() -> Dictionary:
@@ -1144,8 +1183,9 @@ func cos_buy(id: String) -> bool:
 	return true
 
 
+## Món chỉ có từ Road Trip (Cosmetics.for_sale sai) không mở bằng video.
 func cos_unlock_video(id: String) -> bool:
-	if Cosmetics.kind_of(id) == "" or Cosmetics.is_owned(s, id):
+	if not Cosmetics.for_sale(id) or Cosmetics.is_owned(s, id):
 		return false
 	if not await watch("cosmetic_unlock"):
 		return false
@@ -1167,8 +1207,11 @@ func cos_equip(id: String) -> bool:
 
 # --- nickname ---
 
-## The player's nickname, "" until one is set (design.md mục 5 "Biệt danh").
+## The player's nickname (design.md mục 5 "Biệt danh"). A save without one (new, or an older save, or a cloud copy
+## picked over it) first gets its default code, "CD_" and 6 random digits, kept until the player renames.
 func profile_name() -> String:
+	if Nickname.ensure(s, _name_rng):
+		_queue_save()
 	return Nickname.current(s)
 
 
@@ -1230,6 +1273,8 @@ func shop_catalog() -> Array:
 func buy_sku(sku: String) -> Dictionary:
 	if not Config.SKUS.has(sku):
 		return {"status": "error", "sku": sku, "granted": false}
+	if owns_once(sku):
+		return {"status": "owned", "sku": sku, "granted": false}
 	_buying += 1
 	var r: Dictionary = await Platform.buy(sku)
 	_buying -= 1
@@ -1242,6 +1287,14 @@ func buy_sku(sku: String) -> Dictionary:
 		status = "offline"
 		notice.emit(status)
 	return {"status": status, "sku": sku, "granted": granted}
+
+
+## Gói mua một lần (consumable false) đã mua: chính SKU đó hoặc bản thường / bản `_sale` của nó (special_pack và
+## special_pack_sale tính chung; Google Play chỉ chặn mua lại từng SKU).
+func owns_once(sku: String) -> bool:
+	if bool(Config.SKUS.get(sku, {}).get("consumable", true)):
+		return false
+	return PackConditions.purchases(s, sku.trim_suffix(PackConditions.SALE_SUFFIX)) > 0
 
 
 ## Lần thất bại vừa rồi (video hoặc mua hàng) đã được Main báo bằng popup (notice): màn gọi không báo thêm.
@@ -1278,15 +1331,15 @@ func grant_purchase(p: Dictionary) -> bool:
 	var consumable := bool(info.get("consumable", true))
 	var dup := false
 	for e in s.buys:
-		if e is Dictionary and (str(e.get("token", "")) == token \
-				or (not consumable and str(e.get("sku", "")) == sku)):
+		# A one-time pack and its _sale are one purchase (owns_once).
+		if e is Dictionary and (str(e.get("token", "")) == token or (not consumable \
+				and str(e.get("sku", "")).trim_suffix(PackConditions.SALE_SUFFIX) == sku.trim_suffix(PackConditions.SALE_SUFFIX))):
 			dup = true
 	if dup or info.is_empty():
 		if not info.is_empty():
 			Platform.finish(p, consumable)
 		return false
-	_give({"coins": int(info.get("gold", 0)), "items": info.get("inv", {}), "inf_min": int(info.get("inf_min", 0))},
-		"iap_" + sku)
+	_give(_sku_reward(info), "iap_" + sku)
 	if bool(info.get("no_ads", false)):
 		s["no_ads"] = true
 	if bool(info.get("weekly_vip", false)):
@@ -1342,6 +1395,11 @@ func offer_buy(id: String) -> Dictionary:
 
 func offers_open() -> Array:
 	return Offers.open_offers(s, now())
+
+
+## Shop bán thẻ gói của offer `id` bây giờ không (Offers.in_shop).
+func offer_in_shop(id: String) -> bool:
+	return Offers.in_shop(s, id, now())
 
 
 ## SKU bán của offer hoặc gói (Config.OFFERS, rồi Config.PACKS). Lúc weekend sale đổi sang `<sku>_sale`
@@ -1627,14 +1685,15 @@ func lb_world_view() -> Dictionary:
 
 
 ## Thang 7 league: {current, points, rows: [{id, min, max (-1 ở league cuối), reward, has_reward, reached (đã vào
-## trong tuần này), current}]}.
+## trong tuần này), current}]}. reward là thưởng xem trước (Leaderboard.preview_reward): cos_random về 0 khi đã hết
+## avatar/frame để random.
 func lb_leagues_view() -> Dictionary:
 	var cur := Leaderboard.league(s)
 	var rows: Array = []
 	for i in Leaderboard.leagues().size():
 		var nxt := Leaderboard.next_min(i)
 		rows.append({"id": Leaderboard.league_id(i), "min": Leaderboard.league_min(i),
-			"max": nxt - 1 if nxt >= 0 else -1, "reward": Leaderboard.reward_of(i),
+			"max": nxt - 1 if nxt >= 0 else -1, "reward": Leaderboard.preview_reward(s, i),
 			"has_reward": Leaderboard.has_reward(i), "reached": i <= cur and Leaderboard.joined(s), "current": i == cur})
 	return {"current": Leaderboard.league_id(cur), "points": Leaderboard.points(s), "rows": rows}
 
@@ -1666,7 +1725,8 @@ func lb_claim() -> Dictionary:
 	if r.is_empty():
 		return {}
 	_give(r, "lb_league")
-	log_event("lb_claim", {"league": Leaderboard.league_id(Leaderboard.league(s)), "coins": int(r.get("coins", 0))})
+	log_event("lb_claim", {"league": Leaderboard.league_id(Leaderboard.league(s)), "coins": int(r.get("coins", 0)),
+		"cos": ",".join(r.get("cos", []))})
 	save_now()
 	return r
 
@@ -1690,9 +1750,20 @@ func lb_week_claim() -> Dictionary:
 		return {}
 	_give(r, "lb_week")
 	log_event("lb_claim", {"league": Leaderboard.league_id(int(res.league)), "coins": int(r.get("coins", 0)),
-		"week": int(res.week) + 1})
+		"week": int(res.week) + 1, "cos": ",".join(r.get("cos", []))})
 	save_now()
 	return r
+
+
+## Popup Cách hoạt động của Leaderboard khi vào level có khối crystal đầu tiên (thường là Config.UNLOCK.leaderboard, L70, lúc mở khoá): true
+## một lần, khi `attempt` có khối crystal. Đánh dấu đã xem ngay: chơi lại không hiện nữa.
+func lb_take_guide(attempt: Dictionary) -> bool:
+	if (attempt.get("specials", []) as Array).is_empty() or bool(s.lb.get("guide", false)):
+		return false
+	s.lb["guide"] = true
+	log_event("lb_guide", {"level": int(attempt.get("level", 0))})
+	save_now()
+	return true
 
 
 ## Giây tới lúc hết tuần BXH (đếm ngược trên popup Leaderboard).
@@ -1896,7 +1967,7 @@ func lives_view() -> Dictionary:
 	return {
 		"count": c, "max": Lives.max_for(s), "seconds_to_next": Lives.seconds_to_next(s, t),
 		"open": Unlocks.is_open("lives", level),
-		"infinite": inf, "infinite_left": Lives.infinite_left(s, t),
+		"infinite": inf, "infinite_left": Lives.infinite_left(s, t), "infinite_forever": Lives.forever(s),
 		"can_play": c > 0 or inf or level < int(Config.LIVES.from_level),
 		"refill_price": int(Config.ECON.refill_coins), "refill_lives": int(Config.ECON.refill_lives),
 		"can_refill_gold": c < Lives.max_for(s) and int(s.coins) >= int(Config.ECON.refill_coins),
@@ -2025,9 +2096,10 @@ func start_road_trip() -> Dictionary:
 	return _begin_attempt(data, int(v.level), false, true)
 
 
-## Thắng level Road Trip: tiến một level, hộp ở level đó thì cộng vật phẩm vào kho. Không gold, không x2, không
-## Weekly Pass hay leaderboard; interstitial chạy khi rời popup thắng (road_trip_leave_win). Trả {road_trip, level, box, reward, before, after, done, coins: 0, ...} (khoá của
-## on_level_won để màn level đọc chung).
+## Thắng level Road Trip: tiến một level, hộp ở level đó thì cộng vật phẩm vào kho, mở và đeo luôn avatar/frame của
+## hộp (đã có thì bỏ qua). Không gold, không x2, không Weekly Pass hay leaderboard; interstitial chạy khi rời popup thắng
+## (road_trip_leave_win). Trả {road_trip, level, box, reward, cos (món vừa mở hoặc ""), before, after, done, coins: 0,
+## ...} (khoá của on_level_won để màn level đọc chung).
 func _road_trip_won(attempt: Dictionary) -> Dictionary:
 	var level := int(attempt.level)
 	_finish_attempt(attempt, true, 0)
@@ -2038,9 +2110,16 @@ func _road_trip_won(attempt: Dictionary) -> Dictionary:
 	if not reward.is_empty():
 		inv_changed.emit()
 		log_event("rt_box", {"level": level, "box": int(r.box) + 1})
+	var cos := str(r.cos)
+	if cos != "" and not Cosmetics.unlock(s, cos):
+		cos = ""
+	if cos != "":
+		Cosmetics.equip(s, cos)
+		cos_changed.emit()
+		log_event("cos_buy", {"id": cos, "price": 0, "how": "road_trip"})
 	ftue("first_win")
 	save_now()
-	return {"road_trip": true, "level": level, "box": int(r.box), "reward": reward, "before": r.before,
+	return {"road_trip": true, "level": level, "box": int(r.box), "reward": reward, "cos": cos, "before": r.before,
 		"after": r.after, "done": RoadTrip.is_done(s), "coins": 0, "move_coins": 0, "x2_available": false,
 		"x2_free": false, "rate_prompt": false, "progress": {}, "unlocked": [] as Array[String]}
 

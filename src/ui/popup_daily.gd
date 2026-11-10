@@ -14,6 +14,7 @@ const UnityKit := preload("res://src/ui/unity_kit.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const LbKit := preload("res://src/ui/lb_kit.gd")
 const Config := preload("res://src/config.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 
 const CELLS := "Profile_FrameCells"
 ## Wide cell (the week's big gift): PopupOkLayer's well and the sliced outline of the Profile cell's Lock, tinted
@@ -160,11 +161,14 @@ func _rewards(card: Control, reward: Dictionary, size: Vector2) -> void:
 	var list: Array = []
 	var coins := int(reward.get("coins", 0))
 	if coins > 0:
-		list.append([GOLD_ICON, null, LbKit.fmt_int(coins)])
+		list.append([GOLD_ICON, null, LbKit.fmt_int(coins), "gold"])
 	var items: Dictionary = reward.get("items", {})
 	for k in ["hint", "move", "smash"]:
 		if items.has(k):
-			list.append(["", ThemeKit.icon("booster_" + k), tr("booster_count") % int(items[k])])
+			list.append(["", ThemeKit.icon("booster_" + k), tr("booster_count") % int(items[k]), k])
+	# RewardFly part -> icon, for the flight when the day is claimed.
+	var icons := {}
+	card.set_meta("icons", icons)
 	var box: Control = UnityKit.add(card, {"n": "Rewards", "a": true, "r": [0, 1, 0, 1, 0, 0, size.x, size.y - DAY_H, 0.5, 0.5]},
 		Rect2(0, DAY_H - 6, size.x, size.y - DAY_H + 6)).root
 	var k := minf(ITEM_SCALE, (size.x - 16.0) / maxf(1.0, (ITEM + GAP) * list.size() - GAP))
@@ -182,6 +186,7 @@ func _rewards(card: Control, reward: Dictionary, size: Vector2) -> void:
 		if list[i][1] != null:
 			v.texture("Icon Item", list[i][1])
 		v.text("Quantity", list[i][2])
+		icons[list[i][3]] = v.node("Icon Item")
 
 
 func _refresh_buttons(view: Dictionary) -> void:
@@ -228,7 +233,7 @@ func _on_claim() -> void:
 		_status("")
 	else:
 		claimed_any = true
-		Sfx.play("sfx_coin")
+		_fly("current", reward)
 		_status(tr("daily_reward_received"))
 	_rebuild_keep_status()
 
@@ -248,9 +253,20 @@ func _on_video() -> void:
 		return
 	claimed_any = true
 	ahead_any = true
-	Sfx.play("sfx_coin")
+	_fly("next", reward)
 	_status(tr("daily_reward_received"))
 	_rebuild_keep_status()
+
+
+## The claimed day's rewards fly from its cell (cell state `state` before the claim) to their counters; the coin
+## sound plays here when nothing flies.
+func _fly(state: String, reward: Dictionary) -> void:
+	var icons := {}
+	for c in cell_nodes:
+		if str(c.get_meta("state", "")) == state:
+			icons = c.get_meta("icons", {})
+	if RewardFly.launch(self, reward, icons) == 0:
+		Sfx.play("sfx_coin")
 
 
 func _rebuild_keep_status() -> void:

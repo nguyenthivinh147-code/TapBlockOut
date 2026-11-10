@@ -35,6 +35,8 @@ const PIECE_ICON := "lb_piece"
 ## RewardItemSO icons: gold (RewardType.Gold) and unlimited lives (InfiniteHeart).
 const GOLD_SPRITE := "Resources_moved_UI_Maincenter:UI_Maincenter_3"
 const INF_SPRITE := "Resources_moved_UI_Maincenter:UI_Maincenter_16"
+## Preview tile of the random league avatar/frame (design.md mục 7 "League"): this avatar in this frame.
+const COS_RANDOM_ICON := ["avatar_08", "frame_08"]
 
 ## Màu nền huy hiệu theo league (chưa có ảnh cúp riêng cho từng league).
 const LEAGUE_COLORS := {
@@ -440,12 +442,26 @@ static func _sub_line(root: Control, name_l: Label, sub: String) -> void:
 static func reward_items(parent: Control, reward: Dictionary) -> Array:
 	var out: Array = []
 	for e: Dictionary in reward_entries(reward):
-		out.append(_reward_item(parent, str(e.sprite), e.tex, str(e.amount)))
+		var v := _reward_item(parent, str(e.sprite), e.tex, str(e.amount))
+		if e.has("cos"):
+			set_entry_icon(v.call("node", "RewardIcon"), e)
+		out.append(v)
 	return out
 
 
-## One entry per part of a game reward {coins, items, inf_min}, in the order of reward_items:
-## {kind ("gold" | booster | "inf"), sprite (Unity sprite key or ""), tex (Texture2D or null), amount (text)}.
+## RewardFly sources of reward_items(parent, reward): part kind -> its RewardIcon.
+static func reward_icons(items: Array, reward: Dictionary) -> Dictionary:
+	var out := {}
+	var entries := reward_entries(reward)
+	for i in mini(items.size(), entries.size()):
+		out[str(entries[i].kind)] = (items[i] as RefCounted).call("node", "RewardIcon")
+	return out
+
+
+## One entry per part of a game reward {coins, items, inf_min, inf_forever, cos, cos_random}, in the order of
+## reward_items: {kind ("gold" | booster | "inf" | "cos" | "cos_random"), sprite (Unity sprite key or ""), tex
+## (Texture2D or null), amount (text)}. League avatars and frames (cos: ids) and the random one of a preview
+## (cos_random > 0) also carry `cos` (the id, "" for the random one): set_entry_icon draws them.
 static func reward_entries(reward: Dictionary) -> Array:
 	var out: Array = []
 	var coins := int(reward.get("coins", 0))
@@ -458,15 +474,41 @@ static func reward_entries(reward: Dictionary) -> Array:
 			out.append({"kind": kind, "sprite": "", "tex": ThemeKit.icon("booster_" + kind),
 				"amount": TranslationServer.translate("booster_count") % n})
 	var inf := int(reward.get("inf_min", 0))
-	if inf > 0:
+	if bool(reward.get("inf_forever", false)):
+		out.append({"kind": "inf", "sprite": INF_SPRITE, "tex": null,
+			"amount": TranslationServer.translate("shop_lives_forever")})
+	elif inf > 0:
 		out.append({"kind": "inf", "sprite": INF_SPRITE, "tex": null,
 			"amount": TranslationServer.translate("weekly_reward_inf") % inf})
+	var cos: Variant = reward.get("cos", [])
+	if cos is Array:
+		for id in cos:
+			var key := "lb_reward_frame" if str(id).begins_with("frame_") else "lb_reward_avatar"
+			out.append({"kind": "cos", "sprite": "", "tex": null, "cos": str(id),
+				"amount": TranslationServer.translate(key)})
+	# The random one of a preview (bubble): "x1" like the boosters, the "?" on its icon says it is random (the words
+	# "Random avatar/frame" do not fit under a bubble item; RewardText writes them).
+	if int(reward.get("cos_random", 0)) > 0:
+		out.append({"kind": "cos_random", "sprite": "", "tex": null, "cos": "",
+			"amount": TranslationServer.translate("booster_count") % int(reward.cos_random)})
 	return out
 
 
-## Fills a Unity image node with a reward_entries entry (sprite key or texture, aspect kept).
+## Fills a Unity image node with a reward_entries entry (sprite key or texture, aspect kept). An avatar/frame entry
+## hides the node's own picture and puts the avatar in its frame on top (child CosIcon); the next entry put on the
+## same node (the shared bubble) takes it away again.
 static func set_entry_icon(img_node: Control, e: Dictionary) -> void:
 	if img_node == null:
+		return
+	var old := img_node.get_node_or_null("CosIcon")
+	if old != null:
+		img_node.remove_child(old)
+		old.queue_free()
+		img_node.self_modulate.a = 1.0
+	if e.has("cos"):
+		# A Unity image without its picture would draw a white rect: only the avatar child shows.
+		img_node.self_modulate.a = 0.0
+		_cos_icon(img_node, str(e.cos))
 		return
 	if str(e.get("sprite", "")) != "":
 		UnityUI.set_sprite(img_node, str(e.sprite))
@@ -477,6 +519,28 @@ static func set_entry_icon(img_node: Control, e: Dictionary) -> void:
 	var im := UnityUI.image_of(img_node)
 	if im != null:
 		im.set("preserve_aspect", true)
+
+
+## Avatar in its frame over `img_node` (child CosIcon, full rect): a league reward item as it will look on the
+## player (Profile.reward_icon with the worn ones), or for "" the random one of a preview (COS_RANDOM_ICON with a
+## big "?" on it).
+static func _cos_icon(img_node: Control, id: String) -> void:
+	var sz := img_node.size
+	if img_node.has_meta("u_rect"):
+		var us: Vector2 = (img_node.get_meta("u_rect") as Dictionary).get("size", Vector2.ZERO)
+		if us.x > 0.0 and us.y > 0.0:
+			sz = us
+	var px := maxi(roundi(minf(sz.x, sz.y)), 16)
+	var ic: Control = Profile.make_avatar(COS_RANDOM_ICON[0], COS_RANDOM_ICON[1], px) if id == "" \
+		else Profile.reward_icon(id, Game.s.cos, px)
+	ic.name = "CosIcon"
+	ic.custom_minimum_size = Vector2.ZERO
+	img_node.add_child(ic)
+	ic.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if id == "":
+		var q := UnityKit.label(ic, "?", Rect2(0, 0, px, px), px * 0.7, "ffffffff", "Baloo Outline - Purple")
+		q.name = "RandomMark"
+		q.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
 static func _reward_item(parent: Control, key: String, tex: Texture2D, amount: String) -> RefCounted:

@@ -197,7 +197,7 @@ func test_lose_last_life_goes_to_no_lives(t: T) -> void:
 
 func test_daily_gift_8_days(t: T) -> void:
 	var d := D.new()
-	await d.begin(DIR + "/daily", 4, 1000, true)
+	await d.begin(DIR + "/daily", 14, 1000, true)
 	var g := d.game()
 	var coins := 1000
 	var idx := 0
@@ -296,32 +296,47 @@ func test_buy_avatar_and_video_unlock(t: T) -> void:
 	d.finish()
 
 
+## L1–10 thắng không có thẻ, không x2: sang thẳng level kế, cả khi vừa mở tính năng ở Home (Shop ở L5).
+func test_no_win_card_below_l11(t: T) -> void:
+	var d := D.new()
+	await d.begin(DIR + "/nocard", 4, -1, true)
+	var g := d.game()
+	t.ok(await d.play_from_home(4), "vào L4")
+	t.ok(await d.solve_level(), "giải L4")
+	t.ok(await d.wait_playing(5), "thắng L4 (mở Shop) vẫn vào thẳng L5")
+	t.eq(d.main.current_name, "level", "không về Home")
+	t.eq(d.popup("ContinueButton"), null, "không có thẻ thắng")
+	t.eq(int(g.s.coins), 1000 + _win_coins(d), "gold thắng vẫn vào ví")
+	t.eq(d.plat().an.count("rv_offer"), 0, "không mời x2")
+	d.finish()
+
+
 func test_x2_free_video_and_closed_early(t: T) -> void:
 	var d := D.new()
-	await d.begin(DIR + "/x2", 1)
+	await d.begin(DIR + "/x2", 11, -1, true)
 	var g := d.game()
-	t.ok(await d.play_from_home(1), "vào L1")
-	# L1: x2 miễn phí, không quảng cáo
-	t.ok(await d.win_level(), "thắng L1")
+	t.ok(await d.play_from_home(11), "vào L11")
+	# L11 (thẻ thắng đầu tiên): x2 miễn phí, không quảng cáo
+	t.ok(await d.win_level(), "thắng L11")
 	var win1 := _win_coins(d)
-	t.ok(win1 > int(Config.ECON.win_coins), "L1 có gold MOVES thừa")
+	t.ok(win1 > int(Config.ECON.win_coins), "L11 có gold MOVES thừa")
 	t.eq(int(g.s.coins), 1000 + win1, "+gold thắng")
-	t.ok(d.popup("X2Button") != null, "L1 có x2")
+	t.ok(d.popup("X2Button") != null, "L11 có x2")
 	d.press("X2Button")
-	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == 1000 + 2 * win1), "x2 miễn phí ở L1")
-	t.eq(_rewarded(d, "x2_coins").size(), 0, "L1 không gọi quảng cáo")
-	t.ok(await d.x2_to(2), "x2 xong tự sang L2")
-	# L2: x2 bằng video
-	t.ok(await d.win_level(), "thắng L2")
+	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == 1000 + 2 * win1), "x2 miễn phí ở L11")
+	t.eq(_rewarded(d, "x2_coins").size(), 0, "L11 không gọi quảng cáo")
+	t.ok(await d.x2_to(12), "x2 xong tự sang L12")
+	# L12: x2 bằng video
+	t.ok(await d.win_level(), "thắng L12")
 	var win2 := _win_coins(d)
-	t.eq(int(g.s.coins), 1000 + 2 * win1 + win2, "+gold L2")
+	t.eq(int(g.s.coins), 1000 + 2 * win1 + win2, "+gold L12")
 	d.press("X2Button")
-	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == 1000 + 2 * win1 + 2 * win2), "x2 L2 sau video")
+	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == 1000 + 2 * win1 + 2 * win2), "x2 L12 sau video")
 	t.eq(_rewarded(d, "x2_coins").size(), 1, "một lần xem video x2")
-	t.ok(await d.x2_to(3), "x2 xong tự sang L3")
-	# L3: đóng video sớm không thưởng, thử lại được
+	t.ok(await d.x2_to(13), "x2 xong tự sang L13")
+	# L13: đóng video sớm không thưởng, thử lại được
 	d.plat().ads.simulate("closed")
-	t.ok(await d.win_level(), "thắng L3")
+	t.ok(await d.win_level(), "thắng L13")
 	var before := int(g.s.coins)
 	d.press("X2Button")
 	var msg := d.popup("MessageLabel") as Label
@@ -334,7 +349,7 @@ func test_x2_free_video_and_closed_early(t: T) -> void:
 	t.eq(_rewarded(d, "x2_coins").size(), 3, "tổng 3 lần gọi video x2")
 	t.eq(d.plat().an.count("rv_done"), 2, "rv_done hai lần")
 	t.ok(d.plat().an.count("rv_cancel") >= 1, "rv_cancel khi đóng sớm")
-	t.ok(await d.x2_to(4), "x2 xong tự sang L4")
+	t.ok(await d.x2_to(14), "x2 xong tự sang L14")
 	t.eq(d.main.popup_count(), 0, "không còn popup")
 	d.finish()
 

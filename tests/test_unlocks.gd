@@ -13,9 +13,10 @@ func test_always_open(t: T) -> void:
 
 func test_thresholds(t: T) -> void:
 	var table := {
-		"daily_gift": 4, "hint": 5, "shop": 5, "move": 12, "smash": 17, "lives": 10,
+		"daily_gift": 14, "hint": 5, "shop": 11, "move": 12, "smash": 17, "lives": 10,
 		"starter": 10, "review": 10, "challenge": 50, "stone": 14, "ice": 30,
-		"chain": 40, "layer": 55, "fog": 70, "pulse": 90, "frost": 110, "leaderboard": 8,
+		"chain": 45, "layer": 65, "fog": 85, "pulse": 115, "frost": 165, "leaderboard": 70,
+		"road_trip": 95, "win_streak": 45, "special_bomb": 50, "choco": 300, "ribbon": 350,
 	}
 	Config.reset()
 	Config.FEATURES.challenge = true
@@ -41,11 +42,11 @@ func test_switched_off_feature(t: T) -> void:
 	Config.FEATURES.special_bomb = false
 	p = Unlocks.feature_progress(49)
 	t.eq(p.unlocked, [] as Array[String], "tắt cả Màn đặc biệt: thắng L49 không báo mở")
-	t.eq(p.start, 40, "mốc trước là L40 (Xích, Win Streak)")
-	t.eq(p.end, 51, "bỏ mốc L50, mốc kế L51 (Level Pack)")
+	t.eq(p.start, 45, "mốc trước là L45 (Xích, Win Streak)")
+	t.eq(p.end, 60, "bỏ mốc L50, mốc kế L60 (Level Pack)")
 	Config.FEATURES.shop = false
-	t.ok(not Unlocks.is_open("shop", 5), "tắt shop qua FEATURES")
-	t.eq(Unlocks.features_at(5), ["hint"] as Array[String], "L5 chỉ còn hint")
+	t.ok(not Unlocks.is_open("shop", 11), "tắt shop qua FEATURES")
+	t.eq(Unlocks.features_at(11), [] as Array[String], "L11 không còn gì để báo")
 	Config.reset()
 
 
@@ -92,11 +93,13 @@ func test_gift_skipped_levels(t: T) -> void:
 func test_mech_intro(t: T) -> void:
 	var s := SaveSchema.defaults()
 	t.eq(s.mech_seen, [], "bản lưu mới chưa xem cơ chế nào")
-	var table := {14: "stone", 30: "ice", 40: "chain", 55: "layer", 70: "fog", 90: "pulse", 110: "frost"}
+	var table := {14: "stone", 30: "ice", 45: "chain", 65: "layer", 85: "fog", 115: "pulse", 165: "frost",
+		300: "choco", 350: "ribbon"}
 	for lv in table:
 		t.eq(Unlocks.pending_mech(s, lv), table[lv], "L%d giới thiệu %s" % [lv, table[lv]])
 		t.eq(int(Config.UNLOCK[table[lv]]), lv, "khớp Config.UNLOCK.%s" % table[lv])
-	for lv in [1, 13, 15, 29, 31, 89, 91, 200]:
+	# Mốc cũ trước 2026-11-10 (40, 55, 70, 90, 110, 130, 150) không còn là level dạy.
+	for lv in [1, 13, 15, 29, 31, 40, 55, 70, 90, 110, 130, 150, 200]:
 		t.eq(Unlocks.pending_mech(s, lv), "", "L%d không phải level dạy" % lv)
 	Unlocks.mark_mech_seen(s, "stone")
 	t.eq(Unlocks.pending_mech(s, 14), "", "đã xem thì không hiện lại")
@@ -113,31 +116,40 @@ func test_mech_intro(t: T) -> void:
 func test_feature_progress(t: T) -> void:
 	Config.reset()
 	var p := Unlocks.feature_progress(1)
-	t.ok(p.has_next and p.start == 1 and p.end == 4, "L1: mốc 1 -> 4 (quà ngày)")
+	t.ok(p.has_next and p.start == 1 and p.end == 5, "L1: mốc 1 -> 5 (Gợi ý)")
 	t.near(p.before, 0.0, 0.001, "L1 trước")
-	t.near(p.after, 1.0 / 3.0, 0.001, "L1 sau")
-	t.eq(p.features, ["daily_gift"] as Array[String], "mốc 4 là quà ngày")
+	t.near(p.after, 1.0 / 4.0, 0.001, "L1 sau")
+	t.eq(p.features, ["hint"] as Array[String], "L5 chỉ mở Gợi ý (shop từ L11)")
 	t.eq(p.unlocked, [] as Array[String], "thắng L1 không mở gì")
-	p = Unlocks.feature_progress(2)
-	t.ok(p.start == 1 and p.end == 4, "L2: mốc 1 -> 4")
-	t.near(p.after, 2.0 / 3.0, 0.001, "L2 sau")
 	p = Unlocks.feature_progress(3)
-	t.near(p.after, 1.0, 0.001, "L3 chạm mốc")
-	t.eq(p.unlocked, ["daily_gift"] as Array[String], "thắng L3 mở quà ngày")
+	t.ok(p.start == 1 and p.end == 5, "L3: mốc 1 -> 5")
+	t.near(p.after, 3.0 / 4.0, 0.001, "L3 sau")
+	t.eq(p.unlocked, [] as Array[String], "thắng L3 không mở gì")
 	p = Unlocks.feature_progress(4)
-	t.eq(p.start, 4, "mốc đã mở gần nhất")
-	t.eq(p.end, 5, "mốc kế")
-	t.eq(p.features, ["hint", "shop"] as Array[String], "L5 mở hai tính năng")
+	t.near(p.after, 1.0, 0.001, "L4 chạm mốc")
+	t.eq(p.unlocked, ["hint"] as Array[String], "thắng L4 mở Gợi ý")
 	p = Unlocks.feature_progress(9)
 	t.eq(p.unlocked, ["lives"] as Array[String], "L10 chỉ báo mạng, bỏ starter/review")
+	p = Unlocks.feature_progress(10)
+	t.eq(p.unlocked, ["shop"] as Array[String], "thắng L10 mở shop và video gold")
+	p = Unlocks.feature_progress(12)
+	t.eq(p.start, 12, "mốc đã mở gần nhất")
+	t.eq(p.end, 14, "mốc kế")
+	t.eq(p.features, ["daily_gift", "stone"] as Array[String], "mốc 14 là quà ngày và Thùng sắt")
+	p = Unlocks.feature_progress(13)
+	t.eq(p.unlocked, ["daily_gift", "stone"] as Array[String], "thắng L13 mở quà ngày")
+	t.ok(Unlocks.opens_home(p.unlocked), "thắng L13 về Home vì quà ngày")
 	var last := 0
 	var marks := Unlocks.levels()
 	for k in marks:
 		last = maxi(last, int(marks[k]))
 	t.eq(Unlocks.feature_progress(last).has_next, false, "hết tính năng thì ẩn thanh")
-	p = Unlocks.feature_progress(90)
-	t.eq(p.end, 100, "sau Cổng nhịp là mốc Chain Offer")
-	t.eq(p.features, ["chain_offer"] as Array[String], "mốc 100 là Chain Offer")
+	p = Unlocks.feature_progress(115)
+	t.eq(p.end, 130, "sau Cổng nhịp là mốc Chain Offer")
+	t.eq(p.features, ["chain_offer"] as Array[String], "mốc 130 là Chain Offer")
+	p = Unlocks.feature_progress(299)
+	t.eq(p.unlocked, ["choco"] as Array[String], "thắng L299 mở Socola")
+	t.eq(Unlocks.feature_progress(300).end, 350, "sau Socola là mốc cuối Ruy băng L350")
 	t.eq(Unlocks.feature_progress(20, 20).has_next, false, "demo dừng ở L20")
 	t.eq(Unlocks.feature_progress(19, 20).unlocked, [] as Array[String], "ngoài trần demo không báo mở")
 	t.ok(Unlocks.opens_home(["daily_gift"]), "quà ngày về Home")
@@ -150,19 +162,26 @@ func test_offer_marks(t: T) -> void:
 	Config.reset()
 	var marks := Unlocks.levels()
 	t.eq(int(marks.weekly_pass), 27, "Weekly Pass: sau L26, level HARD thứ 2")
-	t.eq(int(marks.level_pack), 51, "Level Pack: sau mốc L50")
-	t.eq(int(marks.chain_offer), 100, "Chain Offer: CHAIN.level_unlock")
-	t.eq(int(marks.road_trip), 70, "Road Trip L70")
+	t.eq(int(marks.level_pack), 60, "Level Pack: OFFERS.level_pack.first_level")
+	t.eq(int(marks.chain_offer), 130, "Chain Offer: CHAIN.level_unlock")
+	t.eq(int(marks.road_trip), 95, "Road Trip L95")
 	t.eq(int(marks.special_bomb), 50, "Màn đặc biệt L50")
 	t.eq(Unlocks.feature_progress(26).unlocked, ["weekly_pass"] as Array[String], "thắng L26 mở Weekly Pass")
-	t.eq(Unlocks.feature_progress(50).unlocked, ["level_pack"] as Array[String], "thắng L50 mở Level Pack")
-	t.eq(Unlocks.feature_progress(69).unlocked, ["fog", "road_trip"] as Array[String], "thắng L69 mở Sương mù, Road Trip")
-	t.eq(Unlocks.feature_progress(99).unlocked, ["chain_offer"] as Array[String], "thắng L99 mở Chain Offer")
+	var p := Unlocks.feature_progress(44)
+	t.eq(p.unlocked, ["chain", "win_streak"] as Array[String], "thắng L44 mở Xích, Win Streak")
+	t.ok(Unlocks.opens_home(p.unlocked), "thắng L44 về Home vì Win Streak")
+	t.eq(Unlocks.feature_progress(59).unlocked, ["level_pack"] as Array[String], "thắng L59 mở Level Pack")
+	p = Unlocks.feature_progress(69)
+	t.eq(p.unlocked, ["leaderboard"] as Array[String], "thắng L69 mở Leaderboard")
+	t.ok(Unlocks.opens_home(p.unlocked), "thắng L69 về Home vì Leaderboard")
+	t.eq(Unlocks.feature_progress(84).unlocked, ["fog"] as Array[String], "thắng L84 mở Sương mù")
+	t.eq(Unlocks.feature_progress(94).unlocked, ["road_trip"] as Array[String], "thắng L94 mở Road Trip")
+	t.eq(Unlocks.feature_progress(129).unlocked, ["chain_offer"] as Array[String], "thắng L129 mở Chain Offer")
 	t.ok(not Unlocks.opens_home(["weekly_pass", "level_pack", "chain_offer", "road_trip"]), "không kéo về Home")
 	Config.CHAIN.level_unlock = 120
-	Config.OFFERS.level_pack.every_levels = 30
+	Config.OFFERS.level_pack.first_level = 40
 	t.eq(int(Unlocks.levels().chain_offer), 120, "theo Remote Config chain_level_unlock")
-	t.eq(int(Unlocks.levels().level_pack), 31, "theo Remote Config offers_level_pack_every_levels")
+	t.eq(int(Unlocks.levels().level_pack), 40, "theo Remote Config offers_level_pack_first_level")
 	Config.WEEKLY.enabled = false
 	t.ok("weekly_pass" not in Unlocks.features_at(27), "Weekly Pass tắt thì không báo")
 	Config.reset()
