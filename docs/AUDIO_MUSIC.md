@@ -26,7 +26,7 @@ Chưa có số liệu thật. Dưới đây là giả định suy từ dòng gam
 | Cách nghe | Nhiều người tắt tiếng nơi công cộng; số còn lại nghe qua loa điện thoại (dải khoảng 300 Hz–8 kHz, thường mono) hoặc tai nghe | Nhạc không mang thông tin gameplay; cân dải trung, ít sub-bass, gộp mono không mất tiếng; có nút tắt nhạc riêng (đã có) |
 | Thị trường | 14 ngôn ngữ: Âu Mỹ, Mỹ La-tinh, Thổ, Nga, Ukraina, Ấn, Indonesia, Nhật, Hàn, Việt | Không lời, không chất liệu dân tộc đặc trưng, hoà âm pop phổ thông |
 | Thời lượng | Chơi nhiều level liền, nhạc màn chơi nghe hàng chục vòng | Màn chơi ít giai điệu nổi, vòng lặp dài, chỗ nối không lộ |
-| Thiết bị | Android tầm thấp và trung | Ogg khoảng 1 MB mỗi bài, phát dạng stream |
+| Thiết bị | Android tầm thấp và trung | Ogg dưới 1 MB mỗi bài, phát dạng stream |
 
 ## 3. Tiêu chuẩn
 
@@ -49,7 +49,7 @@ Kiểm bằng `tools/music_check.py` (mục 5). Loudness theo ITU-R BS.1770, LRA
 
 | Tiêu chí | Home | Màn chơi | Ghi chú |
 | --- | --- | --- | --- |
-| Định dạng | Ogg Vorbis stereo 44,1 kHz, q 0,3, `loop=true` trong `.import` | Như Home | |
+| Định dạng | Ogg Vorbis stereo 44,1 kHz, q 0,05 (khoảng 70 kbps), `loop=true` trong `.import` | Như Home | |
 | Độ dài vòng lặp | 60–90 giây | 80–150 giây, nên từ 90 giây | Màn chơi lặp nhiều nên cần dài hơn |
 | Điểm lặp | Tròn ô nhịp, bắt đầu ở phách mạnh | Như Home | |
 | Dung lượng | ≤ 1,5 MB | ≤ 1,5 MB | |
@@ -90,20 +90,22 @@ Mỗi bài tạo 3 bản bằng Stable Audio 3 Medium Base (MCP `comfyui`, `use_
 
 Đã thử thêm đợt thứ hai cho màn chơi (Rhodes, guitar fingerpick ở dải trung; seed 3211–3213, 190 giây). Đợt này đỡ trầm hơn nhưng bị loại: nhạc ngắt 0,3–0,5 giây mỗi 12–24 giây, có bản ngả giọng thứ, có bản nhịp nhảy giữa 78 và 82 BPM.
 
-Kết quả đo trên file Ogg trong `assets/music/` (đã giải mã lại):
+Kết quả đo trên file Ogg trong `assets/music/` (đã giải mã lại; nén q 0,05 từ 2026-11-10):
 
 | Tiêu chí | Home | Màn chơi |
 | --- | --- | --- |
-| Vòng lặp, dung lượng | 67,2 giây, 0,97 MB | 84,0 giây, 1,12 MB |
-| Loudness, true peak | −17,98 LUFS, −2,05 dBTP | −20,00 LUFS, −2,57 dBTP |
-| LRA | 1,6 LU | 1,8 LU |
+| Vòng lặp, dung lượng | 67,2 giây, 0,60 MB (72 kbps) | 84,0 giây, 0,69 MB (66 kbps) |
+| Loudness, true peak | −17,99 LUFS, −1,82 dBTP | −20,05 LUFS, −3,10 dBTP |
+| LRA | 1,6 LU | 1,7 LU |
 | Nhịp, độ trôi | 99,96 BPM, 0,03 | 79,97 BPM, 0,04 |
 | Giọng (ước lượng theo chroma) | C major | F major |
 | Hụt qua loa điện thoại | 3,2 LU | 4,8 LU (6,9 LU khi chưa có low shelf) |
-| Dải 2–6 kHz, dưới 60 Hz | −27,6 dB, −16,7 dB | −47,5 dB, −15,6 dB |
-| Gộp mono | Hụt 1,2 LU, tương quan 0,52 | Hụt 1,5 LU, tương quan 0,49 |
+| Dải 2–6 kHz, dưới 60 Hz | −26,7 dB, −16,6 dB | −45,5 dB, −15,5 dB |
+| Gộp mono | Hụt 1,2 LU, tương quan 0,53 | Hụt 1,5 LU, tương quan 0,49 |
 | Khoảng lặng | Không có | Không có |
-| Chỗ nối | Bước mẫu 0,008 (p99,9 của bài: 0,20); loudness −18,0 → −18,3 LUFS (bản gốc tại điểm bắt đầu −16,3 → −16,2); pha phách liền; onset ×1,24 | Bước mẫu 0,002 (p99,9: 0,04); −20,8 → −20,5 LUFS (bản gốc −19,3 → −19,4); pha phách liền; onset ×0,48 |
+| Chỗ nối | Bước mẫu 0,005 (p99,9 của bài: 0,21); loudness −18,0 → −18,3 LUFS (bản gốc tại điểm bắt đầu −16,3 → −16,2); pha phách liền; onset ×1,25 | Bước mẫu 0,001 (p99,9: 0,04); −20,8 → −20,6 LUFS (bản gốc −19,3 → −19,4); pha phách liền; onset ×0,44 |
+
+Trước 2026-11-10 hai bài nén q 0,3 (0,97 MB và 1,12 MB, khoảng 110 kbps). Hạ xuống q 0,05 giảm 0,8 MB cho bản build mà mọi tiêu chí trên vẫn đạt, các số đo gần như không đổi.
 
 Màn chơi đạt mọi tiêu chí nhưng vòng lặp 84 giây ngắn hơn mức nên dùng (90 giây). Bản 3201 chỉ ổn định từ giây 50 nên không cắt được vòng 32 ô nhịp mà vẫn khớp tốt.
 

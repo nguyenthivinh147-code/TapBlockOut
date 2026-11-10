@@ -1846,14 +1846,14 @@
     "source_format": "flac",
     "source_sha256": "409194a2f4c2890f801aebbd95ea719576a5c7200ea02e6aa4400aabbc34a740",
     "output": "assets/music/bgm_home.ogg",
-    "output_sha256": "db484e708ed7eff296e40c70918554bd63dbb9112d76c8388f16f87d7781b640",
-    "output_bytes": 965720,
+    "output_sha256": "ee1a4f4c3574b544fc317ab07cc01311f4dfdbdcff067dfab493b2ad1c9683a2",
+    "output_bytes": 603431,
     "processing": {
-      "format": "ogg vorbis stereo 44.1kHz q0.3",
+      "format": "ogg vorbis stereo 44.1kHz q0.05 (about 72 kbps)",
       "steps": "tools/process_audio.sh MUSIC: high-pass 40 Hz; loop of 28 bars at 99.96 BPM from 15.261 s, 67.19989 s long, 0.6 s crossfade from the pre-roll; loudness drift ramp 1.51 dB; -18 LUFS, peak <= -2 dBFS; loop=true in .import",
       "seconds": 67.2,
-      "lufs": -17.98,
-      "true_peak_db": -2.05
+      "lufs": -17.99,
+      "true_peak_db": -1.82
     }
   },
   {
@@ -1873,14 +1873,14 @@
     "source_format": "flac",
     "source_sha256": "8fe2e8d671126d3d9a21a3fbef4288203b927bdefd1c2cd36b79b6e96f90e656",
     "output": "assets/music/bgm_level.ogg",
-    "output_sha256": "8fc1d0c0e55684e074e96f57bf6521f960f8e844180cba80467e178f088bb6b7",
-    "output_bytes": 1116804,
+    "output_sha256": "5821f76fee92436b68a29fc7dda1e9295bee7c6d1373ce26eb82d997f3973944",
+    "output_bytes": 687975,
     "processing": {
-      "format": "ogg vorbis stereo 44.1kHz q0.3",
+      "format": "ogg vorbis stereo 44.1kHz q0.05 (about 72 kbps)",
       "steps": "tools/process_audio.sh MUSIC: high-pass 40 Hz, low shelf -5 dB at 200 Hz; loop of 28 bars at 80 BPM from 53.986 s, 84.00025 s long, 0.75 s crossfade from the pre-roll; loudness drift ramp 0.04 dB; -20 LUFS, peak <= -2 dBFS; loop=true in .import",
       "seconds": 84.0,
-      "lufs": -20.0,
-      "true_peak_db": -2.57
+      "lufs": -20.05,
+      "true_peak_db": -3.1
     }
   },
   {

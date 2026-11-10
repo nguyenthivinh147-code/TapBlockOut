@@ -2,9 +2,9 @@
 
 Dành cho người duyệt bản thử. Không cần biết lập trình.
 
-- File cài: `build/TapBlockOut-demo.apk` (khoảng 61 MB, bản debug, ký bằng khoá debug).
+- File cài: `build/TapBlockOut-demo.apk` (khoảng 81 MB ngày 2026-11-10, bản debug, ký bằng khoá debug).
 - Tên gói: `com.tungcv2.tapblockout`, phiên bản `0.1.0` (mã 1), chỉ chạy dọc màn hình, cần Android 7.0 trở lên.
-- APK nặng vì chứa cả hai kiểu chip (arm64 và armeabi-v7a) và bản engine debug. Phần hình và âm thanh của game chỉ khoảng 6 MB. Bản phát hành (AAB) sẽ nhẹ hơn nhiều.
+- APK nặng vì chứa cả hai kiểu chip (arm64 và armeabi-v7a) và bản engine debug: engine chiếm 55 MB. Phần còn lại khoảng 26 MB: hình 10 MB, dữ liệu ICU cho chữ Nhật và Hindi 2,8 MB, SDF thân khối bake sẵn 2,8 MB, mã Java 2,2 MB, nhạc 1,3 MB, boot splash 1,2 MB, script 1,2 MB, font 0,8 MB. Bản phát hành (AAB) nhẹ hơn vì Google Play chỉ giao engine của một kiểu chip.
 
 ## 1. Cài lên điện thoại
 
@@ -67,5 +67,5 @@ Dành cho người duyệt bản thử. Không cần biết lập trình.
 ## 6. Lệch so với kế hoạch
 
 - Preset `Android Demo` dùng build không Gradle (APK debug), nên chưa có plugin Android nào (quảng cáo, Billing, Firebase...). Plugin thuộc Phase 10.
-- Kích thước APK 61 MB là do hai ABI và template debug, không phải do assets (tests và `addons/godot_ai` đã được loại khỏi gói).
+- Kích thước APK (khoảng 81 MB) chủ yếu do hai ABI và template debug (tests và `addons/godot_ai` đã được loại khỏi gói). Ngày 2026-11-10 phần game giảm 4,1 MB: scene UI đóng dạng `.tscn.res` được nén trong APK (kế hoạch mục 1.3), ảnh lớn sang WebP lossy theo `tools/compress_textures.gd`, avatar giới hạn 256 px, nhạc nền nén q 0,05.
 - Các level 21 trở lên không có trong bản này, nên bản demo không thể thử bộ sinh level hay Daily Challenge.

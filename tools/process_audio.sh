@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Xu ly am thanh goc (art/audio/*.flac) thanh file dung trong game, chi dung GStreamer + Python chuan.
 #   sfx_*.flac -> assets/sfx/<ten>.wav  (mono 44.1 kHz 16-bit, cat lang, can am luong, cat do dai toi da)
-#   bgm_*.flac -> assets/music/<ten>.ogg (stereo, loop cat theo o nhip trong MUSIC, LUFS dich, Ogg Vorbis q~0.3)
+#   bgm_*.flac -> assets/music/<ten>.ogg (stereo, loop cat theo o nhip trong MUSIC, LUFS dich, Ogg Vorbis q~0.05)
 # Dung: tools/process_audio.sh [ten ...]   (khong tham so thi xu ly het)
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -29,9 +29,9 @@ decode() { # flac -> wav 16-bit stereo 44.1 kHz
     ! audio/x-raw,format=S16LE,rate=44100,channels=2 ! wavenc ! filesink location="$2"
 }
 
-encode_ogg() { # wav -> ogg vorbis
+encode_ogg() { # wav -> ogg vorbis, about 70 kbps (docs/AUDIO_MUSIC.md section 3.2; q 0.3 until 2026-11-10)
   gst-launch-1.0 -q filesrc location="$1" ! wavparse ! audioconvert ! audioresample \
-    ! vorbisenc quality=0.3 ! oggmux ! filesink location="$2"
+    ! vorbisenc quality=0.05 ! oggmux ! filesink location="$2"
 }
 
 names=("$@")
