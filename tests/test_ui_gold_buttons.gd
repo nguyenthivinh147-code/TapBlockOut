@@ -98,18 +98,3 @@ func test_helper_pack(t: T) -> void:
 	var p := _mount("popup_helper_pack")
 	_check(t, _btn(p, "GoldButton"), "1,900", "gói trợ giúp: giá cứu lượt lần 1")
 	p.free()
-
-
-func test_profile(t: T) -> void:
-	var g := _g()
-	g.s.level = 5
-	var p := (load("res://scenes/profile.tscn") as PackedScene).instantiate() as Control
-	_root().add_child(p)
-	p.setup({})
-	for id in ["avatar_01", "frame_03"]:
-		p.select(id)
-		var b: Button = p.buy_button
-		_check(t, b, "50" if id == "avatar_01" else "100", id)
-		var coin := b.get_node("Image")
-		t.ok(coin.get_index() < b.get_node("Text (TMP)").get_index(), id + ": icon gold trước giá")
-	p.free()

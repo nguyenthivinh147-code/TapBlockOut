@@ -53,13 +53,11 @@ func test_grid_counts_and_defaults(t: T) -> void:
 	t.ok(p.use_button.disabled, "nút đang đeo")
 	t.eq(_txt(p.use_button), "Equipped", "chữ đang đeo")
 	p.select("avatar_01")
-	t.ok(p.buy_button != null and p.video_button != null, "món chưa có: giá và video")
+	t.ok(p.video_button != null and p.video_button.visible, "món chưa có: chỉ có nút video")
 	t.eq(p.use_button, null, "không có nút đeo")
-	t.eq(_txt(p.buy_button), "50", "giá avatar_01")
-	p.select("avatar_02")
-	t.eq(_txt(p.buy_button), "75", "giá avatar_02")
+	t.ok(not (p.find_child("AvatarButtonGroup", true, false).get_node("BuyButton") as Control).visible, "không có nút mua gold")
 	p.select("frame_03")
-	t.eq(_txt(p.buy_button), "100", "giá frame_03")
+	t.ok(p.video_button != null, "frame_03: nút video")
 	t.ok(p.find_child("Grid_frame", true, false).visible, "chọn frame thì sang tab Frame")
 	t.ok(not p.find_child("Grid_avatar", true, false).visible, "ẩn lưới avatar")
 	p.queue_free()
@@ -74,7 +72,7 @@ func test_tabs_keep_selection(t: T) -> void:
 	t.eq(_txt(p.use_button), "Equipped", "frame mặc định đang đeo")
 	p.tab_buttons["avatar"].pressed.emit()
 	t.ok(p.cells["avatar_03"].ring.visible, "quay lại tab Avatar vẫn giữ ô đã chọn")
-	t.ok(p.buy_button != null, "nút mua avatar_03")
+	t.ok(p.video_button != null, "nút video avatar_03")
 	p.queue_free()
 
 
@@ -198,33 +196,6 @@ func test_equip_owned(t: T) -> void:
 	p.queue_free()
 
 
-func test_buy_with_gold(t: T) -> void:
-	var g := _g()
-	g.s.coins = 120
-	var p := _profile()
-	p.select("avatar_02")
-	p.buy_button.pressed.emit()  # 75
-	t.eq(int(g.s.coins), 45, "trừ 75 gold")
-	t.ok((g.s.cos.owned as Array).has("avatar_02"), "đã sở hữu")
-	t.eq(g.s.cos.avatar, "avatar_02", "mua xong đeo luôn")
-	t.eq(UiTween.roll_target(p.gold_label), 45, "ví cập nhật (số đếm lùi tới 45)")
-	t.ok(p.buy_button == null, "không còn nút mua")
-	t.ok(p.use_button != null and p.use_button.disabled, "nút đang đeo")
-	p.queue_free()
-
-
-func test_buy_not_enough_gold(t: T) -> void:
-	var g := _g()
-	g.s.coins = 10
-	var p := _profile()
-	p.select("frame_01")
-	p.buy_button.pressed.emit()
-	t.eq(int(g.s.coins), 10, "không trừ gold")
-	t.ok(not (g.s.cos.owned as Array).has("frame_01"), "chưa có")
-	t.eq(p.status_label.text, "Not enough gold", "báo thiếu gold")
-	p.queue_free()
-
-
 func test_video_unlock(t: T) -> void:
 	var g := _g()
 	g.s.coins = 0
@@ -261,7 +232,6 @@ func test_road_trip_only(t: T) -> void:
 	var g := _g()  # level 5: Road Trip còn khoá
 	var p := _profile()
 	p.select("avatar_06")
-	t.eq(p.buy_button, null, "không nút mua")
 	t.eq(p.video_button, null, "không nút video")
 	t.eq(p.use_button, null, "không nút đeo")
 	t.eq(p.road_trip_button, null, "Road Trip khoá: không nút")
@@ -271,7 +241,7 @@ func test_road_trip_only(t: T) -> void:
 	t.ok(p.cells["avatar_06"].lock.visible, "ô vẫn khoá")
 	p.select("avatar_04")
 	t.ok(not l.visible, "món thường: ẩn dòng mở khoá")
-	t.ok(p.buy_button != null, "món thường: có nút mua")
+	t.ok(p.video_button != null, "món thường: có nút video")
 	p.queue_free()
 	g.s.level = 95
 	p = _profile()
@@ -299,7 +269,6 @@ func test_league_only(t: T) -> void:
 	var g := _g()  # level 5: Leaderboard còn khoá
 	var p := _profile()
 	p.select("avatar_10")
-	t.eq(p.buy_button, null, "không nút mua")
 	t.eq(p.video_button, null, "không nút video")
 	t.eq(p.use_button, null, "không nút đeo")
 	t.eq(p.league_button, null, "Leaderboard khoá: không nút")
@@ -313,7 +282,7 @@ func test_league_only(t: T) -> void:
 	t.ok(p.cells["avatar_10"].lock.visible, "ô vẫn khoá")
 	p.select("avatar_04")
 	t.ok(not locked.visible and not note.visible, "món thường: ẩn hai dòng")
-	t.ok(p.buy_button != null, "món thường: có nút mua")
+	t.ok(p.video_button != null, "món thường: có nút video")
 	p.queue_free()
 	g.s.level = 70
 	p = _profile()

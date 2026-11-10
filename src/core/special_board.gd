@@ -4,7 +4,7 @@ extends RefCounted
 ##   giữa lưới Config.BOARD_W x BOARD_H. Cắt và gán hướng bằng `LevelGenerator._tile` / `_assign` (cùng cách level chính
 ##   bảo đảm giải được); số lượt dọn bàn nhắm `rounds_share` x số khối. moves = số khối + dư (`slack`, đôi khi +1 / +2).
 ## - `bomb_plan(level, count, seed)`: chọn khối mang bom và số giây. "Số lần chạm để gỡ" một khối = số khối phải rời bàn
-##   trước nó (cả chuỗi chặn, tính trên bàn đầy) + 1. Khoảng [bomb_min_taps, bomb_max_share x số khối] chia `count` tầng
+##   trước nó (cả chuỗi chặn, tính trên bàn đầy) + 1. Khoảng `bomb_range` = [max(bomb_min_taps, bomb_min_share x số khối), bomb_max_share x số khối] chia `count` tầng
 ##   đều nhau, mỗi tầng một khối. Bom xếp từ nông tới sâu; quả thứ k có `bomb_seconds(số khối khác nhau phải chạm để
 ##   gỡ hết quả 1..k)` giây, nên chạm 1 lần mỗi giây theo thứ tự đó luôn kịp (bàn tối đa 64 khối).
 ## - `urgent_hint(board, bombs)`: khối thoát được ngay nằm trong chuỗi chặn của quả bom gấp nhất.
@@ -204,6 +204,13 @@ static func bomb_cell(cells: Array) -> Vector2i:
 	return best
 
 
+## Khoảng số lần chạm hợp lệ của khối mang bom trên bàn `n` khối: [lo, hi]. Sàn theo tỉ lệ để bom không nằm nông.
+static func bomb_range(n: int) -> Vector2i:
+	var sp: Dictionary = Config.SPECIAL
+	var lo := maxi(int(sp.bomb_min_taps), ceili(n * float(sp.bomb_min_share) - 0.001))
+	return Vector2i(lo, maxi(lo, floori(n * float(sp.bomb_max_share))))
+
+
 ## Số bom khi đã thắng `wins` trận Special: bombs_start + wins / bombs_every, tối đa bombs_max.
 static func bomb_count(wins: int) -> int:
 	var sp: Dictionary = Config.SPECIAL
@@ -230,8 +237,9 @@ static func bomb_plan(level: Dictionary, count: int, seed_value: int) -> Array[D
 	var shape := _shape_of_level(level)
 	var bl := _blockers(shape, int(level.w), int(level.h))
 	var n := shape.size()
-	var lo := int(sp.bomb_min_taps)
-	var hi := maxi(lo, floori(n * float(sp.bomb_max_share)))
+	var rng_taps := bomb_range(n)
+	var lo := rng_taps.x
+	var hi := rng_taps.y
 	var taps := {}
 	var cands: Array[String] = []
 	for b in level.get("blocks", []):

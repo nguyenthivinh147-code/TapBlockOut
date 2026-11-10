@@ -87,17 +87,6 @@ func test_cosmetics(t: T) -> void:
 	Config.reset()
 	t.eq(Config.cosmetic_ids("avatar").size(), 13, "avatar 00-12")
 	t.eq(Config.cosmetic_ids("frame")[12], "frame_12", "frame_12")
-	t.eq(Config.cosmetic_price("avatar_00"), 0, "mặc định miễn phí")
-	t.eq(Config.cosmetic_price("avatar_01"), 50, "50")
-	t.eq(Config.cosmetic_price("avatar_02"), 75, "75")
-	t.eq(Config.cosmetic_price("frame_03"), 100, "100")
-	t.eq(Config.cosmetic_price("frame_04"), 50, "xoay lại")
-	t.eq(Config.cosmetic_price("lạ"), 0, "id lạ")
-	var total := 0
-	for kind in ["avatar", "frame"]:
-		for id in Config.cosmetic_ids(kind):
-			total += Config.cosmetic_price(id)
-	t.eq(total, 1800, "mua hết 1.800")
 
 
 func test_apply_remote(t: T) -> void:

@@ -1086,7 +1086,8 @@ func _finish_exit(node: BlockNode) -> void:
 ## Lao nhanh dần tới vật cản, va, bật về chỗ cũ. Rung nhẹ cả bàn; không màn đỏ. Khối về chỗ rồi cổng mới đổi theo
 ## lượt `seq` (cổng nhịp đang khoá thì mở ra sau cú dội).
 func _anim_bounce(node: BlockNode, dir: Vector2, cells_to_go: float, steps: int, blocker: String, gate_side: String, seq: int) -> void:
-	var home := node.position
+	# chỗ cũ tính từ ô lưới, không lấy node.position: tap lại lúc khối đang bật thì position đang lệch
+	var home := _origin + Vector2(node.origin_cell) * _cell
 	var travel := maxf(cells_to_go, 0.0) * _cell
 	if cells_to_go < 0.5:
 		travel = _cell * 0.12
@@ -1243,7 +1244,7 @@ func _anim_chained(node: BlockNode, key_id: String, seq: int) -> void:
 	node.busy = true
 	_begin()
 	_move_begin(seq)
-	var home := node.position
+	var home := _origin + Vector2(node.origin_cell) * _cell
 	var tw := node.create_tween()
 	for s in [1.0, -1.0, 0.6, -0.6]:
 		tw.tween_property(node, "position", home + Vector2(_cell * 0.07 * s, 0), 0.04)

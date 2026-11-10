@@ -35,6 +35,7 @@ const HUD_TONE := preload("res://src/ui/hud_tone.gdshader")
 const SpecialBombs := preload("res://src/ui/special_bombs.gd")
 const SpecialBoard := preload("res://src/core/special_board.gd")
 const BombCurtain := preload("res://src/ui/bomb_curtain.gd")
+const LOW_MOVES_SHADER := preload("res://src/ui/low_moves.gdshader")
 
 const POPUP_RESCUE := "res://scenes/popup_rescue.tscn"
 const POPUP_OFFER := "res://scenes/popup_offer.tscn"
@@ -234,6 +235,10 @@ var _hint_fx: Control = null  # sao Gợi ý đang bay; còn bay thì bấm Gợ
 var _moves_pending: int = 0  # lượt +Move đã cộng vào bàn nhưng dấu "+" chưa bay tới chip lượt
 var _moves_cashed: int = 0  # lượt thừa thẻ thắng đã đổi ra gold (đồng gold đã rời chip lượt)
 var _chip_tw: Tween = null
+var _warn: ColorRect = null  # red vignette of the last move, between the HUD and the popups
+var _warn_pulse_tw: Tween = null  # loops the MOVES chip scale and the vignette breath
+var _warn_fade_tw: Tween = null
+var _warn_on: bool = false
 var _pieces_pending: int = 0  # mảnh đã nhặt nhưng icon crystal chưa bay tới chip mảnh
 var _toast_token: int = 0
 var _left: bool = false
@@ -296,6 +301,7 @@ func _build() -> void:
 	smash_label = %SmashLabel
 	_overlay = %LocalPopups
 	(%MovesCaption as Label).text = tr("level_moves").to_upper()
+	_build_warn()
 	title_label.text = ""
 	moves_label.text = ""
 	(hard_badge as Label).text = tr("level_hard")
@@ -718,7 +724,9 @@ func hud_toned() -> Array[CanvasItem]:
 func _refresh_hud() -> void:
 	if not _built or board == null:
 		return
-	moves_label.text = str(maxi(0, board.moves_left() - _moves_pending - _moves_cashed))
+	var shown := maxi(0, board.moves_left() - _moves_pending - _moves_cashed)
+	moves_label.text = str(shown)
+	_set_low_moves(shown == Config.LOW_MOVES and not board.is_won() and state != "over" and state != "left")
 	var total := (attempt.get("specials", []) as Array).size()
 	piece_chip.visible = total > 0
 	piece_label.text = "%d/%d" % [int(attempt.get("pieces", 0)) - _pieces_pending, total]
@@ -732,6 +740,56 @@ func _refresh_hud() -> void:
 		var n := maxi(int(Game.s.inv.get(kind, 0)) - RewardFly.held(kind), 0)
 		badge.text = (tr("booster_count") % n) if n > 0 else ""
 		badge.add_theme_stylebox_override("normal", _badge_box(n > 0))
+
+
+## Red vignette node of the last-move warning: full screen, ignores touches, sits above the HUD and below IdleTip and
+## the popups. Hidden until _set_low_moves(true).
+func _build_warn() -> void:
+	_warn = ColorRect.new()
+	_warn.name = "LowMovesWarn"
+	_warn.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_warn.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_warn.visible = false
+	var mat := ShaderMaterial.new()
+	mat.shader = LOW_MOVES_SHADER
+	mat.set_shader_parameter("reach", Config.LOW_MOVES_REACH)
+	mat.set_shader_parameter("max_alpha", Config.LOW_MOVES_ALPHA)
+	mat.set_shader_parameter("amount", 0.0)
+	mat.set_shader_parameter("breath", 0.0)
+	_warn.material = mat
+	_warn.resized.connect(func() -> void: mat.set_shader_parameter("rect_size", _warn.size))
+	add_child(_warn)
+	move_child(_warn, %IdleTip.get_index())
+
+
+## Last move: the vignette fades in and the MOVES chip pulses until the count changes or the level ends.
+func _set_low_moves(on: bool) -> void:
+	if _warn == null or on == _warn_on:
+		return
+	_warn_on = on
+	var mat := _warn.material as ShaderMaterial
+	mat.set_shader_parameter("rect_size", _warn.size)
+	if _warn_fade_tw != null and _warn_fade_tw.is_valid():
+		_warn_fade_tw.kill()
+	if _warn_pulse_tw != null and _warn_pulse_tw.is_valid():
+		_warn_pulse_tw.kill()
+	_warn_fade_tw = create_tween()
+	if on:
+		_warn.visible = true
+		_warn_fade_tw.tween_property(mat, "shader_parameter/amount", 1.0, Config.LOW_MOVES_FADE)
+		var half := Config.LOW_MOVES_PERIOD * 0.5
+		var peak := Vector2.ONE * Config.LOW_MOVES_CHIP_SCALE
+		moves_chip.pivot_offset = moves_chip.size * 0.5
+		_warn_pulse_tw = create_tween().set_loops()
+		_warn_pulse_tw.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		_warn_pulse_tw.tween_property(moves_chip, "scale", peak, half)
+		_warn_pulse_tw.parallel().tween_property(mat, "shader_parameter/breath", 1.0, half)
+		_warn_pulse_tw.tween_property(moves_chip, "scale", Vector2.ONE, half)
+		_warn_pulse_tw.parallel().tween_property(mat, "shader_parameter/breath", 0.0, half)
+	else:
+		_warn_fade_tw.tween_property(mat, "shader_parameter/amount", 0.0, Config.LOW_MOVES_FADE)
+		_warn_fade_tw.tween_callback(func() -> void: _warn.visible = _warn_on)
+		moves_chip.scale = Vector2.ONE
 
 
 ## Nền huy hiệu booster: tròn xanh trống (còn hàng, code ghi số) hoặc sprite dấu + (hết kho).
@@ -957,6 +1015,8 @@ func _rescue_flow() -> void:
 		var method := str(r) if r is String else ""
 		if method == "inventory" or method == "gold" or method == "video":
 			board_view.refresh()
+			Sfx.play("moves")
+			_fly_moves(int(Config.ECON.rescue_moves))
 			_refresh_hud()
 			_set_state("playing")
 			_reset_think()
@@ -1652,18 +1712,17 @@ func _special_end_popup(mode: String) -> void:
 		_leave("home")
 
 
-## Thắng: popup hộp quà (booster đã vào kho; x2 bằng quảng cáo), interstitial result_exit theo nhịp thẻ thắng, rồi
-## vào level chính kế.
+## Thắng: thẻ thắng như level thường (win_card, ô thưởng là booster đã vào kho; x2 bằng quảng cáo), interstitial
+## result_exit theo nhịp thẻ thắng, rồi về Home (nút của thẻ là Trang chủ).
 func _special_win(res: Dictionary) -> void:
-	var wr: Variant = await _popup_scene(POPUP_SPECIAL_END, {"mode": "win", "reward": str(res.get("reward", "hint")),
-		"x2_available": bool(res.get("x2_available", false))})
+	var wr: Variant = await _popup_scene(WIN_CARD, res)
 	if _left:
 		return
 	var x2 := wr is Dictionary and bool(wr.get("x2_taken", false))
 	await Game.special_leave_win(x2)
 	if _left:
 		return
-	await _continue_main()
+	_leave("home")
 
 
 ## Rời Màn đặc biệt sang level chính kế ngay trong màn này (màn chuyển cảnh load_transition), hoặc về Home khi hết

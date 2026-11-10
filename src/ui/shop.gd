@@ -72,6 +72,13 @@ const NAV_BAR_FRAME := Vector2(886, 182)
 ## ADS Daily pill: "0 / 5 ads watched" is longer than Unity's timer there (Vietnamese, Portuguese...), so it wraps onto
 ## two lines and shrinks down to this size instead of overflowing the pill (two_lines).
 const VIDEO_TEXT_MIN := 12.0
+## ADS Daily pill: the prefab's navy tint is swapped for a lighter blue (same sprite).
+const VIDEO_PILL_COLOR := Color("5b9fe8")
+## Watch button once the day's videos are used: the gray pill of UnityKit.BUTTONS, with its text material.
+const VIDEO_BTN_ON := "green"
+const VIDEO_BTN_OFF := "gray"
+## Dim of the TV icon on the gray Watch button.
+const VIDEO_ICON_OFF := Color(0.7, 0.7, 0.7, 1.0)
 ## UIShopCashLayer.ShowLayer fades the scroll view in.
 const FADE_IN := 0.3
 ## RewardItemSO gold icons: IAPProductSO gives cube.sort.color.gold.N the gold ItemId N.
@@ -118,6 +125,13 @@ var _busy_src: Button = null
 var _closed: bool = false
 var _toast_tween: Tween = null
 var _video_text: Label = null
+var _video_clock: Control = null
+var _video_btn_text: Label = null
+var _video_btn_icon: Control = null
+## Pill label rect with the clock icon (the prefab's) and without it (centered): offsets from u_rect.pos.x.
+var _video_text_x: float = 0.0
+var _video_state: int = -1
+var _video_tick: float = 0.0
 var _top: Control = null
 ## sku -> node gold bay lên chip khi mua (icon gold của ô hoặc thẻ, không có thì nút mua)
 var _gold_from: Dictionary = {}
@@ -453,21 +467,64 @@ func _video_card() -> void:
 	video_button.connect("clicked", watch_video)
 	_video_icon = video_button.get_parent().get_node_or_null("BG/Icon")
 	# The game's "Watch video" is longer than Unity's "0/5": the scene moves it right of the TV icon.
-	ui.text(p + "/Button_Ads/Text (TMP)", tr("ads_daily_watch"))
+	_video_btn_text = ui.text(p + "/Button_Ads/Text (TMP)", tr("ads_daily_watch"))
+	_video_btn_icon = video_button.get_node_or_null("Image")
+	var pill: Control = ui.node(p + "/Image")
+	UnityUI.image_of(pill).call("set_color", VIDEO_PILL_COLOR)
+	_video_clock = ui.node(p + "/Image/Image")
 	_video_text = ui.label(p + "/Image/Text (TMP)")
+	_video_text_x = float((_video_text.get_meta("u_rect") as Dictionary).pos.x)
 	two_lines(_video_text, VIDEO_TEXT_MIN)
 	_refresh_video()
 	if Game.shop_videos_left() > 0:
 		Game.offer_video("shop_coins")
 
 
+## Videos left: the pill counts "n / 5" without the clock icon and the Watch button is live. All used: the pill shows
+## the clock and the time to the next day (_process ticks it), and the Watch button is gray.
 func _refresh_video() -> void:
 	var total := int(Config.ECON.shop_video_max)
 	var left: int = Game.shop_videos_left()
+	var used_up := left <= 0
 	if is_instance_valid(_video_text):
-		UnityUI.set_text(_video_text, tr("ads_daily_progress") % [total - left, total])
+		if used_up:
+			UnityUI.set_text(_video_text, HubTop.fmt_time(Game.shop_videos_reset_in()))
+		else:
+			UnityUI.set_text(_video_text, tr("ads_daily_progress") % [total - left, total])
+		_set_video_state(1 if used_up else 0)
 	if is_instance_valid(video_button):
 		video_button.call("set_interactable", left > 0 and _busy_src != video_button)
+
+
+## Swaps the pill (clock icon, label position) and the Watch button (green or gray) when the state changes.
+func _set_video_state(state: int) -> void:
+	if state == _video_state:
+		return
+	_video_state = state
+	var counting_down := state == 1
+	if is_instance_valid(_video_clock):
+		_video_clock.visible = counting_down
+	var r: Dictionary = _video_text.get_meta("u_rect")
+	r.pos = Vector2(_video_text_x if counting_down else 0.0, float(r.pos.y))
+	UnityUI.apply_rect(_video_text)
+	if is_instance_valid(video_button):
+		var key: String = VIDEO_BTN_OFF if counting_down else VIDEO_BTN_ON
+		UnityUI.set_sprite(video_button, str(UnityKit.BUTTONS[key][0]))
+		if is_instance_valid(_video_btn_text):
+			_video_btn_text.material = UnityUI.text_material(str(UnityKit.BUTTONS[key][1]), false)
+		if is_instance_valid(_video_btn_icon):
+			_video_btn_icon.self_modulate = VIDEO_ICON_OFF if counting_down else Color.WHITE
+
+
+## The countdown shows h:mm:ss, so it redraws once a second; the next day brings the videos back.
+func _process(delta: float) -> void:
+	if _video_state != 1 or not is_instance_valid(_video_text):
+		return
+	_video_tick += delta
+	if _video_tick < 1.0:
+		return
+	_video_tick = 0.0
+	_refresh_video()
 
 
 ## RestorePurchase (iOS only in Unity); the game offers it on every platform.

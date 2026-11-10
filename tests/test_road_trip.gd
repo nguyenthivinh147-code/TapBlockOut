@@ -374,9 +374,6 @@ func test_win_box_skips_owned_cosmetic(t: T) -> void:
 
 func test_road_trip_cosmetic_not_for_sale(t: T) -> void:
 	var g := _g()
-	g.s.coins = 1000
-	t.ok(not g.cos_buy("avatar_06"), "không mua bằng gold")
-	t.eq(int(g.s.coins), 1000, "không trừ gold")
 	t.ok(not await g.cos_unlock_video("frame_06"), "không mở bằng video")
 	t.eq(_plat().ads.calls.size(), 0, "không gọi quảng cáo")
 	t.ok(not (g.s.cos.owned as Array).has("frame_06"), "chưa có")

@@ -9,6 +9,11 @@ static func day_number(now: int, tz_offset_sec: int) -> int:
 	return floori(float(now + tz_offset_sec) / float(DAY_SEC))
 
 
+## Số giây còn lại đến 00:00 giờ địa phương tiếp theo (1..DAY_SEC).
+static func seconds_to_next_day(now: int, tz_offset_sec: int) -> int:
+	return DAY_SEC - posmod(now + tz_offset_sec, DAY_SEC)
+
+
 ## Thứ trong tuần theo giờ địa phương, quy ước Godot: 0 = Chủ nhật ... 6 = Thứ bảy.
 static func weekday(now: int, tz_offset_sec: int) -> int:
 	return posmod(day_number(now, tz_offset_sec) + 4, 7)

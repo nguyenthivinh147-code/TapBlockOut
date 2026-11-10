@@ -1,17 +1,17 @@
 extends RefCounted
-## Avatar và frame. Chỉ đọc và ghi s.cos (và s.coins khi mua bằng gold, không qua Wallet).
+## Avatar và frame. Chỉ đọc và ghi s.cos. Không bán bằng gold: món bán chỉ mở bằng video (Game.cos_unlock_video).
 
 const Config := preload("res://src/config.gd")
 
 const KINDS := ["avatar", "frame"]
 
 
-## [{id, kind, price}] gồm cả *_00 mặc định (price 0), avatar trước frame.
+## [{id, kind}] gồm cả *_00 mặc định, avatar trước frame.
 static func catalog() -> Array:
 	var out: Array = []
 	for kind in KINDS:
 		for id in Config.cosmetic_ids(kind):
-			out.append({"id": id, "kind": kind, "price": Config.cosmetic_price(id)})
+			out.append({"id": id, "kind": kind})
 	return out
 
 
@@ -41,25 +41,13 @@ static func league_only(id: String) -> bool:
 	return raw is Array and (raw as Array).has(id)
 
 
-## Mua bằng gold hoặc mở bằng video được: món có trong catalog, không chỉ có từ Road Trip hay thưởng league.
+## Mở bằng video được: món có trong catalog, không chỉ có từ Road Trip hay thưởng league.
 static func for_sale(id: String) -> bool:
 	return kind_of(id) != "" and road_trip_box(id) == 0 and not league_only(id)
 
 
 static func equipped(s: Dictionary, kind: String) -> String:
 	return str(s.cos.get(kind, ""))
-
-
-## Mua bằng gold: trừ thẳng s.coins. Sai khi id lạ, chỉ có từ Road Trip, đã có, hoặc thiếu gold.
-static func buy(s: Dictionary, id: String) -> bool:
-	if not for_sale(id) or is_owned(s, id):
-		return false
-	var price := Config.cosmetic_price(id)
-	if int(s.coins) < price:
-		return false
-	s.coins = int(s.coins) - price
-	(s.cos.owned as Array).append(id)
-	return true
 
 
 ## Mở không trả gold (video Game đã xem xong, hoặc hộp Road Trip): sai khi id lạ hoặc đã có. Món chỉ có từ Road

@@ -92,11 +92,10 @@ const _DAILY := [
 	{"coins": 1000, "items": {"smash": 1, "hint": 1, "move": 1}},
 ]
 
-## avatar_01..N và frame_01..N; giá xoay vòng theo `prices`. *_00 miễn phí và luôn có.
+## avatar_01..N và frame_01..N. *_00 miễn phí và luôn có; món còn lại không bán gold, chỉ mở bằng video, Road Trip hay thưởng league.
 const _COSMETICS := {
 	"avatar_count": 12,
 	"frame_count": 12,
-	"prices": [50, 75, 100],
 	"default_avatar": "avatar_00",
 	"default_frame": "frame_00",
 }
@@ -351,7 +350,8 @@ const ROAD_TRIP_COSMETICS := {3: "avatar_05", 6: "avatar_06", 9: "avatar_07", 12
 ## cells_per_block_* ô mỗi khối, số lượt dọn bàn nhắm rounds_share x số khối, trọng số khối bị chặn mũ blocked_power;
 ## moves = số khối + slack (slack_plus1_share bàn +1, slack_plus2_share bàn +2).
 ## Bom: bombs_start + số trận thắng / bombs_every quả, tối đa bombs_max. Khối mang bom có số lần chạm để gỡ trong
-## [bomb_min_taps, bomb_max_share x số khối]; số giây = bomb_time_share x (bomb_base_sec + bomb_sec_per_tap x số khối
+## [max(bomb_min_taps, bomb_min_share x số khối), bomb_max_share x số khối] (2026-11-10: sàn 0,4 và trần 0,9 để bom nằm
+## sâu hơn, trước là [4, 0,8 x số khối]); số giây = bomb_time_share x (bomb_base_sec + bomb_sec_per_tap x số khối
 ## phải chạm), làm tròn lên (cộng dồn theo thứ tự gỡ; 19 + số lần chạm là số đo của game tham khảo, bomb_time_share
 ## 0,8 làm bom khó hơn 20%, 2026-11-10). Còn warn_sec giây thì ngòi cháy và tích tắc; nổ xong boom_popup_sec giây thì
 ## hiện popup "Bùm!".
@@ -377,7 +377,8 @@ const _SPECIAL := {
 	"bombs_every": 20,
 	"bombs_max": 6,
 	"bomb_min_taps": 4,
-	"bomb_max_share": 0.8,
+	"bomb_min_share": 0.4,
+	"bomb_max_share": 0.9,
 	"bomb_base_sec": 19,
 	"bomb_sec_per_tap": 1.0,
 	"bomb_time_share": 0.8,
@@ -609,6 +610,17 @@ const HUD_TONE_SAT := 0.8
 const HUD_TONE_VAL := 0.97
 const HUD_TONE_GLOSS := 0.5
 
+## Last-move warning (level screen): with 1 move left a red vignette (src/ui/low_moves.gdshader) rims the screen and the
+## MOVES chip pulses. LOW_MOVES_PERIOD is one pulse cycle in seconds, LOW_MOVES_CHIP_SCALE the chip's peak scale,
+## LOW_MOVES_REACH how far the glow reaches in from the screen edge (canvas px), LOW_MOVES_ALPHA its peak opacity,
+## LOW_MOVES_FADE the fade in/out time in seconds.
+const LOW_MOVES := 1
+const LOW_MOVES_PERIOD := 0.9
+const LOW_MOVES_CHIP_SCALE := 1.12
+const LOW_MOVES_REACH := 80.0
+const LOW_MOVES_ALPHA := 0.5
+const LOW_MOVES_FADE := 0.3
+
 ## Close X of every Unity popup (btnTurnOff, ExitButton, ...; UnityUI.CLOSE_NAMES), 2026-11-08: the art is drawn
 ## CLOSE_ART_SCALE times its prefab size around its own center, and the touch target is CLOSE_HIT_SCALE times the
 ## prefab one (art grown to UButton.MIN_HIT). Both are side lengths: a 64 px X draws at 128 px, its 96 px target is 211 px.
@@ -731,18 +743,6 @@ static func cosmetic_ids(kind: String) -> Array:
 	return ids
 
 
-## Giá gold của một món; *_00 hoặc id lạ trả 0.
-static func cosmetic_price(id: String) -> int:
-	var parts := id.rsplit("_", true, 1)
-	if parts.size() != 2 or not parts[1].is_valid_int():
-		return 0
-	var n: int = int(parts[1])
-	var prices: Array = COSMETICS.get("prices", [])
-	if n < 1 or prices.is_empty():
-		return 0
-	return int(prices[(n - 1) % prices.size()])
-
-
 ## Ghi đè từ Remote Config. Khoá `<nhóm>_<khoá>` (chữ thường, ví dụ `econ_win_coins`,
 ## `econ_booster_price_hint`, `skus_starter_pack_usd`, `content_ftue_steps`); giá trị là chuỗi
 ## được ép về đúng kiểu cũ (mảng: các phần tử cách nhau bằng dấu phẩy). Khoá lạ, giá trị hỏng,
@@ -839,3 +839,8 @@ static func _coerce(old: Variant, raw: String) -> Variant:
 ## one again skips parsing it and decoding its textures. Each held scene keeps its textures in memory
 ## (docs/UI_NODES.md, "Cache scene"); 0 turns the cache off.
 const SCENE_CACHE := 8
+
+
+## PopupRemoveAds plain card: x and width (prefab units) of the two description lines, inside the cream panel.
+const REMOVE_ADS_TEXT_X := 165.0
+const REMOVE_ADS_TEXT_W := 330.0

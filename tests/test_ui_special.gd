@@ -125,17 +125,57 @@ func test_win_rewards_then_main_level(t: T) -> void:
 		lv.board_view.block_tapped.emit(id)
 		await _tree().process_frame
 	t.ok(lv.board.is_won(), "thắng")
-	t.ok(await _wait_until(func() -> bool: return _pop(lv, "ClaimButton") != null), "popup thắng")
+	t.ok(await _wait_until(func() -> bool: return _pop(lv, "ContinueButton") != null), "thẻ thắng như level thường")
+	t.ok(_pop(lv, "LbRow") == null and _pop(lv, "FeatureProgress") == null, "không bảng xếp hạng, không thanh tính năng")
+	var reward := _pop(lv, "GoldReward")
+	t.ok(reward != null and (reward.get_node("RewardLabel") as Label).text == "x1", "ô thưởng là booster x1")
+	var coins0 := int(g.s.coins)
 	t.eq(_inv_total(g), inv0 + 1, "+1 booster")
 	t.eq(SpecialBomb.wins(g.s), 1, "1 trận thắng")
 	t.eq(SpecialBomb.board(g.s), 2, "sang bàn 2")
 	t.eq(int(g.s.level), OPEN, "level chính không tăng")
-	_press(lv, "ClaimButton")
-	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and not bool(lv.attempt.get("special", false))),
-		"vào level chính kế")
-	t.eq(lv.title_label.text, lv.tr("level_title") % OPEN, "Level %d" % OPEN)
+	t.eq(int(g.s.coins), coins0, "không cộng gold")
+	t.eq(((_pop(lv, "ContinueButton") as Node).find_child("Text (TMP)", true, false) as Label).text, lv.tr("level_home"),
+		"nút dưới là Trang chủ")
+	# The first Special x2 is free: FreeBtn (no video icon), the label says so, no rewarded ad.
+	var x2 := _pop(lv, "X2Button") as Button
+	t.ok(x2 != null and x2.get_node_or_null("Image") == null, "x2 lần đầu là nút miễn phí, không icon video")
+	t.ok(x2.find_child("Text (TMP)", true, false) != null
+		and (x2.find_child("Text (TMP)", true, false) as Label).text == lv.tr("win_x2_free"), "nhãn x2 miễn phí")
+	t.ok(not bool(g.s.meta.get("special_x2_used", false)), "chưa dùng x2 miễn phí")
+	x2.pressed.emit()
+	t.ok(await _wait_until(func() -> bool: return bool(g.s.meta.get("special_x2_used", false))), "x2 miễn phí xong")
+	t.eq(_inv_total(g), inv0 + 2, "x2: thêm 1 booster cùng loại")
+	var closed: Array = []
+	lv.closed.connect(func(r: Variant) -> void: closed.append(r))
+	_press(lv, "ContinueButton")
+	t.ok(await _wait_until(func() -> bool: return not closed.is_empty()), "về Home")
+	t.eq(str((closed[0] as Dictionary).get("action", "")), "home", "action home")
+	t.eq(int(g.s.level), OPEN, "level chính vẫn như cũ")
 	t.eq(int(g.lives_view().count), lives0, "không mất mạng")
 	lv.free()
+
+
+func test_special_x2_first_free_then_video(t: T) -> void:
+	var g := _g()
+	var p: Node = _tree().root.get_node("Platform")
+	g.s.special["wins"] = 0
+	var a: Dictionary = g.special_start()
+	t.ok(not a.is_empty(), "vào Special")
+	var res: Dictionary = g.on_level_won(a)
+	t.ok(res.x2_available and res.x2_free, "lần đầu x2 miễn phí")
+	var inv0 := _inv_total(g)
+	t.ok(await g.special_claim_x2(), "nhận x2 miễn phí")
+	t.eq(_inv_total(g), inv0 + 1, "+1 booster")
+	t.eq(p.ads.calls.size(), 0, "không gọi quảng cáo")
+	SpecialBomb.add_bonus(g.s, 2)
+	var a2: Dictionary = g.special_start()
+	t.ok(not a2.is_empty(), "vào Special lần 2")
+	var res2: Dictionary = g.on_level_won(a2)
+	t.ok(res2.x2_available and not res2.x2_free, "lần sau x2 cần video")
+	p.ads.set_ready(false, false)
+	var a3: Dictionary = g.special_start()
+	t.ok(not a3.is_empty() and not bool(g.on_level_won(a3).x2_available), "không có video thì không mời x2")
 
 
 func test_bomb_explodes(t: T) -> void:

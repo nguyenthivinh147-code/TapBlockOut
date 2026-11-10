@@ -36,7 +36,7 @@ const PARTS := {
 		"cell": "Panel/ProfileMenu/BG/Frame/Viewport/Content/Profile_FrameCells",
 		"image": "FrameImage", "group": "Panel/ProfileMenu/FrameButtonGroup", "label": "profile_frames"},
 }
-## Buy and video side by side: 286-wide pills 20 apart (SettingMainMenuLayer's two pills sit 20 apart).
+## Items only league rewards give: Leaderboard note and button side by side, 286-wide pills 20 apart.
 const PAIR_X := 153.0
 const BTN_Y := -364.0
 ## "Unlocked at Level N" line in place of Buy and video (items only Road Trip gives, Road Trip still locked).
@@ -53,7 +53,6 @@ var back_btn: Button = null
 var ui: UView = null
 var tab_buttons: Dictionary = {}
 var use_button: Button = null
-var buy_button: Button = null
 var video_button: Button = null
 ## Road Trip button of the shown tab (item only a Road Trip box gives, Road Trip open); null otherwise.
 var road_trip_button: Button = null
@@ -66,7 +65,7 @@ var _args: Dictionary = {}
 var _built: bool = false
 var _tab: String = "avatar"
 var _sel: Dictionary = {}
-## kind -> {"save", "used", "buy", "video": Button}
+## kind -> {"save", "used", "video": Button, ...}
 var _actions: Dictionary = {}
 var _busy: bool = false
 
@@ -232,20 +231,14 @@ func _wire_kind(kind: String) -> void:
 	ui.text(g + "/SaveButton/Text (TMP)", tr("profile_equip"))
 	var used := ui.button(g + "/UsedButton")
 	ui.text(g + "/UsedButton/Text (TMP)", tr("profile_equipped"))
-	var buy := ui.on_click(g + "/BuyButton", _on_buy_selected)
-	# Gold buy button like every gold price: atlas_main's yellow pill, coin then price (the prefab has price then coin).
-	UnityKit.gold_pill(buy)
-	var coin := ui.node(g + "/BuyButton/Image")
-	UnityKit.gold_coin(coin)
-	var price := ui.node(g + "/BuyButton/Text (TMP)")
-	if coin.get_index() > price.get_index():
-		buy.move_child(coin, price.get_index())
-	_actions[kind] = {"save": save, "used": used, "buy": buy, "video": _video_button(g)}
+	# Cosmetics are not sold for gold (design.md mục 5): the prefab's BuyButton stays hidden.
+	ui.node(g + "/BuyButton").visible = false
+	_actions[kind] = {"save": save, "used": used, "video": _video_button(g)}
 	_actions[kind].merge(_road_trip_parts(g))
 	_actions[kind].merge(_league_parts(g))
 
 
-## Where Buy and video sit, for an item only a Road Trip box gives (Cosmetics.road_trip_box): a green Road Trip button
+## Where the video button sits, for an item only a Road Trip box gives (Cosmetics.road_trip_box): a green Road Trip button
 ## that opens the Road Trip screen, or "Unlocked at Level N" while Road Trip is still locked.
 func _road_trip_parts(group: String) -> Dictionary:
 	var save: Dictionary = (ui.node(group + "/SaveButton") as Control).get_meta("u_rect")
@@ -271,8 +264,8 @@ func _on_road_trip() -> void:
 	closed.emit({"action": "road_trip"})
 
 
-## Where Buy and video sit, for an item only league rewards give (Cosmetics.league_only): the line "Reach Platinum
-## League or higher in the Leaderboard to get it" (Buy's place) beside a green Leaderboard button that opens the
+## Where the video button sits, for an item only league rewards give (Cosmetics.league_only): the line "Reach Platinum
+## League or higher in the Leaderboard to get it" (left) beside a green Leaderboard button that opens the
 ## Leaderboard popup over Home, or "Unlocked at Level N" in the button's place while the Leaderboard is locked.
 func _league_parts(group: String) -> Dictionary:
 	var save: Dictionary = (ui.node(group + "/SaveButton") as Control).get_meta("u_rect")
@@ -301,8 +294,8 @@ func _on_league() -> void:
 	closed.emit({"action": "ranking"})
 
 
-## The game's video unlock (VideoButton in the scene): SaveButton copy on the blue pill, TV left of the text like
-## PopupRewardLayer's x2.
+## The game's video unlock (VideoButton in the scene), the only way to get a sale item: SaveButton copy on the blue
+## pill, TV left of the text like PopupRewardLayer's x2. Centered under the grid.
 func _video_button(group: String) -> Button:
 	var b := ui.node(group).get_node("VideoButton") as Button
 	UnityUI.set_text(b.get_node("Text (TMP)") as Label, tr("ads_watch"))
@@ -334,6 +327,9 @@ func refresh() -> void:
 		var kind := _kind_of(str(id))
 		var picked := str(id) == str(_sel.get(kind, ""))
 		(e.panel as Button).button_pressed = picked
+		# ToggleAnimator disables a pressed toggle ("a selected tab cannot be pressed again"); a cell must never stay
+		# disabled, or the avatar previewed before this one cannot be tapped again.
+		(e.panel as Button).disabled = false
 		# ToggleAnimator.gameObjects (the Select ring) is not applied by unity_ui.gd.
 		(e.ring as Control).visible = picked
 		(e.check as Control).visible = str(id) == (av_id if kind == "avatar" else fr_id)
@@ -343,7 +339,7 @@ func refresh() -> void:
 		_refresh_actions(kind, owned, av_id if kind == "avatar" else fr_id)
 
 
-## ProfileUICoreLayer.OnAvatarSelected: Used when worn, OK when owned, Buy (+ the game's video) otherwise.
+## ProfileUICoreLayer.OnAvatarSelected: Used when worn, OK when owned, the video button otherwise.
 func _refresh_actions(kind: String, owned: Array, worn: String) -> void:
 	var a: Dictionary = _actions[kind]
 	var id := str(_sel.get(kind, ""))
@@ -357,7 +353,6 @@ func _refresh_actions(kind: String, owned: Array, worn: String) -> void:
 	var lb_open := lb_only and Game.lb_open()
 	(a.used as Control).visible = on
 	(a.save as Control).visible = have and not on
-	(a.buy as Control).visible = sale
 	(a.video as Control).visible = sale
 	(a.rt as Control).visible = rt_open
 	(a.rt_locked as Control).visible = rt_only and not rt_open
@@ -371,15 +366,10 @@ func _refresh_actions(kind: String, owned: Array, worn: String) -> void:
 			Leaderboard.league_id(maxi(Leaderboard.cos_from(), 0))))
 		if not lb_open:
 			UnityUI.set_text(a.lb_locked as Label, tr("common_locked_level") % int(Config.UNLOCK.get("leaderboard", 0)))
-	var group := str(PARTS[kind].group)
 	if sale:
-		ui.text(group + "/BuyButton/Text (TMP)", str(Config.cosmetic_price(id)))
-		_place(a.buy, -PAIR_X)
-		_place(a.video, PAIR_X)
-		ui.relayout(group + "/BuyButton")
+		_place(a.video, 0.0)
 	if kind == _tab:
 		use_button = (a.used if on else a.save) if have else null
-		buy_button = a.buy if sale else null
 		video_button = a.video if sale else null
 		road_trip_button = a.rt if rt_open else null
 		league_button = a.lb if lb_open else null
@@ -436,10 +426,6 @@ func _on_equip_selected() -> void:
 	_on_equip(str(_sel.get(_tab, "")))
 
 
-func _on_buy_selected() -> void:
-	_on_buy(str(_sel.get(_tab, "")))
-
-
 func _on_video_selected() -> void:
 	_on_video(str(_sel.get(_tab, "")))
 
@@ -447,15 +433,6 @@ func _on_video_selected() -> void:
 func _on_equip(id: String) -> void:
 	_say("")
 	Game.cos_equip(id)
-
-
-func _on_buy(id: String) -> void:
-	if Game.cos_buy(id):
-		_say("")
-		Sfx.play("coin")
-		Game.cos_equip(id)
-	else:
-		_say(tr("profile_not_enough"))
 
 
 func _on_video(id: String) -> void:

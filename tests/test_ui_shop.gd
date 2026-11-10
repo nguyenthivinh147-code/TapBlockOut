@@ -407,6 +407,28 @@ func test_shop_ads_daily(t: T) -> void:
 	_free(shop)
 
 
+func test_shop_ads_daily_counter_ui(t: T) -> void:
+	var g := _g()
+	var shop := _open(ShopScene)
+	var clock: Control = shop.find_child("AdsDaily", true, false).get_node("Image/Image")
+	t.ok(not clock.visible, "đang đếm lượt: không có icon đồng hồ")
+	for i in 5:
+		await shop.watch_video()
+	t.ok(clock.visible, "hết lượt: hiện icon đồng hồ")
+	var left: int = g.shop_videos_reset_in()
+	t.eq(left, 43200, "12:00 giờ máy: còn 12 giờ đến ngày mới")
+	t.ok(_has_label(shop, shop.HubTop.fmt_time(left)), "hiện giờ đếm ngược")
+	t.ok(shop.video_button.disabled, "nút Watch video khoá")
+	t.eq(shop._video_state, 1, "nút Watch video đổi sang xám")
+	_free(shop)
+	g.test_now = MONDAY + 86400
+	shop = _open(ShopScene)
+	clock = shop.find_child("AdsDaily", true, false).get_node("Image/Image")
+	t.ok(not clock.visible, "ngày mới: bỏ đồng hồ")
+	t.ok(not shop.video_button.disabled, "ngày mới: nút Watch video mở lại")
+	_free(shop)
+
+
 ## Pack names, buy buttons and prices stay inside their cards, and the ADS Daily progress inside its pill, in the
 ## language with the longest strings here (scenes/shop.tscn once saved these nodes snapped to the card corners).
 func test_shop_cards_hold_their_text(t: T) -> void:

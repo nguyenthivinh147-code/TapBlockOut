@@ -56,7 +56,7 @@ Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, đ�
 | Wireframe | Màn | Trạng thái |
 |---|---|---|
 | 2.1 | Home | Xong, có logic |
-| 2.2 | `popup_daily` | Xong, có logic. Game có 7 ô mỗi tuần như wireframe; thêm dòng tuần và ô thứ 7 chiếm cả hàng |
+| 2.2 | `popup_daily` | Xong, có logic. Game có 7 ô mỗi tuần như wireframe; thêm dòng tuần và ô thứ 7 chiếm cả hàng. Từ 2026-11-10 nền khung là `PopupDailyRewardAd` (9-slice, border 110) và tiêu đề là dải ruy băng `Popup_BundleHeart_Title`, chữ trong khung đổi sang trắng cho hợp nền tím. Mỗi ô ngày là thẻ hồng `UI_Shop_Packs_Atlas1_0` (9-slice, dải hồng dưới giữ cao 55 đơn vị; tên ngày nằm trong dải, phần thưởng nằm trong ô sáng), hôm nay viền xanh lá, ngày đã nhận phủ lớp tối và dấu tích ở góc trên phải. Cũng từ 2026-11-10 popup rộng 800 x 1360, ô 216 x 250 (ô ngày cuối 220 cao) để icon và số lượng nằm trọn trong ô sáng; số lượng và tiêu đề cùng viền tím |
 | 3.2, 3.4 | Dải cảnh báo độ khó, HUD level | Xong, có logic. Bánh răng mở 3.5; Home nằm trong popup đó. Nút và khung HUD nay dùng sprite `assets/ui/hud/` theo ảnh ref kẹo (xem `design.md`), không còn icon Figma trên tile |
 | 3.5 | `popup_ingame_settings` | Xong, có logic. Theo hi-fi "Ingame/Setting"; nút xanh là Restart (Figma ghi giá 100 gold), "-1 tim" gắn cả Home và Restart khi bỏ ván mất mạng |
 | 3.6, 3.10 | Hộp thoại trong `level.gd` | Xong, có logic. Dùng hộp thoại chung thay vì scene riêng |

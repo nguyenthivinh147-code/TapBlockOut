@@ -82,8 +82,10 @@ func test_bomb_plan(t: T) -> void:
 			for b in plan:
 				ids[b.id] = true
 				t.eq(int(b.taps), int(taps[b.id]), "taps khớp")
-				t.ok(int(b.taps) >= int(sp.bomb_min_taps) and int(b.taps) <= maxi(int(sp.bomb_min_taps),
-					floori(n * float(sp.bomb_max_share))), "taps trong khoảng")
+				var rg := SpecialBoard.bomb_range(n)
+				t.ok(int(b.taps) >= rg.x and int(b.taps) <= rg.y, "taps trong khoảng")
+				t.ok(int(b.taps) >= int(sp.bomb_min_taps) and float(b.taps) >= float(n) * float(sp.bomb_min_share) - 1.0,
+					"bom nằm sâu: taps >= sàn theo tỉ lệ")
 				t.ok(int(b.seconds) >= SpecialBoard.bomb_seconds(int(b.taps)), "đủ giây cho riêng quả này")
 				t.ok(int(b.seconds) >= last_sec, "giây tăng dần")
 				last_sec = int(b.seconds)

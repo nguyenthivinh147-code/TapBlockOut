@@ -1170,20 +1170,7 @@ func claim_mech_intro(level: int) -> String:
 
 # --- cosmetic ---
 
-func cos_buy(id: String) -> bool:
-	var price := Config.cosmetic_price(id)
-	if not Cosmetics.buy(s, id):
-		return false
-	if price > 0:
-		Platform.spend("gold", price, "cosmetic")
-	coins_changed.emit(int(s.coins))
-	cos_changed.emit()
-	log_event("cos_buy", {"id": id, "price": price, "how": "gold"})
-	save_now()
-	return true
-
-
-## Món chỉ có từ Road Trip (Cosmetics.for_sale sai) không mở bằng video.
+## Cách duy nhất để có món bán (không bán gold). Món chỉ có từ Road Trip hay league (Cosmetics.for_sale sai) không mở bằng video.
 func cos_unlock_video(id: String) -> bool:
 	if not Cosmetics.for_sale(id) or Cosmetics.is_owned(s, id):
 		return false
@@ -1241,6 +1228,11 @@ func shop_watch_video() -> bool:
 
 func shop_videos_left() -> int:
 	return ShopVideos.remaining(s, today())
+
+
+## Giây còn lại đến ngày mới, lúc đó video gold trong shop được đặt lại.
+func shop_videos_reset_in() -> int:
+	return Clock.seconds_to_next_day(now(), _tz())
 
 
 func shop_opened(source: String = "") -> void:
@@ -2213,21 +2205,28 @@ func _special_won(attempt: Dictionary) -> Dictionary:
 	ftue("first_win")
 	save_now()
 	log_event("sp_reward", {"level": n, "kind": kind, "wins": SpecialBomb.wins(s)})
-	var avail := Platform.ready_rewarded()
-	if avail:
+	# The first Special x2 ever is free (no video, no video icon on the button); later ones need the rewarded ad.
+	var free := not bool(s.meta.get("special_x2_used", false))
+	var avail := free or Platform.ready_rewarded()
+	if avail and not free:
 		offer_video("special_x2")
 	return {"special": true, "level": n, "reward": kind, "x2_available": avail, "coins": 0, "move_coins": 0,
-		"x2_free": false, "rate_prompt": false, "progress": {}, "unlocked": [] as Array[String]}
+		"x2_free": free, "rate_prompt": false, "progress": {}, "unlocked": [] as Array[String]}
 
 
-## Xem quảng cáo `special_x2`: thêm 1 booster cùng loại với thưởng vừa nhận. Một lần mỗi trận thắng.
+## x2 Special: thêm 1 booster cùng loại với thưởng vừa nhận. Một lần mỗi trận thắng. Lần đầu tiên miễn phí (không
+## quảng cáo), từ lần sau xem rewarded `special_x2`.
 func special_claim_x2() -> bool:
 	if _sp_reward == "":
 		return false
 	var kind := _sp_reward
-	if not await watch("special_x2", {"kind": kind}):
+	var free := not bool(s.meta.get("special_x2_used", false))
+	if not free and not await watch("special_x2", {"kind": kind}):
+		return false
+	if _sp_reward == "":
 		return false
 	_sp_reward = ""
+	s.meta["special_x2_used"] = true
 	Wallet.inv_add(s, kind, 1)
 	inv_changed.emit()
 	save_now()

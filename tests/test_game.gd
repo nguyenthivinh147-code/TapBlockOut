@@ -489,13 +489,11 @@ func test_daily_gift_and_next(t: T) -> void:
 
 func test_cosmetics(t: T) -> void:
 	var g := _g()
-	t.eq(g.cos_buy("avatar_01"), true, "mua 50")
-	t.eq(int(g.s.coins), 950, "ví")
-	t.eq(g.cos_buy("avatar_01"), false, "đã có")
+	t.eq(await g.cos_unlock_video("avatar_01"), true, "mở bằng video")
+	t.eq(int(g.s.coins), 1000, "không trừ gold")
+	t.eq(await g.cos_unlock_video("avatar_01"), false, "đã có thì không xem")
 	t.eq(g.cos_equip("avatar_01"), true, "đeo")
-	t.eq(await g.cos_unlock_video("frame_02"), true, "mở bằng video")
-	t.eq(int(g.s.coins), 950, "không trừ gold")
-	t.eq(await g.cos_unlock_video("frame_02"), false, "đã có thì không xem")
+	t.eq(await g.cos_unlock_video("frame_02"), true, "frame cũng mở bằng video")
 	t.eq(_p().an.count("cos_buy"), 2, "log cos_buy")
 
 

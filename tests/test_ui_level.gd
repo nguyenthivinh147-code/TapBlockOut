@@ -365,7 +365,8 @@ func test_rescue_inventory(t: T) -> void:
 	t.ok(await _wait_until(_playing.bind(lv)), "chơi tiếp")
 	t.eq(lv.board.moves_left(), 3, "+3 MOVES")
 	t.eq(int(g.s.inv.move), 0, "trừ kho")
-	t.eq(lv.moves_label.text, str(3), "HUD cập nhật")
+	t.ok(lv.get_node_or_null("LocalPopups/MoveFx") != null, "cứu lượt diễn hiệu ứng +Move như booster")
+	t.ok(await _wait_until(func() -> bool: return lv.moves_label.text == "3"), "HUD cập nhật")
 	lv.free()
 
 
@@ -1149,3 +1150,25 @@ func test_caption_above_frame(t: T) -> void:
 	lv._set_tut("")
 	t.ok(not tut.visible, "không có chữ thì ẩn bong bóng")
 	host.free()
+
+
+func test_last_move_warning(t: T) -> void:
+	_g(1)
+	var lv := _mount()
+	await _wait_until(_playing.bind(lv))
+	var warn := lv.get_node("LowMovesWarn") as ColorRect
+	t.ok(warn != null and not warn.visible, "nhiều lượt: chưa có viền đỏ")
+	t.eq(warn.mouse_filter, Control.MOUSE_FILTER_IGNORE, "viền đỏ không nuốt chạm")
+	t.ok(warn.get_index() < lv.get_node("LocalPopups").get_index(), "viền đỏ nằm dưới popup")
+	lv.board.add_moves(1 - lv.board.moves_left())
+	lv._refresh_hud()
+	t.eq(lv.moves_label.text, "1", "còn 1 lượt")
+	t.ok(warn.visible, "còn 1 lượt: viền đỏ hiện")
+	await _wait_until(func() -> bool: return lv.moves_chip.scale.x > 1.01, 1500)
+	t.ok(lv.moves_chip.scale.x > 1.01, "chip lượt phập phồng")
+	lv.board.add_moves(3)
+	lv._refresh_hud()
+	await _wait_until(func() -> bool: return not warn.visible, 1500)
+	t.ok(not warn.visible, "thêm lượt: viền đỏ tắt")
+	t.eq(lv.moves_chip.scale, Vector2.ONE, "chip về cỡ thường")
+	lv.free()

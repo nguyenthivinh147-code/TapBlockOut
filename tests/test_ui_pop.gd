@@ -8,6 +8,7 @@ const BoardState := preload("res://src/core/board_state.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const PopFuse := preload("res://src/ui/pop_fuse.gd")
 const Config := preload("res://src/config.gd")
+const Unlocks := preload("res://src/meta/unlocks.gd")
 const SCENE := "res://scenes/board_view.tscn"
 const POPUP := "res://scenes/booster_unlocked.tscn"
 
@@ -133,3 +134,8 @@ func test_intro_popup_title(t: T) -> void:
 	t.eq(pop.ui.image(P + "BoosterImage/Icon").get("tex"), ThemeKit.icon("mech_pop"), "candy bomb icon")
 	t.ok(ThemeKit.icon("mech_pop") != null, "icon exists")
 	pop.queue_free()
+
+
+func test_every_mech_has_an_icon(t: T) -> void:
+	for m in Unlocks.MECHS:
+		t.ok(ThemeKit.has_real_icon("mech_" + str(m)), "mech_%s icon file exists (new-feature notice, win card)" % m)

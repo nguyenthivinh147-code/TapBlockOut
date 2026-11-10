@@ -10,16 +10,18 @@
 [ext_resource type="FontFile" path="res://assets/fonts/baloo.res" id="8_nwt5s"]
 [ext_resource type="Texture2D" path="res://assets/ui/cc/UI_Shop_Popup_Atlas.png" id="9_gexg3"]
 [ext_resource type="Texture2D" path="res://assets/ui/cc/Resources_UI_Maincenter.png" id="10_42vjy"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/PopupDailyRewardAd.png" id="11_dbg"]
+[ext_resource type="Texture2D" path="res://assets/ui/cc/Popup_BundleHeart_Title.png" id="12_dttl"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cxk2h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g4d6u"]
 shader = ExtResource("7_f4h2j")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
-shader_parameter/underlay_color = Color(0.20392157, 0.003921569, 0.20784314, 1)
+shader_parameter/outline_color = Color(0.33, 0.05, 0.46, 1)
+shader_parameter/underlay_color = Color(0.33, 0.05, 0.46, 1)
 shader_parameter/face_edge = 0.446428570625
-shader_parameter/outline_half = 0.1285714305
+shader_parameter/outline_half = 0.17
 shader_parameter/underlay_on = true
 shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.26)
@@ -255,10 +257,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -362.0
-offset_top = -585.0
-offset_right = 362.0
-offset_bottom = 585.0
+offset_left = -400.0
+offset_top = -680.0
+offset_right = 400.0
+offset_bottom = 680.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 metadata/u = {
@@ -270,7 +272,7 @@ metadata/u_rect = {
 "amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0.5, 0.5),
 "pos": Vector2(0, 0),
-"size": Vector2(724, 1170)
+"size": Vector2(800.0, 1360.0)
 }
 
 [node name="Bg" parent="Layer/Canvas/PopupOkLayer/Panel" index="0" unique_id=701902053]
@@ -279,16 +281,16 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -362.0
-offset_top = -585.0
-offset_right = 362.0
-offset_bottom = 585.0
+offset_left = -400.0
+offset_top = -680.0
+offset_right = 400.0
+offset_bottom = 680.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
 script = ExtResource("4_unmc1")
-tex = ExtResource("5_mu8br")
-region = Rect2(0, 0, 800, 800)
-border = Vector4(120, 120, 120, 120)
+tex = ExtResource("11_dbg")
+region = Rect2(0, 0, 1024, 1024)
+border = Vector4(110, 110, 110, 110)
 kind = 1
 fill_method = 4
 metadata/u = {
@@ -296,7 +298,7 @@ metadata/u = {
 "img": {
 "ppu": 1.0,
 "rt": true,
-"sp": "Popup2"
+"sp": "PopupDailyRewardAd"
 },
 "n": "Bg"
 }
@@ -305,22 +307,23 @@ metadata/u_rect = {
 "amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0.5, 0.5),
 "pos": Vector2(0, 0),
-"size": Vector2(724, 1170)
+"size": Vector2(800.0, 1360.0)
 }
 
 [node name="Image" parent="Layer/Canvas/PopupOkLayer/Panel" index="1" unique_id=1874760295]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -225.0
-offset_top = -87.85
-offset_right = 225.0
-offset_bottom = 87.85
+offset_left = -400.0
+offset_top = -249.5
+offset_right = 400.0
+offset_bottom = 97.5
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
 script = ExtResource("4_unmc1")
-tex = ExtResource("6_2ib3s")
-region = Rect2(384, 1332, 368, 108)
+tex = ExtResource("12_dttl")
+region = Rect2(0, 0, 1024, 445)
+border_scale = 2.0
 preserve_aspect = true
 fill_method = 4
 metadata/u = {
@@ -328,7 +331,7 @@ metadata/u = {
 "img": {
 "ppu": 1.0,
 "rt": true,
-"sp": "Resources_moved_UI_Maincenter:UI_Maincenter_60"
+"sp": "Popup_BundleHeart_Title"
 },
 "n": "Image"
 }
@@ -336,8 +339,8 @@ metadata/u_rect = {
 "amax": Vector2(0.5, 1),
 "amin": Vector2(0.5, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 0),
-"size": Vector2(450, 175.7)
+"pos": Vector2(0, 76),
+"size": Vector2(800.0, 347.0)
 }
 
 [node name="txtHeader" parent="Layer/Canvas/PopupOkLayer/Panel/Image" index="0" unique_id=1160393672]
@@ -348,9 +351,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -227.7163
-offset_top = -52.0
+offset_top = 40.0
 offset_right = 227.7163
-offset_bottom = 52.0
+offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
@@ -360,7 +363,7 @@ theme_override_constants/line_spacing = -8
 theme_override_constants/outline_size = 0
 theme_override_constants/shadow_outline_size = 0
 theme_override_fonts/font = SubResource("FontVariation_t5i23")
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 72
 theme_override_styles/normal = SubResource("StyleBoxEmpty_wvnh1")
 text = "Daily gift"
 horizontal_alignment = 1
@@ -378,7 +381,7 @@ metadata/u_rect = {
 "amin": Vector2(0.5, 0.5),
 "pivot": Vector2(0.5, 0.5),
 "pos": Vector2(0, 0),
-"size": Vector2(455.4326, 104)
+"size": Vector2(455.4326, 110)
 }
 metadata/u_txt = {
 "auto": [18.0, 64.0],
@@ -839,14 +842,14 @@ metadata/u_txt = {
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_d4owk")
 layout_mode = 0
-offset_left = 60.0
-offset_top = 118.0
-offset_right = 664.0
-offset_bottom = 174.0
+offset_left = 52
+offset_top = 130
+offset_right = 748.0
+offset_bottom = 186
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -5
 theme_override_constants/outline_size = 0
@@ -869,8 +872,8 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(362, -146),
-"size": Vector2(604, 56)
+"pos": Vector2(400.0, -158),
+"size": Vector2(696.0, 56)
 }
 metadata/u_txt = {
 "auto": [18.0, 40.0],
@@ -887,14 +890,14 @@ metadata/u_sub = true
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_d4owk")
 layout_mode = 0
-offset_left = 60.0
-offset_top = 804.0
-offset_right = 664.0
-offset_bottom = 860.0
+offset_left = 52
+offset_top = 990
+offset_right = 748.0
+offset_bottom = 1046
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -5
 theme_override_constants/outline_size = 0
@@ -916,8 +919,8 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(362, -832),
-"size": Vector2(604, 56)
+"pos": Vector2(400.0, -1018),
+"size": Vector2(696.0, 56)
 }
 metadata/u_txt = {
 "auto": [18.0, 40.0],
@@ -933,10 +936,10 @@ metadata/u_sub = true
 [node name="ClaimButton" type="Button" parent="Layer/Canvas/PopupOkLayer/Panel/Content" index="5" unique_id=1688224537]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 136.3117
-offset_top = 870.0
-offset_right = 587.6883
-offset_bottom = 1010.0
+offset_left = 174.3117
+offset_top = 1060
+offset_right = 625.6883
+offset_bottom = 1200
 pivot_offset_ratio = Vector2(0.5, 1)
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_cxk2h")
@@ -972,7 +975,7 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0),
-"pos": Vector2(362, -1010),
+"pos": Vector2(400.0, -1130),
 "size": Vector2(451.3766, 140)
 }
 metadata/u_sub = true
@@ -1077,10 +1080,10 @@ metadata/u_rect = {
 unique_name_in_owner = true
 visible = false
 layout_mode = 0
-offset_left = 136.3117
-offset_top = 870.0
-offset_right = 587.6883
-offset_bottom = 1010.0
+offset_left = 174.3117
+offset_top = 1060
+offset_right = 625.6883
+offset_bottom = 1200
 pivot_offset_ratio = Vector2(0.5, 1)
 focus_mode = 0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_cxk2h")
@@ -1116,7 +1119,7 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0),
-"pos": Vector2(362, -1010),
+"pos": Vector2(400.0, -1130),
 "size": Vector2(451.3766, 140)
 }
 metadata/u_sub = true
@@ -1220,14 +1223,14 @@ metadata/u_rect = {
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_d4owk")
 layout_mode = 0
-offset_left = 60.0
-offset_top = 1024.0
-offset_right = 664.0
-offset_bottom = 1120.0
+offset_left = 52
+offset_top = 1216
+offset_right = 748.0
+offset_bottom = 1312
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -4
 theme_override_constants/outline_size = 0
@@ -1249,8 +1252,8 @@ metadata/u_rect = {
 "amax": Vector2(0, 1),
 "amin": Vector2(0, 1),
 "pivot": Vector2(0.5, 0.5),
-"pos": Vector2(362, -1072),
-"size": Vector2(604, 96)
+"pos": Vector2(400.0, -1264),
+"size": Vector2(696.0, 96)
 }
 metadata/u_txt = {
 "auto": [18.0, 36.0],

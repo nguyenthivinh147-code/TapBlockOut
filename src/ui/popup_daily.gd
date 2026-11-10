@@ -3,7 +3,7 @@ extends Control
 ## setup(args: Dictionary); signal closed(result) với result = {claimed: bool, ahead: bool}.
 ## No Unity prefab (docs/UI_UNITY.md): PopupOkLayer frame. Each day is a copy of ProfileLayer's frame cell
 ## (Profile_FrameCells: swirl, orange frame, green Select glow for today, Lock veil and Equipped tick for a claimed
-## day) holding PopupRewardLayer's ItemReward per reward on that layer's grid spacing (32). The buttons are
+## day) holding PopupRewardLayer's ItemReward per reward. The buttons are
 ## DailyRewardAdLayer's ClaimFreeBtn and WatchAdsBtn. Frame, texts and buttons are nodes of scenes/popup_daily.tscn;
 ## the day cells are built from Game.daily_view().
 
@@ -17,28 +17,37 @@ const Config := preload("res://src/config.gd")
 const RewardFly := preload("res://src/ui/reward_fly.gd")
 
 const CELLS := "Profile_FrameCells"
-## Wide cell (the week's big gift): PopupOkLayer's well and the sliced outline of the Profile cell's Lock, tinted
-## with the colours sampled from the cell frame (UI_Maincenter_64) and the Select glow (UI_Maincenter_66).
-const WELL := "Resources_moved_UI_Maincenter:UI_Maincenter_68"
+## Every cell is the pink card of the shop packs (UI_Shop_Packs_Atlas1_0: pink well above, pink band below) sliced
+## so the band stays PINK_BAND tall; the day name sits in the band, the rewards in the well. Today gets the green
+## outline (the sliced outline of PopupOkLayer's well family) tinted with the colour sampled from Select.
+const PINK := "UI_Shop_Packs_Atlas1:UI_Shop_Packs_Atlas1_0"
+## Card inside the 512x312 sprite (without the soft shadow) and its 9-slice border in texture px: l, t, r, b.
+const PINK_REGION := Rect2(8, 8, 496, 298)
+const PINK_BORDER := Vector4(40, 40, 40, 100)
+const PINK_SCALE := 0.55
+const PINK_BAND := 55.0
+const PINK_TOP := 22.0
 const FRAME_WIDE := "Resources_UI_Maincenter:UI_Maincenter_23"
-const WIDE_FRAME := "ffb24dff"
 const WIDE_TODAY := "18f418ff"
 ## RewardItemSO gold icon; the TV of the video buttons marks the day a video can claim ahead.
 const GOLD_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_3"
 const VIDEO_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_5"
-## Error text colour of PopupWinStreakMain's time (used by Weekly Pass too).
-const WARN := "ec304fff"
+## Text colours on the dark purple PopupDailyRewardAd panel: normal and error.
+const TEXT := "ffffffff"
+const WARN := "ff8aa0ff"
 
-## Layout in Unity canvas units from the panel's top-left corner (PopupOkLayer frame, 724 wide).
+## Layout in Unity canvas units from the panel's top-left corner (popup frame, 800 wide).
 const COLS := 3
-## Profile_FrameCells is 172 square; 180 fills three columns of the frame.
-const CELL := Vector2(180, 180)
+## Three pink cards fill a row of the frame; they are tall enough for a whole ItemReward (icon + quantity) above the band.
+const CELL := Vector2(216, 250)
+## Rows sit closer than columns, and the big-gift row is shorter, so the grid keeps the height of the old square cells.
+const ROW_GAP := 24.0
+const WIDE_H := 220.0
 ## PopupRewardLayer/Panel/Content: GridLayoutGroup spacing 32, cell 148.
-const GAP := 32.0
+const GAP := 24.0
 const ITEM := 148.0
-const ITEM_SCALE := 0.75
-const GRID := Vector2(60, 186)
-const DAY_H := 56.0
+const ITEM_SCALE := 1.0
+const GRID := Vector2(52, 200)
 
 var claim_button: Button = null
 var video_button: Button = null
@@ -99,10 +108,10 @@ func _refresh() -> void:
 		var col := i % COLS
 		@warning_ignore("integer_division")
 		var row := i / COLS
-		var rect := Rect2(GRID.x + (CELL.x + GAP) * col, GRID.y + (CELL.y + GAP) * row, CELL.x, CELL.y)
+		var rect := Rect2(GRID.x + (CELL.x + GAP) * col, GRID.y + (CELL.y + ROW_GAP) * row, CELL.x, CELL.y)
 		# The last day is the week's big gift: a whole row of its own.
 		if i == cells.size() - 1:
-			rect = Rect2(GRID.x, GRID.y + (CELL.y + GAP) * ceili(float(i) / COLS), CELL.x * COLS + GAP * (COLS - 1), CELL.y)
+			rect = Rect2(GRID.x, GRID.y + (CELL.y + ROW_GAP) * ceili(float(i) / COLS), CELL.x * COLS + GAP * (COLS - 1), WIDE_H)
 		var card := _make_cell(panel, cells[i], rect, _can_ahead(view, cells[i]))
 		panel.move_child(card, week.get_index() + 1 + i)
 		cell_nodes.append(card)
@@ -117,7 +126,6 @@ func _can_ahead(view: Dictionary, cell: Dictionary) -> bool:
 func _make_cell(panel: Control, cell: Dictionary, rect: Rect2, ahead: bool) -> Control:
 	var state := str(cell.state)
 	var today := state == "current"
-	var wide := rect.size.x > CELL.x * 1.5
 	var s := UnityKit.spec(CELLS, "")
 	s.n = "Cell%d" % int(cell.day)
 	s.erase("tog")
@@ -125,35 +133,43 @@ func _make_cell(panel: Control, cell: Dictionary, rect: Rect2, ahead: bool) -> C
 	var kids: Dictionary = {}
 	for c in s.ch:
 		kids[str(c.n)] = c
-	# Select (green glow) marks today; Lock's dark veil and Equipped's tick mark a claimed day.
+	# Select (green outline) marks today; Lock's dark veil and Equipped's tick mark a claimed day.
+	kids.Image.a = false
+	kids.Select.img.sp = FRAME_WIDE
+	kids.Select.img.t = 1
+	kids.Select.img.ppu = 0.85
+	kids.Select.img.c = WIDE_TODAY
 	kids.Select.a = today
 	kids.Lock.ch = [kids.Lock.ch[0]]
 	kids.Lock.a = state == "claimed"
 	kids.Equipped.a = state == "claimed"
-	if wide:
-		# The week's big gift spans the row: square art would stretch, so the sliced well and outline frame of the
-		# same family take the place of the swirl and the frame.
-		kids.Image.img.sp = WELL
-		kids.Image.img.t = 1
-		kids.FrameImage.img.sp = FRAME_WIDE
-		kids.FrameImage.img.t = 1
-		kids.FrameImage.img.ppu = 0.85
-		kids.FrameImage.img.c = WIDE_TODAY if today else WIDE_FRAME
-		kids.Select.a = false
-		kids.Lock.ch[0].img.sp = WELL
-		kids.Lock.ch[0].img.t = 1
 	var card: Control = UnityKit.add(panel, s, rect).root
 	card.set_meta("state", state)
-	var day := UnityKit.label(card, tr("daily_day") % int(cell.day), Rect2(0, 8, rect.size.x, DAY_H - 8), 36, "ffffffff",
-		"Baloo Outline - Purple")
+	_pink(card.get_node("FrameImage"), Color.WHITE)
+	_pink(card.get_node("Lock"), Color(0, 0, 0, 0.55))
+	card.get_node("Lock/Image").visible = false
+	var day := UnityKit.label(card, tr("daily_day") % int(cell.day), Rect2(0, rect.size.y - PINK_BAND, rect.size.x, PINK_BAND - 6),
+		40, "ffffffff", "Baloo Outline - Purple")
 	day.name = "Day"
 	_rewards(card, cell.reward, rect.size)
 	# Veil and tick above the rewards, like the Profile cell's Lock and Equipped.
 	for n in ["Lock", "Equipped"]:
 		card.move_child(card.get_node(n), -1)
+	# The tick sits in the card's top-right corner, clear of the day name in the band.
+	UnityKit.place(card.get_node("Equipped"), Rect2(rect.size.x - 66.0, 6.0, 60.0, 60.0))
 	if ahead:
 		UnityKit.sprite(card, VIDEO_ICON, Rect2(rect.size.x - 62, -14, 76, 76)).name = "Video"
 	return card
+
+
+## Sliced pink card of the shop packs on a built Image node, tinted with `tint`.
+func _pink(node: Control, tint: Color) -> void:
+	var info := UnityUI.sprite_info(PINK)
+	var k := float((info.region as Rect2).size.x) / 512.0
+	var img: Control = UnityUI.image_of(node)
+	img.set("kind", 1)
+	img.set("color", tint)
+	img.call("set_texture", info.tex, Rect2(PINK_REGION.position * k, PINK_REGION.size * k), PINK_BORDER * k, PINK_SCALE / k)
 
 
 ## PopupRewardLayer's ItemReward (icon 117.6, quantity 48) per reward, in a row on that layer's grid spacing.
@@ -169,9 +185,11 @@ func _rewards(card: Control, reward: Dictionary, size: Vector2) -> void:
 	# RewardFly part -> icon, for the flight when the day is claimed.
 	var icons := {}
 	card.set_meta("icons", icons)
-	var box: Control = UnityKit.add(card, {"n": "Rewards", "a": true, "r": [0, 1, 0, 1, 0, 0, size.x, size.y - DAY_H, 0.5, 0.5]},
-		Rect2(0, DAY_H - 6, size.x, size.y - DAY_H + 6)).root
+	var well := size.y - PINK_TOP - PINK_BAND
+	var box: Control = UnityKit.add(card, {"n": "Rewards", "a": true, "r": [0, 1, 0, 1, 0, 0, size.x, well, 0.5, 0.5]},
+		Rect2(0, PINK_TOP, size.x, well)).root
 	var k := minf(ITEM_SCALE, (size.x - 16.0) / maxf(1.0, (ITEM + GAP) * list.size() - GAP))
+	k = minf(k, well / ITEM)
 	var step := (ITEM + GAP) * k
 	var x0 := (size.x - step * list.size() + GAP * k) * 0.5
 	for i in list.size():
@@ -180,7 +198,11 @@ func _rewards(card: Control, reward: Dictionary, size: Vector2) -> void:
 		if list[i][0] != "":
 			s.ch[0].img.sp = list[i][0]
 		s.ch[0].img.pa = true
-		var v := UnityKit.add(box, s, Rect2(x0 + step * i, 0, ITEM, ITEM))
+		# Quantity: purple outline like the day name (the prefab's black one reads harsh on the pink card).
+		for c in s.ch:
+			if str(c.n) == "Quantity":
+				c.txt.mat = "Baloo Outline - Purple"
+		var v := UnityKit.add(box, s, Rect2(x0 + step * i, (well - ITEM * k) * 0.5 - 8.0, ITEM, ITEM))
 		v.root.scale = Vector2.ONE * k
 		v.root.pivot_offset_ratio = Vector2.ZERO
 		if list[i][1] != null:
@@ -219,7 +241,7 @@ func _fail_text() -> String:
 
 
 func _status(text: String, warn: bool = false) -> void:
-	status_label.add_theme_color_override("font_color", Color(WARN if warn else UnityKit.INK))
+	status_label.add_theme_color_override("font_color", Color(WARN if warn else TEXT))
 	UnityUI.set_text(status_label, text)
 
 

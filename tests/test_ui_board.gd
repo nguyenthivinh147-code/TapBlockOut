@@ -200,6 +200,22 @@ func test_blocked_bounce_returns(t: T) -> void:
 	v.queue_free()
 
 
+func test_blocked_repeated_taps_return(t: T) -> void:
+	var board := BoardState.new(_lv(5, 5, [_b("b1", "yellow", [[2, 4]]), _b("b2", "blue", [[2, 1]])]))
+	var v := (load(SCENE) as PackedScene).instantiate() as Control
+	_root().add_child(v)
+	v.setup(board, Vector2(720, 900))
+	var home := v.block_node("b1").position as Vector2
+	# tap lại giữa lúc khối đang lao/bật về: không được lấy vị trí đang lệch làm chỗ cũ
+	for i in 6:
+		v.apply_result(board.tap("b1"))
+		await (Engine.get_main_loop() as SceneTree).create_timer(0.06).timeout
+	var done: bool = await _wait_done(v)
+	t.ok(done, "animation_done sau chuỗi tap")
+	t.eq(v.block_node("b1").position, home, "về đúng chỗ cũ sau nhiều lần tap")
+	v.queue_free()
+
+
 func test_rejected_and_unknown(t: T) -> void:
 	var board := BoardState.new(_lv(3, 3, [_b("b1", "yellow", [[1, 1]])], {"moves": 0}))
 	var v := (load(SCENE) as PackedScene).instantiate() as Control

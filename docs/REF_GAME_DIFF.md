@@ -58,7 +58,7 @@ Bảng tính "số level để đủ tiền" dùng thưởng một level chơi h
 | Nút x2 | Chỉ khi level > 50 và còn ≥ 3 bước | Từ L11 (L1–10 không có thẻ thắng, sang thẳng level kế); L11 miễn phí |
 | Video đổi gold | Không có | Shop: 200 gold mỗi video, tối đa 5 video/ngày |
 | Quà hằng ngày | Daily Win từ L100: thắng 7 ngày liên tiếp được 2 Gợi ý + 1 bước + 1 Búa | Lịch quà 28 ngày từ L14, lỡ ngày không mất chuỗi. Win Streak mới có giao diện, **chưa nối logic** |
-| Avatar, frame | 30 avatar; frame nhận từ thưởng Challenge và Rank | 12 avatar + 12 frame, mua 50 / 75 / 100 gold hoặc 1 video |
+| Avatar, frame | 30 avatar; frame nhận từ thưởng Challenge và Rank | 12 avatar + 12 frame, 1 video mỗi món, không bán gold |
 | Biệt danh | 3–15 ký tự, 4.991 từ cấm | 3–14 ký tự, từ cấm 14 ngôn ngữ cộng tên dành riêng, đổi miễn phí. Tên chỉ hiện ở Profile |
 
 ## 4. Level và độ khó

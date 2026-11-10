@@ -28,6 +28,9 @@ const TIMER_SPEC := ["PopupStarterPack", "Panel/Content/Preview/Platform/Time"]
 ## Card art swapped in at build time (assets/ui/<name>.png): the prefab's art shows the Unity game's boosters.
 const PACK_ART := {"level_pack": "art_level_pack"}
 const PACK_ART_IMAGE := "Panel/Content/Image"
+## Card background replaced at build time (the prefab card draws the Unity cat and boosters).
+const PACK_BG := {"starter_pack": "bg_starter_pack"}
+const PACK_BG_IMAGE := "Panel/Bg (1)"
 
 var offer_id: String = ""
 var sku: String = ""
@@ -164,6 +167,9 @@ func _build_pack(layer: String) -> void:
 	var art := str(PACK_ART.get(offer_id, ""))
 	if art != "" and ui.has(PACK_ART_IMAGE) and ThemeKit.has_real_icon(art):
 		ui.texture(PACK_ART_IMAGE, ThemeKit.icon(art))
+	var bg := str(PACK_BG.get(offer_id, ""))
+	if bg != "" and ui.has(PACK_BG_IMAGE) and ThemeKit.has_real_icon(bg):
+		ui.texture(PACK_BG_IMAGE, ThemeKit.icon(bg))
 	_fill_slots()
 	buy_button = ui.button("Panel/Content/GameObject/FreeBtn")
 	buy_button.connect("clicked", buy)

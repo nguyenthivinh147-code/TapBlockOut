@@ -13,6 +13,10 @@ extends Control
 ## x2: popup tự gọi Game.claim_x2 (xem video, hoặc miễn phí ở L1). Nút x2 là FreeBtn (miễn phí) hoặc ClaimBtn (video).
 ## x2 xong thì thanh trên (HubTop, chỉ mạng và gold) trượt xuống, gold của thẻ bay từ ô gold lên chip gold của thanh
 ## (CoinFx), số trên chip đếm từ ví trước lúc thắng tới ví hiện tại, rồi thẻ tự đóng như Tiếp tục (nút khoá suốt lúc bay).
+## Màn đặc biệt (args.special, Game._special_won): thẻ này dùng lại với ô thưởng là booster args.reward ("x1", x2 thì "x2",
+## booster đã vào kho; chip gold, thẻ bảng xếp hạng và thanh tính năng ẩn vì Special không có gold, điểm, level). Nút x2
+## gọi Game.special_claim_x2 (xem quảng cáo, thêm 1 booster cùng loại), thẻ không tự đóng; nút dưới là Trang chủ (thay Tiếp tục); đóng thì booster bay về nút
+## booster của màn (RewardFly).
 ## closed(result): {x2_offered, x2_taken, rate_prompt, coins}. Bên gọi (level) gọi
 ## Game.leave_win_card(result.x2_offered, result.x2_taken) rồi mới sang level kế.
 
@@ -27,6 +31,7 @@ const UButton := preload("res://src/ui/u_button.gd")
 const UAnim := preload("res://src/ui/u_anim.gd")
 const CoinFx := preload("res://src/ui/coin_fx.gd")
 const HubTop := preload("res://src/ui/hub_top.gd")
+const RewardFly := preload("res://src/ui/reward_fly.gd")
 const X2_PLACEMENT := "x2_coins"
 ## Gold MOVES thừa bắt đầu bay khi thẻ đã hiện chừng này giây.
 const MOVE_GOLD_DELAY := 0.45
@@ -51,6 +56,8 @@ const ROW := "Panel/WinPanel/BG/GameObject"
 const MEDALS := ["UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_14", "UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_15",
 	"UI_Leaderboard_Atlas:UI_Leaderboard_Atlas_24"]
 ## Feature (Unlocks) -> game icon shown in the next-feature frame; hidden when the icon has no file.
+## Booster kind (Game.special_view reward) -> game icon of the Special reward cell.
+const BOOSTER_ICONS := {"hint": "booster_hint", "smash": "booster_smash", "move": "booster_move"}
 const FEATURE_ICONS := {"daily_gift": "ui_gift", "hint": "booster_hint", "shop": "ui_shop", "move": "booster_move",
 	"smash": "booster_smash", "lives": "ui_heart", "leaderboard": "ui_leaderboard", "road_trip": "ui_road_trip",
 	"win_streak": "ic_win_streak", "special_bomb": "special_bomb", "weekly_pass": "ic_weekly_pass",
@@ -105,6 +112,25 @@ func setup(args: Dictionary) -> void:
 	_move_gold_left = _move_coins() > 0 and _moves() > 0 and is_instance_valid(_args.get("moves_chip"))
 	_shown = _coins() - _move_coins() if _move_gold_left else _coins()
 	_build()
+	if _special():
+		# The booster is in the inventory already: its button keeps the old count until the icon flies there as the
+		# card closes (Continue); a cell not shown yet does not fly.
+		RewardFly.hold(self, _fly_reward())
+		closed.connect(func(_r: Variant) -> void:
+			RewardFly.launch(self, _fly_reward(), {_reward_kind(): %GoldReward.get_node("CoinIcon")}), CONNECT_ONE_SHOT)
+
+
+func _special() -> bool:
+	return bool(_args.get("special", false))
+
+
+func _reward_kind() -> String:
+	return str(_args.get("reward", "hint"))
+
+
+## Special: the booster and its x2 copy.
+func _fly_reward() -> Dictionary:
+	return {"items": {_reward_kind(): 2 if _x2_taken else 1}}
 
 
 func _coins() -> int:
@@ -141,15 +167,22 @@ func _build_rewards() -> void:
 	# The gold Reward.prefab (CoinIcon, RewardLabel) is a node of the scene. VictoryPanel's RankPoint reward is left
 	# out: rank points show only on the player's leaderboard card.
 	_reward = %GoldReward.get_node("RewardLabel")
-	UnityUI.set_text(_reward, tr("win_reward") % _shown)
-	# Weekly Pass keys (args.weekly_points > 0: season Active and tutorial seen), then Special Bomb tickets.
-	var keys := int(_args.get("weekly_points", 0))
-	if keys > 0:
-		var kt := tr("weekly_key_reward_one") if keys == 1 else tr("weekly_key_reward") % keys
-		_add_reward("WeeklyKeyReward", "mech_key", kt)
-	var tickets := int(_args.get("special_tickets", 0))
-	if tickets > 0:
-		_add_reward("SpecialTicketReward", "special_bomb", tr("special_ticket_reward") % tickets)
+	if _special():
+		# The booster takes the gold cell: its icon and "x1".
+		var cell := UnityUI.image_of(%GoldReward.get_node("CoinIcon"))
+		cell.set_texture(ThemeKit.icon(str(BOOSTER_ICONS.get(_reward_kind(), "booster_hint"))))
+		cell.preserve_aspect = true
+		UnityUI.set_text(_reward, "x1")
+	else:
+		UnityUI.set_text(_reward, tr("win_reward") % _shown)
+		# Weekly Pass keys (args.weekly_points > 0: season Active and tutorial seen), then Special Bomb tickets.
+		var keys := int(_args.get("weekly_points", 0))
+		if keys > 0:
+			var kt := tr("weekly_key_reward_one") if keys == 1 else tr("weekly_key_reward") % keys
+			_add_reward("WeeklyKeyReward", "mech_key", kt)
+		var tickets := int(_args.get("special_tickets", 0))
+		if tickets > 0:
+			_add_reward("SpecialTicketReward", "special_bomb", tr("special_ticket_reward") % tickets)
 	_space_rewards()
 	ui.relayout(REWARDS)
 
@@ -314,7 +347,8 @@ func _show_unlocked() -> void:
 func _build_buttons() -> void:
 	var cont: Button = ui.button(ROW + "/ContinueBtn")
 	cont.name = "ContinueButton"
-	ui.text(ROW + "/ContinueBtn/Text (TMP)", tr("win_continue"))
+	# Special: the button goes Home (the player has not moved on in the main levels), same node and name.
+	ui.text(ROW + "/ContinueBtn/Text (TMP)", tr("level_home") if _special() else tr("win_continue"))
 	cont.connect("clicked", _on_continue_pressed)
 	if bool(_args.get("x2_available", false)):
 		var free := bool(_args.get("x2_free", false))
@@ -333,14 +367,18 @@ func _build_buttons() -> void:
 			r.size = Vector2(236, (r.size as Vector2).y)
 			UnityUI.apply_rect(_x2_label)
 		_x2_amount = ui.label(ROW + "/" + keep + "/GameObject (1)/Text (TMP)")
-		_x2_amount.text = LbKit.fmt_int(_shown * 2)
-		ui.relayout(ROW + "/" + keep + "/GameObject (1)")
+		if _special():
+			# No gold to double: the amount line (gold icon and number) goes, the cell above shows x1 / x2.
+			ui.show(ROW + "/" + keep + "/GameObject (1)", false)
+		else:
+			_x2_amount.text = LbKit.fmt_int(_shown * 2)
+			ui.relayout(ROW + "/" + keep + "/GameObject (1)")
 		_x2_btn.connect("clicked", _on_x2_pressed)
-		if free:
+		if free and not _special():  # The hint talks about gold; Special has none.
 			var hint := _line("X2HintLabel", tr("tut_x2"), 604.0)
 			hint.get_parent().move_child(hint, (%MessageLabel as Control).get_index())
-		else:
-			Game.offer_video(X2_PLACEMENT)
+		elif not free and not _special():
+			Game.offer_video(X2_PLACEMENT)  # Game._special_won offered special_x2 already.
 	else:
 		ui.show(ROW + "/FreeBtn", false)
 		ui.show(ROW + "/ClaimBtn", false)
@@ -622,8 +660,23 @@ func _on_x2_pressed() -> void:
 		return
 	_finish_move_gold()
 	_set_busy(true)
-	var ok: bool = await Game.claim_x2()
+	var ok := false
+	if _special():
+		ok = await Game.special_claim_x2()
+	else:
+		ok = await Game.claim_x2()
 	if not is_inside_tree():
+		return
+	if ok and _special():
+		_x2_taken = true
+		RewardFly.hold(self, _fly_reward())
+		UnityUI.set_text(_reward, "x2")
+		_punch_reward(1.35)
+		ui.stop(_x2_path)
+		UnityUI.set_text(_x2_label, tr("win_x2_done"))
+		_msg.visible = false
+		Sfx.play("sfx_coin")
+		_set_busy(false)  # Keeps the x2 button off; Continue closes the card.
 		return
 	if ok:
 		_x2_taken = true

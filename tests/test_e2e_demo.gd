@@ -255,7 +255,7 @@ func test_daily_gift_8_days(t: T) -> void:
 	d.finish()
 
 
-func test_buy_avatar_and_video_unlock(t: T) -> void:
+func test_avatar_video_unlock(t: T) -> void:
 	var d := D.new()
 	await d.begin(DIR + "/avatar", 1, 1000, true)
 	var g := d.game()
@@ -263,21 +263,6 @@ func test_buy_avatar_and_video_unlock(t: T) -> void:
 	t.ok(await d.wait_until(func() -> bool: return d.main.current_name == "profile"), "mở Profile")
 	var pr: Control = d.main.current_screen
 	t.ok(pr.cells.has("avatar_01"), "có ô avatar_01")
-	pr.cells["avatar_01"].panel.pressed.emit()
-	pr.buy_button.pressed.emit()
-	var price: int = Config.cosmetic_price("avatar_01")
-	t.eq(int(g.s.coins), 1000 - price, "trừ gold mua avatar")
-	t.ok((g.s.cos.owned as Array).has("avatar_01"), "đã sở hữu")
-	t.eq(str(g.s.cos.avatar), "avatar_01", "tự đeo")
-	t.ok(await d.wait_until(func() -> bool: return pr.buy_button == null and pr.use_button != null), "ô chuyển sang đã có")
-	t.eq(d.plat().an.named("spend").back().params.sink, "cosmetic", "analytics spend cosmetic")
-	t.ok(d.plat().save.last_json.contains("avatar_01"), "đã mirror bản lưu")
-	# thiếu gold
-	g.s.coins = 0
-	pr.cells["avatar_02"].panel.pressed.emit()
-	pr.buy_button.pressed.emit()
-	t.ok(not (g.s.cos.owned as Array).has("avatar_02"), "thiếu gold không mua được")
-	t.eq(pr.status_label.text, _tr("profile_not_enough"), "báo thiếu gold")
 	# đóng video sớm rồi xem hết
 	d.plat().ads.simulate("closed")
 	pr.cells["avatar_03"].panel.pressed.emit()

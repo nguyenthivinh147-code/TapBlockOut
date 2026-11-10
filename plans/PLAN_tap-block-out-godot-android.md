@@ -345,8 +345,7 @@ func rescue_skip(attempt: Dictionary) -> void
 func daily_view() -> Dictionary
 func daily_claim() -> Dictionary
 func daily_claim_next() -> Dictionary
-func cos_buy(id: String) -> bool
-func cos_unlock_video(id: String) -> bool  # sai với món chỉ có từ Road Trip hay thưởng league (Cosmetics.for_sale, Config.ROAD_TRIP_COSMETICS, LEADERBOARD.cosmetics)
+func cos_unlock_video(id: String) -> bool  # cách duy nhất có món bán (không bán gold, từ 2026-11-10); sai với món chỉ có từ Road Trip hay thưởng league (Cosmetics.for_sale, Config.ROAD_TRIP_COSMETICS, LEADERBOARD.cosmetics)
 func cos_equip(id: String) -> bool
 func profile_name() -> String       # biệt danh; chưa có thì ghi và trả mã mặc định "CD_042917"
 func set_profile_name(raw: String) -> String  # "" là đã lưu, hoặc Nickname.ERR_LENGTH | ERR_CHARS | ERR_BANNED ("length" | "chars" | "banned")
@@ -637,7 +636,7 @@ Các module chỉ phụ thuộc `src/config.gd` và `save_schema.gd`. Test tự 
 
 - [x] **Task 2.5: Avatar, frame, video shop**
   - **Allowed Files:** `src/meta/cosmetics.gd`, `src/meta/shop_videos.gd`, `tests/test_cosmetics.gd`, `tests/test_shop_videos.gd`.
-  - **Specs:** `cosmetics`: `catalog()`, `is_owned`, `buy(s,id)->bool`, `unlock(s,id)->bool`, `equip(s,id)->bool`; mặc định `*_00` miễn phí; `buy` trừ thẳng `s.coins`, không gọi `Wallet`. `shop_videos`: `remaining(s,day)`, `note_watch(s,day)->coins`, reset theo ngày, tối đa `shop_video_max`. Video cosmetic không tính vào giới hạn này.
+  - **Specs:** `cosmetics`: `catalog()`, `is_owned`, `unlock(s,id)->bool`, `equip(s,id)->bool`; mặc định `*_00` miễn phí; không có `buy` (không bán gold). `shop_videos`: `remaining(s,day)`, `note_watch(s,day)->coins`, reset theo ngày, tối đa `shop_video_max`. Video cosmetic không tính vào giới hạn này.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_cosmetics && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_shop_videos`
 
 - [x] **Task 2.6: Nhịp interstitial**

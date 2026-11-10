@@ -35,17 +35,29 @@ func _build() -> void:
 	ui.on_click(BUNDLE + "/Button_Purchase", _buy.bind("remove_ads_bundle"))
 	Shop.fill_no_ads_bundle(ui, BUNDLE)
 	ui.text(CARD + "/PackName", tr("shop_remove_ads"))
+	_fit_line(CARD + "/Description", Vector2(-50.0, 90.0))
+	_fit_line(CARD + "/InterAdsTxt", Vector2(-145.0, 80.0))
 	ui.text(CARD + "/Description", tr("ads_noads_one"))
-	ui.text(CARD + "/InterAdsTxt", "- " + tr("ads_noads_two"))
+	ui.text(CARD + "/InterAdsTxt", tr("ads_noads_two"))
 	# The plain pack is no ads only (no gold): its third line ("bonus gold") stays hidden.
 	ui.show(CARD + "/BannerAdsTxt", false)
-	ui.text(CARD + "/Button_Purchase/Text (TMP)", tr("ads_noads_buy") % Platform.price("remove_ads"))
+	ui.text(CARD + "/Button_Purchase/Text (TMP)", Platform.price("remove_ads"))
 	ui.on_click(CARD + "/Button_Purchase", _buy.bind("remove_ads"))
 	ui.text("Continue/Text (TMP)", tr("offer_no_thanks"))
 	ui.on_click("Continue", _send.bind("close"))
 	var restore: RefCounted = ui.sub(%Restore)
 	restore.text("Button/Text (TMP)", tr("shop_restore"))
 	restore.on_click("Button", _restore)
+
+
+## Keeps a description line of the plain card inside the cream panel (right of the ADS icon): the prefab's 394-wide box
+## ran past the panel edge. `y_size` = (top, height) in the prefab's pivot-top coordinates.
+func _fit_line(path: String, y_size: Vector2) -> void:
+	var l: Label = ui.label(path)
+	var r: Dictionary = l.get_meta("u_rect")
+	r.pos = Vector2(Config.REMOVE_ADS_TEXT_X, y_size.x)
+	r.size = Vector2(Config.REMOVE_ADS_TEXT_W, y_size.y)
+	UnityUI.apply_rect(l)
 
 
 func _buy(sku: String) -> void:

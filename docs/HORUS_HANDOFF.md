@@ -93,7 +93,6 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `econ_helper_pack_fail`, `econ_helper_pack_sku` (popup hết MOVES kèm Helper Pack từ lần hết MOVES thứ N liên tiếp ở một level) | 3, helper_great |
 | `features_challenge` (bật/tắt Daily Challenge, "1" hoặc "0"; tắt thì Home ẩn icon) | false (tắt từ 2026-11-08) |
 | `cosmetics_avatar_count`, `cosmetics_frame_count` | 12, 12 |
-| `cosmetics_prices` | 50,75,100 |
 | `cosmetics_default_avatar`, `cosmetics_default_frame` | avatar_00, frame_00 |
 | `offers_min_secs` / `offers_gap_runs` | 300 / 3 |
 | `offers_starter_pack_sku`, `_after_level`, `_at_run`, `_hours` | starter_pack, 10, 12, 48 |
@@ -158,7 +157,7 @@ Tên và tham số chữ thường, `snake_case`, phẳng. Mọi sự kiện do 
 | `rescue_show` | level, price, remaining, index |
 | `rescue_use` | level, method, price, index |
 | `daily_claim` | idx, coins, next (0/1) |
-| `cos_buy` | id, price, how (gold/video/road_trip) |
+| `cos_buy` | id, price, how (video/road_trip; "gold" chỉ ở bản trước 2026-11-10) |
 | `shop_open` | source, level |
 | `offer_show` | id, level |
 | `offer_buy` | id, sku |

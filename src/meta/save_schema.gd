@@ -53,7 +53,7 @@ static func defaults() -> Dictionary:
 		"notify": {"ignored": 0, "plan": [], "asked": false, "hours": []},
 		"settings": {"sfx": true, "music": true, "haptics": true, "notif": true, "lang": ""},
 		"meta": {"install_at": 0, "sessions": 0, "first_session_done": false, "rated": false, "ftue": [],
-			"intro_seen": false},
+			"intro_seen": false, "special_x2_used": false},
 	}
 
 
