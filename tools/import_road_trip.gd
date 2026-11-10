@@ -5,6 +5,11 @@ extends SceneTree
 ## Input axes: a cell's x is its row (up = -x) and y its column (left = -y); the only reading under which every level
 ## clears. The shape is already portrait (10-14 columns, 12-24 rows), so it is kept as is, centred in a grid of at least
 ## Config.BOARD_W x BOARD_H. Each block keeps its exit side in `dir`; moves = StepLimit.
+## Re-cut (2026-11-10, user: more L blocks, fewer straight ones; design.md mục 7 "Road Trip"): the input's cells are
+## cut again into as many blocks by LevelGenerator._tile (L blocks favored, Config.TILE_*), and exit sides are assigned
+## by LevelGenerator._assign (`recut`) aiming at the input's depth (longest chain of waits); a block never takes a side
+## where it would straddle two gates (the cuts below: INPUT_CUT, or the thirds of the shape) unless every side does.
+## The input's blocks only give the cells, the depth and the blocked-at-start count that harden() measures against.
 ## Gates: every side is split into colored gates, each gate its own color, and a block takes the color of the gate it
 ## leaves through (the gate holding most of its cells along that side). Levels up to TWO_GATES_UNTIL have 2 gates a
 ## side (8 colors, cut at INPUT_CUT: column 10, row 14 of the input's 20 x 28 grid); later levels 3 gates a side
@@ -19,6 +24,7 @@ extends SceneTree
 const Config := preload("res://src/config.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
+const LevelGenerator := preload("res://src/core/level_generator.gd")
 
 const OUT_DIR := "res://data/road_trip/"
 const OUT_FILE := "rt_%04d.json"
@@ -38,6 +44,13 @@ const HARDEN_PERCENT := 110
 const FLIP_TRIES := 4
 const PEEL_TRIES := 3
 const CLIMB_STEPS := 6000
+## recut(): RECUT_TRIES cuts, each with up to RECUT_ASSIGN side assignments (weight exponent RECUT_POWER, so most blocks
+## wait at the start like the input); the assignment closest to the input's depth wins, ties to more blocked blocks.
+## Seeded by RECUT_SALT + level number.
+const RECUT_TRIES := 6
+const RECUT_ASSIGN := 10
+const RECUT_POWER := 1
+const RECUT_SALT := 910000
 
 
 func _initialize() -> void:
@@ -62,7 +75,12 @@ func _initialize() -> void:
 			push_error("Không đọc được level " + str(r.LevelDataPath))
 			quit(1)
 			return
-		levels.append(convert_level(src, i + 1, r))
+		var lvl := convert_level(src, i + 1, r)
+		if lvl.is_empty():
+			push_error("level %d: không cắt lại được" % (i + 1))
+			quit(1)
+			return
+		levels.append(lvl)
 	var report := harden_all(levels)
 	var out: Array[String] = []
 	var tiers := {1: 0, 2: 0, 3: 0}
@@ -86,7 +104,34 @@ func _initialize() -> void:
 		f.close()
 	print("road trip: %d level, độ khó %s" % [out.size(), str(tiers)])
 	print(report_text(report))
+	print(shape_text(levels))
 	quit(0)
+
+
+## Share of block shapes over all levels (LevelGenerator._shape_kind): 1 cell, straight, L, other.
+static func shape_text(levels: Array) -> String:
+	var counts := {"1 ô": 0, "thẳng": 0, "L": 0, "khác": 0}
+	var total := 0
+	for d: Dictionary in levels:
+		for b in d.blocks:
+			var cells: Array = []
+			for c in b.cells:
+				cells.append(Vector2i(int(c[0]), int(c[1])))
+			var key := "khác"
+			if cells.size() == 1:
+				key = "1 ô"
+			else:
+				match LevelGenerator._shape_kind(cells):
+					LevelGenerator.SHAPE_STRAIGHT:
+						key = "thẳng"
+					LevelGenerator.SHAPE_L:
+						key = "L"
+			counts[key] += 1
+			total += 1
+	var parts := PackedStringArray()
+	for k in counts:
+		parts.append("%s %.1f%%" % [k, 100.0 * counts[k] / maxi(total, 1)])
+	return "hình khối (%d khối): %s" % [total, ", ".join(parts)]
 
 
 ## One input level (row r of the table) in the game's level format, id = n.
@@ -113,6 +158,15 @@ static func convert_level(src: Dictionary, n: int, r: Dictionary) -> Dictionary:
 		blocks.append({"id": "b%d" % int(b.id), "color": "", "dir": str(b.exitDir), "cells": cells,
 			"ice": 0, "chained_by": "", "inner_color": "", "fog": false})
 	var count := 2 if n <= TWO_GATES_UNTIL else 3
+	var input := {"w": w, "h": h, "blocks": blocks}
+	var p0 := ways(input)
+	var orig: Array[int] = []
+	for b in blocks:
+		orig.append(SIDE_ORDER.find(str(b.dir)))
+	var k_ref := _blocked(p0, orig)
+	blocks = recut(blocks, w, h, n, seam_cuts(count, lo, span, shift, w, h), _depth(p0, orig))
+	if blocks.is_empty():
+		return {}
 	var gates := {}
 	var colors := gate_colors(n, count)
 	var ci := 0
@@ -137,9 +191,138 @@ static func convert_level(src: Dictionary, n: int, r: Dictionary) -> Dictionary:
 		gates[side] = segs
 	var diff := clampi(int(r.get("Difficulty", 1)), 1, 3)
 	var d := {"id": n, "w": w, "h": h, "hard": diff >= 2, "difficulty": diff, "min_taps": blocks.size(),
-		"moves": int(r.StepLimit), "stones": [], "pulse_sides": [], "gates": gates, "blocks": blocks}
+		"moves": int(r.StepLimit), "stones": [], "pulse_sides": [], "gates": gates, "blocks": blocks, "k_ref": k_ref}
 	color_blocks(d)
 	return d
+
+
+## Where the gates of a level will be cut, before the blocks are known: {"x": columns (up / down gates), "y": rows
+## (left / right gates)}, each the first cell of the next gate. 2 gates: INPUT_CUT; 3 gates: the thirds of the shape
+## (best_cuts later searches around them).
+static func seam_cuts(count: int, lo: Vector2i, span: Vector2i, shift: Vector2i, w: int, h: int) -> Dictionary:
+	if count == 2:
+		return {"x": [clampi(int(INPUT_CUT.x) + shift.x, 1, w - 1)],
+			"y": [clampi(int(INPUT_CUT.y) + shift.y, 1, h - 1)]}
+	var out := {}
+	for axis in ["x", "y"]:
+		var a: int = lo.x + shift.x if axis == "x" else lo.y + shift.y
+		var third := float(span.x if axis == "x" else span.y) / 3.0
+		out[axis] = [roundi(a + third), roundi(a + third * 2.0)]
+	return out
+
+
+## Re-cuts the cells of `blocks` (one level, already on the board grid w x h) into as many blocks with
+## LevelGenerator._tile and assigns exit sides with LevelGenerator._assign aiming at `depth_ref`; no block takes a side
+## where its cells straddle a cut of `cuts` (seam_cuts) unless all four do. Blocks are named b1.. by first cell (row,
+## then column), cells sorted the same way, `color` left for color_blocks. [] when no cut works.
+static func recut(blocks: Array, w: int, h: int, n: int, cuts: Dictionary, depth_ref: int) -> Array:
+	var area: Array[Vector2i] = []
+	for b in blocks:
+		for c in b.cells:
+			area.append(Vector2i(int(c[0]), int(c[1])))
+	area.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y < b.y or (a.y == b.y and a.x < b.x))
+	var none: Array[Vector2i] = []
+	var allowed: Array[int] = [0, 1, 2, 3]
+	var best: Array = []
+	var best_err := 1 << 20
+	var best_k := -1
+	for t in RECUT_TRIES:
+		var rng := LevelGenerator._rng(RECUT_SALT + n, t)
+		var groups := LevelGenerator._tile(area, w, h, none, blocks.size(), "", rng)
+		if groups.size() != blocks.size():
+			continue
+		var forbid := _straddle_mask(groups, cuts)
+		var aim := depth_ref
+		for _k in RECUT_ASSIGN:
+			var asg := LevelGenerator._assign(w, h, none, groups, allowed, RECUT_POWER, rng, aim, forbid)
+			if asg.is_empty():
+				break
+			var cand := _named_blocks(groups, asg.color)
+			var cd := {"w": w, "h": h, "blocks": cand}
+			var dirs: Array[int] = []
+			for b in cand:
+				dirs.append(SIDE_ORDER.find(str(b.dir)))
+			var k := _blocked(ways(cd), dirs)
+			var err := absi(int(asg.depth) - depth_ref)
+			if err < best_err or (err == best_err and k > best_k):
+				best = cand
+				best_err = err
+				best_k = k
+			aim = clampi(aim + depth_ref - int(asg.depth), 1, groups.size())
+	return best
+
+
+## forbid for LevelGenerator._assign: forbid[i * 4 + c] = 1 when block i's cells straddle a cut on side
+## LevelData.SIDES[c] (columns for up / down, rows for left / right); all zero for a block that straddles on every side.
+static func _straddle_mask(groups: Array, cuts: Dictionary) -> PackedByteArray:
+	var out := PackedByteArray()
+	out.resize(groups.size() * 4)
+	for i in groups.size():
+		var mn := Vector2i(1 << 20, 1 << 20)
+		var mx := Vector2i(-(1 << 20), -(1 << 20))
+		for c: Vector2i in groups[i]:
+			mn = Vector2i(mini(mn.x, c.x), mini(mn.y, c.y))
+			mx = Vector2i(maxi(mx.x, c.x), maxi(mx.y, c.y))
+		var row := PackedByteArray([0, 0, 0, 0])
+		for col in 4:
+			var side: String = LevelData.SIDES[col]
+			var vertical := side == "left" or side == "right"
+			var lo_p := mn.y if vertical else mn.x
+			var hi_p := mx.y if vertical else mx.x
+			for cut: int in cuts["y" if vertical else "x"]:
+				if lo_p < cut and hi_p >= cut:
+					row[col] = 1
+		if row.count(1) < 4:
+			for col in 4:
+				out[i * 4 + col] = row[col]
+	return out
+
+
+## Level blocks from groups of cells and color indices (LevelData.SIDES order): b1.. by first cell, row then column.
+static func _named_blocks(groups: Array, colors: Array) -> Array:
+	var by_row := func(a: Vector2i, b: Vector2i) -> bool: return a.y < b.y or (a.y == b.y and a.x < b.x)
+	var items: Array = []
+	for i in groups.size():
+		var cells: Array[Vector2i] = []
+		cells.assign(groups[i])
+		cells.sort_custom(by_row)
+		items.append([cells, int(colors[i])])
+	items.sort_custom(func(a: Array, b: Array) -> bool: return by_row.call(a[0][0], b[0][0]))
+	var out: Array = []
+	for k in items.size():
+		var cl: Array = []
+		for c: Vector2i in items[k][0]:
+			cl.append([c.x, c.y])
+		out.append({"id": "b%d" % (k + 1), "color": "", "dir": LevelData.SIDES[int(items[k][1])], "cells": cl,
+			"ice": 0, "chained_by": "", "inner_color": "", "fog": false})
+	return out
+
+
+## p[i][s] = blocks on block i's way out through side SIDE_ORDER[s] (indices into d.blocks), as harden() uses it.
+static func ways(d: Dictionary) -> Array:
+	var blocks: Array = d.blocks
+	var occ := {}
+	for i in blocks.size():
+		for c in blocks[i].cells:
+			occ[Vector2i(int(c[0]), int(c[1]))] = i
+	var p: Array = []
+	for i in blocks.size():
+		var row: Array = []
+		for side in SIDE_ORDER:
+			var step: Vector2i = LevelData.SIDE_DIR[side]
+			var seen := {}
+			var way := PackedInt32Array()
+			for c in blocks[i].cells:
+				var q := Vector2i(int(c[0]), int(c[1])) + step
+				while q.x >= 0 and q.y >= 0 and q.x < int(d.w) and q.y < int(d.h):
+					var o: int = occ.get(q, -1)
+					if o >= 0 and o != i and not seen.has(o):
+						seen[o] = true
+						way.append(o)
+					q += step
+			row.append(way)
+		p.append(row)
+	return p
 
 
 ## Every block takes the color of the gate on its `dir` side that holds most of its cells (ties: the first gate).
@@ -298,33 +481,15 @@ static func report_text(rep: Dictionary) -> String:
 
 
 ## Search for one level, seeded by its id: first with no block moved to a side where it would straddle two gates;
-## when that falls short of the target, again without that rule, kept if it blocks more. Returns
-## {p, orig, forbid, dirs, k0, target, depth0}; d is not changed.
+## when that falls short of the target, again without that rule, kept if it blocks more. `k0` is the input's blocked
+## count (`k_ref`, set by convert_level) when there is one. Returns {p, orig, forbid, dirs, k0, target, depth0}; d is
+## not changed.
 static func harden(d: Dictionary) -> Dictionary:
 	var blocks: Array = d.blocks
 	var n := blocks.size()
-	var occ := {}
-	for i in n:
-		for c in blocks[i].cells:
-			occ[Vector2i(int(c[0]), int(c[1]))] = i
-	var p: Array = []
+	var p := ways(d)
 	var orig: Array[int] = []
 	for i in n:
-		var ways: Array = []
-		for side in SIDE_ORDER:
-			var step: Vector2i = LevelData.SIDE_DIR[side]
-			var seen := {}
-			var way := PackedInt32Array()
-			for c in blocks[i].cells:
-				var q := Vector2i(int(c[0]), int(c[1])) + step
-				while q.x >= 0 and q.y >= 0 and q.x < int(d.w) and q.y < int(d.h):
-					var o: int = occ.get(q, -1)
-					if o >= 0 and o != i and not seen.has(o):
-						seen[o] = true
-						way.append(o)
-					q += step
-			ways.append(way)
-		p.append(ways)
 		orig.append(SIDE_ORDER.find(str(blocks[i].dir)))
 	var straddle: Array = []
 	var none: Array = []
@@ -338,7 +503,9 @@ static func harden(d: Dictionary) -> Dictionary:
 		var zero := PackedByteArray()
 		zero.resize(SIDE_ORDER.size())
 		none.append(zero)
-	var k0 := _blocked(p, orig)
+	# Measured against the input's blocks (`k_ref`, before recut) so the re-cut levels stay HARDEN_PERCENT % harder than
+	# the input; the depth never drops below the re-cut level's own.
+	var k0 := int(d.get("k_ref", _blocked(p, orig)))
 	var depth0 := _depth(p, orig)
 	var target := mini(n - 1, (k0 * HARDEN_PERCENT + 99) / 100)
 	var forbid := straddle

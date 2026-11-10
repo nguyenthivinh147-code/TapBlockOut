@@ -68,8 +68,19 @@ const NEIGHBORS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0,
 ## Kiểu cắt khối theo hình học (`cut_style`): "rows" dải ngang, "cols" dải dọc, "rings" vòng theo viền hình,
 ## "weave" đan rổ (ô WEAVE_TILE x WEAVE_TILE, dải ngang và dọc xen kẽ), "bricks" gạch xây so le dài BRICK_LEN.
 const GEO_STYLES := ["rows", "rings", "weave", "cols", "bricks"]
+## Kiểu cắt dải có móc (2026-11-10): ngoài cạnh hợp kiểu, được gộp qua cạnh khác nếu khối sau gộp là chữ L có một
+## cạnh khung bao dài 2 ô (dải bẻ góc một ô ở đầu, `_hook_ok`).
+const HOOK_STYLES := ["rows", "cols", "bricks", "weave"]
+## Hình khối (`_shape_kind`): khác, thẳng (một hàng hoặc một cột, từ 2 ô), chữ L.
+const SHAPE_OTHER := 0
+const SHAPE_STRAIGHT := 1
+const SHAPE_L := 2
+## Luật hình khi gộp theo kiểu dải có móc (`_merge_option`).
+const HOOK_NONE := 0
+const HOOK_KEEP := 1
+const HOOK_ONLY := 2
 const WEAVE_TILE := 4
-## `_tile_sym`: mỗi lần quét các cách gộp chọn tới 1/TILE_BATCH số lần gộp còn lại.
+## `_tile_sym`: mỗi lần quét các cách gộp bớt tới 1/TILE_BATCH số khối còn dư.
 const TILE_BATCH := 4
 const BRICK_LEN := 4
 
@@ -203,8 +214,11 @@ static func _rounds_tol(want: int, attempt: int) -> int:
 
 
 ## Kiểu cắt khối của level `id` (từ DifficultyCurve.MOTIF_FROM), xen kẽ theo id: "sym" (gộp tự do, đối xứng theo trục của
-## hình), một kiểu hình học trong GEO_STYLES, hoặc "template" (chỉ gộp ô cùng vùng vẽ trong bản vẽ).
+## hình), một kiểu hình học trong GEO_STYLES, hoặc "template" (chỉ gộp ô cùng vùng vẽ trong bản vẽ). Tới
+## Config.EARLY_SHAPE_UNTIL luôn "sym" để khối to, nhiều chữ L.
 static func cut_style(id: int) -> String:
+	if id <= Config.EARLY_SHAPE_UNTIL:
+		return "sym"
 	match posmod(id, 3):
 		0:
 			return "sym"
@@ -293,7 +307,8 @@ static func _attempt_motif(id: int, s: int, attempt: int, strict: bool = true) -
 	var groups: Array = []
 	for _try in STONE_TRIES:
 		stones = _place_stones_sym(shape["cells"], w, h, n_stones, sym_h, sym_v, rng)
-		groups = _tile_sym(shape["cells"], w, h, stones, n, sym_h, sym_v, rng, cut_style(id), shape["regions"])
+		groups = _tile_sym(shape["cells"], w, h, stones, n, sym_h, sym_v, rng, cut_style(id), shape["regions"],
+			Config.EARLY_SIZE_POW if id <= Config.EARLY_SHAPE_UNTIL else Config.TILE_SIZE_POW)
 		if not groups.is_empty() and (stones.is_empty() or not _stone_dead(groups, stones, w, h)):
 			break
 	if groups.is_empty():
@@ -759,7 +774,8 @@ static func _shuffle(a: Array, rng: RandomNumberGenerator) -> void:
 
 
 ## Lát các ô của hình (trừ đá) thành đúng `n` polyomino bằng cách gộp dần các ô đơn, mỗi khối tối đa
-## Config.BLOCK_MAX_CELLS ô; trọng số mỗi cách gộp theo `_merge_weight` (ưu tiên gộp khối 1 ô).
+## Config.BLOCK_MAX_CELLS ô; trọng số mỗi cách gộp theo `_merge_weight` (ưu tiên gộp khối 1 ô, chữ L với hệ số
+## Config.TILE_L_WEIGHT_FREE).
 ## Trả mảng các `Array[Vector2i]`, hoặc [] nếu kẹt.
 static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i], n: int, mirror: String,
 		rng: RandomNumberGenerator) -> Array:
@@ -781,6 +797,7 @@ static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i]
 	while count > target:
 		var pairs: Array = []
 		var weights: Array[float] = []
+		var kinds := {}  # Vector2i(gi, gj) -> hình khối sau gộp, tính một lần mỗi lượt
 		for gi in groups:
 			for c in groups[gi]:
 				for dv in NEIGHBORS:
@@ -794,8 +811,12 @@ static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i]
 					var nb_size: int = groups[gj].size()
 					if na + nb_size > Config.BLOCK_MAX_CELLS:
 						continue
+					var key := Vector2i(gi, gj)
+					if not kinds.has(key):
+						kinds[key] = _shape_kind(groups[gi], groups[gj])
 					pairs.append([gi, gj])
-					weights.append(_merge_weight(na + nb_size, int(na == 1) + int(nb_size == 1)))
+					weights.append(_merge_weight(na + nb_size, int(na == 1) + int(nb_size == 1), int(kinds[key]),
+						Config.TILE_L_WEIGHT_FREE))
 		if pairs.is_empty():
 			return []
 		var pick: Array = pairs[_pick_weighted(weights, rng)]
@@ -821,10 +842,70 @@ static func _tile(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i]
 	return out
 
 
-## Trọng số của một cách gộp ra khối `size` ô, trong đó `singles` (0-2) khối gộp vào là khối 1 ô:
-## Config.TILE_SINGLE_BIAS ^ singles / size. Hệ số làm khối 1 ô được gộp trước nên còn ít khối 1 ô.
-static func _merge_weight(size: int, singles: int) -> float:
-	return pow(Config.TILE_SINGLE_BIAS, singles) / float(size * size)
+## Trọng số của một cách gộp ra khối `size` ô hình `kind` (`_shape_kind`), trong đó `singles` (0-2) khối gộp vào là
+## khối 1 ô: Config.TILE_SINGLE_BIAS ^ singles x hệ số hình / size ^ `size_pow`. Hệ số khối 1 ô làm khối 1 ô được gộp
+## trước nên còn ít khối 1 ô; hệ số hình (`l_weight` cho chữ L, Config.TILE_STRAIGHT_WEIGHT cho khối thẳng) cho nhiều
+## chữ L, ít khối thẳng.
+static func _merge_weight(size: int, singles: int, kind: int = SHAPE_OTHER,
+		l_weight: float = Config.TILE_L_WEIGHT, size_pow: float = Config.TILE_SIZE_POW) -> float:
+	var shape := 1.0
+	if kind == SHAPE_L:
+		shape = l_weight
+	elif kind == SHAPE_STRAIGHT:
+		shape = Config.TILE_STRAIGHT_WEIGHT
+	return pow(Config.TILE_SINGLE_BIAS, singles) * shape / pow(float(size), size_pow)
+
+
+## Hình của khối gồm các ô `a` và `b` (không trùng nhau): SHAPE_STRAIGHT nếu nằm trên một hàng hoặc một cột (từ 2 ô),
+## SHAPE_L nếu là một hàng và một cột ở mép khung bao (gồm L 3 ô), còn lại SHAPE_OTHER (khối 1 ô, T, S, Z, vuông...).
+static func _shape_kind(a: Array, b: Array = []) -> int:
+	var info := _shape_info(a, b)
+	return info.x
+
+
+## [hình (`_shape_kind`), rộng, cao] của khung bao khối gồm các ô `a` và `b`.
+static func _shape_info(a: Array, b: Array = []) -> Vector3i:
+	var n := a.size() + b.size()
+	var lo := Vector2i(1 << 20, 1 << 20)
+	var hi := Vector2i(-(1 << 20), -(1 << 20))
+	for part: Array in [a, b]:
+		for c: Vector2i in part:
+			lo = Vector2i(mini(lo.x, c.x), mini(lo.y, c.y))
+			hi = Vector2i(maxi(hi.x, c.x), maxi(hi.y, c.y))
+	var bw := hi.x - lo.x + 1
+	var bh := hi.y - lo.y + 1
+	if n <= 1:
+		return Vector3i(SHAPE_OTHER, bw, bh)
+	if bw == 1 or bh == 1:
+		return Vector3i(SHAPE_STRAIGHT, bw, bh)
+	# Hàng mép và cột mép có đúng bw + bh - 1 ô: khối đủ chừng ấy ô và mọi ô nằm trên chúng thì là chữ L.
+	if n != bw + bh - 1:
+		return Vector3i(SHAPE_OTHER, bw, bh)
+	for corner in [lo, Vector2i(hi.x, lo.y), Vector2i(lo.x, hi.y), hi]:
+		var on := true
+		for part: Array in [a, b]:
+			for c: Vector2i in part:
+				if c.x != corner.x and c.y != corner.y:
+					on = false
+					break
+			if not on:
+				break
+		if on:
+			return Vector3i(SHAPE_L, bw, bh)
+	return Vector3i(SHAPE_OTHER, bw, bh)
+
+
+## Khối hình `info` (`_shape_info`) có phải dải bẻ góc một ô hợp kiểu cắt `style` không: chữ L có cạnh ngắn của khung
+## bao dài 2 ô, nằm ngang với "rows", "bricks", nằm dọc với "cols", chiều nào cũng được với "weave".
+static func _hook_ok(info: Vector3i, style: String) -> bool:
+	if info.x != SHAPE_L:
+		return false
+	match style:
+		"rows", "bricks":
+			return info.z == 2
+		"cols":
+			return info.y == 2
+	return mini(info.y, info.z) == 2
 
 
 static func _pick_weighted(weights: Array[float], rng: RandomNumberGenerator) -> int:
@@ -841,19 +922,68 @@ static func _pick_weighted(weights: Array[float], rng: RandomNumberGenerator) ->
 
 ## Chọn hình vẽ tay: thử lần lượt các hình trong Motifs.KINDS (bắt đầu theo id và seed, bước MOTIF_STRIDE để level
 ## liền nhau ra hình khác), lấy hình đầu tiên có cỡ vừa: số ô trừ đá chia `n` trong Config.MOTIF_FILL_MIN..MAX.
-## Trong các cỡ và bản lật vừa thì chọn ngẫu nhiên. Trả một biến thể của Motifs.variants, {} nếu không hình nào vừa.
+## L5..Config.EARLY_SHAPE_UNTIL chỉ lấy hình đặc (`_early_shape`) và dùng Config.EARLY_FILL_MIN..MAX, nên khối to hơn và
+## dồn thành cụm giữa bàn. Trong các cỡ và bản lật vừa thì chọn ngẫu nhiên. Trả một biến thể của Motifs.variants, {}
+## nếu không hình nào vừa.
 static func _pick_motif(id: int, s: int, n: int, n_stones: int, rng: RandomNumberGenerator) -> Dictionary:
 	var kinds: Array = Motifs.KINDS
+	var early := id <= Config.EARLY_SHAPE_UNTIL
+	var lo: float = Config.EARLY_FILL_MIN if early else Config.MOTIF_FILL_MIN
+	var hi: float = Config.EARLY_FILL_MAX if early else Config.MOTIF_FILL_MAX
 	var start := posmod(id * MOTIF_STRIDE + s, kinds.size())
 	for k in kinds.size():
 		var fit: Array = []
 		for v in Motifs.variants(kinds[(start + k) % kinds.size()]):
 			var per := float(v["cells"].size() - n_stones) / float(n)
-			if per >= Config.MOTIF_FILL_MIN and per <= Config.MOTIF_FILL_MAX:
+			if per >= lo and per <= hi and (not early or _early_shape(v)):
 				fit.append(v)
 		if not fit.is_empty():
 			return fit[rng.randi_range(0, fit.size() - 1)]
 	return {}
+
+
+## Biến thể hình vẽ tay `v` có dùng được cho L5..Config.EARLY_SHAPE_UNTIL không: hình đặc (số ô ít nhất
+## Config.EARLY_SOLID_MIN khung bao, tối đa Config.EARLY_TIPS_MAX ô đầu nhọn chỉ kề một ô của hình như đầu giấy gói kẹo,
+## không có ô trống nào bị hình bao kín) và chỉ đối xứng một trục (hình đối xứng bốn phía cắt theo phần tư nên ra nhiều
+## khối 2 ô và lệch số khối).
+static func _early_shape(v: Dictionary) -> bool:
+	var w: int = v["w"]
+	var h: int = v["h"]
+	var cells: Array = v["cells"]
+	if (bool(v["sym_h"]) and bool(v["sym_v"])) or float(cells.size()) < Config.EARLY_SOLID_MIN * float(w * h):
+		return false
+	var filled := {}
+	for c in cells:
+		filled[c] = true
+	var tips := 0
+	for c: Vector2i in cells:
+		var near := 0
+		for dv in NEIGHBORS:
+			near += int(filled.has(c + dv))
+		tips += int(near <= 1)
+	if tips > Config.EARLY_TIPS_MAX:
+		return false
+	var out := {}
+	var stack: Array[Vector2i] = []
+	for x in range(-1, w + 1):
+		stack.append(Vector2i(x, -1))
+		stack.append(Vector2i(x, h))
+	for y in h:
+		stack.append(Vector2i(-1, y))
+		stack.append(Vector2i(w, y))
+	while not stack.is_empty():
+		var c: Vector2i = stack.pop_back()
+		if out.has(c) or filled.has(c) or c.x < -1 or c.y < -1 or c.x > w or c.y > h:
+			continue
+		out[c] = true
+		for dv in NEIGHBORS:
+			stack.append(c + dv)
+	for y in h:
+		for x in w:
+			var c := Vector2i(x, y)
+			if not filled.has(c) and not out.has(c):
+				return false
+	return true
 
 
 ## Ô thuộc phần cơ sở của hình đối xứng: nửa trái (gồm cột giữa nếu rộng lẻ) khi `sym_h`, nửa trên khi `sym_v`.
@@ -914,11 +1044,13 @@ static func _expand(cells: Array, joined_h: bool, joined_v: bool, w: int, h: int
 ## Lát hình đối xứng thành khoảng `n` khối: chỉ lát phần cơ sở rồi lật ra, nên cách cắt khối cũng đối xứng. Nhóm chạm
 ## trục có thể nối với ảnh lật của nó thành một khối nằm vắt qua trục (cạnh lẻ thì ô trên trục bắt buộc nối). Gộp dần
 ## như `_tile`: mỗi khối tối đa Config.BLOCK_MAX_CELLS ô, trọng số `_merge_weight`. `style` (`cut_style`) chỉ cho gộp qua
-## những cạnh hợp kiểu (`_edge_ok`); khi không còn cách gộp hợp kiểu mà số khối còn nhiều hơn `n` thì gộp tự do.
-## `regions`: ô -> tên vùng trong bản vẽ (kiểu "template"). Mỗi lần gộp bớt 1, 2 hoặc 4 khối nên số khối ra trong
-## n-2..n+2. Trả mảng các `Array[Vector2i]` trên cả hình, hoặc [] nếu kẹt.
+## những cạnh hợp kiểu (`_edge_ok`, kiểu dải thêm móc chữ L `_hook_ok`); khi không còn cách gộp hợp kiểu mà số khối còn
+## nhiều hơn `n` thì gộp tự do. `regions`: ô -> tên vùng trong bản vẽ (kiểu "template"). `size_pow`: mũ cỡ khối của
+## `_merge_weight` (L5..Config.EARLY_SHAPE_UNTIL dùng Config.EARLY_SIZE_POW cho khối to hơn). Mỗi lần gộp bớt 1, 2
+## hoặc 4 khối nên số khối ra trong n-2..n+2. Trả mảng các `Array[Vector2i]` trên cả hình, hoặc [] nếu kẹt.
 static func _tile_sym(area: Array[Vector2i], w: int, h: int, stones: Array[Vector2i], n: int, sym_h: bool,
-		sym_v: bool, rng: RandomNumberGenerator, style: String = "sym", regions: Dictionary = {}) -> Array:
+		sym_v: bool, rng: RandomNumberGenerator, style: String = "sym", regions: Dictionary = {},
+		size_pow: float = Config.TILE_SIZE_POW) -> Array:
 	var stone_set := {}
 	for c in stones:
 		stone_set[c] = true
@@ -926,7 +1058,7 @@ static func _tile_sym(area: Array[Vector2i], w: int, h: int, stones: Array[Vecto
 	var ax := (w - 1) / 2
 	@warning_ignore("integer_division")
 	var ay := (h - 1) / 2
-	var ctx := {"style": style, "w": w, "h": h, "sym_h": sym_h, "sym_v": sym_v, "regions": regions}
+	var ctx := {"style": style, "w": w, "h": h, "sym_h": sym_h, "sym_v": sym_v, "regions": regions, "pow": size_pow}
 	if style == "rings":
 		ctx["layer"] = _layers(area)
 	var owner := {}
@@ -958,11 +1090,14 @@ static func _tile_sym(area: Array[Vector2i], w: int, h: int, stones: Array[Vecto
 			if not pick.is_empty():
 				total = _apply_merge(groups, owner, pick, total)
 			break
-		# Một lần quét chọn tới 1/TILE_BATCH số lần gộp còn lại, các lần gộp không chung nhóm nào nên trọng số của những
-		# cách gộp còn lại vẫn đúng; nhóm vừa gộp chờ lần quét sau.
+		# Một lần quét bớt tới 1/TILE_BATCH số khối còn dư (mỗi lần gộp bớt 1, 2 hoặc 4 khối theo số bản đối xứng; trước
+		# 2026-11-10 đếm theo số lần gộp nên hình đối xứng bốn phía gộp hết trong lần quét đầu, toàn khối 2 ô). Các lần
+		# gộp không chung nhóm nào nên trọng số của những cách gộp còn lại vẫn đúng; nhóm vừa gộp chờ lần quét sau.
 		var used := {}
+		var sweep_from := total
 		@warning_ignore("integer_division")
-		for _k in maxi(1, (total - n) / TILE_BATCH):
+		var budget := maxi(1, (total - n) / TILE_BATCH)
+		while sweep_from - total < budget:
 			var sum := 0.0
 			for i in opts.size():
 				var o: Array = opts[i]
@@ -1019,6 +1154,10 @@ static func _merge_options(groups: Dictionary, owner: Dictionary, total: int, n:
 	var weights: Array[float] = []
 	var under: Array = []  # các lần gộp làm số khối xuống dưới n
 	var none := [0, 0, 0, 0]
+	# Kiểu dải có móc, lúc gộp theo kiểu: khối sau gộp phải còn là dải thẳng hay dải bẻ góc một ô (HOOK_KEEP); qua cạnh
+	# không hợp kiểu thì chỉ dải bẻ góc một ô (HOOK_ONLY).
+	var hooked := constrained and HOOK_STYLES.has(str(ctx["style"]))
+	var keep := HOOK_KEEP if hooked else HOOK_NONE
 	for gi in groups:
 		var g: Array = groups[gi]
 		var g_single := _full_size(g[3], g[1], g[2]) == 1
@@ -1034,43 +1173,62 @@ static func _merge_options(groups: Dictionary, owner: Dictionary, total: int, n:
 				if not owner.has(nb):
 					continue
 				var gj: int = owner[nb]
-				if gj <= gi or (constrained and not _edge_ok(c, nb, ctx)):
+				if gj <= gi:
 					continue
+				var mode := keep
+				if constrained and not _edge_ok(c, nb, ctx):
+					if not hooked:
+						continue
+					mode = HOOK_ONLY
 				var o: Array = groups[gj]
 				var singles := int(g_single) + int(_full_size(o[3], o[1], o[2]) == 1)
 				_merge_option([gi, gj, bool(g[1]) or bool(o[1]), bool(g[2]) or bool(o[2])], g[3], o[3],
 					_copies(g, sym_h, sym_v) + _copies(o, sym_h, sym_v), singles, total, n, sym_h, sym_v,
-					opts, weights, under)
+					opts, weights, under, g[0], o[0], mode, ctx)
 		var own := _copies(g, sym_h, sym_v)
 		# Nối với ảnh lật của chính nó: hai bản của nhóm thành một khối, nên khối 1 ô tính là hai khối 1 ô gộp lại.
 		var self_singles := 2 if g_single else 0
 		if self_x and not bool(g[1]):
 			_merge_option([gi, -1, true, g[2]], g[3], none, own, self_singles, total, n, sym_h, sym_v, opts,
-				weights, under)
+				weights, under, g[0], [], keep, ctx)
 		if self_y and not bool(g[2]):
 			_merge_option([gi, -1, g[1], true], g[3], none, own, self_singles, total, n, sym_h, sym_v, opts,
-				weights, under)
+				weights, under, g[0], [], keep, ctx)
 	return [opts, weights, under]
 
 
 ## Ghi một cách gộp hai nhóm (đếm ô `a`, `b` theo `_sum4`; b toàn 0: nối với ảnh lật) vào `opts` kèm trọng số
 ## `_merge_weight` nếu khối đầy đủ không quá Config.BLOCK_MAX_CELLS ô và không làm số khối xuống dưới `n`; xuống dưới
 ## `n` thì ghi vào `under`. `opt`: [gi, gj, nối dọc, nối ngang]; `before`: số khối trước gộp; `singles`: số khối 1 ô được
-## gộp (0-2).
+## gộp (0-2). `ca`, `cb`: ô của hai nhóm trong phần cơ sở, để biết hình khối sau gộp (`_full_kind`); `mode`: HOOK_NONE
+## không xét hình, HOOK_KEEP chỉ nhận dải thẳng hay dải bẻ góc một ô hợp kiểu `ctx.style` (`_hook_ok`), HOOK_ONLY chỉ
+## nhận dải bẻ góc một ô.
 static func _merge_option(opt: Array, a: Array, b: Array, before: int, singles: int, total: int, n: int,
-		sym_h: bool, sym_v: bool, opts: Array, weights: Array[float], under: Array) -> void:
+		sym_h: bool, sym_v: bool, opts: Array, weights: Array[float], under: Array, ca: Array, cb: Array,
+		mode: int, ctx: Dictionary) -> void:
 	var cut := before - _copies([null, opt[2], opt[3]], sym_h, sym_v)
 	if cut <= 0:
 		return
 	var size := _full_size(_sum4(a, b), opt[2], opt[3])
 	if size > Config.BLOCK_MAX_CELLS:
 		return
+	var info := _full_kind(ca, cb, opt[2], opt[3], ctx["w"], ctx["h"])
+	if mode != HOOK_NONE and not _hook_ok(info, str(ctx["style"])) and (mode == HOOK_ONLY or info.x != SHAPE_STRAIGHT):
+		return
 	var full: Array = opt + [cut]
 	if total - cut >= n:
 		opts.append(full)
-		weights.append(_merge_weight(size, singles))
+		weights.append(_merge_weight(size, singles, info.x, Config.TILE_L_WEIGHT, float(ctx["pow"])))
 	else:
 		under.append(full)
+
+
+## `_shape_info` của khối đầy đủ khi gộp hai nhóm có ô `ca`, `cb` trong phần cơ sở, nối qua trục dọc (`joined_h`) hay
+## trục ngang (`joined_v`) của hình `w` x `h`: khối vắt qua trục gồm cả ảnh lật (`_expand`).
+static func _full_kind(ca: Array, cb: Array, joined_h: bool, joined_v: bool, w: int, h: int) -> Vector3i:
+	if not joined_h and not joined_v:
+		return _shape_info(ca, cb)
+	return _shape_info(_expand(ca + cb, joined_h, joined_v, w, h))
 
 
 ## Số ô của khối đầy đủ khi nối qua trục dọc (`joined_h`) và trục ngang (`joined_v`), từ số ô của nhóm trong phần cơ sở
@@ -1174,9 +1332,11 @@ static func _flipped(cells: Array[Vector2i], w: int, h: int, horizontal: bool) -
 ## `power`: số mũ của trọng số (1 + số khối chắn đường lúc đầu); càng lớn càng nhiều khối phải chờ lúc đầu.
 ## Độ sâu của một khối là lượt nó rời bàn khi mỗi lượt cho mọi khối đang thông đường đi: 1 nếu đường ra không có khối
 ## nào lúc đầu, không thì 1 + độ sâu lớn nhất của các khối chắn đường đó (chúng đã đi trước). `aim` > 0: lái chuỗi
-## sâu nhất về `aim` (DEPTH_PUSH, DEPTH_FREE khi còn nông, DEPTH_HOLD khi đã đủ sâu).
+## sâu nhất về `aim` (DEPTH_PUSH, DEPTH_FREE khi còn nông, DEPTH_HOLD khi đã đủ sâu). `forbid` (rỗng hoặc n * 4 phần
+## tử): forbid[i * 4 + màu] khác 0 thì khối i không nhận màu đó (Road Trip: cạnh mà khối vắt qua hai cổng).
 static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allowed: Array[int],
-		power: int, rng: RandomNumberGenerator, aim: int = 0) -> Dictionary:
+		power: int, rng: RandomNumberGenerator, aim: int = 0,
+		forbid: PackedByteArray = PackedByteArray()) -> Dictionary:
 	var n := groups.size()
 	var grid := PackedInt32Array()
 	grid.resize(w * h)
@@ -1236,7 +1396,7 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 			if alive[i] == 0:
 				continue
 			for col in allowed:
-				if dead[i * 4 + col] != 0:
+				if dead[i * 4 + col] != 0 or (not forbid.is_empty() and forbid[i * 4 + col] != 0):
 					continue
 				var free := true
 				for gi in path[i * 4 + col]:

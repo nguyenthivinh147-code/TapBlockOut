@@ -268,10 +268,13 @@ func test_every_shape_kind_is_used(t: T) -> void:
 		t.ok(seen.has(kind), "có dùng hình %s" % kind)
 
 
-## Kiểu cắt khối xen kẽ theo level: đối xứng tự do, hình học (đủ các kiểu trong GEO_STYLES), theo vùng vẽ.
+## Kiểu cắt khối xen kẽ theo level: đối xứng tự do, hình học (đủ các kiểu trong GEO_STYLES), theo vùng vẽ. L5 tới
+## Config.EARLY_SHAPE_UNTIL luôn đối xứng tự do (khối to, nhiều chữ L).
 func test_cut_styles_alternate(t: T) -> void:
+	for id in range(DifficultyCurve.MOTIF_FROM, Config.EARLY_SHAPE_UNTIL + 1):
+		t.eq(Gen.cut_style(id), "sym", "L%d cắt tự do" % id)
 	var seen := {}
-	for id in range(DifficultyCurve.MOTIF_FROM, DifficultyCurve.MOTIF_FROM + 15):
+	for id in range(Config.EARLY_SHAPE_UNTIL + 1, Config.EARLY_SHAPE_UNTIL + 16):
 		seen[Gen.cut_style(id)] = true
 		t.ok(Gen.cut_style(id) != Gen.cut_style(id + 1), "L%d và L%d khác kiểu cắt" % [id, id + 1])
 	for style in ["sym", "template"] + Gen.GEO_STYLES:

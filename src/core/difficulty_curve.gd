@@ -9,8 +9,12 @@ extends RefCounted
 
 ## L1-4 are hand-made (tools/gen_levels.gd, table EARLY).
 const EARLY_BLOCKS := [4, 6, 8, 10]
-## From MOTIF_FROM blocks are cut from hand-drawn shapes of 36-182 cells at 2.5-3.4 cells per block: at least
-## MOTIF_MIN_BLOCKS blocks so that a dozen shapes fit, at most BLOCK_CAP so that 16 shapes still fit (6-8 above it).
+## L5-10 (2026-11-10, user: blocks gathered at the centre and bigger): solid hand-drawn shapes of 40-46 cells cut into
+## this many blocks, about 4 cells each (Config.EARLY_SHAPE_UNTIL, EARLY_FILL_*), below MOTIF_MIN_BLOCKS.
+const EARLY_SHAPE_BLOCKS := [10, 10, 10, 11, 11, 11]
+## From L11 (L5-10: EARLY_SHAPE_BLOCKS) blocks are cut from hand-drawn shapes of 36-182 cells at 2.5-3.4 cells per
+## block: at least MOTIF_MIN_BLOCKS blocks so that a dozen shapes fit, at most BLOCK_CAP so that 16 shapes still fit
+## (6-8 above it).
 const MOTIF_MIN_BLOCKS := 12
 const BLOCK_CAP := 60
 ## A Hard / VeryHard level is a peak of the curve: blocks and rounds at least PEAK_HARD / PEAK_VERY_HARD times the
@@ -155,10 +159,13 @@ static func _peak_floor(id: int, value: Callable) -> int:
 	return ceili(med * (PEAK_VERY_HARD if is_very_hard(id) else PEAK_HARD)) if med >= 0.0 else 0
 
 
-## Blocks before the peak rule: L1-4 the hand-made boards, then the reference clamped to MOTIF_MIN_BLOCKS..BLOCK_CAP.
+## Blocks before the peak rule: L1-4 the hand-made boards, L5-10 EARLY_SHAPE_BLOCKS, then the reference clamped to
+## MOTIF_MIN_BLOCKS..BLOCK_CAP.
 static func _base_blocks(id: int) -> int:
 	if id >= 1 and id <= EARLY_BLOCKS.size():
 		return EARLY_BLOCKS[id - 1]
+	if id >= MOTIF_FROM and id < MOTIF_FROM + EARLY_SHAPE_BLOCKS.size():
+		return EARLY_SHAPE_BLOCKS[id - MOTIF_FROM]
 	return clampi(int(REF_BLOCKS[_index(id)]), MOTIF_MIN_BLOCKS, BLOCK_CAP)
 
 
@@ -180,7 +187,7 @@ static func _wave_cap(n: int) -> int:
 ## at most BLOCK_CAP. Ids outside the curve clamp to its ends.
 static func block_count(id: int) -> int:
 	var n := _base_blocks(id)
-	if id <= EARLY_BLOCKS.size():
+	if id < MOTIF_FROM + EARLY_SHAPE_BLOCKS.size():
 		return n
 	return clampi(maxi(n, _peak_floor(id, _base_blocks)), MOTIF_MIN_BLOCKS, BLOCK_CAP)
 

@@ -502,10 +502,29 @@ const SHAPE_ROUGHEN := 0.06
 ## theo trục của hình, không khoét rìa.
 const MOTIF_FILL_MIN := 2.5
 const MOTIF_FILL_MAX := 3.4
-## Cắt khối: mỗi cách gộp có trọng số TILE_SINGLE_BIAS ^ (số khối 1 ô được gộp) / cỡ khối sau gộp, nên khối 1 ô được
-## gộp trước và còn ít khối 1 ô (1.0 là trọng số 1/cỡ của bản trước). Mỗi khối tối đa BLOCK_MAX_CELLS ô.
-const TILE_SINGLE_BIAS := 1.5
+## Cắt khối: mỗi cách gộp có trọng số TILE_SINGLE_BIAS ^ (số khối 1 ô được gộp) x hệ số hình / cỡ khối sau gộp ^
+## TILE_SIZE_POW, nên khối 1 ô được gộp trước và còn ít khối 1 ô. Mỗi khối tối đa BLOCK_MAX_CELLS ô.
+## Hệ số hình (2026-11-10, người dùng: nhiều khối L, ít khối thẳng, khoảng 30% mỗi loại; design.md mục 4 "Hình dạng
+## level") theo khối sau gộp: chữ L (một hàng và một cột ở mép khung bao, kể cả L 3 ô) TILE_L_WEIGHT khi cắt đối xứng
+## (level thường, gộp nhiều cặp mỗi lần quét nên cần hệ số lớn) và TILE_L_WEIGHT_FREE khi cắt tự do (Màn đặc biệt, Road
+## Trip), khối thẳng (một hàng hoặc một cột, kể cả khối 2 ô) TILE_STRAIGHT_WEIGHT, hình khác 1. Trước đó không có hệ số
+## hình, TILE_SINGLE_BIAS 1.5 và TILE_SIZE_POW 2.
+const TILE_SINGLE_BIAS := 4.0
+const TILE_SIZE_POW := 3.5
+const TILE_L_WEIGHT := 16.0
+const TILE_L_WEIGHT_FREE := 4.0
+const TILE_STRAIGHT_WEIGHT := 0.25
 const BLOCK_MAX_CELLS := 7
+## L5..EARLY_SHAPE_UNTIL (2026-11-10, người dùng: khối dồn vào giữa, khối to hơn; 10-11 khối theo
+## DifficultyCurve.EARLY_SHAPE_BLOCKS): chỉ hình vẽ tay đặc, một trục đối xứng (không ô trống kín bên trong, số ô ít
+## nhất EARLY_SOLID_MIN khung bao, tối đa EARLY_TIPS_MAX ô đầu nhọn), số ô chia số khối trong EARLY_FILL_MIN..
+## EARLY_FILL_MAX thay cho MOTIF_FILL_*, cắt kiểu đối xứng tự do, mũ cỡ khối EARLY_SIZE_POW thay cho TILE_SIZE_POW.
+const EARLY_SHAPE_UNTIL := 10
+const EARLY_FILL_MIN := 3.5
+const EARLY_FILL_MAX := 4.5
+const EARLY_SOLID_MIN := 0.7
+const EARLY_TIPS_MAX := 2
+const EARLY_SIZE_POW := 1.5
 ## Level mechanics (design.md section 4, "Cơ chế sau bản demo"): at most LEVEL_MECH_MAX kinds per level. From the
 ## first unlock, a level with id % LEVEL_REST_EVERY == LEVEL_REST_AT is a rest level with none (teaching levels keep
 ## theirs); other levels draw 1, 2 or 3 kinds with weights LEVEL_MECH_WEIGHTS, always including a kind unlocked within

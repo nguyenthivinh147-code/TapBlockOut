@@ -103,11 +103,21 @@ func test_arrows_point_four_ways(t: T) -> void:
 
 
 func test_every_size_band_has_choices(t: T) -> void:
-	# Mọi số khối mục tiêu của level dùng hình vẽ tay (L5-500, gồm Daily Challenge) có ít nhất 8 hình vừa (không tính đá);
-	# dưới 20 khối (L5-13) ít nhất 4 hình.
+	# Mọi số khối mục tiêu của level dùng hình vẽ tay từ L11 (gồm Daily Challenge) có ít nhất 8 hình vừa (không tính
+	# đá); dưới 20 khối (L11-13) ít nhất 4 hình. L5 tới Config.EARLY_SHAPE_UNTIL chỉ lấy hình đặc, một trục đối xứng
+	# (Gen._early_shape) với Config.EARLY_FILL_*: ít nhất 4 hình mỗi level.
+	for id in range(DifficultyCurve.MOTIF_FROM, Config.EARLY_SHAPE_UNTIL + 1):
+		var n := DifficultyCurve.block_count(id)
+		var solid := {}
+		for kind in Motifs.KINDS:
+			for v in Motifs.variants(kind):
+				var per := float(v["cells"].size()) / float(n)
+				if per >= Config.EARLY_FILL_MIN and per <= Config.EARLY_FILL_MAX and Gen._early_shape(v):
+					solid[kind] = true
+		t.ok(solid.size() >= 4, "L%d (%d khối): %d hình đặc vừa %s" % [id, n, solid.size(), str(solid.keys())])
 	var lo := 1 << 20
 	var hi := 0
-	for id in range(DifficultyCurve.MOTIF_FROM, DifficultyCurve.last_level() + 1):
+	for id in range(Config.EARLY_SHAPE_UNTIL + 1, DifficultyCurve.last_level() + 1):
 		lo = mini(lo, DifficultyCurve.block_count(id))
 		hi = maxi(hi, DifficultyCurve.block_count(id))
 	for n in range(lo, hi + 1):
@@ -199,9 +209,14 @@ func test_cut_styles_follow_their_rule(t: T) -> void:
 					for dv in Gen.NEIGHBORS:
 						if set.has(c + dv) and not Gen._edge_ok(c, c + dv, ctx):
 							ok = false
+				# Kiểu dải có móc (2026-11-10): dải bẻ góc một ô thành chữ L cũng đúng quy luật.
+				if not ok and Gen.HOOK_STYLES.has(style):
+					ok = Gen._hook_ok(Gen._shape_info(g), style)
 				blocks += 1
 				follow += int(ok)
-		t.ok(float(follow) >= 0.9 * blocks, "kiểu %s: %d/%d khối đúng quy luật" % [style, follow, blocks])
+		# Kiểu dải có móc hết cách gộp theo kiểu sớm hơn (móc ăn bớt ô lẻ) nên gộp tự do nhiều hơn ở cuối: 80%.
+		var need := 0.8 if Gen.HOOK_STYLES.has(style) else 0.9
+		t.ok(float(follow) >= need * blocks, "kiểu %s: %d/%d khối đúng quy luật" % [style, follow, blocks])
 
 
 func test_picker_uses_every_kind(t: T) -> void:

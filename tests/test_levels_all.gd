@@ -359,9 +359,16 @@ func test_mechanics_follow_unlock_table(t: T) -> void:
 	for m in MECHS:
 		var u := int(Config.UNLOCK[m])
 		t.eq(int(first.get(m, 0)), u, "%s xuất hiện đầu tiên ở level mở khoá %d" % [m, u])
-		# Cổng nhịp chỉ ở bàn tới Gen.GATE_MAX_BLOCKS khối nên ít hơn.
+		# Cổng nhịp chỉ ở bàn tới Gen.GATE_MAX_BLOCKS khối nên ít hơn. Băng chung chỗ lớp phủ với pudding
+		# (Gen.EXCLUSIVE), bom kẹo chỉ đi cùng Config.POP_PARTNERS, nên cũng ít hơn: theo mốc mở 2026-11-10
+		# `mech_plan` cho băng 19%, bom kẹo 16% số level từ mốc mở.
 		var share := float(count.get(m, 0)) / float(TOTAL - u + 1)
-		t.ok(share >= (0.08 if m == "pulse" else 0.2), "%s dùng đủ nhiều (%d level)" % [m, int(count.get(m, 0))])
+		var need := 0.2
+		if m == "pulse":
+			need = 0.08
+		elif m == "frost" or m == "pop":
+			need = 0.15
+		t.ok(share >= need, "%s dùng đủ nhiều (%d level)" % [m, int(count.get(m, 0))])
 	# Cơ chế mới không biến mất sau level dạy: trong Config.LEVEL_MECH_FRESH level sau level dạy, mọi level không nghỉ
 	# (trừ level dạy khác, và bàn quá to cho cổng nhịp) đều có cơ chế đó.
 	for m in MECHS:

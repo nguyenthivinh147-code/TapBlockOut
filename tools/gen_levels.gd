@@ -8,7 +8,8 @@ extends SceneTree
 ## (khoảng 1 phút), rồi bake lại data/pudding_sdf.res bằng tools/bake_sdf.gd:
 ##   tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- --from=1 --to=500 --seed=20261101 --early=1 --out=res://data/levels
 ## `--early=1`: 4 level đầu (EARLY, chắc chắn thắng) dựng tay thay cho bộ sinh; min_taps và moves vẫn do Solver tính.
-## Level dạy cơ chế (id = Config.UNLOCK: 14, 30, 40, 55, 70, 90) do bộ sinh tạo như level thường, chỉ bật cơ chế mới.
+## Level dạy cơ chế (id = Config.UNLOCK: 14, 30, 45, 65, 85, 115, 165, 220, 300, 350) do bộ sinh tạo như level thường,
+## chỉ bật cơ chế mới (Bom kẹo L220 đi cùng pudding).
 
 const Gen := preload("res://src/core/level_generator.gd")
 const LevelData := preload("res://src/core/level_data.gd")
@@ -26,20 +27,21 @@ const BASE_SEED := 20261101
 ## `rows`: mỗi chuỗi một hàng (y tăng xuống dưới), '.' ô trống, '#' đá, chữ cái là khối (cùng chữ = cùng khối).
 ## `blk[chữ]`: color (yellow lên, green trái, blue phải, purple xuống) và tuỳ chọn ice, chain (chữ khối chìa),
 ## inner (màu lớp trong), fog. `pulse`: cạnh có cổng nhịp và trạng thái mở ban đầu.
-## Số khối 4, 6, 8, 10 (DifficultyCurve.EARLY_BLOCKS). L3 chỉ D chờ G, L4 chỉ E chờ H.
+## Số khối 4, 6, 8, 10 (DifficultyCurve.EARLY_BLOCKS). L2-4 (2026-11-10, người dùng: khối dồn vào giữa, khối to hơn):
+## cụm đặc 6x4, 6x5, 6x6 không khe, khối 3-4 ô, gần hết là chữ L. L3 chỉ D chờ B, L4 chỉ E chờ J.
 const EARLY := {
 	1: {"rows": ["AB.CC", "AB...", "...DD"],
 		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "blue"}}},
-	2: {"rows": ["A.B.C", "A.B.C", "DD.EE", ".FF.."],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "green"},
-			"E": {"color": "blue"}, "F": {"color": "green"}}},
-	3: {"rows": ["A.BCC", "A.B..", "DD..E", "..F.E", "GGF.H"],
+	2: {"rows": ["AABBBC", "DABCCC", "DAEFFF", "DDEEEF"],
 		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "purple"},
+			"E": {"color": "purple"}, "F": {"color": "blue"}}},
+	3: {"rows": ["ABBBCC", "ABDDCE", "AFDDEE", "AFGHHH", "FFGGGH"],
+		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "yellow"}, "D": {"color": "yellow"},
 			"E": {"color": "blue"}, "F": {"color": "purple"}, "G": {"color": "purple"}, "H": {"color": "blue"}}},
-	4: {"rows": ["A.BB.C", "A....C", "DDE.FF", "..E...", "G.HH.I", "G...JI"],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "green"},
+	4: {"rows": ["ABBCCD", "ABECDD", "AAECFF", "GGEEHF", "GIJJHF", "IIJJHH"],
+		"blk": {"A": {"color": "green"}, "B": {"color": "yellow"}, "C": {"color": "yellow"}, "D": {"color": "blue"},
 			"E": {"color": "purple"}, "F": {"color": "blue"}, "G": {"color": "green"}, "H": {"color": "purple"},
-			"I": {"color": "blue"}, "J": {"color": "purple"}}},
+			"I": {"color": "purple"}, "J": {"color": "purple"}}},
 }
 
 
