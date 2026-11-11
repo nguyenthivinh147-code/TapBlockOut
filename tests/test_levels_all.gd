@@ -1,13 +1,15 @@
 extends RefCounted
 ## 500 level đóng gói sẵn: L1-4 làm tay (bảng EARLY), còn lại do tools/gen_levels.gd sinh theo đường cong
 ## (DifficultyCurve: số khối, số lượt dọn bàn, tag Hard / VeryHard). Từ L5 (kể cả 6 level dạy cơ chế) khối xếp theo hình
-## vẽ tay, đối xứng; mỗi level tối đa Config.LEVEL_MECH_MAX cơ chế, có level nghỉ không cơ chế.
+## vẽ tay, đối xứng (từ L14 theo kế hoạch chặng, mỗi chặng một level hình không đối xứng); mỗi level tối đa
+## Config.LEVEL_MECH_MAX cơ chế, có level nghỉ không cơ chế.
 const T := preload("res://tests/t.gd")
 const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const Solver := preload("res://src/core/solver.gd")
 const Gen := preload("res://src/core/level_generator.gd")
 const GenTool := preload("res://tools/gen_levels.gd")
+const Motifs := preload("res://src/core/motifs.gd")
 const Config := preload("res://src/config.gd")
 const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
@@ -92,8 +94,78 @@ func test_levels_form_shapes_with_gaps(t: T) -> void:
 	t.ok(shapes.size() >= 30, "nhiều hình dạng khác nhau (%d)" % shapes.size())
 
 
+## Hình vẽ tay mà level dùng: {kind, flip} của biến thể Motifs trùng đúng các ô khối và đá (dời về góc), {} nếu không có.
+## Từ Config.CHAPTER_FROM chỉ thử các hình của chủ đề chặng.
+func _motif_of(id: int, d: Dictionary) -> Dictionary:
+	var box := _footprint(d)
+	var occ: Array = []
+	for raw in d["stones"]:
+		occ.append(LevelData.cell_of(raw) - box.position)
+	for b in d["blocks"]:
+		for raw in b["cells"]:
+			occ.append(LevelData.cell_of(raw) - box.position)
+	occ.sort()
+	var key := str(occ)
+	var kinds: Array = Motifs.LEGACY_KINDS
+	var c := Gen.chapter_of(id)
+	if c >= 0:
+		var th: Dictionary = Motifs.THEMES[c % Motifs.THEMES.size()]
+		kinds = th["kinds"] + th["asym"]
+	for kind: String in kinds:
+		for v: Dictionary in Motifs.variants(kind):
+			if v["w"] != box.size.x or v["h"] != box.size.y or (v["cells"] as Array).size() != occ.size():
+				continue
+			var cells: Array = (v["cells"] as Array).duplicate()
+			cells.sort()
+			if str(cells) == key:
+				return {"kind": kind, "flip": str(v["flip"])}
+	return {}
+
+
+## Từ Config.CHAPTER_FROM mỗi level dùng đúng hình (và bản lật của hình không đối xứng) mà kế hoạch chặng giao
+## (Gen.chapter_plan): chủ đề theo chặng, không lặp hình trong chặng, hai level liền nhau khác nhóm dáng.
+func test_levels_follow_chapter_plan(t: T) -> void:
+	var off := 0
+	for id in range(Config.CHAPTER_FROM, TOTAL + 1):
+		var d := _level(id)
+		if d.is_empty():
+			continue
+		var want: Dictionary = Gen.chapter_plan(Gen.chapter_of(id))[id]
+		var got := _motif_of(id, d)
+		var ok: bool = str(got.get("kind", "")) == str(want["kind"]) \
+			and (not Motifs.ASYM.has(str(want["kind"])) or str(got["flip"]) == str(want["flip"]))
+		off += int(not ok)
+		t.ok(ok, "L%d dùng %s, kế hoạch %s" % [id, str(got), str(want)])
+	t.eq(off, 0, "mọi level đúng kế hoạch chặng")
+
+
+## Từ Config.EXIT_RANGE_FROM (2026-11-11): số khối chạm được ngay lúc đầu nằm trong Gen.exit_range (theo tag, nới theo
+## số lần thử của bộ sinh: seed ghi trong level trừ seed gốc), và tối đa Config.LEVEL_MECH_BLOCK_SHARE số khối mang cơ
+## chế (Gen.mech_blocks).
+func test_exits_and_mechanic_share(t: T) -> void:
+	var total := 0
+	var count := 0
+	var relaxed := 0
+	for id in range(Config.EXIT_RANGE_FROM, TOTAL + 1):
+		var d := _level(id)
+		if d.is_empty():
+			continue
+		var attempt := int(d["seed"]) - GenTool.BASE_SEED
+		var r := Gen.exit_range(id, attempt)
+		var f := Gen.free_count(d)
+		t.ok(f >= r.x and f <= r.y, "L%d: %d khối thoát ngay, khoảng %s" % [id, f, str(r)])
+		relaxed += int(r != Gen.exit_range(id))
+		total += f
+		count += 1
+		var n: int = d["blocks"].size()
+		t.ok(Gen.mech_blocks(d) <= Gen.mech_budget(n), "L%d: %d/%d khối có cơ chế" % [id, Gen.mech_blocks(d), n])
+	t.ok(relaxed * 20 <= count, "tối đa 5%% level phải nới khoảng khối thoát ngay (%d)" % relaxed)
+	t.ok(float(total) / count <= 4.5, "trung bình %.2f khối thoát ngay" % (float(total) / count))
+
+
 ## Từ DifficultyCurve.MOTIF_FROM: khối và đá xếp thành hình đối xứng (trái phải hoặc trên dưới), cách cắt khối cũng
-## đối xứng, hình nằm đúng giữa bàn theo chiều ngang, và các level dùng nhiều hình khác nhau.
+## đối xứng, hình nằm đúng giữa bàn theo chiều ngang, và các level dùng nhiều hình khác nhau. Level dùng hình không đối
+## xứng (Motifs.ASYM, 1 level mỗi chặng) chỉ cần nằm giữa bàn.
 func test_shaped_levels_are_symmetric(t: T) -> void:
 	var outlines := {}
 	for id in range(DifficultyCurve.MOTIF_FROM, TOTAL + 1):
@@ -102,6 +174,8 @@ func test_shaped_levels_are_symmetric(t: T) -> void:
 			continue
 		var box := _footprint(d)
 		t.eq(box.position.x, Config.BOARD_W - box.end.x, "L%d đúng giữa bàn theo chiều ngang" % id)
+		if id >= Config.CHAPTER_FROM and Motifs.ASYM.has(str(Gen.chapter_plan(Gen.chapter_of(id))[id]["kind"])):
+			continue
 		var occ := {}
 		for s in d["stones"]:
 			occ[LevelData.cell_of(s)] = "#"

@@ -1,11 +1,13 @@
 @tool
 extends EditorExportPlugin
 ## Đưa AAR tbo_platform và dependency Maven vào bản Gradle (chỉ preset bật use_gradle_build).
-## Preset APK thường (Android Demo) không bị đụng tới.
+## Preset APK không Gradle chỉ nhận res://build_info.json (version code, mọi preset Android).
 
 const BIN_DIR := "res://addons/tbo_platform/bin/"
 const CONFIG_PATH := "res://android_config.json"
 const VALUES_FILE := "res://android/build/res/values/tbo_platform.xml"
+## Read by Game.version_code().
+const BUILD_INFO := "res://build_info.json"
 
 ## Phiên bản chốt theo android/plugins/tbo_platform/build.gradle.kts (Firebase BoM 35.1.0).
 const DEPENDENCIES: PackedStringArray = [
@@ -64,9 +66,19 @@ func _get_android_manifest_application_element_contents(_platform: EditorExportP
 
 
 func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String, _flags: int) -> void:
+	_add_build_info()
 	if not _use_gradle():
 		return
 	_write_values()
+
+
+## Every Android preset: the preset's version code in res://build_info.json (Game.version_code, support mail subject).
+## Only inside the package, never on disk.
+func _add_build_info() -> void:
+	var preset := get_export_preset()
+	var code: Variant = preset.get_or_env("version/code", "") if preset != null else null
+	var info := {"version_code": int(code) if code != null else 0}
+	add_file(BUILD_INFO, JSON.stringify(info).to_utf8_buffer(), false)
 
 
 ## play_games_app_id (chỉ chữ số) từ res://android_config.json, "" nếu thiếu hoặc không hợp lệ.

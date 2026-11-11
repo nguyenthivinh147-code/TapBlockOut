@@ -30,7 +30,7 @@ addons/GodotGooglePlayBilling/
 
 ## 3. Yêu cầu Gradle và Android
 
-- **Bắt buộc `gradle_build/use_gradle_build=true`** (plugin v2 và dependency Maven không chạy với build APK không Gradle). Hệ quả: preset `Android Demo` (APK nhanh, không Gradle) **không có billing**; đúng ý vì bản demo dùng mock. `Platform` chọn backend theo singleton `TboPlatform`, nhưng `android_iap` phải tự kiểm `Engine.has_singleton("GodotGooglePlayBilling")` (xem mục 4) vì có thể có `TboPlatform` mà không có billing.
+- **Bắt buộc `gradle_build/use_gradle_build=true`** (plugin v2 và dependency Maven không chạy với build APK không Gradle). Preset `Android Demo` build qua Gradle từ 2026-11-11 nên có AAR billing, nhưng bản demo vẫn dùng IAP mock (`Platform.DEMO_NATIVE` chỉ có `notif`). `Platform` chọn backend theo singleton `TboPlatform`, nhưng `android_iap` phải tự kiểm `Engine.has_singleton("GodotGooglePlayBilling")` (xem mục 4) vì có thể có `TboPlatform` mà không có billing.
 - minSdk của plugin: 23 (Godot 4.7 đặt minSdk của template cao hơn, không xung đột). compileSdk của plugin: 36. Template Gradle cần compileSdk >= 36; kiểm khi chạy Task 10.4.
 - Cần Internet lúc build để Gradle lấy `billing-ktx:9.1.0` từ Google Maven (nguồn chính thức).
 - Quyền Internet bật trong preset. Package name phải trùng app trên Play Console. Phải ký bằng keystore phát hành thì Play mới trả sản phẩm (Horus ký AAB).

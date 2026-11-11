@@ -56,8 +56,13 @@ const DEPTH_HOLD := 0.05
 const DEPTH_FREE := 0.3
 ## `_attempt_motif`: đặt lại thùng sắt và cắt lại tối đa STONE_TRIES lần khi có khối bị thùng chắn cả bốn hướng.
 const STONE_TRIES := 3
-## Bước nhảy trong Motifs.KINDS giữa hai level liền nhau (nguyên tố cùng nhau với số hình), để hình kế tiếp khác nhóm.
+## Bước nhảy trong Motifs.LEGACY_KINDS giữa hai level liền nhau trước Config.CHAPTER_FROM (nguyên tố cùng nhau với số
+## hình), để hình kế tiếp khác nhóm.
 const MOTIF_STRIDE := 8
+## From this failed attempt on, a level gives up its planned kind and rotates through the other kinds of its theme.
+const MOTIF_SWAP_AT := 30
+## Seed of the chapter shape plans (`chapter_plan`).
+const CHAPTER_SEED := 1409
 const MECHS := ["stone", "ice", "chain", "layer", "fog", "pulse", "frost", "ribbon", "choco", "pop"]
 ## Lớp phủ: pudding (`ice`) và băng (`frost`) cùng luật, không bao giờ cùng một level.
 const COVERS := ["ice", "frost"]
@@ -210,7 +215,64 @@ static func _features(id: int, attempt: int) -> Dictionary:
 ## Khoảng lệch cho phép của số lượt dọn bàn so với `want`, nới dần theo số lần thử hỏng.
 static func _rounds_tol(want: int, attempt: int) -> int:
 	@warning_ignore("integer_division")
-	return maxi(Config.LEVEL_ROUNDS_TOL_MIN, roundi(want * Config.LEVEL_ROUNDS_TOL)) + attempt / ROUNDS_RELAX_EVERY
+	var tol := maxi(Config.LEVEL_ROUNDS_TOL_MIN, roundi(want * Config.LEVEL_ROUNDS_TOL)) + attempt / ROUNDS_RELAX_EVERY
+	return mini(tol, maxi(Config.LEVEL_ROUNDS_TOL_MIN_CAP, ceili(want * Config.LEVEL_ROUNDS_TOL_CAP)))
+
+
+## Allowed number of blocks that can act at once (`free_count`) on level `id`, as (min, max); (0, 0) before
+## Config.EXIT_RANGE_FROM (no limit). Up to Config.EXIT_RANGE_EARLY_UNTIL EXIT_RANGE_EARLY, then by tag: VeryHard,
+## Hard, normal. Widens by 1 on each side every Config.EXIT_RELAX_EVERY failed attempts (min never below 1).
+static func exit_range(id: int, attempt: int = 0) -> Vector2i:
+	if id < Config.EXIT_RANGE_FROM:
+		return Vector2i.ZERO
+	var r := Config.EXIT_RANGE_NORMAL
+	if id <= Config.EXIT_RANGE_EARLY_UNTIL:
+		r = Config.EXIT_RANGE_EARLY
+	elif DifficultyCurve.is_very_hard(id):
+		r = Config.EXIT_RANGE_VERY_HARD
+	elif is_hard(id):
+		r = Config.EXIT_RANGE_HARD
+	@warning_ignore("integer_division")
+	var relax := attempt / Config.EXIT_RELAX_EVERY
+	return Vector2i(maxi(1, r.x - relax), r.y + relax)
+
+
+## Blocks of `level` that can act on the first tap (exit or peel a shell or ribbon), as the hint's "Available Block"
+## counts them: not covered, hidden, chained, waiting for a chocolate bar or blocked; a knock on a locked gate does not
+## count.
+static func free_count(level: Dictionary) -> int:
+	var b := BoardState.new(level)
+	var n := 0
+	for bid in b.block_ids():
+		n += int(b.can_exit(bid))
+	return n
+
+
+## Lifts the fog or every cover layer of blocks (in block order) that would then act at once, until `free_count` is at
+## least `lo` or no such block is left. Only removes obstacles, so a solvable board stays solvable. Runs before
+## `_pops` so candy bombs see the final board.
+static func _ensure_free(level: Dictionary, lo: int) -> void:
+	var have := free_count(level)
+	if have >= lo:
+		return
+	var b := BoardState.new(level)
+	for bd: Dictionary in level["blocks"]:
+		if have >= lo:
+			return
+		var bid := str(bd["id"])
+		if not bool(bd.get("fog", false)) and int(bd.get("ice", 0)) <= 0:
+			continue
+		var c := b.clone()
+		if bool(bd.get("fog", false)):
+			c.reveal(bid)
+		for _k in int(bd.get("ice", 0)):
+			c.strip(bid)
+		if not c.can_exit(bid):
+			continue
+		bd["fog"] = false
+		bd["ice"] = 0
+		b = BoardState.new(level)
+		have += 1
 
 
 ## Kiểu cắt khối của level `id` (từ DifficultyCurve.MOTIF_FROM), xen kẽ theo id: "sym" (gộp tự do, đối xứng theo trục của
@@ -294,7 +356,7 @@ static func _attempt_motif(id: int, s: int, attempt: int, strict: bool = true) -
 	if feats["stone"]:
 		@warning_ignore("integer_division")
 		n_stones = mini(6, 1 + (id - int(Config.UNLOCK["stone"])) / 20 + rng.randi_range(0, 1))
-	var shape := _pick_motif(id, s, n, n_stones, rng)
+	var shape := _pick_motif(id, s, n, n_stones, rng, attempt, not strict)
 	if shape.is_empty():
 		return {}
 	var w: int = shape["w"]
@@ -347,6 +409,9 @@ static func _stone_dead(groups: Array, stones: Array[Vector2i], w: int, h: int) 
 ## thùng sắt thì số lượt bằng độ sâu lúc gán hướng nên không cần mô phỏng; lớp phủ, xích, hộp giấy, sương mù chỉ làm
 ## chuỗi dài thêm nên độ sâu đã quá mục tiêu thì gán lại luôn. Sương mù và lớp phủ rải xong qua `_unstick` để bàn không
 ## kẹt.
+## From Config.EXIT_RANGE_FROM the number of blocks that can act at once (`free_count`) must also fall in
+## `exit_range(id, attempt)`: `_assign` caps the clear-from-the-start colours at the upper bound and `_ensure_free`
+## lifts fog or covers up to the lower bound; a board outside the range is reassigned like one off the round curve.
 ## `teach`: cơ chế level này dạy ("" nếu không), level phải cho chạm thử cơ chế đó ngay lúc đầu.
 static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictionary, w: int, h: int,
 		stones: Array[Vector2i], groups: Array, teach: String, attempt: int, strict: bool = true) -> Dictionary:
@@ -363,8 +428,10 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 	var low := -1
 	var stall := 0
 	var tries := ASSIGN_TRIES if strict else FAST_ASSIGN_TRIES
+	var exits := exit_range(id, attempt)
 	for _k in tries:
-		var asg := _assign(w, h, stones, groups, _allowed_colors(id), DifficultyCurve.blocked_power(id), rng, aim)
+		var asg := _assign(w, h, stones, groups, _allowed_colors(id), DifficultyCurve.blocked_power(id), rng, aim,
+			PackedByteArray(), exits.y, Config.COLOR_MIX if id >= Config.EXIT_RANGE_FROM else 1.0)
 		if asg.is_empty():
 			return {}
 		var rounds: int = asg["depth"]
@@ -373,6 +440,8 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 			var cand := _build(id, s, hard, _shifted(stones, shift), _shifted_groups(groups, shift), asg, mech)
 			if not mech["fog"].is_empty() or not mech["ice"].is_empty() or not mech["choco"].is_empty():
 				_unstick(cand)
+			if exits.x > 0:
+				_ensure_free(cand, exits.x)
 			# Bom kẹo đặt sau cùng, theo thứ tự giải của bàn đã gỡ kẹt; không có khối đủ điều kiện thì gán hướng lại.
 			if feats["pop"] and not _pops(id, cand, rng):
 				continue
@@ -385,12 +454,14 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 				rounds = Solver.clear_rounds(cand)
 				if rounds < 0:
 					continue
-			if absi(rounds - want) <= tol:
+			var n_free := free_count(cand)
+			var miss := maxi(0, exits.x - n_free) + maxi(0, n_free - exits.y) if exits.x > 0 else 0
+			if absi(rounds - want) <= tol and miss == 0:
 				level = cand
 				break
-			if absi(rounds - want) < near_err:
+			if absi(rounds - want) + miss < near_err:
 				near = cand
-				near_err = absi(rounds - want)
+				near_err = absi(rounds - want) + miss
 		if rounds < want:
 			stall = stall + 1 if rounds <= low else 0
 			low = maxi(low, rounds)
@@ -514,6 +585,7 @@ static func _pops(id: int, level: Dictionary, rng: RandomNumberGenerator) -> boo
 	var cnt := 1
 	if not teach and id > Config.POP_COUNT_ONE_UNTIL:
 		cnt = rng.randi_range(1, Config.POP_COUNT_MAX)
+	cnt = mini(cnt, mech_budget(level["blocks"].size()) - mech_blocks(level))
 	var keys := {}
 	for bd in level["blocks"]:
 		if str(bd.get("chained_by", "")) != "":
@@ -544,6 +616,32 @@ static func _pops(id: int, level: Dictionary, rng: RandomNumberGenerator) -> boo
 			used[x] = true
 		placed += 1
 	return placed > 0
+
+
+## Most blocks of an `n`-block level that may carry a mechanic: floor(n * Config.LEVEL_MECH_BLOCK_SHARE).
+static func mech_budget(n: int) -> int:
+	return floori(n * Config.LEVEL_MECH_BLOCK_SHARE)
+
+
+## Most candy bombs `_pops` may place on level `id` (room `_mechanics` keeps in the mechanic budget).
+static func _pop_max(id: int) -> int:
+	return 1 if teach_mech(id) == "pop" or id <= Config.POP_COUNT_ONE_UNTIL else Config.POP_COUNT_MAX
+
+
+## Blocks of `level` that carry a mechanic, each counted once: cover (pudding or ice), fog, chained, key of a chain,
+## paper box, ribbon, candy bomb. Stones, chocolate bars and pulse gates are not on blocks and do not count.
+static func mech_blocks(level: Dictionary) -> int:
+	var keys := {}
+	for bd: Dictionary in level["blocks"]:
+		if str(bd.get("chained_by", "")) != "":
+			keys[str(bd["chained_by"])] = true
+	var n := 0
+	for bd: Dictionary in level["blocks"]:
+		var rib: Array = bd.get("ribbons", [])
+		n += int(int(bd.get("ice", 0)) > 0 or bool(bd.get("fog", false)) or str(bd.get("chained_by", "")) != "" \
+			or keys.has(str(bd["id"])) or str(bd.get("inner_color", "")) != "" or not rib.is_empty() \
+			or bool(bd.get("pop", false)))
+	return n
 
 
 ## Khối đủ điều kiện làm bom kẹo của `_pops` -> các khối phủ hoặc ẩn trong vùng nổ lúc nó thoát (chưa lọc khối "sạch").
@@ -920,17 +1018,34 @@ static func _pick_weighted(weights: Array[float], rng: RandomNumberGenerator) ->
 	return weights.size() - 1
 
 
-## Chọn hình vẽ tay: thử lần lượt các hình trong Motifs.KINDS (bắt đầu theo id và seed, bước MOTIF_STRIDE để level
-## liền nhau ra hình khác), lấy hình đầu tiên có cỡ vừa: số ô trừ đá chia `n` trong Config.MOTIF_FILL_MIN..MAX.
-## L5..Config.EARLY_SHAPE_UNTIL chỉ lấy hình đặc (`_early_shape`) và dùng Config.EARLY_FILL_MIN..MAX, nên khối to hơn và
-## dồn thành cụm giữa bàn. Trong các cỡ và bản lật vừa thì chọn ngẫu nhiên. Trả một biến thể của Motifs.variants, {}
-## nếu không hình nào vừa.
-static func _pick_motif(id: int, s: int, n: int, n_stones: int, rng: RandomNumberGenerator) -> Dictionary:
-	var kinds: Array = Motifs.KINDS
+## Chọn hình vẽ tay. From Config.CHAPTER_FROM the level takes the kind (and, for an asymmetric kind, the mirror) its
+## chapter plan gives it (`chapter_plan`); from attempt MOTIF_SWAP_AT on, or in fast mode (Daily Challenge, whole
+## library), it falls back to the rotation below over the theme's kinds or Motifs.KINDS. Among the planned kind's sizes
+## the one whose cells (minus stones) per block fall in Config.MOTIF_FILL_MIN..MAX, else the closest.
+## Before Config.CHAPTER_FROM (L5-13): thử lần lượt các hình trong Motifs.LEGACY_KINDS (bắt đầu theo id và seed, bước
+## MOTIF_STRIDE để level liền nhau ra hình khác), lấy hình đầu tiên có cỡ vừa: số ô trừ đá chia `n` trong
+## Config.MOTIF_FILL_MIN..MAX. L5..Config.EARLY_SHAPE_UNTIL chỉ lấy hình đặc (`_early_shape`) và dùng
+## Config.EARLY_FILL_MIN..MAX, nên khối to hơn và dồn thành cụm giữa bàn. Trong các cỡ và bản lật vừa thì chọn ngẫu
+## nhiên. Trả một biến thể của Motifs.variants, {} nếu không hình nào vừa.
+static func _pick_motif(id: int, s: int, n: int, n_stones: int, rng: RandomNumberGenerator, attempt: int = 0,
+		fast: bool = false) -> Dictionary:
+	var kinds: Array = Motifs.LEGACY_KINDS
 	var early := id <= Config.EARLY_SHAPE_UNTIL
 	var lo: float = Config.EARLY_FILL_MIN if early else Config.MOTIF_FILL_MIN
 	var hi: float = Config.EARLY_FILL_MAX if early else Config.MOTIF_FILL_MAX
 	var start := posmod(id * MOTIF_STRIDE + s, kinds.size())
+	if id >= Config.CHAPTER_FROM:
+		if fast:
+			kinds = Motifs.KINDS
+			start = rng.randi_range(0, kinds.size() - 1)
+		else:
+			var c := chapter_of(id)
+			var p: Dictionary = chapter_plan(c)[id]
+			if attempt < MOTIF_SWAP_AT:
+				return _planned_variant(str(p["kind"]), str(p["flip"]), n, n_stones, rng)
+			var theme: Dictionary = Motifs.THEMES[posmod(c, Motifs.THEMES.size())]
+			kinds = theme["kinds"] + theme["asym"]
+			start = posmod(kinds.find(p["kind"]) + attempt - MOTIF_SWAP_AT + 1, kinds.size())
 	for k in kinds.size():
 		var fit: Array = []
 		for v in Motifs.variants(kinds[(start + k) % kinds.size()]):
@@ -940,6 +1055,150 @@ static func _pick_motif(id: int, s: int, n: int, n_stones: int, rng: RandomNumbe
 		if not fit.is_empty():
 			return fit[rng.randi_range(0, fit.size() - 1)]
 	return {}
+
+
+## A variant of `kind` (mirror `flip` for an asymmetric kind: "" or "h") for `n` blocks and `n_stones` stones: a random
+## one among those whose cells per block fall in Config.MOTIF_FILL_MIN..MAX, else the closest to that range.
+static func _planned_variant(kind: String, flip: String, n: int, n_stones: int, rng: RandomNumberGenerator) -> Dictionary:
+	var asym: bool = Motifs.ASYM.has(kind)
+	var fit: Array = []
+	var best := {}
+	var best_d := INF
+	for v: Dictionary in Motifs.variants(kind):
+		if asym and str(v["flip"]) != flip:
+			continue
+		var per := float(v["cells"].size() - n_stones) / float(n)
+		var d := maxf(0.0, Config.MOTIF_FILL_MIN - per) + maxf(0.0, per - Config.MOTIF_FILL_MAX)
+		if d <= 0.0:
+			fit.append(v)
+		elif d < best_d:
+			best = v
+			best_d = d
+	if not fit.is_empty():
+		return fit[rng.randi_range(0, fit.size() - 1)]
+	return best
+
+
+## Chapter of level `id` (design.md section 4 "Hình dạng level", 2026-11-11): -1 before Config.CHAPTER_FROM, 0 up to
+## Config.CHAPTER_FIRST_TO, then one chapter every Config.CHAPTER_LEN levels. Chapter `c` uses theme
+## Motifs.THEMES[c % Motifs.THEMES.size()].
+static func chapter_of(id: int) -> int:
+	if id < Config.CHAPTER_FROM:
+		return -1
+	if id <= Config.CHAPTER_FIRST_TO:
+		return 0
+	@warning_ignore("integer_division")
+	return 1 + (id - Config.CHAPTER_FIRST_TO - 1) / Config.CHAPTER_LEN
+
+
+## First and last level of chapter `c`.
+static func chapter_ids(c: int) -> Vector2i:
+	if c <= 0:
+		return Vector2i(Config.CHAPTER_FROM, Config.CHAPTER_FIRST_TO)
+	var a := Config.CHAPTER_FIRST_TO + 1 + (c - 1) * Config.CHAPTER_LEN
+	return Vector2i(a, a + Config.CHAPTER_LEN - 1)
+
+
+static var _plans: Dictionary = {}  # chapter -> plan (pure function of the chapter, cached)
+
+
+## Shape plan of chapter `c`: level id -> {kind, flip, strict}. One level takes the theme's asymmetric kind for this
+## visit of the theme (the two alternate every Motifs.THEMES.size() chapters) with a random mirror ("" or "h"); the
+## others take distinct symmetric kinds of the theme. Every kind has a size that fits the level's block count
+## (`_kind_fits`) and two levels in a row (across chapters too) are in different silhouette groups (Motifs.GROUP).
+## Without such a plan the adjacency rule, then the fit rule is dropped (`strict` false on every level of the chapter).
+## Deterministic: depends only on `c` (and the previous chapter's last level).
+static func chapter_plan(c: int) -> Dictionary:
+	if _plans.has(c):
+		return _plans[c]
+	var themes: Array = Motifs.THEMES
+	var theme: Dictionary = themes[posmod(c, themes.size())]
+	@warning_ignore("integer_division")
+	var visit := c / themes.size()
+	var asym_kinds: Array = theme["asym"]
+	var odd: String = asym_kinds[posmod(visit, asym_kinds.size())]
+	var r := chapter_ids(c)
+	var ids: Array[int] = []
+	for id in range(r.x, r.y + 1):
+		ids.append(id)
+	var prev := ""
+	if c > 0:
+		var pp := chapter_plan(c - 1)
+		prev = str(Motifs.GROUP[str(pp[r.x - 1]["kind"])])
+	var rng := _rng(c, CHAPTER_SEED)
+	var sym: Array = (theme["kinds"] as Array).duplicate()
+	_shuffle(sym, rng)
+	var slots: Array = ids.duplicate()
+	_shuffle(slots, rng)
+	var flip := "h" if rng.randf() < 0.5 else ""
+	var plan := {}
+	for level in 3:  # 0: fit + adjacency, 1: fit only, 2: neither
+		for slot: int in slots:
+			if level < 2 and not _kind_fits(odd, slot):
+				continue
+			var pick := {slot: odd}
+			if _plan_fill(ids, 0, pick, {}, sym, prev, level == 0, level < 2):
+				for id: int in ids:
+					plan[id] = {"kind": pick[id], "flip": flip if pick[id] == odd else "", "strict": level == 0}
+				break
+		if not plan.is_empty():
+			break
+	if plan.is_empty():  # theme with fewer kinds than levels: cycle through them
+		var all: Array = sym + [odd]
+		for k in ids.size():
+			plan[ids[k]] = {"kind": all[k % all.size()], "flip": flip if all[k % all.size()] == odd else "",
+				"strict": false}
+	_plans[c] = plan
+	return plan
+
+
+## Depth-first fill of `pick` (level id -> kind) for ids[k..] with distinct kinds of `sym` (in that order).
+static func _plan_fill(ids: Array[int], k: int, pick: Dictionary, used: Dictionary, sym: Array, prev: String,
+		adjacent: bool, fit: bool) -> bool:
+	if k >= ids.size():
+		return true
+	var id := ids[k]
+	var before := prev if k == 0 else str(Motifs.GROUP[str(pick[ids[k - 1]])])
+	var after := ""
+	if k + 1 < ids.size() and pick.has(ids[k + 1]):
+		after = str(Motifs.GROUP[str(pick[ids[k + 1]])])
+	if pick.has(id):
+		if adjacent and (str(Motifs.GROUP[str(pick[id])]) == before):
+			return false
+		return _plan_fill(ids, k + 1, pick, used, sym, prev, adjacent, fit)
+	for kind: String in sym:
+		if used.has(kind):
+			continue
+		var g := str(Motifs.GROUP[kind])
+		if adjacent and (g == before or g == after):
+			continue
+		if fit and not _kind_fits(kind, id):
+			continue
+		pick[id] = kind
+		used[kind] = true
+		if _plan_fill(ids, k + 1, pick, used, sym, prev, adjacent, fit):
+			return true
+		pick.erase(id)
+		used.erase(kind)
+	return false
+
+
+## `kind` has a size whose cells (minus the level's expected stones) per block fall in Config.MOTIF_FILL_MIN..MAX for
+## level `id`'s target block count.
+static func _kind_fits(kind: String, id: int) -> bool:
+	var n := DifficultyCurve.block_count(id)
+	var plan := mech_plan(id)
+	if plan.has("pulse"):
+		n = mini(n, GATE_MAX_BLOCKS)
+	var st := 0
+	if plan.has("stone"):
+		@warning_ignore("integer_division")
+		st = mini(6, 1 + (id - int(Config.UNLOCK["stone"])) / 20)
+	for v: Dictionary in Motifs.variants(kind):
+		var per := float(v["cells"].size() - st) / float(n)
+		if per >= Config.MOTIF_FILL_MIN and per <= Config.MOTIF_FILL_MAX:
+			return true
+	return false
 
 
 ## Biến thể hình vẽ tay `v` có dùng được cho L5..Config.EARLY_SHAPE_UNTIL không: hình đặc (số ô ít nhất
@@ -1334,9 +1593,14 @@ static func _flipped(cells: Array[Vector2i], w: int, h: int, horizontal: bool) -
 ## nào lúc đầu, không thì 1 + độ sâu lớn nhất của các khối chắn đường đó (chúng đã đi trước). `aim` > 0: lái chuỗi
 ## sâu nhất về `aim` (DEPTH_PUSH, DEPTH_FREE khi còn nông, DEPTH_HOLD khi đã đủ sâu). `forbid` (rỗng hoặc n * 4 phần
 ## tử): forbid[i * 4 + màu] khác 0 thì khối i không nhận màu đó (Road Trip: cạnh mà khối vắt qua hai cổng).
+## `free_cap` > 0: once that many blocks got a colour with a clear path from the start (depth 1), later blocks take a
+## colour that opened up only after other blocks left whenever one is on offer, so at most about `free_cap` blocks can
+## exit at once (design.md section 4, from Config.EXIT_RANGE_FROM).
+## `mix` < 1: a colour's weight is multiplied by `mix` once per neighbouring block (sharing an edge) that already took
+## that colour, so colours mix instead of whole areas of the shape leaving through the nearest side (2026-11-11).
 static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allowed: Array[int],
 		power: int, rng: RandomNumberGenerator, aim: int = 0,
-		forbid: PackedByteArray = PackedByteArray()) -> Dictionary:
+		forbid: PackedByteArray = PackedByteArray(), free_cap: int = 0, mix: float = 1.0) -> Dictionary:
 	var n := groups.size()
 	var grid := PackedInt32Array()
 	grid.resize(w * h)
@@ -1346,6 +1610,18 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 	for i in n:
 		for c in groups[i]:
 			grid[c.y * w + c.x] = i
+	var near: Array = []  # near[i]: blocks sharing an edge with block i (only when `mix` < 1)
+	if mix < 1.0:
+		for i in n:
+			var seen := {}
+			for c: Vector2i in groups[i]:
+				for d in NEIGHBORS:
+					var q: Vector2i = c + d
+					if q.x >= 0 and q.y >= 0 and q.x < w and q.y < h:
+						var j := grid[q.y * w + q.x]
+						if j >= 0 and j != i:
+							seen[j] = true
+			near.append(PackedInt32Array(seen.keys()))
 	var dirs: Array[Vector2i] = [Vector2i(0, -1), Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, 1)]
 	# path[i*4+col]: chỉ số ô phía trước khối (không tính ô của chính nó), -1 trong dead nếu có đá.
 	var path: Array = []
@@ -1387,6 +1663,7 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 	var depth := PackedInt32Array()
 	depth.resize(n)
 	var deepest := 0
+	var n_free := 0  # blocks given a colour whose path is clear from the start (they exit in the first clear round)
 	for step in n:
 		var cand: Array = []  # [i, col, độ sâu]
 		var weights: Array[float] = []
@@ -1410,6 +1687,10 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 				for _p in power - 1:
 					wt *= base
 				wt *= 3.0 / (3.0 + float(used[col]))
+				if mix < 1.0:
+					for j in near[i]:
+						if alive[j] == 0 and color[j] == col:
+							wt *= mix
 				var dp := 1
 				for j in hit[i * 4 + col]:
 					dp = maxi(dp, depth[j] + 1)
@@ -1425,6 +1706,16 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 				per_block[i].append(col)
 		if cand.is_empty():
 			return {}
+		# `free_cap` blocks already exit at once: hold back the other clear-from-the-start colours while a colour that
+		# only opened up later is on offer (a held-back block can still take it once its blockers have left).
+		if free_cap > 0 and n_free >= free_cap:
+			var later := false
+			for c: Array in cand:
+				later = later or int(c[2]) > 1
+			if later:
+				for k in cand.size():
+					if int(cand[k][2]) <= 1:
+						weights[k] = 0.0
 		var pick: Array = cand[_pick_weighted(weights, rng)]
 		var bi: int = pick[0]
 		var bc: int = pick[1]
@@ -1432,6 +1723,7 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 		color[bi] = bc
 		clear[bi] = per_block[bi]
 		depth[bi] = pick[2]
+		n_free += int(int(pick[2]) <= 1)
 		deepest = maxi(deepest, pick[2])
 		used[bc] += 1
 		alive[bi] = 0
@@ -1442,7 +1734,7 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 
 ## Rải cơ chế lên các khối. Trả {ice (idx -> số lớp phủ), cover ("frost" hoặc ""), chain (idx -> idx khoá), layer
 ## (idx -> màu trong), fog, pulse, ribbon (idx -> màu các lớp, `_ribbons`)}. Lớp phủ (pudding hoặc băng, theo `feats`) không chung khối với xích, hộp giấy, sương
-## mù; khối 2 lớp phải kề ít nhất 2 khối khác.
+## mù; khối 2 lớp phải kề ít nhất 2 khối khác. At most `mech_budget(n)` blocks carry a mechanic (see `mech_blocks`).
 static func _mechanics(id: int, feats: Dictionary, groups: Array, asg: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
 	var n := groups.size()
 	var order: Array = asg["order"]
@@ -1466,6 +1758,54 @@ static func _mechanics(id: int, feats: Dictionary, groups: Array, asg: Dictionar
 	if teach_mech(id) == "chain" and order.size() > 1:
 		pool.erase(order[1])
 		pool.push_front(order[1])
+	# At most mech_budget(n) blocks carry a mechanic (design.md section 4, 2026-11-11), each counted once. Placed in this
+	# order so the few-per-level kinds keep their counts: chain lock and key, paper box, ribbon, (candy bombs: room kept
+	# for `_pops`), cover, then fog takes what is left.
+	var marked := {}
+	var budget := mech_budget(n)
+	if feats["pop"]:
+		budget -= _pop_max(id)
+	if feats["chain"]:
+		@warning_ignore("integer_division")
+		var pairs := mini(4, 1 + (id - int(Config.UNLOCK["chain"])) / 20)
+		var keys := {}
+		for a in pool:
+			if chain.size() >= pairs or marked.size() + 2 > budget:
+				break
+			if taken.has(a):
+				continue
+			var ks: Array = []
+			for k in order:
+				if int(pos[k]) < int(pos[a]) and not keys.has(k) and not chain.has(k):
+					ks.append(k)
+			if ks.is_empty():
+				continue
+			var key: int = ks[rng.randi_range(0, ks.size() - 1)]
+			chain[a] = key
+			keys[key] = true
+			taken[a] = true
+			marked[a] = true
+			marked[key] = true
+	if feats["layer"]:
+		@warning_ignore("integer_division")
+		var cnt := mini(5, 1 + (id - int(Config.UNLOCK["layer"])) / 15)
+		for i in pool:
+			if layer.size() >= cnt or marked.size() >= budget:
+				break
+			if taken.has(i):
+				continue
+			var opts: Array = []
+			for col in asg["clear"][i]:
+				if col != int(asg["color"][i]):
+					opts.append(col)
+			if opts.is_empty():
+				continue
+			layer[i] = opts[rng.randi_range(0, opts.size() - 1)]
+			taken[i] = true
+			marked[i] = true
+	var ribbon := _ribbons(id, feats, groups, asg, pool, pos, taken, rng, budget - marked.size())
+	for i in ribbon:
+		marked[i] = true
 	var cover := ""
 	for m in COVERS:
 		if feats[m] and cover == "":
@@ -1481,44 +1821,11 @@ static func _mechanics(id: int, feats: Dictionary, groups: Array, asg: Dictionar
 		for i in pool:
 			if ice.size() >= cnt:
 				break
+			if taken.has(i) or (not marked.has(i) and marked.size() >= budget):
+				continue
 			ice[i] = 2 if dbl > 0.0 and int(near[i]) >= 2 and rng.randf() < dbl else 1
 			taken[i] = true
-	if feats["chain"]:
-		@warning_ignore("integer_division")
-		var pairs := mini(4, 1 + (id - int(Config.UNLOCK["chain"])) / 20)
-		var keys := {}
-		for a in pool:
-			if chain.size() >= pairs:
-				break
-			if taken.has(a):
-				continue
-			var ks: Array = []
-			for k in order:
-				if int(pos[k]) < int(pos[a]) and not keys.has(k) and not chain.has(k):
-					ks.append(k)
-			if ks.is_empty():
-				continue
-			var key: int = ks[rng.randi_range(0, ks.size() - 1)]
-			chain[a] = key
-			keys[key] = true
-			taken[a] = true
-	if feats["layer"]:
-		@warning_ignore("integer_division")
-		var cnt := mini(5, 1 + (id - int(Config.UNLOCK["layer"])) / 15)
-		for i in pool:
-			if layer.size() >= cnt:
-				break
-			if taken.has(i):
-				continue
-			var opts: Array = []
-			for col in asg["clear"][i]:
-				if col != int(asg["color"][i]):
-					opts.append(col)
-			if opts.is_empty():
-				continue
-			layer[i] = opts[rng.randi_range(0, opts.size() - 1)]
-			taken[i] = true
-	var ribbon := _ribbons(id, feats, groups, asg, pool, pos, taken, rng)
+			marked[i] = true
 	if feats["fog"]:
 		var frac := _ramp(id, int(Config.UNLOCK["fog"]), 0.2, 0.5, 30)
 		var cnt := maxi(1, roundi(n * frac))
@@ -1527,9 +1834,10 @@ static func _mechanics(id: int, feats: Dictionary, groups: Array, asg: Dictionar
 		for i in all:
 			if fog.size() >= cnt:
 				break
-			if ice.has(i):
+			if ice.has(i) or (not marked.has(i) and marked.size() >= budget):
 				continue
 			fog[i] = true
+			marked[i] = true
 	if feats["pulse"]:
 		# Mỗi lần qua cổng khoá tốn một cú dội, nên cổng đặt ở cạnh có ít lần qua nhất (khối theo màu, hộp giấy tính cả
 		# màu vỏ lẫn màu trong); bằng nhau thì ngẫu nhiên. Cổng mở sẵn hay khoá ngẫu nhiên; level dạy luôn khoá.
@@ -1596,11 +1904,11 @@ static func _choco(id: int, feats: Dictionary, asg: Dictionary, pos: Dictionary,
 ## ngay trước, nên bóc hết ruy băng rồi thoát ngay ở lượt của khối vẫn giải được. Chỉ khối chưa có cơ chế khác, đủ ô
 ## (Config.RIBBON_CELL_CAP) và có ít nhất 2 màu thoát. Level thường: số khối và số lớp tăng dần theo level (Config).
 ## Level dạy: Config.RIBBON_TEACH_SMALL khối ít lớp đi sớm nhất (để có khối bóc được ngay), cộng một khối từ 3 ô đi
-## muộn nhất mang Config.RIBBON_TEACH_BIG lớp.
+## muộn nhất mang Config.RIBBON_TEACH_BIG lớp. At most `room` ribbon blocks (the level's mechanic budget left).
 static func _ribbons(id: int, feats: Dictionary, groups: Array, asg: Dictionary, pool: Array, pos: Dictionary,
-		taken: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+		taken: Dictionary, rng: RandomNumberGenerator, room: int = 1 << 20) -> Dictionary:
 	var out := {}
-	if not feats["ribbon"]:
+	if not feats["ribbon"] or room <= 0:
 		return out
 	var cand: Array = []
 	for i in pool:
@@ -1615,8 +1923,8 @@ static func _ribbons(id: int, feats: Dictionary, groups: Array, asg: Dictionary,
 				out[i] = _ribbon_colors(asg, i, rng.randi_range(Config.RIBBON_TEACH_BIG.x, Config.RIBBON_TEACH_BIG.y), rng)
 				cand.remove_at(k)
 				break
-		var small := rng.randi_range(Config.RIBBON_TEACH_SMALL.x, Config.RIBBON_TEACH_SMALL.y)
-		for i in cand.slice(0, small):
+		var small := mini(rng.randi_range(Config.RIBBON_TEACH_SMALL.x, Config.RIBBON_TEACH_SMALL.y), room - out.size())
+		for i in cand.slice(0, maxi(0, small)):
 			out[i] = _ribbon_colors(asg, i, rng.randi_range(1, mini(Config.RIBBON_TEACH_SMALL_LAYERS,
 				_ribbon_cap(groups[i].size()))), rng)
 	else:
@@ -1624,7 +1932,7 @@ static func _ribbons(id: int, feats: Dictionary, groups: Array, asg: Dictionary,
 		var cnt := mini(Config.RIBBON_COUNT_MAX, 1 + (id - u) / Config.RIBBON_COUNT_EVERY)
 		@warning_ignore("integer_division")
 		var cap := mini(Config.RIBBON_MAX_LAYERS, Config.RIBBON_LAYERS_START + (id - u) / Config.RIBBON_LAYERS_EVERY)
-		for i in cand.slice(0, cnt):
+		for i in cand.slice(0, mini(cnt, room)):
 			out[i] = _ribbon_colors(asg, i, rng.randi_range(1, mini(cap, _ribbon_cap(groups[i].size()))), rng)
 	for i in out:
 		taken[i] = true

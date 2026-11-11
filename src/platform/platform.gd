@@ -1,13 +1,18 @@
 extends Node
 ## Autoload Platform (kế hoạch mục 1.9). Có singleton Android "TboPlatform" thì dùng backend
 ## android_*.gd, còn lại (hoặc thiếu file) dùng mock_*.gd. UI và Game chỉ gọi lớp này.
+## Bản demo (Config.is_demo) chỉ dùng plugin cho các phần trong DEMO_NATIVE và không khởi động SDK.
 
 signal paused
 signal resumed
 
+const Config := preload("res://src/config.gd")
 const ANDROID_SINGLETON := "TboPlatform"
 const MOCK_IAP_STATE := "user://mock_iap.json"
 const ANDROID_CONFIG := "res://android_config.json"
+## Demo APK (Gradle, has the plugin): real local notifications and the POST_NOTIFICATIONS prompt; ads, IAP,
+## analytics, Remote Config and cloud save stay mock.
+const DEMO_NATIVE: Array[String] = ["notif"]
 
 var ads: Object
 var iap: Object
@@ -42,15 +47,21 @@ func _init() -> void:
 		if o.has_signal("overlay_shown"):
 			o.connect("overlay_shown", _on_overlay_shown)
 			o.connect("overlay_hidden", _on_overlay_hidden)
-	if not is_android and iap.get("persist_path") != null and DisplayServer.get_name() != "headless":
+	if not _native("iap") and iap.get("persist_path") != null and DisplayServer.get_name() != "headless":
 		iap.persist_path = MOCK_IAP_STATE
 		iap.load_state()
-	if is_android:
+	# The demo starts no SDK (no MAX consent, Firebase, Adjust, Play Games).
+	if is_android and not Config.is_demo():
 		_init_plugin()
 
 
+## Whether `part` uses the plugin backend: on Android, every part, or only DEMO_NATIVE in the demo.
+func _native(part: String) -> bool:
+	return is_android and (not Config.is_demo() or part in DEMO_NATIVE)
+
+
 func _make(part: String) -> Object:
-	if is_android:
+	if _native(part):
 		var path := "res://src/platform/android_%s.gd" % part
 		if ResourceLoader.exists(path):
 			var script := load(path) as GDScript
@@ -93,8 +104,9 @@ func _on_overlay_hidden() -> void:
 
 # --- chung ---
 
+## ms is the base length; the phone vibrates ms × Config.CONTENT.haptic_scale.
 func haptic(ms: int) -> void:
-	Input.vibrate_handheld(ms)
+	Input.vibrate_handheld(maxi(roundi(ms * float(Config.CONTENT.get("haptic_scale", 1.0))), 1))
 
 
 func review() -> void:
@@ -112,6 +124,32 @@ func open_debugger() -> void:
 func _call_plugin(method: String) -> void:
 	if _plugin != null and _plugin.has_method(method):
 		_plugin.call(method)
+
+
+## SDK lines of a tester's support mail (support_mail.gd body): MAX, Firebase and Adjust started (the plugin's
+## module_status), ad units and Adjust settings (android_config.json). Without the plugin or the file: false and "".
+func support_status() -> Dictionary:
+	var s := {}
+	if _plugin != null and _plugin.has_method("module_status"):
+		s = _json_dict(str(_plugin.call("module_status")))
+	var c := _json_dict(FileAccess.get_file_as_string(ANDROID_CONFIG)) if FileAccess.file_exists(ANDROID_CONFIG) else {}
+	return {
+		"max": bool(s.get("ads_ready", false)),
+		"interstitial": str(c.get("interstitial_unit", "")),
+		"rewarded": str(c.get("rewarded_unit", "")),
+		"firebase": bool(s.get("firebase", false)),
+		"adjust": bool(s.get("adjust", false)),
+		"adjust_env": str(c.get("adjust_environment", "")),
+		"adjust_token": str(c.get("adjust_app_token", "")),
+	}
+
+
+## Parsed JSON object, {} when the text is not one (no engine error logged).
+static func _json_dict(text: String) -> Dictionary:
+	var j := JSON.new()
+	if j.parse(text) != OK or not (j.data is Dictionary):
+		return {}
+	return j.data
 
 
 # --- ads ---

@@ -159,6 +159,8 @@ func _on_notice(kind: String) -> void:
 		"offline":
 			if not _has_popup(NO_INTERNET):
 				open_popup(NO_INTERNET)
+		"notif_off":
+			open_popup(POPUP_NOTICE, {"view": {"title": "settings_notifications", "body": "settings_notifications_off"}})
 
 
 ## "v0.1.0" theo application/config/version; trống thì Splash ẩn dòng version.

@@ -28,7 +28,7 @@ Tạo ngày 2026-11-01, đối chiếu lại với thư mục thực tế cùng 
 
 - Godot 4.7.2, GDScript, renderer `gl_compatibility`, chỉ Android, portrait. iOS làm sau nên mọi thứ Android nằm sau autoload `Platform`.
 - Quảng cáo: AppLovin MAX. IAP: Godot Google Play Billing plugin. Firebase Analytics, Remote Config, Crashlytics, Adjust, In-App Review, thông báo, Play Games Saved Games: một plugin Kotlin v2 tự viết.
-- Horus ký AAB, đưa lên Play, cấp `appId`, đăng ký SKU, và **sẽ gửi cấu hình MAX, Firebase, Adjust sau**. Vì thế bản demo dùng hoàn toàn bản giả lập, và mọi code Android phải chạy được khi thiếu cấu hình.
+- Horus ký AAB, đưa lên Play, cấp `appId`, đăng ký SKU, và **sẽ gửi cấu hình MAX, Firebase, Adjust sau**. Vì thế bản demo dùng bản giả lập (trừ thông báo local, từ 2026-11-11 chạy thật qua plugin), và mọi code Android phải chạy được khi thiếu cấu hình.
 - Không banner. Không nhiệm vụ ngày. Không quà quay lại. Không timer trong level.
 - Hai preset export: `Android Demo` (custom feature `demo`, dừng ở L20) và `Android Release`.
 
@@ -47,6 +47,7 @@ Tạo ngày 2026-11-01, đối chiếu lại với thư mục thực tế cùng 
 - Ranh giới file: chỉ sửa file trong Allowed Files. File `.uid` và `.import` do Godot sinh cho file của mình không tính là vi phạm. Thiếu API ở module khác thì báo lại, không sửa hộ.
 - Ảnh PNG trong `assets/` từ 256×256 điểm ảnh trở lên (tính sau `process/size_limit`) import dạng WebP lossy (`compress/mode=1`, `compress/lossy_quality=0.9`) để giảm dung lượng game, nếu lossy nhỏ hơn lossless ít nhất 25%. Icon nhỏ hơn và ảnh màu phẳng (pattern, khung trơn) giữ lossless cho nét sắc. Thêm hoặc xuất lại ảnh thì chạy `tools/godot.sh --headless --path . -s res://tools/compress_textures.gd` rồi import lại; thêm `-- --check` thì không sửa gì, thoát 1 nếu còn file chưa đặt.
 - Ảnh có cỡ hiển thị lớn nhất đã biết thì đặt `process/size_limit` khoảng 1,5 lần cỡ đó: avatar `assets/avatars/` để 256 (to nhất 160 px ở màn Profile). Đừng đặt `size_limit` cho ảnh mà scene trong `scenes/unity/` tham chiếu theo vùng (`region`, `border` tính bằng px ảnh đã import): thu nhỏ ảnh làm lệch các vùng đó.
+- Mọi preset Android nhận `res://build_info.json` (`{"version_code": <version/code của preset>}`), chỉ nằm trong gói, do `_export_begin` của `addons/tbo_platform/export_plugin.gd` thêm; `Game.version_code()` đọc nó (chạy từ project thì `"0"`).
 - Bản export Android đóng scene thành binary `<đường_dẫn>.tscn.res` qua lớp `DeflatedScenes` trong `addons/tbo_platform/plugin.gd` (addon phải bật). Bộ export Android để mọi file `.scn` không nén trong APK, mà `.scn` Godot tự chuyển từ `.tscn` lại không nén, nên trước 2026-11-10 cảnh UI chiếm 2,6 MB thay vì 0,56 MB. Không bật `ResourceSaver.FLAG_COMPRESS` (nén theo khối 4 KB, còn 1,6 MB) và không xuất dạng text (nạp chậm hơn khoảng 3,5 lần).
 - Boot splash `assets/ui/boot_splash.png` phải là PNG: Godot nạp nó trước khi có bộ đọc WebP/JPG, sai định dạng thì hiện splash mặc định. File được đóng nguyên vào gói nên `.import` để `importer="skip"`. Đổi ảnh thì chạy `npm ci --prefix tools/node` rồi `node tools/node/png_shrink.mjs --drop-bits=2 assets/ui/boot_splash.png` (làm tròn mỗi kênh màu về bội số của 4, sai lệch tối đa ±2 mức, không thấy dải màu). PNG bảng màu 256 không dùng: thử libimagequant ngày 2026-11-10 được 1,23 → 0,76 MB nhưng nền pastel lấm tấm hạt dither. Ảnh là `loading_bg.png` có `loading_logo.png` vẽ đè ở `Splash.LOGO_RECT` (px của ảnh 1152×2048); màn loading vẽ lại đúng như vậy trong khung `Splash.boot_rect` để nối liền boot splash, nên đổi ảnh hay vị trí logo thì đo lại `LOGO_RECT` rồi chạy `tests/test_splash_art.gd`. `boot_splash/stretch_mode` chỉ dùng Keep Width, Keep Height, Cover hoặc Ignore (test kiểm), vì màn loading chỉ vẽ theo được bốn mode đó. Đang dùng Keep Height: ảnh luôn cao bằng màn nên logo không bị cắt; trên điện thoại (hẹp hơn 9:16) giống Cover, còn màn rộng hơn (tablet) có hai dải bên màu `boot_splash/bg_color` (hồng tím nhạt, trung bình mép trái và phải của ảnh). Chạy trên desktop, cửa sổ mở ở 443×960 (`window/size/window_*_override`): cửa sổ 886×1920 cao hơn màn hình thì Godot vẽ boot splash cho cỡ đó trước khi trình quản lý cửa sổ thu cửa sổ lại, nên khung đầu bị phóng to.
 - Font fallback Jua (tiếng Hàn) và M PLUS Rounded (tiếng Nhật) là bản subset trong `art/fonts/subset/`: chữ có trong `i18n/`, `scenes/`, `data/`, `src/`, cộng đủ kana, jamo, dấu câu CJK và các chữ Hán mà autohinter FreeType dùng để đo (thiếu chúng thì nét chữ Nhật lệch so với font đầy đủ). Thêm hoặc sửa text tiếng Hàn, Nhật thì chạy `node tools/node/subset_fonts.mjs` rồi `tools/godot.sh --headless --path . -s res://tools/gen_baloo_font.gd`; `tests/test_shipped_assets.gd` báo lỗi khi quên. Tên người chơi gõ chữ ngoài bộ subset thì dùng font hệ thống.
@@ -54,14 +55,16 @@ Tạo ngày 2026-11-01, đối chiếu lại với thư mục thực tế cùng 
 ### 1.4 Lệnh dùng chung
 
 ```bash
+tools/test.sh                                                              # toàn bộ test (bọc run_all.gd bằng timeout), log output/test/, báo cáo output/report/
+tools/test.sh test_board                                                   # chỉ tests/test_board*.gd
 tools/godot.sh --headless --path . --quit                                  # nạp autoload và main scene, chạy 1 khung
-tools/godot.sh --headless --path . -s res://tests/run_all.gd               # toàn bộ test
-tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_board # chỉ tests/test_board*.gd
 tools/godot.sh --headless --path . --import                                # chỉ Orchestrator hoặc task được phép, khi editor đóng (mục 1.12)
 tools/godot.sh --headless --path . -s res://tools/bake_sdf.gd              # bake lại data/pudding_sdf.res sau khi sinh lại level hay đổi cách dựng SDF
 ```
 
-`run_all.gd` tự tìm `tests/test_*.gd` nên thêm test không phải sửa file dùng chung. Thoát 0 là đạt. `--quit` **không** parse toàn project: script không nối tới main scene hay autoload có lỗi cú pháp vẫn thoát 0, nên module chỉ được kiểm qua test của nó. `-s` có nạp autoload, gọi được `Platform`, `Game` theo tên.
+Quy trình kiểm một thay đổi, tầng test, smoke, báo cáo: `docs/TESTING.md` (Phase 11). `tools/test.sh` đạt khi thoát 0 và có dòng `ALL TESTS PASSED (<n>)`; thoát 1 là game có lỗi, 2 là hạ tầng test hỏng. Smoke là `tools/smoke.sh` (Task 11.3). `tools/godot.sh` không có biến `GODOT` thì dùng đường dẫn Linux, không có thì tìm `Godot_v4.7.2-stable_win64.exe` ở Desktop (Windows).
+
+`run_all.gd` tự tìm `tests/test_*.gd` nên thêm test không phải sửa file dùng chung. Lỗi engine hay lỗi script ghi ra trong lúc một test chạy làm test đó fail (`Logger`); lỗi cố ý khai bằng `t.expect_error`, nhiễu đã biết ghi vào `tests/allow_errors.txt`. `--quit` **không** parse toàn project; `tests/test_static_check.gd` nạp mọi script nên bắt được lỗi cú pháp của module chưa nối vào đâu. `-s` có nạp autoload, gọi được `Platform`, `Game` theo tên.
 
 Dạng file test:
 
@@ -73,7 +76,7 @@ func test_ten_ca(t: T) -> void:
 	t.eq(1 + 1, 2, "cộng")
 ```
 
-`T` có `eq`, `ok`, `near`, `fail`. Hàm tên `test_*` được chạy tuần tự, có thể `await`. Test dùng file phải ghi trong `user://test_<tên_test>/` để các tiến trình song song không đụng nhau.
+`T` có `eq` (lỗi chỉ ra phần tử khác đầu tiên của Array, Dictionary), `ok`, `near`, `fail`, `expect_error`, `allow`. Hàm tên `test_*` được chạy tuần tự, có thể `await`. Test dùng file phải ghi trong `user://test_<tên_test>/` để các tiến trình song song không đụng nhau.
 
 ### 1.5 Cấu trúc thư mục
 
@@ -102,9 +105,13 @@ art/           bản gốc và manifest.json, có .gdignore
 android/plugins/tbo_platform/   plugin Kotlin (Phase 10)
 addons/        godot_ai/ (đã cài, công cụ editor, có trong git, không vào bản export); plugin Godot (Phase 10)
 tests/  tools/  reference/horus/  plans/
+tests/smoke/   smoke.gd  smoke_saves.gd (Task 11.3; chạy bằng tools/smoke.sh)
+docs/          tài liệu; docs/TESTING.md (quy trình test), docs/godot/ (tham chiếu API Godot, MIT)
+.claude/       settings.json (chặn lệnh git phá dữ liệu), skills/, agents/, rules/ (Phase 11)
+output/        ảnh, log, báo cáo, Excel sinh ra (không vào git, có .gdignore)
 ```
 
-`art/`, `tools/`, `reference/`, `plans/` có `.gdignore`. Thư mục `android/` cũng có `.gdignore`. Preset loại `tests/*` và `addons/godot_ai/*` khỏi bản export.
+`art/`, `tools/`, `reference/`, `plans/`, `output/` có `.gdignore`. Thư mục `android/` cũng có `.gdignore`. Preset loại `tests/*` và `addons/godot_ai/*` khỏi bản export.
 
 ### 1.6 Dữ liệu level
 
@@ -220,7 +227,7 @@ Không thêm khoá gốc ngoài danh sách này nếu task không được phép
 
 ### 1.9 Interface `Platform` (autoload, `src/platform/platform.gd`)
 
-Chọn backend lúc khởi động: `Engine.has_singleton("TboPlatform")` thì dùng Android, còn lại dùng mock. Mọi hàm async là coroutine, gọi bằng `await`.
+Chọn backend lúc khởi động: `Engine.has_singleton("TboPlatform")` thì dùng Android, còn lại dùng mock. Bản demo (`Config.is_demo()`) có plugin nhưng chỉ dùng backend Android cho các phần trong `Platform.DEMO_NATIVE` (`notif`), không gọi `init_sdks`. Mọi hàm async là coroutine, gọi bằng `await`.
 
 ```gdscript
 signal paused; signal resumed
@@ -318,7 +325,8 @@ func cloud_conflict_view() -> Dictionary  # {local, cloud}: {name, level, avatar
 func resolve_cloud(use_cloud: bool) -> void  # giữ một bản, gộp đơn mua của bản kia
 func notice_shown(reason: String) -> bool  # lỗi video/mua đã được Main báo bằng popup: màn gọi không báo thêm
 func online() -> bool               # coroutine: HEAD CONTENT.net_check_url; test đặt test_online
-# Win Streak (design.md mục 7 "Win Streak", Task 9.18)
+# Win Streak (design.md mục 7 "Win Streak", Task 9.18); tắt bằng Config.FEATURES.win_streak (từ 2026-11-11), lượt
+# đang chạy cũng thôi đếm (WinStreak.is_running)
 func streak_refresh() -> void       # WinStreak.validate: ngày Active của tuần mới thì bắt đầu lượt mới, lượt cũ quá hạn thì xoá (quà chưa nhận mất); streak_view tự gọi
 func streak_view() -> Dictionary    # WinStreak.view: {visible, running, started, streak, floor, before, milestones, claimable, ends_in, next_in, entry}
 func streak_entry() -> String       # "intro" | "main" | "end" | ""
@@ -500,6 +508,7 @@ git status --short
 | 8 | **Mốc: bản demo** | | 8.1 → 8.2 |
 | 9 | Nội dung phát hành | 9.1, 9.2, 9.5 | sau đó 9.3 → 9.4; 9.6–9.32 tuần tự (chung `game.gd`, `config.gd`, `save_schema.gd`, `home.gd`, `i18n/strings.csv`) |
 | 10 | Android thật | 10.1, 10.2 | sau đó 10.3 → 10.4 |
+| 11 | Quy trình test | | 11.1 → 11.2 → 11.3 → 11.4 |
 
 Phase 9–10 làm tiếp sau mốc demo, ẩn sau preset `Android Release`, nên không đổi bản demo. Nếu người dùng duyệt demo và đổi luật, các phase này có thể phải sửa theo.
 
@@ -574,6 +583,12 @@ Ngày lấy từ tiêu đề task và các đoạn "Bổ sung" trong mục 3. Ta
 - Task 9.25: Socola phủ thanh (cơ chế thứ 9, L150; từ 2026-11-10 là L300).
 - Task 9.26–9.32: lập kế hoạch 7 cơ chế mới (bom kẹo, dây kẹo kéo, hũ kẹo, kẹo hai vị, kẹo tên lửa, ống kẹo, kẹo mút chong chóng), chưa làm.
 - Task 9.33: khối chữ L, cụm khít L2–10, cắt lại Road Trip và Màn đặc biệt, sinh lại 500 level theo mốc mở mới (đóng phần "Còn lại" của Task 9.22, 9.25, 9.26).
+
+**2026-11-11:** lập Phase 11 (quy trình test, lấy mẫu từ Butcher Defense).
+
+- Task 11.1: Lớp Claude và tài liệu test.
+- Task 11.2: Runner bắt lỗi engine, kiểm tra tĩnh, `tools/test.sh`, báo cáo HTML.
+- Task 11.3: Smoke bấm thật A, B, C, D, E, M, S.
 
 ---
 
@@ -711,7 +726,7 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 5.5: Popup quà và Settings**
   - **Allowed Files:** `scenes/popup_daily.tscn`, `src/ui/popup_daily.gd`, `scenes/settings.tscn`, `src/ui/settings.gd`, `tests/test_ui_daily.gd`, `tests/test_ui_settings.gd`.
-  - **Specs:** Popup quà chỉ mở khi bấm, hiện đúng 7 ô của tuần đang đi, nút nhận, nút video nhận ô kế tiếp (không tự chạy). Settings: âm thanh, nhạc, rung, thông báo, ngôn ngữ, Privacy khi `has_privacy`, Restore, Contact support (mở `mailto:` tới `Config.CONTENT.support_email`), phiên bản. Chạm 10 lần vào dòng phiên bản (hoặc phím F1 ở `main.gd`) mở menu tester (`scenes/tester_menu.tscn`) có nút mediation debugger (`Platform.open_debugger()`); bản debug thêm ô sửa gold, level, booster và nút xoá tài khoản (`Game.tester_edit`, `Game.tester_wipe`).
+  - **Specs:** Popup quà chỉ mở khi bấm, hiện đúng 7 ô của tuần đang đi, nút nhận, nút video nhận ô kế tiếp (không tự chạy). Settings: âm thanh, nhạc, rung, thông báo, ngôn ngữ, Privacy Policy và Terms of Service (như `PrivacyPolicyControl` của Unity: mất mạng thì popup 1.6, có mạng thì popup Có/Không bằng `popup_notice` có `cancel`, Yes chờ một khung rồi mở `Config.CONTENT.privacy_url` / `terms_url`, xem `design.md` mục 8), Privacy settings khi `has_privacy`, Restore, Support (như `CustomerSupportButton` của Unity: mất mạng thì popup 1.6, có mạng thì mở `mailto:` tới `Config.CONTENT.support_email`, tiêu đề và thân dựng bằng `src/meta/support_mail.gd`, xem `design.md` mục 8 "Mail hỗ trợ"), phiên bản. Chạm 10 lần vào dòng phiên bản (hoặc phím F1 ở `main.gd`) mở menu tester (`scenes/tester_menu.tscn`) có nút mediation debugger (`Platform.open_debugger()`); bản debug thêm ô sửa gold, level, booster và nút xoá tài khoản (`Game.tester_edit`, `Game.tester_wipe`).
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_daily && tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_settings`
 
 ### Phase 6: Ráp màn level
@@ -852,7 +867,7 @@ Task 9.13–9.17 ghi lại phần đã làm từ 2026-11-02 tới 2026-11-08 mà
 
 Task 9.18–9.19 ghi lại phần nối logic các màn wireframe ngày 2026-11-09 (`design.md` mục 9, `docs/UI_FIGMA.md` bảng "Trạng thái"). Chạy tuần tự sau 9.17 vì cùng sửa `game.gd`, `main.gd`, `level.gd`, `home.gd`, `config.gd`, `i18n/strings.csv`.
 
-- [x] **Task 9.18: Win Streak (2026-11-09)**
+- [x] **Task 9.18: Win Streak (2026-11-09)** — đang tắt từ 2026-11-11 (`Config.FEATURES.win_streak` = false, design.md mục 7 "Win Streak").
   - **Allowed Files:** `src/meta/win_streak.gd`, `src/meta/save_schema.gd` (`streak`), `src/meta/unlocks.gd`, `src/config.gd` (`WIN_STREAK`, `UNLOCK.win_streak`), `src/game/game.gd` (`streak_*`, `leave_attempt`, `streak_up` của `on_level_won`), scene và script cùng tên của `popup_streak_intro`, `streak_main`, `popup_streak_rewards`, `popup_streak_end`, `popup_streak_keep`, `src/ui/popup_notice.gd`, `src/ui/popup_reward.gd`, `src/ui/home.gd`, `scenes/home.tscn`, `src/ui/level.gd`, `src/ui/main.gd` (`_open_streak`), `i18n/strings.csv`, `tests/test_win_streak.gd`, `tests/test_ui_streak.gd`, `design.md`, `docs/UI_FIGMA.md`.
   - **Specs:** `design.md` mục 7 "Win Streak", theo `ME_WinStreak` của color-cube-match-puzzle. `win_streak.gd` là logic thuần, giờ truyền vào (`now`, `tz`), giờ máy như Weekly Pass. Mở từ `UNLOCK.win_streak` (L45 từ 2026-11-10, trước là L40), icon ở cột trái Home. Lượt theo tuần: ngày trong `WIN_STREAK.active_days` (thứ Sáu, Bảy, Chủ nhật) là Active, lượt bắt đầu ở ngày Active đầu tiên người chơi mở game, các ngày khác chỉ nhận quà; lượt mới xoá chuỗi và mốc đã nhận, quà chưa nhận mất (`validate`). Chuỗi chỉ đếm sau khi bấm Start và chỉ trong ngày Active: thắng level chính +1 (Daily Challenge, Road Trip không tính); thua hoặc bỏ ván đã chạm (`Game.leave_attempt`) thì tụt về mốc đã đạt gần nhất, rồi hiện "Bạn đã mất chuỗi thắng" (`popup_notice`, `streak_take_lost`). Mốc và thưởng trong `WIN_STREAK.milestones` (gold, booster, phút mạng vô hạn `inf_min`), nhận thủ công từng mốc (`streak_claim`) rồi hiện `popup_reward`. Icon Home mở theo `streak_entry()`: Giới thiệu 9.1, Main 9.2, End 9.4; Giới thiệu tự mở một lần mỗi lượt (`streak_take_auto_intro`); Start mở luật 9.3 rồi Main. Bỏ ván khi chuỗi sẽ tụt (`streak_at_stake`) dùng `popup_streak_keep` (9.5) thay `popup_keep_playing`.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_win_streak test_ui_streak test_ui_level test_ui_stubs`
@@ -876,7 +891,7 @@ Task 9.18–9.19 ghi lại phần nối logic các màn wireframe ngày 2026-11-
       - 4.3 `popup_rate`: một lần, sau thẻ thắng ở level mở Rate us (`rate_now`).
       - 4.6 `popup_keep_playing`: thay hộp thoại xác nhận bỏ ván mất mạng.
       - 4.7 `popup_helper_pack`: ở lần cứu đầu khi hết MOVES lần thứ 3 liên tiếp ở level và kho hết +3 Move (`helper_pack_due`), bán `ECON.helper_pack_sku`.
-    - **Settings:** mở `popup_language` (10.4) và `popup_help` (10.5); Gửi mở mail tới `CONTENT.support_email`.
+    - **Settings:** mở `popup_language` (10.4). Support mở mail ngay như Unity (2026-11-11: bỏ `popup_help` 10.5 và dòng Help trong cài đặt trong màn).
     - **Bỏ:** 1.3, 3.3, 3.11, 4.2.
     - **Còn chỉ UI:** 5.2, 5.3. Mục Hearts (gói mạng) của Shop tắt ở mọi bản build, kể cả debug (`shop.gd` `SHOW_HEARTS`, 2026-11-10). `popup_ads_daily` (2.3) chỉ còn trong danh sách xem trước; ADS Daily thật nằm trong Shop.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_wired test_cloud test_ui_shop test_ui_stubs test_ui_level test_ui_settings test_e2e`
@@ -981,6 +996,21 @@ Task 9.18–9.19 ghi lại phần nối logic các màn wireframe ngày 2026-11-
   - **Còn lại:** xem L2–10 trên máy thật. Băng (19%) và bom kẹo (16% số level từ mốc mở) ít hơn các cơ chế khác do `mech_plan`; test hạ ngưỡng còn 15%, chỉnh `mech_plan` nếu người dùng muốn nhiều hơn.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_generator test_motifs test_levels_all test_levels_demo test_special test_road_trip test_pudding_bank`
 
+- [x] **Task 9.34: Ít khối thoát ngay, trần 50% khối có cơ chế, hình theo chặng và chủ đề, trộn màu (2026-11-11)**
+  - **Allowed Files:** `src/config.gd` (`EXIT_RANGE_*`, `EXIT_RELAX_EVERY`, `LEVEL_MECH_BLOCK_SHARE`, `COLOR_MIX`, `CHAPTER_*`, `LEVEL_ROUNDS_TOL_CAP`, `LEVEL_ROUNDS_TOL_MIN_CAP`), `src/core/level_generator.gd` (`exit_range`, `free_count`, `_ensure_free`, `_finish`, `_assign` `free_cap` và `mix`, `_rounds_tol`, `_mechanics`, `_ribbons` `room`, `_pops`, `mech_budget`, `mech_blocks`, `_pick_motif`, `_planned_variant`, `chapter_of`, `chapter_ids`, `chapter_plan`, `_plan_fill`, `_kind_fits`, `MOTIF_SWAP_AT`, `CHAPTER_SEED`), `src/core/motifs.gd` (`LEGACY_KINDS`, `GROUP`, `ASYM`, `THEMES`, `KINDS`, 61 hình mới, cỡ 7 cho chữ thập, nhà, tim, thoi), `data/levels/level_0014.json` … `level_0500.json`, `data/pudding_sdf.res`, `tests/test_generator.gd`, `tests/test_motifs.gd`, `tests/test_levels_all.gd`, `design.md`, `docs/REF_GAME_DIFF.md`.
+  - **Specs:** `design.md` mục 4 "Đường cong độ khó" (khối thoát được ngay), "Hình dạng level" (chặng và chủ đề, trộn màu), "Cơ chế sau bản demo" (trần khối có cơ chế), mục 9. Người dùng chốt qua ba vòng hỏi:
+    - Khoảng khối thoát ngay: L14–29 2–4 khối; level thường và level nghỉ 3–5; Hard 2–4; VeryHard 2–3.
+    - Giữ số khối, số lượt, tag và dư MOVES.
+    - Mỗi level tối đa 50% khối có cơ chế.
+    - Chặng 10 level, 8 chủ đề, mỗi chủ đề 9 hình đối xứng và 2 hình không đối xứng (khoảng 10% số level).
+    - Hai level liền nhau khác nhóm dáng.
+    - Duyệt bảng hình của 8 chủ đề trước khi sinh lại.
+    - Trộn màu, giữ cách cắt khối đối xứng.
+    - L1–13, Road Trip và Màn đặc biệt không đổi.
+    - Lệnh: `tools/godot.sh --headless --path . -s res://tools/gen_levels.gd -- --from=1 --to=500 --seed=20261101 --early=1 --out=res://data/levels` (khoảng 70 giây), rồi `tools/godot.sh --headless --path . -s res://tools/bake_sdf.gd`.
+  - **Còn lại:** xem trên máy thật các hình mới, độ khó khi màu xen nhau và khi ít khối thoát ngay.
+  - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_generator test_motifs test_levels_all test_levels_demo test_special test_road_trip test_pudding_bank test_level_loop && tools/godot.sh --headless --path . -s res://tools/validate_levels.gd`
+
 **Cổng Phase 9:** cổng mặc định, gộp manifest của Task 9.5, thêm xem cơ chế qua MCP (mục 1.12): chạy level dạy 14, 30, 45, 65, 85, 115, 165, 300, 350 (mốc 2026-11-10) và chụp từng màn. Không có session MCP thì ghi vào báo cáo, không chặn.
 
 ### Phase 10: Android thật
@@ -1004,10 +1034,39 @@ Chưa có cấu hình của Horus: code phải biên dịch được, chạy kh�
 
 - [x] **Task 10.4: Bản Gradle và AAB bàn giao**
   - **Allowed Files:** `export_presets.cfg`, `android/build/**` (template, không commit), `android_config.json` (file tạm, không commit), `tools/export_release.sh`, `docs/HORUS_HANDOFF.md`, `tools/godot.sh`.
-  - **Specs:** Chạy khi editor đóng (mục 1.12). Chạy `--install-android-build-template`, bật `use_gradle_build=true` cho `Android Release`, `gradle_build/export_format=1` (AAB), target SDK theo yêu cầu hiện hành của Play. `Android Demo` giữ nguyên để vẫn build APK nhanh. `tools/export_release.sh` chép `android/config/platform_config.json` thành `android_config.json` nếu có, export, rồi xoá file tạm; ra APK debug dùng plugin và AAB chưa ký bản phát hành. `docs/HORUS_HANDOFF.md`: danh sách SKU kèm giá USD, placement, khoá Remote Config, sự kiện analytics, file cấu hình Horus cần gửi và nơi đặt, cách build, quy tắc tăng version.
+  - **Specs:** Chạy khi editor đóng (mục 1.12). Chạy `--install-android-build-template`, bật `use_gradle_build=true` cho `Android Release`, `gradle_build/export_format=1` (AAB), target SDK theo yêu cầu hiện hành của Play. `Android Demo` giữ nguyên để vẫn build APK nhanh (2026-11-11: đã chuyển sang Gradle, xem "Bổ sung 2026-11-11" dưới đây). `tools/export_release.sh` chép `android/config/platform_config.json` thành `android_config.json` nếu có, export, rồi xoá file tạm; ra APK debug dùng plugin và AAB chưa ký bản phát hành. `docs/HORUS_HANDOFF.md`: danh sách SKU kèm giá USD, placement, khoá Remote Config, sự kiện analytics, file cấu hình Horus cần gửi và nơi đặt, cách build, quy tắc tăng version.
   - **Verification:** `tools/export_release.sh && ls -lh build/*release*.aab build/*gradle*.apk && tools/godot.sh --headless --path . -s res://tests/run_all.gd`
 
+**Bổ sung 2026-11-11 (người dùng yêu cầu): APK demo xin quyền và gửi thông báo thật.** APK demo cũ không Gradle nên không có plugin: manifest chỉ có VIBRATE, thông báo là mock, máy không bao giờ hiện hộp xin `POST_NOTIFICATIONS`. Preset `Android Demo` chuyển sang Gradle (`use_gradle_build=true`, APK, minSdk 24, targetSdk 36), vẫn feature `demo`, nên có plugin `TboPlatform` và các quyền trong manifest của plugin. `Platform` ở bản demo chỉ dùng plugin cho `notif` (quảng cáo, IAP, analytics, Remote Config, cloud save vẫn mock; không khởi động SDK). `tools/export_apk.sh` tự cài Android build template khi thiếu `android/build`. Settings: nút Thông báo hiện tắt khi máy chưa cho quyền; bật thì xin quyền (`Game.toggle_notif`), vẫn tắt thì popup `notif_off`. Build demo giờ cần Gradle như Task 10.4 (lần đầu tải Gradle, thư viện, SDK 36).
+
 **Cổng Phase 10:** cổng mặc định, `tools/export_apk.sh "Android Demo" build/TapBlockOut-demo.apk` vẫn đạt.
+
+### Phase 11: Quy trình test
+
+Lấy mẫu từ quy trình test của Butcher Defense (2026-11-11), chỉ lấy cơ chế, không lấy test của game đó. Đặc tả từng tầng ở `docs/TESTING.md`; task xong thì bỏ ghi chú *(Task 11.x)* trong file đó.
+
+- [x] **Task 11.1: Lớp Claude và tài liệu test (2026-11-11)**
+  - **Allowed Files:** `.claude/settings.json`, `.claude/skills/**`, `.claude/agents/**`, `.claude/rules/**`, `docs/TESTING.md`, `docs/godot/**`, `CLAUDE.md`, `.gitignore`, kế hoạch này.
+  - **Specs:** `settings.json` chặn `git clean`, `reset --hard`, `checkout --`/`checkout .`, `restore`, `push --force`/`-f` cho cả Bash và PowerShell. Skill `/design-note` (ghi vào `design.md` và mục 9), `/balance-check`, `/game-testcase-generator`, `/release-android`. Agent `economy-designer`, `performance-analyst`, `technical-artist`. Rule theo loại file `godot-code.md`, `godot-scene-files.md`. `docs/godot/` chép từ Claude Code Game Studios 1.2.0 (MIT, giữ `LICENSE-CCGS`). `CLAUDE.md`: luật test đỏ trước, đọc PNG với thay đổi nhìn thấy, `output/`, tối đa khoảng 5 agent.
+  - **Verification:** `test -f .claude/settings.json && ls .claude/skills/*/SKILL.md .claude/agents/*.md .claude/rules/*.md docs/godot/VERSION.md docs/TESTING.md && tools/godot.sh --headless --path . -s res://tests/run_all.gd`
+
+- [x] **Task 11.2: Runner, kiểm tra tĩnh, báo cáo HTML (2026-11-11)**
+  - **Allowed Files:** `tests/run_all.gd`, `tests/t.gd`, `tests/allow_errors.txt`, `tests/static_allow.txt`, `tests/test_static_check.gd`, `tests/test_runner.gd`, `tools/test.sh`, `tools/report.mjs`, `tools/godot.sh`, `CLAUDE.md`, `docs/TESTING.md`, mục 1.4 của kế hoạch. Test cũ đỏ vì `Logger` chỉ sửa sau khi người dùng xem danh sách.
+  - **Specs:** `Logger` (`OS.add_logger`) làm test fail khi có lỗi engine hoặc script trong lúc chạy; `t.expect_error`; allowlist kèm lý do và ngày, in `ALLOWED <n>`; dòng cuối `ALL TESTS PASSED (<n>)`. `t.eq` chỉ ra phần tử khác đầu tiên, `t.allow` cho mục được miễn. `tools/test.sh` bọc `timeout`, mã thoát 0/1/2, giữ khoá `~/.candy_test.lock` (hai tiến trình chạy cùng file test dùng chung `user://test_<tên>/`), log riêng mỗi lần chạy trong `output/test/<thời điểm>-<pid>/`, tạo `output/.gdignore`. `test_static_check.gd`: parse mọi script, không `class_name`, `src/core`/`src/meta` thuần, dò bí mật trong `git ls-files`. `tools/report.mjs` sinh `output/report/index.html`. `CLAUDE.md` mục Lệnh đổi sang `tools/test.sh`. `tools/godot.sh` không có biến `GODOT` thì tìm bản win64 ở Desktop.
+  - **Verification:** `tools/test.sh; echo $?` in `0`; `test -f output/report/index.html`; `tests/test_runner.gd` kiểm `Logger`, `expect_error`, `t.eq` và luật static check bằng mã nguồn mẫu viết ngay trong test (không có file mẫu chứa private key trong repo).
+
+- [x] **Task 11.3: Smoke bấm thật, đợt đầu (2026-11-11)**
+  - **Allowed Files:** `tests/smoke/**`, `tools/smoke.sh`, `tools/report.mjs`, `docs/TESTING.md`.
+  - **Specs:** Kịch bản A, B, C, D, E, M, S; bấm bằng `push_input` có hit-test; save dựng bằng code trong `user://smoke_<kịch bản>/`; khoá `mkdir ~/.candy_godot.lock`; `SMOKE REAL INPUT`; bất biến; census; `SMOKE_RES`, `SMOKE_SEED`. Chạy như bản phát hành (tắt demo, UI gallery, công cụ tài khoản); link ra ngoài của Settings bị thay bằng log.
+  - **Kết quả:** `tools/smoke.sh headless` đạt A, B, C, D, E, S; M (seed 1) đỏ vì lỗi game monkey tìm ra: bấm Chơi ở Home rồi bấm nút khác trong lúc curtain chưa phủ kín thì game mở màn đó, curtain xong lại vào level và gỡ màn vừa mở (popup mở trên màn đó báo "Lambda capture at index 0 was freed", `main.gd` `_popup_then`). `tools/smoke.sh window A B` đạt, ảnh đã xem.
+  - **Verification:** `tools/smoke.sh headless; echo $?` in `0`; `tools/smoke.sh window B` rồi đọc ảnh trong `output/smoke/window/B/`.
+
+- [ ] **Task 11.4: Smoke đợt sau**
+  - **Allowed Files:** `tests/smoke/**`, `docs/TESTING.md`.
+  - **Specs:** Kịch bản F (ads có thưởng), G (lưu qua khởi động lại), H (booster), T (chuyển cảnh), L (ngôn ngữ).
+  - **Verification:** `tools/smoke.sh headless F G H` in `0`; `tools/smoke.sh window T L` rồi đọc ảnh.
+
+**Cổng Phase 11:** cổng mặc định cộng `tools/test.sh` và `tools/smoke.sh headless` thoát 0.
 
 ---
 
@@ -1025,6 +1084,7 @@ Orchestrator không đánh dấu các mục này, chỉ liệt kê lại trong b
 - [ ] Chốt luật, hình và âm của từng cơ chế Task 9.26–9.32 (các mục "Điểm cần chốt") trước khi task đó bắt đầu.
 - [x] Báo khi đã thêm xong các cơ chế để sinh lại 500 level và bake lại `data/pudding_sdf.res` (Task 9.22 "Còn lại"). Người dùng cho sinh lại ngày 2026-11-10 (Task 9.33), trước Task 9.27–9.32; mỗi cơ chế thêm sau đó cần sinh lại lần nữa.
 - [ ] Xem L2–10 (cụm khít, khối to) và tỉ lệ khối chữ L trên máy thật (Task 9.33).
+- [ ] Xem trên máy thật các hình theo chủ đề từ L14, màu xen nhau và độ khó khi ít khối thoát ngay (Task 9.34).
 
 ## 5. Blocker thật sự
 

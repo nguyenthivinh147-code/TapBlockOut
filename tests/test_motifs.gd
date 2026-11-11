@@ -38,8 +38,58 @@ func test_kinds_match_table(t: T) -> void:
 	t.eq(Motifs.KINDS.size(), Motifs.MOTIFS.size(), "KINDS liệt kê đúng số hình trong MOTIFS")
 	for kind in Motifs.KINDS:
 		t.ok(Motifs.MOTIFS.has(kind), "%s có bản vẽ" % kind)
-	t.ok(Motifs.KINDS.size() % Gen.MOTIF_STRIDE != 0 and Motifs.KINDS.size() % 2 != 0,
-		"MOTIF_STRIDE (8) nguyên tố cùng nhau với số hình (%d)" % Motifs.KINDS.size())
+		t.ok(["solid", "hollow", "branch", "islands", "thin"].has(str(Motifs.GROUP.get(kind, ""))),
+			"%s thuộc một nhóm dáng" % kind)
+	for kind in Motifs.LEGACY_KINDS:
+		t.ok(Motifs.KINDS.has(kind) and not Motifs.ASYM.has(kind), "hình cũ %s còn trong thư viện, đối xứng" % kind)
+	for kind in Motifs.ASYM:
+		t.eq(Motifs.MOTIFS[kind]["flips"], ["h"], "%s (không đối xứng) có bản lật trái phải" % kind)
+	t.ok(Motifs.LEGACY_KINDS.size() % Gen.MOTIF_STRIDE != 0 and Motifs.LEGACY_KINDS.size() % 2 != 0,
+		"MOTIF_STRIDE (8) nguyên tố cùng nhau với số hình cũ (%d)" % Motifs.LEGACY_KINDS.size())
+
+
+## Chủ đề chặng (design.md mục 4, 2026-11-11): 8 chủ đề, mỗi chủ đề 9 hình đối xứng và 2 hình không đối xứng, mỗi hình
+## thuộc đúng một chủ đề; mỗi chủ đề có ít nhất 4 nhóm dáng và không quá 4 hình cùng nhóm trong một chặng (9 hình đối
+## xứng cộng 1 hình không đối xứng), để luật hai level liền nhau khác nhóm xếp được.
+func test_themes(t: T) -> void:
+	t.eq(Motifs.THEMES.size(), 8, "8 chủ đề")
+	var owner := {}
+	for th: Dictionary in Motifs.THEMES:
+		var name := str(th["name"])
+		t.eq((th["kinds"] as Array).size(), Config.CHAPTER_LEN - 1, "%s có 9 hình đối xứng" % name)
+		t.eq((th["asym"] as Array).size(), 2, "%s có 2 hình không đối xứng" % name)
+		for kind: String in th["kinds"]:
+			t.ok(not Motifs.ASYM.has(kind), "%s: %s đối xứng" % [name, kind])
+		for kind: String in th["asym"]:
+			t.ok(Motifs.ASYM.has(kind), "%s: %s không đối xứng" % [name, kind])
+		for kind: String in th["kinds"] + th["asym"]:
+			t.ok(not owner.has(kind), "%s chỉ thuộc một chủ đề (%s, %s)" % [kind, owner.get(kind, ""), name])
+			owner[kind] = name
+		var groups := {}
+		for kind: String in th["kinds"]:
+			groups[Motifs.GROUP[kind]] = int(groups.get(Motifs.GROUP[kind], 0)) + 1
+		t.ok(groups.size() >= 4, "%s có %d nhóm dáng" % [name, groups.size()])
+		for odd: String in th["asym"]:
+			var g := str(Motifs.GROUP[odd])
+			t.ok(int(groups.get(g, 0)) + 1 <= 4, "%s: nhóm %s tối đa 4 hình mỗi chặng (cùng %s)" % [name, g, odd])
+	for kind in Motifs.KINDS:
+		t.ok(owner.has(kind), "%s có chủ đề" % kind)
+
+
+## Hình mới (ngoài 27 hình cũ) có cỡ vừa mọi số khối 12-60 (Config.MOTIF_FILL_*), để kế hoạch chặng xếp được.
+func test_new_kinds_cover_every_block_count(t: T) -> void:
+	for kind in Motifs.KINDS:
+		if Motifs.LEGACY_KINDS.has(kind):
+			continue
+		var gaps: Array[int] = []
+		for n in range(DifficultyCurve.MOTIF_MIN_BLOCKS, DifficultyCurve.BLOCK_CAP + 1):
+			var ok := false
+			for v in Motifs.variants(kind):
+				var per := float(v["cells"].size()) / float(n)
+				ok = ok or (per >= Config.MOTIF_FILL_MIN and per <= Config.MOTIF_FILL_MAX)
+			if not ok:
+				gaps.append(n)
+		t.ok(gaps.is_empty(), "%s vừa mọi số khối (thiếu %s)" % [kind, str(gaps)])
 
 
 func test_every_drawing_fits_and_is_symmetric(t: T) -> void:
@@ -52,7 +102,10 @@ func test_every_drawing_fits_and_is_symmetric(t: T) -> void:
 			var tag := "%s %dx%d" % [kind, w, h]
 			t.eq(w % 2, 0, "%s rộng chẵn để nằm đúng giữa bàn 14 cột" % tag)
 			t.ok(w <= Gen.MAX_W and h <= Gen.MAX_H, "%s vừa khung %dx%d" % [tag, Gen.MAX_W, Gen.MAX_H])
-			t.ok(bool(v["sym_h"]) or bool(v["sym_v"]), "%s đối xứng" % tag)
+			if Motifs.ASYM.has(kind):
+				t.ok(not bool(v["sym_h"]) and not bool(v["sym_v"]), "%s không đối xứng" % tag)
+			else:
+				t.ok(bool(v["sym_h"]) or bool(v["sym_v"]), "%s đối xứng" % tag)
 			var cells: Array = v["cells"]
 			t.ok(cells.size() < w * h, "%s có khoảng trống trong khung" % tag)
 			for size in _components(cells):
@@ -109,7 +162,7 @@ func test_every_size_band_has_choices(t: T) -> void:
 	for id in range(DifficultyCurve.MOTIF_FROM, Config.EARLY_SHAPE_UNTIL + 1):
 		var n := DifficultyCurve.block_count(id)
 		var solid := {}
-		for kind in Motifs.KINDS:
+		for kind in Motifs.LEGACY_KINDS:
 			for v in Motifs.variants(kind):
 				var per := float(v["cells"].size()) / float(n)
 				if per >= Config.EARLY_FILL_MIN and per <= Config.EARLY_FILL_MAX and Gen._early_shape(v):
@@ -219,22 +272,62 @@ func test_cut_styles_follow_their_rule(t: T) -> void:
 		t.ok(float(follow) >= need * blocks, "kiểu %s: %d/%d khối đúng quy luật" % [style, follow, blocks])
 
 
-func test_picker_uses_every_kind(t: T) -> void:
+## L5-13 vẫn xoay vòng 27 hình cũ: dùng đủ, hai level liền nhau khác hình.
+func test_legacy_picker_uses_every_kind(t: T) -> void:
 	var seen := {}
-	for id in range(14, 14 + Motifs.KINDS.size() * 4):
-		for n in [16, 30, 42, 56]:
-			var v := Gen._pick_motif(id, 0, n, 0, Gen._rng(id, n))
-			t.ok(not v.is_empty(), "L%d %d khối có hình" % [id, n])
-			if not v.is_empty():
-				seen[v["kind"]] = true
+	for id in range(11, Config.CHAPTER_FROM):
+		for sd in Motifs.LEGACY_KINDS.size() * 2:
+			for n in [12, 16]:
+				var v := Gen._pick_motif(id, sd, n, 0, Gen._rng(id, n))
+				t.ok(not v.is_empty(), "L%d %d khối có hình" % [id, n])
+				if not v.is_empty():
+					seen[v["kind"]] = true
+					t.ok(Motifs.LEGACY_KINDS.has(v["kind"]), "L%d dùng hình cũ" % id)
+	t.ok(seen.size() >= 20, "L11-13 dùng nhiều hình cũ (%d)" % seen.size())
+
+
+## Kế hoạch chặng (Gen.chapter_plan) cho L14-500: chặng 10 level (chặng đầu L14-20), chủ đề xoay vòng theo
+## Motifs.THEMES; trong chặng không lặp hình, đúng 1 level dùng hình không đối xứng (hai hình của chủ đề luân phiên mỗi
+## lượt quay lại); mọi hình đều có cỡ vừa số khối của level; hai level liền nhau (kể cả qua chặng) khác nhóm dáng.
+func test_chapter_plans(t: T) -> void:
+	t.eq(Gen.chapter_of(Config.CHAPTER_FROM - 1), -1, "trước L14 không có chặng")
+	t.eq(Gen.chapter_of(14), 0, "L14 chặng đầu")
+	t.eq(Gen.chapter_of(20), 0, "L20 chặng đầu")
+	t.eq(Gen.chapter_of(21), 1, "L21 chặng 2")
+	t.eq(Gen.chapter_of(30), 1, "L30 chặng 2")
+	t.eq(Gen.chapter_ids(1), Vector2i(21, 30), "chặng 2 là L21-30")
+	var seen := {}
+	var prev := ""
+	var loose := 0
+	var last := Gen.chapter_of(DifficultyCurve.last_level())
+	for c in last + 1:
+		var plan := Gen.chapter_plan(c)
+		var r := Gen.chapter_ids(c)
+		var th: Dictionary = Motifs.THEMES[c % Motifs.THEMES.size()]
+		var used := {}
+		var odd := 0
+		for id in range(r.x, r.y + 1):
+			t.ok(plan.has(id), "chặng %d có L%d" % [c, id])
+			var p: Dictionary = plan[id]
+			var kind := str(p["kind"])
+			seen[kind] = true
+			t.ok(not used.has(kind), "chặng %d không lặp hình %s" % [c, kind])
+			used[kind] = true
+			t.ok((th["kinds"] as Array).has(kind) or (th["asym"] as Array).has(kind), "L%d dùng hình của chủ đề" % id)
+			if Motifs.ASYM.has(kind):
+				odd += 1
+				@warning_ignore("integer_division")
+				t.eq(kind, str(th["asym"][(c / Motifs.THEMES.size()) % 2]), "chặng %d: hình không đối xứng luân phiên" % c)
+			else:
+				t.eq(str(p["flip"]), "", "L%d hình đối xứng không lật" % id)
+			loose += int(not bool(p["strict"]))
+			if bool(p["strict"]):
+				t.ok(Gen._kind_fits(kind, id), "L%d: %s vừa %d khối" % [id, kind, DifficultyCurve.block_count(id)])
+				t.ok(str(Motifs.GROUP[kind]) != prev, "L%d khác nhóm dáng với level trước (%s)" % [id, prev])
+			prev = str(Motifs.GROUP[kind])
+		t.eq(odd, 1, "chặng %d có đúng 1 hình không đối xứng" % c)
+	t.eq(loose, 0, "mọi chặng xếp được đủ luật")
 	for kind in Motifs.KINDS:
 		t.ok(seen.has(kind), "có dùng hình %s" % kind)
-	# Level liền nhau ra hình khác nhau (cùng số khối, cùng seed).
-	var prev := ""
-	var same := 0
-	for id in range(14, 101):
-		var kind: String = Gen._pick_motif(id, 0, 45, 0, Gen._rng(id, 0)).get("kind", "")
-		if kind == prev:
-			same += 1
-		prev = kind
-	t.eq(same, 0, "không có hai level liền nhau cùng hình")
+	# Kế hoạch chỉ phụ thuộc chặng.
+	t.eq(JSON.stringify(Gen.chapter_plan(7)), JSON.stringify(Gen.chapter_plan(7)), "kế hoạch lặp lại")

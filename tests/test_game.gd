@@ -357,6 +357,31 @@ func test_lost_ad_recovered_once(t: T) -> void:
 	_p().ads = orig
 
 
+## A shop video killed mid-ad on day D and recovered on day D+1 counts against day D (ad_pend.at), not the new day.
+func test_lost_shop_video_counts_on_its_own_day(t: T) -> void:
+	var g := _g()
+	var fake := FakeAds.new()
+	fake.overlay_enabled = false
+	var orig: Object = _p().ads
+	_p().ads = fake
+	g.test_tz = 0
+	var day_sec := 86400
+	var day := 20400
+	var watched_at := day * day_sec + 3600
+	g.s.shop["day"] = day
+	g.s.shop["videos"] = 2
+	g.s["ad_pend"] = {"pl": "shop_coins", "coins": 0, "at": watched_at}
+	g.save_now()
+	fake.lost = [{"pl": "shop_coins"}]
+	g.test_now = watched_at + day_sec
+	await g.boot()
+	t.eq(int(g.s.coins), 1200, "trao lại 200 gold")
+	t.eq(g.shop_videos_left(), int(Config.ECON.shop_video_max), "ngày mới vẫn đủ lượt video")
+	t.eq(int(g.s.shop.day), day, "lượt tính vào ngày xem")
+	t.eq(int(g.s.shop.videos), 3, "ngày xem thêm 1 lượt")
+	_p().ads = orig
+
+
 func test_ad_pend_cleared_on_boot_without_lost(t: T) -> void:
 	var g := _g()
 	g.s["ad_pend"] = {"pl": "x2_coins", "coins": 40, "at": 1}
@@ -524,6 +549,36 @@ func test_offer_flow(t: T) -> void:
 	t.eq(int(g.s.inv.smash), 1, "kèm booster")
 	t.eq(int(g.s.offers.items.starter_pack.bought), 1, "Offers.bought")
 	t.eq(_p().an.count("offer_buy"), 1, "offer_buy")
+
+
+## Nút Thông báo của Settings: hiện tắt khi máy chưa cho quyền; bật thì xin quyền, vẫn bị từ chối thì báo notif_off.
+func test_toggle_notif_asks_permission(t: T) -> void:
+	var g := _g()
+	var notices: Array = []
+	var on_notice := func(kind: String) -> void: notices.append(kind)
+	g.notice.connect(on_notice)
+	_p().notif.granted = false
+	t.eq(bool(g.s.settings.get("notif", true)), true, "cài đặt mặc định bật")
+	t.eq(g.notif_on(), false, "chưa có quyền thì hiện tắt")
+	await g.toggle_notif()
+	t.eq(_p().notif.asked, true, "bật thì xin quyền")
+	t.eq(bool(g.s.notify.asked), true, "tính là lần xin sau lượt 2")
+	t.eq(bool(g.s.settings.notif), true, "giữ cài đặt bật")
+	t.eq(notices, ["notif_off"], "từ chối: báo bật trong cài đặt máy")
+	_p().notif.granted = true
+	_p().notif.asked = false
+	notices.clear()
+	g.s.level = 5
+	t.eq(g.notif_on(), true, "có quyền thì hiện bật")
+	await g.toggle_notif()
+	t.eq(bool(g.s.settings.notif), false, "tắt")
+	t.eq(_p().notif.scheduled.size(), 0, "tắt thì huỷ lịch")
+	await g.toggle_notif()
+	t.eq(bool(g.s.settings.notif), true, "bật lại")
+	t.eq(_p().notif.asked, false, "đã có quyền: không hỏi")
+	t.ok(_p().notif.scheduled.size() > 0, "bật lại thì có lịch")
+	t.eq(notices, [], "không báo")
+	g.notice.disconnect(on_notice)
 
 
 func test_notifications(t: T) -> void:

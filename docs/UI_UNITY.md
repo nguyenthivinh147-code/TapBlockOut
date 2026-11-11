@@ -40,6 +40,7 @@ Mọi màn trừ bàn chơi, HUD trong level và Home dựng theo cách setup UI
   - Code màn nghe tín hiệu `clicked`. Test vẫn dùng `pressed.emit()`; `clicked` bỏ qua cú bấm đã bị ScrollRect kéo.
   - Toggle có `ToggleGroup` (ButtonGroup) và `ToggleAnimator`.
 - Layout: `HorizontalLayoutGroup`, `VerticalLayoutGroup`, `GridLayoutGroup`, `LayoutElement`, `ContentSizeFitter` chạy như Unity khi `build()` và khi gọi `relayout()`. Con của layout group lưu ở 0,0 trong prefab, Unity xếp lúc chạy.
+  - Đổi kích thước lúc đang mở (resize cửa sổ, xoay, chia đôi màn hình) chỉ co lại Canvas (`_fit_canvases`), không chạy lại layout group: nếu chiều rộng canvas đổi, con vẫn ở vị trí xếp theo chiều rộng cũ, lệch và bị cắt. Màn có layout group phụ thuộc chiều rộng thì nối `resized` và gọi `relayout()` (Shop: `_on_resized` xếp lại `Content`).
 - Auto size đo cỡ preferred (ContentSizeFitter, layout group điều khiển cỡ con) ở `fontSizeMax` như `TMP_Text.GetPreferredWidth`, rồi `fit_text` co chữ trong rect đó.
   - `fit_text` dò cỡ chữ bằng font và giãn dòng tính sẵn (`_text_metrics`), chỉ gắn cỡ tìm được vào nhãn: mỗi lần đổi override thì Label shape lại cả chữ.
   - Chữ, vùng, khoảng cỡ và kiểu xuống dòng giống lần fit trước, cỡ chữ trên nhãn vẫn là cỡ đã fit (meta `u_fit_key`, `u_fit_fs`): bỏ qua. Popup mới dựng gọi `fit_text` cho mỗi nhãn vài lần trong cùng frame (`set_text`, lượt deferred sau khi nối, mỗi lần `resized`); nhãn thuộc `fit_group` luôn fit lại.
@@ -151,12 +152,11 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `tutorial_intro` | `MainTutorialLayer` |
 | `booster_unlocked`, `booster_soon` | `BoosterTutorialLayer` |
 | `load_transition` | `LoadLevelProcessVer2` |
-| `popup_help` | `PopupFeedBack` |
 | `popup_change_name` | `PopupEditNameLayer` |
 | `popup_rate` | `PopupRatingLayer` |
 | `popup_keep_playing` | `PopupKeepPlaying` |
 | `popup_rescue` | `PopupReviveLayer` |
-| `win_card`, `lose_card` | `EndGameUILayer` (`WinPanel`, `LossPanel`) |
+| `win_card`, `lose_card` | `EndGameUILayer` (`WinPanel`, `LossPanel`). Thẻ thắng: prefab đặt nội dung thấp hơn tâm màn, nên lúc hiện cả `WinPanel` dời cho khung từ cúp tới đáy hàng nút nằm giữa màn (`win_card.gd` `_center_content`, yêu cầu 2026-11-11); đo lúc chạy vì chiều cao đổi theo thẻ bảng xếp hạng và thanh tính năng, `test_win_card_centered` canh lỗi này |
 | Dải cảnh báo độ khó trong level | `WarningHardLevelLayer` (khung, huy hiệu là sprite kẹo `assets/ui/warn_banner/` theo bậc, bỏ `Noti1`, `Noti2`, hai vạch chắn `Image`; xem `design.md`) |
 | `popup_ingame_settings` | `SettingInGameLayer` |
 | `settings` | `SettingMainMenuLayer` |

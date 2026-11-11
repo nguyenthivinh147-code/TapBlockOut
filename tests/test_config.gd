@@ -150,7 +150,8 @@ func test_apply_remote_bad_values(t: T) -> void:
 	Config.reset()
 
 
-## Daily Challenge ships switched off; Remote Config `features_challenge` turns it back on, reset() off again.
+## Daily Challenge and Win Streak ship switched off; Remote Config `features_<name>` turns them back on, reset() off
+## again.
 func test_feature_switches(t: T) -> void:
 	Config.reset()
 	t.eq(Config.FEATURES.challenge, false, "Daily Challenge tắt mặc định")
@@ -163,6 +164,12 @@ func test_feature_switches(t: T) -> void:
 	Config.apply_remote({"features_challenge": "true"})
 	Config.reset()
 	t.eq(Config.FEATURES.challenge, false, "reset về tắt")
+	# Win Streak ships switched off too (2026-11-11).
+	t.eq(Config.FEATURES.win_streak, false, "Win Streak tắt mặc định")
+	Config.apply_remote({"features_win_streak": "1"})
+	t.eq(Config.FEATURES.win_streak, true, "Remote Config bật lại Win Streak")
+	Config.reset()
+	t.eq(Config.FEATURES.win_streak, false, "reset về tắt")
 
 
 func test_bool_coercion(t: T) -> void:

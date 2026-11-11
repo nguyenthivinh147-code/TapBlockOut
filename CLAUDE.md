@@ -9,14 +9,14 @@ Game xếp khối trên Android gốc, làm bằng Godot (không phải bản we
 ## Lệnh
 
 ```bash
-tools/godot.sh --headless --path . --quit                                  # nạp autoload và main scene, chạy 1 khung
-tools/godot.sh --headless --path . -s res://tests/run_all.gd               # toàn bộ test
-tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_board # chỉ tests/test_board*.gd
-tools/godot.sh --headless --path . --import                                # chỉ khi editor đóng
+tools/test.sh                                      # toàn bộ test, kể cả kiểm tra tĩnh; log output/test/, báo cáo output/report/
+tools/test.sh test_board                           # chỉ tests/test_board*.gd
+tools/godot.sh --headless --path . --quit          # nạp autoload và main scene, chạy 1 khung
+tools/godot.sh --headless --path . --import        # chỉ khi editor đóng
 ```
 
-- Thoát 0 là đạt. `--quit` không parse toàn project: script không nối tới main scene hay autoload có lỗi cú pháp vẫn thoát 0, nên module chỉ được kiểm qua test của nó.
-- `run_all.gd` tự tìm `tests/test_*.gd`; thêm test không phải sửa file dùng chung. Test dùng file phải ghi trong `user://test_<tên_test>/`.
+- `tools/test.sh` đạt khi thoát 0 và có dòng `ALL TESTS PASSED (<n>)`; thoát 1 là game có lỗi, 2 là hạ tầng test hỏng (treo, crash, Godot không chạy). Lỗi engine trong lúc test làm test fail: lỗi cố ý khai bằng `t.expect_error`, nhiễu đã biết ghi vào `tests/allow_errors.txt` kèm lý do và ngày.
+- `run_all.gd` tự tìm `tests/test_*.gd`; thêm test không phải sửa file dùng chung. Test dùng file phải ghi trong `user://test_<tên_test>/`. `test_static_check.gd` parse mọi script (`--quit` chỉ nạp main scene và autoload) và kiểm luật code, bí mật trong git.
 - Build và cài đặt: `tools/export_apk.sh` (APK demo), `tools/export_release.sh` (AAB), `tools/build_plugin.sh`, `tools/install_billing.sh`. Chi tiết xem kế hoạch Phase 10.
 
 ## MCP `godot-ai` (kế hoạch mục 1.12)
@@ -37,6 +37,10 @@ tools/godot.sh --headless --path . --import                                # ch�
 - Chỉ Orchestrator chạy lệnh git ghi.
 - Tài liệu bằng tiếng Việt, giữ nguyên thuật ngữ kỹ thuật tiếng Anh. Mã nguồn, tên định danh, comment bằng tiếng Anh.
 - Đổi hành vi, con số hay interface thì sửa luôn `design.md`, kế hoạch hoặc `docs/` liên quan trong cùng thay đổi.
+- Sửa lỗi: viết test hồi quy, chạy thấy nó **đỏ** trên code chưa sửa, rồi mới sửa. Lỗi chỉ thấy bằng mắt (layout, màu, animation): ảnh chụp trước và sau thay cho test.
+- Thay đổi người chơi nhìn thấy chỉ xong khi đã chạy có cửa sổ và đọc ảnh PNG.
+- File sinh ra (ảnh, log, video, báo cáo, Excel) ghi vào `output/<việc>/`; file tạm ở scratchpad.
+- Gọi sub-agent khi việc cần, tối đa khoảng 5 cùng lúc (khoảng 30 agent một lúc từng làm hết hạn mức).
 
 ## Không làm
 
@@ -48,6 +52,7 @@ tools/godot.sh --headless --path . --import                                # ch�
 ## Đọc gì khi cần
 
 - Kế hoạch, interface (`BoardState`, `Platform`, `Game`), cấu trúc thư mục, dữ liệu level: `plans/PLAN_tap-block-out-godot-android.md` mục 1.
+- Kiểm một thay đổi (quy trình 5 bước, tầng test, smoke, ma trận bao phủ, máy thật, quay video): `docs/TESTING.md`.
 - UI các màn và popup (trừ Home, bàn chơi, HUD): dựng từ prefab Unity color-cube-match-puzzle, `docs/UI_UNITY.md`.
 - UI dạng node (scene `scenes/unity/`, bake màn bằng `tools/bake_screen.gd`, quy tắc script màn): `docs/UI_NODES.md`.
 - UI theo Figma (Home, HUD, thanh trên/dưới), màn chưa nối logic, `Config.ui_preview`: `docs/UI_FIGMA.md`.

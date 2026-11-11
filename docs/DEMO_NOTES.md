@@ -47,7 +47,7 @@ Dành cho người duyệt bản thử. Không cần biết lập trình.
 - [ ] Rung nhẹ hoạt động (có nút tắt trong Cài đặt).
 - [ ] Lưu game: chơi vài level, mua thử, tắt hẳn app rồi mở lại, tiến độ vẫn còn.
 - [ ] Cảm giác chơi và các số kinh tế trong `design.md` mục 5 (giá, thưởng, quà 28 ngày, mạng).
-- [ ] Thông báo trên Android 13 trở lên (xin quyền, hiện đúng giờ). Lưu ý bản demo dùng thông báo giả lập, mục này kiểm đầy đủ ở bản có plugin thật.
+- [ ] Thông báo trên Android 13 trở lên: qua level 2 thì hiện hộp xin quyền của hệ thống; App info liệt kê quyền Thông báo; thông báo 20:00 và quà ngày hiện đúng giờ (có thể lệch vài phút); từ chối rồi bật nút Thông báo trong Settings thì xin lại hoặc báo bật trong cài đặt máy. Từ 2026-11-11 bản demo dùng thông báo thật qua plugin.
 
 ## 5. Còn là placeholder hoặc chưa hoàn thiện
 
@@ -66,6 +66,6 @@ Dành cho người duyệt bản thử. Không cần biết lập trình.
 
 ## 6. Lệch so với kế hoạch
 
-- Preset `Android Demo` dùng build không Gradle (APK debug), nên chưa có plugin Android nào (quảng cáo, Billing, Firebase...). Plugin thuộc Phase 10.
-- Kích thước APK (khoảng 81 MB) chủ yếu do hai ABI và template debug (tests và `addons/godot_ai` đã được loại khỏi gói). Ngày 2026-11-10 phần game giảm 4,1 MB: scene UI đóng dạng `.tscn.res` được nén trong APK (kế hoạch mục 1.3), ảnh lớn sang WebP lossy theo `tools/compress_textures.gd`, avatar giới hạn 256 px, nhạc nền nén q 0,05.
+- Preset `Android Demo` build qua Gradle (APK debug) từ 2026-11-11, có plugin `TboPlatform` và Billing, nhưng chỉ dùng plugin cho thông báo local; quảng cáo, mua hàng, Firebase, Adjust, cloud save vẫn giả lập và không khởi động SDK. Quyền trong manifest giống bản Gradle (`docs/HORUS_HANDOFF.md` mục 8). Lần build đầu tải Gradle, thư viện và Android SDK 36.
+- Kích thước APK (khoảng 93 MB từ bản Gradle 2026-11-11, `compress_native_libraries=true`; bản không Gradle cũ khoảng 81 MB) chủ yếu do hai ABI và template debug (tests và `addons/godot_ai` đã được loại khỏi gói). Ngày 2026-11-10 phần game giảm 4,1 MB: scene UI đóng dạng `.tscn.res` được nén trong APK (kế hoạch mục 1.3), ảnh lớn sang WebP lossy theo `tools/compress_textures.gd`, avatar giới hạn 256 px, nhạc nền nén q 0,05.
 - Các level 21 trở lên không có trong bản này, nên bản demo không thể thử bộ sinh level hay Daily Challenge.

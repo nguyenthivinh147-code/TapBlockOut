@@ -132,9 +132,10 @@ static func validate(s: Dictionary, now: int, tz: int, level: int) -> void:
 		s["streak"] = empty()
 
 
-## Lượt của tuần này đang chạy (ngày Active).
+## Lượt của tuần này đang chạy (ngày Active). Tắt trong Config.FEATURES thì không chạy, kể cả lượt bắt đầu trước khi
+## tắt: thắng không cộng, thua không tụt, không hỏi "Giữ chuỗi?".
 static func is_running(s: Dictionary, now: int, tz: int) -> bool:
-	return is_active_day(now, tz) and int(_w(s).week) == week_id(now, tz)
+	return Unlocks.enabled(FEATURE) and is_active_day(now, tz) and int(_w(s).week) == week_id(now, tz)
 
 
 static func started(s: Dictionary) -> bool:

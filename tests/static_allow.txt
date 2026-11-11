@@ -1,0 +1,4 @@
+# Ngoại lệ của tests/test_static_check.gd (docs/TESTING.md "Kiểm tra tĩnh").
+# Mỗi dòng: <đường dẫn>:<luật> ## <lý do> (YYYY-MM-DD). Dòng không còn vi phạm nào thì test báo để xoá.
+
+src/meta/clock.gd:pure_time ## local_tz_offset là chỗ duy nhất đọc múi giờ máy, có ghi ở đầu file; giờ hiện tại vẫn truyền vào từ ngoài (2026-11-11)

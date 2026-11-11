@@ -19,6 +19,8 @@ func _g(level: int = 47) -> Node:  # Win Streak opens at L45, which also teaches
 	DirAccess.make_dir_recursive_absolute(DIR)
 	var g: Node = _tree().root.get_node("Game")
 	g.reset_for_test(DIR + "/save.json")
+	# Win Streak is switched off in Config.FEATURES; these tests cover the feature itself.
+	Config.FEATURES.win_streak = true
 	g.test_now = FRI
 	g.test_tz = 0
 	var p: Node = _tree().root.get_node("Platform")
@@ -60,6 +62,31 @@ func _labels(n: Node, out: Array) -> Array:
 	for c in n.get_children():
 		_labels(c, out)
 	return out
+
+
+## Config.FEATURES.win_streak off (the shipped default): Home hides the icon and nothing opens by itself; with an event
+## started before the switch, a win does not count and leaving a touched level neither asks nor drops the streak.
+func test_switched_off_by_default(t: T) -> void:
+	var g := _g()
+	_streak(g, 3)
+	Config.reset()
+	t.eq(bool(Config.FEATURES.get("win_streak", true)), false, "mặc định tắt")
+	t.eq(g.streak_entry(), "", "icon Home không mở popup")
+	t.ok(not g.streak_take_auto_intro(), "không tự mở giới thiệu")
+	var home := _open("home")
+	t.ok(not home.find_child("StreakItem", true, false).visible, "Home ẩn icon")
+	home.free()
+	var a: Dictionary = g.start_attempt()
+	a["taps"] = 1
+	t.ok(not g.streak_at_stake(a), "bỏ ván không hỏi Giữ chuỗi")
+	g.leave_attempt(a)
+	t.eq(WinStreak.count(g.s), 3, "về Home giữa ván không tụt chuỗi")
+	t.ok(not g.streak_take_lost(), "không báo mất chuỗi")
+	var won: Dictionary = g.on_level_won(g.start_attempt())
+	t.ok(not bool(won.get("streak_up", true)), "thắng không cộng chuỗi")
+	t.eq(WinStreak.count(g.s), 3, "chuỗi giữ nguyên")
+	var p: Node = _tree().root.get_node("Platform")
+	t.eq(p.an.count("streak_up"), 0, "không log streak_up")
 
 
 func test_entry_follows_state(t: T) -> void:

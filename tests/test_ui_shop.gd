@@ -458,6 +458,31 @@ func test_shop_cards_hold_their_text(t: T) -> void:
 	TranslationServer.set_locale("en")
 
 
+## Opened at one aspect ratio and resized to another (window, rotation, split screen), the cards are placed again in
+## Content: each keeps its offset from Content's centre instead of the x the first width gave it.
+func test_shop_relayout_on_resize(t: T) -> void:
+	_offers_open(_g())
+	var shop: Control = _open(ShopScene, {"source": "test"})
+	var content: Control = shop.find_child("Content", true, false)
+	var cards := ["Shop_RemoveAds", "Shop_GoldBigPack", "RestorePurchase"]
+	var base := {}
+	for card in cards:
+		base[card] = _centre_offset(content, card)
+	# Full-rect anchors would take the size back from the window: pin the top-left corner and size it by hand.
+	shop.set_anchors_preset(Control.PRESET_TOP_LEFT, true)
+	for sz in [Vector2(1200, 1920), Vector2(886, 2215)]:
+		shop.size = sz
+		for card in cards:
+			t.near(_centre_offset(content, card), float(base[card]), 1.0, "%s giữa Content ở %s" % [card, sz])
+	_free(shop)
+
+
+## Card centre x minus Content centre x, in Content's units.
+func _centre_offset(content: Control, card: String) -> float:
+	var c: Control = content.get_node(card)
+	return c.position.x + c.size.x * 0.5 - content.size.x * 0.5
+
+
 ## Prefab buttons (unity_ui.gd) draw their text in a child TMP label.
 func _text(b: Node) -> String:
 	if b is Button and (b as Button).text != "":

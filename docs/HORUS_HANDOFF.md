@@ -88,7 +88,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `unlock_stone`, `unlock_ice`, `unlock_chain`, `unlock_layer`, `unlock_fog`, `unlock_pulse`, `unlock_frost`, `unlock_pop`, `unlock_choco`, `unlock_ribbon` | 14, 30, 45, 65, 85, 115, 165, 220, 300, 350 (level dạy cơ chế; đổi 2026-11-10, trước 14, 30, 40, 55, 70, 90, 110, 150, 130; Bom kẹo `pop` thêm 2026-11-10). Đổi mốc cơ chế qua Remote Config chỉ dời popup giới thiệu, không đổi level đã đóng gói |
 | `features_pop` (bật/tắt Bom kẹo, "1" hoặc "0"; tắt thì khối bom kẹo thành khối thường, MOVES không đổi) | true |
 | `unlock_road_trip`, `unlock_special_bomb` (đổi 2026-11-10, trước là 70, 50; 2026-11-09 trước là 2, 41) | 95, 50 |
-| `features_win_streak` (bật/tắt Win Streak, "1" hoặc "0") | true |
+| `features_win_streak` (bật/tắt Win Streak, "1" hoặc "0"; tắt thì Home ẩn icon, lượt đang chạy cũng thôi đếm) | false (tắt từ 2026-11-11) |
 | `win_streak_active_days` (ngày Active, 0 = Chủ nhật, 6 = thứ Bảy; ngày khác chỉ nhận quà) | 5,6,0 |
 | `econ_helper_pack_fail`, `econ_helper_pack_sku` (popup hết MOVES kèm Helper Pack từ lần hết MOVES thứ N liên tiếp ở một level) | 3, helper_great |
 | `features_challenge` (bật/tắt Daily Challenge, "1" hoặc "0"; tắt thì Home ẩn icon) | false (tắt từ 2026-11-08) |
@@ -176,7 +176,7 @@ Tất cả bị `.gitignore` (không commit). Không dán bí mật vào repo, l
 | --- | --- |
 | `platform_config.json` (theo mẫu `android/config/platform_config.example.json`) | `android/config/platform_config.json`. `tools/export_release.sh` chép thành `android_config.json` ở gốc project lúc build rồi xoá; nội dung vào APK/AAB nên **không đặt khoá riêng tư** |
 | Khoá AppLovin MAX: `applovin_sdk_key`, `rewarded_unit`, `interstitial_unit` | trong `platform_config.json` |
-| `privacy_policy_url` (bắt buộc cho luồng đồng ý GDPR), `terms_url` | trong `platform_config.json` |
+| `privacy_policy_url` (bắt buộc cho luồng đồng ý GDPR), `terms_url` | trong `platform_config.json`. Hai dòng Privacy Policy và Terms of Service trong Settings không đọc file này: chúng mở `https://horusent.com/privacy-policy/` và `https://horusent.com/term-conditions/` (`Config.CONTENT.privacy_url`, `terms_url`, như Unity). Nên đặt cùng hai địa chỉ ở đây; đổi trang thì sửa cả hai chỗ |
 | Token Adjust: `adjust_app_token`, `adjust_environment` (`sandbox` khi test, `production` khi phát hành), `adjust_events` | trong `platform_config.json` |
 | Play Games App ID (chỉ chữ số): `play_games_app_id` | trong `platform_config.json`; script build ghi vào `android/build/res/values/tbo_platform.xml` |
 | Public key Billing (base64, trong Play Console > Monetization setup): `billing_public_key` | trong `platform_config.json` |
@@ -191,12 +191,12 @@ Thiếu khoá nào thì mô-đun đó tắt, không crash. Google-services: nế
 
 ```
 tools/export_release.sh        # APK debug có plugin + AAB bản phát hành chưa ký
-tools/export_apk.sh "Android Demo" build/TapBlockOut-demo.apk   # APK demo nhanh, không Gradle
+tools/export_apk.sh "Android Demo" build/TapBlockOut-demo.apk   # APK demo (Gradle, plugin chỉ cho thông báo)
 ```
 
 - Chạy khi editor Godot đóng. Cần JDK 21 (`JAVA_HOME` mặc định `/usr/lib/jvm/java-21-openjdk-amd64`), Android SDK ở `~/Android/Sdk`, export templates 4.7.2, Gradle tự tải từ nguồn chính thức (services.gradle.org, Maven Central, Google Maven) ở lần đầu.
 - `export_release.sh`: cài Android build template nếu thiếu (`android/build/`, không commit), vá manifest (Auto Backup: `allowBackup="true"`, `fullBackupContent`, `dataExtractionRules`), chép cấu hình nếu có, xuất rồi xoá `android_config.json` tạm. Idempotent.
-- Đầu ra: `build/TapBlockOut-gradle-debug.apk` (preset `Android Gradle APK`, ký bằng debug keystore mặc định của Godot) và `build/TapBlockOut-release-<versionName>.aab` (preset `Android Release`, **không ký**, không debuggable; Horus ký). Preset `Android Demo` (không Gradle, custom feature `demo`, dừng ở L20) giữ nguyên.
+- Đầu ra: `build/TapBlockOut-gradle-debug.apk` (preset `Android Gradle APK`, ký bằng debug keystore mặc định của Godot) và `build/TapBlockOut-release-<versionName>.aab` (preset `Android Release`, **không ký**, không debuggable; Horus ký). Preset `Android Demo` (custom feature `demo`, dừng ở L20) cũng build qua Gradle từ 2026-11-11 để thông báo chạy thật; ở bản demo `Platform` chỉ dùng plugin cho `notif`, phần còn lại giả lập. `export_apk.sh` tự cài template nếu thiếu `android/build`, không vá manifest, không chép cấu hình.
 - `targetSdk` = 36 (Android 16), `minSdk` = 24, đặt trong `export_presets.cfg`. Nguồn: https://developer.android.com/google/play/requirements/target-sdk, đọc ngày 2026-11-01 (trang cập nhật 2026-10-28): từ 2026-08-31 app mới và bản cập nhật phải target Android 16 (API 36) trở lên. `minSdk 24` là mức template Godot 4.7.2 và plugin dùng; build merge thành công nghĩa là không dependency nào (MAX 13.7.0, Firebase BoM 35.1.0, Play Games v2 22.1.0, Billing 9.1.0) đòi cao hơn.
 - Quy tắc version: sửa `version/code` và `version/name` ở **cả ba** preset trong `export_presets.cfg` (giữ giống nhau). `versionCode` là số nguyên phải tăng mỗi lần đưa lên Play (kể cả bản nội bộ), không bao giờ dùng lại. `versionName` dạng `MAJOR.MINOR.PATCH`; tên file AAB lấy từ `versionName` của preset `Android Release`.
 
@@ -217,3 +217,4 @@ tools/export_apk.sh "Android Demo" build/TapBlockOut-demo.apk   # APK demo nhanh
 - [ ] Nhận từ Horus: `appId`, khoá MAX và ad unit, `google-services.json`, token Adjust, id Play Games, public key Billing; đặt theo mục 6.
 - [ ] Có cấu hình rồi: test rewarded, interstitial, mua hàng bằng license tester, Remote Config, cloud save, thông báo trên bản nội bộ.
 - [ ] Thông báo trên máy thật, Android 13 trở lên.
+- [ ] Mail hỗ trợ (nút Support, `design.md` mục 8 "Mail hỗ trợ") tới `support@horusvn.com` theo mẫu tiêu đề của Unity: `Candy Away - <phiên bản> - <version code> - v0 - Android - USERID: <id máy>`. Máy tester cần trạng thái SDK trong mail ở bản phát hành: gửi một mail từ máy đó, lấy `USERID` trong tiêu đề, thêm vào `Config.TESTER_DEVICES` (`src/config.gd`).

@@ -1,0 +1,2 @@
+# Lỗi engine đã biết mà tests/run_all.gd không tính là lỗi (docs/TESTING.md "Tầng 1").
+# Mỗi dòng: <chuỗi con của dòng lỗi> ## <lý do> (YYYY-MM-DD). Lỗi do test cố ý gây ra thì dùng t.expect_error, không ghi ở đây.

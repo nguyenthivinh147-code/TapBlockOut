@@ -137,18 +137,6 @@ shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_qgutk"]
-shader = ExtResource("5_ykctn")
-shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.16862746, 0.023529412, 0, 1)
-shader_parameter/underlay_color = Color(0, 0, 0, 1)
-shader_parameter/face_edge = 0.510714285875
-shader_parameter/outline_half = 0.0
-shader_parameter/underlay_on = false
-shader_parameter/underlay_edge = 0.29107142087500004
-shader_parameter/underlay_offset = Vector2(0.30750003, -3.075)
-shader_parameter/px_range = 14.0
-
 [node name="PopupIngameSettings" type="Control" unique_id=2027358566]
 layout_mode = 1
 anchors_preset = 15
@@ -2177,120 +2165,6 @@ metadata/u_txt = {
 "st": 0.0,
 "ws": 0.0
 }
-
-[node name="HelpButton" type="Button" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content" index="8" unique_id=2131375314]
-unique_name_in_owner = true
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -277.3
-offset_top = -119.9
-offset_right = 277.3
-offset_bottom = -41.9
-pivot_offset_ratio = Vector2(0.5, 0.5)
-focus_mode = 0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_wlwou")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_wlwou")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_wlwou")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_wlwou")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_wlwou")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_wlwou")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_wlwou")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_wlwou")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_wlwou")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_wlwou")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_wlwou")
-flat = true
-script = ExtResource("3_dfl65")
-tint_colors = Array[Color]([Color(1, 1, 1, 1), Color(0.9607843, 0.9607843, 0.9607843, 1), Color(0.78431374, 0.78431374, 0.78431374, 1), Color(0.78431374, 0.78431374, 0.78431374, 0.5019608)])
-sound = true
-metadata/u = {
-"btn": {
-"inter": true,
-"target": "8718630026291339018"
-},
-"id": "1923638288587286472",
-"img": {
-"ppu": 1.0,
-"rt": true,
-"sp": null
-},
-"n": "HelpButton"
-}
-metadata/u_rect = {
-"amax": Vector2(0.5, 0),
-"amin": Vector2(0.5, 0),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 80.9),
-"size": Vector2(554.6, 78)
-}
-metadata/u_sub = true
-
-[node name="image" type="Control" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/HelpButton" unique_id=628691113]
-anchors_preset = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-script = ExtResource("4_anbax")
-kind = 1
-color = Color(1, 1, 1, 0)
-fill_method = 4
-
-[node name="Text (TMP)" type="Label" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/HelpButton" unique_id=1644393495]
-material = SubResource("ShaderMaterial_qgutk")
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 11.34095
-offset_bottom = -11.34095
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(0.08627451, 0.42745098, 0.8, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/line_spacing = -4
-theme_override_constants/outline_size = 0
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_3pd8o")
-theme_override_font_sizes/font_size = 35
-theme_override_styles/normal = SubResource("StyleBoxEmpty_0skne")
-text = "Help & Support"
-horizontal_alignment = 1
-vertical_alignment = 1
-metadata/u = {
-"id": "8718630026291339018",
-"n": "Text (TMP)",
-"txt": {
-"rt": false
-}
-}
-metadata/u_rect = {
-"amax": Vector2(1, 1),
-"amin": Vector2(0, 0),
-"pivot": Vector2(0.5, 0.5),
-"pos": Vector2(0, 0),
-"size": Vector2(0, -22.6819)
-}
-metadata/u_txt = {
-"auto": [18.0, 35.0],
-"cs": 0.0,
-"fs": 35.0,
-"ls": 0.0,
-"m": [0.0, 0.0, 0.0, 0.0],
-"st": 5.0,
-"ws": 0.0
-}
-
-[node name="Underline" type="ColorRect" parent="Canvas/SettingInGameLayer/Panel/PauseMenu/Content/HelpButton/Text (TMP)" unique_id=1713697658]
-layout_mode = 0
-offset_left = 163.29999
-offset_top = 41.451237
-offset_right = 391.3
-offset_bottom = 43.551235
-mouse_filter = 2
-color = Color(0.08627451, 0.42745098, 0.8, 1)
 
 [node name="Control_40" parent="Canvas/SettingInGameLayer/Panel/PauseMenu" index="4" unique_id=259727841]
 visible = false

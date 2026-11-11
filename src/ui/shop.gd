@@ -182,8 +182,17 @@ func _build() -> void:
 
 	_hub_bars()
 	_animate()
-	if not resized.is_connected(_fit_panel):
-		resized.connect(_fit_panel)
+	if not resized.is_connected(_on_resized):
+		resized.connect(_on_resized)
+
+
+## A new aspect ratio (window resize, rotation, split screen) changes the canvas width (UnityUI refits the canvas
+## first, its handler is connected earlier), so Content's layout groups place the cards again: build() arranged them
+## for the width the Shop opened at.
+func _on_resized() -> void:
+	_fit_panel()
+	if ui != null and is_instance_valid(ui.node(C)):
+		ui.relayout(C)
 
 
 ## ShopFx over the layer and the bars (last child): the content's cards pop in, the loops start.

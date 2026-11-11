@@ -1,9 +1,12 @@
 extends Control
 ## Settings (wireframe 10.3) on SettingMainMenuLayer of color-cube-match-puzzle: sound effects, vibration and music
-## icons in the cream well, Support and Language pills, a Privacy Policy link row, the version under the popup's right
-## edge. The game's extras are copies of prefab nodes: a notifications toggle (copy of Vibrate, the well split in 4),
-## Restore purchases / UI preview rows and the restore result (copies of PolicyButton, one 78-unit row each; the popup
-## grows like GameplaySettingsUI.OnPurchasedAds). Language opens SettingLanguage (popup_language.gd). Static nodes
+## icons in the cream well, Support and Language pills, link rows under them, the version under the popup's right
+## edge. Privacy Policy and Terms of Service work like PrivacyPolicyControl: offline -> popup 1.6, else a Yes/No
+## popup (popup_notice.gd), Yes opens the page one frame after it closes. The game's extras are copies of prefab nodes:
+## a notifications toggle (copy of Vibrate, the well split in 4), the link rows (Policy, Terms, GDPR Privacy settings,
+## Restore purchases, UI preview) and the restore result (copies of PolicyButton, one 78-unit row each; the popup
+## grows like GameplaySettingsUI.OnPurchasedAds). Language opens SettingLanguage (popup_language.gd); Support opens a
+## mail to support like CustomerSupportButton (support_mail.gd), or popup 1.6 when offline. Static nodes
 ## are in scenes/settings.tscn; the link rows depend on the platform, the build and the restore result: built here.
 ## 10 quick taps on the version open the tester menu (tester_menu.gd); after it saves or deletes the account,
 ## Settings closes so Main rebuilds Home. setup(args: Dictionary); signal closed(result).
@@ -14,8 +17,16 @@ const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UView := preload("res://src/ui/u_view.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
 const Config := preload("res://src/config.gd")
+const SupportMail := preload("res://src/meta/support_mail.gd")
 const LANGUAGE_POPUP := "res://scenes/popup_language.tscn"
-const HELP_POPUP := "res://scenes/popup_help.tscn"
+const POPUP_NOTICE := "res://scenes/popup_notice.tscn"
+## PrivacyPolicyControl links: row node, row text, question of the Yes/No popup, Config.CONTENT key of the page. The
+## prefab's titles are ui_popup_notify_title ("Notify"): this game's Notice title.
+const LINKS := {
+	"policy": {"node": "PrivacyPolicyButton", "text": "settings_policy", "ask": "settings_policy_ask", "url": "privacy_url"},
+	"terms": {"node": "TermsOfServiceButton", "text": "settings_terms", "ask": "settings_terms_ask", "url": "terms_url"},
+}
+const LINK_TITLE := "ads_notice_title"
 
 const LAYER := "SettingMainMenuLayer"
 const PANEL := "Panel/PauseMenu"
@@ -54,6 +65,10 @@ var ui: UView = null
 var toggle_buttons: Dictionary = {}
 var lang_buttons: Dictionary = {}
 var privacy_button: Button = null
+var policy_button: Button = null
+var terms_button: Button = null
+## The Yes/No popup of a Policy or Terms tap while it is open.
+var confirm_panel: Node = null
 var restore_button: Button = null
 var gallery_button: Button = null
 var support_button: Button = null
@@ -61,8 +76,6 @@ var language_button: Button = null
 var version_button: Button = null
 var close_button: Button = null
 var language_panel: Control = null
-## Popup Help (Support), null when closed.
-var help_panel: Control = null
 var tester_panel: Control = null
 var status_label: Label = null
 var last_url: String = ""
@@ -73,6 +86,8 @@ var _version_label: Label = null
 var _version_taps: int = 0
 var _last_tap_ms: int = 0
 var _busy: bool = false
+## Support, Policy or Terms is checking the network (one check per tap).
+var _net_busy: bool = false
 var _status_text: String = ""
 
 
@@ -88,19 +103,20 @@ func version_text() -> String:
 	return str(Config.CONTENT.build)
 
 
-## Mail to support: subject with the topic (popup Help) and the build; body with the message and the player's level,
-## language and app version.
-func support_url(topic: String = "", body: String = "") -> String:
-	var subject := tr("settings_support_subject")
-	if topic != "":
-		subject += " - " + tr(topic)
-	subject = "%s (%s)" % [subject, str(Config.CONTENT.build)]
-	var info := "Level %d · %s · v%s" % [int(Game.s.level), Game.current_lang(), Game.app_version()]
-	var text := (body + "
-
-" if body != "" else "") + "---
-" + info
-	return "mailto:%s?subject=%s&body=%s" % [str(Config.CONTENT.support_email), subject.uri_encode(), text.uri_encode()]
+## Mail to support (support_mail.gd): product, versions, OS and device id in the subject, the nickname in the body,
+## plus the SDK status for testers (debug builds, Config.TESTER_DEVICES).
+func support_url() -> String:
+	var device := OS.get_unique_id()
+	var subject := SupportMail.subject({
+		"product": str(ProjectSettings.get_setting("application/config/name", "")),
+		"version": Game.app_version(),
+		"version_code": Game.version_code(),
+		"os": OS.get_name(),
+		"device_id": device,
+	})
+	var tester := SupportMail.is_tester(OS.is_debug_build(), device, Config.TESTER_DEVICES)
+	var body := SupportMail.body(Game.profile_name(), Platform.support_status() if tester else {})
+	return SupportMail.url(str(Config.CONTENT.support_email), subject, body)
 
 
 func _open_url(url: String) -> void:
@@ -158,7 +174,8 @@ func _show_toggle(key: String) -> void:
 	var b: Control = toggle_buttons.get(key)
 	if b == null:
 		return
-	var on := bool(Game.s.settings.get(key, true))
+	# Notifications show off while the system permission is missing, whatever the saved setting.
+	var on := Game.notif_on() if key == "notif" else bool(Game.s.settings.get(key, true))
 	var icon: Control = b.get_node("Image")
 	for def in TOGGLES:
 		if str(def.key) != key:
@@ -194,17 +211,24 @@ func _apply_texts() -> void:
 		language_panel.call("fill")
 
 
-## Link rows under the pills (Privacy, Restore, UI preview) and the restore result, bottom-up like PolicyButton.
+## Link rows under the pills (Policy, Terms, Privacy settings, Restore, UI preview) and the restore result, bottom-up
+## like PolicyButton.
 func _layout_rows() -> void:
 	for c in _rows:
 		if is_instance_valid(c):
 			c.queue_free()
 	_rows.clear()
 	privacy_button = null
+	policy_button = null
+	terms_button = null
 	restore_button = null
 	gallery_button = null
 	status_label = null
 	var defs: Array[Array] = []
+	for kind in LINKS:
+		var link: Dictionary = LINKS[kind]
+		defs.append([str(link.node), tr(str(link.text)), _on_link.bind(kind)])
+	# GDPR consent form of the ads SDK, only where it is required.
 	if Platform.has_privacy:
 		defs.append(["PrivacyButton", tr("settings_privacy"), _on_privacy])
 	defs.append(["RestoreButton", tr("settings_restore"), _on_restore])
@@ -247,6 +271,10 @@ func _layout_rows() -> void:
 		match str(d[0]):
 			"PrivacyButton":
 				privacy_button = row as Button
+			"PrivacyPolicyButton":
+				policy_button = row as Button
+			"TermsOfServiceButton":
+				terms_button = row as Button
 			"RestoreButton":
 				restore_button = row as Button
 			"GalleryButton":
@@ -290,6 +318,12 @@ static func _appear_later(node: Variant, cb: Callable) -> void:
 
 
 func _on_toggle(key: String) -> void:
+	if key == "notif":
+		# Turning it on may ask the system permission (Game.toggle_notif): the toggle shows the answer.
+		await Game.toggle_notif()
+		if is_inside_tree():
+			_show_toggle(key)
+		return
 	Game.set_setting(key, not bool(Game.s.settings.get(key, true)))
 	_show_toggle(key)
 
@@ -342,19 +376,62 @@ func _on_restore() -> void:
 	_layout_rows()
 
 
-## Support: popup Help (wireframe 10.5); Send opens the mail.
+## Support (CustomerSupportButton): offline -> popup 1.6 (Main, Game.notice) and stop; else the mail app opens. No
+## analytics event: Unity's SendOpenPauseTracking("other") returns before sending.
 func _on_support() -> void:
-	if help_panel != null:
+	if _net_busy:
 		return
-	help_panel = (load(HELP_POPUP) as PackedScene).instantiate()
-	help_panel.name = "HelpPanel"
-	add_child(help_panel)
-	help_panel.call("setup", {})
-	help_panel.connect("closed", func(r: Variant) -> void:
-		help_panel.queue_free()
-		help_panel = null
-		if r is Dictionary and str(r.get("action", "")) == "send":
-			_open_url(support_url(str(r.get("topic", "")), str(r.get("message", "")))))
+	_net_busy = true
+	var ok: bool = await Game.online()
+	_net_busy = false
+	if not is_inside_tree():
+		return
+	if not ok:
+		Game.notice.emit("offline")
+		return
+	_open_url(support_url())
+
+
+## Privacy Policy / Terms of Service (PrivacyPolicyControl): offline -> popup 1.6 (Game.notice) and stop; else the
+## Yes/No popup over Settings. Yes: the popup closes, one frame later the page opens (PopupOkUICoreLayer.OnOkButtonClick);
+## No, X, the dim or Back only close it.
+func _on_link(kind: String) -> void:
+	if _net_busy or is_instance_valid(confirm_panel):
+		return
+	_net_busy = true
+	var ok: bool = await Game.online()
+	_net_busy = false
+	if not is_inside_tree():
+		return
+	if not ok:
+		Game.notice.emit("offline")
+		return
+	var link: Dictionary = LINKS[kind]
+	confirm_panel = _open_over(POPUP_NOTICE, {"view": {"title": LINK_TITLE, "body": str(link.ask),
+		"ok": "common_yes", "cancel": "common_no"}})
+	if confirm_panel == null:
+		return
+	var r: Variant = await confirm_panel.closed
+	confirm_panel = null
+	if not (r is Dictionary and str((r as Dictionary).get("action", "")) == "ok"):
+		return
+	await get_tree().process_frame
+	if is_inside_tree():
+		_open_url(str(Config.CONTENT.get(str(link.url), "")))
+
+
+## A popup over Settings through Main.open_popup (Back closes the top one), or a child when Settings runs alone (tests).
+func _open_over(path: String, args: Dictionary) -> Node:
+	var n := get_parent()
+	while n != null:
+		if n.has_method("open_popup") and n.has_method("add_popup"):
+			return n.call("open_popup", path, args)
+		n = n.get_parent()
+	var node := (load(path) as PackedScene).instantiate()
+	add_child(node)
+	node.connect("closed", func(_r: Variant) -> void: node.queue_free())
+	node.call("setup", args)
+	return node
 
 
 func _on_version() -> void:

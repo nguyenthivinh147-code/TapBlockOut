@@ -20,6 +20,7 @@ func test_thresholds(t: T) -> void:
 	}
 	Config.reset()
 	Config.FEATURES.challenge = true
+	Config.FEATURES.win_streak = true
 	for f in table:
 		var lv: int = table[f]
 		t.ok(not Unlocks.is_open(f, lv - 1), "%s đóng ở L%d" % [f, lv - 1])
@@ -42,7 +43,7 @@ func test_switched_off_feature(t: T) -> void:
 	Config.FEATURES.special_bomb = false
 	p = Unlocks.feature_progress(49)
 	t.eq(p.unlocked, [] as Array[String], "tắt cả Màn đặc biệt: thắng L49 không báo mở")
-	t.eq(p.start, 45, "mốc trước là L45 (Xích, Win Streak)")
+	t.eq(p.start, 45, "mốc trước là L45 (Xích)")
 	t.eq(p.end, 60, "bỏ mốc L50, mốc kế L60 (Level Pack)")
 	Config.FEATURES.shop = false
 	t.ok(not Unlocks.is_open("shop", 11), "tắt shop qua FEATURES")
@@ -168,8 +169,13 @@ func test_offer_marks(t: T) -> void:
 	t.eq(int(marks.special_bomb), 50, "Màn đặc biệt L50")
 	t.eq(Unlocks.feature_progress(26).unlocked, ["weekly_pass"] as Array[String], "thắng L26 mở Weekly Pass")
 	var p := Unlocks.feature_progress(44)
-	t.eq(p.unlocked, ["chain", "win_streak"] as Array[String], "thắng L44 mở Xích, Win Streak")
+	t.eq(p.unlocked, ["chain"] as Array[String], "Win Streak tắt: thắng L44 chỉ mở Xích")
+	t.ok(not Unlocks.opens_home(p.unlocked), "thắng L44 không về Home")
+	Config.FEATURES.win_streak = true
+	p = Unlocks.feature_progress(44)
+	t.eq(p.unlocked, ["chain", "win_streak"] as Array[String], "bật lại: thắng L44 mở Xích, Win Streak")
 	t.ok(Unlocks.opens_home(p.unlocked), "thắng L44 về Home vì Win Streak")
+	Config.reset()
 	t.eq(Unlocks.feature_progress(59).unlocked, ["level_pack"] as Array[String], "thắng L59 mở Level Pack")
 	p = Unlocks.feature_progress(69)
 	t.eq(p.unlocked, ["leaderboard"] as Array[String], "thắng L69 mở Leaderboard")

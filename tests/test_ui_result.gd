@@ -242,6 +242,48 @@ func test_win_weekly_key_reward(t: T) -> void:
 	p3.free()
 
 
+## Thẻ thắng nằm giữa màn: tâm khung từ ngôi sao (Cup) tới đáy hàng nút trùng tâm màn, lệch tối đa 1,5% chiều cao,
+## ở level thường, khi có thẻ bảng xếp hạng (cao hơn), khi hết tính năng để mở và ở Màn đặc biệt (không thanh tính năng).
+func test_win_card_centered(t: T) -> void:
+	var g := _g()
+	var last := 0
+	for k in Config.UNLOCK:
+		last = maxi(last, int(Config.UNLOCK[k]))
+	var with_lb := _won_pieces(g, int(Config.UNLOCK.leaderboard) + 2)
+	t.ok(not (with_lb.lb as Dictionary).is_empty(), "có thẻ bảng xếp hạng")
+	var cases := {
+		"L12": _won(g, 12),
+		"bảng xếp hạng": with_lb,
+		"hết tính năng": _won_pieces(g, last + 5),
+		"Màn đặc biệt": {"special": true, "reward": "hint", "x2_available": true, "x2_free": false},
+	}
+	for k in cases:
+		var p := _mount("win_card", cases[k])
+		for i in 3:
+			await _tree().process_frame
+		var screen := p.get_global_rect()
+		var cup := p.find_child("Cup", true, false) as Control
+		var box := cup.get_global_rect()
+		for b in ["X2Button", "ContinueButton"]:
+			var btn := _btn(p, b)
+			if btn != null and btn.is_visible_in_tree():
+				box = box.merge(btn.get_global_rect())
+		var tol := screen.size.y * 0.015
+		t.ok(absf(box.get_center().y - screen.get_center().y) <= tol,
+			"%s: giữa màn theo chiều dọc (tâm %.0f, màn %.0f)" % [k, box.get_center().y, screen.get_center().y])
+		t.ok(absf(box.get_center().x - screen.get_center().x) <= tol, "%s: giữa màn theo chiều ngang" % k)
+		t.ok(box.position.y >= screen.position.y and box.end.y <= screen.end.y, "%s: nằm trong màn" % k)
+		p.free()
+
+
+## Thắng level có khối đặc biệt (pieces > 0) để có điểm bảng xếp hạng khi đã mở.
+func _won_pieces(g: Node, level: int) -> Dictionary:
+	g.s.level = level
+	var attempt: Dictionary = g.start_attempt()
+	attempt["pieces"] = 5
+	return g.on_level_won(attempt)
+
+
 # --- lose card ---
 
 func test_lose_retry_home(t: T) -> void:

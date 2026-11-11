@@ -15,6 +15,8 @@ const LV := 45
 
 func _s() -> Dictionary:
 	Config.reset()
+	# Win Streak is switched off in Config.FEATURES; these tests cover the feature itself.
+	Config.FEATURES.win_streak = true
 	return SaveSchema.defaults()
 
 
@@ -129,6 +131,33 @@ func test_new_week_resets(t: T) -> void:
 	WinStreak.on_win(s2, FRI + 2 * H, 0)
 	WinStreak.validate(s2, FRI + 10 * D, 0, LV)
 	t.eq(WinStreak.claimable(s2), [] as Array[int], "qua lượt sau thì quà cũ mất")
+
+
+## Config.FEATURES.win_streak off (the shipped default since 2026-11-11): no event at any level, and a save whose event
+## was started before the switch neither counts wins nor drops on a miss, so no "Keep your streak?" either.
+func test_switched_off(t: T) -> void:
+	var s := _s()
+	_started(s)
+	for i in 3:
+		WinStreak.on_win(s, FRI + 2 * H, 0)
+	Config.reset()
+	t.eq(bool(Config.FEATURES.get("win_streak", true)), false, "mặc định tắt")
+	t.ok(not WinStreak.visible(LV + 500), "không hiện ở level nào")
+	t.eq(WinStreak.entry(s, FRI + 2 * H, 0, LV), "", "icon Home không mở popup")
+	t.ok(not WinStreak.is_running(s, FRI + 2 * H, 0), "lượt cũ không chạy")
+	t.ok(not WinStreak.at_stake(s, FRI + 2 * H, 0), "không hỏi Giữ chuỗi")
+	t.ok(not WinStreak.on_win(s, FRI + 2 * H, 0), "thắng không cộng")
+	t.ok(not WinStreak.on_miss(s, FRI + 2 * H, 0), "thua không tụt")
+	t.eq(WinStreak.count(s), 3, "chuỗi giữ nguyên")
+	t.ok(not WinStreak.start(s, FRI + 2 * H, 0), "không Start được")
+	var fresh := SaveSchema.defaults()
+	WinStreak.validate(fresh, FRI + 7 * D + H, 0, LV)
+	t.eq(int(fresh.streak.week), -1, "ngày Active tuần sau không bắt đầu lượt")
+	t.ok(not WinStreak.should_auto_intro(fresh, FRI + 7 * D + H, 0, LV), "không tự mở giới thiệu")
+	Config.FEATURES.win_streak = true
+	t.ok(WinStreak.on_win(s, FRI + 2 * H, 0), "bật lại giữa lượt thì đếm tiếp")
+	t.eq(WinStreak.count(s), 4, "chuỗi 4")
+	Config.reset()
 
 
 func test_save_defaults(t: T) -> void:

@@ -1,5 +1,5 @@
 extends Control
-## Thẻ thắng: +gold, x2 (L1 miễn phí), Tiếp tục. Bố cục WinPanel của EndGameUILayer (color-cube-match-puzzle):
+## Thẻ thắng: +gold, x2 (thẻ đầu tiên, L11, miễn phí), Tiếp tục. Bố cục WinPanel của EndGameUILayer (color-cube-match-puzzle):
 ## cúp và kèn, ribbon tiêu đề, thẻ người chơi trên bảng xếp hạng, thanh tính năng kế tiếp, dải phần thưởng, hàng nút.
 ## Ô thưởng gold và dòng thông báo là node trong scenes/win_card.tscn; dòng gợi ý x2 thêm lúc chạy khi có. Dải phần
 ## thưởng có gold, thêm ô "+N key" (args.weekly_points, icon chìa Weekly Pass) và ô "+N vé" (args.special_tickets)
@@ -10,7 +10,7 @@ extends Control
 ## on_move_cashed(lượt): khi đó ô gold bắt đầu từ coins - move_coins, đồng gold bay từ chip vào ô (CoinFx), mỗi đồng
 ## rời chip thì gọi on_move_cashed, chạm ô thì số gold (cả số trên nút x2) tăng dần. Bấm x2 hay Tiếp tục thì cộng nốt.
 ## Lúc bay, cả khung chip lượt vẽ trên nền tối của thẻ (z_index CHIP_Z), xong thì về dưới nền.
-## x2: popup tự gọi Game.claim_x2 (xem video, hoặc miễn phí ở L1). Nút x2 là FreeBtn (miễn phí) hoặc ClaimBtn (video).
+## x2: popup tự gọi Game.claim_x2 (xem video, hoặc miễn phí ở thẻ đầu tiên, L11). Nút x2 là FreeBtn (miễn phí) hoặc ClaimBtn (video).
 ## x2 xong thì thanh trên (HubTop, chỉ mạng và gold) trượt xuống, gold của thẻ bay từ ô gold lên chip gold của thanh
 ## (CoinFx), số trên chip đếm từ ví trước lúc thắng tới ví hiện tại, rồi thẻ tự đóng như Tiếp tục (nút khoá suốt lúc bay).
 ## Màn đặc biệt (args.special, Game._special_won): thẻ này dùng lại với ô thưởng là booster args.reward ("x1", x2 thì "x2",
@@ -405,6 +405,7 @@ func _line(node_name: String, text: String, y: float) -> Label:
 func _animate_in() -> void:
 	if ui == null or not is_inside_tree():
 		return
+	_center_content()
 	# VictoryPanel.PlayShowAnimation: canvas group alpha 0.3 -> 1 in 1 s, OutBack.
 	var win: Control = ui.node(WIN)
 	win.modulate.a = 0.3
@@ -416,6 +417,35 @@ func _animate_in() -> void:
 	_animate_lb()
 	if _move_gold_left:
 		create_tween().tween_callback(_fly_move_gold).set_delay(MOVE_GOLD_DELAY)
+
+
+## Nội dung thẻ (từ cúp tới đáy hàng nút) nằm giữa màn. Prefab đặt nó thấp hơn tâm, và chiều cao đổi theo thẻ bảng
+## xếp hạng và thanh tính năng (ẩn ở Màn đặc biệt và khi hết tính năng), nên đo khi bố cục đã xong, trước khi cúp và nút
+## bắt đầu co giãn, rồi dời cả WinPanel. Độ dời ghi vào u_rect (đơn vị canvas, mọi thứ neo theo tâm) nên vẫn đúng khi
+## cửa sổ đổi cỡ.
+func _center_content() -> void:
+	var win: Control = ui.node(WIN)
+	var box := _content_box()
+	var s := win.get_global_transform().get_scale().y
+	if not box.has_area() or s <= 0.0:
+		return
+	var mid := (win.get_parent() as Control).get_global_rect().get_center().y
+	var r: Dictionary = (win.get_meta("u_rect") as Dictionary).duplicate()
+	r.pos = (r.pos as Vector2) + Vector2(0.0, (box.get_center().y - mid) / s)
+	win.set_meta("u_rect", r)
+	UnityUI.apply_rect(win)
+
+
+## Khung toàn cục của nội dung thẻ: cúp (ngôi sao) và các nút đang hiện của hàng nút.
+func _content_box() -> Rect2:
+	var box := Rect2()
+	var parts: Array = [ui.node(TOP + "/Panel/AnimGroup/LightRotate/Cup")]
+	parts.append_array(ui.node(ROW).get_children())
+	for c in parts:
+		if c is Control and (c as Control).is_visible_in_tree():
+			var r := (c as Control).get_global_rect()
+			box = r if not box.has_area() else box.merge(r)
+	return box
 
 
 # --- gold MOVES thừa (CoinFx từ chip lượt của màn level vào ô gold) ---

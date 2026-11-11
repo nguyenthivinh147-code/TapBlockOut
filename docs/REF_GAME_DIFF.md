@@ -31,7 +31,7 @@ Bảng này chỉ ghi chỗ khác, không phải danh sách việc phải làm. 
 | Vật cản | Bom đếm ngược, chỉ ở level Special | Level chính không có bom đếm ngược (bom đếm ngược chỉ ở Màn đặc biệt; Bom kẹo L220 có ngòi cháy nhưng không đếm giờ và giúp người chơi). Có 6 vật cản game gốc không có: thùng sắt (L14), pudding (L30), xích (L45), sương mù (L85), cổng nhịp (L115), băng (L165; cùng luật pudding, không cùng level); mốc từ 2026-11-10 |
 | Màu và cạnh bàn | Bộ MoreColor có 12 màu, mỗi cạnh nhiều đoạn màu | 4 màu, mỗi cạnh một cổng liền. Road Trip: mỗi cạnh 2 cổng (8 màu, L1–200) hoặc 3 cổng (12 màu, L201–400), khối mang màu cổng nó thoát qua |
 | Lưới | 20×28, 28×36, 32×32 | Tối đa 14×18 (Road Trip cao tới 24); cỡ ô đổi theo hình của level |
-| Khối | Khối đặc, chia 4 cánh kiểu chong chóng | Polyomino 1–7 ô (khoảng 3 ô mỗi khối); từ L5 xếp theo 27 hình vẽ tay, cắt theo kiểu đối xứng, hình học hoặc vùng vẽ |
+| Khối | Khối đặc, chia 4 cánh kiểu chong chóng | Polyomino 1–7 ô (khoảng 3 ô mỗi khối); L5–13 xếp theo 27 hình vẽ tay, từ L14 theo 88 hình chia 8 chủ đề (mỗi chặng 10 level một chủ đề), cắt theo kiểu đối xứng, hình học hoặc vùng vẽ. Từ L14 màu xen nhau: cặp khối kề cùng màu 33% (game gốc 31%), khối thoát được ngay lúc đầu trung bình 4,1 (game gốc 8,8) |
 | Khen khi chơi | Lời khen combo (Good … Unbelievable) | Không có combo; chỉ vỗ tay khi nghĩ ≥ 8 giây rồi đi đúng |
 | Thẻ thắng L1–9 | Bỏ qua | Luôn hiện |
 

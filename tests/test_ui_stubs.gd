@@ -90,7 +90,7 @@ func test_hidden_in_release(t: T) -> void:
 	var home := _open("home")
 	t.ok(not home.find_child("LeaderboardButton", true, false).disabled, "Bảng xếp hạng đã nối logic: mở theo level, không theo bản build")
 	t.ok(home.find_child("RemoveAdsItem", true, false).visible, "Remove Ads đã nối logic: có ở bản phát hành")
-	t.ok(home.find_child("StreakItem", true, false).visible, "Win Streak đã nối logic: mở từ L45")
+	t.ok(not home.find_child("StreakItem", true, false).visible, "Win Streak tắt (Config.FEATURES.win_streak): ẩn icon")
 	var labels: Array = []
 	_walk_labels(home, labels)
 	t.ok(not labels.has(home.tr("home_ads_daily")), "không có ADS Daily")

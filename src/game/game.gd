@@ -790,7 +790,8 @@ func _end_lost(attempt: Dictionary, show_offer: bool) -> bool:
 	return charged
 
 
-## x2 gold của level vừa thắng. L1 miễn phí (không quảng cáo). Chưa xem hết thì vẫn thử lại được.
+## x2 gold của level vừa thắng. Thẻ thắng đầu tiên (ECON.win_card_from_level, L11) miễn phí, không quảng cáo.
+## Chưa xem hết thì vẫn thử lại được.
 func claim_x2() -> bool:
 	if _x2_pending <= 0:
 		return false
@@ -995,7 +996,11 @@ func _recover_lost_ads() -> void:
 				var n := int(pend.get("coins", 0)) if str(pend.get("pl", "")) == pl else 0
 				_earn(n, "ad_recovered")
 			"shop_coins":
-				var g := ShopVideos.note_watch(s, today())
+				# The video counts on the day it was watched (ad_pend.at), not the day the game reopens.
+				var day := today()
+				if str(pend.get("pl", "")) == pl and int(pend.get("at", 0)) > 0:
+					day = mini(Clock.day_number(int(pend.at), _tz()), day)
+				var g := ShopVideos.note_watch(s, day)
 				_earn(g, "ad_recovered")
 			"":
 				continue
@@ -1837,6 +1842,18 @@ static func app_version() -> String:
 	return str(ProjectSettings.get_setting("application/config/version", ""))
 
 
+## Android version code of the export preset (`version/code`): addons/tbo_platform/export_plugin.gd writes it to
+## res://build_info.json in the APK/AAB. "0" when run from the project (no export).
+static func version_code() -> String:
+	var path := "res://build_info.json"
+	if not FileAccess.file_exists(path):
+		return "0"
+	var info: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if not (info is Dictionary) or not (info as Dictionary).has("version_code"):
+		return "0"
+	return str(int((info as Dictionary).version_code))
+
+
 ## Popup cập nhật (wireframe 1.2): "force" (dưới CONTENT.min_version: bắt buộc), "optional" (dưới latest_version,
 ## một lần mỗi lần mở game) hoặc "".
 func update_state() -> String:
@@ -2302,6 +2319,29 @@ func set_setting(key: String, value: Variant) -> void:
 			else:
 				Platform.cancel_all()
 	_queue_save()
+
+
+## Notifications toggle as Settings shows it: the game setting and the system permission.
+func notif_on() -> bool:
+	return bool(s.settings.get("notif", true)) and Platform.enabled()
+
+
+## Settings notifications toggle. Turning it on without the system permission asks for it (Android 13+; counts as
+## the one ask after run 2). Still off afterwards (denied, or Android no longer shows the prompt): popup notice
+## "notif_off" (turn it on in the device settings).
+func toggle_notif() -> void:
+	if notif_on():
+		set_setting("notif", false)
+		return
+	set_setting("notif", true)
+	if Platform.enabled():
+		return
+	s.notify["asked"] = true
+	save_now()
+	await Platform.ask()
+	_replan_notifications()
+	if not Platform.enabled():
+		notice.emit("notif_off")
 
 
 func haptic(ms: int) -> void:

@@ -9,6 +9,7 @@ const AndroidRc := preload("res://src/platform/android_rc.gd")
 const AndroidSave := preload("res://src/platform/android_save.gd")
 const AndroidNotif := preload("res://src/platform/android_notif.gd")
 const PlatformScript := preload("res://src/platform/platform.gd")
+const Config := preload("res://src/config.gd")
 
 const DIR := "user://test_platform_android_contract"
 const SCALE := 0.001
@@ -365,6 +366,27 @@ func test_platform_picks_android_backends(t: T) -> void:
 	var r: Dictionary = await p.rewarded("pl")
 	t.eq(r["ok"], true, "rewarded ok")
 	t.eq(seen, {"p": 1, "r": 1}, "overlay phát paused rồi resumed")
+	p.free()
+	fake.free()
+
+
+## Bản demo (Gradle, có plugin): chỉ thông báo dùng plugin, phần còn lại mock, không khởi động SDK.
+func test_platform_demo_uses_plugin_only_for_notif(t: T) -> void:
+	var fake := FakeSingleton.new()
+	Engine.register_singleton("TboPlatform", fake)
+	Config.demo_override = 1
+	var p: Node = PlatformScript.new()
+	Config.demo_override = -1
+	Engine.unregister_singleton("TboPlatform")
+	t.eq(p.is_android, true, "is_android")
+	t.ok(p.notif is AndroidNotif, "notif qua plugin")
+	t.ok(not (p.ads is AndroidAds), "ads mock")
+	t.ok(not (p.iap is AndroidIap), "iap mock")
+	t.ok(not (p.an is AndroidAn), "an mock")
+	t.ok(not (p.rc is AndroidRc), "rc mock")
+	t.ok(not (p.save is AndroidSave), "save mock")
+	t.ok(not ("init_sdks" in fake.log), "không init_sdks")
+	t.ok(not ("set_config" in fake.log), "không set_config")
 	p.free()
 	fake.free()
 

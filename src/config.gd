@@ -55,9 +55,11 @@ const _UNLOCK := {
 
 ## On/off switch per Config.UNLOCK feature (missing key = on). Off: Unlocks.is_open is false at every level, the win
 ## card neither announces nor counts it, and Home hides its icon. Remote Config: `features_<name>` ("1" / "0").
-## Daily Challenge is off since 2026-11-08 (design.md mục 4 "Phạm vi").
+## Daily Challenge is off since 2026-11-08 (design.md mục 4 "Phạm vi"), Win Streak since 2026-11-11 (design.md mục 7
+## "Win Streak"; an event started before the switch stops counting too, WinStreak.is_running).
 const _FEATURES := {
 	"challenge": false,
+	"win_streak": false,
 }
 
 ## 28 ô quà. Tổng: 6.650 gold, 5 hint, 5 move, 4 smash.
@@ -464,8 +466,14 @@ const _CONTENT := {
 	# over music_fade_out_sec.
 	"music_fade_in_sec": 1.0,
 	"music_fade_out_sec": 0.5,
+	# Every phone vibration (Platform.haptic) lasts its ms (Sfx.HAPTIC_MS, Game.haptic callers) times this.
+	"haptic_scale": 1.5,
 	"build": "v1",
 	"support_email": "support@horusvn.com",
+	# Privacy Policy and Terms of Service rows in Settings (PrivacyPolicyControl of color-cube-match-puzzle: the same
+	# hardcoded pages on every platform). Yes in the confirm popup opens them in the browser.
+	"privacy_url": "https://horusent.com/privacy-policy/",
+	"terms_url": "https://horusent.com/term-conditions/",
 	# Popup cập nhật lúc mở game (popup_update.gd): phiên bản app (application/config/version) thấp hơn
 	# latest_version thì mời cập nhật, có Để sau; thấp hơn min_version thì bắt buộc, không có Để sau. Trống là tắt.
 	# Remote Config `content_latest_version`, `content_min_version`. Nút Cập nhật mở store_url.
@@ -503,6 +511,12 @@ const SHAPE_ROUGHEN := 0.06
 ## theo trục của hình, không khoét rìa.
 const MOTIF_FILL_MIN := 2.5
 const MOTIF_FILL_MAX := 3.4
+## Level shapes by chapter (design.md section 4 "Hình dạng level", user request 2026-11-11): from CHAPTER_FROM levels
+## come in chapters of CHAPTER_LEN levels (the first one ends at CHAPTER_FIRST_TO); each chapter draws its shapes from
+## one theme of Motifs.THEMES, in turn.
+const CHAPTER_FROM := 14
+const CHAPTER_FIRST_TO := 20
+const CHAPTER_LEN := 10
 ## Cắt khối: mỗi cách gộp có trọng số TILE_SINGLE_BIAS ^ (số khối 1 ô được gộp) x hệ số hình / cỡ khối sau gộp ^
 ## TILE_SIZE_POW, nên khối 1 ô được gộp trước và còn ít khối 1 ô. Mỗi khối tối đa BLOCK_MAX_CELLS ô.
 ## Hệ số hình (2026-11-10, người dùng: nhiều khối L, ít khối thẳng, khoảng 30% mỗi loại; design.md mục 4 "Hình dạng
@@ -535,6 +549,26 @@ const LEVEL_MECH_WEIGHTS := [0.35, 0.4, 0.25]
 const LEVEL_REST_EVERY := 4
 const LEVEL_REST_AT := 3
 const LEVEL_MECH_FRESH := 10
+## At most this share of a level's blocks carry a mechanic (cover, fog, chain lock or key, paper box, ribbon, candy
+## bomb; each block counted once), floor(blocks * share) (design.md section 4, user request 2026-11-11).
+const LEVEL_MECH_BLOCK_SHARE := 0.5
+## Blocks that can act on the first tap (exit or peel, as the hint's "Available Block" counts them), from
+## EXIT_RANGE_FROM: (min, max) EXIT_RANGE_EARLY up to EXIT_RANGE_EARLY_UNTIL, then by tag (VeryHard, Hard, normal and
+## rest levels). The generator widens the range by 1 on each side every EXIT_RELAX_EVERY failed attempts (design.md
+## section 4, user request 2026-11-11; before that 1-17, mean 6.5).
+const EXIT_RANGE_FROM := 14
+const EXIT_RANGE_EARLY_UNTIL := 29
+const EXIT_RANGE_EARLY := Vector2i(2, 4)
+const EXIT_RANGE_NORMAL := Vector2i(3, 5)
+const EXIT_RANGE_HARD := Vector2i(2, 4)
+const EXIT_RANGE_VERY_HARD := Vector2i(2, 3)
+const EXIT_RELAX_EVERY := 10
+## From EXIT_RANGE_FROM, when the generator gives blocks their colour (exit side), each neighbouring block that already
+## took a colour multiplies that colour's weight by COLOR_MIX, so colours mix instead of whole areas of the shape
+## leaving through the nearest side (design.md section 4 "Hình dạng level", user request 2026-11-11). On L14-500
+## same-colour neighbours went from 49% to 33% of neighbouring pairs (reference game 31%); stronger mixing barely
+## lowers it because many blocks have a single way out.
+const COLOR_MIX := 0.01
 ## Cover mechanics, pudding (`ice`) and ice (`frost`), never both in one level (design.md section 4): a block's `ice`
 ## field is its layer count, 0..COVER_MAX_LAYERS; each neighbouring block that leaves the board strips one layer.
 ## Share of covered blocks: COVER_SHARE_LO -> COVER_SHARE_HI over COVER_SHARE_OVER levels from the kind's unlock. From
@@ -599,9 +633,13 @@ const POP_STAGGER := 0.06
 const POP_SFX_MAX := 4
 const POP_SFX_DB := -6.0
 ## Clear rounds (Solver.clear_rounds) of a generated level stay within max(LEVEL_ROUNDS_TOL_MIN,
-## LEVEL_ROUNDS_TOL * target) of DifficultyCurve.wave_count.
+## LEVEL_ROUNDS_TOL * target) of DifficultyCurve.wave_count. The generator widens that by 1 every few failed attempts,
+## never past max(LEVEL_ROUNDS_TOL_MIN_CAP, ceil(LEVEL_ROUNDS_TOL_CAP * target)) (2026-11-11: with the cap on blocks that
+## exit at once, shallow wide levels went 60% deeper than the curve; past the cap the exit range widens instead).
 const LEVEL_ROUNDS_TOL := 0.1
 const LEVEL_ROUNDS_TOL_MIN := 1
+const LEVEL_ROUNDS_TOL_CAP := 0.25
+const LEVEL_ROUNDS_TOL_MIN_CAP := 2
 ## Level screen HUD (restart, settings, 3 boosters, MOVES frame, piece chip frame, HARD pill): the candy-purple sprites
 ## are toned down by src/ui/hud_tone.gdshader (design.md "HUD level"). HUD_TONE_GLOSS pulls the pale gloss sheen toward
 ## the body color (0 keeps it, 1 removes it); then HSV saturation and value are multiplied by HUD_TONE_SAT, HUD_TONE_VAL.
@@ -704,6 +742,11 @@ static func account_tool() -> bool:
 	if account_tool_override >= 0:
 		return account_tool_override > 0
 	return OS.is_debug_build()
+
+
+## Tester phones (Unity DeviceIdTesting): OS.get_unique_id() of each, the USERID in the subject of a support mail sent
+## from that phone. Their support mail carries the SDK status, also in release builds (support_mail.gd is_tester).
+const TESTER_DEVICES: Array[String] = []
 
 
 ## Trả mọi nhóm về mặc định (test dùng sau khi apply_remote).

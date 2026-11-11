@@ -16,3 +16,6 @@ android_config.json.import
 reference/horus/
 tools/node/node_modules/
 __pycache__/
+
+# Test, smoke, report output (docs/TESTING.md)
+output/

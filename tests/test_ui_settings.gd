@@ -140,24 +140,114 @@ func test_privacy_only_when_available(t: T) -> void:
 
 
 func test_support_mailto_not_really_opened(t: T) -> void:
-	_game()
+	var g := _game()
+	g.test_online = 1
 	var opened: Array = []
 	var node := _open(opened)
 	node.support_button.pressed.emit()
-	t.eq(opened.size(), 0, "Support mở popup Help trước, chưa gửi mail")
-	var help: Control = node.help_panel
-	t.ok(help != null, "popup Help")
-	# Pick the purchase topic, write a message, Send.
-	(help.find_child("Topic_purchase", true, false).get_node("Pick") as Button).pressed.emit()
-	t.eq(str(help.get("topic")), "settings_help_purchase", "chọn chủ đề")
-	(help.get("message") as TextEdit).text = "Lost my gold"
-	(help.find_child("SaveButton", true, false) as Button).pressed.emit()
-	t.eq(opened.size(), 1, "gọi opener một lần")
-	t.ok(str(opened[0]).begins_with("mailto:" + str(Config.CONTENT.support_email)), "mailto tới email hỗ trợ")
-	t.ok(str(opened[0]).contains("subject="), "có tiêu đề")
-	t.ok(str(opened[0]).contains("body=Lost%20my%20gold"), "thân thư có nội dung")
-	t.ok(not str(opened[0]).contains(" "), "đã mã hoá")
-	t.eq(node.help_panel, null, "Gửi đóng popup Help")
+	t.eq(opened.size(), 1, "Support mở mail ngay, không qua popup")
+	var url := str(opened[0])
+	var head := "mailto:%s?subject=" % str(Config.CONTENT.support_email)
+	t.ok(url.begins_with(head), "mailto tới email hỗ trợ")
+	t.ok(not url.contains(" "), "đã mã hoá")
+	var parts := url.trim_prefix(head).split("&body=")
+	var subject := "%s - %s - 0 - v0 - USERID: %s" % [ProjectSettings.get_setting("application/config/name"),
+		g.app_version(), OS.get_unique_id()]
+	t.eq(parts[0].uri_decode(), subject, "tiêu đề như Unity (chạy từ project: version code 0, không ghi Android)")
+	var body := parts[1].uri_decode()
+	t.ok(body.begins_with("Hi there!. My account is " + g.profile_name()), "thân thư có biệt danh")
+	t.eq(body.contains("--- SDK Status ---"), OS.is_debug_build(), "bản debug kèm trạng thái SDK")
+	node.queue_free()
+
+
+func test_support_offline(t: T) -> void:
+	var g := _game()
+	g.test_online = 0
+	var opened: Array = []
+	var notices: Array = []
+	var on_notice := func(kind: String) -> void: notices.append(kind)
+	g.notice.connect(on_notice)
+	var node := _open(opened)
+	await node._on_support()
+	g.notice.disconnect(on_notice)
+	t.eq(notices, ["offline"], "mất mạng: Main hiện popup No Internet")
+	t.eq(opened.size(), 0, "không mở mail")
+	g.test_online = 1
+	node.queue_free()
+
+
+## Label text of a prefab node of a popup's UView.
+func _ui_text(pop: Node, path: String) -> String:
+	var n: Node = pop.get("ui").call("node", path)
+	return (n as Label).text if n is Label else _label_text(n)
+
+
+## Privacy Policy and Terms of Service like PrivacyPolicyControl (color-cube-match-puzzle): online -> Yes/No popup
+## (Notice title, the question), Yes opens the page one frame after the popup closes, No and X only close it.
+func test_policy_terms_confirm_then_open(t: T) -> void:
+	var g := _game()
+	g.test_online = 1
+	t.eq(str(Config.CONTENT.get("privacy_url", "")), "https://horusent.com/privacy-policy/", "URL Privacy như Unity")
+	t.eq(str(Config.CONTENT.get("terms_url", "")), "https://horusent.com/term-conditions/", "URL Terms như Unity")
+	var opened: Array = []
+	var node := _open(opened)
+	var tree := _root().get_tree()
+	var cases := [
+		[node.get("policy_button"), "Privacy Policy", "Do you want to read the privacy policy?", "privacy_url"],
+		[node.get("terms_button"), "Terms of Service", "Do you want to read the terms of use?", "terms_url"],
+	]
+	for c in cases:
+		var b: Button = c[0]
+		t.ok(b != null, "có dòng " + str(c[1]))
+		if b == null:
+			continue
+		t.eq(_label_text(b), str(c[1]), "chữ dòng " + str(c[1]))
+		for close in ["Panel/Content/Button/Cancel", "Panel/Top/btnTurnOff"]:
+			b.pressed.emit()
+			var pop: Node = node.confirm_panel
+			t.ok(pop != null, "%s mở popup hỏi" % c[1])
+			if pop == null:
+				continue
+			t.eq(_ui_text(pop, "Panel/Image/txtHeader"), "Notice", "tiêu đề Notice")
+			t.eq(_ui_text(pop, "Panel/Content/Description"), str(c[2]), "câu hỏi")
+			t.eq(_ui_text(pop, "Panel/Content/Button/Ok"), "Yes", "nút Yes")
+			t.eq(_ui_text(pop, "Panel/Content/Button/Cancel"), "No", "nút No")
+			t.ok((pop.get("ui").call("node", "Panel/Content/Button/Cancel") as Control).visible, "hiện nút No")
+			b.pressed.emit()
+			t.eq(node.confirm_panel, pop, "chạm lần nữa không mở popup thứ hai")
+			(pop.get("ui").call("node", close) as Button).pressed.emit()
+			await tree.process_frame
+			await tree.process_frame
+			t.eq(opened.size(), 0, "%s: không mở trang" % close.get_file())
+			t.eq(node.confirm_panel, null, "%s đóng popup" % close.get_file())
+		b.pressed.emit()
+		var yes_pop: Node = node.confirm_panel
+		if yes_pop == null:
+			continue
+		(yes_pop.get("ui").call("node", "Panel/Content/Button/Ok") as Button).pressed.emit()
+		t.eq(opened.size(), 0, "Yes: đóng popup, chờ một khung rồi mới mở")
+		await tree.process_frame
+		await tree.process_frame
+		t.eq(opened, [str(Config.CONTENT.get(c[3], ""))], "Yes mở trang " + str(c[1]))
+		opened.clear()
+	node.queue_free()
+
+
+func test_policy_terms_offline(t: T) -> void:
+	var g := _game()
+	g.test_online = 0
+	var opened: Array = []
+	var notices: Array = []
+	var on_notice := func(kind: String) -> void: notices.append(kind)
+	g.notice.connect(on_notice)
+	var node := _open(opened)
+	await node.call("_on_link", "policy")
+	await node.call("_on_link", "terms")
+	g.notice.disconnect(on_notice)
+	t.eq(notices, ["offline", "offline"], "mất mạng: Main hiện popup No Internet")
+	t.eq(node.get("confirm_panel"), null, "không mở popup hỏi")
+	t.eq(opened.size(), 0, "không mở trang")
+	g.test_online = 1
 	node.queue_free()
 
 
@@ -218,7 +308,8 @@ func test_prefab_layout_touch_targets(t: T) -> void:
 	var node := _open([])
 	var card: Control = node.find_child("PauseMenu", true, false)
 	t.ok(absf(card.size.x - 724.0) < 0.5, "rộng popup theo prefab SettingMainMenuLayer (724)")
-	var hits: Array = [node.close_button, node.support_button, node.language_button, node.restore_button, node.version_button]
+	var hits: Array = [node.close_button, node.support_button, node.language_button, node.restore_button, node.version_button,
+		node.get("policy_button"), node.get("terms_button")]
 	hits.append_array(node.toggle_buttons.values())
 	for b in hits:
 		var s: Vector2 = b.hit_size()
@@ -234,4 +325,5 @@ func test_ingame_life_badge(t: T) -> void:
 		node.setup({"life_cost": cost})
 		t.eq(node.home_button.find_child("LifeBadge", true, false) != null, cost, "huy hiệu -1 tim trên Home khi life_cost=%s" % cost)
 		t.eq(node.retry_button.find_child("LifeBadge", true, false) != null, cost, "huy hiệu -1 tim trên Retry khi life_cost=%s" % cost)
+		t.ok(node.find_child("HelpButton", true, false) == null, "cài đặt trong màn không có dòng hỗ trợ")
 		node.queue_free()

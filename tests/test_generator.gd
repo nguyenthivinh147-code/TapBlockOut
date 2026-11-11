@@ -288,11 +288,35 @@ func test_deterministic(t: T) -> void:
 			var b := Gen.generate(id, sd)
 			t.ok(not a.is_empty(), "id %d seed %d" % [id, sd])
 			t.eq(JSON.stringify(a), JSON.stringify(b), "id %d seed %d lặp lại" % [id, sd])
-			# seed ghi trong level tái tạo đúng level đó khi level sinh được trước lần thử Gen.COUNT_RELAX_EVERY
-			# (từ đó bộ sinh bớt khối mục tiêu, như L55 seed 12345).
-			if int(a["seed"]) - sd < Gen.COUNT_RELAX_EVERY:
+			# seed ghi trong level tái tạo đúng level đó khi level sinh được trước lần nới đầu tiên của bộ sinh
+			# (số lượt dọn bàn mỗi Gen.ROUNDS_RELAX_EVERY lần thử, khối thoát ngay mỗi Config.EXIT_RELAX_EVERY, số khối
+			# mục tiêu mỗi Gen.COUNT_RELAX_EVERY): lần thử sau đó nới luật nên seed ghi lại bắt đầu lại từ luật chặt.
+			if int(a["seed"]) - sd < mini(Gen.ROUNDS_RELAX_EVERY, mini(Config.EXIT_RELAX_EVERY, Gen.COUNT_RELAX_EVERY)):
 				var c := Gen.generate(id, int(a["seed"]))
 				t.eq(JSON.stringify(a), JSON.stringify(c), "id %d seed ghi lại" % id)
+
+
+## Từ Config.EXIT_RANGE_FROM (design.md mục 4, 2026-11-11): số khối chạm được ngay (Gen.free_count) nằm trong
+## Gen.exit_range theo tag, và tối đa Config.LEVEL_MECH_BLOCK_SHARE số khối mang cơ chế (Gen.mech_blocks).
+func test_exit_range_and_mech_budget(t: T) -> void:
+	t.eq(Gen.exit_range(13), Vector2i.ZERO, "trước L14 không giới hạn")
+	t.eq(Gen.exit_range(14), Config.EXIT_RANGE_EARLY, "L14-29")
+	t.eq(Gen.exit_range(Config.EXIT_RANGE_EARLY_UNTIL + 2), Config.EXIT_RANGE_NORMAL, "level thường")
+	t.eq(Gen.exit_range(33), Config.EXIT_RANGE_VERY_HARD, "L33 VeryHard")
+	var relaxed := Gen.exit_range(33, Config.EXIT_RELAX_EVERY * 2)
+	t.eq(relaxed, Vector2i(maxi(1, Config.EXIT_RANGE_VERY_HARD.x - 2), Config.EXIT_RANGE_VERY_HARD.y + 2), "nới dần")
+	t.eq(Gen.mech_budget(45), 22, "45 khối: tối đa 22 khối có cơ chế")
+	var base := 20261101
+	for id in range(Config.EXIT_RANGE_FROM, 501, 13):
+		var d := Gen.generate(id, base)
+		if d.is_empty():
+			t.fail("L%d không sinh được" % id)
+			continue
+		var r := Gen.exit_range(id, int(d["seed"]) - base)
+		var f := Gen.free_count(d)
+		t.ok(f >= r.x and f <= r.y, "L%d: %d khối thoát ngay trong %s" % [id, f, str(r)])
+		var n: int = d["blocks"].size()
+		t.ok(Gen.mech_blocks(d) <= Gen.mech_budget(n), "L%d: %d/%d khối có cơ chế" % [id, Gen.mech_blocks(d), n])
 
 
 func test_seeds_differ(t: T) -> void:
