@@ -43,7 +43,7 @@ script = ExtResource("1")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0, 0.016, 0.059, 0.85)
+color = Color(0, 0, 0, 0.8)
 
 [node name="Center" type="CenterContainer" parent="." unique_id=802807833]
 layout_mode = 0
@@ -67,7 +67,7 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_x8msq")
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_colors/font_outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4

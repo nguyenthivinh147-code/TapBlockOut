@@ -69,8 +69,8 @@ shader_parameter/px_range = 14.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
 shader = ExtResource("3_gfbdw")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
-shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.1285714305
 shader_parameter/underlay_on = true
@@ -230,7 +230,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("2_jsj22")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 
 [node name="Text (TMP)" type="Label" parent="PopupRemoveAds/Continue" unique_id=2047887710]

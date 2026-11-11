@@ -211,7 +211,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("2_fgexl")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 
 [node name="Panel" type="Control" parent="PopupKeepPlayingWinstreak" unique_id=1440791124]

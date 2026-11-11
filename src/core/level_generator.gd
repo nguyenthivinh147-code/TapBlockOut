@@ -436,7 +436,7 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 			return {}
 		var rounds: int = asg["depth"]
 		if not strict or absi(rounds - want) <= tol or (not plain and (feats["pulse"] or rounds < want)):
-			var mech := _mechanics(id, feats, groups, asg, rng)
+			var mech := _mechanics(id, feats, groups, asg, rng, not strict)
 			var cand := _build(id, s, hard, _shifted(stones, shift), _shifted_groups(groups, shift), asg, mech)
 			if not mech["fog"].is_empty() or not mech["ice"].is_empty() or not mech["choco"].is_empty():
 				_unstick(cand)
@@ -1587,7 +1587,8 @@ static func _flipped(cells: Array[Vector2i], w: int, h: int, horizontal: bool) -
 
 
 ## Mô phỏng ván tiến. Trả {order: Array[int], color: Array[int] (theo chỉ số nhóm),
-## clear: Array (mỗi nhóm: các màu thoát được lúc nó bị chọn), depth: chuỗi chặn sâu nhất}; {} nếu kẹt.
+## clear: Array (mỗi nhóm: các màu thoát được lúc nó bị chọn), depth: chuỗi chặn sâu nhất,
+## free: {chỉ số nhóm: true} các khối có độ sâu 1 (thông đường ngay lúc đầu)}; {} nếu kẹt.
 ## `power`: số mũ của trọng số (1 + số khối chắn đường lúc đầu); càng lớn càng nhiều khối phải chờ lúc đầu.
 ## Độ sâu của một khối là lượt nó rời bàn khi mỗi lượt cho mọi khối đang thông đường đi: 1 nếu đường ra không có khối
 ## nào lúc đầu, không thì 1 + độ sâu lớn nhất của các khối chắn đường đó (chúng đã đi trước). `aim` > 0: lái chuỗi
@@ -1664,6 +1665,7 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 	depth.resize(n)
 	var deepest := 0
 	var n_free := 0  # blocks given a colour whose path is clear from the start (they exit in the first clear round)
+	var free_now := {}  # those blocks
 	for step in n:
 		var cand: Array = []  # [i, col, độ sâu]
 		var weights: Array[float] = []
@@ -1724,18 +1726,23 @@ static func _assign(w: int, h: int, stones: Array[Vector2i], groups: Array, allo
 		clear[bi] = per_block[bi]
 		depth[bi] = pick[2]
 		n_free += int(int(pick[2]) <= 1)
+		if int(pick[2]) <= 1:
+			free_now[bi] = true
 		deepest = maxi(deepest, pick[2])
 		used[bc] += 1
 		alive[bi] = 0
 		for c in groups[bi]:
 			grid[c.y * w + c.x] = -1
-	return {"order": order, "color": color, "clear": clear, "depth": deepest}
+	return {"order": order, "color": color, "clear": clear, "depth": deepest, "free": free_now}
 
 
 ## Rải cơ chế lên các khối. Trả {ice (idx -> số lớp phủ), cover ("frost" hoặc ""), chain (idx -> idx khoá), layer
 ## (idx -> màu trong), fog, pulse, ribbon (idx -> màu các lớp, `_ribbons`)}. Lớp phủ (pudding hoặc băng, theo `feats`) không chung khối với xích, hộp giấy, sương
 ## mù; khối 2 lớp phải kề ít nhất 2 khối khác. At most `mech_budget(n)` blocks carry a mechanic (see `mech_blocks`).
-static func _mechanics(id: int, feats: Dictionary, groups: Array, asg: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+## `fast` (in-game generation, `strict_rounds` false): the paper box of a layer teaching level goes to a block that peels
+## at once (see below); the packaged levels are generated with `fast` false and stay as they are.
+static func _mechanics(id: int, feats: Dictionary, groups: Array, asg: Dictionary, rng: RandomNumberGenerator,
+		fast: bool = false) -> Dictionary:
 	var n := groups.size()
 	var order: Array = asg["order"]
 	var pos := {}
@@ -1758,6 +1765,13 @@ static func _mechanics(id: int, feats: Dictionary, groups: Array, asg: Dictionar
 	if teach_mech(id) == "chain" and order.size() > 1:
 		pool.erase(order[1])
 		pool.push_front(order[1])
+	# Fast mode, layer teaching level: blocks with a clear path from the start come first (still in shuffled order), so
+	# the paper box peels at once and the attempt passes `_teach_ok`; a box on a random block usually waits and the
+	# whole attempt was thrown away (L65 took 4-23 attempts, up to 670 ms, over the 200 ms of design.md section 4).
+	if fast and teach_mech(id) == "layer":
+		var free: Dictionary = asg["free"]
+		var front: Array = pool.filter(func(i: int) -> bool: return free.has(i))
+		pool = front + pool.filter(func(i: int) -> bool: return not free.has(i))
 	# At most mech_budget(n) blocks carry a mechanic (design.md section 4, 2026-11-11), each counted once. Placed in this
 	# order so the few-per-level kinds keep their counts: chain lock and key, paper box, ribbon, (candy bombs: room kept
 	# for `_pops`), cover, then fog takes what is left.

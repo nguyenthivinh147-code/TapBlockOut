@@ -86,6 +86,22 @@ func test_valid_solvable_fast(t: T) -> void:
 		COUNT, total_ms / COUNT, max_ms, worst_id, str(seen)])
 
 
+## Sinh nhanh (trong game): level dạy Hai lớp đặt hộp giấy vào khối bóc được ngay, nên lần thử đầu đã qua `_teach_ok`.
+## Trước đó hộp giấy rơi vào khối ngẫu nhiên, thường phải chờ khối khác: L65 seed 0 tốn 7 lần thử (215 ms > MAX_MSEC),
+## seed 2000 tốn 23 lần (670 ms). Đếm lần thử (seed ghi trong level − seed truyền vào) thay cho đo giờ.
+func test_fast_layer_teach_first_attempt(t: T) -> void:
+	var id := int(Config.UNLOCK["layer"])
+	t.eq(Gen.teach_mech(id), "layer", "L%d là level dạy Hai lớp" % id)
+	for k in 12:
+		var sd := k * 1000
+		var d := Gen.generate(id, sd, false)
+		t.ok(not d.is_empty(), "L%d seed %d sinh được" % [id, sd])
+		if d.is_empty():
+			continue
+		t.ok(int(d["seed"]) - sd <= 1, "L%d seed %d: %d lần thử" % [id, sd, int(d["seed"]) - sd + 1])
+		t.ok(Gen._teach_ok(d, "layer"), "L%d seed %d có khối bóc được ngay" % [id, sd])
+
+
 ## Các ô có khối hoặc đá của level.
 func _occupied(d: Dictionary) -> Dictionary:
 	var occ := {}

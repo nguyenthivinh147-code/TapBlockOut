@@ -122,19 +122,40 @@ func open_game(name: String, prepare: Callable = Callable(), shot_splash: bool =
 	var dir := "user://smoke_%s" % name
 	DirAccess.make_dir_recursive_absolute(dir)
 	game.reset_for_test(dir + "/save.json")
-	# Như bản phát hành: không demo, không UI gallery, không công cụ sửa tài khoản (smoke chạy bằng Godot editor nên
-	# OS.is_debug_build() luôn true).
+	_release_env(NOW)
+	if prepare.is_valid():
+		prepare.call(game)
+	game.save_now()
+	return await _boot_main(name, shot_splash)
+
+
+## Mở lại save user://smoke_<tên>/save.json đã có như lần mở app sau: không reset_for_test, không dựng save, giờ
+## giả muộn hơn một phút. Kịch bản G2 dùng, trong tiến trình Godot riêng (autoload Game chưa boot).
+func reopen_game(name: String) -> bool:
+	close_game()
+	var path := "user://smoke_%s/save.json" % name
+	if not FileAccess.file_exists(path):
+		return fail("không có save %s" % path)
+	game.save_path = path
+	game.test_online = 1
+	_release_env(NOW + 60)
+	return await _boot_main(name, false)
+
+
+## Như bản phát hành: không demo, không UI gallery, không công cụ sửa tài khoản (smoke chạy bằng Godot editor nên
+## OS.is_debug_build() luôn true); giờ cố định, ads và mua hàng giả.
+func _release_env(now: int) -> void:
 	Config.demo_override = 0
 	Config.ui_preview_override = 0
 	Config.account_tool_override = 0
-	game.test_now = NOW
+	game.test_now = now
 	game.test_tz = 0
 	plat.ads.calls.clear()
 	plat.ads.set_ready(true, true)
 	plat.iap = MockIap.new()
-	if prepare.is_valid():
-		prepare.call(game)
-	game.save_now()
+
+
+func _boot_main(name: String, shot_splash: bool) -> bool:
 	Engine.time_scale = float(args.get("speed", "1"))
 	main = (load("res://scenes/main.tscn") as PackedScene).instantiate() as Control
 	root.add_child(main)
@@ -504,6 +525,28 @@ func shot(name: String) -> void:
 			img.save_png(out_dir.path_join(base + ".png"))
 			print("SMOKE SHOT %s.png" % base)
 	census(base)
+
+
+## Ảnh liền nhau mỗi `every` giây thật trong `sec` giây, không đợi màn yên, để soát animation chuyển cảnh (kịch bản
+## T). Chỉ chụp khi có cửa sổ; headless chỉ đợi chừng đó thời gian.
+func film(name: String, sec: float, every: float = 0.15) -> void:
+	var n := int(ceil(sec / every))
+	if not window:
+		step("quay %s: %d khung (headless không chụp)" % [name, n])
+		await create_timer(sec, true, false, true).timeout
+		return
+	shots += 1
+	var base := "%02d_%s" % [shots, name]
+	for i in n:
+		var t0 := Time.get_ticks_msec()
+		await RenderingServer.frame_post_draw
+		var img := root.get_texture().get_image()
+		if img != null and not img.is_empty():
+			img.save_png(out_dir.path_join("%s_%02d.png" % [base, i]))
+			print("SMOKE SHOT %s_%02d.png" % [base, i])
+		var left := every * 1000.0 - float(Time.get_ticks_msec() - t0)
+		if left > 1.0:
+			await create_timer(left / 1000.0, true, false, true).timeout
 
 
 func census(base: String) -> void:

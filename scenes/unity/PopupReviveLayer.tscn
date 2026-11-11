@@ -63,8 +63,8 @@ shader_parameter/px_range = 14.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
 shader = ExtResource("5_snmma")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
-shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.085714287
 shader_parameter/underlay_on = true
@@ -99,8 +99,8 @@ shader_parameter/px_range = 14.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1u54v"]
 shader = ExtResource("5_snmma")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.02745098, 0.0627451, 0.09803922, 1)
-shader_parameter/underlay_color = Color(0.02745098, 0.0627451, 0.09803922, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.1285714305
 shader_parameter/underlay_on = true
@@ -111,8 +111,8 @@ shader_parameter/px_range = 14.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
 shader = ExtResource("5_snmma")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
-shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.1285714305
 shader_parameter/underlay_on = true
@@ -286,7 +286,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("2_ofxjs")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 
 [node name="Panel" type="Control" parent="PopupReviveLayer/Bg" unique_id=1192319256]

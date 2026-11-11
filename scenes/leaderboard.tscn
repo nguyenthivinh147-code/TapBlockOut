@@ -115,8 +115,8 @@ shader_parameter/grad_y1 = null
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
 shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
-shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.085714287
 shader_parameter/underlay_on = true
@@ -136,8 +136,8 @@ spacing_glyph = -1
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uvgey"]
 shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
-shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.085714287
 shader_parameter/underlay_on = true
@@ -153,8 +153,8 @@ shader_parameter/grad_y1 = null
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c7li3"]
 shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
-shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.085714287
 shader_parameter/underlay_on = true
@@ -194,8 +194,8 @@ spacing_glyph = -1
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qejyp"]
 shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0, 0, 0, 1)
-shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.1285714305
 shader_parameter/underlay_on = true
@@ -286,8 +286,8 @@ shader_parameter/grad_y1 = null
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
 shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
-shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.1285714305
 shader_parameter/underlay_on = true
@@ -303,8 +303,8 @@ shader_parameter/grad_y1 = null
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j5nr6"]
 shader = ExtResource("7_epfd2")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
-shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.085714287
 shader_parameter/underlay_on = true
@@ -447,7 +447,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("3_bbyyb")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 
 [node name="Panel" parent="FrameCanvas/PopupOkLayer" index="1" unique_id=355069323]
@@ -7741,7 +7741,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("3_bbyyb")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 
 [node name="Image" parent="Canvas/LeaderboardLayer/WeekResultPanel" index="1" unique_id=1407053239]

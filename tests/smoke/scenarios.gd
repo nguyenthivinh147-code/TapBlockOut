@@ -5,6 +5,16 @@ extends RefCounted
 const Saves := preload("res://tests/smoke/smoke_saves.gd")
 const Config := preload("res://src/config.gd")
 const Lives := preload("res://src/meta/lives.gd")
+const Cosmetics := preload("res://src/meta/cosmetics.gd")
+const BOOSTERS := ["hint", "move", "smash"]
+## Kịch bản G: tiến trình sau (G2) đọc kết quả mong đợi tiến trình trước ghi ở đây.
+const G_EXPECT := "user://smoke_G/expect.json"
+
+
+## Ads giả không bao giờ tải được video (Game.watch gọi Platform.load_ads trước khi chờ).
+class NoLoadAds extends "res://src/platform/mock_ads.gd":
+	func load_ads() -> void:
+		pass
 
 ## Popup không thuộc kịch bản (quà booster, giới thiệu, offer, mời tính năng): settle() tự đóng.
 const STRAY_SCRIPTS := ["booster_unlocked.gd", "booster_soon.gd", "tutorial_intro.gd", "popup_rate.gd",
@@ -41,6 +51,18 @@ static func run(r, scen: String) -> bool:
 			return await scen_m(r)
 		"S":
 			return await scen_s(r)
+		"F":
+			return await scen_f(r)
+		"G":
+			return await scen_g(r)
+		"G2":
+			return await scen_g2(r)
+		"H":
+			return await scen_h(r)
+		"T":
+			return await scen_t(r)
+		"L":
+			return await scen_l(r)
 	return r.fail("không có kịch bản %s" % scen)
 
 
@@ -278,6 +300,478 @@ static func scen_s(r) -> bool:
 			if not await tap_named(r, "PlayButton", r.main.current_screen):
 				return false
 	await r.shot("soak_end")
+	return await verify_saved(r)
+
+
+## F. Ads có thưởng (design.md mục 6, ads giả của Platform): x2 ở thẻ thắng (đóng sớm, không có video khi còn mạng và
+## khi mất mạng, xem hết), ADS Daily trong Shop (đóng sớm, xem hết), mở avatar bằng video ở Profile. Chỉ thưởng khi xem
+## hết và đúng một lần; đóng sớm hay không có video thì số dư không đổi.
+static func scen_f(r) -> bool:
+	if not await r.open_game("F", Callable(Saves, "veteran")):
+		return false
+	if not await win_level(r):
+		return false
+	var x2 := func() -> Control: return r.popup_node("X2Button") as Control
+	if not await wait_for(r, func() -> bool: return x2.call() != null, 20000, "X2Button"):
+		return r.fail("thắng L30 mà thẻ thắng không có nút x2")
+	await r.wait_sec(0.8)
+	await r.shot("win_card")
+	var pending := int(r.game.get("_x2_pending"))
+	var coins := int(r.game.s.coins)
+	if pending <= 0:
+		return r.fail("thẻ thắng có x2 mà không có gold chờ nhân đôi")
+	if not await _ad_tap(r, x2.call(), "x2_coins", "closed", "x2 (đóng sớm)"):
+		return false
+	await r.wait_sec(0.5)
+	if int(r.game.s.coins) != coins or x2.call() == null:
+		return r.fail("x2 đóng sớm: gold %d → %d, nút x2 %s" % [coins, int(r.game.s.coins),
+			"còn" if x2.call() != null else "mất"])
+	await r.shot("x2_closed_early")
+	for online in [true, false]:
+		if not await _ad_unavailable(r, x2.call(), "x2", online):
+			return false
+		if int(r.game.s.coins) != coins:
+			return r.fail("x2 không có video mà gold đổi %d → %d" % [coins, int(r.game.s.coins)])
+	if not await _ad_tap(r, x2.call(), "x2_coins", "", "x2 (xem hết)"):
+		return false
+	if not await wait_for(r, func() -> bool: return int(r.game.s.coins) != coins, 10000, "*"):
+		return r.fail("x2 xem hết mà gold không đổi")
+	if int(r.game.s.coins) != coins + pending:
+		return r.fail("x2 xem hết: gold %d → %d, mong đợi +%d" % [coins, int(r.game.s.coins), pending])
+	r.step("x2 xem hết: gold %d → %d" % [coins, int(r.game.s.coins)])
+	if not await wait_for(r, func() -> bool: return _playing(r) > 30 or r.screen_name() == "home", 20000):
+		return r.fail("x2 xong thẻ thắng không tự đóng sang level kế")
+	if not await go_home_from_level(r):
+		return false
+	await settle_all(r)
+	if not await _f_shop(r):
+		return false
+	if not await back_home(r):
+		return r.fail("Shop không về Home")
+	await settle_all(r)
+	if not await _f_profile(r):
+		return false
+	if not await back_home(r):
+		return r.fail("Profile không về Home")
+	return await verify_saved(r)
+
+
+## ADS Daily trong Shop: đóng sớm không thưởng; xem hết cộng Config.ECON.shop_video_coins và bớt 1 lượt của ngày.
+static func _f_shop(r) -> bool:
+	if not await tap_named(r, "ShopButton", r.main.current_screen):
+		return false
+	if not await wait_for(r, func() -> bool: return r.screen_name() == "shop", 10000):
+		return r.fail("bấm Shop không mở màn Shop")
+	var btn := func() -> Control: return r.main.current_screen.get("video_button") as Control
+	if btn.call() == null or not await scroll_into_view(r, btn.call()):
+		return r.fail("Shop không có nút ADS Daily bấm được")
+	await r.shot("shop_ads_daily")
+	var coins := int(r.game.s.coins)
+	var left := int(r.game.shop_videos_left())
+	if left <= 0:
+		return r.fail("save mới mà ADS Daily hết lượt")
+	if not await _ad_tap(r, btn.call(), "shop_coins", "closed", "ADS Daily (đóng sớm)"):
+		return false
+	await r.wait_sec(0.5)
+	if int(r.game.s.coins) != coins or int(r.game.shop_videos_left()) != left:
+		return r.fail("ADS Daily đóng sớm: gold %d → %d, lượt %d → %d" % [coins, int(r.game.s.coins), left,
+			int(r.game.shop_videos_left())])
+	if not await _ad_tap(r, btn.call(), "shop_coins", "", "ADS Daily (xem hết)"):
+		return false
+	var gain := int(Config.ECON.shop_video_coins)
+	if not await wait_for(r, func() -> bool: return int(r.game.s.coins) == coins + gain, 10000, "*"):
+		return r.fail("ADS Daily xem hết: gold %d → %d, mong đợi +%d" % [coins, int(r.game.s.coins), gain])
+	if int(r.game.shop_videos_left()) != left - 1:
+		return r.fail("ADS Daily xem hết: lượt %d → %d" % [left, int(r.game.shop_videos_left())])
+	r.step("ADS Daily: gold %d → %d, còn %d lượt" % [coins, coins + gain, left - 1])
+	await settle_all(r)
+	await r.shot("shop_after_video")
+	return true
+
+
+## Profile: món bán (Cosmetics.for_sale) chưa có ở tab đang hiện, chạm ô rồi xem hết video thì món đó vào kho.
+static func _f_profile(r) -> bool:
+	if not await tap_named(r, "ProfileButton", r.main.current_screen):
+		return false
+	if not await wait_for(r, func() -> bool: return r.screen_name() == "profile", 10000):
+		return r.fail("bấm Profile không mở màn Profile")
+	await r.wait_sec(0.6)
+	var prof: Node = r.main.current_screen
+	var id := ""
+	for k in (prof.cells as Dictionary).keys():
+		var cell := (prof.cells[k] as Dictionary).panel as Control
+		if Cosmetics.for_sale(str(k)) and not Cosmetics.is_owned(r.game.s, str(k)) and cell.is_visible_in_tree():
+			id = str(k)
+			break
+	if id == "":
+		return r.fail("Profile không có món bán nào chưa có ở tab đang hiện")
+	var panel := (prof.cells[id] as Dictionary).panel as Control
+	if not await scroll_into_view(r, panel):
+		return r.fail("không cuộn được tới ô %s" % id)
+	if not await r.tap(panel, "ô %s" % id):
+		return r.fail("không chạm được ô %s" % id)
+	await r.wait_sec(0.4)
+	var video := prof.get("video_button") as Control
+	if video == null or not video.is_visible_in_tree():
+		return r.fail("chọn món bán %s mà không có nút xem video" % id)
+	if not await _ad_tap(r, video, "cosmetic_unlock", "", "mở %s bằng video" % id):
+		return false
+	if not await wait_for(r, func() -> bool: return Cosmetics.is_owned(r.game.s, id), 10000, "*"):
+		return r.fail("xem hết video mà %s chưa vào kho" % id)
+	r.step("mở %s bằng video" % id)
+	await r.shot("profile_unlocked")
+	return true
+
+
+## Bấm `btn` (nút gọi Game.watch) sau khi ép kết quả ads giả `result` ("closed"; "" là xem như người dùng: headless
+## trả ngay ok, cửa sổ thì settle bấm "Xem hết" trên lớp phủ); đợi lượt gọi ads mới đúng `placement`.
+static func _ad_tap(r, btn: Control, placement: String, result: String, label: String) -> bool:
+	if btn == null:
+		return r.fail("%s: không có nút" % label)
+	var calls: Array = r.plat.ads.calls
+	var before := calls.size()
+	if result != "":
+		r.plat.ads.simulate(result)
+	if not await r.tap(btn, label):
+		return r.fail("không bấm được %s" % label)
+	if not await wait_for(r, func() -> bool: return r.plat.ads.calls.size() > before, 10000, "*"):
+		return r.fail("%s không gọi quảng cáo" % label)
+	var last: Dictionary = r.plat.ads.calls.back()
+	if str(last.placement) != placement:
+		return r.fail("%s gọi placement %s, mong đợi %s" % [label, last.placement, placement])
+	r.step("ads %s: %s" % [placement, JSON.stringify(last.result)])
+	return true
+
+
+## Không có video (design.md mục 6 "Chờ và lỗi"): lớp "Đang tải video" (Main.ad_loading) phủ màn trong lúc chờ, rồi
+## popup "chưa có video" (popup_notice) khi còn mạng hoặc "Mất kết nối" (popup_no_internet) khi mất mạng. Đóng popup đó,
+## trả ads giả và mạng như cũ.
+static func _ad_unavailable(r, btn: Control, label: String, online: bool) -> bool:
+	if btn == null:
+		return r.fail("%s không có video: không có nút" % label)
+	var stock: Variant = r.plat.ads
+	var none := NoLoadAds.new()
+	none.set_ready(false, false)
+	r.plat.ads = none
+	r.game.test_online = 1 if online else 0
+	var wait0: Variant = Config.ADS.get("rv_wait_sec")
+	Config.ADS["rv_wait_sec"] = 0.5
+	var want := "popup_notice.gd" if online else "popup_no_internet.gd"
+	var seen := {"wait": false}
+	var shown: bool = await r.tap(btn, "%s (không có video, %s)" % [label, "còn mạng" if online else "mất mạng"])
+	if shown:
+		shown = await wait_for(r, func() -> bool:
+			seen["wait"] = bool(seen["wait"]) or r.main.ad_loading != null
+			return r.popup_script(want) != null, 15000, want)
+	r.plat.ads = stock
+	r.game.test_online = 1
+	Config.ADS["rv_wait_sec"] = wait0
+	if not shown:
+		return r.fail("%s không có video mà không hiện %s" % [label, want])
+	if not bool(seen["wait"]):
+		return r.fail("%s không có video mà không thấy lớp Đang tải video" % label)
+	if none.calls.size() != 0:
+		return r.fail("%s không có video mà vẫn gọi phát video" % label)
+	await r.wait_sec(0.5)
+	await r.shot("%s_%s" % [label.to_snake_case(), "no_video" if online else "offline"])
+	var pop: Node = r.popup_script(want)
+	var close := find_close(pop)
+	if close == null:
+		return r.fail("%s không có nút đóng" % want)
+	await r.tap(close, "%s: %s" % [want, close.name])
+	if not await wait_for(r, func() -> bool: return r.popup_script(want) == null, 6000, "*"):
+		return r.fail("không đóng được %s" % want)
+	r.step("%s: không có video (%s) → %s, không thưởng" % [label, "còn mạng" if online else "mất mạng", want])
+	return true
+
+
+## G. Lưu qua khởi động lại: thắng L30 (gold, level), dùng một booster ở L31, tắt nhạc trong Settings, rồi như Android
+## (Platform.paused) và bị tắt ngay. Một tiến trình Godot mới (kịch bản G2, cùng save) phải đọc lại đúng các số đó.
+static func scen_g(r) -> bool:
+	if not await r.open_game("G", Callable(Saves, "veteran")):
+		return false
+	if not await win_level(r):
+		return false
+	if not await after_win(r, 30):
+		return false
+	if not await wait_for(r, func() -> bool: return _playing(r) == 31, 20000):
+		return r.fail("thắng L30 không sang L31")
+	var lv: Control = r.level_screen()
+	var hint := int(r.game.s.inv.hint)
+	await r.tap(lv.booster_buttons["hint"], "booster hint ở L31")
+	if not await wait_for(r, func() -> bool: return int(r.game.s.inv.hint) == hint - 1, 6000):
+		return r.fail("dùng hint ở L31 không trừ kho")
+	if not await go_home_from_level(r):
+		return false
+	await settle_all(r)
+	if not await tap_named(r, "SettingsButton", r.main.current_screen):
+		return false
+	if not await wait_for(r, func() -> bool: return r.popup_node("Toggle_music") != null, 6000, "Toggle_music"):
+		return r.fail("Settings không có nút nhạc")
+	var music := bool(r.game.s.settings.music)
+	await r.tap(r.popup_node("Toggle_music") as Control, "Settings: nhạc")
+	if not await wait_for(r, func() -> bool: return bool(r.game.s.settings.music) != music, 4000, "*"):
+		return r.fail("bấm nút nhạc không đổi cài đặt")
+	if not await close_to(r, 0):
+		return r.fail("không đóng được Settings")
+	await settle_all(r)
+	var s: Dictionary = r.game.s
+	var expect := {"level": int(s.level), "coins": int(s.coins), "hint": int(s.inv.hint), "move": int(s.inv.move),
+		"smash": int(s.inv.smash), "lives": int(s.lives["count"]), "music": bool(s.settings.music),
+		"sessions": int(s.meta.sessions)}
+	var f := FileAccess.open(G_EXPECT, FileAccess.WRITE)
+	f.store_string(JSON.stringify(expect))
+	f.close()
+	r.step("trước khi tắt: %s" % JSON.stringify(expect))
+	# Như Android: onPause (Game lưu ngay) rồi tiến trình bị giết; OS.execute chặn luồng chính nên tiến trình này không
+	# ghi thêm gì trong lúc G2 chạy.
+	r.plat.emit_signal("paused")
+	var args := PackedStringArray(["--headless", "--path", ProjectSettings.globalize_path("res://"),
+		"-s", "res://tests/smoke/smoke.gd", "--", "scen=G2", "out=%s" % r.out_dir.path_join("G2"),
+		"speed=%s" % r.args.get("speed", "1"), "window=0", "max=240"])
+	DirAccess.make_dir_recursive_absolute(r.out_dir.path_join("G2"))
+	var out: Array = []
+	var code := OS.execute(OS.get_executable_path(), args, out, true)
+	for line in "\n".join(PackedStringArray(out)).split("\n"):
+		if line.begins_with("SMOKE ") or line.contains("ERROR"):
+			print("G2 | %s" % line)
+	if code != 0:
+		return r.fail("tiến trình sau (G2) thoát mã %d" % code)
+	r.step("tiến trình sau (G2) đọc đúng save")
+	return true
+
+
+## G2 (chỉ scen_g gọi, tiến trình riêng): mở lại save của G như lần mở app sau, so với G_EXPECT.
+static func scen_g2(r) -> bool:
+	var text := FileAccess.get_file_as_string(G_EXPECT)
+	var expect: Variant = JSON.parse_string(text)
+	if not (expect is Dictionary):
+		return r.fail("không đọc được %s" % G_EXPECT)
+	if not await r.reopen_game("G"):
+		return false
+	var s: Dictionary = r.game.s
+	var got := {"level": int(s.level), "coins": int(s.coins), "hint": int(s.inv.hint), "move": int(s.inv.move),
+		"smash": int(s.inv.smash), "lives": int(s.lives["count"]), "music": bool(s.settings.music),
+		"sessions": int(s.meta.sessions) - 1}
+	r.step("sau khi mở lại: %s" % JSON.stringify(got))
+	for k in (expect as Dictionary).keys():
+		if str(got.get(k)) != str(expect[k]):
+			return r.fail("mở lại app: %s = %s, trước khi tắt là %s" % [k, str(got.get(k)), str(expect[k])])
+	if not await wait_for(r, func() -> bool: return _playing(r) == int(expect.level), 20000):
+		return r.fail("mở lại app không vào L%d" % int(expect.level))
+	return await verify_saved(r)
+
+
+## H. Booster trong level (design.md mục 3): Gợi ý sáng một khối, Thêm lượt cộng ECON.rescue_moves MOVES, Búa phá một
+## khối; mỗi lần trừ đúng 1 trong kho. Hết booster mà đủ gold thì mua (trừ ECON.booster_price), không đủ gold thì xem
+## video (booster_free) để dùng một lần.
+static func scen_h(r) -> bool:
+	if not await r.open_game("H", Callable(Saves, "veteran")):
+		return false
+	if not await wait_for(r, func() -> bool: return _playing(r) == 30, 20000):
+		return r.fail("không vào được L30")
+	await settle_all(r)
+	for kind in BOOSTERS:
+		if not await _use_booster(r, kind, "kho"):
+			return false
+	# Hết hint, đủ gold: mua bằng gold.
+	r.game.s.inv["hint"] = 0
+	var price := int(Config.ECON.booster_price.hint)
+	var coins := int(r.game.s.coins)
+	if not await _tap_booster(r, "hint"):
+		return false
+	if not await _tap_dialog(r, "BuyButton", "mua hint bằng gold"):
+		return false
+	if not await wait_for(r, func() -> bool: return int(r.game.s.coins) == coins - price, 6000, "*"):
+		return r.fail("mua hint: gold %d → %d, mong đợi -%d" % [coins, int(r.game.s.coins), price])
+	r.step("mua hint: gold %d → %d" % [coins, coins - price])
+	await r.wait_sec(1.0)
+	# Hết move, không đủ gold: xem video để dùng một lần.
+	r.game.s.inv["move"] = 0
+	r.game.s.coins = 0
+	var lv: Control = r.level_screen()
+	var moves: int = lv.board.moves_left()
+	if not await _tap_booster(r, "move"):
+		return false
+	var video := await _dialog_button(r, "VideoButton")
+	if video == null:
+		return r.fail("hết move và không đủ gold mà không có nút xem video")
+	if not await _ad_tap(r, video, "booster_free", "", "move bằng video"):
+		return false
+	var gain := int(Config.ECON.rescue_moves)
+	if not await wait_for(r, func() -> bool: return r.level_screen().board.moves_left() == moves + gain, 8000, "*"):
+		return r.fail("move bằng video: MOVES %d → %d, mong đợi +%d" % [moves, r.level_screen().board.moves_left(), gain])
+	r.step("move bằng video: MOVES %d → %d" % [moves, moves + gain])
+	await r.shot("booster_video")
+	return await verify_saved(r)
+
+
+## Dùng booster `kind` có sẵn trong kho và kiểm tác dụng của nó.
+static func _use_booster(r, kind: String, how: String) -> bool:
+	var lv: Control = r.level_screen()
+	var have := int(r.game.s.inv[kind])
+	if have <= 0:
+		return r.fail("save không có %s trong kho" % kind)
+	var moves: int = lv.board.moves_left()
+	var blocks: Array = lv.board.block_ids()
+	if not await _tap_booster(r, kind):
+		return false
+	match kind:
+		"hint":
+			if not await wait_for(r, func() -> bool: return is_instance_valid(lv.get("_hint_fx")), 4000, "*"):
+				return r.fail("bấm hint không có hiệu ứng gợi ý")
+		"move":
+			var gain := int(Config.ECON.rescue_moves)
+			if not await wait_for(r, func() -> bool: return lv.board.moves_left() == moves + gain, 4000, "*"):
+				return r.fail("move: MOVES %d → %d, mong đợi +%d" % [moves, lv.board.moves_left(), gain])
+		"smash":
+			if not await wait_for(r, func() -> bool: return bool(lv.get("_smash_mode")), 4000, "*"):
+				return r.fail("bấm búa không vào chế độ phá khối")
+			var target := ""
+			for id in blocks:
+				if not lv.board.can_exit(str(id)):
+					target = str(id)
+					break
+			if target == "":
+				target = str(blocks[0])
+			await r.tap_block(target)
+			if not await wait_for(r, func() -> bool: return not lv.board.block_ids().has(target), 6000, "*"):
+				return r.fail("búa không phá khối %s" % target)
+	if not await wait_for(r, func() -> bool: return int(r.game.s.inv[kind]) == have - 1, 4000, "*"):
+		return r.fail("dùng %s: kho %d → %d" % [kind, have, int(r.game.s.inv[kind])])
+	r.step("dùng %s từ %s: kho %d → %d" % [kind, how, have, have - 1])
+	await r.wait_sec(1.2)
+	await r.shot("booster_%s" % kind)
+	return true
+
+
+static func _tap_booster(r, kind: String) -> bool:
+	if not await wait_for(r, func() -> bool:
+			return r.level_screen() != null and str(r.level_screen().state) == "playing", 10000):
+		return r.fail("level không ở trạng thái chơi để bấm %s" % kind)
+	var b: Control = r.level_screen().booster_buttons[kind]
+	if not await r.tap(b, "booster %s" % kind):
+		return r.fail("không bấm được booster %s" % kind)
+	return true
+
+
+## Nút `name` của hộp thoại đang hiện (hộp thoại booster của level), null nếu không thấy trong 6 giây.
+static func _dialog_button(r, name: String) -> Control:
+	var found := {"b": null}
+	await wait_for(r, func() -> bool:
+		found["b"] = find_visible(r.main, name)
+		return found["b"] != null, 6000, "*")
+	return found["b"] as Control
+
+
+static func _tap_dialog(r, name: String, label: String) -> bool:
+	var b := await _dialog_button(r, name)
+	if b == null:
+		return r.fail("%s: không thấy nút %s" % [label, name])
+	await r.wait_sec(0.4)
+	if not await r.tap(b, label):
+		return r.fail("không bấm được %s" % label)
+	return true
+
+
+## T. Chuyển cảnh: ảnh mỗi 150 ms (r.film, chỉ khi có cửa sổ) qua level → Home, Home → Chơi (curtain kẹo), thắng →
+## level kế (màn chuyển level), Home → Shop → Home (trượt tab), mở và đóng Settings.
+static func scen_t(r) -> bool:
+	if not await r.open_game("T", Callable(Saves, "veteran")):
+		return false
+	if not await wait_for(r, func() -> bool: return _playing(r) == 30, 20000):
+		return r.fail("không vào được L30")
+	await settle_all(r)
+	var lv: Control = r.level_screen()
+	await r.tap(lv.settings_button, "Cài đặt trong màn")
+	if not await wait_for(r, func() -> bool: return r.popup_script("popup_ingame_settings.gd") != null, 6000,
+			"popup_ingame_settings.gd"):
+		return r.fail("Cài đặt trong màn không mở")
+	await r.wait_sec(0.4)
+	if not await tap_named(r, "HomeButton", r.popup_script("popup_ingame_settings.gd")):
+		return false
+	# Rời level có thể hỏi xác nhận (mất mạng): bấm xác nhận rồi mới quay cảnh chuyển.
+	await wait_for(r, func() -> bool: return find_visible(r.main, "ConfirmButton") != null \
+		or r.screen_name() == "home" or r.main.curtain != null, 1500, "*")
+	var confirm := find_visible(r.main, "ConfirmButton") as Control
+	if confirm != null:
+		await r.tap(confirm, "xác nhận rời màn")
+	await r.film("level_to_home", 1.5)
+	if not await wait_for(r, func() -> bool: return r.screen_name() == "home" and r.main.curtain == null, 15000):
+		return r.fail("Cài đặt → Home không về Home")
+	await settle_all(r)
+	await r.quiet()
+	if not await tap_named(r, "PlayButton", r.main.current_screen):
+		return false
+	await r.film("play_curtain", 3.0)
+	if not await win_level(r):
+		return false
+	var cont: Variant = null
+	if await wait_for(r, func() -> bool: return r.popup_node("ContinueButton") != null, 20000, "ContinueButton"):
+		cont = r.popup_node("ContinueButton")
+	if cont == null:
+		return r.fail("thắng mà không có thẻ thắng")
+	await r.wait_sec(0.8)
+	await r.tap(cont, "Tiếp tục")
+	await r.film("next_level", 2.4)
+	if not await go_home_from_level(r):
+		return false
+	await settle_all(r)
+	await r.quiet()
+	if not await tap_named(r, "ShopButton", r.main.current_screen):
+		return false
+	await r.film("home_to_shop", 0.9)
+	if not await wait_for(r, func() -> bool: return r.screen_name() == "shop", 6000):
+		return r.fail("bấm Shop không mở màn Shop")
+	await r.quiet()
+	var tab := find_visible(r.main.current_screen, "HomeTab") as Control
+	if tab == null:
+		return r.fail("màn Shop không có tab Home")
+	await r.tap(tab, "tab Home")
+	await r.film("shop_to_home", 0.9)
+	if not await back_home(r):
+		return r.fail("Shop không về Home")
+	await settle_all(r)
+	await r.quiet()
+	if not await tap_named(r, "SettingsButton", r.main.current_screen):
+		return false
+	await r.film("popup_open", 0.9)
+	if r.popups().is_empty():
+		return r.fail("bấm Settings không mở popup")
+	var close := find_close(r.popups().back())
+	if close == null:
+		return r.fail("Settings không có nút đóng")
+	await r.tap(close, "đóng Settings")
+	await r.film("popup_close", 0.9)
+	return await verify_saved(r)
+
+
+## L. Mỗi ngôn ngữ của Game.LANGS: Home và popup Settings, ảnh khi có cửa sổ và census mọi chế độ (cảnh báo chữ rộng
+## hơn nhãn, ra ngoài màn, giống key chưa dịch). Đổi ngôn ngữ bằng Game.set_setting như ô của popup Language, rồi dựng
+## lại Home như lúc đóng Settings sau khi đổi ngôn ngữ.
+static func scen_l(r) -> bool:
+	if not await r.open_game("L", Callable(Saves, "all_unlocked")):
+		return false
+	if not await go_home_from_level(r):
+		return false
+	await settle_all(r)
+	var langs: Array = (r.game.get_script() as Script).get_script_constant_map()["LANGS"]
+	for lang in langs:
+		r.game.set_setting("lang", lang)
+		r.main.go("home")
+		await settle_all(r)
+		await r.shot("home_%s" % lang)
+		if not await tap_named(r, "SettingsButton", r.main.current_screen):
+			return false
+		if not await wait_for(r, func() -> bool: return r.popup_script("settings.gd") != null, 6000, "settings.gd"):
+			return r.fail("%s: Settings không mở" % lang)
+		await r.wait_sec(0.6)
+		await r.shot("settings_%s" % lang)
+		if not await close_to(r, 0):
+			return r.fail("%s: không đóng được Settings" % lang)
+		await settle_all(r)
+	r.game.set_setting("lang", "en")
+	r.step("đã soát %d ngôn ngữ" % langs.size())
 	return await verify_saved(r)
 
 
@@ -596,8 +1090,11 @@ static func monkey(r, rng: RandomNumberGenerator, taps: int) -> bool:
 	return true
 
 
-## Nút bấm được ở lớp trên cùng: popup trên cùng (và lớp phủ giả) nếu có, không thì màn hiện tại.
+## Nút bấm được ở lớp trên cùng: popup trên cùng (và lớp phủ giả) nếu có, không thì màn hiện tại. Màn chuyển cảnh
+## (Main.curtain) phủ kín và chặn chạm nên lúc nó chạy không có gì để bấm: nút bên dưới bị gỡ khi nó phủ kín.
 static func clickables(r) -> Array[Control]:
+	if r.main.curtain != null:
+		return []
 	var roots: Array[Node] = []
 	for name in ["MockAdOverlay", "MockIapOverlay"]:
 		var o: Node = r.root.find_child(name, true, false)
@@ -606,7 +1103,9 @@ static func clickables(r) -> Array[Control]:
 	if roots.is_empty():
 		var pops: Array = r.popups()
 		if not pops.is_empty():
-			roots.append(pops.back())
+			var top: Node = pops.back()
+			var inner := _nested_popup(top)
+			roots.append(inner if inner != null else top)
 		elif r.main.current_screen != null:
 			roots.append(r.main.current_screen)
 	var out: Array[Control] = []
@@ -629,6 +1128,24 @@ static func clickables(r) -> Array[Control]:
 	return out
 
 
+## Popup mở bên trong một popup (vd hướng dẫn của Weekly Pass, con của node WeeklyPass): node hiện, có signal closed,
+## nằm sâu nhất và sau cùng theo thứ tự cây; null nếu không có. Nó che nút của popup chứa nó nên là lớp trên cùng.
+static func _nested_popup(top: Node) -> Node:
+	var found: Node = null
+	var stack: Array[Node] = []
+	for ch in top.get_children():
+		stack.push_front(ch)
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n is CanvasItem and not (n as CanvasItem).is_visible_in_tree():
+			continue
+		if n.has_signal("closed") and script_file(n).begins_with("popup_"):
+			found = n
+		for ch in n.get_children():
+			stack.push_front(ch)
+	return found
+
+
 static func _banned(n: Node) -> bool:
 	if MONKEY_BANNED_NAMES.has(str(n.name)) or n.is_in_group("tester_menu"):
 		return true
@@ -640,6 +1157,9 @@ static func _signature(r) -> String:
 	var parts: PackedStringArray = [r.screen_name()]
 	for c in r.popups():
 		parts.append(script_file(c))
+		var inner := _nested_popup(c)
+		if inner != null:
+			parts.append(script_file(inner))
 	for name in ["MockAdOverlay", "MockIapOverlay"]:
 		if r.root.find_child(name, true, false) != null:
 			parts.append(name)

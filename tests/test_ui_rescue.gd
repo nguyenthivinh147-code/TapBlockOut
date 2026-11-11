@@ -1,6 +1,7 @@
 extends RefCounted
 const T := preload("res://tests/t.gd")
 const MockIap := preload("res://src/platform/mock_iap.gd")
+const ThemeKit := preload("res://src/ui/theme_kit.gd")
 
 const DIR := "user://test_ui_rescue"
 const SCENE := "res://scenes/popup_rescue.tscn"
@@ -201,5 +202,5 @@ func test_layout_rules(t: T) -> void:
 	var dim: Control = p.find_child("Dim", true, false)
 	var img: Control = dim.get("image") if dim.get("image") != null else dim
 	var c: Color = img.get("color")
-	t.ok(c.r < 0.1 and c.g < 0.1 and c.a > 0.5, "nền mờ trung tính")
+	t.ok(c.is_equal_approx(ThemeKit.SCRIM), "nền mờ là SCRIM chung, không màn đỏ: %s" % c)
 	p.free()

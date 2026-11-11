@@ -97,8 +97,8 @@ base_font = ExtResource("7_jm10c")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3wugu"]
 shader = ExtResource("6_76cdv")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0, 0.011764706, 0.16862746, 1)
-shader_parameter/underlay_color = Color(0, 0.011764706, 0.16862746, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.1285714305
 shader_parameter/underlay_on = true
@@ -240,7 +240,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("2_gfa6v")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 
 [node name="Panel" type="Control" parent="PopupStarterPack" unique_id=1478806822]

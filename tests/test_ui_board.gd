@@ -329,6 +329,29 @@ func test_setup_twice_resets(t: T) -> void:
 	v.queue_free()
 
 
+## Chơi lại (setup lần nữa) trong lúc một khối đang lao ra: khối đó bị gỡ cùng bàn cũ, không bay tiếp rồi bị nghiền ở
+## thanh của bàn mới. Trước đây _clear bỏ sót nó (_anim_exit đã gỡ nó khỏi _nodes), tween xong gọi _grind trên bóng đã
+## bị gỡ: "Cannot call method 'hide' on a previously freed instance" (smoke M seed 3, 2026-11-11).
+func test_setup_during_exit_drops_flying_block(t: T) -> void:
+	var board := BoardState.new(_lv(5, 5, [_b("b1", "yellow", [[2, 2]]), _b("b2", "blue", [[0, 0]])]))
+	var v := _make(_lv(5, 5, []))
+	v.setup(board, Vector2(720, 900))
+	v.apply_result(board.tap("b1"))
+	t.ok(v.is_animating(), "khối b1 đang lao ra")
+	v.setup(BoardState.new(_lv(5, 5, [_b("a", "green", [[1, 1]])])), Vector2(720, 900))
+	var blocks: Node = v.get_node("Blocks")
+	var deadline := Time.get_ticks_msec() + 2000
+	while Time.get_ticks_msec() < deadline:
+		await (Engine.get_main_loop() as SceneTree).process_frame
+	t.eq(v.block_count(), 1, "chỉ còn khối của bàn mới")
+	var left: Array[String] = []
+	for ch in blocks.get_children():
+		if not ch.is_queued_for_deletion():
+			left.append(str(ch.get("id")) if ch.get("id") != null else str(ch.name))
+	t.eq(left, ["a"] as Array[String], "lớp khối chỉ còn node của bàn mới")
+	v.queue_free()
+
+
 # --- bàn trong holder của VBox giống màn level: nằm trọn, căn giữa, theo đổi kích thước holder ---
 
 func _fit_in_holder(t: T, w: int, h: int, holder_size: Vector2) -> void:

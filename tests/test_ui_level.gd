@@ -119,6 +119,37 @@ func _check_bg(t: T, lv: Control, label: String) -> void:
 	var dim := bg.get_node_or_null("Dim") as ColorRect
 	t.ok(dim != null and dim.color == ThemeKit.LEVEL_BG_DIM, "%s: có lớp dim" % label)
 	t.ok(pic != null and dim != null and dim.get_index() > pic.get_index(), "%s: dim phủ trên ảnh" % label)
+	await _check_bg_fade(t, lv, bg, label)
+
+
+## Đáy ảnh nền (nấm chấm bi, kẹo gậy) nhạt dần vào LEVEL_BG: dải Fade neo đáy, giữa ảnh và dim, đã đặc từ mép trên
+## hàng booster trở xuống, để hình nền không tranh chỗ với nút booster. Chờ container xếp hàng booster trước khi đo.
+func _check_bg_fade(t: T, lv: Control, bg: Node, label: String) -> void:
+	var pic := bg.get_node_or_null("Image")
+	var dim := bg.get_node_or_null("Dim")
+	var fade := bg.get_node_or_null("Fade") as TextureRect
+	t.ok(fade != null, "%s: có lớp nhạt dần ở đáy" % label)
+	if fade == null or pic == null or dim == null:
+		return
+	t.ok(fade.get_index() > pic.get_index() and fade.get_index() < dim.get_index(), "%s: lớp nhạt dần giữa ảnh và dim" % label)
+	t.eq(fade.mouse_filter, Control.MOUSE_FILTER_IGNORE, "%s: lớp nhạt dần không chặn chạm" % label)
+	var tex := fade.texture as GradientTexture2D
+	t.ok(tex != null and tex.gradient != null, "%s: lớp nhạt dần là gradient" % label)
+	if tex == null or tex.gradient == null:
+		return
+	t.ok(is_equal_approx(tex.fill_from.x, tex.fill_to.x) and tex.fill_from.y < tex.fill_to.y, "%s: gradient dọc, đậm dần xuống" % label)
+	var solid := Color(ThemeKit.LEVEL_BG, ThemeKit.LEVEL_BG_FADE_ALPHA)
+	t.ok(is_zero_approx(tex.gradient.sample(0.0).a), "%s: mép trên lớp nhạt dần trong suốt" % label)
+	t.ok(tex.gradient.sample(ThemeKit.LEVEL_BG_FADE_SOLID).is_equal_approx(solid), "%s: đặc từ LEVEL_BG_FADE_SOLID" % label)
+	t.ok(tex.gradient.sample(1.0).is_equal_approx(solid), "%s: đáy màu LEVEL_BG" % label)
+	var row_node := lv.get_node("Margin/Column/BoosterRow") as Control
+	t.ok(await _wait_until(func() -> bool: return row_node.get_global_rect().position.y > 0.0), "%s: hàng booster đã xếp chỗ" % label)
+	var band := fade.get_global_rect()
+	var row := row_node.get_global_rect()
+	t.ok(is_equal_approx(band.size.y, ThemeKit.LEVEL_BG_FADE_HEIGHT), "%s: cao LEVEL_BG_FADE_HEIGHT" % label)
+	t.ok(band.end.y >= lv.get_global_rect().end.y - 0.5, "%s: phủ tới đáy màn" % label)
+	t.ok(band.position.y + band.size.y * ThemeKit.LEVEL_BG_FADE_SOLID <= row.position.y,
+		"%s: đã đặc từ mép trên hàng booster (%.0f ≤ %.0f)" % [label, band.position.y + band.size.y * ThemeKit.LEVEL_BG_FADE_SOLID, row.position.y])
 
 
 func _burn_moves(lv: Control, id: String) -> void:
@@ -137,7 +168,7 @@ func test_hud_level1(t: T) -> void:
 	t.eq(lv.title_label.text, lv.tr("level_title") % 1, "tên level")
 	t.eq(lv.moves_label.text, str(lv.board.moves_left()), "MOVES")
 	t.ok(not lv.hard_badge.visible, "không HARD")
-	_check_bg(t, lv, "L1")
+	await _check_bg(t, lv, "L1")
 	var toned: Array = lv.hud_toned()
 	t.eq(toned.size(), 8, "restart, settings, 3 booster, khung MOVES, khung chip mảnh, pill HARD")
 	t.ok(toned.has(lv.hard_badge), "pill HARD chỉnh tông")
@@ -156,7 +187,8 @@ func test_hud_level1(t: T) -> void:
 		t.ok(lv.booster_buttons[k].get_parent().visible, "ô booster %s luôn hiện" % k)
 		t.ok(lv.booster_locks[k].visible, "booster %s khoá ở L1" % k)
 		t.ok(not lv.booster_badges[k].visible, "ô khoá không có nhãn số %s" % k)
-		t.eq(lv.booster_caps[k].text, lv.tr("level_title") % int(Config.UNLOCK[k]), "ô khoá ghi level mở %s" % k)
+		t.ok(lv.booster_buttons[k].get_parent().get_children().all(func(c: Node) -> bool: return not c is Label),
+				"ô booster %s không có chữ dưới ô" % k)
 	var inv_hint := int(g.s.inv.get("hint", 0))
 	lv.booster_buttons.hint.pressed.emit()
 	# Wireframe 3.7: the "coming soon" popup names the booster and its level; a tap anywhere closes it.
@@ -462,7 +494,8 @@ func test_booster_gift_and_hint(t: T) -> void:
 	_tap(pop)
 	t.ok(await _wait_until(_playing.bind(lv)), "chạm scene giới thiệu là vào chơi, không có popup dùng thử")
 	t.ok(not lv.booster_locks.hint.visible, "gợi ý mở ở L5")
-	t.eq(lv.booster_caps.hint.text, lv.tr("booster_hint"), "ô mở ghi tên booster")
+	t.ok(lv.booster_buttons.hint.get_parent().get_children().all(func(c: Node) -> bool: return not c is Label),
+			"ô đã mở cũng không có chữ dưới ô")
 	t.ok(lv.booster_locks.move.visible, "+3 Move chưa mở")
 	# The gift's icon flies from the popup into the button (RewardFly); the badge counts it as it lands.
 	t.ok(await _wait_until(func() -> bool: return lv.booster_badges.hint.text == lv.tr("booster_count") % 1),
@@ -868,17 +901,19 @@ func test_hard_warning(t: T) -> void:
 	t.ok(await _wait_until(func() -> bool: return lv.find_child("DifficultyBanner", true, false) != null), "L23 có dải cảnh báo")
 	t.ok(not _playing(lv), "chưa chơi khi đang cảnh báo")
 	t.eq(lv.hard_badge.text, lv.tr("level_hard"), "huy hiệu KHÓ")
+	_check_pill(t, lv, "hard")
 	t.eq((lv.find_child("Text", true, false) as Label).text, lv.tr("level_hard"), "dải ghi KHÓ")
 	t.eq(_banner_art(lv), ["warn_frame_hard.png", "warn_badge_hard.png"], "khung và huy hiệu kẹo đỏ")
-	_check_bg(t, lv, "L23 (Hard)")
+	await _check_bg(t, lv, "L23 (Hard)")
 	t.ok(await _wait_until(_playing.bind(lv)), "tự vào chơi")
 	lv.free()
 	_g(33)
 	lv = _mount()
 	t.ok(await _wait_until(func() -> bool: return lv.find_child("DifficultyBanner", true, false) != null), "L33 (VeryHard) có dải cảnh báo")
 	t.eq(lv.hard_badge.text, lv.tr("level_very_hard"), "huy hiệu RẤT KHÓ")
+	_check_pill(t, lv, "very_hard")
 	t.eq(_banner_art(lv), ["warn_frame_very_hard.png", "warn_badge_very_hard.png"], "khung và huy hiệu kẹo tím")
-	_check_bg(t, lv, "L33 (VeryHard)")
+	await _check_bg(t, lv, "L33 (VeryHard)")
 	t.ok(await _wait_until(_playing.bind(lv)), "L33 tự vào chơi")
 	lv._on_restart_pressed()
 	await _wait_until(func() -> bool: return _pop(lv, "ConfirmButton") != null or _playing(lv))
@@ -897,6 +932,20 @@ func _banner_art(lv: Control) -> Array:
 		var tex := b.find_child(n, true, false).get("tex") as Texture2D
 		out.append(tex.resource_path.get_file() if tex != null else "")
 	return out
+
+
+## Pill độ khó trên HUD theo màu bậc như Home và dải cảnh báo: Hard kẹo đỏ, VeryHard kẹo tím; viền và bóng chữ cùng
+## sắc với pill.
+func _check_pill(t: T, lv: Control, tier: String) -> void:
+	var pill := lv.hard_badge as Label
+	var box := pill.get_theme_stylebox("normal") as StyleBoxTexture
+	var want := "hud_pill_hard.png" if tier == "hard" else "hud_pill.png"
+	t.eq(box.texture.resource_path.get_file() if box != null and box.texture != null else "", want, "pill %s: %s" % [tier, want])
+	for c: String in ["font_outline_color", "font_shadow_color"]:
+		var h: float = pill.get_theme_color(c).h
+		var red: bool = h < 0.05 or h > 0.9
+		var purple: bool = h > 0.68 and h < 0.85
+		t.ok(red if tier == "hard" else purple, "pill %s: %s cùng sắc (h %.2f)" % [tier, c, h])
 
 
 # --- main ---

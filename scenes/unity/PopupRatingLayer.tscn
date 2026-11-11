@@ -131,7 +131,7 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
 script = ExtResource("1_8ygst")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 metadata/u = {
 "id": "5227445294147618665",

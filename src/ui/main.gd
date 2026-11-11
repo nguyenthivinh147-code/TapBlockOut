@@ -530,12 +530,15 @@ func _open_special() -> void:
 
 ## Mở popup trên Home; đóng thì làm mới Home (hoặc dựng lại, khi đổi ngôn ngữ ở Settings).
 func _popup_then(path: String, args: Dictionary, rebuild: bool) -> void:
-	var host := current_screen
+	# The host by id, not captured: a lambda capturing a node freed before the popup closes raises an engine error
+	# (tests/test_main_popup_host.gd).
+	var host_id := current_screen.get_instance_id() if current_screen != null else 0
 	var p := open_popup(path, args)
 	if p == null or not p.has_signal("closed"):
 		return
 	p.connect("closed", func(_r: Variant) -> void:
-		if host != current_screen or not is_instance_valid(host):
+		var host := instance_from_id(host_id)
+		if host == null or host != current_screen:
 			return
 		if rebuild and current_name == "home":
 			go("home")

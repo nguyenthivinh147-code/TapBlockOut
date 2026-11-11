@@ -63,6 +63,13 @@ const BOMB_MAX_STEP := 0.25
 ## Candy-cane frame and skull badge of the difficulty banner, by tier ("hard", "very_hard"); the layer scene holds the
 ## Hard pair. Built by tools/make_warn_banner_art.py, both tiers the same size.
 const WARN_ART := "res://assets/ui/warn_banner/warn_%s_%s.png"
+## HUD difficulty pill by tier, in the tier color like Home (home.gd TIERS) and the warning banner: Hard strawberry red
+## (tools/make_hud_pill_hard.py turns the hue of hud_pill.png), Very Hard grape purple. Text outline and shadow are the
+## purple pill's ones turned to the same hue. The scene's pill gives the 9-slice margins.
+const PILL_TIERS := {
+	"hard": {"tex": "res://assets/ui/hud/hud_pill_hard.png", "outline": Color("9E2035"), "shadow": Color("6E1C29")},
+	"very_hard": {"tex": "res://assets/ui/hud/hud_pill.png", "outline": Color("5B1F9E"), "shadow": Color("3A1C6E")},
+}
 const BOOSTERS := ["hint", "move", "smash"]
 const FREE_PLACEMENT := "booster_free"
 const MECHS := Unlocks.MECHS
@@ -192,6 +199,8 @@ var board: BoardState = null
 var board_view: Control = null
 var title_label: Label = null
 var hard_badge: Control = null
+## Stylebox of the difficulty pill by tier (PILL_TIERS), built once from the scene's pill.
+var _pill_boxes := {}
 var moves_label: Label = null
 ## Khung MOVES chứa moves_label; dấu "+" của +Move bay tới và nảy khung này.
 var moves_chip: PanelContainer = null
@@ -205,11 +214,10 @@ var toast_label: Label = null
 var smash_label: Label = null
 var settings_button: Button = null
 var restart_button: Button = null
-## id booster -> nút, nhãn góc (số còn lại hoặc "+"), ổ khoá (hiện khi chưa mở), chữ dưới nút (tên hoặc level mở)
+## Booster id -> button, corner badge (count left or "+"), lock (shown while locked). No caption under the buttons.
 var booster_buttons: Dictionary = {}
 var booster_badges: Dictionary = {}
 var booster_locks: Dictionary = {}
-var booster_caps: Dictionary = {}
 ## Mốc bắt đầu "đang nghĩ" (ms); test lùi mốc này để thử tiếng vỗ tay.
 var think_start_ms: int = 0
 ## Mốc lần chạm màn hình cuối (ms) để nhắc Gợi ý khi treo máy; test lùi mốc này để thử.
@@ -306,6 +314,11 @@ func _build() -> void:
 	moves_label.text = ""
 	(hard_badge as Label).text = tr("level_hard")
 	hard_badge.visible = false
+	var pill_box := hard_badge.get_theme_stylebox("normal") as StyleBoxTexture
+	for tier: String in PILL_TIERS:
+		var box := pill_box.duplicate() as StyleBoxTexture
+		box.texture = load(str(PILL_TIERS[tier].tex)) as Texture2D
+		_pill_boxes[tier] = box
 	piece_label.text = ""
 	piece_chip.visible = false
 	clap_label.text = tr("level_clap")
@@ -327,9 +340,6 @@ func _build() -> void:
 		booster_buttons[kind] = b
 		booster_badges[kind] = get_node("%BoosterBadge_" + kind)
 		booster_locks[kind] = get_node("%BoosterLock_" + kind)
-		var cap: Label = get_node("%BoosterCaption_" + kind)
-		cap.text = tr("booster_" + kind)
-		booster_caps[kind] = cap
 	# Tone down the purple HUD sprites; a CanvasItem material does not reach child nodes, so labels, badges and locks
 	# keep their colors. The piece chip draws its frame in the PieceFrame child, the MOVES chip in its own panel.
 	var tone := ShaderMaterial.new()
@@ -518,6 +528,7 @@ func _start_level(warn: bool = true) -> void:
 		very_hard = is_hard and Game.difficulty_of(_level) == "very_hard"
 	hard_badge.visible = is_hard
 	(hard_badge as Label).text = tr("level_very_hard") if very_hard else tr("level_hard")
+	_style_pill("very_hard" if very_hard else "hard")
 	_set_tut(_mech_hint())
 	board_view.setup(board)
 	board_view.set_specials(attempt.get("specials", []))
@@ -710,9 +721,17 @@ func _touched() -> bool:
 
 # --- HUD ---
 
-## Nodes drawing the purple HUD sprites that hud_tone.gdshader tones down: restart, settings, the 3 booster buttons,
-## the MOVES chip panel, the piece chip frame and the HARD pill. The pill is a Label drawing its own text, so the
-## text outline gets the same tone.
+## Difficulty pill in the tier color (PILL_TIERS): sprite, text outline and shadow.
+func _style_pill(tier: String) -> void:
+	var t: Dictionary = PILL_TIERS[tier]
+	hard_badge.add_theme_stylebox_override("normal", _pill_boxes[tier])
+	hard_badge.add_theme_color_override("font_outline_color", t.outline)
+	hard_badge.add_theme_color_override("font_shadow_color", t.shadow)
+
+
+## Nodes drawing the candy HUD sprites that hud_tone.gdshader tones down: restart, settings, the 3 booster buttons,
+## the MOVES chip panel, the piece chip frame and the difficulty pill (purple, red on Hard). The pill is a Label
+## drawing its own text, so the text outline gets the same tone.
 func hud_toned() -> Array[CanvasItem]:
 	var out: Array[CanvasItem] = [restart_button, settings_button, moves_chip, piece_chip.get_node("PieceFrame"),
 			hard_badge]
@@ -734,7 +753,6 @@ func _refresh_hud() -> void:
 		var open := Unlocks.is_open(kind, _unlock_ref())
 		(booster_buttons[kind] as Button).self_modulate = Color.WHITE if open else LOCKED_TINT
 		(booster_locks[kind] as Control).visible = not open
-		(booster_caps[kind] as Label).text = tr("booster_" + kind) if open else tr("level_title") % _unlock_level(kind)
 		var badge: Label = booster_badges[kind]
 		badge.visible = open
 		var n := maxi(int(Game.s.inv.get(kind, 0)) - RewardFly.held(kind), 0)

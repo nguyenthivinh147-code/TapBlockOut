@@ -49,8 +49,8 @@ shader_parameter/px_range = 14.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qejyp"]
 shader = ExtResource("7_iy4i6")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0, 0, 0, 1)
-shader_parameter/underlay_color = Color(0, 0, 0, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.1285714305
 shader_parameter/underlay_on = true
@@ -75,7 +75,7 @@ anchor_bottom = 1.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
 script = ExtResource("1_v24vj")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 metadata/u = {
 "cs": [{
@@ -252,7 +252,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("1_v24vj")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 
 [node name="Panel" type="Control" parent="DownloadDataLayer/PopupLoginNoInternet" unique_id=115575119]

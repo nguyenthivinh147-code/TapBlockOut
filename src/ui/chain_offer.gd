@@ -31,6 +31,9 @@ const SLOTS := ["ChainOfferPack", "ChainOfferPack (1)", "ChainOfferPack (2)", "C
 	"ChainOfferPack (5)"]
 const SPARE_SLOTS := ["ChainOfferPack (6)", "ChainOfferPack (7)", "ChainOfferPack (8)", "ChainOfferPack (9)"]
 const BUTTONS := ["Button_Purchase", "Button_Purchase_Lock", "Button_Free", "Button_Free_Lock", "Button_Claim"]
+## Button_Claim is the gray pill: its text takes the gray buttons' black stroke, not the prefab's "Baloo Outline - Black"
+## (plum in this game).
+const GRAY_TEXT_MAT := "Baloo Outline - Gray"
 ## ShopRewardItem slots of a pack's reward row.
 const ITEMS := ["ShopRewardItem(Clone)", "ShopRewardItem(Clone) (2)", "ShopRewardItem(Clone) (3)"]
 const VIDEO_ICON := "Resources_moved_UI_Maincenter:UI_Maincenter_5"
@@ -203,8 +206,11 @@ func _slot(slot: String, i: int, st: Dictionary, current: int) -> void:
 			text = _label(type, st)
 	var bp := p + "/" + button
 	ui.show(bp, true)
-	Shop.one_line(ui.label(bp + "/ComboText/Text (TMP)"))
+	var label: Label = ui.label(bp + "/ComboText/Text (TMP)")
+	Shop.one_line(label)
 	ui.text(bp + "/ComboText/Text (TMP)", text)
+	if button == "Button_Claim":
+		label.material = UnityUI.text_material(GRAY_TEXT_MAT, false)
 	var b: Button = ui.button(bp)
 	if state == "claimable":
 		claim_button = b

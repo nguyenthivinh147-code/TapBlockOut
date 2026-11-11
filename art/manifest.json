@@ -2459,6 +2459,21 @@
   },
   {
     "manifest": "images",
+    "name": "hud_pill_hard",
+    "status": "used",
+    "tool": "python3 tools/make_hud_pill_hard.py (Pillow, khong AI)",
+    "source": "assets/ui/hud/hud_pill.png",
+    "source_sha256": "340000d92a914dc7ac310e2b7efb1b915db8eba7c2cb3ec0ec4e86eb5abcdc59",
+    "file": "assets/ui/hud/hud_pill_hard.png",
+    "file_sha256": "7d81d014f1bddf596dbb59207b17662d75566e0b2c528fe0f5c7127771412302",
+    "file_size": [
+      96,
+      44
+    ],
+    "note": "2026-11-11: pill do kho Hard tren HUD level theo mau bac (do dau nhu nut Choi Home va dai canh bao Hard; VeryHard giu hud_pill tim). Xoay sac hud_pill tu tim ~284 do sang ~352 do (HARD_HUE_SHIFT 48/256), saturation x1.08. Cung co va 9-slice voi hud_pill; dung trong src/ui/level.gd PILL_TIERS"
+  },
+  {
+    "manifest": "images",
     "name": "hud_badge_plus",
     "status": "used",
     "tool": "mcp comfyui edit_game_image (ref art/concepts/ref_hud_candy.png)",

@@ -272,7 +272,7 @@ offset_right = 0.0
 offset_bottom = 0.0
 mouse_filter = 2
 script = ExtResource("4_d4flp")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 
 [node name="Panel" parent="Intro/Canvas/PopupOkLayer" index="1" unique_id=355069323]

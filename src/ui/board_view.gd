@@ -463,10 +463,11 @@ func _clear() -> void:
 	_owner.clear()
 	for ch in _shadow_root.get_children():
 		ch.queue_free()
-	# khối đang bị nghiền dở: xoá cùng vụn của nó trong _fx_root bên dưới, hoạt ảnh nghiền dừng theo
+	# Every node on the block layer: also blocks flying out (_anim_exit takes them out of _nodes before they reach the
+	# bar, so a restart mid-flight used to leave them grinding into the new board) and the exit clips of blocks being
+	# ground (their shards in _fx_root go below); their tweens stop with them.
 	for ch in _blocks_root.get_children():
-		if str(ch.name).begins_with("ExitClip"):
-			ch.queue_free()
+		ch.queue_free()
 	_pending = 0
 	for side in _gate_tws:
 		var gtw: Tween = _gate_tws[side]
@@ -885,6 +886,9 @@ func _leading_point(lc: Array, dir: Vector2) -> Vector2:
 ## Khối trôi đều qua thanh cùng màu: phần đã qua mặt trong của thanh bị cắt đi (lùa dưới thanh),
 ## đổi thành khối vuông nhỏ phun ra phía ngoài thanh, toả hình nón. Toạ độ theo dir tính trong toạ độ của BoardView.
 func _grind(node: BlockNode, dir: Vector2, side: String, seq: int, strips: Array = []) -> void:
+	# The board was set up again (_clear) in the frame the flight ended: that move belongs to the old board.
+	if node.is_queued_for_deletion():
+		return
 	_gate_reach(seq)
 	_release_covers(strips)
 	_choco_reach(seq)

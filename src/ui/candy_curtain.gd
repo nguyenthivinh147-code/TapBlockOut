@@ -68,10 +68,12 @@ var _filling := false
 
 
 func _ready() -> void:
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# The offsets too: inside the tree, set_anchors_preset alone keeps the current 0x0 rect, and taps went through to
+	# the screen under the falling candies (tests/test_curtain_cover.gd).
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_rng.randomize()
-	# The full-rect anchors size it on the next layout pass; the parent (Main) already has the screen's size.
+	# The parent (Main) already has the screen's size.
 	var parent := get_parent() as Control
 	_screen = parent.size if parent != null and parent.size != Vector2.ZERO else get_viewport_rect().size
 	if custom_tex == "" and (kind < 0 or kind >= CANDY_TEX.size()):

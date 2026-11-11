@@ -259,7 +259,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("4_djm7o")
-color = Color(0, 0, 0, 0.85)
+color = Color(0, 0, 0, 0.8)
 fill_method = 4
 
 [node name="Panel" parent="Canvas/PopupKeepPlaying" index="1" unique_id=877577483]

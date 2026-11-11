@@ -1,6 +1,6 @@
 extends RefCounted
 ## Builder Unity UI (unity_ui.gd): build hai lần một owner, Slider, auto size với ContentSizeFitter, Animator tắt sẵn
-## và OnDisplayLayout, AnimScaleButton, TMP_InputField, CutoutMaskUI, alpha dim popup.
+## và OnDisplayLayout, AnimScaleButton, TMP_InputField, CutoutMaskUI, màu dim popup (cả scene đã bake).
 const T := preload("res://tests/t.gd")
 const UnityUI := preload("res://src/ui/unity_ui.gd")
 const UnityKit := preload("res://src/ui/unity_kit.gd")
@@ -203,10 +203,41 @@ func test_popup_dim_alpha(t: T) -> void:
 			["PopupRemoveAds", "Continue"], ["LeaderboardWeeklyResultLayer", "WeekResultPanel/Dim"]]:
 		var v := UnityUI.build(o, case[0], {"reveal": false})
 		var img: Control = UnityUI.image_of(v.node(case[1]))
-		t.near(img.color.a, ThemeKit.POPUP_DIM_ALPHA, 0.0001, "%s dim 85%%" % case[0])
+		t.ok(img.color.is_equal_approx(ThemeKit.SCRIM), "%s dim màu SCRIM: %s" % [case[0], img.color])
 	# Not a dim: the loading swirl (material) and the hard-level band (taller than the screen) keep theirs.
 	var load := UnityUI.build(o, "LoadLevelProcess", {"reveal": false})
 	t.near(UnityUI.image_of(load.node("BG")).color.a, 1.0, 0.0001, "nền loading giữ alpha")
 	var warn := UnityUI.build(o, "WarningHardLevelLayer", {"reveal": false})
 	t.near(UnityUI.image_of(warn.node("Panel/WarningExtreme/Dim")).color.a, float(0xa6) / 255.0, 0.001, "dải cảnh báo giữ alpha")
 	o.free()
+
+
+## Baked scenes keep the dim colour _is_dim gave at bake time; a colour change must reach them too.
+func test_baked_popup_dims(t: T) -> void:
+	for layer in ["PopupOkLayer", "PopupReviveLayer", "PopupNextMonth"]:
+		var root: Node = (load("res://scenes/unity/%s.tscn" % layer) as PackedScene).instantiate()
+		var img: Control = root.get_node("%s/Bg/image" % layer)
+		t.ok(img.color.is_equal_approx(ThemeKit.SCRIM), "%s.tscn dim màu SCRIM: %s" % [layer, img.color])
+		root.free()
+	# Stale dims: black 85% (old Unity prefab dims), the old near-black SCRIM (PopupKit gallery), or the plum #1A0A28
+	# tried on 2026-11-11 at any alpha.
+	var now := var_to_str(ThemeKit.SCRIM)
+	var plum := var_to_str(Color("1A0A28"))
+	plum = plum.substr(0, plum.rfind(",") + 1)
+	var stale: Array[String] = []
+	for f in _scene_files("res://scenes"):
+		for line in FileAccess.get_file_as_string(f).split("\n"):
+			if line.contains("Color(0, 0, 0, 0.85)") or line.contains("Color(0, 0.016, 0.059, 0.85)") \
+					or line.contains(plum):
+				stale.append("%s: %s" % [f, line])
+	t.eq(stale, [] as Array[String], "mọi dim trong scene đúng màu %s" % now)
+
+
+func _scene_files(dir: String) -> Array[String]:
+	var out: Array[String] = []
+	for f in DirAccess.get_files_at(dir):
+		if f.ends_with(".tscn"):
+			out.append(dir.path_join(f))
+	for d in DirAccess.get_directories_at(dir):
+		out.append_array(_scene_files(dir.path_join(d)))
+	return out

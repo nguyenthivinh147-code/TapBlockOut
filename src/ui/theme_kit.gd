@@ -53,9 +53,10 @@ const POPUP_CREAM := Color("F8F3DE")
 const INK := Color("3A3F6E")
 const TEXT := Color("FFFFFF")
 const TEXT_DIM := Color("BEC6EF")
-## Default text stroke and underlay: TMP material "Baloo Outline - Black" (white face, black outline and shadow).
-const TEXT_OUTLINE := Color("000000")
-const UNDERLAY := Color("000000")
+## Default text stroke and underlay: dark plum (= RIBBON_STROKE), never pure black. TMP material
+## "Baloo Outline - Black" keeps its prefab name but uses the same plum (data/ui_unity/_materials.json).
+const TEXT_OUTLINE := Color("3A1C6E")
+const UNDERLAY := Color("3A1C6E")
 const GOLD := Color("FFC933")
 const GOLD_DEEP := Color("FFA508")
 const GOOD := Color("73DF31")
@@ -63,9 +64,10 @@ const DANGER := Color("F2581F")
 const HARD_BANNER := Color("B757FA")
 const HARD_BANNER_VERY := Color("C31F1F")
 const VIDEO := Color("2F92E0")
-# Opacity of every popup's full-screen dim: SCRIM here and the Unity prefabs' dim image (UnityUI._setup_image).
-const POPUP_DIM_ALPHA := 0.85
-const SCRIM := Color(0.0, 0.016, 0.059, POPUP_DIM_ALPHA)
+# Every popup's full-screen dim: black at 80%. PopupKit, StubUI and the Unity prefabs' dim image
+# (UnityUI._setup_image) use SCRIM; the baked scenes carry the same colour.
+const POPUP_DIM_ALPHA := 0.8
+const SCRIM := Color(0, 0, 0, POPUP_DIM_ALPHA)
 # Theme Slate (Gameplay)
 const SLATE_BG := Color("504D73")
 const SLATE_SURFACE := Color("3D3A63")
@@ -76,6 +78,13 @@ const LEVEL_BG := Color("FFEEF4")
 const LEVEL_BG_IMAGE := "res://assets/bg/bg_level.png"
 const LEVEL_BG_IMAGE_ALPHA := 0.35
 const LEVEL_BG_DIM := Color(0, 0, 0, 0)
+# Bottom fade (node Background/Fade, between Image and Dim): the picture's busy bottom (polka-dot mushrooms, candy cane)
+# fades into LEVEL_BG so it does not compete with the booster row. A bottom-anchored band LEVEL_BG_FADE_HEIGHT tall,
+# clear at its top edge, LEVEL_BG at LEVEL_BG_FADE_ALPHA from LEVEL_BG_FADE_SOLID of its height down (smoothstep ramp),
+# so it is solid above the booster row on every screen height.
+const LEVEL_BG_FADE_HEIGHT := 760.0
+const LEVEL_BG_FADE_SOLID := 0.5
+const LEVEL_BG_FADE_ALPHA := 0.85
 const BOARD_BG := Color("E9CDD2")
 # Chữ và khối trên thân popup kem (Theme Warm + Popup Lavender)
 const INK_DIM := Color("6C74AE")
@@ -454,7 +463,7 @@ static func make_label(text: String, size: int = FS_BODY, color: Color = TEXT) -
 	return l
 
 
-## Black drop shadow under the outline, like TMP material "Baloo Outline - Black". outline 0 removes it.
+## Plum (UNDERLAY) drop shadow under the outline, like TMP material "Baloo Outline - Black". outline 0 removes it.
 static func underlay(l: Label, outline: int) -> void:
 	l.add_theme_color_override("font_shadow_color", UNDERLAY if outline > 0 else Color(0, 0, 0, 0))
 	l.add_theme_constant_override("shadow_offset_x", 0)

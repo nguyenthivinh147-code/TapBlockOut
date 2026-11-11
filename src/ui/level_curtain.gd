@@ -48,7 +48,8 @@ var _purple_x := Vector2.ZERO
 
 
 func _ready() -> void:
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# The offsets too: inside the tree, set_anchors_preset alone keeps the current 0x0 rect and lets taps through.
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_purple = _slab("Purple", PURPLE)
 	_pink = _slab("Pink", PINK)

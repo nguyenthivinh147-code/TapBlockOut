@@ -470,7 +470,7 @@ static func _make(spec: Dictionary, parent: Control, path: String, rays: bool, i
 		var img: Control = c if c is UImage else _child_image(c)
 		_setup_image(img, spec.img, Vector2(r[8], r[9]))
 		if _is_dim(spec, r):
-			img.color.a = ThemeKit.POPUP_DIM_ALPHA
+			img.color = ThemeKit.SCRIM
 		if bool(spec.img.get("rt", false)) and not (c is UButton):
 			c.mouse_filter = Control.MOUSE_FILTER_PASS
 	elif spec.has("raw"):
@@ -681,7 +681,8 @@ static func _setup_image(img: Control, d: Dictionary, pivot: Vector2) -> void:
 
 
 ## A popup's full-screen dim: a plain black, raycast-blocking Image stretched exactly over its parent (no sprite,
-## no material such as LoadLevelProcess's SwirlMask). Each prefab picks its own alpha; the game uses one for all.
+## no material such as LoadLevelProcess's SwirlMask). Each prefab picks its own alpha; the game uses ThemeKit.SCRIM
+## for all.
 static func _is_dim(spec: Dictionary, r: Array) -> bool:
 	var d: Dictionary = spec.img
 	if d.get("sp") != null or d.get("mat") != null or not bool(d.get("rt", false)) or not bool(d.get("on", true)):

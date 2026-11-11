@@ -98,8 +98,8 @@ Button/styles/hover = SubResource("StyleBoxTexture_svjb4")
 Button/styles/normal = SubResource("StyleBoxTexture_c1pbi")
 Button/styles/pressed = SubResource("StyleBoxTexture_535f6")
 Label/colors/font_color = Color(1, 1, 1, 1)
-Label/colors/font_outline_color = Color(0, 0, 0, 1)
-Label/colors/font_shadow_color = Color(0, 0, 0, 1)
+Label/colors/font_outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+Label/colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 Label/constants/outline_size = 6
 Label/constants/shadow_offset_x = 0
 Label/constants/shadow_offset_y = 4
@@ -168,6 +168,16 @@ corner_radius_bottom_right = 22
 corner_radius_bottom_left = 22
 anti_aliasing_size = 1.5
 
+[sub_resource type="Gradient" id="Gradient_bgfade"]
+offsets = PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 1)
+colors = PackedColorArray(1, 0.93333334, 0.95686275, 0, 1, 0.93333334, 0.95686275, 0.1328125, 1, 0.93333334, 0.95686275, 0.425, 1, 0.93333334, 0.95686275, 0.7171875, 1, 0.93333334, 0.95686275, 0.85, 1, 0.93333334, 0.95686275, 0.85)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bgfade"]
+gradient = SubResource("Gradient_bgfade")
+width = 4
+height = 256
+fill_to = Vector2(0, 1)
+
 [node name="Level" type="Control" unique_id=1028707476]
 layout_mode = 1
 anchors_preset = 15
@@ -194,6 +204,16 @@ mouse_filter = 2
 texture = ExtResource("4_h6wmr")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="Fade" type="TextureRect" parent="Background"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -760.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_bgfade")
+expand_mode = 1
 
 [node name="Dim" type="ColorRect" parent="Background" unique_id=1403860003]
 layout_mode = 0
@@ -240,7 +260,7 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 6
@@ -254,7 +274,7 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 6
@@ -272,8 +292,8 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+theme_override_colors/font_outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 5
 theme_override_constants/outline_size = 8
@@ -288,7 +308,7 @@ custom_minimum_size = Vector2(120, 55)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 5
@@ -387,8 +407,8 @@ stretch_mode = 5
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.7882353, 0.2, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+theme_override_colors/font_outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 5
 theme_override_constants/outline_size = 8
@@ -420,8 +440,8 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 0.7882353, 0.2, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+theme_override_colors/font_outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 6
@@ -440,8 +460,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+theme_override_colors/font_outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 6
@@ -549,7 +569,7 @@ offset_bottom = 8.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
@@ -578,20 +598,6 @@ mouse_filter = 2
 texture = ExtResource("17_v3why")
 expand_mode = 1
 stretch_mode = 5
-
-[node name="BoosterCaption_hint" type="Label" parent="Margin/Column/BoosterRow/Booster_hint" unique_id=1860448540]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 6
-theme_override_constants/shadow_outline_size = 6
-theme_override_font_sizes/font_size = 24
-text = "Hint"
-horizontal_alignment = 1
 
 [node name="Booster_move" type="VBoxContainer" parent="Margin/Column/BoosterRow" unique_id=815968105]
 layout_mode = 2
@@ -631,7 +637,7 @@ offset_bottom = 8.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
@@ -660,20 +666,6 @@ mouse_filter = 2
 texture = ExtResource("17_v3why")
 expand_mode = 1
 stretch_mode = 5
-
-[node name="BoosterCaption_move" type="Label" parent="Margin/Column/BoosterRow/Booster_move" unique_id=2063793345]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 6
-theme_override_constants/shadow_outline_size = 6
-theme_override_font_sizes/font_size = 24
-text = "+3 Move"
-horizontal_alignment = 1
 
 [node name="Booster_smash" type="VBoxContainer" parent="Margin/Column/BoosterRow" unique_id=531924338]
 layout_mode = 2
@@ -713,7 +705,7 @@ offset_bottom = 8.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_colors/font_outline_color = Color(0.35686275, 0.12156863, 0.61960787, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
@@ -742,20 +734,6 @@ mouse_filter = 2
 texture = ExtResource("17_v3why")
 expand_mode = 1
 stretch_mode = 5
-
-[node name="BoosterCaption_smash" type="Label" parent="Margin/Column/BoosterRow/Booster_smash" unique_id=337083155]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 6
-theme_override_constants/shadow_outline_size = 6
-theme_override_font_sizes/font_size = 24
-text = "Smash"
-horizontal_alignment = 1
 
 [node name="IdleTip" type="Control" parent="." unique_id=694213875]
 unique_name_in_owner = true

@@ -640,10 +640,11 @@ const LEVEL_ROUNDS_TOL := 0.1
 const LEVEL_ROUNDS_TOL_MIN := 1
 const LEVEL_ROUNDS_TOL_CAP := 0.25
 const LEVEL_ROUNDS_TOL_MIN_CAP := 2
-## Level screen HUD (restart, settings, 3 boosters, MOVES frame, piece chip frame, HARD pill): the candy-purple sprites
-## are toned down by src/ui/hud_tone.gdshader (design.md "HUD level"). HUD_TONE_GLOSS pulls the pale gloss sheen toward
-## the body color (0 keeps it, 1 removes it); then HSV saturation and value are multiplied by HUD_TONE_SAT, HUD_TONE_VAL.
-## Child nodes (labels, count badge, lock, hint bulb) keep their colors; the HARD pill draws its own text, which is toned.
+## Level screen HUD (restart, settings, 3 boosters, MOVES frame, piece chip frame, difficulty pill): the candy sprites
+## (purple; the pill is red on Hard) are toned down by src/ui/hud_tone.gdshader (design.md "HUD level"). HUD_TONE_GLOSS
+## pulls the pale purple gloss sheen toward the body color (0 keeps it, 1 removes it); then HSV saturation and value are
+## multiplied by HUD_TONE_SAT, HUD_TONE_VAL. Child nodes (labels, count badge, lock, hint bulb) keep their colors; the
+## difficulty pill draws its own text, which is toned.
 const HUD_TONE_SAT := 0.8
 const HUD_TONE_VAL := 0.97
 const HUD_TONE_GLOSS := 0.5

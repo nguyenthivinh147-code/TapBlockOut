@@ -57,8 +57,8 @@ shader_parameter/px_range = 14.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jm0a0"]
 shader = ExtResource("4_vq253")
 shader_parameter/face_color = Color(1, 1, 1, 1)
-shader_parameter/outline_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
-shader_parameter/underlay_color = Color(0.039215688, 0.09411765, 0.20392157, 1)
+shader_parameter/outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
+shader_parameter/underlay_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 shader_parameter/face_edge = 0.446428570625
 shader_parameter/outline_half = 0.085714287
 shader_parameter/underlay_on = true

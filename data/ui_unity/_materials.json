@@ -28,8 +28,8 @@
 		"face_dilate": 0,
 		"outline_width": 0.3,
 		"outline_softness": 0,
-		"outline_color": "000000ff",
-		"underlay_color": "000000ff",
+		"outline_color": "3a1c6eff",
+		"underlay_color": "3a1c6eff",
 		"underlay_offset": [
 			0,
 			-0.24
@@ -74,8 +74,8 @@
 		"face_dilate": 0,
 		"outline_width": 0.2,
 		"outline_softness": 0,
-		"outline_color": "0a1834ff",
-		"underlay_color": "0a1834ff",
+		"outline_color": "3a1c6eff",
+		"underlay_color": "3a1c6eff",
 		"underlay_offset": [
 			0,
 			-0.24
@@ -97,8 +97,8 @@
 		"face_dilate": 0,
 		"outline_width": 0.3,
 		"outline_softness": 0,
-		"outline_color": "071019ff",
-		"underlay_color": "071019ff",
+		"outline_color": "3a1c6eff",
+		"underlay_color": "3a1c6eff",
 		"underlay_offset": [
 			0,
 			-0.24
@@ -143,8 +143,8 @@
 		"face_dilate": 0,
 		"outline_width": 0.3,
 		"outline_softness": 0,
-		"outline_color": "00032bff",
-		"underlay_color": "00032bff",
+		"outline_color": "3a1c6eff",
+		"underlay_color": "3a1c6eff",
 		"underlay_offset": [
 			0,
 			-0.24

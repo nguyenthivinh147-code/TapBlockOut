@@ -46,6 +46,7 @@ Chạy cùng `tools/test.sh`, không có lệnh riêng.
 
 ```bash
 tools/smoke.sh [headless|window] [kịch bản...]     # mặc định headless A B C D E M S
+tools/smoke.sh headless F G H T L                  # không nằm trong mặc định; T, L chạy window mới có ảnh
 tools/smoke.sh window B                            # có cửa sổ, chụp PNG
 SMOKE_RES=540x1200 tools/smoke.sh window D         # cửa sổ tỉ lệ khác (mặc định 443x960, cùng tỉ lệ 886x1920)
 SMOKE_SEED=42 tools/smoke.sh headless M            # chạy lại đúng chuỗi bấm của monkey
@@ -76,13 +77,13 @@ Kịch bản:
 | E | Shop: mua mọi SKU đang bán qua store giả → popup thưởng → kiểm số dư theo `Config.SKUS` |
 | M | Monkey: bấm ngẫu nhiên (seed in ra log) trên save cài mới rồi save mở hết |
 | S | Soak: 10 level liên tiếp từ L30, `SMOKE FRAMES` từng level và `SMOKE MEM` sau mỗi level |
-| F | Ads có thưởng (x2, video avatar, ads daily): xem hết, đóng sớm, không tải được *(Task 11.4)* |
-| G | Lưu qua khởi động lại: tiến trình sau đọc save của tiến trình trước *(Task 11.4)* |
-| H | Dùng từng booster trong level *(Task 11.4)* |
-| T | Chuyển cảnh: ảnh mỗi 150 ms để soát animation *(Task 11.4)* |
-| L | Mỗi ngôn ngữ: Home và một popup, soát chữ tràn *(Task 11.4)* |
+| F | Ads có thưởng (ads giả): x2 ở thẻ thắng L30 đóng sớm (không thưởng, nút còn), không có video khi còn mạng (lớp "Đang tải video" rồi popup "chưa có video") và khi mất mạng (popup "Mất kết nối"), xem hết (gold cộng đúng phần nhân đôi, thẻ tự đóng); ADS Daily trong Shop đóng sớm rồi xem hết (+`ECON.shop_video_coins`, bớt 1 lượt); mở một avatar bán bằng video ở Profile |
+| G | Lưu qua khởi động lại: thắng L30, dùng hint ở L31, tắt nhạc trong Settings, phát `Platform.paused` như Android rồi chạy một tiến trình Godot mới (`scen=G2`, headless, cùng save, giờ giả muộn hơn 1 phút). G2 so level, gold, từng booster, mạng, cài đặt nhạc với số G ghi trong `user://smoke_G/expect.json` và phải vào lại đúng level. Dòng của G2 in trong log của G với tiền tố `G2 \| ` |
+| H | Booster ở L30: hint (có hiệu ứng gợi ý), move (+`ECON.rescue_moves` MOVES), búa (vào chế độ phá, phá một khối chưa đi được), mỗi lần trừ đúng 1 trong kho; hết hint mà đủ gold thì mua (trừ `ECON.booster_price`); hết move và hết gold thì xem video `booster_free` |
+| T | Chuyển cảnh, ảnh mỗi 150 ms (`r.film`, chỉ khi `window`): level → Home, Home → Chơi (curtain kẹo), thẻ thắng → level kế, Home → Shop → Home (trượt tab), mở và đóng Settings |
+| L | Mỗi ngôn ngữ của `Game.LANGS`: Home và popup Settings, census cả headless (chữ rộng hơn nhãn, ra ngoài màn, giống key chưa dịch), ảnh khi `window` |
 
-**Monkey (M).** Mỗi lần: nút bấm được ở lớp trên cùng (popup trên cùng hoặc lớp phủ mock nếu có, không thì màn hiện tại), hoặc 40% là toạ độ ngẫu nhiên trên bàn khi đang chơi; hướng dẫn L1 thì chạm theo bàn tay. Không bao giờ bấm: `SupportButton`, `VersionButton` (10 lần chạm mở menu tester), `GalleryButton`, `DebuggerButton`, `WipeButton`, `SaveButton`, `PrivacyButton`, mọi thứ trong menu tester, `popup_update` (mở store), `ui_gallery`; link của Settings đã bị chặn nên bấm được. Đạt khi không có lỗi script hay engine và không kẹt: 20 lần bấm liền không đổi màn, popup, bàn chơi hay các số người chơi thấy (gold, booster, level, mạng, cài đặt, avatar, quà ngày, mua hàng).
+**Monkey (M).** Mỗi lần: nút bấm được ở lớp trên cùng (popup trên cùng, hoặc popup lồng bên trong nó như hướng dẫn của Weekly Pass, hoặc lớp phủ mock nếu có, không thì màn hiện tại; lúc màn chuyển cảnh `Main.curtain` đang chạy thì không bấm gì, như người chơi đợi nó mở ra), hoặc 40% là toạ độ ngẫu nhiên trên bàn khi đang chơi; hướng dẫn L1 thì chạm theo bàn tay. Không bao giờ bấm: `SupportButton`, `VersionButton` (10 lần chạm mở menu tester), `GalleryButton`, `DebuggerButton`, `WipeButton`, `SaveButton`, `PrivacyButton`, mọi thứ trong menu tester, `popup_update` (mở store), `ui_gallery`; link của Settings đã bị chặn nên bấm được. Đạt khi không có lỗi script hay engine và không kẹt: 20 lần bấm liền không đổi màn, popup (kể cả popup lồng), bàn chơi hay các số người chơi thấy (gold, booster, level, mạng, cài đặt, avatar, quà ngày, mua hàng).
 
 **Bất biến.** Mọi kịch bản kiểm mỗi 30 khung hình; vi phạm 3 lần liên tiếp mới báo `SMOKE INVARIANT <tên> <giá trị>` và làm kịch bản fail (để không báo nhầm khi trạng thái đổi giữa chừng một khung). Danh sách: gold, từng booster, mạng là số hữu hạn ≥ 0; mạng ≤ `Lives.max_for(s)`; level ≥ 1 (sau L500 game lặp nội dung nên không có trần); MOVES ≥ 0 trong level; chồng popup không quá 3 lớp. Cuối mỗi kịch bản: save trên đĩa khớp bộ nhớ (gold, level, booster, mạng) sau `save_now`.
 
