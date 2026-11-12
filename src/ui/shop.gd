@@ -69,6 +69,9 @@ const PACK_ART := {
 ## than Unity's BottomBarLayer, so the panel loses the height of HubNav's bar (182 of its 886-wide frame) when larger.
 const BOTTOM_BAR := 183.0
 const NAV_BAR_FRAME := Vector2(886, 182)
+## Toast pill (%ToastBg, behind the text): space around the text, canvas units. The text has no plate of its own and
+## the toast sits over the scrolled list (the Restore Purchases row at the bottom).
+const TOAST_PAD := Vector2(36, 18)
 ## ADS Daily pill: "0 / 5 ads watched" is longer than Unity's timer there (Vietnamese, Portuguese...), so it wraps onto
 ## two lines and shrinks down to this size instead of overflowing the pill (two_lines).
 const VIDEO_TEXT_MIN := 12.0
@@ -107,6 +110,7 @@ var close_button: Button = null
 var video_button: Button = null
 var restore_button: Button = null
 var toast_label: Label = null
+var toast_bg: Control = null
 var coins_label: Label = null
 ## sku -> nút mua
 var buy_buttons: Dictionary = {}
@@ -177,6 +181,7 @@ func _build() -> void:
 	_fade_in()
 
 	toast_label = %Toast
+	toast_bg = %ToastBg
 	toast_label.modulate.a = 0.0
 	_fit_panel()
 
@@ -1030,12 +1035,30 @@ func toast(text: String) -> void:
 	if not is_instance_valid(toast_label):
 		return
 	UnityUI.set_text(toast_label, text)
+	_fit_toast_bg()
 	toast_label.modulate.a = 1.0
 	if _toast_tween != null:
 		_toast_tween.kill()
 	_toast_tween = create_tween()
 	_toast_tween.tween_interval(2.0)
 	_toast_tween.tween_property(toast_label, "modulate:a", 0.0, 0.4)
+
+
+## The pill behind the toast hugs its text (lines wrapped at the label's width), TOAST_PAD around it.
+func _fit_toast_bg() -> void:
+	if not is_instance_valid(toast_bg) or toast_label.text.is_empty():
+		return
+	var font := toast_label.get_theme_font("font")
+	var fs := toast_label.get_theme_font_size("font_size")
+	var line := float(toast_label.get_theme_constant("line_spacing"))
+	var brk := TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND | TextServer.BREAK_ADAPTIVE
+	var sz := font.get_multiline_string_size(toast_label.text, HORIZONTAL_ALIGNMENT_CENTER, toast_label.size.x, fs, -1, brk)
+	var lines := maxi(1, roundi(sz.y / font.get_height(fs)))
+	var half := Vector2(minf(sz.x, toast_label.size.x), (font.get_height(fs) + line) * lines - line) * 0.5 + TOAST_PAD
+	toast_bg.offset_left = -half.x
+	toast_bg.offset_right = half.x
+	toast_bg.offset_top = -half.y
+	toast_bg.offset_bottom = half.y
 
 
 ## While gold flies, the chip counts on its own (HubTop.gold_shown, ShopFx; RewardFly.held).

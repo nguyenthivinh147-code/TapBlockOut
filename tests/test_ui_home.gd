@@ -213,6 +213,33 @@ func test_difficulty_tiers(t: T) -> void:
 		h.queue_free()
 
 
+## Chữ độ khó trên nút Chơi (cả viền) không đè vệt bóng trắng ở góc trái trên của nút, ở mọi ngôn ngữ (tiếng Nga,
+## Ukraina đè lên, smoke L 2026-11-12).
+func test_hard_tag_clears_gloss(t: T) -> void:
+	var g := _g(1)
+	var lv := {}
+	for tier in ["hard", "very_hard"]:
+		var n := 2
+		while n < 400 and g.difficulty_of(n) != tier:
+			n += 1
+		lv[tier] = n
+	var langs: Array = (g.get_script() as Script).get_script_constant_map()["LANGS"]
+	for lang in langs:
+		g.set_setting("lang", lang)
+		for tier in lv:
+			g.s.level = int(lv[tier])
+			var h := _home()
+			var tag: Label = h.hard_tag
+			var text := tag.text.to_upper() if tag.uppercase else tag.text
+			var fs := tag.get_theme_font_size("font_size")
+			var w := tag.get_theme_font("font").get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+			var left := tag.position.x + (tag.size.x - w) * 0.5 - tag.get_theme_constant("outline_size") * 0.5
+			var gloss: float = h.play_btn.size.x * h.PLAY_GLOSS_END / h.PLAY_RECT.size.x
+			t.ok(left >= gloss, "%s %s: chữ \"%s\" bắt đầu ở x %.1f, vệt bóng tới %.1f" % [lang, tier, text, left, gloss])
+			h.free()
+	g.set_setting("lang", "en")
+
+
 ## Ba mốc thẳng hàng trên đường giữa ray kẹo thẳng đứng; mốc khoá là lục giác xám ở mọi độ khó.
 func test_nodes_on_rail(t: T) -> void:
 	for level in [1, 7]:

@@ -592,7 +592,7 @@ Ngày lấy từ tiêu đề task và các đoạn "Bổ sung" trong mục 3. Ta
 
 **2026-11-12:**
 
-- Task 11.4: Smoke F, G, H, T, L chạy đạt; smoke đợi nút đứng yên mới bấm; đóng Settings không dựng lại Home.
+- Task 11.4: Smoke F, G, H, T, L chạy đạt; smoke đợi nút đứng yên mới bấm; đóng Settings không dựng lại Home; sửa ba lỗi hiển thị smoke L, F tìm ra (chữ Hindi, nhãn độ khó trên nút Chơi, nền toast Shop).
 
 ---
 
@@ -1068,7 +1068,7 @@ Lấy mẫu từ quy trình test của Butcher Defense (2026-11-11), chỉ lấy
 - [x] **Task 11.4: Smoke đợt sau (2026-11-11, chạy và sửa 2026-11-12)**
   - **Allowed Files:** `tests/smoke/**`, `docs/TESTING.md`; lỗi game smoke tìm ra: `src/ui/main.gd`, `src/ui/settings.gd`, `tests/test_main_popup_host.gd`, `design.md`.
   - **Specs:** Kịch bản F (ads có thưởng), G (lưu qua khởi động lại), H (booster), T (chuyển cảnh), L (ngôn ngữ).
-  - **Kết quả:** lần chạy đầu cả F, G, H đỏ. Chung: `hud_pill_hard.png` chưa import (đã import). G và H: smoke hit-test nút ở khung này rồi nhấn ở khung sau, trong lúc popup còn phóng to nên cú nhấn rơi vào nền; `tap` nay đợi nút đứng yên và báo `bấm … trượt` khi cú nhấn không trúng nút. G2: so số với JSON (3080 và 3080.0) và log G2 vỡ chữ (stdout đọc theo code page Windows), nay đọc qua `OS.execute_with_pipe` rồi giải mã UTF-8. Census bỏ nhãn đã cuộn khuất khỏi khung cắt (Shop báo nhầm "ra ngoài màn"); monkey không chọn nút đã cuộn khuất (trước đó bấm ô lưới Profile khuất thì trúng nút khác). Lỗi game T tìm ra: đóng Settings ở Home luôn dựng lại Home, chạy lại hiệu ứng vào Home; nay chỉ dựng lại khi đổi ngôn ngữ, khôi phục được mua hàng hoặc menu tester đổi tài khoản (`test_settings_close_keeps_home`). Ảnh đã xem: T (7 đoạn quay), L (14 ngôn ngữ), F, H. Thấy bằng mắt, chưa sửa: tiếng Hindi trên tiêu đề Settings và hai nút Support, Language bị viền dày phủ nét chữ; nhãn độ khó trên nút Chơi (ru, uk) đè vệt bóng của nút; toast "video chưa xem hết" ở Shop không có nền, đè chữ nút Restore Purchases.
+  - **Kết quả:** lần chạy đầu cả F, G, H đỏ. Chung: `hud_pill_hard.png` chưa import (đã import). G và H: smoke hit-test nút ở khung này rồi nhấn ở khung sau, trong lúc popup còn phóng to nên cú nhấn rơi vào nền; `tap` nay đợi nút đứng yên và báo `bấm … trượt` khi cú nhấn không trúng nút. G2: so số với JSON (3080 và 3080.0) và log G2 vỡ chữ (stdout đọc theo code page Windows), nay đọc qua `OS.execute_with_pipe` rồi giải mã UTF-8. Census bỏ nhãn đã cuộn khuất khỏi khung cắt (Shop báo nhầm "ra ngoài màn"); monkey không chọn nút đã cuộn khuất (trước đó bấm ô lưới Profile khuất thì trúng nút khác). Lỗi game T tìm ra: đóng Settings ở Home luôn dựng lại Home, chạy lại hiệu ứng vào Home; nay chỉ dựng lại khi đổi ngôn ngữ, khôi phục được mua hàng hoặc menu tester đổi tài khoản (`test_settings_close_keeps_home`). Ảnh đã xem: T (7 đoạn quay), L (14 ngôn ngữ), F, H. Thấy bằng mắt, sửa cùng ngày (người dùng yêu cầu): chữ Hindi bị viền TMP phủ kín nét (fallback Baloo 2 đổi sang bản ExtraBold wght 800, `tools/gen_baloo_font.gd`); nhãn độ khó trên nút Chơi đè vệt bóng của nút ở ru, uk, it, fr, de, pt_BR, id (`HardTag` thu nhỏ trong 220 px thiết kế, `test_hard_tag_clears_gloss`); toast của Shop không có nền, đè chữ nút Restore Purchases (nền viên thuốc `%ToastBg` ôm chữ, `test_shop_toast_plate`). Ảnh trước và sau đã xem.
   - **Verification:** `tools/smoke.sh headless F G H` in `0`; `tools/smoke.sh window T L` rồi đọc ảnh.
 
 **Cổng Phase 11:** cổng mặc định cộng `tools/test.sh` và `tools/smoke.sh headless` thoát 0.

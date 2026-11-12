@@ -93,6 +93,26 @@ func test_shop_lists_gold_packs_and_others(t: T) -> void:
 
 
 ## Shop.PACK_ART replaces the prefab art of the pack cards (Unity boosters) with the game's boosters.
+## Toast có nền viên thuốc nằm sau chữ, ôm chữ (hẹp hơn dải chữ khi câu ngắn), mờ cùng chữ: chữ trơn đè lên nút
+## Restore Purchases ở đáy danh sách (smoke F, 2026-11-12).
+func test_shop_toast_plate(t: T) -> void:
+	_g()
+	var shop := _open(ShopScene)
+	shop.call("toast", shop.tr("ads_failed"))
+	var bg: Control = shop.toast_bg
+	var label: Label = shop.toast_label
+	t.ok(bg != null and bg.get_parent() == label and bg.show_behind_parent, "nền là con của chữ, vẽ sau chữ")
+	var long_rect := bg.get_global_rect()
+	t.ok(long_rect.size.x > 0.0 and long_rect.size.y > 0.0, "nền có cỡ")
+	t.ok(long_rect.get_center().distance_to(label.get_global_rect().get_center()) < 1.0, "nền canh giữa chữ")
+	shop.call("toast", "OK")
+	var short_rect := bg.get_global_rect()
+	t.ok(short_rect.size.x < long_rect.size.x and short_rect.size.x < label.size.x, "câu ngắn thì nền hẹp theo chữ")
+	var line_h := label.get_theme_font("font").get_height(label.get_theme_font_size("font_size"))
+	t.ok(short_rect.size.y > line_h, "nền cao hơn một dòng chữ")
+	_free(shop)
+
+
 func test_shop_pack_art(t: T) -> void:
 	var g := _g()
 	_offers_open(g)

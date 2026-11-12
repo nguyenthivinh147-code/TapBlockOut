@@ -50,6 +50,9 @@ const PLAY_RECT := Rect2(PATH_X - 193.5, 1274, 387, 165)
 const PLAY_LABEL_RECT := Rect2(0, 0, 387, 150)
 ## Hard, Super Hard: HardTag ở trên, PLAY hạ xuống.
 const PLAY_LABEL_HARD_RECT := Rect2(0, 44, 387, 116)
+## Mép phải vệt bóng trắng ở góc trái trên nút Chơi (px thiết kế trên nút 387 rộng; sprite pill x 48..77 của 380), cùng
+## dải cao với HardTag. HardTag canh giữa nên chữ dài thu nhỏ trong 387 - 2 x 82 (fb_font của nó trong scene: 220).
+const PLAY_GLOSS_END := 80.0
 ## Dải sáng quét dọc nút Chơi (UiMotion.SHINE): lượt đầu sau khi Home mở (s), qua hiệu ứng chuyển màn.
 const PLAY_SHINE_DELAY := 0.8
 const NAV_TOP := 1552.0

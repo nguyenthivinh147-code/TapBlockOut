@@ -1347,7 +1347,7 @@ theme_override_font_sizes/font_size = 29
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/fb_rect = Rect2(0, 20, 387, 46)
-metadata/fb_font = [36.0, 3.0, 330.0]
+metadata/fb_font = [36.0, 3.0, 220.0]
 
 [node name="PlayLabel" type="Label" parent="PlayButton" unique_id=313731296]
 unique_name_in_owner = true

@@ -213,6 +213,13 @@ shader_parameter/underlay_edge = 0.277678570625
 shader_parameter/underlay_offset = Vector2(0, -1.26)
 shader_parameter/px_range = 14.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0ast"]
+bg_color = Color(0.22745098, 0.10980392, 0.43137255, 0.88)
+corner_radius_top_left = 60
+corner_radius_top_right = 60
+corner_radius_bottom_right = 60
+corner_radius_bottom_left = 60
+
 [node name="Shop" type="Control" unique_id=665691190]
 layout_mode = 3
 anchors_preset = 15
@@ -3337,6 +3344,20 @@ metadata/u_txt = {
 "ws": 0.0
 }
 metadata/u_sub = true
+
+[node name="ToastBg" type="Panel" parent="Canvas/ShopCashLayer/Toast"]
+unique_name_in_owner = true
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_t0ast")
 
 [node name="Hub" type="VBoxContainer" parent="." unique_id=1734698373]
 unique_name_in_owner = true

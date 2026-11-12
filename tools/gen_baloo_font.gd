@@ -21,8 +21,13 @@ const ATLAS_WIDTH := 1024
 const GAP := 2
 ## Baloo 2 (same design; Devanagari and missing punctuation), Jua (Hangul), M PLUS Rounded 1c (kana, kanji).
 ## lang: language the TextServer prefers the font for when several fallbacks have the glyph.
+## Baloo 2 is the ExtraBold (wght 800) static instance of the variable art/fonts/Baloo2.ttf: at Regular the thin
+## Devanagari strokes vanish under the TMP outline, which straddles the glyph edge (2026-11-12). Remake it with
+## `uv run --with fonttools python -c "from fontTools.ttLib import TTFont; from fontTools.varLib import instancer;
+## instancer.instantiateVariableFont(TTFont('art/fonts/Baloo2.ttf'), {'wght': 800}, updateFontNames=True)
+## .save('art/fonts/Baloo2-ExtraBold.ttf')"`.
 const FALLBACKS: Array[Dictionary] = [
-	{"src": "res://art/fonts/Baloo2.ttf", "out": "res://assets/fonts/baloo2.res", "lang": "hi"},
+	{"src": "res://art/fonts/Baloo2-ExtraBold.ttf", "out": "res://assets/fonts/baloo2.res", "lang": "hi"},
 	{"src": "res://art/fonts/subset/Jua-Regular.ttf", "out": "res://assets/fonts/jua.res", "lang": "ko"},
 	{"src": "res://art/fonts/subset/MPLUSRounded1c-Bold.ttf", "out": "res://assets/fonts/mplus_rounded.res", "lang": "ja"},
 ]
