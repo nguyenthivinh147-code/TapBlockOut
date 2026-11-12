@@ -54,12 +54,12 @@ SMOKE_SEED=42 tools/smoke.sh headless M            # chạy lại đúng chuỗi
 
 Biến khác: `SMOKE_SPEED` (`Engine.time_scale`, mặc định 3 khi headless, 1 khi window), `SMOKE_TAPS` (số lần bấm monkey mỗi save, mặc định 250), `SMOKE_TIMEOUT` (giây mỗi kịch bản, mặc định 900).
 
-- `tests/smoke/smoke.gd` (SceneTree): mở `main.tscn` như game thật và cung cấp thao tác dùng chung; kịch bản ở `tests/smoke/scenarios.gd`, save mẫu ở `tests/smoke/smoke_saves.gd`. Game boot thẳng vào level khi còn mạng (như trên máy), nên kịch bản về Home bằng Cài đặt trong màn → Home.
+- `tests/smoke/smoke.gd` (Node; desktop chạy `-s tests/smoke/smoke_main.gd` gắn node này vào root, máy thật dùng `tests/smoke/device_main.tscn` làm màn chính, mục "Thiết bị thật"): mở `main.tscn` như game thật và cung cấp thao tác dùng chung; kịch bản ở `tests/smoke/scenarios.gd`, save mẫu ở `tests/smoke/smoke_saves.gd`. Game boot thẳng vào level khi còn mạng (như trên máy), nên kịch bản về Home bằng Cài đặt trong màn → Home.
 - Bấm là `push_input` vào toạ độ thật của nút hoặc khối (khối do solver chọn), trong toạ độ canvas (`get_global_transform_with_canvas`). Trước khi bấm, smoke đợi tối đa 2 giây cho nút đứng yên (tâm nút lệch dưới 1 px qua 2 khung; popup đang phóng to thì nút còn chạy, nút chỉ nhún tại chỗ thì không phải đợi) và hit-test trúng (`gui_get_hovered_control`), như người chơi đợi hiệu ứng xong; tâm bị che thì thử lưới 3x3 và log `SMOKE WARN`; không điểm nào trúng thì vẫn bấm tâm và log `(NOT the target: trúng <node>)`. Cú nhấn rơi vào node khác nút (nút vừa dịch đi) thì log `SMOKE WARN bấm <nút> trượt: lúc nhấn trúng <node>` và `tap` trả false.
 - Như bản phát hành: `Config.demo_override`, `ui_preview_override`, `account_tool_override` về 0 (smoke chạy bằng Godot editor nên là bản debug). Link ra ngoài của Settings (mail hỗ trợ, chính sách, điều khoản) đi qua `settings.opener`; smoke thay bằng hàm chỉ log `mở URL bị chặn: <url>`, nên không bao giờ mở trình duyệt hay ứng dụng mail.
 - Ads và mua hàng dùng mock của `Platform`. Khi chạy window, mock hiện lớp phủ: smoke bấm "Xem hết" và "Mua" như người dùng.
 - Save mỗi kịch bản ở `user://smoke_<kịch bản>/` qua `Game.reset_for_test`; không bao giờ đụng save thật. Save mẫu dựng bằng code (`fresh`, `veteran`, `rich`, `all_unlocked`), không dùng file JSON, để không lỗi thời khi đổi schema, mốc mở tính năng hay sinh lại level. Popup lạc (quà booster, giới thiệu cơ chế, offer, mời tính năng) được đóng bằng chạm thật khi kịch bản không đợi chúng.
-- Ảnh chỉ chụp ở `window`, sau khi màn yên (không popup đang đóng, không curtain, không màn chuyển level); census chạy cả headless.
+- Ảnh chỉ chụp ở `window` (hoặc `capture=1` trên máy thật), sau khi màn yên (không popup đang đóng, không curtain, không màn chuyển level); census chạy cả headless.
 - Mỗi kịch bản một tiến trình Godot, bọc `timeout`, có watchdog bên trong. `smoke.sh` giữ khoá `~/.candy_godot.lock` (chờ tối đa 10 phút; khoá cũ hơn 30 phút coi là kẹt và gỡ) để các phiên song song không tranh cửa sổ, chuột và `user://smoke_*`. Ở `window` cửa sổ cho chuột đi xuyên qua (`mouse_passthrough`); input thật vẫn tới được (phím) thì log `SMOKE REAL INPUT` và lần chạy không hợp lệ (mã 2).
 - Mã thoát như tầng 1: `0` / `1` (`SMOKE FAILED`: kịch bản dừng, `SMOKE ERRORS` khác 0, vi phạm bất biến) / `2`. Lỗi engine khớp `tests/allow_errors.txt` in `SMOKE ALLOWED`, không tính.
 - Kết quả: `output/smoke/<mode>/<kịch bản>/smoke.log`, ảnh PNG, `census_<ảnh>.json`, `meta.json`.
@@ -131,7 +131,39 @@ Nhóm case: `[HP]` luồng chuẩn; `[NEG]` vi phạm điều kiện (kỳ vọn
 
 ## Thiết bị thật (Android)
 
-Chưa có máy nào cắm vào máy dev (kế hoạch mục 1.1): mọi kiểm tra trên máy thật là việc thủ công của người dùng (kế hoạch mục 4). Cài bản demo: `docs/DEMO_NOTES.md`. Ngân sách: ổn định từ 30 khung/giây trên máy 2 GB (`design.md` mục 8, "Bản thử"). Số đo trên desktop không thay cho số trên điện thoại.
+Cài bản demo: `docs/DEMO_NOTES.md`. Ngân sách: ổn định từ 30 khung/giây trên máy 2 GB (`design.md` mục 8, "Bản thử"). Số đo trên desktop không thay cho số trên điện thoại. Âm thanh trễ, rung, cảm giác chơi vẫn là việc thủ công của người dùng (kế hoạch mục 4).
+
+### Smoke trên máy: `tools/device_smoke.sh` (Task 11.5)
+
+```bash
+export JAVA_HOME="C:/Program Files/Android/Android Studio/jbr"      # Windows, như export_apk.sh
+GODOT=<Godot tự chứa> tools/device_smoke.sh build                   # ra build/CandyAway-smoke.apk
+adb install -r build/CandyAway-smoke.apk
+tools/device_smoke.sh run A capture=1                              # cài mới, có ảnh
+tools/device_smoke.sh run S G                                      # soak 10 level; lưu qua lần tắt app thật
+adb install -r build/<APK demo>.apk                                # xong thì cài lại bản demo
+```
+
+- Template Android xuất ra bỏ qua `-s` (kể cả bản debug), nên `build` chép cây code sang snapshot (`SNAP`, mặc định `output/device/snap`; Windows dùng `robocopy`), đổi màn chính của snapshot thành `tests/smoke/device_main.tscn` (gốc là runner `smoke.gd`), cho preset `Android Demo` mang `tests/smoke/`, rồi xuất. Cây code thật không đổi. APK smoke cùng package và chữ ký với bản demo: cài đè lên nhau, giữ dữ liệu; mở app là chạy smoke.
+- `run` ghi tham số vào `user://device_smoke_args.txt` bằng `run-as` (APK debug), mở app bằng `GodotAppLauncher` (`GodotApp` không export, `am start` bị từ chối), theo `logcat` tới `SMOKE OK`/`FAILED`, lấy PSS (`dumpsys meminfo`) mỗi 5 giây, kéo census và ảnh về `output/device/<thời điểm>/<kịch bản>/` (`logcat.txt`, `pss.txt`, `summary.txt`). Trên Android smoke không tự thoát; script force-stop.
+- G trên máy (`restart=external`): sau khi ghi số mong đợi, smoke in `SMOKE G READY` và đợi; script bấm Home (onPause thật của Android), force-stop, rồi tự chạy G2 trên cùng save.
+- Kiểm trước khi chạy: đúng một máy (hoặc `ANDROID_SERIAL`), đã cho phép gỡ lỗi USB, không khoá. Bật `svc power stayon usb` trong lúc chạy, xong trả lại như cũ. Không chạm vào máy khi đang chạy (`SMOKE REAL INPUT`).
+- `summary.txt`: thời gian khởi động (từ dòng đầu của Godot tới `SMOKE START` và tới main boot xong; `am start -W` là tới khung đầu), `SMOKE FRAMES` và `SMOKE SOLVER` từng level, `SMOKE MEM`, lỗi, PSS thấp nhất, cao nhất, cuối.
+- Đo khung hình như người chơi: `run S idle=3 pace=0.5` (pha `idle L<n>` 3 giây bàn đứng yên, rồi chạm mỗi 0,5 giây). Mặc định smoke chạm cách 2 khung, nhiều khối trượt cùng lúc: đó là trường hợp chạm liên tục, nặng hơn người chơi thường. Solver của smoke chạy trên luồng chính trong khung đang đo (`SMOKE SOLVER`): khung giật trùng lần solver chạy là của smoke, không phải của game.
+- adb server bị chương trình khác (phiên khác, Unity, Android Studio) khởi động lại thì máy hỏi lại quyền gỡ lỗi USB và `adb devices` báo `unauthorized`: script dừng mã 2, nhờ người dùng bấm Cho phép rồi chạy lại.
+
+**Lần đo đầu, 2026-11-12** (vivo V2206: Snapdragon 680, Adreno 610, 8 GB, 720×1612, 60 Hz, Android 14; không phải máy 2 GB của ngân sách):
+
+| | Kết quả |
+|---|---|
+| A, S, G→G2 | Đạt, không lỗi script hay engine; ảnh A (màn tải, hướng dẫn L1, L2, Home) hiện đúng. G2 đọc đúng save sau Home + force-stop |
+| Khởi động | Lần đầu sau khi cài: 3,5 giây tới autoload, 9,1 giây tới main boot xong (gồm một ảnh chụp). Các lần sau: 2,1 và 6,4–6,9 giây (`splash_min_sec` 1,5) |
+| Bộ nhớ | PSS 300–380 MB; object, node không tăng qua 10 level, orphan 0 |
+| Chơi theo nhịp người (`pace=0.5`, L30–L39) | Trung vị 16,6 ms (60 FPS), p95 18,6–21,3 ms; khung > 33 ms 2–8 mỗi level (L38: 30/1759), phần lớn trùng lần solver chạy (2–16 ms, tối đa 56 ms) |
+| Bàn đứng yên | 16,6–18,5 ms; L38 20,8 ms (48 FPS) |
+| Chạm liên tục (mặc định) | Trung vị 17–27 ms, p95 40–51 ms |
+
+Kết quả từng lần ở `output/device/<thời điểm>/`.
 
 Kinh nghiệm từ Butcher Defense (cùng Godot 4.7.2, `gl_compatibility`), dùng khi bắt đầu đo trên máy:
 
@@ -154,7 +186,7 @@ Kinh nghiệm từ Butcher Defense (cùng Godot 4.7.2, `gl_compatibility`), dùn
 
 ## Quay video review
 
-- Script kế thừa `tests/smoke/smoke.gd`, chạy `tools/godot.sh --path . --write-movie output/<việc>/video.avi --fixed-fps 30 -s <script>`.
+- Script kế thừa `tests/smoke/smoke.gd` (Node) cộng một launcher SceneTree như `tests/smoke/smoke_main.gd`, chạy `tools/godot.sh --path . --write-movie output/<việc>/video.avi --fixed-fps 30 -s <script>`.
 - Ở chế độ movie, game vẽ chậm hơn thời gian thật: animation chạy theo `delta` (tween, `_process`) vẫn đúng nhịp, animation đọc đồng hồ thật (`Time.get_ticks_*`) sẽ chạy quá nhanh trong video.
 - Cắt sang MP4 bằng ffmpeg (máy này chưa cài): quay chậm 0,5 lần dùng `setpts=2.0*PTS`, đặt `-t` trước `-i`.
 

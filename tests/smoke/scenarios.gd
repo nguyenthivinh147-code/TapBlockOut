@@ -523,11 +523,17 @@ static func scen_g(r) -> bool:
 	f.store_string(JSON.stringify(expect))
 	f.close()
 	r.step("trước khi tắt: %s" % JSON.stringify(expect))
+	if str(r.args.get("restart", "")) == "external":
+		# Máy thật (tools/device_smoke.sh): máy chủ bấm Home (onPause thật của Android) rồi force-stop app, sau đó mở
+		# lại app với scen=G2. Kịch bản này không tự kết thúc.
+		print("SMOKE G READY")
+		await r.wait_until(func() -> bool: return false, 600000)
+		return r.fail("không bị tắt từ ngoài sau 10 phút")
 	# Như Android: onPause (Game lưu ngay) rồi tiến trình bị giết; vòng đợi G2 chặn luồng chính nên tiến trình này
 	# không ghi thêm gì trong lúc G2 chạy.
 	r.plat.emit_signal("paused")
 	var args := PackedStringArray(["--headless", "--path", ProjectSettings.globalize_path("res://"),
-		"-s", "res://tests/smoke/smoke.gd", "--", "scen=G2", "out=%s" % r.out_dir.path_join("G2"),
+		"-s", "res://tests/smoke/smoke_main.gd", "--", "scen=G2", "out=%s" % r.out_dir.path_join("G2"),
 		"speed=%s" % r.args.get("speed", "1"), "window=0", "max=240"])
 	DirAccess.make_dir_recursive_absolute(r.out_dir.path_join("G2"))
 	var res := _run_process(OS.get_executable_path(), args)
@@ -901,6 +907,13 @@ static func win_level(r) -> bool:
 		return r.fail("level không vào trạng thái chơi")
 	var lv: Control = r.level_screen()
 	var lvl := int(lv.attempt.level)
+	# idle=<giây>: đo khung hình lúc bàn đứng yên trước khi chạm (pha "idle L<n>"). pace=<giây>: nghỉ giữa hai lần chạm
+	# như người chơi (mặc định 2 khung, nhanh hơn người thật nên hiệu ứng khối chồng lên nhau).
+	var idle := float(r.args.get("idle", "0"))
+	var pace := float(r.args.get("pace", "0"))
+	if idle > 0.0:
+		r.begin_phase("idle L%d" % lvl)
+		await r.wait_sec(idle)
 	r.begin_phase("L%d" % lvl)
 	var misses := 0
 	for i in 600:
@@ -917,7 +930,10 @@ static func win_level(r) -> bool:
 			misses += 1
 			if misses > 5:
 				return r.fail("L%d: 5 lần chạm khối theo solver không trúng" % lvl)
-		await r.wait_frames(2)
+		if pace > 0.0:
+			await r.wait_sec(pace)
+		else:
+			await r.wait_frames(2)
 	r.end_phase()
 	lv = r.level_screen()
 	if lv != null and not lv.board.is_won():

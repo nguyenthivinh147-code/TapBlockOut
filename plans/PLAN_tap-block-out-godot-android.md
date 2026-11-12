@@ -21,7 +21,7 @@ Tạo ngày 2026-11-01, đối chiếu lại với thư mục thực tế cùng 
 - Debug keystore: editor settings trỏ tới `~/.local/share/godot/keystores/debug.keystore` nhưng **file chưa tồn tại**. Task 0.3 tạo.
 - Java: chỉ có OpenJDK 21 tại `/usr/lib/jvm/java-21-openjdk-amd64`. `JAVA_HOME` và `java_sdk_path` của editor đang rỗng.
 - Không có `ffmpeg`, `gradle` toàn cục, `sox`, `xvfb-run`. Có `python3` với Pillow, `git`, `keytool`, `node`, và màn hình thật `DISPLAY=:0`.
-- `adb devices` không có máy nào. **Mọi kiểm tra trên máy thật là việc thủ công của người dùng** (mục 4).
+- `adb devices` không có máy nào. **Mọi kiểm tra trên máy thật là việc thủ công của người dùng** (mục 4). Từ 2026-11-12 máy dev Windows có điện thoại cắm USB khi người dùng cắm: smoke chạy trên máy bằng `tools/device_smoke.sh` (Task 11.5); cảm giác chơi, âm thanh, rung, máy 2 GB vẫn là việc thủ công.
 - MCP `comfyui` và `godot-ai` cấu hình toàn cục trong `~/.claude.json`, phiên chính gọi được cả hai. `COMFYUI_MCP_OUTPUT_ROOT=/home/tungcv2/Projects/Godot/Projects`, project nằm trong thư mục này. Chưa kiểm chứng sub-agent có gọi được không (Phase 7 có phương án dự phòng).
 
 ### 1.2 Quyết định đã chốt
@@ -105,7 +105,8 @@ art/           bản gốc và manifest.json, có .gdignore
 android/plugins/tbo_platform/   plugin Kotlin (Phase 10)
 addons/        godot_ai/ (đã cài, công cụ editor, có trong git, không vào bản export); plugin Godot (Phase 10)
 tests/  tools/  reference/horus/  plans/
-tests/smoke/   smoke.gd  smoke_saves.gd (Task 11.3; chạy bằng tools/smoke.sh)
+tests/smoke/   smoke.gd (runner, Node)  smoke_main.gd  scenarios.gd  smoke_saves.gd (Task 11.3; chạy bằng tools/smoke.sh)
+               device_main.tscn (màn chính của APK smoke, Task 11.5; chạy bằng tools/device_smoke.sh)
 docs/          tài liệu; docs/TESTING.md (quy trình test), docs/godot/ (tham chiếu API Godot, MIT)
 .claude/       settings.json (chặn lệnh git phá dữ liệu), skills/, agents/, rules/ (Phase 11)
 output/        ảnh, log, báo cáo, Excel sinh ra (không vào git, có .gdignore)
@@ -593,6 +594,7 @@ Ngày lấy từ tiêu đề task và các đoạn "Bổ sung" trong mục 3. Ta
 **2026-11-12:**
 
 - Task 11.4: Smoke F, G, H, T, L chạy đạt; smoke đợi nút đứng yên mới bấm; đóng Settings không dựng lại Home; sửa ba lỗi hiển thị smoke L, F tìm ra (chữ Hindi, nhãn độ khó trên nút Chơi, nền toast Shop).
+- Task 11.5: Smoke trên máy Android thật qua USB (`tools/device_smoke.sh`); runner smoke đổi sang Node. Lần đo đầu trên vivo V2206.
 
 ---
 
@@ -1070,6 +1072,12 @@ Lấy mẫu từ quy trình test của Butcher Defense (2026-11-11), chỉ lấy
   - **Specs:** Kịch bản F (ads có thưởng), G (lưu qua khởi động lại), H (booster), T (chuyển cảnh), L (ngôn ngữ).
   - **Kết quả:** lần chạy đầu cả F, G, H đỏ. Chung: `hud_pill_hard.png` chưa import (đã import). G và H: smoke hit-test nút ở khung này rồi nhấn ở khung sau, trong lúc popup còn phóng to nên cú nhấn rơi vào nền; `tap` nay đợi nút đứng yên và báo `bấm … trượt` khi cú nhấn không trúng nút. G2: so số với JSON (3080 và 3080.0) và log G2 vỡ chữ (stdout đọc theo code page Windows), nay đọc qua `OS.execute_with_pipe` rồi giải mã UTF-8. Census bỏ nhãn đã cuộn khuất khỏi khung cắt (Shop báo nhầm "ra ngoài màn"); monkey không chọn nút đã cuộn khuất (trước đó bấm ô lưới Profile khuất thì trúng nút khác). Lỗi game T tìm ra: đóng Settings ở Home luôn dựng lại Home, chạy lại hiệu ứng vào Home; nay chỉ dựng lại khi đổi ngôn ngữ, khôi phục được mua hàng hoặc menu tester đổi tài khoản (`test_settings_close_keeps_home`). Ảnh đã xem: T (7 đoạn quay), L (14 ngôn ngữ), F, H. Thấy bằng mắt, sửa cùng ngày (người dùng yêu cầu): chữ Hindi bị viền TMP phủ kín nét (fallback Baloo 2 đổi sang bản ExtraBold wght 800, `tools/gen_baloo_font.gd`); nhãn độ khó trên nút Chơi đè vệt bóng của nút ở ru, uk, it, fr, de, pt_BR, id (`HardTag` thu nhỏ trong 220 px thiết kế, `test_hard_tag_clears_gloss`); toast của Shop không có nền, đè chữ nút Restore Purchases (nền viên thuốc `%ToastBg` ôm chữ, `test_shop_toast_plate`). Ảnh trước và sau đã xem.
   - **Verification:** `tools/smoke.sh headless F G H` in `0`; `tools/smoke.sh window T L` rồi đọc ảnh.
+
+- [x] **Task 11.5: Smoke trên máy Android thật (2026-11-12, người dùng cắm máy)**
+  - **Allowed Files:** `tests/smoke/**`, `tools/device_smoke.sh`, `tools/smoke.sh`, `docs/TESTING.md`, kế hoạch này.
+  - **Specs:** Template Android xuất ra bỏ qua `-s` (kể cả debug), nên runner `smoke.gd` đổi từ SceneTree sang Node: desktop chạy `-s tests/smoke/smoke_main.gd` (gắn runner vào root), APK smoke lấy `tests/smoke/device_main.tscn` làm màn chính. `tools/device_smoke.sh build` sửa preset và màn chính trong một snapshot của cây code rồi xuất `build/CandyAway-smoke.apk`; `run <kịch bản>` ghi tham số vào `user://device_smoke_args.txt` bằng `run-as`, mở app, theo logcat, lấy PSS, kéo census và ảnh về `output/device/`. Thêm `capture=1` (chụp ảnh không cần cửa sổ desktop), `restart=external` cho G (máy chủ bấm Home rồi force-stop, sau đó chạy G2), `idle=`/`pace=` (đo bàn đứng yên, chạm theo nhịp người chơi), `SMOKE SOLVER` (thời gian solver của smoke trong khung đang đo).
+  - **Kết quả (vivo V2206: Snapdragon 680, Adreno 610, 8 GB, 720×1612, màn 60 Hz, Android 14):** A, S, G→G2 đạt, không lỗi script hay engine, ảnh đã xem. Khởi động: lần đầu sau khi cài 3,5 giây tới autoload, 9,1 giây tới main boot xong (gồm một ảnh chụp); các lần sau 2,1 và 6,4–6,9 giây (`splash_min_sec` 1,5). PSS 300–380 MB; object và node không tăng qua 10 level, orphan 0. Khung hình L30–L39 chạm theo nhịp người chơi (`pace=0.5`): trung vị 16,6 ms (60 FPS), p95 18,6–21,3 ms, khung > 33 ms 2–8 mỗi level (L38 30/1759), phần lớn trùng lần solver chạy (2–16 ms mỗi lần, tối đa 56 ms ở L38). Bàn đứng yên: 16,6–18,5 ms, L38 20,8 ms. Chạm liên tục (2 khung một lần, nhiều khối trượt cùng lúc): trung vị 17–27 ms, p95 40–51 ms. Máy này không phải máy 2 GB của `design.md` mục 8.
+  - **Verification:** `tools/device_smoke.sh run A capture=1` rồi đọc ảnh trong `output/device/<thời điểm>/A/device_smoke/A/`; `tools/device_smoke.sh run S G` in `mã 0`; `tools/smoke.sh headless` vẫn thoát 0.
 
 **Cổng Phase 11:** cổng mặc định cộng `tools/test.sh` và `tools/smoke.sh headless` thoát 0.
 

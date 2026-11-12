@@ -1,7 +1,12 @@
-extends SceneTree
+extends Node
 ## Smoke: mở scenes/main.tscn như game thật và bấm bằng input thật (push_input vào toạ độ, có hit-test), theo kịch
-## bản trong scenarios.gd (docs/TESTING.md "Tầng 2"). Gọi qua tools/smoke.sh. Tham số sau "--":
+## bản trong scenarios.gd (docs/TESTING.md "Tầng 2"). Runner là một Node: desktop chạy qua tools/smoke.sh
+## (-s smoke_main.gd gắn node này vào root), máy Android thật chạy qua tools/device_smoke.sh (APK lấy device_main.tscn,
+## gốc là node này, làm màn chính; template xuất ra bỏ qua -s). Tham số sau "--":
 ##   scen=<A..S> out=<thư mục tuyệt đối> speed=<time_scale> seed=<n> taps=<n> window=<0|1> max=<giây>
+##   capture=<0|1> (lưu ảnh cả khi không chạy cửa sổ desktop: máy Android thật)
+##   argfile=<đường dẫn> (đọc thêm các dòng key=value, ghi đè tham số dòng lệnh). Trên Android mặc định là
+##   user://device_smoke_args.txt, máy chủ ghi vào trước mỗi lần mở app.
 ## Dòng log: SMOKE STEP, SMOKE SHOT, SMOKE CENSUS, SMOKE WARN, SMOKE FRAMES, SMOKE HITCH, SMOKE MEM, SMOKE INVARIANT,
 ## SMOKE REAL INPUT, SMOKE ERRORS script=<n> engine=<n>, cuối cùng SMOKE OK hoặc SMOKE FAILED <lý do>.
 
@@ -19,6 +24,7 @@ const HITCH_MS := 33.0
 const INVARIANT_EVERY := 30
 const INVARIANT_STRIKES := 3
 const RAW_KEY := "^[a-z][a-z0-9]*(_[a-z0-9]+)+$"
+const DEVICE_ARGFILE := "user://device_smoke_args.txt"
 
 
 ## Đếm lỗi script và lỗi engine (không đếm warning), giữ nội dung để in và so allowlist.
@@ -58,9 +64,13 @@ class Guard:
 			seen = event.as_text()
 
 
+## Cửa sổ gốc của cây (giữ tên `root` như khi runner còn là SceneTree; kịch bản dùng r.root).
+var root: Window = null
 var args := {}
 var out_dir := ""
 var window := false
+## Lưu ảnh ở shot/film: khi chạy cửa sổ desktop hoặc capture=1 (máy thật luôn vẽ màn).
+var capture := false
 var main: Control = null
 var game: Node = null
 var plat: Node = null
@@ -74,6 +84,7 @@ var _script_errors := 0
 var _engine_errors := 0
 var _phase := ""
 var _phase_times: PackedFloat32Array = []
+var _solve_ms: PackedFloat32Array = []
 var _last_usec := 0
 var _frame_no := 0
 var _strikes := {}
@@ -82,27 +93,37 @@ var _invariants_on := false
 var _ended := false
 
 
-func _initialize() -> void:
+func _ready() -> void:
+	root = get_tree().root
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	OS.add_logger(_log)
 	for a in OS.get_cmdline_user_args():
 		var kv := a.split("=", true, 1)
 		args[kv[0]] = kv[1] if kv.size() > 1 else ""
+	var argfile := str(args.get("argfile", DEVICE_ARGFILE if OS.has_feature("android") else ""))
+	if not argfile.is_empty():
+		for raw in FileAccess.get_file_as_string(argfile).split("\n"):
+			var kv := raw.strip_edges().split("=", true, 1)
+			if kv.size() == 2 and not kv[0].is_empty():
+				args[kv[0]] = kv[1]
 	out_dir = str(args.get("out", ProjectSettings.globalize_path("user://smoke_out")))
+	DirAccess.make_dir_recursive_absolute(out_dir)
 	window = str(args.get("window", "0")) == "1"
+	capture = window or str(args.get("capture", "0")) == "1"
 	_load_allow()
 	_run.call_deferred()
 
 
 func _run() -> void:
-	await process_frame
+	await get_tree().process_frame
 	game = root.get_node("Game")
 	plat = root.get_node("Platform")
 	root.add_child(_guard)
 	if window:
 		root.mouse_passthrough = true
-	process_frame.connect(_on_frame)
+	get_tree().process_frame.connect(_on_frame)
 	var limit := float(args.get("max", "870"))
-	create_timer(limit, true, false, true).timeout.connect(func() -> void:
+	get_tree().create_timer(limit, true, false, true).timeout.connect(func() -> void:
 		fail("quá %d giây" % int(limit))
 		_end())
 	var scen := str(args.get("scen", "B"))
@@ -225,7 +246,10 @@ func _end() -> void:
 	Config.account_tool_override = -1
 	close_game()
 	OS.remove_logger(_log)
-	quit(0 if ok else 1)
+	# Máy thật: không tự thoát (thoát giữa chừng từng làm engine abort trên Android ở Butcher Defense, hiện hộp
+	# "ứng dụng dừng"); tools/device_smoke.sh đọc dòng kết thúc rồi force-stop.
+	if not OS.has_feature("android"):
+		get_tree().quit(0 if ok else 1)
 
 
 func _load_allow() -> void:
@@ -267,18 +291,18 @@ func wait_until(cond: Callable, ms: int = 10000) -> bool:
 	while Time.get_ticks_msec() < deadline:
 		if cond.call():
 			return true
-		await process_frame
+		await get_tree().process_frame
 	return bool(cond.call())
 
 
 func wait_frames(n: int) -> void:
 	for i in n:
-		await process_frame
+		await get_tree().process_frame
 
 
 ## Đợi theo thời gian game (đã nhân time_scale).
 func wait_sec(sec: float) -> void:
-	await create_timer(sec, true, false, false).timeout
+	await get_tree().create_timer(sec, true, false, false).timeout
 
 
 func popups() -> Array[Node]:
@@ -347,7 +371,7 @@ func hovered_at(p: Vector2) -> Control:
 	mv.position = p
 	mv.global_position = p
 	_push(mv)
-	await process_frame
+	await get_tree().process_frame
 	return root.gui_get_hovered_control()
 
 
@@ -366,7 +390,7 @@ func click_at(p: Vector2, target: Control = null) -> String:
 			var got := root.gui_get_hovered_control()
 			if got != null and got != target and not target.is_ancestor_of(got):
 				missed = node_label(got)
-		await process_frame
+		await get_tree().process_frame
 	return missed
 
 
@@ -389,7 +413,7 @@ func drag(from: Vector2, to: Vector2, steps: int = 10) -> void:
 		mv.velocity = (p - last) * 60.0
 		last = p
 		_push(mv)
-		await process_frame
+		await get_tree().process_frame
 	var up := InputEventMouseButton.new()
 	up.button_index = MOUSE_BUTTON_LEFT
 	up.pressed = false
@@ -436,7 +460,7 @@ func _wait_still(c: Control, deadline: int) -> void:
 		var p := to_viewport(c, c.size * 0.5)
 		still = still + 1 if p.distance_to(last) < 1.0 else 0
 		last = p
-		await process_frame
+		await get_tree().process_frame
 
 
 ## Bấm Control `c` như ngón tay: đợi tối đa `wait_ms` cho nút đứng yên và tâm nút hit-test trúng `c` (hiệu ứng mở
@@ -516,7 +540,10 @@ func tap_next_move() -> bool:
 	var lv := level_screen()
 	if lv == null or str(lv.state) != "playing":
 		return false
+	var t0 := Time.get_ticks_usec()
 	var r: Dictionary = Solver.solve_state(lv.board)
+	# Solver chạy trên luồng chính, trong khung đang đo: SMOKE SOLVER cho biết phần đó của FRAMES là của smoke.
+	_solve_ms.append((Time.get_ticks_usec() - t0) / 1000.0)
 	if not bool(r.ok) or (r.order as Array).is_empty():
 		return false
 	return await tap_block(str(r.order[0]))
@@ -540,12 +567,12 @@ func quiet(ms: int = 4000) -> void:
 	await wait_sec(0.4)
 
 
-## Chụp màn (chỉ khi có cửa sổ) và ghi census chữ đang hiện (mọi chế độ), sau khi màn yên.
+## Chụp màn (chỉ khi `capture`: có cửa sổ hoặc máy thật) và ghi census chữ đang hiện (mọi chế độ), sau khi màn yên.
 func shot(name: String) -> void:
 	await quiet()
 	shots += 1
 	var base := "%02d_%s" % [shots, name]
-	if window:
+	if capture:
 		await RenderingServer.frame_post_draw
 		var img := root.get_texture().get_image()
 		if img != null and not img.is_empty():
@@ -555,12 +582,12 @@ func shot(name: String) -> void:
 
 
 ## Ảnh liền nhau mỗi `every` giây thật trong `sec` giây, không đợi màn yên, để soát animation chuyển cảnh (kịch bản
-## T). Chỉ chụp khi có cửa sổ; headless chỉ đợi chừng đó thời gian.
+## T). Chỉ chụp khi `capture`; headless chỉ đợi chừng đó thời gian.
 func film(name: String, sec: float, every: float = 0.15) -> void:
 	var n := int(ceil(sec / every))
-	if not window:
+	if not capture:
 		step("quay %s: %d khung (headless không chụp)" % [name, n])
-		await create_timer(sec, true, false, true).timeout
+		await get_tree().create_timer(sec, true, false, true).timeout
 		return
 	shots += 1
 	var base := "%02d_%s" % [shots, name]
@@ -573,7 +600,7 @@ func film(name: String, sec: float, every: float = 0.15) -> void:
 			print("SMOKE SHOT %s_%02d.png" % [base, i])
 		var left := every * 1000.0 - float(Time.get_ticks_msec() - t0)
 		if left > 1.0:
-			await create_timer(left / 1000.0, true, false, true).timeout
+			await get_tree().create_timer(left / 1000.0, true, false, true).timeout
 
 
 ## Khung của `c` trên viewport (gồm transform của CanvasLayer và scale của node).
@@ -653,6 +680,7 @@ func begin_phase(name: String) -> void:
 		end_phase()
 	_phase = name
 	_phase_times = []
+	_solve_ms = []
 	_last_usec = Time.get_ticks_usec()
 
 
@@ -667,6 +695,14 @@ func end_phase() -> void:
 			if v > HITCH_MS:
 				hitches += 1
 		print("SMOKE FRAMES %s n=%d p50=%.1fms p95=%.1fms max=%.1fms hitch=%d" % [_phase, t.size(), p50, p95, t[-1], hitches])
+	if _solve_ms.size() > 0:
+		var s := _solve_ms.duplicate()
+		s.sort()
+		var total := 0.0
+		for v in s:
+			total += v
+		print("SMOKE SOLVER %s n=%d p50=%.1fms max=%.1fms total=%.0fms" % [_phase, s.size(), s[int(s.size() * 0.5)], s[-1],
+			total])
 	_phase = ""
 
 
