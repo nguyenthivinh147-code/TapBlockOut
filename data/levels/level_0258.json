@@ -1,6 +1,6 @@
 {
 	"id": 258, "w": 14, "h": 18, "hard": true,
-	"min_taps": 53, "moves": 58, "seed": 20261104,
+	"min_taps": 53, "moves": 56, "seed": 20261104,
 	"stones": [[2,4],[11,4],[6,9],[7,9],[6,10],[7,10]],
 	"pulse_sides": [],
 	"blocks": [

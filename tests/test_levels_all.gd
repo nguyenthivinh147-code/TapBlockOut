@@ -429,13 +429,14 @@ func test_hard_follows_curve(t: T) -> void:
 		t.eq(bool(d["hard"]), DifficultyCurve.is_hard(id), "L%d cờ HARD theo đường cong" % id)
 		var want := 7 if id <= 3 else (5 if id <= 10 else 4)
 		if id > 13:
-			var late := 1 if id > 100 else 0
+			# Tới L150 thường / Hard / VeryHard 5 / 4 / 5, từ L151 4 / 3 / 4.
+			var late := 1 if id > 150 else 0
 			if DifficultyCurve.is_very_hard(id):
-				want = 5 + late
+				want = 5 - late
 			elif bool(d["hard"]):
-				want = 4 + late
+				want = 4 - late
 			else:
-				want = 5 + late
+				want = 5 - late
 		if bool(d["hard"]):
 			hard += 1
 		t.eq(Solver.slack_for(d), want, "L%d dư %d theo bậc (design.md mục 3)" % [id, want])

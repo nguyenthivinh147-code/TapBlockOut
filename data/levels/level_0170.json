@@ -1,6 +1,6 @@
 {
 	"id": 170, "w": 14, "h": 18, "hard": false,
-	"min_taps": 49, "moves": 55, "seed": 20261102,
+	"min_taps": 49, "moves": 53, "seed": 20261102,
 	"cover": "frost",
 	"stones": [[3,1],[10,1],[5,5],[8,5],[5,11],[8,11],[3,15],[10,15]],
 	"pulse_sides": [{"side":"up","open":false},{"side":"down","open":true}],

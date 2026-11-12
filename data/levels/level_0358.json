@@ -1,6 +1,6 @@
 {
 	"id": 358, "w": 14, "h": 18, "hard": true,
-	"min_taps": 62, "moves": 68, "seed": 20261104,
+	"min_taps": 62, "moves": 66, "seed": 20261104,
 	"stones": [],
 	"pulse_sides": [],
 	"choco_sides": [{"side":"right","layers":4}],

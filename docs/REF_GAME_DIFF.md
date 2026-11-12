@@ -39,7 +39,7 @@ Bảng này chỉ ghi chỗ khác, không phải danh sách việc phải làm. 
 
 | Mục | Game gốc | Candy Away |
 |---|---|---|
-| Dư bước | Số bước − số khối: tutorial khoảng 7, Normal 3,45, Hard 3,94, SuperHard 5,03. **Level khó dư nhiều hơn** | Số chạm tối thiểu + dư cố định (2026-11-12): L1–3 là 7, L4–10 là 5, L11–13 là 4; L14–100 thường 5, Hard 4, VeryHard 5; từ L101 thường 6, Hard 5, VeryHard 6. Đo L21–500: thường 5,8, Hard 4,9, VeryHard 5,8 (game gốc cùng chặng 4,5 / 4,7 / 5,8). Hard vẫn dư ít hơn level thường |
+| Dư bước | Số bước − số khối: tutorial khoảng 7, Normal 3,45, Hard 3,94, SuperHard 5,03. **Level khó dư nhiều hơn** | Số chạm tối thiểu + dư cố định (2026-11-12): L1–3 là 7, L4–10 là 5, L11–13 là 4; L14–150 thường 5, Hard 4, VeryHard 5; từ L151 thường 4, Hard 3, VeryHard 4. Đo L21–500: thường 4,3, Hard 3,3, VeryHard 4,3 (game gốc cùng chặng 4,5 / 4,7 / 5,8). Hard vẫn dư ít hơn level thường |
 | Hết bước | Hồi sinh chỉ bằng video, cộng số khối còn lại, kẹp trong 5–10 bước. Hồi sinh 300 coin có trong code nhưng không dùng | Popup +3 Move, tối đa 4 lần: 1.900 / 2.200 / 2.500 / 2.800 gold, video, hoặc +3 Move trong kho |
 | Mạng | Không có | 10 mạng, 5 phút hồi 1 mạng. Từ L10 thua mất 1 mạng. Nạp: 900 gold được 5 mạng, 1 video được 1 mạng |
 | Chơi lại | Chỉ cảnh báo mất chuỗi thắng (giảm hệ số điểm Rank) | Từ L10 mất 1 mạng nếu đã chạm khối |

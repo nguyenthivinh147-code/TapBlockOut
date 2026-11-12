@@ -243,18 +243,18 @@ func test_solve_state_ignores_moves(t: T) -> void:
 func test_slack_and_compute_moves(t: T) -> void:
 	Config.reset()
 	var one := [_b("a", "yellow", [[0, 0]])]
-	for pair in [[1, 7], [3, 7], [4, 5], [10, 5], [11, 4], [13, 4], [14, 5], [60, 5], [100, 5], [101, 6], [300, 6]]:
+	for pair in [[1, 7], [3, 7], [4, 5], [10, 5], [11, 4], [13, 4], [14, 5], [60, 5], [100, 5], [150, 5], [151, 4], [300, 4]]:
 		t.eq(Solver.slack_for(_lv(5, 5, one, {"id": pair[0]})), pair[1], "L%d dư %d" % pair)
-	# Hard (không trong DifficultyCurve.VERY_HARD) và VeryHard: tới L100 dư 4 và 5, sau đó 5 và 6.
-	for pair in [[24, 4], [98, 4], [150, 5], [499, 5]]:
+	# Hard (không trong DifficultyCurve.VERY_HARD) và VeryHard: tới L150 dư 4 và 5, sau đó 3 và 4.
+	for pair in [[24, 4], [98, 4], [150, 4], [499, 3]]:
 		t.ok(not DifficultyCurve.is_very_hard(pair[0]), "L%d không VeryHard" % pair[0])
 		t.eq(Solver.slack_for(_lv(5, 5, one, {"id": pair[0], "hard": true})), pair[1], "HARD L%d dư %d" % pair)
-	for pair in [[33, 5], [DifficultyCurve.VERY_HARD[-1], 6]]:
+	for pair in [[33, 5], [DifficultyCurve.VERY_HARD[-1], 4]]:
 		t.ok(DifficultyCurve.is_very_hard(pair[0]), "L%d VeryHard" % pair[0])
 		t.eq(Solver.slack_for(_lv(5, 5, one, {"id": pair[0], "hard": true})), pair[1], "VeryHard L%d dư %d" % pair)
 	# Vòng lặp sau L500 (`shown`): bậc theo level hiển thị, HARD từ very_hard_from_level tính như VeryHard.
-	t.eq(Solver.slack_for(_lv(5, 5, one, {"id": 60}), 560), 6, "L560 chơi L60: dư 6")
-	t.eq(Solver.slack_for(_lv(5, 5, one, {"id": 98, "hard": true}), 598), 6, "L598 chơi Hard L98: dư như VeryHard")
+	t.eq(Solver.slack_for(_lv(5, 5, one, {"id": 60}), 560), 4, "L560 chơi L60: dư 4")
+	t.eq(Solver.slack_for(_lv(5, 5, one, {"id": 98, "hard": true}), 598), 4, "L598 chơi Hard L98: dư như VeryHard")
 	# Dư không theo số khối.
 	var many: Array = []
 	for i in range(80):

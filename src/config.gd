@@ -399,20 +399,21 @@ const _CONTENT := {
 	# Spare MOVES on top of the solver's min taps (Solver.slack_for, design.md section 3): levels up to slack_easy_until
 	# get slack_easy, up to slack_intro_until slack_intro, up to slack_early_until slack_early. Then by tag: up to
 	# slack_mid_until slack_normal_mid / slack_hard_mid / slack_very_hard_mid, after that slack_normal / slack_hard /
-	# slack_very_hard (2026-11-12, user: closer to the reference game, which gives harder levels more spare moves).
+	# slack_very_hard (2026-11-12, user: closer to the reference game, which gives harder levels more spare moves; later
+	# the same day, user: one less on L101-150 and two less from L151, so the mid tier runs to L150).
 	"slack_easy": 7,
 	"slack_easy_until": 3,
 	"slack_intro": 5,
 	"slack_intro_until": 10,
 	"slack_early": 4,
 	"slack_early_until": 13,
-	"slack_mid_until": 100,
+	"slack_mid_until": 150,
 	"slack_normal_mid": 5,
 	"slack_hard_mid": 4,
 	"slack_very_hard_mid": 5,
-	"slack_normal": 6,
-	"slack_hard": 5,
-	"slack_very_hard": 6,
+	"slack_normal": 4,
+	"slack_hard": 3,
+	"slack_very_hard": 4,
 	# From this displayed level (the content loop after L500) every HARD level shows as VeryHard.
 	"very_hard_from_level": 501,
 	"hard_banner_sec": 1.2,

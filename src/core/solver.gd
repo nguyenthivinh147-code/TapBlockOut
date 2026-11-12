@@ -36,8 +36,8 @@ static func immediate_exit_exists(level: Dictionary) -> bool:
 
 
 ## Spare MOVES per design.md section 3, fixed per tier and not scaled by block count; numbers live in Config.CONTENT
-## (slack_*). L1-3 7, L4-10 5, L11-13 4 (no tags there). Then by tag (normal / Hard / VeryHard): up to L100 5 / 4 / 5,
-## after that 6 / 5 / 6. `shown`: the displayed level when it differs from the level's id (the content loop after
+## (slack_*). L1-3 7, L4-10 5, L11-13 4 (no tags there). Then by tag (normal / Hard / VeryHard): up to L150 5 / 4 / 5,
+## after that 4 / 3 / 4. `shown`: the displayed level when it differs from the level's id (the content loop after
 ## L500 replays L51-500): the tier follows it, and a HARD level from CONTENT.very_hard_from_level counts as VeryHard,
 ## as the level screen shows it.
 static func slack_for(level: Dictionary, shown: int = 0) -> int:

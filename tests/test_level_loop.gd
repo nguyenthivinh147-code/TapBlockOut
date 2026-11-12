@@ -99,7 +99,7 @@ func test_win_advances_display_level_past_last(t: T) -> void:
 	t.eq(int(a2.level), last + 1, "attempt kế là L%d" % (last + 1))
 	var d: Dictionary = g.current_level_data()
 	t.eq(int(a2.board.remaining_count()), (d.blocks as Array).size(), "bàn là nội dung vòng lặp")
-	# Dư MOVES theo level hiển thị (design.md mục 3): vòng lặp dùng bậc từ L101 dù file là level nhỏ hơn.
+	# Dư MOVES theo level hiển thị (design.md mục 3): vòng lặp dùng bậc từ L151 dù file là level nhỏ hơn.
 	t.eq(int(a2.board.moves_left()), int(d.min_taps) + Solver.slack_for(d, last + 1), "dư theo level hiển thị")
 	Config.demo_override = -1
 
