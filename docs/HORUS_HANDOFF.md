@@ -103,7 +103,7 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `notif_sparse_days` | 16,18,21,24,27,30 |
 | `notif_earliest_hour`, `_latest_hour`, `_quiet_after_ignored`, `_ask_after_run` | 8, 22, 9, 2 |
 | `content_demo_max_level`, `content_release_pregen_level` (level cuối có file), `content_loop_start_level` (sau level cuối lặp lại từ đây) | 20, 500, 51 |
-| `content_slack_easy`, `_slack_easy_until`, `_slack_early`, `_slack_early_until`, `_slack_normal`, `_slack_hard` (dư MOVES; có tác dụng cả với L1–500 ghi sẵn) | 5, 3, 3, 13, 4, 3 |
+| `content_slack_easy`, `_slack_easy_until`, `_slack_intro`, `_slack_intro_until`, `_slack_early`, `_slack_early_until`, `_slack_mid_until`, `_slack_normal_mid`, `_slack_hard_mid`, `_slack_very_hard_mid`, `_slack_normal`, `_slack_hard`, `_slack_very_hard` (dư MOVES theo bậc, `design.md` mục 3; có tác dụng cả với L1–500 ghi sẵn) | 7, 3, 5, 10, 4, 13, 100, 5, 4, 5, 6, 5, 6 |
 | `content_think_clap_sec` | 8 |
 | `content_build`, `content_support_email` | v1, support@horusvn.com |
 | `content_latest_version`, `content_min_version` (popup cập nhật: dưới latest thì mời, dưới min thì bắt buộc; trống là tắt), `content_store_url` | "", "", https://play.google.com/store/apps/details?id=com.tungcv2.tapblockout |

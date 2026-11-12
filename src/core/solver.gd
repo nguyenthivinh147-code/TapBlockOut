@@ -10,6 +10,7 @@ extends RefCounted
 
 const BoardState := preload("res://src/core/board_state.gd")
 const Config := preload("res://src/config.gd")
+const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 const BIG_MOVES := 100000
 const GUARD := 20000  # chặn vòng lặp tham lam, xa hơn mọi level thật
@@ -34,18 +35,27 @@ static func immediate_exit_exists(level: Dictionary) -> bool:
 	return BoardState.new(level).first_exit() != ""
 
 
-## Spare MOVES per design.md section 3: HARD (VeryHard too) 3, L1-3 5, L4-13 3, later levels 4.
-## Fixed per tier, not scaled by block count; numbers live in Config.CONTENT (slack_*).
-static func slack_for(level: Dictionary) -> int:
+## Spare MOVES per design.md section 3, fixed per tier and not scaled by block count; numbers live in Config.CONTENT
+## (slack_*). L1-3 7, L4-10 5, L11-13 4 (no tags there). Then by tag (normal / Hard / VeryHard): up to L100 5 / 4 / 5,
+## after that 6 / 5 / 6. `shown`: the displayed level when it differs from the level's id (the content loop after
+## L500 replays L51-500): the tier follows it, and a HARD level from CONTENT.very_hard_from_level counts as VeryHard,
+## as the level screen shows it.
+static func slack_for(level: Dictionary, shown: int = 0) -> int:
 	var c: Dictionary = Config.CONTENT
-	if bool(level.get("hard", false)):
-		return int(c["slack_hard"])
 	var id := int(level.get("id", 0))
-	if id <= int(c["slack_easy_until"]):
+	var lv := shown if shown > 0 else id
+	if lv <= int(c["slack_easy_until"]):
 		return int(c["slack_easy"])
-	if id <= int(c["slack_early_until"]):
+	if lv <= int(c["slack_intro_until"]):
+		return int(c["slack_intro"])
+	if lv <= int(c["slack_early_until"]):
 		return int(c["slack_early"])
-	return int(c["slack_normal"])
+	var mid := lv <= int(c["slack_mid_until"])
+	if bool(level.get("hard", false)):
+		if DifficultyCurve.is_very_hard(id) or lv >= int(c["very_hard_from_level"]):
+			return int(c["slack_very_hard_mid" if mid else "slack_very_hard"])
+		return int(c["slack_hard_mid" if mid else "slack_hard"])
+	return int(c["slack_normal_mid" if mid else "slack_normal"])
 
 
 ## Clear rounds (design.md section 4): each round taps every block that can act right now (exit, peel the box, knock a

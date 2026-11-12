@@ -50,7 +50,17 @@ Game làm bằng **Godot 4.7.2, GDScript, xuất Android gốc**. Tài liệu Ho
 - Màu quyết định hướng: vàng lên, xanh lá trái, xanh dương phải, tím xuống. Mỗi cạnh khung là một cổng liền, không có cổng rời.
 - Chạm khối, đường thông: khối lao nhanh dần tới thanh cùng màu (tối đa 0,35 s, rồi chậm dần 0,3 s), vỡ thành mảnh kẹo bay xuyên qua thanh, MOVES giảm 1.
 - Chạm khối, đường bị chặn: khối lao tới vật cản, nhún khi va chạm rồi bật về chỗ cũ, khối bị va nhún theo, MOVES giảm 1. Bàn cờ không đổi nên không có thế bí.
-- `MOVES = số chạm tối thiểu do solver tính + dư`. Dư cố định theo bậc, không theo số khối: L1–3 là 5; L4–13 là 3; từ L14 level thường là 4; level HARD và VeryHard là 3 (`Config.CONTENT.slack_*`). Level HARD khó nhờ bàn (thêm khối, chuỗi chặn sâu hơn), không nhờ dư ít. Game cộng dư lúc vào level từ `min_taps` trong file, nên Remote Config đổi được dư mà không phải sinh lại level; `moves` trong file là giá trị theo số mặc định.
+- `MOVES = số chạm tối thiểu do solver tính + dư`. Dư cố định theo bậc, không theo số khối (`Config.CONTENT.slack_*`, `Solver.slack_for`; 2026-11-12, người dùng: gần game tham khảo hơn, game đó cho level khó dư nhiều hơn):
+
+  | Level | Thường | Hard | VeryHard |
+  | --- | --- | --- | --- |
+  | L1–3 | 7 | | |
+  | L4–10 | 5 | | |
+  | L11–13 | 4 | | |
+  | L14–100 | 5 | 4 | 5 |
+  | Từ L101 | 6 | 5 | 6 |
+
+  L1–13 không có level Hard hay VeryHard. Trước 2026-11-12: L1–3 là 5, L4–13 là 3, từ L14 level thường 4, Hard và VeryHard 3. Bậc theo level hiển thị: vòng lặp sau L500 (chơi lại L51–500) dùng bậc "từ L101", và level Hard ở đó tính như VeryHard vì màn chơi hiện "rất khó" (`CONTENT.very_hard_from_level`). Game cộng dư lúc vào level từ `min_taps` trong file, nên Remote Config đổi được dư mà không phải sinh lại level; `moves` trong file là giá trị theo số mặc định.
 - Nghĩ quá lâu rồi đi đúng (mặc định từ 8 giây): tiếng vỗ tay và lời khen (`level_clap`, "Hay lắm!"; 2026-11-08, `src/ui/praise_fx.gd`). Chữ nằm giữa hàng trên của HUD và khung, đáy chữ cách mép trên khung `BOARD_CAPTION_GAP`, không bao giờ đè khung; chỗ hẹp thì chữ co lại. Chữ vàng chuyển cam, viền tím đậm, bật từ đáy lên to 130% rồi nảy về, nghiêng nhẹ, loé trắng, có vệt sáng quét qua và sao lấp lánh trên chữ, thở nhẹ rồi bay lên và mờ đi; tổng 1,6 giây. Sau chữ có hào quang vàng, tia nắng xoay và một vòng sóng; lớp này nằm sau bàn nên khung che phần dưới. Sao kẹo nhiều màu và confetti bung ra trước bàn rồi rơi. Dòng hướng dẫn trên khung mờ đi trong lúc khen. Hiệu ứng không chặn chạm.
 - Mỗi level có ít nhất một khối thoát được ngay. Solver kiểm 100% level trong unit test và lúc build.
 - Khối không có mũi tên chỉ hướng: hướng đi đọc theo màu khối và thanh cổng cùng màu.
@@ -110,32 +120,32 @@ Từ 2026-11-08, 500 level thường bám game tham khảo Tap Block Out 2.2.1, 
 - **Tag:** giữ đúng level của game tham khảo, gồm 149 Hard và 69 VeryHard trong L1–500. Riêng tag rơi vào level dạy cơ chế thì dời sang level ngay sau, hai level đổi số đo cho nhau: Hard ở L70 (level dạy Sương mù cũ) dời sang L71; từ 2026-11-10 VeryHard ở L300 (level dạy Socola) dời sang L301 và ở L350 (level dạy Ruy băng) dời sang L351. Level dạy và L1–4 không mang tag. Level Hard đầu tiên là L23, VeryHard đầu tiên là L33. Huy hiệu và hộp thoại "rất khó" hiện cho level VeryHard; từ L501 (vòng lặp) mọi level HARD cũng hiện "rất khó" (`CONTENT.very_hard_from_level`).
 - **Tag khớp đường cong:** level Hard có số khối và số lượt ít nhất 1,15 lần trung vị các level thường trong 3 level hai bên, VeryHard ít nhất 1,3 lần (`PEAK_*`), tính sau khi kẹp nên vẫn đúng ở level bị trần cắt (trừ khi chính level đó chạm trần). Số đo gốc đã thoả gần hết; số nào chưa đủ thì đường cong nâng lên.
 - **Số khối mục tiêu** (`block_count`): L1–4 làm tay 4, 6, 8, 10 khối. L5–10 là 10, 10, 10, 11, 11, 11 khối (`EARLY_SHAPE_BLOCKS`, 2026-11-10: hình đặc khoảng 4 ô mỗi khối, mục "Hình dạng level"; trước đó 12 khối). Từ L11 lấy số đo, kẹp trong 12–60 khối (`MOTIF_MIN_BLOCKS`, `BLOCK_CAP`). Hình vẽ tay nhỏ nhất có 34 ô nên với khoảng 3 ô mỗi khối thì dưới 12 khối gần như không có hình vừa. Trên 60 khối chỉ còn 6–8 hình vừa nên level to lặp hình. Game tham khảo có 125 level trên 60 khối (tới 112 khối); các level đó bị cắt xuống 60.
-- **Số lượt mục tiêu** (`wave_count`): lấy số đo. Level bị cắt số khối thì số lượt giảm theo cùng tỉ lệ. Tối đa 0,55 lượt mỗi khối (`WAVE_SHARE_MAX`), vì hình 12×17 hiếm khi có chuỗi sâu hơn.
-- **Khối thoát được ngay** (từ L14, 2026-11-11, người dùng yêu cầu giảm): số khối đi được ngay lúc đầu, tức thoát hoặc bóc được lớp ngoài, đếm như "Available Block" của Gợi ý (`LevelGenerator.free_count`), nằm trong khoảng: L14–29 2–4 khối (`Config.EXIT_RANGE_EARLY`); từ L30 level thường và level nghỉ 3–5, Hard 2–4, VeryHard 2–3 (`EXIT_RANGE_NORMAL`, `EXIT_RANGE_HARD`, `EXIT_RANGE_VERY_HARD`). Level dạy cơ chế theo cùng khoảng, ngoài điều kiện riêng của nó (mục "Hình dạng level"). Lúc gán hướng, đã đủ khối đi ở lượt đầu bằng trần thì bộ sinh chỉ chọn khối nằm sâu hơn. Sau `_unstick`, còn thiếu thì bỏ sương mù hoặc lớp phủ ở khối hết che là thoát được (`_ensure_free`). Không đạt thì gán lại; cứ 10 lần thử (`EXIT_RELAX_EVERY`) khoảng rộng thêm 1 mỗi phía, sàn 1 khối. Daily Challenge từ L50 dùng cùng khoảng nhưng chỉ gán lại 3 lần, nên khoảng 14% bàn lệch ra ngoài (đo 153 bàn ngày 2026-11-11, trung bình 4,4 khối). L1–13, Road Trip và Màn đặc biệt không đổi.
-- **Bộ sinh:** lúc gán hướng, bộ sinh ưu tiên cách gán làm khối nằm sâu hơn trong chuỗi chặn khi chuỗi còn nông hơn mục tiêu, và giữ lại khi đã đủ sâu. Sau khi rải cơ chế, bộ sinh đo số lượt. Lệch quá max(1, 10%) mục tiêu thì gán lại; vẫn lệch thì cắt lại hoặc sinh lại, và khoảng lệch cho phép nới dần theo số lần thử, tối đa max(2, 25%) mục tiêu (`Config.LEVEL_ROUNDS_TOL*`; trần từ 2026-11-11, vì có trần khối thoát ngay thì khoảng lệch nới nhanh hơn khoảng khối thoát và L47, L66 từng sâu hơn mục tiêu 60%). Daily Challenge sinh ngay trong game nên chỉ gán lại 3 lần trong cùng một hình rồi giữ bàn gần mục tiêu nhất (lệch số lượt cộng lệch khoảng khối thoát ngay); mỗi bàn trung bình 45 ms, chậm nhất khoảng 130 ms trên máy dev (đo 2026-11-11 với khoảng khối thoát ngay và trộn màu; 2026-11-10 là 35 và 115 ms).
-- **Đo trên 500 level đóng gói** (sinh lại 2026-11-11, mục 9): số khối lệch đường cong tối đa 2 (cắt khối đối xứng, mục "Hình dạng level"). Số lượt có 472/496 level (L5–500) trong khoảng lệch max(1, 10%), cả 496 level trong max(2, 25%); bản 2026-11-10 là 490 và 493 level. So với game tham khảo, tính trên L21–500:
+- **Số lượt mục tiêu** (`wave_count`): lấy đúng số đo, kể cả level bị cắt số khối, tối đa 0,8 lượt mỗi khối (`WAVE_SHARE_MAX`). Từ 2026-11-12 (người dùng: số lượt dọn bàn cao gần game tham khảo, giữ trần 60 khối, chuỗi sâu hơn); trước đó level bị cắt số khối thì số lượt giảm theo cùng tỉ lệ và trần là 0,55 lượt mỗi khối. Level VeryHard cắt từ 80–110 khối xuống 60 nên mục tiêu 45–48 lượt thành chuỗi gần như một hàng, bộ sinh thường không đạt (xem số đo dưới).
+- **Khối thoát được ngay**: số khối đi được ngay lúc đầu, tức thoát hoặc bóc được lớp ngoài, đếm như "Available Block" của Gợi ý (`LevelGenerator.free_count`). L1–10 đúng bằng game tham khảo: 4, 2, 3, 3, 2, 3, 4, 4, 4, 5 (`Config.EXIT_EARLY_LEVELS`; L1–4 làm tay theo số này). L11–13 không giới hạn. L14–19 2–4 khối (`EXIT_RANGE_EARLY`); từ L20 level thường và level nghỉ 6–8, Hard 7–9, VeryHard 6–8 (`EXIT_RANGE_NORMAL`, `EXIT_RANGE_HARD`, `EXIT_RANGE_VERY_HARD`). Lịch sử: 2026-11-11 người dùng yêu cầu giảm (trước đó 1–17, trung bình 6,5): L14–29 2–4, từ L30 thường 3–5, Hard 2–4, VeryHard 2–3. 2026-11-12 người dùng yêu cầu gần game tham khảo hơn: so với bản 2026-11-11, level thường từ L20 thêm 2–3 khối, Hard và VeryHard thêm 4–5 khối (game tham khảo: thường 8,4, Hard 9,4, VeryHard 10,3). Level dạy cơ chế theo cùng khoảng, ngoài điều kiện riêng của nó (mục "Hình dạng level"). Lúc gán hướng, đã đủ khối đi ở lượt đầu bằng trần thì bộ sinh chỉ chọn khối nằm sâu hơn. Sau `_unstick`, còn thiếu thì bỏ sương mù hoặc lớp phủ ở khối hết che là thoát được (`_ensure_free`). Không đạt thì gán lại; cứ 10 lần thử (`EXIT_RELAX_EVERY`) khoảng rộng thêm 1 mỗi phía, sàn 1 khối. Daily Challenge từ L50 dùng cùng khoảng nhưng chỉ gán lại 3 lần, nên khoảng 7% bàn lệch ra ngoài (đo 151 bàn ngày 2026-11-12, trung bình 7,5 khối; 2026-11-11 là 14% và 4,4 khối). Road Trip và Màn đặc biệt không đổi.
+- **Bộ sinh:** lúc gán hướng, bộ sinh ưu tiên cách gán làm khối nằm sâu hơn trong chuỗi chặn khi chuỗi còn nông hơn mục tiêu (trọng số nhân 4 cho mỗi tầng sâu thêm, `DEPTH_PUSH`; 2 trước 2026-11-12), và giữ lại khi đã đủ sâu. Mỗi cách cắt gán hướng tối đa 14 lần, bỏ cách cắt sau 3 lần liền không sâu thêm (`ASSIGN_TRIES`, `ROUNDS_STALL`; trước là 8 và 2). Thử trên 218 level Hard và VeryHard, cấu hình này sâu hơn cấu hình cũ 0,8 lượt ở Hard và 1,5 lượt ở VeryHard với cùng mục tiêu. Sau khi rải cơ chế, bộ sinh đo số lượt. Lệch quá max(1, 10%) mục tiêu thì gán lại; vẫn lệch thì cắt lại hoặc sinh lại, và khoảng lệch cho phép nới dần theo số lần thử, tối đa max(2, 25%) mục tiêu (`Config.LEVEL_ROUNDS_TOL*`; trần từ 2026-11-11, vì có trần khối thoát ngay thì khoảng lệch nới nhanh hơn khoảng khối thoát và L47, L66 từng sâu hơn mục tiêu 60%). Tới lần thử thứ 30 (`MOTIF_SWAP_AT`; level có cổng nhịp trong kế hoạch: lần 24, `GATE_DROP_AT`) mà chưa bàn nào vào khoảng lệch số lượt thì lấy bàn có số lượt gần mục tiêu nhất trong số bàn đúng khoảng khối thoát ngay đã gặp (`LevelGenerator.generate`, từ 2026-11-12), để level giữ hình theo kế hoạch chặng và đủ cơ chế: từ các lần đó bộ sinh đổi hình, bỏ cổng nhịp rồi bỏ mọi cơ chế. Lần thử nào cũng chỉ dựa vào chính nó nên seed ghi trong level sinh lại đúng level, trừ level lấy bàn gần nhất. Daily Challenge sinh ngay trong game nên chỉ gán lại 3 lần trong cùng một hình rồi giữ bàn gần mục tiêu nhất; mỗi bàn trung bình 65 ms, chậm nhất khoảng 200 ms trên máy dev (đo 2026-11-12 khi máy đang chạy việc khác, bản trước đo cùng lúc 56 và 180 ms; 2026-11-11 đo lúc máy rảnh 45 và 130 ms).
+- **Đo trên 500 level đóng gói** (sinh lại 2026-11-12, mục 9): số khối lệch đường cong tối đa 2 (cắt khối đối xứng, mục "Hình dạng level"). Số lượt có 446/496 level (L5–500) trong khoảng lệch max(1, 10%), 491/496 trong max(2, 25%); 5 level còn lại lấy bàn gần nhất ở lần thử thứ 30 và nông hơn mục tiêu: L64 28/40, L153 24/34, L168 31/48, L244 33/48, L328 31/47. Bản 2026-11-11 (mục tiêu thấp hơn) là 472 và 496 level. Level lệch mục tiêu thì 250 level nông hơn, 151 level sâu hơn. So với game tham khảo, tính trên L21–500 (trong ngoặc: bản 2026-11-11):
 
-| Tag | Số level | Khối (Candy / tham khảo) | Lượt dọn bàn (Candy / tham khảo) |
-| --- | --- | --- | --- |
-| Thường | 262 | 40,5 / 40,6 | 16,2 / 16,4 |
-| Hard | 149 | 54,6 / 57,4 | 27,6 / 31,1 |
-| VeryHard | 69 | 59,2 / 77,7 | 30,2 / 42,1 |
+| Tag | Số level | Khối (Candy / tham khảo) | Lượt dọn bàn (Candy / tham khảo) | Khối thoát ngay (Candy / tham khảo) | Dư MOVES (Candy / tham khảo) |
+| --- | --- | --- | --- | --- | --- |
+| Thường | 262 | 40,5 / 40,6 | 16,4 (16,2) / 16,4 | 7,3 (4,6) / 8,4 | 5,8 (4) / 4,5 |
+| Hard | 149 | 54,6 / 57,4 | 29,5 (27,6) / 31,1 | 8,2 (3,8) / 9,4 | 4,9 (3) / 4,7 |
+| VeryHard | 69 | 59,2 / 77,7 | 36,6 (30,2) / 42,1 | 7,1 (2,9) / 10,3 | 5,8 (3) / 5,8 |
 
-  VeryHard thấp hơn game tham khảo vì bị trần 60 khối. Cả 500 level trung bình 46,2 khối và 21,1 lượt, game tham khảo là 49,6 và 23,9. Khối thoát được ngay lúc đầu: cả 500 level trung bình 4,2 (bản 2026-11-10 là 6,4, trước đó 7,3; game tham khảo 8,8); L14–500 trung bình 4,1, level thường và nghỉ 4,6, Hard 3,8, VeryHard 2,9. 22 level (4,5%) phải nới khoảng thêm 1–2 khối, nhiều nhất 7 khối; không level nào nằm ngoài khoảng đã nới.
-- **Dư MOVES:** giữ như mục 3 (Hard và VeryHard 3, level thường 4).
+  VeryHard vẫn nông hơn game tham khảo 13% vì bị trần 60 khối (game tham khảo 77,7 khối). Cả 500 level trung bình 46,2 khối và 22,7 lượt (bản 2026-11-11 là 21,1), game tham khảo là 49,6 và 23,9. Khối thoát được ngay lúc đầu: cả 500 level trung bình 7,4 (bản 2026-11-11 là 4,2; game tham khảo 8,8). Từ L14, 39 level (8%) phải nới khoảng; 22 level nằm ngoài khoảng gốc, 17 level lệch 1 khối, nhiều nhất 2 khối; không level nào nằm ngoài khoảng đã nới. Dư MOVES của game tham khảo là số bước trừ số khối trong bảng level (nhóm A).
+- **Dư MOVES:** theo mục 3 (từ 2026-11-12 tăng: tới L100 thường 5, Hard 4, VeryHard 5; từ L101 6, 5, 6).
 
 Bản trước (L1–100, tới 2026-11-08): điểm độ khó lấy từ file `difficulty_curve_levels_1-100.json` của PixelFlow, nội suy thành 2–30 khối, Hard +2 và VeryHard +3; từ L14 nhân 1,3 (trần 40) rồi nhân 1,5, L1–13 nhân 2. Có 26 level Hard và VeryHard, trung bình L14–100 khoảng 45 khối.
 
-Bốn level đầu làm tay trong `tools/gen_levels.gd` (bảng EARLY). L1–3 chắc chắn thắng: dư 5 MOVES, L1–2 không khối nào bị chặn, L3 chỉ một khối phải chờ; L4 cũng chỉ một khối phải chờ. Từ 2026-11-10 (người dùng: khối dồn vào giữa, khối to hơn) L2–4 là cụm đặc 6×4, 6×5, 6×6 ô ở giữa bàn, không khe, khối 3–4 ô, gần hết là chữ L (như ảnh ref: khối to xếp sát nhau); trước đó là khối 2 ô xếp thưa, có khe. L1 giữ nguyên.
+Bốn level đầu làm tay trong `tools/gen_levels.gd` (bảng EARLY). Từ 2026-11-12 (người dùng: khối thoát ngay ở 10 level đầu giống game tham khảo) số khối thoát được ngay lúc đầu của L1–10 bằng đúng 10 level đầu của game tham khảo: 4, 2, 3, 3, 2, 3, 4, 4, 4, 5 (`Config.EXIT_EARLY_LEVELS`). L1 mọi khối thoát ngay. L2–4 giữ hình cụm và cách cắt khối, chỉ tô lại màu: trong mọi cách tô đúng số khối thoát ngay, chọn cách ít lượt dọn bàn nhất, số khối mỗi màu đều nhất, khối ở rìa cụm hướng ra ngoài; chuỗi chặn thành 4, 4, 3 lượt (trước là 1, 2, 2 và L1–2 không khối nào bị chặn). Dư 7 MOVES ở L1–3 và 5 ở L4–10 bù cho chạm sai. L5–10 do bộ sinh nhắm đúng số đó (khoảng một giá trị, nới như mục "Khối thoát được ngay"). Từ 2026-11-10 (người dùng: khối dồn vào giữa, khối to hơn) L2–4 là cụm đặc 6×4, 6×5, 6×6 ô ở giữa bàn, không khe, khối 3–4 ô, gần hết là chữ L (như ảnh ref: khối to xếp sát nhau); trước đó là khối 2 ô xếp thưa, có khe. L1 giữ nguyên.
 
 Mọi level thắng đều +40 gold, cộng thêm 10 gold cho mỗi MOVES còn thừa lúc thắng (mục 5).
 
 | Level | Màu | Khối | Ghi chú |
 | --- | --- | --- | --- |
 | 1 | 2 màu (vàng, xanh dương) | 4 | Chữ "Tap the block" |
-| 2 | 3 màu | 6 | Không khối bị chặn; cụm 6×4, khối 4 ô |
-| 3 | 3 màu | 8 | Một khối phải chờ; cụm 6×5, khối 3–4 ô |
-| 4 | Đủ 4 màu | 10 | Một khối phải chờ; cụm 6×6, khối 3–4 ô |
+| 2 | 3 màu | 6 | 2 khối thoát ngay, 4 lượt dọn bàn; cụm 6×4, khối 4 ô |
+| 3 | 3 màu | 8 | 3 khối thoát ngay, 4 lượt; cụm 6×5, khối 3–4 ô |
+| 4 | Đủ 4 màu | 10 | 3 khối thoát ngay, 3 lượt; cụm 6×6, khối 3–4 ô |
 | 5–13 | 4 màu | 10–15 | Gợi ý mở ở L5, Rate us ở thẻ thắng L11, +3 Move mở ở L12; từ đây khối xếp thành hình vẽ tay (L5–10: hình đặc, 10–11 khối khoảng 4 ô) |
 | 14 | 4 màu | 13 | Level dạy Thùng sắt |
 | 15–29 | 4 màu | 15–43 | Phá khối mở ở L17; L23 là level HARD đầu tiên (L26, L29 tiếp theo) |
@@ -335,7 +345,7 @@ Tổng một vòng: **6.650 gold, 5 Gợi ý, 5 +3 Move, 4 Phá khối**. Hết 
 - Từ cấm (`src/meta/name_filter.gd`): tục tĩu, xúc phạm, kỳ thị, tình dục của tiếng Anh và 13 ngôn ngữ còn lại viết bằng chữ Latin không dấu, thêm tên dành riêng cho nhân viên và thương hiệu (admin, moderator, official, support, Horus, Candy Away...). Không phân biệt hoa thường; bắt chữ kéo dài ("fuuuck"), chữ chen dấu `_ . -` ("f.u.c.k"), số thay chữ ("sh1t", "a55hole"). Từ ngắn dễ nằm trong từ thường ("ass", "lon", "dit") chỉ cấm khi đứng riêng, nên "class", "London", "Edit" vẫn dùng được.
 - Tên sai luật hoặc có từ cấm: popup giữ nguyên và hiện thông báo nhanh (`profile_name_invalid`, `profile_name_banned`). Game offline nên không kiểm trùng tên.
 
-### Bảng mô phỏng (2026-11-11, `node tools/sim.mjs`)
+### Bảng mô phỏng (2026-11-12, `node tools/sim.mjs`)
 
 Không dùng `economy.simulateEconomy` của Horus vì hàm đó mô hình hoá nâng cấp theo map và quãng đường. Số của game đọc thẳng từ `src/config.gd` (giá trị mặc định, chưa Remote Config) và 500 level trong `data/levels/` (số khối, HARD; sau L500 lặp từ `CONTENT.loop_start_level`), nên đổi số trong config thì chỉ cần chạy lại. Mô phỏng chưa có IAP, Road Trip, Win Streak, Leaderboard, Daily Challenge, Màn đặc biệt, chưa mua booster bằng gold và chưa tính độ khó của cơ chế.
 
@@ -348,48 +358,48 @@ Giả định của mình, chưa có số liệu thật:
 
 | Người chơi | Thời gian L1–20 | Số lần chơi | Thua | Cứu lượt gold / video / kho | Rewarded | Gold còn | Chuỗi level dài nhất dưới 900 gold |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Không xem quảng cáo | 15,9 phút | 23 | 3 | 0,4 / 0,0 / 0,9 | 0 | 1.529 | 1,2 |
-| Thỉnh thoảng xem | 18,6 phút | 21 | 1 | 0,1 / 2,0 / 0,9 | 9 | 2.703 | 0,3 |
-| Xem nhiều | 21,4 phút | 20 | 0 | 0,0 / 3,0 / 0,9 | 18 | 3.792 | 0,0 |
+| Không xem quảng cáo | 15,9 phút | 23 | 3 | 0,4 / 0,0 / 0,9 | 0 | 1.644 | 1,4 |
+| Thỉnh thoảng xem | 18,6 phút | 21 | 1 | 0,1 / 2,0 / 0,9 | 9 | 2.863 | 0,2 |
+| Xem nhiều | 21,4 phút | 20 | 0 | 0,0 / 3,0 / 0,9 | 18 | 3.956 | 0,0 |
 
 | Chặng | Không xem | Thỉnh thoảng | Xem nhiều |
 | --- | --- | --- | --- |
-| Hết L5 | 2,2 phút, 1.304 gold | 2,3 phút, 1.302 gold | 2,4 phút, 1.301 gold |
-| Hết L10 | 5,3 phút, 1.580 gold | 5,4 phút, 1.576 gold | 5,4 phút, 1.573 gold |
-| Hết L15 | 10,2 phút, 1.932 gold | 11,9 phút, 2.448 gold | 14,2 phút, 3.245 gold |
-| Hết L20 | 15,9 phút, 1.529 gold | 18,6 phút, 2.703 gold | 21,4 phút, 3.792 gold |
+| Hết L5 | 2,2 phút, 1.354 gold | 2,3 phút, 1.350 gold | 2,4 phút, 1.347 gold |
+| Hết L10 | 5,3 phút, 1.679 gold | 5,4 phút, 1.668 gold | 5,4 phút, 1.663 gold |
+| Hết L15 | 10,2 phút, 1.986 gold | 11,9 phút, 2.570 gold | 14,2 phút, 3.374 gold |
+| Hết L20 | 15,9 phút, 1.644 gold | 18,6 phút, 2.863 gold | 21,4 phút, 3.956 gold |
 
 Hết ngày 28:
 
 | Người chơi | Level | Gold còn | Thắng + x2 | Lịch quà | Video shop | Tiêu cứu lượt | Avatar/frame | Rewarded/ngày | Interstitial/ngày | Ô lịch |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Không xem | 179 | 2.209 | 10.273 | 6.650 | 0 | 15.714 | 0 | 0,0 | 3,4 | 28 |
-| Thỉnh thoảng | 203 | 25.931 | 16.741 | 9.055 | 11.200 | 12.065 | 4,3 | 8,7 | 1,7 | 42 |
-| Xem nhiều | 197 | 59.598 | 20.145 | 11.806 | 28.000 | 1.353 | 6,2 | 15,6 | 0,3 | 53 |
+| Không xem | 180 | 2.402 | 11.668 | 6.650 | 0 | 16.916 | 0 | 0,0 | 3,4 | 28 |
+| Thỉnh thoảng | 204 | 27.832 | 18.593 | 9.052 | 11.200 | 12.013 | 4,3 | 8,7 | 1,7 | 42 |
+| Xem nhiều | 197 | 61.679 | 22.225 | 11.811 | 28.000 | 1.357 | 6,3 | 15,6 | 0,3 | 53 |
 
 Popup hết MOVES trong 28 ngày:
 
 | Người chơi | Lần hiện | Dùng từ kho | Video | Mua bằng gold | Thiếu gold | Level đầu đủ 1.900 gold |
 | --- | --- | --- | --- | --- | --- | --- |
-| Không xem | 103 | 6 | 0 | 8 | 70 | 15 |
+| Không xem | 103 | 6 | 0 | 9 | 68 | 13 |
 | Thỉnh thoảng | 93 | 8 | 51 | 6 | 1 | 11 |
 | Xem nhiều | 81 | 9 | 64 | 1 | 0 | 11 |
 
-Một lần thắng của người không xem quảng cáo được trung bình 57 gold (40 + gold MOVES thừa), chưa x2:
+Một lần thắng của người không xem quảng cáo được trung bình 65 gold (40 + gold MOVES thừa), chưa x2; bản 2026-11-11 là 57 gold, trước khi tăng dư MOVES (mục 3):
 
 | Món | Giá | Số level thắng để đủ tiền | Số video trong shop |
 | --- | --- | --- | --- |
-| Gợi ý, refill | 900 | 15,7 | 4,5 |
-| +3 Move (booster), cứu lượt lần 1 | 1.900 | 33,2 | 9,5 |
-| Phá khối | 2.900 | 50,6 | 14,5 |
+| Gợi ý, refill | 900 | 13,9 | 4,5 |
+| +3 Move (booster), cứu lượt lần 1 | 1.900 | 29,3 | 9,5 |
+| Phá khối | 2.900 | 44,7 | 14,5 |
 
 **Lệch mục tiêu của hướng dẫn và điều cần theo dõi:**
 
-- Người không xem quảng cáo có chuỗi dài nhất 1,2 level liền không đủ 900 gold ở L1–20 (mục tiêu 3), đạt; bản 2026-11-01 là 5,7, trước khi có gold MOVES thừa và khi avatar còn tiêu gold.
+- Người không xem quảng cáo có chuỗi dài nhất 1,4 level liền không đủ 900 gold ở L1–20 (mục tiêu 3), đạt; bản 2026-11-01 là 5,7, trước khi có gold MOVES thừa và khi avatar còn tiêu gold.
 - "Xem nhiều" mất 21,4 phút cho L1–20, trong mục tiêu 20–30 phút.
-- "Xem nhiều" còn **59.598 gold** sau 28 ngày, 28.000 từ video shop (bản 2026-11-01: 44.895). Nhóm này gần như không có lý do mua IAP. Giữ số 5 video theo quyết định của người dùng; soft launch cần theo dõi và hạ bằng Remote Config nếu IAP thấp.
-- Người không xem quảng cáo hết MOVES 103 lần trong 28 ngày, 70 lần trong đó thiếu gold: phần lớn popup cứu lượt của nhóm này chỉ là cơ hội mở shop IAP.
-- 20 phút mỗi ngày là tới khoảng L179–203 sau 28 ngày (bản 2026-11-01: L264–294, khi level còn ít khối), nên 500 level đóng gói đủ cho người chơi chăm khoảng 2,5 tháng; sau đó lặp lại từ L51.
+- "Xem nhiều" còn **61.679 gold** sau 28 ngày, 28.000 từ video shop (bản 2026-11-01: 44.895). Nhóm này gần như không có lý do mua IAP. Giữ số 5 video theo quyết định của người dùng; soft launch cần theo dõi và hạ bằng Remote Config nếu IAP thấp.
+- Người không xem quảng cáo hết MOVES 103 lần trong 28 ngày, 68 lần trong đó thiếu gold: phần lớn popup cứu lượt của nhóm này chỉ là cơ hội mở shop IAP.
+- 20 phút mỗi ngày là tới khoảng L180–204 sau 28 ngày (bản 2026-11-01: L264–294, khi level còn ít khối), nên 500 level đóng gói đủ cho người chơi chăm khoảng 2,5 tháng; sau đó lặp lại từ L51.
 
 ### Rủi ro người dùng đã chấp nhận khi giữ giá cũ (2026-11-01)
 
@@ -1021,3 +1031,4 @@ Mỗi màu có bốn tông trong `ThemeKit.BLOCK_RAMPS`, vì tông đổi cả s
 - Ba lỗi hiển thị smoke L, F tìm ra (sửa lỗi, 2026-11-12, người dùng yêu cầu): chữ Hindi dùng Baloo 2 ExtraBold (wght 800) thay Regular, vì viền chữ TMP nằm đè lên mép chữ nên nét Devanagari mảnh bị phủ kín, tiêu đề và nút Settings gần như chỉ còn màu viền; nhãn độ khó trên nút Chơi ("VERY HARD", "HARD") thu nhỏ để nằm gọn giữa hai bên vệt bóng trắng ở góc trái trên của nút (tiếng Nga, Ukraina, Ý, Pháp, Đức, Bồ Đào Nha, Indonesia trước đó đè lên); toast của Shop có nền viên thuốc màu mận ôm chữ, vì chữ trơn đè lên nút Restore Purchases ở đáy danh sách.
 - Bỏ màn chuyển level 3.1 `load_transition` (người dùng yêu cầu, 2026-11-12; mục 4 "Mở khoá theo level", mục 7 "Màn đặc biệt"): sang level kế sau thẻ thắng, chơi lại sau thẻ thua và sang level chính sau Màn đặc biệt không còn màn đen có tên level mở ra qua lỗ hình bom (khoảng 1,1 giây); bàn mới dựng ngay bên dưới lúc thẻ đang mờ. Màn kẹo rơi (vào từ Home), mưa bom (vào Special) và hộp quà (Road Trip) giữ nguyên. Xoá scene và script; prefab Unity `LoadLevelProcessVer2` đã bake vẫn giữ.
 - Chạm ô booster còn khoá chỉ phát tiếng bấm (người dùng yêu cầu, 2026-11-12; mục 4 "Mở khoá theo level"): bỏ popup "Chơi tiếp nhé!" (wireframe 3.7, `booster_soon`) mở ra mỗi lần chạm, level chơi tiếp không dừng. Vì dưới ô không còn chữ "Level N" (2026-11-11), trong level không còn chỗ nào báo level mở booster; thanh tiến trình của thẻ thắng vẫn báo. Scene `booster_soon` giữ trong UI gallery.
+- Độ khó gần game tham khảo hơn (người dùng yêu cầu, 2026-11-12, sau khi xem biểu đồ so sánh với game tham khảo; mục 3 "MOVES", mục 4 "Đường cong độ khó L1–500", mục 5 "Bảng mô phỏng"). Người dùng chọn: (1) số lượt dọn bàn lấy đúng số đo, giữ trần 60 khối và cho chuỗi sâu hơn (thay vì nâng trần khối lên 80); level nào bộ sinh không đạt thì lấy bàn gần nhất. Bỏ thu nhỏ số lượt theo trần khối, trần 0,55 → 0,8 lượt mỗi khối, bộ sinh đẩy chuỗi sâu mạnh hơn (`DEPTH_PUSH` 2 → 4, `ASSIGN_TRIES` 8 → 14, `ROUNDS_STALL` 2 → 3). (2) Khối thoát được ngay: L1–10 đúng 10 level đầu của game tham khảo (4, 2, 3, 3, 2, 3, 4, 4, 4, 5); L2–4 làm tay tô lại màu, nên L2 không còn là level không khối nào bị chặn. Từ L20 level thường thêm 2–3 khối, Hard và VeryHard (cả hai) thêm 4–5 khối: khoảng 6–8, 7–9, 6–8 (trước từ L30 là 3–5, 2–4, 2–3; L14–29 2–4, nay L14–19). (3) Dư MOVES: L1–10 thêm 2 (L1–3 7, L4–10 5); L11–100 thường và Hard thêm 1, VeryHard thêm 2 (L11–13 4; L14–100 thường 5, Hard 4, VeryHard 5); từ L101 thường và Hard thêm 2, VeryHard thêm 3 (6, 5, 6). `Solver.slack_for` thêm tham số level hiển thị để vòng lặp sau L500 dùng bậc từ L101 và tính Hard như VeryHard như màn chơi hiện. Sinh lại L1–500 bằng seed gốc, bake lại `data/pudding_sdf.res`. Kết quả L21–500: lượt dọn bàn thường 16,4, Hard 29,5, VeryHard 36,6 (bản trước 16,2, 27,6, 30,2; game tham khảo 16,4, 31,1, 42,1); khối thoát ngay 7,3, 8,2, 7,1 (bản trước 4,6, 3,8, 2,9; game tham khảo 8,4, 9,4, 10,3). Kéo theo: thắng trung bình 57 → 65 gold khi chưa x2, số level thắng để đủ tiền Gợi ý 15,7 → 13,9 (mô phỏng); test nới ba ngưỡng vì mục tiêu sâu hơn khó đạt hơn: 88% level trong khoảng lệch số lượt thay cho 95%; tối đa 2% level lệch quá 25% (chỉ được nông hơn) thay cho không level nào; tối đa 12% level phải nới khoảng khối thoát ngay thay cho 5%.

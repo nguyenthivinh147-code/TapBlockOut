@@ -396,14 +396,23 @@ const _CONTENT := {
 	"demo_max_level": 20,
 	"release_pregen_level": 500,
 	"loop_start_level": 51,
-	# Spare MOVES on top of the solver's min taps (Solver.slack_for): levels up to slack_easy_until get slack_easy,
-	# up to slack_early_until slack_early, after that slack_normal; HARD levels (VeryHard too) get slack_hard.
-	"slack_easy": 5,
+	# Spare MOVES on top of the solver's min taps (Solver.slack_for, design.md section 3): levels up to slack_easy_until
+	# get slack_easy, up to slack_intro_until slack_intro, up to slack_early_until slack_early. Then by tag: up to
+	# slack_mid_until slack_normal_mid / slack_hard_mid / slack_very_hard_mid, after that slack_normal / slack_hard /
+	# slack_very_hard (2026-11-12, user: closer to the reference game, which gives harder levels more spare moves).
+	"slack_easy": 7,
 	"slack_easy_until": 3,
-	"slack_early": 3,
+	"slack_intro": 5,
+	"slack_intro_until": 10,
+	"slack_early": 4,
 	"slack_early_until": 13,
-	"slack_normal": 4,
-	"slack_hard": 3,
+	"slack_mid_until": 100,
+	"slack_normal_mid": 5,
+	"slack_hard_mid": 4,
+	"slack_very_hard_mid": 5,
+	"slack_normal": 6,
+	"slack_hard": 5,
+	"slack_very_hard": 6,
 	# From this displayed level (the content loop after L500) every HARD level shows as VeryHard.
 	"very_hard_from_level": 501,
 	"hard_banner_sec": 1.2,
@@ -552,16 +561,19 @@ const LEVEL_MECH_FRESH := 10
 ## At most this share of a level's blocks carry a mechanic (cover, fog, chain lock or key, paper box, ribbon, candy
 ## bomb; each block counted once), floor(blocks * share) (design.md section 4, user request 2026-11-11).
 const LEVEL_MECH_BLOCK_SHARE := 0.5
-## Blocks that can act on the first tap (exit or peel, as the hint's "Available Block" counts them), from
-## EXIT_RANGE_FROM: (min, max) EXIT_RANGE_EARLY up to EXIT_RANGE_EARLY_UNTIL, then by tag (VeryHard, Hard, normal and
-## rest levels). The generator widens the range by 1 on each side every EXIT_RELAX_EVERY failed attempts (design.md
-## section 4, user request 2026-11-11; before that 1-17, mean 6.5).
+## Blocks that can act on the first tap (exit or peel, as the hint's "Available Block" counts them). L1-10 exactly
+## EXIT_EARLY_LEVELS (the reference game's first levels; L1-4 are hand-made to match); from EXIT_RANGE_FROM: (min, max)
+## EXIT_RANGE_EARLY up to EXIT_RANGE_EARLY_UNTIL, then by tag (VeryHard, Hard, normal and rest levels). The generator
+## widens the range by 1 on each side every EXIT_RELAX_EVERY failed attempts (design.md section 4; 2026-11-11 user
+## request, before that 1-17, mean 6.5; 2026-11-12 user request: closer to the reference game, normal levels from L20
+## +2-3 on average, Hard and VeryHard +4-5).
+const EXIT_EARLY_LEVELS := [4, 2, 3, 3, 2, 3, 4, 4, 4, 5]
 const EXIT_RANGE_FROM := 14
-const EXIT_RANGE_EARLY_UNTIL := 29
+const EXIT_RANGE_EARLY_UNTIL := 19
 const EXIT_RANGE_EARLY := Vector2i(2, 4)
-const EXIT_RANGE_NORMAL := Vector2i(3, 5)
-const EXIT_RANGE_HARD := Vector2i(2, 4)
-const EXIT_RANGE_VERY_HARD := Vector2i(2, 3)
+const EXIT_RANGE_NORMAL := Vector2i(6, 8)
+const EXIT_RANGE_HARD := Vector2i(7, 9)
+const EXIT_RANGE_VERY_HARD := Vector2i(6, 8)
 const EXIT_RELAX_EVERY := 10
 ## From EXIT_RANGE_FROM, when the generator gives blocks their colour (exit side), each neighbouring block that already
 ## took a colour multiplies that colour's weight by COLOR_MIX, so colours mix instead of whole areas of the shape

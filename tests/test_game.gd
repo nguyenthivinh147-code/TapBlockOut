@@ -145,9 +145,9 @@ func test_moves_follow_slack_config(t: T) -> void:
 	g.s.level = 20
 	var a: Dictionary = g.start_attempt()
 	var d: Dictionary = g.current_level_data()
-	t.eq(int(a.moves0), int(d.min_taps) + 4, "L20 dư 4 theo mặc định")
+	t.eq(int(a.moves0), int(d.min_taps) + 5, "L20 dư 5 theo mặc định")
 	t.eq(int(a.moves0), int(d.moves), "khớp số ghi trong file")
-	Config.apply_remote({"content_slack_normal": "7"})
+	Config.apply_remote({"content_slack_normal_mid": "7"})
 	var b: Dictionary = g.start_attempt()
 	Config.reset()
 	t.eq(int(b.moves0), int(d.min_taps) + 7, "Remote Config đổi dư thì MOVES đổi theo")

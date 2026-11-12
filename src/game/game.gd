@@ -554,9 +554,10 @@ func start_attempt() -> Dictionary:
 ## main level's replay. special: a Special Bomb board (special_start), MOVES from the file the same way.
 func _begin_attempt(data: Dictionary, level: int, challenge: bool, road_trip: bool = false,
 		special: bool = false) -> Dictionary:
-	# MOVES follow the current slack config (Remote Config can change it), not the number baked into the file.
+	# MOVES follow the current slack config (Remote Config can change it), not the number baked into the file; the
+	# tier follows the displayed level (the content loop after L500 replays L51-500).
 	if not road_trip and not special and int(data.get("min_taps", 0)) > 0:
-		data["moves"] = int(data["min_taps"]) + Solver.slack_for(data)
+		data["moves"] = int(data["min_taps"]) + Solver.slack_for(data, level)
 	# Bom kẹo tắt từ xa (features_pop = "0"): khối bom kẹo thành khối thường; MOVES không đổi vì số chạm không đổi.
 	if not Unlocks.enabled("pop"):
 		for bd in data.get("blocks", []):

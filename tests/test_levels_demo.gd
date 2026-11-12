@@ -139,11 +139,15 @@ func test_solver_and_moves(t: T) -> void:
 		var slack: int = Solver.slack_for(d)
 		t.eq(int(d["moves"]), int(r["min_taps"]) + slack, "L%d moves" % id)
 		if id <= 3:
+			t.eq(slack, 7, "L%d dư 7" % id)
+		elif id <= 10:
 			t.eq(slack, 5, "L%d dư 5" % id)
+		elif id <= 13:
+			t.eq(slack, 4, "L%d dư 4" % id)
 		elif DifficultyCurve.is_hard(id):
-			t.eq(slack, 3, "L%d HARD dư 3" % id)
+			t.eq(slack, 4, "L%d HARD dư 4" % id)
 		else:
-			t.eq(slack, 3 if id <= 13 else 4, "L%d dư 3 (L4-13) hoặc 4 (từ L14)" % id)
+			t.eq(slack, 5, "L%d dư 5 (từ L14 tới L100)" % id)
 		t.ok(Solver.immediate_exit_exists(d), "L%d có khối thoát ngay" % id)
 
 
@@ -161,21 +165,18 @@ func test_play_through(t: T) -> void:
 		t.eq(b.moves_left(), Solver.slack_for(d), "L%d còn đúng phần dư" % id)
 
 
-func test_early_levels_have_blocked_block(t: T) -> void:
-	# L3-4: có khối đầu tiên bị chặn (không phải khối nào cũng thoát ngay)
-	for id in [3, 4]:
-		var d := _load(id)
-		var b := BoardState.new(d)
-		var stuck := 0
+func test_early_levels_free_blocks(t: T) -> void:
+	# L1-10: số khối thoát được ngay lúc đầu bằng 10 level đầu của game tham khảo (Config.EXIT_EARLY_LEVELS).
+	for id in range(1, 11):
+		var b := BoardState.new(_load(id))
+		var free := 0
 		for bid in b.block_ids():
-			if not b.can_exit(bid):
-				stuck += 1
-		t.ok(stuck >= 1, "L%d có khối bị chặn" % id)
-	# L1-2 chỉ cần chạm là đi
-	for id in [1, 2]:
-		var b1 := BoardState.new(_load(id))
-		for bid in b1.block_ids():
-			t.ok(b1.can_exit(bid), "L%d %s thoát ngay" % [id, bid])
+			free += int(b.can_exit(bid))
+		t.eq(free, int(Config.EXIT_EARLY_LEVELS[id - 1]), "L%d: %d khối thoát ngay" % [id, free])
+	# L1 chỉ cần chạm là đi; từ L2 có khối bị chặn.
+	var b1 := BoardState.new(_load(1))
+	for bid in b1.block_ids():
+		t.ok(b1.can_exit(bid), "L1 %s thoát ngay" % bid)
 
 
 func test_shapes_and_layouts(t: T) -> void:

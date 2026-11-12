@@ -59,9 +59,11 @@ const CHEAPEST = Math.min(...Object.values(E.booster_price), E.refill_coins);
 const VIDEO_COSMETICS = COS.avatar_count + COS.frame_count - Object.keys(RT_COS).length - LB.cosmetics.length;
 
 const LEVEL_DIR = join(ROOT, 'data/levels');
+// Danh sách VeryHard của đường cong độ khó (src/core/difficulty_curve.gd).
+const VERY_HARD = new Set(gdConst(readFileSync(join(ROOT, 'src/core/difficulty_curve.gd'), 'utf8'), 'VERY_HARD'));
 const LEVELS = readdirSync(LEVEL_DIR).filter((f) => /^level_\d+\.json$/.test(f)).sort().map((f) => {
   const l = JSON.parse(readFileSync(join(LEVEL_DIR, f), 'utf8'));
-  return { blocks: l.blocks.length, hard: !!l.hard };
+  return { blocks: l.blocks.length, hard: !!l.hard, veryHard: VERY_HARD.has(l.id) };
 });
 // Sau level cuối game lặp lại nội dung từ CONTENT.loop_start_level.
 function levelAt(l) {
@@ -69,11 +71,17 @@ function levelAt(l) {
   const start = CONTENT.loop_start_level, span = LEVELS.length - start + 1;
   return LEVELS[start - 1 + ((l - start) % span)];
 }
-// MOVES dư theo bậc (design.md mục 3).
-function slack(l, hard) {
-  if (l <= CONTENT.slack_easy_until) return CONTENT.slack_easy;
-  if (l <= CONTENT.slack_early_until) return CONTENT.slack_early;
-  return hard ? CONTENT.slack_hard : CONTENT.slack_normal;
+// MOVES dư theo bậc (design.md mục 3, Solver.slack_for): bậc theo level hiển thị `l`; level HARD từ
+// very_hard_from_level tính như VeryHard.
+function slack(l, lv) {
+  const C = CONTENT;
+  if (l <= C.slack_easy_until) return C.slack_easy;
+  if (l <= C.slack_intro_until) return C.slack_intro;
+  if (l <= C.slack_early_until) return C.slack_early;
+  const mid = l <= C.slack_mid_until ? '_mid' : '';
+  if (!lv.hard) return C[`slack_normal${mid}`];
+  if (lv.veryHard || l >= C.very_hard_from_level) return C[`slack_very_hard${mid}`];
+  return C[`slack_hard${mid}`];
 }
 
 // Giả định.
@@ -173,7 +181,7 @@ function play(p, seed) {
     }
     s.wins++;
     // MOVES còn thừa: thắng không cứu thì chạm sai 0..dư lần; thắng sau khi cứu thì còn 0..rescue_moves - 1.
-    const left = rescued ? Math.floor(rnd() * E.rescue_moves) : Math.floor(rnd() * (slack(l, lv.hard) + 1));
+    const left = rescued ? Math.floor(rnd() * E.rescue_moves) : Math.floor(rnd() * (slack(l, lv) + 1));
     const reward = E.win_coins + left * E.win_move_coins;
     s.gold += reward; s.earn.win += reward;
     // Thẻ thắng từ win_card_from_level (thẻ đầu x2 miễn phí); dưới mốc gold vào ví, không có x2 (design.md mục 4).

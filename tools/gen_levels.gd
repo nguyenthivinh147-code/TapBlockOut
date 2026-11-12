@@ -22,26 +22,28 @@ const DEFAULT_OUT := "user://gen_out"
 ## Seed gốc của bản phát hành L1-500 (ngày chốt thiết kế). Mặc định của --seed vẫn là 0.
 const BASE_SEED := 20261101
 
-## Bốn level đầu làm tay, khoá là id: 2, 3, 3, 4 màu. L1-3 không khối nào bị chặn quá một lần và dư 5 MOVES nên chắc
-## chắn thắng; L4 có một khối phải chờ.
+## Bốn level đầu làm tay, khoá là id: 2, 3, 3, 4 màu. Số khối thoát được ngay lúc đầu bằng 4 level đầu của game tham
+## khảo (Config.EXIT_EARLY_LEVELS: 4, 2, 3, 3; 2026-11-12, người dùng): L1 mọi khối thoát ngay, L2-4 có chuỗi chặn
+## 4, 4, 3 lượt, bù bằng dư 7 MOVES (L1-3) và 5 MOVES (L4).
 ## `rows`: mỗi chuỗi một hàng (y tăng xuống dưới), '.' ô trống, '#' đá, chữ cái là khối (cùng chữ = cùng khối).
 ## `blk[chữ]`: color (yellow lên, green trái, blue phải, purple xuống) và tuỳ chọn ice, chain (chữ khối chìa),
 ## inner (màu lớp trong), fog. `pulse`: cạnh có cổng nhịp và trạng thái mở ban đầu.
 ## Số khối 4, 6, 8, 10 (DifficultyCurve.EARLY_BLOCKS). L2-4 (2026-11-10, người dùng: khối dồn vào giữa, khối to hơn):
-## cụm đặc 6x4, 6x5, 6x6 không khe, khối 3-4 ô, gần hết là chữ L. L3 chỉ D chờ B, L4 chỉ E chờ J.
+## cụm đặc 6x4, 6x5, 6x6 không khe, khối 3-4 ô, gần hết là chữ L. Màu chọn trong mọi cách tô cho đúng số khối thoát
+## ngay: ít lượt dọn bàn nhất, số khối mỗi màu đều nhất, khối ở rìa cụm hướng ra ngoài.
 const EARLY := {
 	1: {"rows": ["AB.CC", "AB...", "...DD"],
 		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "blue"}}},
 	2: {"rows": ["AABBBC", "DABCCC", "DAEFFF", "DDEEEF"],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "purple"},
-			"E": {"color": "purple"}, "F": {"color": "blue"}}},
+		"blk": {"A": {"color": "yellow"}, "B": {"color": "purple"}, "C": {"color": "purple"}, "D": {"color": "yellow"},
+			"E": {"color": "blue"}, "F": {"color": "blue"}}},
 	3: {"rows": ["ABBBCC", "ABDDCE", "AFDDEE", "AFGHHH", "FFGGGH"],
-		"blk": {"A": {"color": "yellow"}, "B": {"color": "yellow"}, "C": {"color": "yellow"}, "D": {"color": "yellow"},
-			"E": {"color": "blue"}, "F": {"color": "purple"}, "G": {"color": "purple"}, "H": {"color": "blue"}}},
+		"blk": {"A": {"color": "purple"}, "B": {"color": "yellow"}, "C": {"color": "blue"}, "D": {"color": "yellow"},
+			"E": {"color": "blue"}, "F": {"color": "blue"}, "G": {"color": "purple"}, "H": {"color": "purple"}}},
 	4: {"rows": ["ABBCCD", "ABECDD", "AAECFF", "GGEEHF", "GIJJHF", "IIJJHH"],
-		"blk": {"A": {"color": "green"}, "B": {"color": "yellow"}, "C": {"color": "yellow"}, "D": {"color": "blue"},
-			"E": {"color": "purple"}, "F": {"color": "blue"}, "G": {"color": "green"}, "H": {"color": "purple"},
-			"I": {"color": "purple"}, "J": {"color": "purple"}}},
+		"blk": {"A": {"color": "purple"}, "B": {"color": "blue"}, "C": {"color": "yellow"}, "D": {"color": "yellow"},
+			"E": {"color": "purple"}, "F": {"color": "yellow"}, "G": {"color": "green"}, "H": {"color": "green"},
+			"I": {"color": "green"}, "J": {"color": "purple"}}},
 }
 
 

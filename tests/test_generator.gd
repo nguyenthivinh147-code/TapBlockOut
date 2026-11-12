@@ -312,11 +312,17 @@ func test_deterministic(t: T) -> void:
 				t.eq(JSON.stringify(a), JSON.stringify(c), "id %d seed ghi lại" % id)
 
 
-## Từ Config.EXIT_RANGE_FROM (design.md mục 4, 2026-11-11): số khối chạm được ngay (Gen.free_count) nằm trong
-## Gen.exit_range theo tag, và tối đa Config.LEVEL_MECH_BLOCK_SHARE số khối mang cơ chế (Gen.mech_blocks).
+## L1-10 đúng Config.EXIT_EARLY_LEVELS, từ Config.EXIT_RANGE_FROM theo tag (design.md mục 4, 2026-11-11 và
+## 2026-11-12): số khối chạm được ngay (Gen.free_count) nằm trong Gen.exit_range, và tối đa
+## Config.LEVEL_MECH_BLOCK_SHARE số khối mang cơ chế (Gen.mech_blocks).
 func test_exit_range_and_mech_budget(t: T) -> void:
-	t.eq(Gen.exit_range(13), Vector2i.ZERO, "trước L14 không giới hạn")
-	t.eq(Gen.exit_range(14), Config.EXIT_RANGE_EARLY, "L14-29")
+	for id in range(1, 11):
+		var v := int(Config.EXIT_EARLY_LEVELS[id - 1])
+		t.eq(Gen.exit_range(id), Vector2i(v, v), "L%d đúng %d khối thoát ngay" % [id, v])
+	t.eq(Gen.exit_range(11), Vector2i.ZERO, "L11-13 không giới hạn")
+	t.eq(Gen.exit_range(13), Vector2i.ZERO, "L11-13 không giới hạn")
+	t.eq(Gen.exit_range(14), Config.EXIT_RANGE_EARLY, "L14-19")
+	t.eq(Gen.exit_range(Config.EXIT_RANGE_EARLY_UNTIL), Config.EXIT_RANGE_EARLY, "L19")
 	t.eq(Gen.exit_range(Config.EXIT_RANGE_EARLY_UNTIL + 2), Config.EXIT_RANGE_NORMAL, "level thường")
 	t.eq(Gen.exit_range(33), Config.EXIT_RANGE_VERY_HARD, "L33 VeryHard")
 	var relaxed := Gen.exit_range(33, Config.EXIT_RELAX_EVERY * 2)

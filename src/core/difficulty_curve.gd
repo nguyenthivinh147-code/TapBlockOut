@@ -4,8 +4,9 @@ extends RefCounted
 ## and clear rounds (each round taps every block whose way is open, see Solver.clear_rounds). Hard and VeryHard (the
 ## reference's Super Hard) keep the reference levels, except the ones that fell on a mechanic teaching level, which
 ## moved one level later together with their numbers: L70 -> L71 (fog's old teaching level), and on 2026-11-10 VeryHard
-## L300 -> L301 (chocolate) and L350 -> L351 (ribbon). The generator clamps the block count to what the hand-drawn shapes hold (`block_count`) and scales the
-## rounds with it (`wave_count`). Pure data: does not read Config.
+## L300 -> L301 (chocolate) and L350 -> L351 (ribbon). The generator clamps the block count to what the hand-drawn shapes hold (`block_count`); the
+## rounds keep the reference number (`wave_count`, 2026-11-12: no longer scaled down with the block count), at most
+## WAVE_SHARE_MAX per block. Pure data: does not read Config.
 
 ## L1-4 are hand-made (tools/gen_levels.gd, table EARLY).
 const EARLY_BLOCKS := [4, 6, 8, 10]
@@ -22,8 +23,9 @@ const BLOCK_CAP := 60
 const PEAK_HARD := 1.15
 const PEAK_VERY_HARD := 1.3
 const PEAK_SPAN := 3
-## Rounds at most WAVE_SHARE_MAX per block: deeper chains rarely fit the 12x17 shapes (the reference goes past 0.7).
-const WAVE_SHARE_MAX := 0.55
+## Rounds at most WAVE_SHARE_MAX per block (the reference goes past 0.7 on its own block counts, past 1 on boards it
+## has over BLOCK_CAP). 0.55 before 2026-11-12.
+const WAVE_SHARE_MAX := 0.8
 ## Points of the curve (`score`): blocks over BLOCK_CAP and rounds over SCORE_ROUNDS, half each, times 10.
 const SCORE_ROUNDS := 40
 ## Colors (directions) for L1-4; 4 from L5.
@@ -169,14 +171,10 @@ static func _base_blocks(id: int) -> int:
 	return clampi(int(REF_BLOCKS[_index(id)]), MOTIF_MIN_BLOCKS, BLOCK_CAP)
 
 
-## Rounds before the peak rule for a board of `n` blocks: the reference, scaled down when the block count is below
-## the reference, at most WAVE_SHARE_MAX per block.
+## Rounds before the peak rule for a board of `n` blocks: the reference, at most WAVE_SHARE_MAX per block (a board
+## cut down to BLOCK_CAP keeps the reference rounds as far as the cap allows).
 static func _base_waves(id: int, n: int) -> int:
-	var ref_n := int(REF_BLOCKS[_index(id)])
-	var w := float(REF_WAVES[_index(id)])
-	if n < ref_n:
-		w *= float(n) / float(ref_n)
-	return clampi(roundi(w), 1, _wave_cap(n))
+	return clampi(int(REF_WAVES[_index(id)]), 1, _wave_cap(n))
 
 
 static func _wave_cap(n: int) -> int:

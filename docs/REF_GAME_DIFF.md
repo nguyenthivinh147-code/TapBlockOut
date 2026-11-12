@@ -31,7 +31,7 @@ Bảng này chỉ ghi chỗ khác, không phải danh sách việc phải làm. 
 | Vật cản | Bom đếm ngược, chỉ ở level Special | Level chính không có bom đếm ngược (bom đếm ngược chỉ ở Màn đặc biệt; Bom kẹo L220 có ngòi cháy nhưng không đếm giờ và giúp người chơi). Có 6 vật cản game gốc không có: thùng sắt (L14), pudding (L30), xích (L45), sương mù (L85), cổng nhịp (L115), băng (L165; cùng luật pudding, không cùng level); mốc từ 2026-11-10 |
 | Màu và cạnh bàn | Bộ MoreColor có 12 màu, mỗi cạnh nhiều đoạn màu | 4 màu, mỗi cạnh một cổng liền. Road Trip: mỗi cạnh 2 cổng (8 màu, L1–200) hoặc 3 cổng (12 màu, L201–400), khối mang màu cổng nó thoát qua |
 | Lưới | 20×28, 28×36, 32×32 | Tối đa 14×18 (Road Trip cao tới 24); cỡ ô đổi theo hình của level |
-| Khối | Khối đặc, chia 4 cánh kiểu chong chóng | Polyomino 1–7 ô (khoảng 3 ô mỗi khối); L5–13 xếp theo 27 hình vẽ tay, từ L14 theo 88 hình chia 8 chủ đề (mỗi chặng 10 level một chủ đề), cắt theo kiểu đối xứng, hình học hoặc vùng vẽ. Từ L14 màu xen nhau: cặp khối kề cùng màu 33% (game gốc 31%), khối thoát được ngay lúc đầu trung bình 4,1 (game gốc 8,8) |
+| Khối | Khối đặc, chia 4 cánh kiểu chong chóng | Polyomino 1–7 ô (khoảng 3 ô mỗi khối); L5–13 xếp theo 27 hình vẽ tay, từ L14 theo 88 hình chia 8 chủ đề (mỗi chặng 10 level một chủ đề), cắt theo kiểu đối xứng, hình học hoặc vùng vẽ. Từ L14 màu xen nhau: cặp khối kề cùng màu 33% (game gốc 31%), khối thoát được ngay lúc đầu: L1–10 đúng như game gốc, từ L20 trung bình thường 7,2, Hard 8,2, VeryHard 7,1 (game gốc 8,4 / 9,4 / 10,3; 2026-11-12, trước đó 4,6 / 3,8 / 2,9) |
 | Khen khi chơi | Lời khen combo (Good … Unbelievable) | Không có combo; chỉ vỗ tay khi nghĩ ≥ 8 giây rồi đi đúng |
 | Thẻ thắng L1–9 | Bỏ qua | Luôn hiện |
 
@@ -39,7 +39,7 @@ Bảng này chỉ ghi chỗ khác, không phải danh sách việc phải làm. 
 
 | Mục | Game gốc | Candy Away |
 |---|---|---|
-| Dư bước | Số bước − số khối: tutorial khoảng 7, Normal 3,45, Hard 3,94, SuperHard 5,03. **Level khó dư nhiều hơn** | Số chạm tối thiểu + dư cố định: L1–3 là 5, L4–13 là 3, từ L14 level thường là 4, HARD và VeryHard là 3. **Level khó dư ít hơn** (đo L51–100: thường 4,0, HARD 3,0) |
+| Dư bước | Số bước − số khối: tutorial khoảng 7, Normal 3,45, Hard 3,94, SuperHard 5,03. **Level khó dư nhiều hơn** | Số chạm tối thiểu + dư cố định (2026-11-12): L1–3 là 7, L4–10 là 5, L11–13 là 4; L14–100 thường 5, Hard 4, VeryHard 5; từ L101 thường 6, Hard 5, VeryHard 6. Đo L21–500: thường 5,8, Hard 4,9, VeryHard 5,8 (game gốc cùng chặng 4,5 / 4,7 / 5,8). Hard vẫn dư ít hơn level thường |
 | Hết bước | Hồi sinh chỉ bằng video, cộng số khối còn lại, kẹp trong 5–10 bước. Hồi sinh 300 coin có trong code nhưng không dùng | Popup +3 Move, tối đa 4 lần: 1.900 / 2.200 / 2.500 / 2.800 gold, video, hoặc +3 Move trong kho |
 | Mạng | Không có | 10 mạng, 5 phút hồi 1 mạng. Từ L10 thua mất 1 mạng. Nạp: 900 gold được 5 mạng, 1 video được 1 mạng |
 | Chơi lại | Chỉ cảnh báo mất chuỗi thắng (giảm hệ số điểm Rank) | Từ L10 mất 1 mạng nếu đã chạm khối |
@@ -128,7 +128,7 @@ Các chỗ này trước đó khác game gốc nhiều hơn:
 
 ## Có quyết định nhưng ngược hướng game gốc
 
-- Level HARD dư 3, ít hơn level thường (4). Game gốc cho level khó dư nhiều hơn.
+- Level Hard dư ít hơn level thường 1 MOVES (VeryHard thì bằng). Game gốc cho level khó dư nhiều hơn.
 - Ở L11–32 số khối tăng nhanh hơn game gốc khoảng 2,3 lần.
 - Tính theo số level phải thắng, booster đắt hơn 1,2–2,6 lần.
 - Road Trip mở ở L95 (game gốc L61; 2026-11-09 là L70, trước đó L2) và thắng không có gold (game gốc khoảng 36 coin mỗi level).

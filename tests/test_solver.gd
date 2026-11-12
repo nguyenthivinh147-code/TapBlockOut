@@ -4,6 +4,7 @@ const BoardState := preload("res://src/core/board_state.gd")
 const LevelData := preload("res://src/core/level_data.gd")
 const Solver := preload("res://src/core/solver.gd")
 const Config := preload("res://src/config.gd")
+const DifficultyCurve := preload("res://src/core/difficulty_curve.gd")
 
 const BIG := 1000
 const NEIGHBORS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
@@ -242,28 +243,36 @@ func test_solve_state_ignores_moves(t: T) -> void:
 func test_slack_and_compute_moves(t: T) -> void:
 	Config.reset()
 	var one := [_b("a", "yellow", [[0, 0]])]
-	for pair in [[1, 5], [3, 5], [4, 3], [13, 3], [14, 4], [60, 4], [300, 4]]:
+	for pair in [[1, 7], [3, 7], [4, 5], [10, 5], [11, 4], [13, 4], [14, 5], [60, 5], [100, 5], [101, 6], [300, 6]]:
 		t.eq(Solver.slack_for(_lv(5, 5, one, {"id": pair[0]})), pair[1], "L%d dư %d" % pair)
-	for id in [24, 29, 99, 150]:
-		t.eq(Solver.slack_for(_lv(5, 5, one, {"id": id, "hard": true})), 3, "HARD L%d dư 3" % id)
+	# Hard (không trong DifficultyCurve.VERY_HARD) và VeryHard: tới L100 dư 4 và 5, sau đó 5 và 6.
+	for pair in [[24, 4], [98, 4], [150, 5], [499, 5]]:
+		t.ok(not DifficultyCurve.is_very_hard(pair[0]), "L%d không VeryHard" % pair[0])
+		t.eq(Solver.slack_for(_lv(5, 5, one, {"id": pair[0], "hard": true})), pair[1], "HARD L%d dư %d" % pair)
+	for pair in [[33, 5], [DifficultyCurve.VERY_HARD[-1], 6]]:
+		t.ok(DifficultyCurve.is_very_hard(pair[0]), "L%d VeryHard" % pair[0])
+		t.eq(Solver.slack_for(_lv(5, 5, one, {"id": pair[0], "hard": true})), pair[1], "VeryHard L%d dư %d" % pair)
+	# Vòng lặp sau L500 (`shown`): bậc theo level hiển thị, HARD từ very_hard_from_level tính như VeryHard.
+	t.eq(Solver.slack_for(_lv(5, 5, one, {"id": 60}), 560), 6, "L560 chơi L60: dư 6")
+	t.eq(Solver.slack_for(_lv(5, 5, one, {"id": 98, "hard": true}), 598), 6, "L598 chơi Hard L98: dư như VeryHard")
 	# Dư không theo số khối.
 	var many: Array = []
 	for i in range(80):
 		many.append(_b("b%d" % i, "yellow", [[0, 0]]))
-	t.eq(Solver.slack_for(_lv(5, 5, many, {"id": 60})), 4, "80 khối vẫn dư 4")
+	t.eq(Solver.slack_for(_lv(5, 5, many, {"id": 60})), 5, "80 khối vẫn dư 5")
 	var lv := _load("basic")  # id 2, 3 chạm
-	t.eq(Solver.compute_moves(lv), 3 + 5, "L2 dư 5")
+	t.eq(Solver.compute_moves(lv), 3 + 7, "L2 dư 7")
 	lv["id"] = 8
-	t.eq(Solver.compute_moves(lv), 3 + 3, "L8 dư 3")
+	t.eq(Solver.compute_moves(lv), 3 + 5, "L8 dư 5")
 	lv["id"] = 22
-	t.eq(Solver.compute_moves(lv), 3 + 4, "level thường dư 4")
+	t.eq(Solver.compute_moves(lv), 3 + 5, "level thường dư 5")
 	lv["hard"] = true
-	t.eq(Solver.compute_moves(lv), 3 + 3, "HARD dư 3")
+	t.eq(Solver.compute_moves(lv), 3 + 4, "HARD dư 4")
 	# Remote Config đổi dư thì theo.
-	Config.apply_remote({"content_slack_normal": "6", "content_slack_hard": "2"})
-	t.eq(Solver.compute_moves(lv), 3 + 2, "slack_hard từ Config")
+	Config.apply_remote({"content_slack_normal_mid": "6", "content_slack_hard_mid": "2"})
+	t.eq(Solver.compute_moves(lv), 3 + 2, "slack_hard_mid từ Config")
 	lv["hard"] = false
-	t.eq(Solver.compute_moves(lv), 3 + 6, "slack_normal từ Config")
+	t.eq(Solver.compute_moves(lv), 3 + 6, "slack_normal_mid từ Config")
 	Config.reset()
 
 

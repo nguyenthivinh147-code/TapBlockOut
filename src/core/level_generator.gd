@@ -42,16 +42,18 @@ const GATE_DROP_AT := 24
 ## Seed riêng của `mech_plan` (chỉ theo id, không theo seed của lần sinh).
 const PLAN_SEED := 977
 ## `_finish`: gán hướng lại tối đa ASSIGN_TRIES lần để số lượt dọn bàn vào khoảng của đường cong, bỏ cách cắt khi
-## ROUNDS_STALL lần liền không sâu thêm; cứ ROUNDS_RELAX_EVERY lần thử hỏng thì nới khoảng đó thêm 1.
-const ASSIGN_TRIES := 8
+## ROUNDS_STALL lần liền không sâu thêm; cứ ROUNDS_RELAX_EVERY lần thử hỏng thì nới khoảng đó thêm 1. 2026-11-12 (số
+## lượt theo đúng game tham khảo, chuỗi sâu hơn): 14 và 3, trước là 8 và 2.
+const ASSIGN_TRIES := 14
 ## Chế độ sinh trong game (`strict_rounds` false) chỉ gán FAST_ASSIGN_TRIES lần rồi giữ bàn gần nhất.
 const FAST_ASSIGN_TRIES := 3
-const ROUNDS_STALL := 2
+const ROUNDS_STALL := 3
 const ROUNDS_RELAX_EVERY := 5
 ## `_assign`: khi chuỗi chặn sâu nhất còn nông hơn mục tiêu, trọng số mỗi cách gán nhân DEPTH_PUSH ^ (độ sâu của nó trừ
 ## độ sâu lớn nhất) nên khối nằm sâu được ưu tiên, còn khối thoát được ngay từ đầu nhân DEPTH_FREE để vẫn còn vài khối đi
-## được lúc đầu; khi đã đủ sâu thì cách gán làm chuỗi sâu thêm nhân DEPTH_HOLD.
-const DEPTH_PUSH := 2.0
+## được lúc đầu; khi đã đủ sâu thì cách gán làm chuỗi sâu thêm nhân DEPTH_HOLD. DEPTH_PUSH 4 từ 2026-11-12 (trước 2):
+## trên 218 level Hard / VeryHard, VeryHard sâu thêm 1,5 lượt so với 2.
+const DEPTH_PUSH := 4.0
 const DEPTH_HOLD := 0.05
 const DEPTH_FREE := 0.3
 ## `_attempt_motif`: đặt lại thùng sắt và cắt lại tối đa STONE_TRIES lần khi có khối bị thùng chắn cả bốn hướng.
@@ -93,12 +95,20 @@ const BRICK_LEN := 4
 ## Level hợp lệ cho (id, seed), hoặc {} nếu mọi lần thử đều hỏng (không xảy ra trong thực tế).
 ## `strict_rounds` false (Daily Challenge, sinh trong game): vẫn gán hướng lại để số lượt gần đường cong, nhưng giữ bàn
 ## gần nhất thay vì cắt lại hay sinh lại, nên nhanh gần như khi chưa có mục tiêu số lượt.
+## Strict: when no attempt lands within the allowed rounds (a deep target the shape cannot hold), the board with the
+## closest rounds among those with the free blocks in range is returned, once attempts reach GATE_DROP_AT (a level
+## with pulse gates in its plan) or MOTIF_SWAP_AT, so the level keeps its planned shape and mechanics (later attempts
+## swap the shape and drop gates, then every mechanic). Such a level does not regenerate from the seed it records.
 static func generate(id: int, seed_value: int, strict_rounds: bool = true) -> Dictionary:
+	var best := {}
+	var give_up := GATE_DROP_AT if mech_plan(id).has("pulse") else MOTIF_SWAP_AT
 	for attempt in MAX_TRIES:
-		var lvl := _attempt(id, seed_value + attempt, attempt, strict_rounds)
+		if strict_rounds and attempt >= give_up and best.has("level"):
+			return best["level"]
+		var lvl := _attempt(id, seed_value + attempt, attempt, strict_rounds, best)
 		if not lvl.is_empty():
 			return lvl
-	return {}
+	return best.get("level", {})
 
 
 ## Cơ chế đã mở ở level này (theo Config.UNLOCK). Dùng cho test và công cụ.
@@ -219,14 +229,18 @@ static func _rounds_tol(want: int, attempt: int) -> int:
 	return mini(tol, maxi(Config.LEVEL_ROUNDS_TOL_MIN_CAP, ceili(want * Config.LEVEL_ROUNDS_TOL_CAP)))
 
 
-## Allowed number of blocks that can act at once (`free_count`) on level `id`, as (min, max); (0, 0) before
-## Config.EXIT_RANGE_FROM (no limit). Up to Config.EXIT_RANGE_EARLY_UNTIL EXIT_RANGE_EARLY, then by tag: VeryHard,
-## Hard, normal. Widens by 1 on each side every Config.EXIT_RELAX_EVERY failed attempts (min never below 1).
+## Allowed number of blocks that can act at once (`free_count`) on level `id`, as (min, max). L1-10 exactly
+## Config.EXIT_EARLY_LEVELS; (0, 0) from there to Config.EXIT_RANGE_FROM (no limit). Up to
+## Config.EXIT_RANGE_EARLY_UNTIL EXIT_RANGE_EARLY, then by tag: VeryHard, Hard, normal. Widens by 1 on each side every
+## Config.EXIT_RELAX_EVERY failed attempts (min never below 1).
 static func exit_range(id: int, attempt: int = 0) -> Vector2i:
-	if id < Config.EXIT_RANGE_FROM:
-		return Vector2i.ZERO
 	var r := Config.EXIT_RANGE_NORMAL
-	if id <= Config.EXIT_RANGE_EARLY_UNTIL:
+	if id >= 1 and id <= Config.EXIT_EARLY_LEVELS.size():
+		var v := int(Config.EXIT_EARLY_LEVELS[id - 1])
+		r = Vector2i(v, v)
+	elif id < Config.EXIT_RANGE_FROM:
+		return Vector2i.ZERO
+	elif id <= Config.EXIT_RANGE_EARLY_UNTIL:
 		r = Config.EXIT_RANGE_EARLY
 	elif DifficultyCurve.is_very_hard(id):
 		r = Config.EXIT_RANGE_VERY_HARD
@@ -312,9 +326,9 @@ static func _ramp(id: int, unlock: int, lo: float, hi: float, over: int) -> floa
 	return lerpf(lo, hi, clampf(float(id - unlock) / float(over), 0.0, 1.0))
 
 
-static func _attempt(id: int, s: int, attempt: int, strict: bool = true) -> Dictionary:
+static func _attempt(id: int, s: int, attempt: int, strict: bool = true, best: Dictionary = {}) -> Dictionary:
 	if id >= DifficultyCurve.MOTIF_FROM:
-		return _attempt_motif(id, s, attempt, strict)
+		return _attempt_motif(id, s, attempt, strict, best)
 	var rng := _rng(id, s)
 	var feats := _features(id, attempt)
 	var n := _target_count(id, rng, attempt)
@@ -340,12 +354,12 @@ static func _attempt(id: int, s: int, attempt: int, strict: bool = true) -> Dict
 	var groups := _tile(area, w, h, stones, n, mirror, rng)
 	if groups.is_empty():
 		return {}
-	return _finish(id, s, rng, feats, w, h, stones, groups, "", attempt, strict)
+	return _finish(id, s, rng, feats, w, h, stones, groups, "", attempt, strict, best)
 
 
 ## Từ DifficultyCurve.MOTIF_FROM: hình vẽ tay, đá và khối đối xứng theo trục của hình, cắt theo `cut_style(id)`; level
 ## dạy chỉ bật cơ chế mới.
-static func _attempt_motif(id: int, s: int, attempt: int, strict: bool = true) -> Dictionary:
+static func _attempt_motif(id: int, s: int, attempt: int, strict: bool = true, best: Dictionary = {}) -> Dictionary:
 	var rng := _rng(id, s)
 	var teach := teach_mech(id)
 	var feats := _features(id, attempt)
@@ -375,7 +389,7 @@ static func _attempt_motif(id: int, s: int, attempt: int, strict: bool = true) -
 			break
 	if groups.is_empty():
 		return {}
-	return _finish(id, s, rng, feats, w, h, stones, groups, teach, attempt, strict)
+	return _finish(id, s, rng, feats, w, h, stones, groups, teach, attempt, strict, best)
 
 
 ## Có khối nào mà đường ra theo cả bốn hướng đều gặp thùng sắt không (khối đó không bao giờ ra được).
@@ -414,7 +428,8 @@ static func _stone_dead(groups: Array, stones: Array[Vector2i], w: int, h: int) 
 ## lifts fog or covers up to the lower bound; a board outside the range is reassigned like one off the round curve.
 ## `teach`: cơ chế level này dạy ("" nếu không), level phải cho chạm thử cơ chế đó ngay lúc đầu.
 static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictionary, w: int, h: int,
-		stones: Array[Vector2i], groups: Array, teach: String, attempt: int, strict: bool = true) -> Dictionary:
+		stones: Array[Vector2i], groups: Array, teach: String, attempt: int, strict: bool = true,
+		best: Dictionary = {}) -> Dictionary:
 	var hard := is_hard(id)
 	var want := DifficultyCurve.wave_count(id)
 	var tol := _rounds_tol(want, attempt)
@@ -425,6 +440,8 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 	var level := {}
 	var near := {}  # bàn có số lượt gần nhất (giữ khi không `strict`)
 	var near_err := 1 << 20
+	var fit := {}  # strict: bàn có số lượt gần nhất trong số bàn đúng khoảng khối thoát ngay (ứng viên cho `best`)
+	var fit_err := 1 << 20
 	var low := -1
 	var stall := 0
 	var tries := ASSIGN_TRIES if strict else FAST_ASSIGN_TRIES
@@ -435,7 +452,11 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 		if asg.is_empty():
 			return {}
 		var rounds: int = asg["depth"]
-		if not strict or absi(rounds - want) <= tol or (not plain and (feats["pulse"] or rounds < want)):
+		# Strict and off the curve: still build the board when it could become this attempt's closest one (`fit`, kept
+		# in `best` if no attempt lands in range). Only this attempt's state decides, so a level regenerates from the
+		# seed it records.
+		var could_near: bool = strict and absi(rounds - want) < fit_err
+		if not strict or could_near or absi(rounds - want) <= tol or (not plain and (feats["pulse"] or rounds < want)):
 			var mech := _mechanics(id, feats, groups, asg, rng, not strict)
 			var cand := _build(id, s, hard, _shifted(stones, shift), _shifted_groups(groups, shift), asg, mech)
 			if not mech["fog"].is_empty() or not mech["ice"].is_empty() or not mech["choco"].is_empty():
@@ -462,6 +483,9 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 			if absi(rounds - want) + miss < near_err:
 				near = cand
 				near_err = absi(rounds - want) + miss
+			if miss == 0 and absi(rounds - want) < fit_err:
+				fit = cand
+				fit_err = absi(rounds - want)
 		if rounds < want:
 			stall = stall + 1 if rounds <= low else 0
 			low = maxi(low, rounds)
@@ -471,7 +495,18 @@ static func _finish(id: int, s: int, rng: RandomNumberGenerator, feats: Dictiona
 	if level.is_empty() and not strict:
 		level = near
 	if level.is_empty():
+		if strict and not fit.is_empty() and fit_err < int(best.get("err", 1 << 20)):
+			var done := _complete(fit, teach)
+			if not done.is_empty():
+				best["level"] = done
+				best["err"] = fit_err
 		return {}
+	return _complete(level, teach)
+
+
+## Validates `level`, sets min_taps and moves; {} if it fails a check (invalid, unsolvable, nothing exits at once, the
+## teaching level's mechanic not on offer at once).
+static func _complete(level: Dictionary, teach: String) -> Dictionary:
 	var errs := LevelData.validate(level)
 	if not errs.is_empty():
 		return {}
