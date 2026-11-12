@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" path="res://scenes/unity/ProfileLayer.tscn" id="u0"]
 
 [sub_resource type="Gradient" id="Gradient_rtvim"]
-colors = PackedColorArray(0.22352941, 0.40392157, 0.7490196, 1, 0.48235294, 0.61960787, 0.8666667, 1)
+colors = PackedColorArray(0.91372549, 0.85098039, 1, 1, 1, 0.89019608, 0.9254902, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_2bw5n"]
 gradient = SubResource("Gradient_rtvim")
@@ -146,7 +146,7 @@ layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color(0.22352941, 0.40392157, 0.7490196, 1)
+color = Color(0.91372549, 0.85098039, 1, 1)
 
 [node name="Gradient" type="TextureRect" parent="Background" unique_id=1253541617]
 layout_mode = 0
@@ -685,7 +685,7 @@ offset_top = -96.8535
 offset_right = 120.9274
 offset_bottom = -41.000504
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_color = Color(0.29019608, 0.16470588, 0.41960784, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -5
 theme_override_constants/outline_size = 0
@@ -729,7 +729,7 @@ offset_top = 46.79395
 offset_right = -21.857952
 offset_bottom = 95.206055
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_color = Color(0.29019608, 0.16470588, 0.41960784, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -4
 theme_override_constants/outline_size = 0
@@ -772,7 +772,7 @@ offset_top = -24.2061
 offset_right = 296.56067
 offset_bottom = 37.4063
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_color = Color(0.29019608, 0.16470588, 0.41960784, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -4
 theme_override_constants/outline_size = 0
@@ -976,7 +976,7 @@ offset_right = -73.04315
 offset_bottom = -6.5
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(0.10980392, 0.2901961, 0.5137255, 1)
+theme_override_colors/font_color = Color(0.29019608, 0.16470588, 0.41960784, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/line_spacing = -4
 theme_override_constants/outline_size = 0

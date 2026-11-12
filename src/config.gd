@@ -725,6 +725,11 @@ static var SALE_MODE: int = _SALE_MODE
 static var SALE_PERCENT: int = _SALE_PERCENT
 
 
+## Bộ ảnh giao diện (ThemeKit chỉ chứa màu vẽ bằng code): "" ảnh gốc, "pastel" concept A sữa dâu oải hương
+## (assets/themes/pastel/, docs/UI_THEME_PASTEL.md). src/ui/theme_assets.gd đọc giá trị này lúc khởi động.
+const UI_THEME := "pastel"
+
+
 ## Công tắc cho test: -1 theo OS.has_feature("demo"), 0 ép bản phát hành, 1 ép bản demo.
 ## reset() trả về -1.
 static var demo_override: int = -1

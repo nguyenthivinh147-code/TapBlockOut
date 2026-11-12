@@ -12,7 +12,7 @@ region = Rect2(26, 874, 149, 149)
 
 [sub_resource type="Gradient" id="Gradient_rt"]
 offsets = PackedFloat32Array(0, 0.55, 1)
-colors = PackedColorArray(0.3529412, 0.4392157, 0.8784314, 1, 0.6627451, 0.5372549, 0.9254902, 1, 1, 0.8, 0.8784314, 1)
+colors = PackedColorArray(0.7254902, 0.62745098, 0.94117647, 1, 0.6627451, 0.5372549, 0.9254902, 1, 1, 0.8, 0.8784314, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_rt"]
 gradient = SubResource("Gradient_rt")
@@ -37,7 +37,7 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color(0.3529412, 0.4392157, 0.8784314, 1)
+color = Color(0.7254902, 0.62745098, 0.94117647, 1)
 
 [node name="Gradient" type="TextureRect" parent="Background"]
 layout_mode = 1

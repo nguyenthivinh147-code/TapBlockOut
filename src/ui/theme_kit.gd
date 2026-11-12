@@ -40,17 +40,18 @@ const BLOCK_RAMPS := {
 const BLOCK_SAT := 0.83
 const BLOCK_VAL := 0.96
 
-# Brand / Menu
-const BG := Color("3967BF")
-const BG_TOP := Color("3967BF")
-const BG_BOTTOM := Color("7B9EDD")
-const NAV_TOP := Color("4A5199")
-const NAV_BOTTOM := Color("2E3270")
+# Brand / Menu. Theme pastel (concept A, docs/UI_THEME_PASTEL.md): lavender E9D9FF fading to peach FFE3EC; the base
+# theme used blue 3967BF -> 7B9EDD.
+const BG := Color("E9D9FF")
+const BG_TOP := Color("E9D9FF")
+const BG_BOTTOM := Color("FFE3EC")
+const NAV_TOP := Color("C9B3F5")
+const NAV_BOTTOM := Color("9F86E0")
 # Popup Lavender: PANEL là nền tối cho khối thông tin trên nền màu, POPUP_CREAM + INK cho thân popup sáng.
-const PANEL := Color("2E3270")
-const PANEL_BORDER := Color("7E86C8")
-const POPUP_CREAM := Color("F8F3DE")
-const INK := Color("3A3F6E")
+const PANEL := Color("4A2A6B")
+const PANEL_BORDER := Color("9F86E0")
+const POPUP_CREAM := Color("FFF6EC")
+const INK := Color("4A2A6B")
 const TEXT := Color("FFFFFF")
 const TEXT_DIM := Color("BEC6EF")
 ## Default text stroke and underlay: dark plum (= RIBBON_STROKE), never pure black. TMP material
@@ -71,10 +72,10 @@ const SCRIM := Color(0, 0, 0, POPUP_DIM_ALPHA)
 # Theme Slate (Gameplay)
 const SLATE_BG := Color("504D73")
 const SLATE_SURFACE := Color("3D3A63")
-# Gameplay background: one picture for every difficulty, drawn faint at LEVEL_BG_IMAGE_ALPHA over the pastel pink LEVEL_BG
+# Gameplay background: one picture for every difficulty, drawn faint at LEVEL_BG_IMAGE_ALPHA over the pastel lavender LEVEL_BG
 # (alone if the picture is missing), LEVEL_BG_DIM left clear, and the board panel behind the blocks.
-# BOARD_BG: same pink tone as the blended background (~#F7E6E5 over the board area), a little darker.
-const LEVEL_BG := Color("FFEEF4")
+# BOARD_BG: dark plum tray (concept A), block contrast 3.4-6.1:1; the base theme used pink E9CDD2 (1.1-2.0:1).
+const LEVEL_BG := Color("F1E3FF")
 const LEVEL_BG_IMAGE := "res://assets/bg/bg_level.png"
 const LEVEL_BG_IMAGE_ALPHA := 0.35
 const LEVEL_BG_DIM := Color(0, 0, 0, 0)
@@ -85,9 +86,9 @@ const LEVEL_BG_DIM := Color(0, 0, 0, 0)
 const LEVEL_BG_FADE_HEIGHT := 760.0
 const LEVEL_BG_FADE_SOLID := 0.5
 const LEVEL_BG_FADE_ALPHA := 0.85
-const BOARD_BG := Color("E9CDD2")
+const BOARD_BG := Color("3B2A5C")
 # Chữ và khối trên thân popup kem (Theme Warm + Popup Lavender)
-const INK_DIM := Color("6C74AE")
+const INK_DIM := Color("8A6FB0")
 const INK_GOOD := Color("3E7F1E")
 const INK_DANGER := Color("C31F1F")
 const BROWN := Color("A95D3A")
@@ -95,9 +96,9 @@ const WELL := Color("F2E3C3")
 const WELL_HOT := Color("FAE2BA")
 const WELL_HEADER := Color("F59A1F")
 const WELL_TODAY := Color("71CB1B")
-const PATH_LINE := Color("20417B")
+const PATH_LINE := Color("4A2A6B")
 const TOGGLE_ON := Color("52DA41")
-const TOGGLE_OFF := Color("859DC6")
+const TOGGLE_OFF := Color("B8A6D9")
 const GOLD_STROKE := Color("6B2C07")
 const RIBBON_STROKE := Color("3A1C6E")
 

@@ -115,7 +115,7 @@ PanelContainer/styles/panel = SubResource("StyleBoxFlat_jbfel")
 
 [sub_resource type="Gradient" id="Gradient_vwpem"]
 offsets = PackedFloat32Array(0, 0.844)
-colors = PackedColorArray(0.20392157, 0.32941177, 0.6745098, 1, 0.87058824, 0.88235295, 0.9490196, 1)
+colors = PackedColorArray(0.91372549, 0.85098039, 1, 1, 1, 0.89019608, 0.9254902, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_hsf4p"]
 gradient = SubResource("Gradient_vwpem")
@@ -150,7 +150,7 @@ region = Rect2(1242, 288, 200, 200)
 
 [sub_resource type="Gradient" id="Gradient_tilxw"]
 offsets = PackedFloat32Array(0, 0.494, 1)
-colors = PackedColorArray(0.20392157, 0.32941177, 0.6745098, 1, 0.20392157, 0.32941177, 0.6745098, 0.77, 0.20392157, 0.32941177, 0.6745098, 0)
+colors = PackedColorArray(0.91372549, 0.85098039, 1, 1, 0.91372549, 0.85098039, 1, 0.77, 0.91372549, 0.85098039, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_dy5n5"]
 gradient = SubResource("Gradient_tilxw")

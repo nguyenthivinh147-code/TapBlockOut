@@ -23,6 +23,9 @@ const RewardFly := preload("res://src/ui/reward_fly.gd")
 const SCENE_PATH := "res://scenes/hub_nav.tscn"
 const DESIGN_W := 886.0
 const DESIGN_H := 248.0
+## Tint of a locked tab (button and panel). Theme pastel: light, the padlock says "locked"; the base theme dimmed to
+## Color(0.7, 0.7, 0.78) on its dark purple tabs.
+const LOCKED_TINT := Color(0.9, 0.88, 0.95)
 ## [tab, icon, chữ, nút trong scene, nền tím trong scene], trái sang phải
 const TABS := [["shop", "ui_shop", "home_shop", "ShopButton", "ShopPanel"], ["home", "ui_home", "home_home", "HomeTab", "HomePanel"],
 	["road_trip", "ui_road_trip", "home_road_trip", "RoadTripTab", "RoadTripPanel"]]
@@ -278,7 +281,7 @@ func refresh() -> void:
 func _set_open(b: Button, tab_name: String, icon_name: String, open: bool) -> void:
 	_open[tab_name] = open
 	b.disabled = not open
-	b.modulate = Color.WHITE if open else Color(0.7, 0.7, 0.78)
+	b.modulate = Color.WHITE if open else LOCKED_TINT
 	(_panels[tab_name] as Control).modulate = b.modulate
 	var ic := _icons[tab_name] as TextureRect
 	ic.texture = ThemeKit.icon(icon_name if open else "ui_lock")

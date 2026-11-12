@@ -71,8 +71,9 @@ const PILL_TIERS := {
 const BOOSTERS := ["hint", "move", "smash"]
 const FREE_PLACEMENT := "booster_free"
 const MECHS := Unlocks.MECHS
-## Ô booster chưa mở: tô tối nền và icon (ổ khoá, nhãn là node con nên giữ màu).
-const LOCKED_TINT := Color(0.55, 0.55, 0.62)
+## Ô booster chưa mở: tô tối nền và icon (ổ khoá, nhãn là node con nên giữ màu). Theme pastel: tối vừa trên ô
+## oải hương sáng; theme gốc Color(0.55, 0.55, 0.62) trên ô tím đậm.
+const LOCKED_TINT := Color(0.72, 0.7, 0.8)
 
 
 ## Hộp thoại nhỏ dựng bằng code theo PopupOkLayer (color-cube-match-puzzle). items: [{id, text, kind, name, close}].

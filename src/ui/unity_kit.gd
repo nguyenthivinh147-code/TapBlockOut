@@ -21,7 +21,7 @@ const BUTTONS := {
 	"gray": ["Resources_moved_UI_Maincenter:UI_Maincenter_74", "Baloo Outline - Gray"],
 }
 ## Body text colour of PopupOkLayer's description (atlas material, no outline).
-const INK := "1c4a83ff"
+const INK := "4a2a6bff"
 const WELL := "Resources_moved_UI_Maincenter:UI_Maincenter_68"
 ## Every price paid in gold: atlas_main's yellow pill and coin (ui_atlas.gd), the coin + price row of PopupReviveLayer's
 ## GoldBtn.

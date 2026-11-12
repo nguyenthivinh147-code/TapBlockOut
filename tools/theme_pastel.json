@@ -1,0 +1,747 @@
+{
+	"theme": "pastel",
+	"sat_floor": [
+		0.12,
+		0.26
+	],
+	"icon_sat_cap": 0.76,
+	"icon_sat_keep": 0.3,
+	"families": {
+		"red": {
+			"centre": 352,
+			"half": 12,
+			"feather": 8
+		},
+		"orange": {
+			"centre": 28,
+			"half": 13,
+			"feather": 8
+		},
+		"yellow": {
+			"centre": 50,
+			"half": 9,
+			"feather": 6
+		},
+		"green": {
+			"centre": 110,
+			"half": 40,
+			"feather": 10
+		},
+		"cyan": {
+			"centre": 190,
+			"half": 8,
+			"feather": 6
+		},
+		"blue": {
+			"centre": 220,
+			"half": 24,
+			"feather": 10
+		},
+		"purple": {
+			"centre": 272,
+			"half": 22,
+			"feather": 8
+		},
+		"magenta": {
+			"centre": 308,
+			"half": 11,
+			"feather": 6
+		}
+	},
+	"targets": {
+		"lavender": {
+			"hue": 262,
+			"sat": 0.55,
+			"sat_max": 0.44,
+			"lift": 0.55,
+			"keep_hue": 0.15
+		},
+		"strawberry": {
+			"hue": 342,
+			"sat": 0.6,
+			"sat_max": 0.55,
+			"lift": 0.35,
+			"keep_hue": 0.1
+		},
+		"cream": {
+			"hue": 32,
+			"sat": 0.3,
+			"sat_max": 0.26,
+			"lift": 0.55
+		},
+		"butter": {
+			"hue": 45,
+			"sat": 0.55,
+			"sat_max": 0.46,
+			"lift": 0.5
+		},
+		"lavender_light": {
+			"hue": 264,
+			"sat": 0.5,
+			"sat_max": 0.33,
+			"lift": 0.36,
+			"keep_hue": 0.1
+		}
+	},
+	"maps": {
+		"frame": {
+			"blue": "lavender",
+			"cyan": "lavender",
+			"purple": "lavender",
+			"magenta": "lavender"
+		},
+		"frame_warm": {
+			"blue": "lavender",
+			"cyan": "lavender",
+			"purple": "lavender",
+			"magenta": "lavender",
+			"orange": "strawberry"
+		},
+		"ribbon": {
+			"blue": "strawberry",
+			"cyan": "strawberry",
+			"purple": "strawberry",
+			"magenta": "strawberry",
+			"orange": "strawberry",
+			"yellow": "strawberry"
+		},
+		"label": {
+			"orange": "cream",
+			"yellow": "cream"
+		},
+		"frame_light": {
+			"blue": "lavender_light",
+			"cyan": "lavender_light",
+			"purple": "lavender_light",
+			"magenta": "lavender_light"
+		}
+	},
+	"files": {
+		"ui/hud/hud_panel.png": {
+			"map": "frame_light"
+		},
+		"ui/hud/hud_moves_panel.png": {
+			"map": "frame_light"
+		},
+		"ui/hud/hud_btn_settings.png": {
+			"map": "frame_light"
+		},
+		"ui/hud/hud_btn_restart.png": {
+			"map": "frame_light"
+		},
+		"ui/hud/hud_booster_hint.png": {
+			"map": "frame_light"
+		},
+		"ui/hud/hud_booster_move.png": {
+			"map": "frame_light"
+		},
+		"ui/hud/hud_booster_smash.png": {
+			"map": "frame_light"
+		},
+		"ui/hud/hud_pill.png": {
+			"map": "frame_light"
+		},
+		"ui/figma/ic_setting.png": {
+			"map": "frame_light"
+		},
+		"ui/figma/popup_frame1.png": {
+			"map": "frame"
+		},
+		"ui/figma/popup_frame2.png": {
+			"map": "frame"
+		},
+		"ui/figma/popup_frame3.png": {
+			"map": "frame"
+		},
+		"ui/figma/bg_shop.png": {
+			"map": "frame"
+		},
+		"ui/figma/ava.png": {
+			"map": "frame"
+		},
+		"ui/figma/ava_frame.png": {
+			"map": "frame"
+		},
+		"ui/figma/home_banner.png": {
+			"map": "label"
+		},
+		"ui/cc/Popup2.png": {
+			"map": "frame"
+		},
+		"ui/cc/PopupDailyRewardAd.png": {
+			"map": "frame"
+		},
+		"ui/cc/Popup_SpecialPack.png": {
+			"map": "frame"
+		},
+		"ui/cc/BG_Winstreak.png": {
+			"map": "frame"
+		},
+		"ui/lb_promo_box.png": {
+			"map": "frame"
+		},
+		"ui/figma/ic_gold.png": {
+			"map": "icon"
+		},
+		"ui/figma/gold1.png": {
+			"map": "icon"
+		},
+		"ui/figma/gold2.png": {
+			"map": "icon"
+		},
+		"ui/figma/gold3.png": {
+			"map": "icon"
+		},
+		"ui/figma/gold4.png": {
+			"map": "icon"
+		},
+		"ui/figma/gold5.png": {
+			"map": "icon"
+		},
+		"ui/figma/gold6.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_heart.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_heartlose.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_lives.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_noads.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_booster1.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_booster2.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_booster3.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_giftbox1.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_giftbox2.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_giftbox3.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_watchads.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_dailygift.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_leaderboard.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_store.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_home.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_star1.png": {
+			"map": "icon"
+		},
+		"ui/figma/ic_saletag.png": {
+			"map": "icon"
+		},
+		"ui/cc/Gold1.png": {
+			"map": "icon"
+		},
+		"ui/cc/Gold2.png": {
+			"map": "icon"
+		},
+		"ui/cc/Gold3.png": {
+			"map": "icon"
+		},
+		"ui/cc/Gold4.png": {
+			"map": "icon"
+		},
+		"ui/cc/Gold5.png": {
+			"map": "icon"
+		},
+		"ui/cc/Gold6.png": {
+			"map": "icon"
+		},
+		"ui/cc/BundleBig.png": {
+			"map": "icon"
+		},
+		"ui/cc/BundleMid.png": {
+			"map": "icon"
+		},
+		"ui/cc/BundleSmall.png": {
+			"map": "icon"
+		},
+		"ui/cc/BundleTim.png": {
+			"map": "icon"
+		},
+		"ui/cc/NoAdsPack.png": {
+			"map": "icon"
+		},
+		"ui/cc/StarterPack.png": {
+			"map": "icon"
+		},
+		"ui/cc/HelperOffer.png": {
+			"map": "icon"
+		},
+		"ui/cc/LimitedPack.png": {
+			"map": "icon"
+		},
+		"ui/cc/TV.png": {
+			"map": "icon"
+		},
+		"ui/cc/DailyRewardIcon.png": {
+			"map": "icon"
+		},
+		"ui/cc/Resources_moved_SpecialPack.png": {
+			"map": "icon"
+		},
+		"ui/cc/ic_booster1.png": {
+			"map": "icon"
+		},
+		"ui/cc/ic_booster1_1.png": {
+			"map": "icon"
+		},
+		"ui/cc/ic_booster2.png": {
+			"map": "icon"
+		},
+		"ui/cc/ic_booster2_1.png": {
+			"map": "icon"
+		},
+		"ui/cc/ic_booster3_1.png": {
+			"map": "icon"
+		},
+		"ui/cc/ic_winstreak2.png": {
+			"map": "icon"
+		},
+		"ui/art_chain_offer.png": {
+			"map": "icon"
+		},
+		"ui/art_level_pack.png": {
+			"map": "icon"
+		},
+		"ui/art_level_pack_shop.png": {
+			"map": "icon"
+		},
+		"ui/art_no_ads_bundle.png": {
+			"map": "icon"
+		},
+		"ui/art_starter_pack.png": {
+			"map": "icon"
+		},
+		"ui/booster_hint.png": {
+			"map": "icon"
+		},
+		"ui/booster_move.png": {
+			"map": "icon"
+		},
+		"ui/booster_smash.png": {
+			"map": "icon"
+		},
+		"ui/ic_chain_offer.png": {
+			"map": "icon"
+		},
+		"ui/ic_level_pack.png": {
+			"map": "icon"
+		},
+		"ui/ic_weekly_pass.png": {
+			"map": "icon"
+		},
+		"ui/ic_win_streak.png": {
+			"map": "icon"
+		},
+		"ui/ui_gold.png": {
+			"map": "icon"
+		},
+		"ui/ui_heart.png": {
+			"map": "icon"
+		},
+		"ui/ui_gift.png": {
+			"map": "icon"
+		},
+		"ui/ui_hint.png": {
+			"map": "icon"
+		},
+		"ui/ui_video.png": {
+			"map": "icon"
+		},
+		"ui/cc/Resources_moved_UI_Maincenter.png": {
+			"regions": [
+				[
+					384,
+					1332,
+					368,
+					108,
+					"ribbon"
+				],
+				[
+					0,
+					1628,
+					360,
+					102,
+					"frame"
+				],
+				[
+					0,
+					1734,
+					360,
+					102,
+					"frame"
+				],
+				[
+					0,
+					1840,
+					360,
+					102,
+					"frame"
+				],
+				[
+					0,
+					1946,
+					360,
+					102,
+					"frame"
+				],
+				[
+					384,
+					1731,
+					380,
+					144,
+					"frame"
+				],
+				[
+					936,
+					523,
+					228,
+					132,
+					"frame_light"
+				],
+				[
+					780,
+					0,
+					256,
+					256,
+					"icon"
+				],
+				[
+					1299,
+					0,
+					256,
+					256,
+					"icon"
+				],
+				[
+					0,
+					259,
+					256,
+					256,
+					"icon"
+				],
+				[
+					259,
+					259,
+					256,
+					256,
+					"icon"
+				],
+				[
+					518,
+					259,
+					256,
+					256,
+					"icon"
+				],
+				[
+					779,
+					259,
+					256,
+					256,
+					"icon"
+				],
+				[
+					542,
+					663,
+					72,
+					72,
+					"icon"
+				],
+				[
+					614,
+					663,
+					72,
+					72,
+					"icon"
+				]
+			]
+		},
+		"ui/figma/atlas_main.png": {
+			"regions": [
+				[
+					937,
+					524,
+					226,
+					144,
+					"frame_light"
+				],
+				[
+					384,
+					1332,
+					368,
+					108,
+					"ribbon"
+				],
+				[
+					0,
+					1628,
+					358,
+					102,
+					"frame"
+				],
+				[
+					0,
+					1734,
+					358,
+					102,
+					"frame"
+				],
+				[
+					0,
+					1840,
+					358,
+					102,
+					"frame"
+				],
+				[
+					0,
+					1946,
+					358,
+					102,
+					"frame"
+				],
+				[
+					384,
+					1731,
+					380,
+					144,
+					"frame"
+				],
+				[
+					780,
+					0,
+					256,
+					256,
+					"icon"
+				],
+				[
+					0,
+					260,
+					256,
+					256,
+					"icon"
+				],
+				[
+					260,
+					260,
+					256,
+					256,
+					"icon"
+				],
+				[
+					520,
+					260,
+					256,
+					256,
+					"icon"
+				],
+				[
+					780,
+					260,
+					256,
+					256,
+					"icon"
+				],
+				[
+					1040,
+					0,
+					256,
+					256,
+					"frame_light"
+				]
+			]
+		},
+		"ui/cc/Resources_UI_Maincenter.png": {
+			"regions": [
+				[
+					1792,
+					536,
+					256,
+					270,
+					"frame"
+				],
+				[
+					1273,
+					1779,
+					128,
+					140,
+					"frame"
+				],
+				[
+					623,
+					1679,
+					103,
+					92,
+					"frame"
+				],
+				[
+					0,
+					1892,
+					380,
+					156,
+					"ribbon"
+				]
+			]
+		},
+		"ui/cc/UI_Shop_Atlas.png": {
+			"regions": [
+				[
+					536,
+					0,
+					488,
+					84,
+					"ribbon"
+				],
+				[
+					535,
+					89,
+					488,
+					84,
+					"ribbon"
+				],
+				[
+					488,
+					187,
+					536,
+					116,
+					"ribbon"
+				],
+				[
+					136,
+					150,
+					344,
+					180,
+					"frame_warm"
+				],
+				[
+					0,
+					150,
+					132,
+					180,
+					"frame"
+				],
+				[
+					0,
+					340,
+					466,
+					256,
+					"frame"
+				],
+				[
+					0,
+					808,
+					1024,
+					216,
+					"frame"
+				]
+			]
+		},
+		"ui/cc/UI_Shop_Packs_Atlas.png": {
+			"regions": [
+				[
+					0,
+					0,
+					512,
+					312,
+					"frame"
+				],
+				[
+					0,
+					633,
+					512,
+					312,
+					"frame"
+				],
+				[
+					0,
+					948,
+					108,
+					76,
+					"frame"
+				]
+			]
+		},
+		"ui/cc/UI_WinLose_Atlas.png": {
+			"regions": [
+				[
+					1,
+					144,
+					560,
+					140,
+					"frame"
+				]
+			]
+		},
+		"ui/cc/UI_Leaderboard_Atlas.png": {
+			"regions": [
+				[
+					0,
+					0,
+					200,
+					60,
+					"frame"
+				],
+				[
+					0,
+					64,
+					200,
+					60,
+					"frame"
+				],
+				[
+					204,
+					0,
+					72,
+					60,
+					"frame"
+				],
+				[
+					204,
+					64,
+					72,
+					60,
+					"frame"
+				]
+			]
+		}
+	},
+	"code_colors": {
+		"1c4a83": "4a2a6b",
+		"166dcc": "7a4fc0",
+		"126dcc": "7a4fc0",
+		"476b97": "6b4f8a",
+		"295487": "6b4f8a",
+		"1f3e7e": "4a2a6b",
+		"27306a": "4a2a6b",
+		"5a70e0": "b9a0f0",
+		"3967bf": "e9d9ff",
+		"7b9edd": "ffe3ec",
+		"3454ac": "e9d9ff",
+		"dee1f2": "ffe3ec"
+	}
+}

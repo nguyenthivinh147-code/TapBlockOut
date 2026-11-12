@@ -58,6 +58,7 @@ tools/godot.sh --headless --path . --import        # chỉ khi editor đóng
 - UI các màn và popup (trừ Home, bàn chơi, HUD): dựng từ prefab Unity color-cube-match-puzzle, `docs/UI_UNITY.md`.
 - UI dạng node (scene `scenes/unity/`, bake màn bằng `tools/bake_screen.gd`, quy tắc script màn): `docs/UI_NODES.md`.
 - UI theo Figma (Home, HUD, thanh trên/dưới), màn chưa nối logic, `Config.ui_preview`: `docs/UI_FIGMA.md`.
+- Theme pastel (concept A: ảnh twin trong `assets/themes/pastel/`, `Config.UI_THEME`, `--theme=`, tool `tools/theme_recolor.py`): `docs/UI_THEME_PASTEL.md`.
 - Bàn giao cho Horus, SKU, cấu hình SDK: `docs/HORUS_HANDOFF.md`.
 - Plugin Billing (phiên bản, sha256, cách cài lại): `docs/BILLING_NOTES.md`.
 - Nhạc nền (phân tích người chơi, tiêu chuẩn, tạo và kiểm vòng lặp bằng `tools/music_check.py`): `docs/AUDIO_MUSIC.md`.

@@ -93,7 +93,8 @@ src/meta/      save_schema.gd  save_store.gd  clock.gd  wallet.gd  lives.gd  unl
                weekly_pass.gd  chain_offer.gd  pack_conditions.gd (Special Pack)  special_bomb.gd (Màn đặc biệt)
 src/platform/  platform.gd (autoload Platform)  mock_*.gd  android_*.gd
 src/game/      game.gd (autoload Game)  sfx.gd (autoload Sfx)
-src/ui/        theme_kit.gd  ...script màn hình...
+src/ui/        theme_kit.gd  theme_assets.gd (autoload ThemeAssets, nạp trước Platform: ảnh theme, docs/UI_THEME_PASTEL.md)
+               ...script màn hình...
 scenes/        main.tscn  board_view.tscn  ...  unity/<Prefab>.tscn (layout Unity đã bake)
 data/levels/   level_0001.json ... level_0500.json (CONTENT.release_pregen_level; sau L500 lặp lại từ CONTENT.loop_start_level)
 data/road_trip/ rt_0001.json ... rt_0400.json (Road Trip, nhập bằng tools/import_road_trip.gd)

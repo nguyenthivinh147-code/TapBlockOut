@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [sub_resource type="Gradient" id="Gradient_o5a4c"]
-colors = PackedColorArray(0.22352941, 0.40392157, 0.7490196, 1, 0.48235294, 0.61960787, 0.8666667, 1)
+colors = PackedColorArray(0.91372549, 0.85098039, 1, 1, 1, 0.89019608, 0.9254902, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_bkp1e"]
 gradient = SubResource("Gradient_o5a4c")
@@ -12,7 +12,7 @@ fill_to = Vector2(0.5, 1)
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color(0.22352941, 0.40392157, 0.7490196, 1)
+color = Color(0.91372549, 0.85098039, 1, 1)
 
 [node name="Gradient" type="TextureRect" parent="." unique_id=1372677323]
 layout_mode = 0

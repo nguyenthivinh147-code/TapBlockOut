@@ -25,7 +25,7 @@ const FIG_CLOSE_CENTER := Vector2(771, 132)
 const FIG_CLOSE_ICON := 72.0
 ## Vùng chạm tối thiểu 96 px trên màn, tính ra px Figma.
 const FIG_HIT := 96.0 / FIG_SCALE
-const FIG_INK := Color("1C4A83")
+const FIG_INK := Color("4A2A6B")
 const FIG_WELL := Color("FAE4BF")
 const FIG_CREAM := Color("FFFAF0")
 const FIG_TITLE_STROKE := Color("5519B7")
