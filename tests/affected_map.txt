@@ -1,0 +1,102 @@
+# Kịch bản smoke và test cho từng file (tools/affected.sh, docs/TESTING.md mục "Chọn test theo thay đổi").
+#
+# Dòng: <đích...> : <mẫu...>   ## lý do (tuỳ chọn)
+#   Đích: mã kịch bản (A, B, WP...); * = bộ mặc định của tools/smoke.sh; - = không kịch bản nào chạy tới;
+#         test:<tên> = tests/<tên>.gd; test:* = mọi test.
+#   Mẫu: đường dẫn từ gốc repo; * trong một thư mục, ** qua nhiều thư mục, ? một ký tự.
+#
+# Kịch bản: script đi ngược đồ thị tham chiếu từ file đổi và dừng ở file đầu tiên có dòng với đích kịch bản (mã, *, -).
+# Một file khớp nhiều dòng thì lấy hợp. Chỉ cần ghi file "màn" và module; file con (hiệu ứng, shader, ảnh, scene Unity)
+# tự tìm tới màn dùng nó. Hàm scen_* nhắc tên file trong chuỗi ("popup_reward.gd") cũng chọn kịch bản đó.
+# Sửa trong tests/smoke/*.gd và tests/cases/<MÃ>.csv: script tự quy về kịch bản, không cần dòng ở đây.
+# test: chỉ áp cho chính file đổi; test còn được chọn qua đồ thị (test nạp file đổi, trực tiếp hay gián tiếp).
+# `tools/affected.sh --check` (chạy trong tests/test_affected.gd) báo mẫu không khớp, mã lạ, file src/ scenes/ chưa có
+# kịch bản.
+
+# ---------------------------------------------------------------- hạ tầng test
+test:* : tools/test.sh tools/godot.sh tests/run_all.gd tests/t.gd tests/allow_errors.txt project.godot
+test:test_static_check : **                          ## parse mọi script, dò bí mật trong mọi file git theo dõi
+test:test_cases : tests/cases/** tests/smoke/*.gd tests/test_*.gd
+test:test_affected : tools/affected.mjs tools/affected.sh tests/affected_map.txt
+test:test_smoke : tests/smoke/**
+* : tools/smoke.sh project.godot
+
+# ---------------------------------------------------------------- lõi: đổi là mọi kịch bản có thể hỏng
+* : src/game/game.gd src/config.gd src/platform/platform.gd src/platform/mock_rc.gd
+* T : src/ui/main.gd scenes/main.tscn
+B : src/game/sfx.gd src/platform/mock_an.gd assets/music/** assets/sfx/**
+B G : src/platform/mock_notif.gd src/meta/notif_plan.gd    ## lịch thông báo đặt lúc app vào nền (G phát Platform.paused)
+G : src/platform/mock_save.gd src/ui/select_account.gd scenes/select_account.tscn
+E SP CO WP : src/platform/mock_iap.gd
+F C H PR DG : src/platform/mock_ads.gd
+- : src/platform/android_*.gd                             ## chỉ có trên máy thật: /device-test
+
+# ---------------------------------------------------------------- bàn chơi
+B C H S V : src/core/board_state.gd src/core/solver.gd src/core/level_data.gd src/core/level_loop.gd
+B C H S : src/ui/level.gd scenes/level.tscn src/ui/board_view.gd scenes/board_view.tscn
+SB : src/core/level_generator.gd                         ## lúc chạy chỉ Màn đặc biệt sinh bàn; level chính đọc data/levels
+SB : src/core/special_board.gd
+V : data/levels/*.json
+RT : data/road_trip/*.json
+SB : data/special/*.json
+B : data/pudding_sdf.res
+B T : src/ui/candy_curtain.gd src/ui/level_curtain.gd
+H : src/ui/booster_unlocked.gd scenes/booster_unlocked.tscn src/ui/shop_mini.gd scenes/shop_mini.tscn
+- : src/ui/booster_soon.gd scenes/booster_soon.tscn     ## game không mở nữa (2026-11-12)
+
+# ---------------------------------------------------------------- thắng, thua, mạng
+B F : src/ui/win_card.gd scenes/win_card.tscn
+C : src/ui/lose_card.gd scenes/lose_card.tscn src/ui/popup_rescue.gd scenes/popup_rescue.tscn
+C : src/ui/popup_keep_playing.gd scenes/popup_keep_playing.tscn src/ui/no_lives.gd scenes/no_lives.tscn
+C : src/ui/popup_helper_pack.gd scenes/popup_helper_pack.tscn src/meta/rescue_flow.gd
+C G : src/meta/lives.gd
+
+# ---------------------------------------------------------------- Home, điều hướng, cài đặt
+A : src/ui/splash.gd scenes/splash.tscn src/ui/tutorial_intro.gd scenes/tutorial_intro.tscn
+A test:test_splash_art : assets/ui/boot_splash.png      ## chỉ project.godot trỏ tới; hiện trước màn loading
+A : src/ui/popup_update.gd scenes/popup_update.tscn src/meta/app_version.gd
+D B T : src/ui/home.gd scenes/home.tscn src/ui/home_sparkles.gd
+D E LB RT T : src/ui/hub_nav.gd scenes/hub_nav.tscn
+D E LB : src/ui/hub_top.gd scenes/hub_top.tscn
+B T : src/ui/popup_ingame_settings.gd scenes/popup_ingame_settings.tscn   ## mọi kịch bản về Home qua popup này
+D T L : src/ui/settings.gd scenes/settings.tscn
+D L : src/ui/popup_language.gd scenes/popup_language.tscn
+D : src/meta/support_mail.gd
+A D OFF : src/meta/unlocks.gd
+G A : src/meta/save_schema.gd src/meta/save_store.gd
+L : i18n/** assets/fonts/**
+test:test_i18n test:test_shipped_assets : i18n/** assets/fonts/**
+- : src/ui/tester_menu.gd scenes/tester_menu.tscn src/ui/ui_gallery.gd scenes/ui_gallery.tscn src/ui/sample_data.gd
+- : src/ui/popup_heart_*.gd scenes/popup_heart_*.tscn src/ui/popup_ads_daily.gd scenes/popup_ads_daily.tscn  ## chưa nối logic, chỉ mở từ ui_gallery
+- : scenes/unity/LoadLevelProcess*.tscn data/ui_unity/LoadLevelProcess*.json  ## layer Unity không màn nào nạp
+- : scenes/unity/PopupNextMonth.tscn data/ui_unity/PopupNextMonth.json
+
+# ---------------------------------------------------------------- Shop, quảng cáo, gói
+E D T : src/ui/shop.gd scenes/shop.tscn src/ui/shop_fx.gd
+E : src/ui/popup_reward.gd scenes/popup_reward.tscn
+E H : src/meta/wallet.gd
+F E : src/meta/shop_videos.gd
+F B : src/meta/ad_pacing.gd
+F : src/ui/ad_loading.gd scenes/ad_loading.tscn src/ui/popup_notice.gd scenes/popup_notice.tscn
+F : src/ui/popup_no_internet.gd scenes/popup_no_internet.tscn
+SP C D : src/ui/popup_offer.gd scenes/popup_offer.tscn
+SP E : src/meta/offers.gd src/meta/pack_conditions.gd
+D : src/ui/popup_remove_ads.gd scenes/popup_remove_ads.tscn
+B : src/ui/popup_rate.gd scenes/popup_rate.tscn
+
+# ---------------------------------------------------------------- tính năng
+WP : src/meta/weekly_pass.gd src/ui/weekly_pass.gd scenes/weekly_pass.tscn src/ui/weekly_pass_tutorial.gd
+WP : scenes/weekly_pass_tutorial.tscn src/ui/popup_weekly_*.gd scenes/popup_weekly_*.tscn
+CO : src/meta/chain_offer.gd src/ui/chain_offer.gd scenes/chain_offer.tscn
+RT : src/meta/road_trip.gd src/ui/road_trip.gd src/ui/road_trip_map.gd scenes/road_trip.tscn src/ui/gift_curtain.gd
+RT : src/ui/popup_road_trip_win.gd scenes/popup_road_trip_win.tscn
+LB : src/meta/leaderboard.gd src/ui/leaderboard.gd scenes/leaderboard.tscn src/ui/lb_kit.gd
+LB : src/ui/popup_lb_*.gd scenes/popup_lb_*.tscn src/ui/popup_leagues.gd scenes/popup_leagues.tscn
+SB : src/meta/special_bomb.gd src/ui/special_bombs.gd src/ui/bomb_curtain.gd src/ui/glass_crack.gd
+SB : src/ui/popup_special.gd scenes/popup_special.tscn src/ui/popup_special_end.gd scenes/popup_special_end.tscn
+DG : src/meta/daily_calendar.gd src/ui/popup_daily.gd scenes/popup_daily.tscn
+DG G : src/meta/clock.gd
+PR : src/meta/cosmetics.gd src/meta/nickname.gd src/meta/name_filter.gd src/ui/profile.gd scenes/profile.tscn
+PR : src/ui/popup_change_name.gd scenes/popup_change_name.tscn
+OFF : src/meta/win_streak.gd src/ui/streak_main.gd scenes/streak_main.tscn src/ui/popup_streak_*.gd
+OFF : scenes/popup_streak_*.tscn src/ui/challenge.gd scenes/challenge.tscn

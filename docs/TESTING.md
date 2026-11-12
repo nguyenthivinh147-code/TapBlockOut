@@ -8,11 +8,39 @@ Mục ghi *(Task 11.x)* là phần chưa làm xong; khi task xong thì bỏ ghi 
 
 1. **Có luật hoặc số mới** → `/design-note` (sửa `design.md` và thêm dòng vào mục 9 "Nhật ký quyết định"). Sửa nhỏ thì bỏ qua.
 2. **Code và test.** Sửa lỗi thì test hồi quy đỏ trước (luật trong `CLAUDE.md`). Số case tối thiểu cho từng thành phần: mục **Ma trận bao phủ**.
-3. **`tools/test.sh [lọc]`** → dòng cuối `ALL TESTS PASSED (<n>)`, thoát 0. Bộ này gồm cả kiểm tra tĩnh.
-4. **Người chơi nhìn thấy thay đổi** (UI, VFX, animation, chữ) → `tools/smoke.sh window <kịch bản>` và **đọc ảnh PNG**. Log có `SMOKE OK` và `SMOKE ERRORS script=0 engine=0`. Test đạt chưa có nghĩa là màn đã hiện đúng.
+3. **`tools/test.sh [lọc]`** → dòng cuối `ALL TESTS PASSED (<n>)`, thoát 0. Bộ này gồm cả kiểm tra tĩnh. Lọc và kịch bản smoke headless theo thay đổi: `tools/affected.sh` (mục **Chọn test theo thay đổi**).
+4. **Người chơi nhìn thấy thay đổi** (UI, VFX, animation, chữ) → `tools/smoke.sh window <kịch bản>` (`tools/affected.sh` in dòng này) và **đọc ảnh PNG**. Log có `SMOKE OK` và `SMOKE ERRORS script=0 engine=0`. Test đạt chưa có nghĩa là màn đã hiện đúng.
 5. **Có quyết định đáng nhớ** → một dòng trong `design.md` mục 9.
 
 Thứ tự mặc định: headless trước (`tools/test.sh`, `tools/smoke.sh headless`). Chế độ `window` chỉ khi thay đổi hiện lên màn hình, và chỉ chạy kịch bản liên quan. MCP `godot-ai` dùng để xem và thử nhanh trong editor, không thay bước 3 và 4.
+
+## Chọn test theo thay đổi: `tools/affected.sh`
+
+```bash
+tools/affected.sh                  # so với HEAD: đã stage, chưa stage, file mới
+tools/affected.sh main             # so với merge-base với main, cộng phần chưa commit
+tools/affected.sh -v               # kèm đường đi chọn từng test và kịch bản
+tools/affected.sh --run            # chạy luôn test rồi smoke headless
+tools/affected.sh --files src/ui/shop.gd tests/smoke/scen_events.gd:120-140   # file (và dòng) cho sẵn
+tools/affected.sh --check          # kiểm tests/affected_map.txt
+```
+
+In lý do cho từng file đổi, rồi các lệnh: `tools/test.sh <file test>.gd...`, `tools/smoke.sh headless <kịch bản>`, `SMOKE_ARGS="from=<a> to=<b>" tools/smoke.sh headless V` khi có level đổi, `tools/smoke.sh window <kịch bản>` khi người chơi thấy thay đổi (file trong `src/ui/`, `scenes/`, `assets/`, `data/ui_unity/`, `i18n/`, shader; chỉ kịch bản có chụp ảnh), và dòng `Máy thật` khi đổi plugin Android, `src/platform/android_*.gd`, export hay smoke máy thật (người dùng gọi `/device-test`). `--run` không chạy `window` (phải đọc ảnh) và không chạy máy thật; mã thoát là mã tệ nhất của các lệnh. Cần Node. Ở cổng Phase vẫn chạy `tools/test.sh` đủ (kế hoạch mục 2).
+
+**Đồ thị tham chiếu.** File A dùng file B khi A ghi đường dẫn `res://` của B (tiền tố khi đường dẫn dựng lúc chạy, như `"res://scenes/%s.tscn"`), `uid://` của B, tên autoload của B (`Game`, `Platform`, `Sfx`, ngoài comment và chuỗi), tên file B trong chuỗi, hoặc `#include` B trong shader. Tên file trong chuỗi: có đuôi (`"popup_reward.gd"`), hoặc không đuôi khi là CamelCase (`"ShopCashLayer"`, layer Unity nạp theo tên) hay là ảnh, âm thanh, font (`ThemeKit.icon("lb_piece")`); không tính chuỗi trong `config.gd`, vì id tính năng như `"weekly_pass"` trùng tên file. JSON layer trong `data/ui_unity/` tính tên sprite nó vẽ (`"Popup_Lose"`, `"Atlas:Sprite_2"`). Sửa `foo.png.import`, `foo.gd.uid` tính là sửa `foo.png`, `foo.gd`. `project.godot`, `export_presets.cfg` không lan tiếp.
+
+**Test.** Mọi `tests/test_*.gd` nối tới file đổi qua đồ thị, cộng đích `test:` của dòng trong `tests/affected_map.txt` khớp chính file đổi (hạ tầng test chọn mọi test; mọi file chọn `test_static_check`). Test nạp `main.tscn` hay autoload `Game` nối tới gần như mọi file game, nên một file UI chọn khoảng 30 test, một module `meta` khoảng 45, trên 98 (2026-11-12).
+
+**Kịch bản smoke.**
+
+- Từ file đổi đi ngược đồ thị, dừng ở file đầu tiên có dòng trong `tests/affected_map.txt` (một file khớp nhiều dòng thì lấy hợp). Đường dẫn tiền tố chỉ dùng khi không file game nào ghi thẳng tên file; không đi qua test và file chỉ mục `data/ui_unity/_*.json` (liệt kê mọi sprite).
+- Hàm `scen_*` nhắc tên file trong chuỗi (`r.popup_script("popup_reward.gd")`) cũng chọn kịch bản của nó.
+- Sửa trong `tests/smoke/*.gd`: dòng sửa quy về hàm chứa nó (hoặc về các hàm dùng hằng ở dòng đó), rồi đi theo lời gọi tới các hàm `scen_*`. Sửa trong `scen_wp` chỉ chọn WP; sửa `tap()` của runner chọn mọi kịch bản; dòng nhắc mã kịch bản (`"WP": ...`, `scen_wp(r)`) chọn mã đó. Dòng không tới kịch bản nào chọn kịch bản của file đó, hoặc bộ mặc định khi file không có kịch bản (`_ready` của runner); dòng chỉ là comment không chọn gì.
+- `tests/cases/<MÃ>.csv` chọn kịch bản `<MÃ>`. `data/levels/level_<n>.json` chọn V từ level nhỏ nhất tới lớn nhất đã đổi; module bàn chơi chọn V L1–L40.
+
+**`tests/affected_map.txt`.** Mỗi dòng `<đích...> : <mẫu...>`, kèm `## lý do` nếu cần. Đích: mã kịch bản, `*` (bộ mặc định của `tools/smoke.sh`), `-` (không kịch bản nào chạy tới, ví dụ màn chỉ mở từ `ui_gallery`), `test:<tên>`, `test:*`. Mẫu: `*` trong một thư mục, `**` qua nhiều thư mục. Chỉ cần ghi file "màn" và module; hiệu ứng, shader, ảnh, scene Unity tự tìm tới màn dùng nó. `--check` chạy trong `tools/test.sh` (`tests/test_affected.gd`) và báo: mẫu không khớp file nào, mã kịch bản hay test không có thật, kịch bản không dòng nào chọn được, file trong `src/` hay `scenes/` không tới được dòng nào. Thêm kịch bản, màn hay module mới thì thêm dòng trong cùng thay đổi.
+
+**Giới hạn.** Đồ thị là tĩnh: tên file ghép lúc chạy (`"ic_music_" + state`) không thấy được, nên file đó đi theo đường dẫn tiền tố (thường qua `theme_kit.gd`) và chọn gần hết kịch bản. Chọn thừa thay vì chọn thiếu.
 
 ## Tầng 1: `tools/test.sh` (unit, E2E, kiểm tra tĩnh)
 
