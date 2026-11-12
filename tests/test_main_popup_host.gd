@@ -26,3 +26,28 @@ func test_host_freed_before_popup_closes(t: T) -> void:
 	await d.tree().process_frame
 	t.eq(main.current_name, "profile", "đóng popup không dựng lại Home")
 	d.finish()
+
+
+## Settings mở trên Home rồi đóng mà không đổi gì: Home giữ nguyên (chỉ refresh), không dựng lại và phát lại hiệu ứng
+## mở Home (smoke T, ảnh popup_close, 2026-11-12). Đổi ngôn ngữ thì đóng Settings mới dựng lại Home.
+func test_settings_close_keeps_home(t: T) -> void:
+	var d := Driver.new()
+	await d.begin(DIR, 20, -1, true, false)
+	var main := d.main
+	var home_id := (main.current_screen as Node).get_instance_id()
+	main.call("_popup_then", main.SETTINGS, {}, true)
+	var layer: Control = main.popup_layer
+	var p: Node = layer.get_child(layer.get_child_count() - 1)
+	p.call("close")
+	await d.tree().process_frame
+	t.eq(main.current_name, "home", "vẫn ở Home")
+	t.eq((main.current_screen as Node).get_instance_id(), home_id, "đóng Settings không dựng lại Home")
+	main.call("_popup_then", main.SETTINGS, {}, true)
+	p = layer.get_child(layer.get_child_count() - 1)
+	d.game().set_setting("lang", "vi")
+	p.call("_on_language", "vi")
+	p.call("close")
+	await d.tree().process_frame
+	t.ok((main.current_screen as Node).get_instance_id() != home_id, "đổi ngôn ngữ rồi đóng Settings thì dựng lại Home")
+	d.game().set_setting("lang", "en")
+	d.finish()

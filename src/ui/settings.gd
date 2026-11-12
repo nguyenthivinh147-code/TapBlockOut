@@ -9,7 +9,8 @@ extends Control
 ## mail to support like CustomerSupportButton (support_mail.gd), or popup 1.6 when offline. Static nodes
 ## are in scenes/settings.tscn; the link rows depend on the platform, the build and the restore result: built here.
 ## 10 quick taps on the version open the tester menu (tester_menu.gd); after it saves or deletes the account,
-## Settings closes so Main rebuilds Home. setup(args: Dictionary); signal closed(result).
+## Settings closes so Main rebuilds Home. setup(args: Dictionary); signal closed(result): {"rebuild": true} when Home
+## must be rebuilt (language, restored purchases, account changed), else null and Home only refreshes.
 
 signal closed(result: Variant)
 
@@ -79,6 +80,8 @@ var language_panel: Control = null
 var tester_panel: Control = null
 var status_label: Label = null
 var last_url: String = ""
+## Home must be rebuilt when Settings closes (the language changed, purchases were restored, the account changed).
+var needs_rebuild: bool = false
 
 var _built: bool = false
 var _rows: Array[Control] = []
@@ -352,6 +355,7 @@ func close_language() -> void:
 
 
 func _on_language(_value: String) -> void:
+	needs_rebuild = true
 	_status_text = ""
 	# Texts follow the new language in place; the Language popup stays open.
 	_apply_texts()
@@ -370,6 +374,7 @@ func _on_restore() -> void:
 	restore_button.call("set_interactable", false)
 	var ok: bool = await Game.restore_purchases()
 	_busy = false
+	needs_rebuild = needs_rebuild or ok
 	if not is_inside_tree():
 		return
 	_status_text = tr("shop_restore_ok") if ok else tr("shop_restore_none")
@@ -464,6 +469,7 @@ func close_tester() -> void:
 func _on_tester_closed(result: Variant) -> void:
 	close_tester()
 	if result is Dictionary:
+		needs_rebuild = true
 		close()
 
 
@@ -476,4 +482,4 @@ func _on_gallery() -> void:
 
 
 func close() -> void:
-	closed.emit(null)
+	closed.emit({"rebuild": true} if needs_rebuild else null)

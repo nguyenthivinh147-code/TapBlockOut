@@ -351,7 +351,10 @@ func hovered_at(p: Vector2) -> Control:
 	return root.gui_get_hovered_control()
 
 
-func click_at(p: Vector2) -> void:
+## Nhấn rồi thả ở `p` (toạ độ viewport). Có `target`: trả "" khi cú nhấn rơi vào `target` hoặc con của nó, không thì
+## tên node nhận cú nhấn (hover ngay sau khi nhấn, trước khi nút kịp đóng popup).
+func click_at(p: Vector2, target: Control = null) -> String:
+	var missed := ""
 	for pressed in [true, false]:
 		var ev := InputEventMouseButton.new()
 		ev.button_index = MOUSE_BUTTON_LEFT
@@ -359,7 +362,12 @@ func click_at(p: Vector2) -> void:
 		ev.position = p
 		ev.global_position = p
 		_push(ev)
+		if pressed and target != null and is_instance_valid(target):
+			var got := root.gui_get_hovered_control()
+			if got != null and got != target and not target.is_ancestor_of(got):
+				missed = node_label(got)
 		await process_frame
+	return missed
 
 
 ## Kéo bằng chuột (cuộn danh sách): nhấn ở `from`, di qua `steps` bước, thả ở `to` (toạ độ viewport).
@@ -416,14 +424,30 @@ static func node_label(n: Variant) -> String:
 	return "%s%s" % [n.name, tag]
 
 
-## Bấm Control `c` như ngón tay: đợi tối đa `wait_ms` cho tâm nút hit-test trúng `c` (hiệu ứng mở popup, màn chuyển
-## cảnh còn che), rồi thử tâm và lưới 3x3, bấm điểm đầu tiên trúng `c` (hoặc con của nó). Không điểm nào trúng: vẫn
-## bấm tâm (như người chơi), log "(NOT the target)" và trả false.
+## Đợi tâm của `c` đứng yên trên màn (lệch dưới 1 px qua 2 khung liền), tối đa tới `deadline`. Popup đang phóng to
+## hay màn đang trượt thì nút còn chạy: hit-test ở khung này rồi nhấn ở khung sau sẽ trượt sang nền. Nút chỉ nhún tại
+## chỗ (tâm không đổi) không phải đợi.
+func _wait_still(c: Control, deadline: int) -> void:
+	var last := Vector2.INF
+	var still := 0
+	while still < 2 and Time.get_ticks_msec() < deadline:
+		if not is_instance_valid(c) or not c.is_inside_tree():
+			return
+		var p := to_viewport(c, c.size * 0.5)
+		still = still + 1 if p.distance_to(last) < 1.0 else 0
+		last = p
+		await process_frame
+
+
+## Bấm Control `c` như ngón tay: đợi tối đa `wait_ms` cho nút đứng yên và tâm nút hit-test trúng `c` (hiệu ứng mở
+## popup, màn chuyển cảnh còn che), rồi thử tâm và lưới 3x3, bấm điểm đầu tiên trúng `c` (hoặc con của nó). Không điểm
+## nào trúng: vẫn bấm tâm (như người chơi), log "(NOT the target)" và trả false.
 func tap(c: Control, label: String = "", wait_ms: int = 2000) -> bool:
 	if c == null or not is_instance_valid(c) or not c.is_visible_in_tree():
 		return fail("bấm %s: không có hoặc đang ẩn" % label)
 	var name := label if not label.is_empty() else str(c.name)
 	var deadline := Time.get_ticks_msec() + wait_ms
+	await _wait_still(c, deadline)
 	while Time.get_ticks_msec() < deadline and not await reachable(c):
 		await wait_frames(2)
 		if not is_instance_valid(c) or not c.is_visible_in_tree():
@@ -446,7 +470,10 @@ func tap(c: Control, label: String = "", wait_ms: int = 2000) -> bool:
 			if i > 0:
 				print("SMOKE WARN tâm của %s bị %s che, bấm điểm khác" % [name, node_label(first_hit)])
 			step("bấm %s" % name)
-			await click_at(p)
+			var missed := await click_at(p, c)
+			if not missed.is_empty():
+				print("SMOKE WARN bấm %s trượt: lúc nhấn trúng %s" % [name, missed])
+				return false
 			return true
 	step("bấm %s (NOT the target: trúng %s)" % [name, node_label(first_hit)])
 	if is_instance_valid(c) and c.is_inside_tree():
@@ -549,6 +576,25 @@ func film(name: String, sec: float, every: float = 0.15) -> void:
 			await create_timer(left / 1000.0, true, false, true).timeout
 
 
+## Khung của `c` trên viewport (gồm transform của CanvasLayer và scale của node).
+func _canvas_rect(c: Control) -> Rect2:
+	var xf := c.get_global_transform_with_canvas()
+	return Rect2(xf * Vector2.ZERO, xf.basis_xform(c.size)).abs()
+
+
+## Giao các khung cắt của node cha (clip_contents, clip_children: ScrollContainer, Unity Mask), null khi không có.
+func _clip_of(c: Control) -> Variant:
+	var clip: Variant = null
+	var n := c.get_parent()
+	while n != null:
+		var pc := n as Control
+		if pc != null and (pc.clip_contents or pc.clip_children != CanvasItem.CLIP_CHILDREN_DISABLED):
+			var r := _canvas_rect(pc)
+			clip = r if clip == null else (clip as Rect2).intersection(r)
+		n = n.get_parent()
+	return clip
+
+
 func census(base: String) -> void:
 	var rows: Array = []
 	var warns: Array[String] = []
@@ -567,8 +613,13 @@ func census(base: String) -> void:
 			shown = l.tr(l.text)
 		if shown.strip_edges().is_empty():
 			continue
-		var xf := l.get_global_transform_with_canvas()
-		var rect := Rect2(xf * Vector2.ZERO, xf.basis_xform(l.size))
+		var rect := _canvas_rect(l)
+		# Trong danh sách cuộn (ScrollRect, Mask): phần nằm ngoài khung cắt không hiện, nhãn cuộn khuất hẳn thì bỏ qua.
+		var clip: Variant = _clip_of(l)
+		if clip != null:
+			if not (clip as Rect2).intersects(rect):
+				continue
+			rect = rect.intersection(clip as Rect2)
 		var fsize := l.get_theme_font_size("font_size")
 		if l.label_settings != null:
 			fsize = l.label_settings.font_size

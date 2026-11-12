@@ -523,22 +523,39 @@ static func scen_g(r) -> bool:
 	f.store_string(JSON.stringify(expect))
 	f.close()
 	r.step("trước khi tắt: %s" % JSON.stringify(expect))
-	# Như Android: onPause (Game lưu ngay) rồi tiến trình bị giết; OS.execute chặn luồng chính nên tiến trình này không
-	# ghi thêm gì trong lúc G2 chạy.
+	# Như Android: onPause (Game lưu ngay) rồi tiến trình bị giết; vòng đợi G2 chặn luồng chính nên tiến trình này
+	# không ghi thêm gì trong lúc G2 chạy.
 	r.plat.emit_signal("paused")
 	var args := PackedStringArray(["--headless", "--path", ProjectSettings.globalize_path("res://"),
 		"-s", "res://tests/smoke/smoke.gd", "--", "scen=G2", "out=%s" % r.out_dir.path_join("G2"),
 		"speed=%s" % r.args.get("speed", "1"), "window=0", "max=240"])
 	DirAccess.make_dir_recursive_absolute(r.out_dir.path_join("G2"))
-	var out: Array = []
-	var code := OS.execute(OS.get_executable_path(), args, out, true)
-	for line in "\n".join(PackedStringArray(out)).split("\n"):
+	var res := _run_process(OS.get_executable_path(), args)
+	for line in str(res.out).split("\n"):
 		if line.begins_with("SMOKE ") or line.contains("ERROR"):
-			print("G2 | %s" % line)
+			print("G2 | %s" % line.strip_edges(false, true))
+	var code := int(res.code)
 	if code != 0:
 		return r.fail("tiến trình sau (G2) thoát mã %d" % code)
 	r.step("tiến trình sau (G2) đọc đúng save")
 	return true
+
+
+## Chạy `exe` tới khi xong (chặn luồng chính), trả {out, code}. Đọc stdout dạng byte rồi giải mã UTF-8: OS.execute trên
+## Windows giải mã theo code page của máy nên chữ tiếng Việt trong log G2 bị vỡ.
+static func _run_process(exe: String, args: PackedStringArray) -> Dictionary:
+	var info := OS.execute_with_pipe(exe, args, false)
+	if info.is_empty():
+		return {"out": "", "code": -1}
+	var pipe: FileAccess = info["stdio"]
+	var pid := int(info["pid"])
+	var buf := PackedByteArray()
+	while OS.is_process_running(pid):
+		buf.append_array(pipe.get_buffer(65536))
+		OS.delay_msec(20)
+	buf.append_array(pipe.get_buffer(1 << 20))
+	pipe.close()
+	return {"out": buf.get_string_from_utf8(), "code": OS.get_process_exit_code(pid)}
 
 
 ## G2 (chỉ scen_g gọi, tiến trình riêng): mở lại save của G như lần mở app sau, so với G_EXPECT.
@@ -555,8 +572,12 @@ static func scen_g2(r) -> bool:
 		"sessions": int(s.meta.sessions) - 1}
 	r.step("sau khi mở lại: %s" % JSON.stringify(got))
 	for k in (expect as Dictionary).keys():
-		if str(got.get(k)) != str(expect[k]):
-			return r.fail("mở lại app: %s = %s, trước khi tắt là %s" % [k, str(got.get(k)), str(expect[k])])
+		# JSON đọc mọi số thành float: so theo giá trị (3080 == 3080.0), in số nguyên.
+		var want: Variant = expect[k]
+		if want is float:
+			want = int(want)
+		if typeof(got.get(k)) != typeof(want) or got.get(k) != want:
+			return r.fail("mở lại app: %s = %s, trước khi tắt là %s" % [k, str(got.get(k)), str(want)])
 	if not await wait_for(r, func() -> bool: return _playing(r) == int(expect.level), 20000):
 		return r.fail("mở lại app không vào L%d" % int(expect.level))
 	return await verify_saved(r)
@@ -1121,7 +1142,10 @@ static func clickables(r) -> Array[Control]:
 			if n is BaseButton and (n as Control).is_visible_in_tree() and not (n as BaseButton).disabled \
 					and (n as Control).mouse_filter != Control.MOUSE_FILTER_IGNORE:
 				var c := n as Control
-				if view.has_point(r.to_viewport(c, c.size * 0.5)):
+				var at: Vector2 = r.to_viewport(c, c.size * 0.5)
+				# Ô đã cuộn khuất khỏi khung cắt (lưới Profile, danh sách Language) không thấy nên không bấm.
+				var clip: Variant = r._clip_of(c)
+				if view.has_point(at) and (clip == null or (clip as Rect2).has_point(at)):
 					out.append(c)
 		if out.is_empty() and root is Control and STRAY_SCRIPTS.has(script_file(root)):
 			out.append(root as Control)

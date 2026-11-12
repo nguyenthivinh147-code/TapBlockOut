@@ -528,7 +528,9 @@ func _open_special() -> void:
 			host.call("refresh"))
 
 
-## Mở popup trên Home; đóng thì làm mới Home (hoặc dựng lại, khi đổi ngôn ngữ ở Settings).
+## Mở popup trên Home; đóng thì làm mới Home. `rebuild`: popup đóng với {"rebuild": true} thì dựng lại Home (Settings
+## sau khi đổi ngôn ngữ, khôi phục mua hàng, đổi tài khoản); đóng mà không đổi gì thì chỉ làm mới, không phát lại hiệu
+## ứng mở Home.
 func _popup_then(path: String, args: Dictionary, rebuild: bool) -> void:
 	# The host by id, not captured: a lambda capturing a node freed before the popup closes raises an engine error
 	# (tests/test_main_popup_host.gd).
@@ -536,11 +538,11 @@ func _popup_then(path: String, args: Dictionary, rebuild: bool) -> void:
 	var p := open_popup(path, args)
 	if p == null or not p.has_signal("closed"):
 		return
-	p.connect("closed", func(_r: Variant) -> void:
+	p.connect("closed", func(r: Variant) -> void:
 		var host := instance_from_id(host_id)
 		if host == null or host != current_screen:
 			return
-		if rebuild and current_name == "home":
+		if rebuild and current_name == "home" and r is Dictionary and bool((r as Dictionary).get("rebuild", false)):
 			go("home")
 		elif host.has_method("refresh"):
 			host.call("refresh"))
