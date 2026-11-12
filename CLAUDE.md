@@ -53,6 +53,7 @@ tools/godot.sh --headless --path . --import        # chỉ khi editor đóng
 
 - Kế hoạch, interface (`BoardState`, `Platform`, `Game`), cấu trúc thư mục, dữ liệu level: `plans/PLAN_tap-block-out-godot-android.md` mục 1.
 - Kiểm một thay đổi (quy trình 5 bước, tầng test, smoke, ma trận bao phủ, máy thật, quay video): `docs/TESTING.md`.
+- Test case hoặc kịch bản smoke cho một tính năng (CSV `tests/cases/`, skill `/game-testcase-generator`, giao sub-agent viết test): `docs/TESTING.md` mục "Test case".
 - UI các màn và popup (trừ Home, bàn chơi, HUD): dựng từ prefab Unity color-cube-match-puzzle, `docs/UI_UNITY.md`.
 - UI dạng node (scene `scenes/unity/`, bake màn bằng `tools/bake_screen.gd`, quy tắc script màn): `docs/UI_NODES.md`.
 - UI theo Figma (Home, HUD, thanh trên/dưới), màn chưa nối logic, `Config.ui_preview`: `docs/UI_FIGMA.md`.

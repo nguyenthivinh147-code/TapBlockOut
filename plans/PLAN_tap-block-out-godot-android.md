@@ -107,6 +107,9 @@ addons/        godot_ai/ (đã cài, công cụ editor, có trong git, không v�
 tests/  tools/  reference/horus/  plans/
 tests/smoke/   smoke.gd (runner, Node)  smoke_main.gd  scenarios.gd  smoke_saves.gd (Task 11.3; chạy bằng tools/smoke.sh)
                device_main.tscn (màn chính của APK smoke, Task 11.5; chạy bằng tools/device_smoke.sh)
+               scen_levels.gd scen_events.gd scen_modes.gd scen_meta.gd (kịch bản V và tính năng, Task 11.6)
+tests/cases/   <MODULE>.csv (test case theo form skill /game-testcase-generator, cột AUTO; có .gdignore, Task 11.7)
+               đọc bằng tests/cases_csv.gd; kiểm bằng tests/test_cases.gd
 docs/          tài liệu; docs/TESTING.md (quy trình test), docs/godot/ (tham chiếu API Godot, MIT)
 .claude/       settings.json (chặn lệnh git phá dữ liệu), skills/, agents/, rules/ (Phase 11)
 output/        ảnh, log, báo cáo, Excel sinh ra (không vào git, có .gdignore)
@@ -453,7 +456,7 @@ func open_popup(scene_path: String, args: Dictionary = {}) -> Node
 func boot_to_level() -> bool  # sau màn loading: vào thẳng level khi chơi được (còn mạng, còn level), không thì Home
 ```
 
-Mọi màn và popup là scene có script `func setup(args: Dictionary) -> void` và signal `closed(result: Variant)`. UI tĩnh của màn là node trong scene (layout Unity instance từ `scenes/unity/<Prefab>.tscn`); script chỉ tìm node, điền chữ, dữ liệu, signal, còn phần theo dữ liệu thì sinh lúc chạy (`docs/UI_NODES.md`). Nút Back Android đóng popup trên cùng. Đường dẫn scene: `scenes/<tên>.tscn`, script `src/ui/<tên>.gd`. Kích thước gốc 720×1280, stretch `canvas_items`, aspect `expand`, nút tối thiểu 96×96 ở độ phân giải gốc (tương đương khoảng 48dp).
+Mọi màn và popup là scene có script `func setup(args: Dictionary) -> void` và signal `closed(result: Variant)`. UI tĩnh của màn là node trong scene (layout Unity instance từ `scenes/unity/<Prefab>.tscn`); script chỉ tìm node, điền chữ, dữ liệu, signal, còn phần theo dữ liệu thì sinh lúc chạy (`docs/UI_NODES.md`). Nút Back Android đóng popup trên cùng (`closed(null)`); popup có `on_back()` thì Main gọi nó thay vào đó (Settings đóng popup Language trước, popup kết quả Leaderboard nhận thưởng), popup có `blocks_back()` true thì Back không làm gì. Main xử lý Back ở bước sau notification (`call_deferred`), vì lúc notification đi qua cây Main không thêm được màn mới. Đường dẫn scene: `scenes/<tên>.tscn`, script `src/ui/<tên>.gd`. Kích thước gốc 720×1280, stretch `canvas_items`, aspect `expand`, nút tối thiểu 96×96 ở độ phân giải gốc (tương đương khoảng 48dp).
 
 ### 1.12 MCP `godot-ai`
 
@@ -595,6 +598,9 @@ Ngày lấy từ tiêu đề task và các đoạn "Bổ sung" trong mục 3. Ta
 
 - Task 11.4: Smoke F, G, H, T, L chạy đạt; smoke đợi nút đứng yên mới bấm; đóng Settings không dựng lại Home; sửa ba lỗi hiển thị smoke L, F tìm ra (chữ Hindi, nhãn độ khó trên nút Chơi, nền toast Shop).
 - Task 11.5: Smoke trên máy Android thật qua USB (`tools/device_smoke.sh`); runner smoke đổi sang Node. Lần đo đầu trên vivo V2206.
+- Task 11.6: Kịch bản V (500 level) và 9 kịch bản tính năng mới, skill `/device-test`; 500/500 level đạt trên vivo V2206, tìm ra 5 lỗi game (chưa sửa).
+- Task 11.7: Test case trong repo (`tests/cases/<MODULE>.csv`, form skill `/game-testcase-generator` cộng cột AUTO), smoke chấm từng case (`r.tc`), `tests/test_cases.gd` đo bao phủ; thử trên Weekly Pass.
+- Bỏ màn chuyển level 3.1 `load_transition` (người dùng yêu cầu; mục 4 đóng việc duyệt chỗ đặt).
 
 ---
 
@@ -891,8 +897,8 @@ Task 9.18–9.19 ghi lại phần nối logic các màn wireframe ngày 2026-11-
       - Shop có Helper Packs (`helper_great`); `helper_epic` và Bundles (`bundle_*`) ẩn khỏi Shop (người dùng chọn, 2026-11-09), SKU vẫn trong `Config.SKUS`. Từ 2026-11-10 `helper_great` chỉ bán ở popup hết MOVES (mục Helper Packs không hiện); gói mua một lần (`consumable: false`, `Game.owns_once`) đã sở hữu thì ẩn thẻ.
       - 7.5 `popup_weekly_upsell`: một lần mỗi mùa trên Home khi chưa VIP.
     - **Trong level:**
-      - 3.1 `load_transition`: khi sang level kế hoặc chơi lại.
-      - 3.7 `booster_soon`: khi chạm booster còn khoá.
+      - 3.1 `load_transition`: bỏ (người dùng yêu cầu, 2026-11-12), xoá scene và script; sang level kế, chơi lại, Special sang level chính không có màn chuyển cảnh.
+      - 3.7 `booster_soon`: game không mở nữa (người dùng yêu cầu, 2026-11-12): chạm booster còn khoá chỉ phát tiếng bấm. Scene và script giữ, chỉ mở từ UI gallery.
       - 3.9 `popup_free_pick`: bỏ (người dùng yêu cầu, 2026-11-10), xoá scene và script; quà booster chỉ còn scene `booster_unlocked`.
       - 4.3 `popup_rate`: một lần, sau thẻ thắng ở level mở Rate us (`rate_now`).
       - 4.6 `popup_keep_playing`: thay hộp thoại xác nhận bỏ ván mất mạng.
@@ -1079,6 +1085,17 @@ Lấy mẫu từ quy trình test của Butcher Defense (2026-11-11), chỉ lấy
   - **Kết quả (vivo V2206: Snapdragon 680, Adreno 610, 8 GB, 720×1612, màn 60 Hz, Android 14):** A, S, G→G2 đạt, không lỗi script hay engine, ảnh đã xem. Khởi động: lần đầu sau khi cài 3,5 giây tới autoload, 9,1 giây tới main boot xong (gồm một ảnh chụp); các lần sau 2,1 và 6,4–6,9 giây (`splash_min_sec` 1,5). PSS 300–380 MB; object và node không tăng qua 10 level, orphan 0. Khung hình L30–L39 chạm theo nhịp người chơi (`pace=0.5`): trung vị 16,6 ms (60 FPS), p95 18,6–21,3 ms, khung > 33 ms 2–8 mỗi level (L38 30/1759), phần lớn trùng lần solver chạy (2–16 ms mỗi lần, tối đa 56 ms ở L38). Bàn đứng yên: 16,6–18,5 ms, L38 20,8 ms. Chạm liên tục (2 khung một lần, nhiều khối trượt cùng lúc): trung vị 17–27 ms, p95 40–51 ms. Máy này không phải máy 2 GB của `design.md` mục 8.
   - **Verification:** `tools/device_smoke.sh run A capture=1` rồi đọc ảnh trong `output/device/<thời điểm>/A/device_smoke/A/`; `tools/device_smoke.sh run S G` in `mã 0`; `tools/smoke.sh headless` vẫn thoát 0.
 
+- [x] **Task 11.6: Test toàn bộ tính năng và 500 level trên máy thật (2026-11-12, người dùng yêu cầu)**
+  - **Allowed Files:** `tests/smoke/**`, `tools/device_smoke.sh`, `tools/smoke.sh`, `.claude/skills/device-test/**`, `docs/TESTING.md`, kế hoạch này. Lỗi game tìm ra: báo người dùng, sửa theo luật test đỏ trước trong task riêng.
+  - **Specs:** Kịch bản V (`tests/smoke/scen_levels.gd`): chơi liền level `from`–`to` bằng solver và chạm thật, mỗi level một dòng `SMOKE LEVEL` (vào được, bàn trong màn, thắng trong MOVES, khung hình, lỗi); level hỏng thì ghi lại, mở save mới ở level kế và chạy tiếp. Kịch bản tính năng chơi hết luồng (nhận thưởng, tiến độ, hết hạn, `[NEG]`) theo `design.md`: WP, CO, SP (`scen_events.gd`: Weekly Pass, Chain Offer, Special Pack), RT, LB, SB (`scen_modes.gd`: Road Trip, Leaderboard, Màn đặc biệt), DG, PR, OFF (`scen_meta.gd`: quà 28 ngày, Profile, Daily Challenge và Win Streak đang tắt). `scenarios.gd` `SCEN_FILES` nạp các file này. Skill gọi tay `/device-test`: kiểm máy, build APK smoke, chạy mọi kịch bản và 500 level theo đợt 50, tóm tắt, cài lại bản demo.
+  - **Kết quả (game bản HEAD 1ee91af):** vivo V2206: 17/21 kịch bản đạt (D đỏ vì smoke, RT LB DG đỏ vì game), 500/500 level đạt (chạm liên tục: p95 trung bình 46,5 ms, chỉ 8 level đầu ≤ 33 ms), khởi động 6,3–7,4 giây, PSS cao nhất 424 MB. Samsung SM-F731B (Snapdragon 8 Gen 2, 1080×2640, 120 Hz): D (sau khi sửa smoke), A, L đạt; 8 level nặng nhất theo nhịp người chơi trung vị 8,3 ms, p95 ≤ 11,3 ms. Lỗi smoke sửa trong task: D chạm tâm nút "No thanks" phủ cả popup Remove Ads, tâm rơi vào thẻ (`tap` thử tâm các Label con); V thêm `pace=`. Lỗi game (chưa sửa, chờ người dùng; DG, RT, LB đỏ cả desktop lẫn máy): DG chấm đỏ quà 28 ngày không hiện khi qua 00:00 lúc đang ở Home; chữ `offer_special_pack_body` nói mua bao nhiêu lần cũng được, trái giới hạn 1 (đọc lúc viết SP); RT lambda timer của `_show_box_bubble` giữ panel đã giải phóng (lỗi engine); LB chạm cúp ở popup Lên giải và Kết quả tuần không nhận (LeagueBadge chặn chạm); LB PromoBadge (z 1) vẽ đè popup Kết quả tuần. Thấy bằng mắt: nhãn độ khó chạm chữ nút Chơi ở ko, ja, hi; ô đếm hộp quà Road Trip che nút 33–34 trên màn 0,409.
+  - **Verification:** `tools/smoke.sh headless V WP CO SP RT LB SB DG PR OFF` in `mã 0` (V với `SMOKE_ARGS="from=1 to=40"`); `tools/device_smoke.sh run` mọi kịch bản và V 1–500 in `mã 0` hoặc mỗi level hỏng có trong báo cáo; `tools/test.sh` đạt.
+
+- [ ] **Task 11.7: Kịch bản smoke theo test case, bao phủ đo bằng máy (2026-11-12, người dùng yêu cầu)**
+  - **Allowed Files:** `tests/cases/**`, `tests/cases_csv.gd`, `tests/test_cases.gd`, `tests/smoke/**`, `tests/test_weekly_pass.gd`, `tools/smoke.sh`, `tools/device_smoke.sh`, `tools/report.mjs`, `.claude/skills/game-testcase-generator/SKILL.md`, `.claude/rules/smoke-cases.md`, `CLAUDE.md`, `docs/TESTING.md`, kế hoạch này.
+  - **Specs:** Lý do: 9 kịch bản của Task 11.6 do sub-agent viết thẳng từ `design.md`, không có danh sách case để duyệt, kỳ vọng đọc từ `Config` nên không bắt được `config.gd` lệch `design.md`. Mỗi tính năng có `tests/cases/<MODULE>.csv` (11 cột của skill cộng `AUTO`: `smoke:`, `unit:`, `todo:`, `manual:`); skill sinh CSV trước rồi dựng Excel từ CSV. Smoke chấm case bằng `r.tc(id, ok, detail)`, `r.tc_look(id, shot)`, `r.tc_blocked(id, why)`, in `SMOKE CASE`, cuối lần chạy in `SMOKE CASES` và fail khi có case FAIL hoặc case của kịch bản chưa được chấm (`missing`). Số kỳ vọng ghi từ CSV, không tính lại bằng code game. `tests/test_cases.gd` kiểm định dạng CSV, case `smoke:`/`unit:` có ID trong code, ID trong code có trong CSV, in dòng `CASES` theo module. Báo cáo HTML có bảng case. Rule `.claude/rules/smoke-cases.md` tự nạp khi sửa `tests/smoke/**`, `tests/cases/**`. Thử trên WP: sinh `tests/cases/WP.csv`, đo case kịch bản WP cũ đã phủ, viết lại kịch bản theo case.
+  - **Verification:** `tools/test.sh` đạt (gồm `test_cases`, dòng `CASES WP` có `todo 0`); `tools/smoke.sh headless WP` in `SMOKE CASES WP ... missing=0`, mỗi case FAIL có loại; ảnh của case `look` đã đọc ở `tools/smoke.sh window WP`.
+
 **Cổng Phase 11:** cổng mặc định cộng `tools/test.sh` và `tools/smoke.sh headless` thoát 0.
 
 ---
@@ -1093,7 +1110,7 @@ Orchestrator không đánh dấu các mục này, chỉ liệt kê lại trong b
 - [ ] Có cấu hình rồi: test rewarded, interstitial, mua hàng bằng license tester, Remote Config, cloud save, thông báo trên bản nội bộ.
 - [ ] Thông báo trên máy thật, Android 13 trở lên.
 - [ ] Nhờ người bản xứ duyệt 12 cột dịch máy trong `i18n/strings.csv` (`pt_BR`, `tr`, `de`, `fr`, `id`, `es`, `ru`, `ko`, `ja`, `hi`, `uk`, `it`) và xem chữ có tràn khung trên máy thật (tiếng Đức, Nga dài nhất; Hindi, Hàn, Nhật dùng font fallback).
-- [ ] Duyệt lại chỗ đặt màn chuyển cảnh 3.1 (`load_transition`): đang dùng khi sang level kế hoặc chơi lại, không đặt ở Road Trip vì Road Trip đã có màn nắp hộp quà (`design.md` mục 9, 2026-11-09).
+- [x] Duyệt lại chỗ đặt màn chuyển cảnh 3.1 (`load_transition`): người dùng chọn bỏ hẳn (2026-11-12, `design.md` mục 9).
 - [ ] Chốt luật, hình và âm của từng cơ chế Task 9.26–9.32 (các mục "Điểm cần chốt") trước khi task đó bắt đầu.
 - [x] Báo khi đã thêm xong các cơ chế để sinh lại 500 level và bake lại `data/pudding_sdf.res` (Task 9.22 "Còn lại"). Người dùng cho sinh lại ngày 2026-11-10 (Task 9.33), trước Task 9.27–9.32; mỗi cơ chế thêm sau đó cần sinh lại lần nữa.
 - [ ] Xem L2–10 (cụm khít, khối to) và tỉ lệ khối chữ L trên máy thật (Task 9.33).

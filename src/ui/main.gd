@@ -589,14 +589,29 @@ func _exit_tree() -> void:
 
 
 func _notification(what: int) -> void:
-	if what != NOTIFICATION_WM_GO_BACK_REQUEST or popup_layer == null or curtain != null or _slide_out != null:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST and _back_allowed():
+		# Handled after the notification: it may travel down the tree (Node.propagate_notification), which keeps Main
+		# busy, and a Back that changes the screen (Settings after a language change, a screen's on_back) or flies a
+		# reward must add children to Main (tests/test_main_back.gd).
+		_on_go_back.call_deferred()
+
+
+func _back_allowed() -> bool:
+	return popup_layer != null and curtain == null and _slide_out == null
+
+
+func _on_go_back() -> void:
+	if not _back_allowed():
 		return
 	var top := _top_popup()
 	if top != null:
 		# A forced update cannot be dismissed.
 		if top.has_method("blocks_back") and bool(top.call("blocks_back")):
 			return
-		if top.has_signal("closed"):
+		# A popup with its own Back (a panel over it, a result to send, a reward to claim) handles it.
+		if top.has_method("on_back"):
+			top.call("on_back")
+		elif top.has_signal("closed"):
 			top.emit_signal("closed", null)
 		else:
 			top.queue_free()

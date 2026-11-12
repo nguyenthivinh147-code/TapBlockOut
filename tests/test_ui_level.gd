@@ -190,18 +190,16 @@ func test_hud_level1(t: T) -> void:
 		t.ok(lv.booster_buttons[k].get_parent().get_children().all(func(c: Node) -> bool: return not c is Label),
 				"ô booster %s không có chữ dưới ô" % k)
 	var inv_hint := int(g.s.inv.get("hint", 0))
-	lv.booster_buttons.hint.pressed.emit()
-	# Wireframe 3.7: the "coming soon" popup names the booster and its level; a tap anywhere closes it.
-	var soon: Control = null
-	for c in lv.get_node("LocalPopups").get_children():
-		if c.scene_file_path == "res://scenes/booster_soon.tscn":
-			soon = c
-	t.ok(soon != null, "chạm ô khoá mở popup booster sắp mở")
-	t.eq(soon.ui.label("GameObject/UnlockPanel/BoosterDescription").text,
-		lv.tr("booster_soon_level") % [lv.tr("booster_hint"), int(Config.UNLOCK.hint)], "báo level mở")
-	t.ok(soon.find_child("BuyButton", true, false) == null or not soon.find_child("BuyButton", true, false).visible, "không mở hộp mua")
-	_tap(soon)
-	t.ok(await _wait_until(_playing.bind(lv)), "chạm thì chơi tiếp")
+	var sfx := _tree().root.get_node("Sfx")
+	var popups_before: int = lv.get_node("LocalPopups").get_child_count()
+	for k in ["hint", "move", "smash"]:
+		# A locked slot only clicks (design.md mục 4 "Mở khoá theo level", 2026-11-12): no popup 3.7, no buy box.
+		sfx.last_played = ""
+		lv.booster_buttons[k].pressed.emit()
+		await _tree().process_frame
+		t.eq(sfx.last_played, "button", "chạm ô khoá %s phát tiếng bấm" % k)
+		t.eq(lv.get_node("LocalPopups").get_child_count(), popups_before, "chạm ô khoá %s không mở popup" % k)
+		t.eq(lv.state, "playing", "chạm ô khoá %s vẫn chơi tiếp" % k)
 	t.eq(int(g.s.inv.get("hint", 0)), inv_hint, "không dùng booster")
 	t.eq(lv.tut_label.text, lv.tr("tut_tap"), "hướng dẫn L1")
 	t.eq(lv.board_view.highlighted_id(), lv.board.hint(), "chỉ khối đi được")
@@ -986,6 +984,7 @@ func test_main_navigation(t: T) -> void:
 	m.current_screen.find_child("SettingsButton", true, false).pressed.emit()
 	t.eq(m.popup_count(), 1, "mở Settings")
 	m._notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
+	await _tree().process_frame  # Main handles Back after the notification (main.gd _on_go_back)
 	t.eq(m.popup_count(), 0, "Back đóng popup")
 	# quà chưa mở ở L1 nên bỏ qua; profile
 	m.current_screen.find_child("ProfileButton", true, false).pressed.emit()

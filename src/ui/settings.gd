@@ -483,3 +483,14 @@ func _on_gallery() -> void:
 
 func close() -> void:
 	closed.emit({"rebuild": true} if needs_rebuild else null)
+
+
+## Android Back (Main): the Language or tester panel over Settings closes first (they are children of Settings, not
+## Main popups); then Settings closes through close(), so a language change still rebuilds Home.
+func on_back() -> void:
+	if language_panel != null:
+		close_language()
+	elif tester_panel != null:
+		tester_panel.emit_signal("closed", null)
+	else:
+		close()

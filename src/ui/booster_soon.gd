@@ -1,5 +1,6 @@
 extends "res://src/ui/stub_ui.gd"
-## Wireframe 3.7 Booster Coming Soon: chạm booster còn khoá ở level (level.gd, design.md mục 4 "Mở khoá theo level").
+## Wireframe 3.7 Booster Coming Soon. Since 2026-11-12 the game does not open it (a locked booster only clicks, design.md
+## mục 4 "Mở khoá theo level"); it stays for the UI gallery.
 ## Bố cục BoosterTutorialLayer (color-cube-match-puzzle): tiêu đề ba lớp chữ ("Chơi tiếp nhé!"), tia sáng quay, ba
 ## bản sao icon cạnh nhau, một ô cho mỗi booster theo thứ tự hàng booster: booster đã mở hiện icon của nó, booster còn
 ## khoá hiện ổ khoá. Mô tả ghi tên booster vừa chạm và level mở. Tên, số lượng và nút của prefab ẩn: chạm đâu cũng

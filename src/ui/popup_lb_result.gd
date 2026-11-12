@@ -104,6 +104,11 @@ func _fit_rewards(items: Array) -> void:
 			UnityUI.fit_text(txt)
 
 
+## Android Back (Main) is one more tap: the whole popup is the claim button, so Back claims too.
+func on_back() -> void:
+	_claim()
+
+
 func _claim() -> void:
 	if _done:
 		return

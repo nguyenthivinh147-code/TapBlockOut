@@ -33,6 +33,17 @@ const MONKEY_BANNED_NAMES := ["SupportButton", "VersionButton", "GalleryButton",
 	"SaveButton", "PrivacyButton"]
 const MONKEY_BANNED_SCRIPTS := ["tester_menu.gd", "popup_update.gd", "ui_gallery.gd"]
 const MONKEY_STUCK := 20
+## Kịch bản ở file riêng: mã → file có `static func run(r, scen: String) -> bool`. Nạp lúc chạy (load, không preload)
+## để các file đó preload được file này lấy hàm dùng chung mà không thành vòng.
+const SCEN_FILES := {
+	"V": "res://tests/smoke/scen_levels.gd",
+	"WP": "res://tests/smoke/scen_events.gd", "CO": "res://tests/smoke/scen_events.gd",
+	"SP": "res://tests/smoke/scen_events.gd",
+	"RT": "res://tests/smoke/scen_modes.gd", "LB": "res://tests/smoke/scen_modes.gd",
+	"SB": "res://tests/smoke/scen_modes.gd",
+	"DG": "res://tests/smoke/scen_meta.gd", "PR": "res://tests/smoke/scen_meta.gd",
+	"OFF": "res://tests/smoke/scen_meta.gd",
+}
 
 
 static func run(r, scen: String) -> bool:
@@ -63,6 +74,9 @@ static func run(r, scen: String) -> bool:
 			return await scen_t(r)
 		"L":
 			return await scen_l(r)
+	if SCEN_FILES.has(scen):
+		var file: Script = load(str(SCEN_FILES[scen]))
+		return await file.run(r, scen)
 	return r.fail("không có kịch bản %s" % scen)
 
 

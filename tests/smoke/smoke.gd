@@ -16,6 +16,7 @@ const Solver := preload("res://src/core/solver.gd")
 const MockIap := preload("res://src/platform/mock_iap.gd")
 const UiTween := preload("res://src/ui/ui_tween.gd")
 const Config := preload("res://src/config.gd")
+const Cases := preload("res://tests/cases_csv.gd")
 
 ## Giờ giả lập cố định để lịch quà, mạng, offer ra cùng kết quả mỗi lần chạy.
 const NOW := 1800000000
@@ -91,6 +92,8 @@ var _strikes := {}
 var _reported := {}
 var _invariants_on := false
 var _ended := false
+## Test case đã báo trong lần chạy (tc, tc_look, tc_blocked): id -> trạng thái nặng nhất.
+var _cases := {}
 
 
 func _ready() -> void:
@@ -228,6 +231,7 @@ func _end() -> void:
 	if _phase != "":
 		end_phase()
 	_invariants_on = false
+	_end_cases()
 	_count_errors()
 	print("SMOKE ERRORS script=%d engine=%d" % [_script_errors, _engine_errors])
 	if not _guard.seen.is_empty():
@@ -250,6 +254,66 @@ func _end() -> void:
 	# "ứng dụng dừng"); tools/device_smoke.sh đọc dòng kết thúc rồi force-stop.
 	if not OS.has_feature("android"):
 		get_tree().quit(0 if ok else 1)
+
+
+# ---------------------------------------------------------------- test case (tests/cases/*.csv)
+
+const _CASE_RANK := {"pass": 0, "look": 1, "blocked": 2, "FAIL": 3}
+
+
+## Chấm test case `id` của tests/cases/<MODULE>.csv (cột AUTO `smoke:<kịch bản>`, docs/TESTING.md "Test case") tại
+## lúc kết quả kỳ vọng thấy được: in `SMOKE CASE <id> pass|FAIL <chi tiết>`. FAIL không dừng kịch bản (các case sau vẫn
+## chạy); cuối lần chạy còn case FAIL thì SMOKE FAILED. `detail` ghi số thấy được so với số kỳ vọng.
+func tc(id: String, ok: bool, detail: String = "") -> bool:
+	_case(id, "pass" if ok else "FAIL", detail)
+	return ok
+
+
+## Case cần mắt (layout, chữ đè, màu): chụp `shot_name` rồi in `SMOKE CASE <id> look <ảnh>`; người hoặc agent đọc ảnh
+## rồi chấm. Không chụp được (headless, không `capture=1`) thì case là blocked.
+func tc_look(id: String, shot_name: String) -> void:
+	await shot(shot_name)
+	if capture:
+		_case(id, "look", "%02d_%s.png" % [shots, shot_name])
+	else:
+		_case(id, "blocked", "cần ảnh: chạy window hoặc capture=1")
+
+
+## Case không chấm được ở lần chạy này (bước trước hỏng, thiếu điều kiện): in `SMOKE CASE <id> blocked <lý do>`.
+func tc_blocked(id: String, why: String) -> void:
+	_case(id, "blocked", why)
+
+
+func _case(id: String, status: String, detail: String) -> void:
+	var old := str(_cases.get(id, "pass"))
+	if not _cases.has(id) or int(_CASE_RANK[status]) > int(_CASE_RANK[old]):
+		_cases[id] = status
+	print("SMOKE CASE %s %s%s" % [id, status, (" " + detail) if not detail.is_empty() else ""])
+
+
+## Cuối lần chạy: case AUTO `smoke:<kịch bản>` trong tests/cases/*.csv chưa được chấm thì in `SMOKE CASE <id> missing`;
+## in `SMOKE CASES <kịch bản> pass= fail= look= blocked= missing=`. Case FAIL hoặc missing làm kịch bản fail.
+func _end_cases() -> void:
+	var scen := str(args.get("scen", ""))
+	var missing: Array[String] = []
+	for id in Cases.smoke_ids(scen):
+		if not _cases.has(id):
+			missing.append(id)
+			print("SMOKE CASE %s missing" % id)
+	if _cases.is_empty() and missing.is_empty():
+		return
+	var n := {"pass": 0, "look": 0, "blocked": 0, "FAIL": 0}
+	var failed: Array[String] = []
+	for id in _cases:
+		n[_cases[id]] += 1
+		if _cases[id] == "FAIL":
+			failed.append(id)
+	print("SMOKE CASES %s pass=%d fail=%d look=%d blocked=%d missing=%d" % [scen, n["pass"], n["FAIL"], n["look"],
+		n["blocked"], missing.size()])
+	if not failed.is_empty():
+		fail("case FAIL: %s" % ", ".join(failed))
+	if not missing.is_empty():
+		fail("case chưa chạy tới: %s" % ", ".join(missing))
 
 
 func _load_allow() -> void:
@@ -423,7 +487,7 @@ func drag(from: Vector2, to: Vector2, steps: int = 10) -> void:
 	await wait_frames(6)
 
 
-## Nút Back của Android (NOTIFICATION_WM_GO_BACK_REQUEST): main đóng popup trên cùng hoặc gọi on_back của màn.
+## Nút Back của Android (NOTIFICATION_WM_GO_BACK_REQUEST): main gọi on_back của popup trên cùng (không có thì đóng nó), hết popup thì gọi on_back của màn.
 func back() -> void:
 	step("bấm Back")
 	_guard.injecting = true
@@ -464,7 +528,8 @@ func _wait_still(c: Control, deadline: int) -> void:
 
 
 ## Bấm Control `c` như ngón tay: đợi tối đa `wait_ms` cho nút đứng yên và tâm nút hit-test trúng `c` (hiệu ứng mở
-## popup, màn chuyển cảnh còn che), rồi thử tâm và lưới 3x3, bấm điểm đầu tiên trúng `c` (hoặc con của nó). Không điểm
+## popup, màn chuyển cảnh còn che), rồi thử tâm, tâm các Label con (nút phủ cả popup như "No thanks": người chơi bấm
+## vào chữ) và lưới 3x3, bấm điểm đầu tiên trúng `c` (hoặc con của nó). Không điểm
 ## nào trúng: vẫn bấm tâm (như người chơi), log "(NOT the target)" và trả false.
 func tap(c: Control, label: String = "", wait_ms: int = 2000) -> bool:
 	if c == null or not is_instance_valid(c) or not c.is_visible_in_tree():
@@ -477,6 +542,12 @@ func tap(c: Control, label: String = "", wait_ms: int = 2000) -> bool:
 		if not is_instance_valid(c) or not c.is_visible_in_tree():
 			return fail("bấm %s: nút biến mất trong lúc đợi" % name)
 	var points: Array[Vector2] = [c.size * 0.5]
+	# A full-screen button ("No thanks" over a whole popup) has cards over its centre; a player taps its text.
+	var to_local := c.get_global_transform_with_canvas().affine_inverse()
+	for l in c.find_children("*", "Label", true, false):
+		if (l as Label).is_visible_in_tree() and not (l as Label).text.strip_edges().is_empty():
+			points.append(to_local * ((l as Label).get_global_transform_with_canvas() * ((l as Label).size * 0.5)))
+	var own_points := points.size()
 	for fy in [0.3, 0.5, 0.7]:
 		for fx in [0.3, 0.5, 0.7]:
 			points.append(c.size * Vector2(fx, fy))
@@ -491,7 +562,7 @@ func tap(c: Control, label: String = "", wait_ms: int = 2000) -> bool:
 		if i == 0:
 			first_hit = h
 		if h != null and (h == c or c.is_ancestor_of(h)):
-			if i > 0:
+			if i >= own_points:
 				print("SMOKE WARN tâm của %s bị %s che, bấm điểm khác" % [name, node_label(first_hit)])
 			step("bấm %s" % name)
 			var missed := await click_at(p, c)
@@ -560,9 +631,6 @@ func quiet(ms: int = 4000) -> void:
 		for c in main.popup_layer.get_children():
 			if UiTween.closing(c):
 				return false
-		var lv := level_screen()
-		if lv != null and lv.find_child("LoadTransition", false, false) != null:
-			return false
 		return main.curtain == null and not is_instance_valid(main.get("_slide_out")), ms)
 	await wait_sec(0.4)
 

@@ -1,0 +1,518 @@
+ID,CASE,PRIORITY,DESCRIPTIONS,PRE COND,INPUT,STEP,EXPECTED RESULT,ACTUAL RESULT,STATUS,NOTE,AUTO
+M01,Mở khoá và chu kỳ mùa,,"Mở khoá sau level HARD thứ 2, trạng thái Locked / Active / Waiting theo giờ máy, nút Weekly Pass ở Home. Nguồn: design.md §4 ""Mở khoá theo level"", §7 ""Weekly Pass""; src/config.gd _WEEKLY. In-scope: bản phát hành L1–500 và vòng lặp. Out-of-scope: quảng cáo có thưởng (Weekly Pass không có placement), RNG (thưởng cố định), Restore (weekly_pass là consumable).",,,,,,Ready,,
+M01.1,Mở khoá sau level HARD thứ 2,,"design.md §4 ""Mở khoá theo level"" (Sau khi thắng L26), §4 ""Thẻ thắng"" (thanh tiến trình), §7 (bản demo không mở).",,,,,,Ready,,
+TC_CA_WP_001,"[HP] Thắng L26 (HARD thứ 2) thì Weekly Pass mở, vào thẳng L27",P0,"Qua level HARD thứ 2 thì Weekly Pass mở: thẻ thắng báo mở, game không kéo về Home, Home có nút.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 26): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false, points 0). Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Level 26 (HARD thứ 2; HARD thứ 1 là L23), thắng bằng solver.","1. Mở game, vào thẳng L26.
+2. Chơi thắng L26.
+3. Đọc thẻ thắng: thanh tiến trình, dải phần thưởng.
+4. Bấm Tiếp tục.
+5. Ở L27: Cài đặt → Home, đọc cột phải.","- s.level 26 → 27; Game.weekly_state() = ""active"".
+- Thẻ thắng L26: thanh tiến trình đầy 100% và dòng đổi thành ""Weekly Pass unlocked!"" (feature_unlocked % feature_weekly_pass).
+- Thẻ thắng L26 không có ô WeeklyKeyReward; s.weekly.points = 0 (lúc thắng còn Locked).
+- Sau Tiếp tục vào thẳng màn level L27, không qua Home.
+- Home: WeeklyPassItem hiện ở cột phải, Caption ""Weekly Pass (1)"" (thưởng free mốc 0 key nhận được), WeeklyDot hiện.",,Ready,"design.md §4 ""Mở khoá theo level"" (Sau khi thắng L26; Weekly Pass không kéo về Home), §4 ""Thẻ thắng"". Config.WEEKLY.unlock_hard_index = 2. Test Data A, C6.",todo:smoke:WP
+TC_CA_WP_002,"[NEG] Trước khi thắng L26: không có nút, thắng L26 không cộng key",P1,Ngưỡng−1: ở L26 Weekly Pass còn khoá; lần thắng L26 tính lúc còn khoá nên không cộng key kể cả khi cờ tutorial đã bật.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 26): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true (dữ liệu test, để loại trừ điều kiện tutorial), points 0. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Level 26.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Đọc cột phải Home.
+3. Bấm Chơi, thắng L26.
+4. Đọc thẻ thắng và s.weekly.","- Ở L26: WeeklyPassItem ẩn; Game.weekly_state() = ""locked"".
+- Thắng L26: s.weekly.points giữ 0; thẻ thắng không có ô WeeklyKeyReward; không có sự kiện analytics weekly_points.
+- Gold chỉ cộng thưởng thắng (+40 + 10 × MOVES còn).",,Ready,"design.md §7 ""Thắng level ... khi Active"", §4 ""Mở khoá theo level"".",todo:smoke:WP
+TC_CA_WP_003,[NEG] Bản demo (L1–20) không bao giờ mở Weekly Pass,P2,"Mục ""chỉ có ở bản phát hành"": bản demo không có level HARD thứ 2 nên Weekly Pass luôn khoá.","Config.demo_override = 1 (bản demo, CONTENT.demo_max_level = 20); s.level = 21 (đã qua L20), s.weekly.tut_seen = true. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây.","Game.weekly_unlock_level(), Game.weekly_state(), Game.weekly_view(), Game.on_level_won ở L20.","1. Đặt demo_override = 1, s.level = 21.
+2. Gọi weekly_unlock_level, weekly_state, weekly_view.
+3. Gọi on_level_won cho một lượt thắng L20.","- weekly_unlock_level() = 0 (L1–20 không có level HARD thứ 2).
+- weekly_state() = ""locked""; weekly_view().unlocked = false (Home ẩn nút).
+- Kết quả on_level_won có weekly_points = 0; s.weekly.points giữ 0.",,Ready,"design.md §7 ""Bản demo dừng ở L20 nên không bao giờ mở""; §9 nhật ký (Weekly Pass chỉ có ở bản phát hành).",todo:unit:test_weekly_pass
+TC_CA_WP_004,[UI] Thẻ thắng L25 báo mốc mở kế tiếp là Weekly Pass,P2,Thanh tiến trình tính năng của thẻ thắng tính cả mốc Weekly Pass (L27).,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 25): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Level 25 (mốc trước: L17 Phá khối; mốc kế: L27 Weekly Pass).,"1. Mở game, thắng L25.
+2. Đọc dòng và thanh tiến trình trên thẻ thắng.
+3. Chụp ảnh thẻ.","- Dòng ""Next unlock: Weekly Pass"" (feature_next % feature_weekly_pass).
+- Thanh chạy từ 80% lên 90% ((25−17)/(27−17) → (26−17)/(27−17)).
+- Icon ở đầu thanh là icon Weekly Pass; chữ không đè thanh.",,Ready,"design.md §4 ""Thẻ thắng và thẻ thua"" (thanh tiến trình), ""Mở khoá theo level"" (mốc Weekly Pass L27). Test Data C6.",todo:smoke:WP
+M01.2,"Chu kỳ tuần: Active, Waiting",,design.md §7: thứ Hai 06:00 → thứ Hai 00:00 tuần sau theo giờ máy; thứ Hai 00:00–06:00 là Waiting.,,,,,,Ready,,
+TC_CA_WP_005,"[HP] Giữa tuần mùa Active, layer đếm ngược tới hết mùa",P1,Mùa Active ở giữa tuần: layer hiện đủ Main Tree và thời gian còn lại tới T2 00:00.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 0. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",ts 1800000000; hết mùa ở ts 1800230400 (T2 18/01/2027 00:00).,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Bấm nút Weekly Pass.
+3. Đọc TimeLabel, KeysLabel, các thẻ.","- Game.weekly_state() = ""active""; s.weekly.cycle = ""W20829"".
+- TimeLabel ""2d 16h left"" (weekly_time_left; còn 230400 giây).
+- KeysLabel ""0 / 130 keys"".
+- Có Free0..Free10, Vip0..Vip10, BuyVipButton, ClaimAllButton.",,Ready,"design.md §7 ""Chu kỳ theo giờ máy"". OQ-01 (mốc cuối 130 key). Test Data C1.",todo:smoke:WP
+TC_CA_WP_006,"[HP] Waiting (T2 00:00–06:00): nút còn, layer chỉ có đếm ngược",P1,"Trong Waiting nút ở Home vẫn hiện, layer chỉ có thông báo đếm ngược tới 06:00, không có tutorial.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false, points 0). Giờ giả ts 1800230401 (T2 18/01/2027 00:00:01, tz 0). Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",ts 1800230401; mở mùa ở ts 1800252000 (06:00).,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Đọc nút Weekly Pass.
+3. Bấm nút, đọc layer.
+4. Bấm OK.","- Game.weekly_state() = ""waiting""; WeeklyPassItem vẫn hiện, Caption ""Weekly Pass"" (không số), WeeklyDot ẩn.
+- Layer: WaitingLabel ""Next season starts soon"" và ""The Weekly Pass opens in 5:59:59. See you then!"" (weekly_waiting_title, weekly_waiting_body).
+- Không có Free0, BuyVipButton, ClaimAllButton; không có node Tutorial; s.weekly.tut_seen vẫn false.
+- OK đóng layer, về Home.",,Ready,"design.md §7 ""Thứ Hai 00:00-06:00 là Waiting (nút còn, layer chỉ có đếm ngược)"", ""Tutorial: lần đầu mở layer khi Active"". OQ-09 (chữ ribbon lúc Waiting). Test Data C1.",todo:smoke:WP
+TC_CA_WP_007,[EDGE] Biên CN 23:59:59 → T2 00:00:00,P1,Giây cuối của mùa còn Active; giây đầu thứ Hai là Waiting của chu kỳ mới và chốt mùa cũ.,"WeeklyPass logic thuần, tz 0; s.weekly.cycle = ""W20829"", points 5, không VIP.",ts 1800230399 (CN 17/01/2027 23:59:59) và 1800230400 (T2 18/01/2027 00:00:00).,"1. Gọi WeeklyPass.state, seconds_left, window ở hai thời điểm.
+2. Gọi WeeklyPass.refresh ở 1800230400.","- 1800230399: state ""active"", seconds_left = 1, cycle ""W20829"".
+- 1800230400: state ""waiting"", seconds_left = 21600, cycle ""W20836"".
+- refresh ở 1800230400: settled = true; s.weekly.cycle = ""W20836"", points = 0, pending_end.points = 5.",,Ready,"design.md §7 ""Chu kỳ theo giờ máy"". Test Data C1.",todo:unit:test_weekly_pass
+TC_CA_WP_008,"[EDGE] Biên T2 05:59:59 → 06:00:00, không chốt mùa lần hai",P1,Mở mùa lúc 06:00 đúng giây; mốc 06:00 không phải mốc reset.,"WeeklyPass logic thuần, tz 0; s.weekly đã refresh ở 1800230400 (cycle ""W20836""), sau đó points = 2 (dữ liệu test), claimed_free [0].",ts 1800251999 (T2 05:59:59) và 1800252000 (T2 06:00:00).,"1. Gọi state, seconds_left ở hai thời điểm.
+2. Gọi refresh ở 1800252000.","- 1800251999: state ""waiting"", seconds_left = 1 (""0:00:01"").
+- 1800252000: state ""active"", seconds_left = 583200 (""6d 18h"").
+- refresh ở 06:00:00: settled = false; cycle giữ ""W20836"", points 2, claimed_free [0] giữ nguyên.",,Ready,design.md §7 chu kỳ. Test Data C1.,todo:unit:test_weekly_pass
+TC_CA_WP_009,[EDGE] Layer đang mở lúc 06:00 tự chuyển từ Waiting sang Active,P2,Đồng hồ trong layer tự dựng lại khi trạng thái đổi; lần mở đầu khi Active thì có tutorial.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false). Giờ giả ts 1800251998 (T2 05:59:58). Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",game.test_now đổi 1800251998 → 1800252000.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer: WaitingLabel ""... opens in 0:00:02 ..."".
+3. Đặt game.test_now = 1800252000, đợi 2 giây, không đóng layer.","- Layer tự dựng lại: không còn WaitingLabel; có Free0, TimeLabel ""6d 18h left"", KeysLabel ""0 / 130 keys"".
+- Tutorial tự chạy (tut_seen = false): node Tutorial hiện, bước 1 trỏ Free0.",,Ready,"design.md §7 chu kỳ, Tutorial.",todo:smoke:WP
+TC_CA_WP_010,[EDGE] Chu kỳ theo giờ máy và múi giờ; đổi múi giờ giữa tuần không reset,P1,"Mốc tuần theo giờ địa phương; đổi tz (du lịch, giờ mùa hè) giữa tuần không chốt mùa.","WeeklyPass logic thuần; s.weekly.cycle = ""W20829"", points 6.",ts 1800205200 (CN 17/01/2027 17:00 UTC) với tz 0 và tz +25200 (UTC+7); ts 1799841600 (T4 13/01/2027 12:00 UTC) với tz 0 rồi +3600.,"1. Gọi state, seconds_left, window ở ts 1800205200 với tz 0 và tz +25200.
+2. Gọi refresh ở ts 1799841600 với tz 0, rồi với tz +3600.","- tz 0: ""active"" (CN 17:00 giờ máy), cycle ""W20829"".
+- tz +25200: ""waiting"" (T2 00:00 giờ máy), seconds_left = 21600, cycle ""W20836"".
+- T4 đổi tz 0 → +3600: cycle giữ ""W20829"", refresh trả settled = false, points giữ 6.",,Ready,"design.md §7 ""theo giờ máy"". OQ-05 (đổi giờ/múi giờ qua mốc tuần). Test Data C1.",todo:unit:test_weekly_pass
+TC_CA_WP_011,[EDGE] Tuần giao năm và tuần có ngày 29/02,P2,"Mùa kéo dài đúng 7 ngày, không gãy ở 31/12 → 01/01 và ở năm nhuận.","WeeklyPass logic thuần, tz 0.","ts 1798437600 (T2 28/12/2026 06:00), 1798761599, 1798761600 (01/01/2027 00:00), 1835395200 (T3 29/02/2028).","1. Gọi window, state ở các ts.
+2. Gọi refresh ở 1798761599 rồi 1798761600 (cùng save).","- Mùa T2 28/12/2026: open_at 1798437600, end 1799020800 (T2 04/01/2027 00:00), cycle ""W20815"".
+- 1798761599 và 1798761600: cùng cycle ""W20815"", state ""active""; refresh lần hai settled = false.
+- 29/02/2028: cycle ""W21242"", end 1835913600 (T2 06/03/2028 00:00); end − start = 604800.",,Ready,design.md §7 chu kỳ; skill [EDGE] Thời gian. Test Data C1.,todo:unit:test_weekly_pass
+TC_CA_WP_012,[EDGE] Lùi giờ máy về tuần trước sau khi đã sang mùa mới,P1,Chỉnh đồng hồ lùi không được mở lại mùa cũ hay cho nhận lại mốc khởi đầu (15 phút mạng vô hạn).,"s.weekly.cycle = ""W20836"" (mùa mới bắt đầu ở ts 1800252001), claimed_free [0], points 2, tut_seen true; s.lives.inf_until = 1800252901.","Giờ lùi về ts 1800000000 (tuần W20829), rồi trở lại ts 1800252100.","1. Game.weekly_refresh() ở 1800000000; đọc s.weekly; gọi Game.weekly_claim_free(0).
+2. Game.weekly_refresh() ở 1800252100; gọi Game.weekly_claim_free(0).","- Lúc giờ lùi: không reset (s.weekly.cycle giữ ""W20836"", points 2, claimed_free [0]); không có pending_end mới.
+- weekly_claim_free(0) trả {} cả lúc lùi lẫn lúc trở lại; s.lives.inf_until giữ 1800252901 (không cộng thêm 900 giây).",,Ready,"design.md §7 chu kỳ (không nêu giờ lùi); §5 ""Quà 28 ngày"" (giờ lùi thì không có quà tới khi vượt mốc). OQ-05.",todo:unit:test_weekly_pass
+M01.3,Nút Weekly Pass ở Home,,"design.md §7; Game.weekly_view (badge, dot); docs/UI_FIGMA.md (cột phải Home).",,,,,,Ready,,
+TC_CA_WP_013,[HP] Badge và chấm đỏ của nút Weekly Pass cập nhật theo thưởng nhận được,P1,Ribbon ghi số ô nhận được; chấm đỏ khi mùa Active chưa mở layer hoặc còn ô nhận được.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 2, claimed_free [], opened false. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Mốc 3 key (Free1) đạt sau khi thắng L27 (+1).,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home. Đọc nút.
+2. Mở layer, bấm Free0, đóng layer, đọc nút.
+3. Bấm Chơi, thắng L27 (+1 key).
+4. Cài đặt → Home, đọc nút.","- Bước 1: Caption ""Weekly Pass (1)"", WeeklyDot hiện.
+- Bước 2: Caption ""Weekly Pass"", WeeklyDot ẩn (s.weekly.opened = true, không còn ô nhận được).
+- Bước 4: s.weekly.points = 3; Caption ""Weekly Pass (1)"" (Free1 nhận được), WeeklyDot hiện.",,Ready,design.md §7 Main Tree. OQ-01 (mốc 3 key của free). Test Data C5.,todo:smoke:WP
+TC_CA_WP_014,[UI] Nút Weekly Pass ở Home trên nhiều tỉ lệ màn,P2,"Vị trí, icon, ribbon, chấm đỏ của nút ở cột phải Home trên các tỉ lệ màn.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","SMOKE_RES 443x960 (886×1920), 540x1200 (20:9), 432x1008 (21:9), 768x1024 (4:3).","1. Chạy smoke window với từng SMOKE_RES.
+2. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+3. Chụp Home.","- Nút ở cột phải, ribbon ""Weekly Pass (1)"" không tràn ribbon, chấm đỏ ở góc icon.
+- r.reachable(WeeklyPassButton) đúng: tâm nút không bị thanh trên/dưới hay tai thỏ che.
+- Census không có nhãn ra ngoài màn.",,Ready,design.md §7; docs/UI_FIGMA.md (cột phải Home). OQ-12 (wireframe Figma không mở được).,todo:smoke:WP
+TC_CA_WP_015,[EDGE] Bấm dồn nút Weekly Pass ở Home chỉ mở một layer,P1,Thao tác dồn dập: 20 lần chạm trong 1 giây không chồng hai layer.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false). Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",20 lần chạm WeeklyPassButton trong 1 giây.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Bấm WeeklyPassButton 20 lần trong 1 giây.
+3. Đợi 2 giây, đọc chồng popup.","- Đúng 1 popup weekly_pass trong chồng popup (Main.popup_count() = 1).
+- Sự kiện weekly_open đúng 1 lần; đúng 1 node Tutorial.
+- Không lỗi script, engine; bất biến chồng popup ≤ 3 lớp giữ.",,Ready,design.md §7; skill [EDGE] Thao tác dồn dập.,todo:smoke:WP
+M02,Hướng dẫn và cộng key,,"Tutorial 3 bước lần đầu mở layer, popup How to earn rewards, key theo độ khó khi thắng, ô ""+N chìa"" trên thẻ thắng. Nguồn: design.md §7 ""Weekly Pass"" (Thắng level, Tutorial), §4 ""Dải phần thưởng"".",,,,,,Ready,,
+M02.1,Tutorial và How to earn rewards,,"design.md §7 ""Tutorial"" (src/ui/weekly_pass_tutorial.gd, popup_weekly_tutorial).",,,,,,Ready,,
+TC_CA_WP_016,[HP] Lần đầu mở layer khi Active: tutorial 3 bước rồi popup How to earn rewards,P0,"Tutorial chạy trên hàng mốc khởi đầu, chạm bất kỳ đâu sang bước kế, bước cuối lưu cờ tut_seen (điều kiện cộng key).","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false, points 0, chưa mở layer mùa này). Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",3 lần chạm vào nền ngoài lỗ (góc trên trái).,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Bấm nút Weekly Pass, đợi hiệu ứng mở popup xong.
+3. Đọc bước 1, chạm nền.
+4. Đọc bước 2, chạm nền.
+5. Đọc bước 3, chạm nền.
+6. Đọc popup mở sau đó.","- Bước 1: node Tutorial hiện ≤ 1 giây sau khi layer mở (đề xuất); lỗ quanh Free0; BubbleLabel ""Welcome to Weekly Pass! Claim your first reward!"" (weekly_tut_free_claim).
+- Bước 2: lỗ quanh Vip0; ""Activating VIP gives you access to unique rewards!"" (weekly_tut_vip).
+- Bước 3: lỗ quanh ProgressRow; ""This is your progress. Tap this icon to learn how to earn rewards!"" (weekly_tut_progress).
+- Sau chạm thứ 3: Tutorial biến mất; s.weekly.tut_seen = true và save trên đĩa có tut_seen true; popup How to earn rewards (""How to earn rewards"") mở.
+- Chạm trong tutorial không nhận thưởng: gold 3.000, s.lives.inf_until không đổi, claimed_free [].",,Ready,"design.md §7 ""Tutorial"", ""Chỉ cộng key sau khi người chơi xem xong tutorial"".",todo:smoke:WP
+TC_CA_WP_017,"[NEG] Back giữa tutorial: không lưu cờ, lần sau chạy lại từ bước 1",P1,Đóng layer giữa tutorial thì không tính đã xem; thắng level lúc đó không cộng key.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false). Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Nút Back của Android ở bước 2.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, đợi tutorial bước 1, chạm nền một lần (sang bước 2).
+3. Nhấn Back.
+4. Bấm Chơi, thắng L27; Cài đặt → Home.
+5. Mở lại layer.","- Sau Back: layer đóng, về Home; s.weekly.tut_seen = false; không có popup How to earn rewards.
+- Thắng L27: s.weekly.points giữ 0, thẻ thắng không có ô WeeklyKeyReward.
+- Mở lại: Tutorial chạy lại từ bước 1 (lỗ quanh Free0, chữ weekly_tut_free_claim).",,Ready,"design.md §7 ""Đóng layer giữa chừng thì không lưu cờ, lần sau chạy lại"".",todo:smoke:WP
+TC_CA_WP_018,"[EDGE] Kill app giữa tutorial, mở lại thì tutorial chạy lại",P1,Gián đoạn thiết bị: app bị tắt giữa tutorial không lưu cờ tut_seen.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false). Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Tắt app ở bước 2; tiến trình Godot thứ hai trên cùng save (như kịch bản G/G2), giờ +60 giây.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, tutorial sang bước 2.
+3. Phát Platform.paused, tắt tiến trình.
+4. Mở tiến trình Godot mới trên cùng save (ts 1800000060).
+5. Cài đặt → Home, mở layer.","- Save đọc lại: s.weekly.tut_seen = false.
+- Tutorial chạy lại từ bước 1 (lỗ quanh Free0).",,Ready,"design.md §7 ""Tutorial""; skill [EDGE] Gián đoạn thiết bị.",todo:smoke:WP
+TC_CA_WP_019,"[HP] Nút ""i"" và biểu tượng chìa mở lại How to earn rewards",P2,"Popup How to earn rewards mở lại bất cứ lúc nào, nội dung key theo độ khó và quyền lợi VIP.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","InfoButton, KeyButton ở hàng tiến độ.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer.
+3. Bấm InfoButton, đọc popup, bấm OK.
+4. Bấm KeyButton, đọc popup, bấm X.","- Mỗi lần bấm mở đúng 1 popup ""How to earn rewards"" trên layer.
+- KeyRowNormal ""Win a level"" ""+1""; KeyRowHard ""Win a HARD level"" ""+3""; KeyRowVeryHard ""Win a VERY HARD level"" ""+5"".
+- Note2 ""VIP unlocks the VIP reward of every milestone and +3 max hearts this week. It also opens the Bonus Bank.""; Note1 weekly_howto_claim; Note3 weekly_howto_season.
+- OK hoặc X đóng popup; layer Weekly Pass vẫn mở.",,Ready,"design.md §7 ""Nút i và biểu tượng chìa ở hàng tiến độ mở lại popup đó bất cứ lúc nào"". OQ-08 (chữ Note3).",todo:smoke:WP
+TC_CA_WP_020,[UI] Popup How to earn rewards: bố cục trên nhiều tỉ lệ màn và ngôn ngữ dài,P2,"Popup không tràn chữ, nút OK và X bấm được trên mọi tỉ lệ.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","SMOKE_RES 443x960, 540x1200, 768x1024; ngôn ngữ en, de, ru.","1. Chạy smoke window với từng SMOKE_RES và ngôn ngữ.
+2. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+3. Mở layer → InfoButton, chụp.","- Panel trong màn; 3 hàng key và 3 dòng ghi chú nằm trong giếng kem, không chữ đè nhau.
+- r.reachable(OkButton) và nút X đúng; X cách mép màn ≥ 8 px.
+- Census: không nhãn tràn, không key tr() thô.",,Ready,design.md §7 Tutorial; skill [UI] mỗi popup có case layout đa tỉ lệ.,todo:smoke:WP
+TC_CA_WP_021,[UI] Spotlight của tutorial trùng đúng target trên nhiều tỉ lệ màn,P2,"Lỗ sáng, viền, bàn tay và bảng thoại chỉ đúng target ở mọi tỉ lệ màn.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false). Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","SMOKE_RES 443x960, 540x1200, 768x1024.","1. Chạy smoke window với từng SMOKE_RES.
+2. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+3. Mở layer, chụp ở từng bước của tutorial.","- Tutorial.hole_rect() chứa khung toàn cục của target (Free0, Vip0, ProgressRow) nới 10 px mỗi phía.
+- BubbleLabel nằm trọn trong màn (lề ≥ 16 đơn vị canvas) và không đè lên lỗ.
+- Bàn tay (Arrow) chỉ vào tâm target; viền Highlight bao lỗ; phần ngoài lỗ tối.",,Ready,"design.md §7 ""overlay dim nền và khoét lỗ quanh target""; skill [UI] Tutorial. OQ-12 (video tutorial pixelflow không có trong repo).",todo:smoke:WP
+TC_CA_WP_022,"[EDGE] Chạm dồn trong tutorial: không bỏ bước, cờ và popup chỉ một lần",P2,Chạm 20 lần/giây vào overlay không làm hỏng thứ tự bước hay mở hai popup.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false). Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",20 lần chạm vào nền trong 1 giây.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, đợi tutorial bước 1.
+3. Chạm nền 20 lần trong 1 giây.
+4. Đợi 2 giây.","- Các bước hiện theo thứ tự Free0 → Vip0 → ProgressRow (log BubbleLabel từng bước), không lỗi.
+- s.weekly.tut_seen = true; sự kiện weekly_tutorial đúng 1 lần.
+- Đúng 1 popup How to earn rewards; gold, claimed_free không đổi.",,Ready,design.md §7 Tutorial; skill [EDGE] Thao tác dồn dập.,todo:smoke:WP
+TC_CA_WP_023,[EDGE] Cờ tutorial không reset khi sang mùa,P1,Xem tutorial một lần cho mọi mùa: mùa mới cộng key ngay.,"s.weekly: cycle ""W20829"", tut_seen true, points 10, không VIP.","WeeklyPass.refresh ở ts 1800252001 (T2 18/01/2027 06:00:01, tz 0).","1. Gọi refresh.
+2. Gọi WeeklyPass.add_points(s, ""active"", """").","- Sau refresh: tut_seen = true; points 0; cycle ""W20836"".
+- add_points trả 1; points = 1.",,Ready,"design.md §7 ""cờ s.weekly.tut_seen, nằm trong bản lưu và không reset theo mùa"".",todo:unit:test_weekly_pass
+M02.2,Cộng key khi thắng level,,"design.md §7: Normal +1, Hard +3, VeryHard +5; chỉ khi Active và đã xem tutorial; không tính Daily Challenge, Road Trip, Màn đặc biệt.",,,,,,Ready,,
+TC_CA_WP_024,[HP] Thắng level thường L27 sau tutorial: +1 key,P0,"Key theo độ khó: level thường +1, thẻ thắng có ô ""+1 key"".","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 0. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",L27 (level thường).,"1. Mở game, thắng L27.
+2. Đọc thẻ thắng.
+3. Tiếp tục → L28 → Cài đặt → Home → mở layer.","- s.weekly.points 0 → 1; sự kiện weekly_points {level 27, points 1, total 1}.
+- Thẻ thắng có ô WeeklyKeyReward ""+1 key"" (weekly_key_reward_one) ngay sau ô gold.
+- Layer: KeysLabel ""1 / 130 keys""; ProgressBar.value = 0,333 (1/3 đoạn 0 → 3 key).",,Ready,"design.md §7 ""Normal +1 key"", §4 ""Dải phần thưởng"". OQ-01 (mốc 3 key). Test Data C3, C5.",todo:smoke:WP
+TC_CA_WP_025,[HP] Thắng level HARD L29: +3 key,P0,Key theo độ khó: level HARD +3.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 29): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 0, claimed_free []. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",L29 (HARD).,"1. Mở game, thắng L29.
+2. Đọc thẻ thắng.
+3. Tiếp tục → Cài đặt → Home.","- s.weekly.points 0 → 3; weekly_points {level 29, points 3, total 3}.
+- Thẻ thắng có ô WeeklyKeyReward ""+3 keys"" (weekly_key_reward).
+- Home: Caption ""Weekly Pass (2)"" (Free0 và Free1 nhận được).",,Ready,"design.md §7 ""Hard +3"". OQ-01. Test Data C3.",todo:smoke:WP
+TC_CA_WP_026,[HP] Thắng level VeryHard L33: +5 key,P1,Key theo độ khó: level VeryHard +5.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 33): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 0. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",L33 (VeryHard đầu tiên).,"1. Mở game, thắng L33.
+2. Đọc thẻ thắng.","- s.weekly.points 0 → 5; weekly_points {level 33, points 5, total 5}.
+- Thẻ thắng có ô WeeklyKeyReward ""+5 keys"".",,Ready,"design.md §7 ""VeryHard +5""; §4 (VeryHard đầu tiên là L33). Test Data C3.",todo:smoke:WP
+TC_CA_WP_027,[NEG] Thắng trước khi xem tutorial không cộng key,P0,"Key thắng trước lần xem tutorial đầu không tính, dù Weekly Pass đã mở và mùa Active.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false, points 0), chưa mở layer. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","L27, L28 (thường).","1. Mở game, thắng L27 (không mở layer).
+2. Đọc thẻ thắng, Tiếp tục.
+3. Thắng L28.
+4. Cài đặt → Home.","- Sau cả hai lần thắng: s.weekly.points = 0; thẻ thắng không có ô WeeklyKeyReward; không có sự kiện weekly_points.
+- Gold vẫn cộng đủ thưởng thắng (+40 + 10 × MOVES còn) mỗi lần.
+- Home: Caption ""Weekly Pass (1)"" (mốc 0 vẫn nhận được), WeeklyDot hiện.",,Ready,"design.md §7 ""xem lần đầu mở layer, nên key thắng trước lúc đó không tính"".",todo:smoke:WP
+TC_CA_WP_028,[EDGE] Thắng lúc Waiting không cộng key,P1,"Trong Waiting (T2 00:00–06:00) thắng level không cộng key, không có ô chìa.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, cycle ""W20836"", points 0. Giờ giả ts 1800230401 (T2 00:00:01). Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",L27.,"1. Mở game, thắng L27.
+2. Đọc thẻ thắng và s.weekly.","- s.weekly.points giữ 0; thẻ thắng không có ô WeeklyKeyReward; không có sự kiện weekly_points.
+- Gold cộng đủ thưởng thắng.",,Ready,"design.md §7 ""không cộng (chưa xem tutorial, Waiting, Locked, Daily Challenge) thì không có ô"".",todo:smoke:WP
+TC_CA_WP_029,[NEG] Thua hoặc bỏ cuộc không cộng key,P2,Chỉ thắng mới cộng key.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 1. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","L27: chạm khối bị chặn tới hết MOVES, Bỏ cuộc.","1. Mở game ở L27.
+2. Chạm khối bị chặn tới hết MOVES.
+3. Bỏ cuộc → xác nhận mất mạng.
+4. Đọc thẻ thua và s.weekly.","- s.weekly.points giữ 1; không có sự kiện weekly_points.
+- Mạng 10 → 9 (thua từ L10 mất 1 mạng).",,Ready,"design.md §7 ""Thắng level ... khi Active""; §3 ""Mạng"".",todo:smoke:WP
+TC_CA_WP_030,"[NEG] Road Trip, Màn đặc biệt, Daily Challenge thắng không cộng key",P2,Các chế độ phụ không cộng key Weekly Pass.,"s.level = 96 (Road Trip, Màn đặc biệt đã mở), s.weekly.tut_seen = true, points 5, mùa Active (ts 1800000000, tz 0); Config.FEATURES.challenge bật tạm cho test (đang tắt ở bản phát hành).","Game.on_level_won với attempt road_trip, special, challenge (thắng).","1. Gọi on_level_won cho một lượt thắng Road Trip.
+2. Gọi on_level_won cho một lượt thắng Màn đặc biệt.
+3. Gọi on_level_won cho một lượt thắng Daily Challenge.","- Sau mỗi lần: s.weekly.points giữ 5; weekly_points của kết quả là 0 hoặc không có.
+- Không có sự kiện analytics weekly_points.",,Ready,"design.md §7 ""không tính Daily Challenge""; §7 Road Trip ""không điểm Weekly Pass""; §7 Màn đặc biệt ""không cộng điểm Weekly Pass"".",todo:unit:test_weekly_pass
+TC_CA_WP_031,"[NEG] x2 ở thẻ thắng chỉ nhân gold, không nhân key",P1,"x2 bằng video nhân gold của lượt thắng, key giữ nguyên.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 29): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 0. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Ads giả sẵn sàng, xem hết.","L29 (HARD), MOVES còn N lúc thắng.","1. Mở game, thắng L29 (ghi N và gold trước khi thắng).
+2. Bấm x2, xem hết video giả.
+3. Đợi thẻ tự đóng.","- Gold tăng đúng 2 × (40 + 10 × N) so với trước khi thắng.
+- s.weekly.points 0 → 3 (không phải 6); ô WeeklyKeyReward vẫn ""+3 keys"" sau x2.",,Ready,"design.md §4 ""x2 chỉ nhân gold, không nhân key hay vé"". Test Data C3.",todo:smoke:WP
+TC_CA_WP_032,[EDGE] Level vòng lặp L501+ mang tag HARD,P2,"Sau L500, level HARD hiện ""rất khó"": số key theo VeryHard.","s.level = 501 (nội dung lặp: L501 dùng L51, tag HARD), s.weekly.tut_seen = true, points 0, Active.","Game.difficulty_of(501), on_level_won L501 rồi L502 (L52, thường).","1. Gọi difficulty_of(501).
+2. Gọi on_level_won thắng L501.
+3. Gọi on_level_won thắng L502.","- difficulty_of(501) = ""very_hard""; thắng L501: points 0 → 5 (giả định OQ-06).
+- Thắng L502: points 5 → 6.",,Ready,"design.md §4 ""từ L501 mọi level HARD cũng hiện rất khó"" (CONTENT.very_hard_from_level); §7 key theo độ khó. OQ-06.",todo:unit:test_weekly_pass
+TC_CA_WP_033,[EDGE] Chơi liền qua mốc tuần không tắt app: key vào đúng mùa,P1,"Mùa đổi lúc T2 00:00 dù app đang mở: thắng lúc Waiting không cộng, thắng sau 06:00 cộng vào mùa mới.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, cycle ""W20829"", points 3, không VIP, claimed []. Giờ giả ts 1800230300 (CN 23:58:20). Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Đổi game.test_now trước chạm khối cuối: 1800230390, 1800230460, 1800252060.","1. Mở game ở L27; đặt test_now = 1800230390, thắng L27.
+2. Tiếp tục; đặt test_now = 1800230460 (T2 00:01:00), thắng L28.
+3. Tiếp tục; đặt test_now = 1800252060 (T2 06:01:00), thắng L29 (HARD).
+4. Cài đặt → Home, mở layer.","- Bước 1: points 3 → 4 (mùa W20829), thẻ ""+1 key"".
+- Bước 2: thẻ thắng không có ô WeeklyKeyReward (Waiting).
+- Bước 3: s.weekly.cycle = ""W20836"", points = 3 (chỉ key của L29), thẻ ""+3 keys"".
+- Layer: popup cuối mùa ""You earned 4 keys this season. A new season is coming!"", OK → KeysLabel ""3 / 130 keys"".",,Ready,"design.md §7 chu kỳ (mùa mới từ T2 00:00; Waiting không cộng key), ""Sang mùa"". OQ-07 (lúc hiện popup cuối mùa).",todo:smoke:WP
+M02.3,"Ô ""+N chìa"" trên thẻ thắng",,"design.md §4 ""Dải phần thưởng"", §9 (2026-11-10).",,,,,,Ready,,
+TC_CA_WP_034,"[UI] Ô ""+N chìa"" trên thẻ thắng: vị trí, chữ, ba ô",P2,"Ô chìa nằm sau ô gold; ba ô (gold, chìa, vé) giữ khoảng cách tâm như hai ô, chữ không dính nhau.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 29): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true. Lần hai: save s.level = 51 (HARD), Màn đặc biệt đã mở, ngăn vé trống để lần thắng có ""+1 vé"". Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","L29 (2 ô), L51 (3 ô); ngôn ngữ en, de, ru.","1. Chạy smoke window.
+2. Thắng L29, chụp thẻ thắng.
+3. Thắng L51, chụp thẻ thắng.
+4. Lặp với de, ru.","- Ô chìa ngay sau ô gold, icon chìa, chữ ""+3 keys""; hai ô cách đều quanh tâm thẻ.
+- Ba ô: khoảng cách tâm như hai ô, chữ ""+3 keys"" và ""+1 vé"" (special_ticket_reward) không chồng nhau.
+- de, ru: census không có chữ ô chìa tràn nhãn.",,Ready,"design.md §4 ""Dải phần thưởng"", §9 ""Ô +N chìa trên thẻ thắng"".",todo:smoke:WP
+M03,Main Tree và Bonus Bank,,"Nhận thưởng free/VIP từng mốc, Nhận tất cả, Bonus Bank. Nguồn: design.md §7 ""Main Tree"", ""Bonus Bank""; bảng mốc ở src/config.gd _WEEKLY.main (OQ-01).",,,,,,Ready,,
+M03.1,Nhận thưởng từng mốc,,design.md §7 Main Tree; Game.weekly_claim_free / weekly_claim_vip.,,,,,,Ready,,
+TC_CA_WP_035,[HP] Nhận free mốc khởi đầu 0 key: 15 phút mạng vô hạn,P0,Mốc khởi đầu nhận được ngay: free 15 phút mạng vô hạn.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 0, s.lives.inf_until = 0. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Thẻ Free0.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm Free0.
+3. Đóng layer, đọc chip mạng ở thanh trên Home.","- s.lives.inf_until = 1800000900 (giờ giả + 900 giây); claimed_free = [0]; gold giữ 3.000.
+- Free0 có node Claimed (tích), disabled; Vip0 còn Lock.
+- ClaimAllButton không tương tác (không còn ô nhận được); Home Caption ""Weekly Pass"".
+- Chip mạng hiện mạng vô hạn và đếm ngược ""15:00"".
+- Sự kiện weekly_claim {kind ""free"", coins 0, points 0}.",,Ready,"design.md §7 ""mốc khởi đầu 0 key (free 15 phút mạng vô hạn, VIP 150 gold, nhận được ngay)""; §9 mạng vô hạn. Test Data C7.",todo:smoke:WP
+TC_CA_WP_036,[HP] Nhận free mốc 3 key: +100 gold,P0,Thưởng gold của mốc free cộng đúng và chip gold cập nhật.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 3, claimed_free [0]. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Thẻ Free1 (mốc 3 key, 100 gold).","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm Free1.
+3. Đợi đồng gold bay xong, đọc chip gold.","- s.coins 3.000 → 3.100; claimed_free = [0, 1]; Free1 có tích.
+- Chip gold ở thanh trên hiện 3100 (bằng s.coins) sau khi đồng cuối chạm.
+- Sự kiện weekly_claim {kind ""free"", coins 100, points 3}.",,Ready,design.md §7 Main Tree. OQ-01 (số của mốc 1–10 chỉ có trong config.gd). Test Data C2.,todo:smoke:WP
+TC_CA_WP_037,[HP] Nhận free mốc 8 key: +1 Gợi ý,P1,Thưởng booster của mốc free vào kho.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 8, claimed_free [0, 1]. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Thẻ Free2 (mốc 8 key, 1 Gợi ý).","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm Free2.","- s.inv.hint 3 → 4; gold giữ 3.000; claimed_free = [0, 1, 2]; Free2 có tích.",,Ready,design.md §7 Main Tree. OQ-01. Test Data C2.,todo:smoke:WP
+TC_CA_WP_038,"[HP] Thưởng free và VIP của 11 mốc đúng bảng, tổng cả mùa",P1,"Mỗi mốc trả đúng gold, booster, phút mạng vô hạn; tổng một mùa khớp Test Data.","s.weekly: points 130, vip true, claimed [] (dữ liệu test). Bảng mốc theo Test Data C2.","WeeklyPass.claim_free(s, i), claim_vip(s, i) với i = 0..10.","1. Với i từ 0 tới 10: gọi claim_free, ghi thưởng; gọi claim_vip, ghi thưởng.
+2. Cộng tổng.","- Từng mốc khớp Test Data C2 (ví dụ i=0: free inf 15 phút, VIP 150 gold; i=1 (3 key): free 100, VIP 200 + 30 phút; i=10 (130 key): free 500 + 1 Phá khối, VIP 2.000 + 2 Phá khối).
+- Tổng free: 1.650 gold, 2 Gợi ý, 2 +3 Move, 2 Phá khối, 15 phút.
+- Tổng VIP: 5.950 gold, 3 Gợi ý, 4 +3 Move, 4 Phá khối, 30 phút.",,Ready,design.md §7 Main Tree (chỉ nêu mốc 0 và VIP mốc 3 key). OQ-01. Test Data C2.,todo:unit:test_weekly_pass
+TC_CA_WP_039,"[EDGE] Biên điểm mốc: thiếu 1 key chưa nhận, đủ key nhận được",P1,"Ngưỡng−1 / ngưỡng ở mốc đầu, giữa, cuối.","s.weekly: vip false, claimed [], tut_seen true.","points = 2/3 (mốc 1), 7/8 (mốc 2), 129/130 (mốc 10).","1. Với từng cặp điểm: đặt points, gọi free_claimable và claim_free cho mốc tương ứng.","- free_claimable(1): false ở 2, true ở 3; free_claimable(2): false ở 7, true ở 8; free_claimable(10): false ở 129, true ở 130.
+- claim_free trả {} khi chưa đủ key; s.weekly.claimed_free không đổi.",,Ready,design.md §7 Main Tree. OQ-01. Test Data C2.,todo:unit:test_weekly_pass
+TC_CA_WP_040,[NEG] Bấm thẻ mốc chưa đạt,P1,"Thẻ chưa đủ key không nhận được: dữ liệu giữ nguyên, thẻ disabled.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 4, claimed_free [0, 1]. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Thẻ Free2 (mốc 8 key).,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm Free2.","- Free2 disabled, không có pill Claim.
+- s.inv.hint giữ 3, gold giữ 3.000, claimed_free giữ [0, 1]; không có sự kiện weekly_claim.",,Ready,design.md §7 Main Tree.,todo:smoke:WP
+TC_CA_WP_041,[NEG] Bấm thẻ VIP khi chưa mua VIP,P1,Thưởng VIP khoá khi chưa VIP.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 4, không VIP. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Thẻ Vip0 (150 gold), Vip1 (200 gold + 30 phút).","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm Vip0, rồi Vip1.","- Vip0, Vip1 có node Lock, disabled.
+- Gold giữ 3.000; claimed_vip giữ []; s.lives.inf_until không đổi; không có sự kiện weekly_claim.",,Ready,"design.md §7 ""mỗi mốc có thưởng free và thưởng VIP"".",todo:smoke:WP
+TC_CA_WP_042,[NEG] Bấm lại thẻ đã nhận,P2,Không nhận lại thưởng đã nhận.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 3, claimed_free [0, 1]. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Thẻ Free1 đã nhận.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm Free1 ba lần, cách nhau 1 giây.","- Free1 có tích, disabled; gold giữ 3.000; claimed_free giữ [0, 1].",,Ready,design.md §7 Main Tree.,todo:smoke:WP
+TC_CA_WP_043,[EDGE] Chạm dồn 20 lần/giây vào một thẻ: nhận đúng một lần,P0,Thao tác dồn dập trên thẻ thưởng chỉ tạo một giao dịch.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 3, claimed_free [0]. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",20 lần chạm Free1 trong 1 giây.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer.
+3. Bấm Free1 20 lần trong 1 giây.","- s.coins 3.000 → 3.100 (đúng +100 một lần).
+- claimed_free = [0, 1], mốc 1 xuất hiện một lần; sự kiện weekly_claim 1 lần; không lỗi.",,Ready,design.md §7 Main Tree; skill [EDGE] Thao tác dồn dập. OQ-01.,todo:smoke:WP
+TC_CA_WP_044,"[UI] Trạng thái thẻ thưởng, kim cương mốc và hàng tiến độ",P2,"Mỗi trạng thái thẻ (nhận được, đã nhận, khoá VIP, chưa đạt) hiện đúng hình.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, vip true, points 10, claimed_free [0, 1], claimed_vip [0]. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",points 10 (giữa mốc 8 và 15).,"1. Chạy smoke window.
+2. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+3. Mở layer, chụp; cuộn xuống, chụp.","- Free0, Free1, Vip0: node Claimed; Vip1, Free2, Vip2: pill ""Claim""; Free3 trở đi: không pill, không Lock.
+- KeysLabel ""10 / 130 keys""; ProgressBar.value = 0,286 ((10−8)/(15−8)).
+- Kim cương 0 và 3 ở trạng thái đã qua, 8 sáng (mốc vừa đạt), 15 trở đi chưa đạt; thanh dọc đầy 22,9%.
+- Số trên thẻ: Vip1 ""200"" và ""30m"", Vip2 ""300"" và ""x1"".",,Ready,"design.md §7 ""Ô thưởng ... nút Nhận ở dải màu bên dưới"". OQ-01. Test Data C5.",todo:smoke:WP
+TC_CA_WP_045,"[UI] Thưởng bay vào ô đếm, số trên chip khớp ví",P2,Gold và mạng vô hạn vừa nhận bay vào chip của chúng; chip cuối cùng bằng số trong ví.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, vip true, points 3, claimed []. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Thẻ Vip1 (200 gold + 30 phút).,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm Vip1.
+3. Đợi 2 giây, đọc chip gold và chip mạng.","- Chip gold chạy từ 3000 lên 3200 theo từng đồng chạm, cuối cùng bằng s.coins = 3.200.
+- Chip mạng hiện mạng vô hạn; s.lives.inf_until = 1800001800.",,Ready,"design.md §2 ""Phần thưởng bay vào ô đếm"" (áp dụng Weekly Pass từng ô).",todo:smoke:WP
+TC_CA_WP_046,[HP] Tỉ lệ thanh tiến độ tới mốc kế,P2,Công thức thanh tiến độ: phần key trong đoạn từ mốc đã đạt tới mốc kế.,s.weekly với points theo INPUT.,"points = 0, 1, 4, 8, 129, 130, 300.",1. Với từng giá trị: gọi WeeklyPass.progress_ratio(s).,"- 0 → 0; 1 → 0,333; 4 → 0,2; 8 → 0; 129 → 0,96 ((129−105)/25); 130 → 1; 300 → 1.",,Ready,"design.md §9 ""hàng tiến độ (thanh tới mốc kế)"". OQ-01. Test Data C5.",todo:unit:test_weekly_pass
+TC_CA_WP_047,[HP] Booster và mạng vô hạn nhận từ Weekly Pass dùng được ngay trong level,P1,Tích hợp: thưởng từ Weekly Pass dùng ngay trong level chính.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 8, claimed []. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Nhận tất cả (free mốc 0, 3, 8), rồi chơi L27.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm ClaimAllButton, đóng layer.
+3. Bấm Chơi vào L27, dùng Gợi ý.
+4. Chạm khối bị chặn tới hết MOVES, Bỏ cuộc.","- Sau Nhận tất cả: gold 3.100, hint 4, s.lives.inf_until = 1800000900.
+- Dùng Gợi ý: hint 4 → 3, có hiệu ứng gợi ý.
+- Bỏ cuộc trong 15 phút mạng vô hạn: không có cảnh báo mất mạng, mạng giữ 10.",,Ready,"design.md §3 ""Mạng"", §9 ""mạng vô hạn ... đang còn hạn thì thua không mất mạng""; skill [HP] tích hợp module.",todo:smoke:WP
+M03.2,Nhận tất cả,,Game.weekly_claim_all: hết Main Tree và Bonus Bank đang nhận được.,,,,,,Ready,,
+TC_CA_WP_048,[HP] Nhận tất cả khi chưa VIP (8 key),P0,"Nhận tất cả gom mọi ô free đã đạt, không đụng ô VIP.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 8, claimed [], không VIP. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Mốc đạt: 0, 3, 8 key.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm ClaimAllButton.
+3. Bấm ClaimAllButton lần nữa.","- s.coins 3.000 → 3.100; hint 3 → 4; s.lives.inf_until = 1800000900.
+- claimed_free = [0, 1, 2]; claimed_vip = []; Vip0..Vip2 còn Lock.
+- Sau đó ClaimAllButton không tương tác; lần bấm thứ hai không đổi gì.
+- Sự kiện weekly_claim {kind ""all"", coins 100, points 8} đúng 1 lần.",,Ready,design.md §7 Main Tree. OQ-01. Test Data C5.,todo:smoke:WP
+TC_CA_WP_049,[HP] Nhận tất cả khi có VIP (15 key),P0,Nhận tất cả gom ô free và ô VIP đã đạt.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, vip true, s.lives.bonus 3, mạng 13/13, points 15, claimed []. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Mốc đạt: 0, 3, 8, 15 key.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm ClaimAllButton.","- s.coins 3.000 → 4.300 (free 250 + VIP 1.050); hint 3 → 5; s.lives.inf_until = 1800002700 (15 + 30 phút).
+- claimed_free = [0, 1, 2, 3]; claimed_vip = [0, 1, 2, 3].
+- Sự kiện weekly_claim {kind ""all"", coins 1300, points 15}.",,Ready,design.md §7 Main Tree. OQ-01. Test Data C5.,todo:smoke:WP
+TC_CA_WP_050,[EDGE] Chạm dồn Nhận tất cả,P1,20 lần chạm Nhận tất cả trong 1 giây chỉ nhận một lần.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, vip true, points 15, claimed []. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",20 lần chạm ClaimAllButton trong 1 giây.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer.
+3. Bấm ClaimAllButton 20 lần trong 1 giây.","- s.coins đúng 4.300 (+1.300 một lần); hint đúng 5.
+- Sự kiện weekly_claim kind ""all"" đúng 1 lần.",,Ready,design.md §7; skill [EDGE] Thao tác dồn dập. OQ-01.,todo:smoke:WP
+M03.3,Bonus Bank,,"design.md §7: mở khi đủ mốc cuối + có VIP + đã xem End popup; cứ 15 key thừa 1 mốc, tối đa 10, mỗi mốc 400 gold.",,,,,,Ready,,
+TC_CA_WP_051,"[HP] Bonus Bank mở khi đủ mốc cuối, có VIP và đã xem End popup",P1,Bank mở và cho nhận 400 gold mỗi ô đã đạt.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, vip true, points 160, mọi ô Main Tree đã nhận, end_seen false. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",160 key = 30 key thừa = 2 ô.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer (lần đầu khi ≥ 130 key).
+3. Cuộn tới Bonus Bank.
+4. Bấm Bank0.","- Sau khi mở layer: s.weekly.end_seen = true (giả định OQ-02).
+- Bonus Bank ghi ""Every 15 extra keys""; Bank0, Bank1 có pill Claim; Bank2..Bank9 có Lock.
+- Bấm Bank0: s.coins 3.000 → 3.400; claimed_bank = [0]; Bank0 có tích.",,Ready,"design.md §7 ""Bonus Bank"". OQ-01 (mốc cuối 130), OQ-02 (End popup). Test Data C4.",todo:smoke:WP
+TC_CA_WP_052,[NEG] Bonus Bank khoá khi chưa VIP,P1,Không VIP thì không có Bank dù đủ mốc cuối.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, không VIP, points 200, mọi ô free đã nhận. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","200 key, không VIP.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, cuộn tới Bonus Bank.","- Hiện ""Reach the last milestone with VIP to unlock the Bonus Bank."" (weekly_bank_locked), không có nút Bank0..Bank9.
+- Gold giữ 3.000; claimed_bank giữ []; Game.weekly_claim_bank(0) trả {}.",,Ready,"design.md §7 ""Bonus Bank mở khi ... có VIP"".",todo:smoke:WP
+TC_CA_WP_053,[EDGE] Biên số ô Bonus Bank,P1,"Công thức số ô: INT((key − 130)/15), tối đa 10; mở từ đúng 130 key.","s.weekly: vip true, end_seen true, claimed_bank [].","points = 129, 130, 144, 145, 159, 160, 280, 295, 999.","1. Với từng giá trị: gọi bank_unlocked, bank_slots, claim_all_bank (save mới mỗi lần).","- bank_unlocked: false ở 129, true từ 130.
+- bank_slots: 0, 0, 0, 1, 1, 2, 10, 10, 10.
+- claim_all_bank coins: 0, 0, 0, 400, 400, 800, 4.000, 4.000, 4.000.",,Ready,"design.md §7 ""cứ 15 key thừa được 1 mốc, tối đa 10 mốc, mỗi mốc 400 gold"". OQ-01. Test Data C4.",todo:unit:test_weekly_pass
+TC_CA_WP_054,[EDGE] Chưa xem End popup thì Bonus Bank chưa mở,P2,Điều kiện thứ ba của Bank: đã xem End popup.,"s.weekly: vip true, points 160, end_seen false, mùa Active.",Game.weekly_opened() (mở layer).,"1. Gọi bank_unlocked, bank_claimable(0), claim_bank(0).
+2. Gọi Game.weekly_opened().
+3. Gọi lại.","- Trước: bank_unlocked false, bank_claimable(0) false, claim_bank(0) trả {}.
+- Sau weekly_opened: end_seen true, bank_claimable(0) true.",,Ready,"design.md §7 ""đã xem End popup"". OQ-02.",todo:unit:test_weekly_pass
+TC_CA_WP_055,[HP] Nhận tất cả gồm cả Bonus Bank,P2,Nhận tất cả gom luôn ô Bank đã đạt.,"s.weekly: vip true, end_seen true, points 175, mọi ô Main Tree đã nhận, claimed_bank []; mùa Active; gold 3.000.",175 key = 45 key thừa = 3 ô.,1. Gọi Game.weekly_claim_all().,"- Thưởng trả coins 1.200 (3 × 400); gold 3.000 → 4.200; claimed_bank = [0, 1, 2].",,Ready,design.md §7 Bonus Bank. OQ-02. Test Data C4.,todo:unit:test_weekly_pass
+M04,"VIP: mua, +3 mạng tối đa, Upsell",,"SKU weekly_pass ($4.99, consumable), quyền lợi VIP, popup Upsell (wireframe 7.5). Nguồn: design.md §7 ""Weekly Pass"" (VIP, Upsell), §7 ""Giao hàng"", §6 (popup mất kết nối); docs/HORUS_HANDOFF.md mục 2.",,,,,,Ready,,
+M04.1,Mua VIP trong layer,,"Game.weekly_buy_vip, Game.buy_sku, grant_purchase.",,,,,,Ready,,
+TC_CA_WP_056,[HP] Mua VIP trong layer thành công,P0,Mua VIP mở thưởng VIP và +3 mạng tối đa ngay.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 3, claimed_free [0]. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả ok.","SKU weekly_pass, giá mock ""$4.99"".","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm BuyVipButton (""Get VIP for $4.99"").
+3. Store giả: Mua.
+4. Đọc layer, thanh trên.","- s.weekly.vip = true; s.buys thêm 1 đơn sku ""weekly_pass""; Platform.iap.calls 1 lần buy.
+- s.lives.bonus = 3; mạng 10 → 13; Lives.max_for = 13; chip mạng hiện 13.
+- BuyVipButton ẩn; VipLabel ""VIP active - +3 max hearts this week"".
+- Vip0 (150), Vip1 (200 + 30m) có pill Claim, hết Lock; Home Caption ""Weekly Pass (3)"".
+- Sự kiện weekly_vip {points 3}.",,Ready,"design.md §7 ""VIP: +3 mạng tối đa trong tuần (cộng luôn vào số mạng hiện có)"". Test Data C7.",todo:smoke:WP
+TC_CA_WP_057,[NEG] Huỷ ở hộp thoại thanh toán,P0,"Huỷ mua: không VIP, không trừ tiền, nút mua còn.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 3. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả cancel.",SKU weekly_pass.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm BuyVipButton.
+3. Store giả: Huỷ.","- s.weekly.vip = false; s.buys không đổi; mạng 10/10, Lives.max_for = 10.
+- BuyVipButton hiện và bấm được; không có ToastLabel; Vip0 còn Lock.",,Ready,design.md §7 Giao hàng; skill [EDGE] Mua hàng (huỷ).,todo:smoke:WP
+TC_CA_WP_058,[NEG] Thanh toán lỗi khi có mạng: báo tại chỗ,P1,"Lỗi thanh toán (không phải huỷ, chờ) khi còn mạng thì báo dòng lỗi trong layer.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 3. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả error; game.test_online = 1.",SKU weekly_pass.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm BuyVipButton.","- s.weekly.vip = false; s.buys không đổi.
+- ToastLabel ""The purchase didn't go through."" (shop_buy_failed); không có popup Mất kết nối.
+- BuyVipButton bấm lại được.",,Ready,"design.md §6 ""lỗi khác ... vẫn báo tại chỗ"".",todo:smoke:WP
+TC_CA_WP_059,"[EDGE] Đơn pending: báo đang chờ, chưa cấp VIP",P1,Đơn chờ xử lý không cấp VIP cho tới khi hoàn tất.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 3. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả pending.",SKU weekly_pass.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm BuyVipButton.","- ToastLabel ""Your purchase is pending."" (shop_buy_pending).
+- s.weekly.vip = false; s.buys không đổi; Lives.max_for = 10.",,Ready,"design.md §7 ""Giao hàng""; skill [EDGE] Mua hàng (pending). OQ-03 (đơn hoàn tất sau khi sang mùa).",todo:smoke:WP
+TC_CA_WP_060,"[EDGE] Đơn treo giao khi mở lại app hoặc resume, mỗi token một lần",P0,"Bất biến: không trả tiền mà không nhận VIP, không nhận VIP hai lần cho một đơn.","Mùa W20829 Active (ts 1800000000); s.weekly.vip false; mạng 10/10. Platform.pending() có đơn {status ok, sku weekly_pass, token ""T1""} chưa finish (app bị tắt sau khi store trừ tiền, trước khi giao; hoặc đơn pending vừa hoàn tất).","Đơn token ""T1"".","1. Boot (hoặc phát resume): game giao đơn treo.
+2. Boot lần nữa khi đơn T1 vẫn còn trong Platform.pending().
+3. Gọi Game.grant_purchase với đơn T1 lần nữa.","- Lần 1: s.weekly.vip = true; s.buys 1 đơn T1; s.lives.bonus 3, mạng 13; Platform.finish gọi với consumable = true.
+- Lần 2 và 3: grant_purchase trả false; s.buys vẫn 1 đơn; bonus 3, mạng không cộng thêm 3.",,Ready,"design.md §7 ""Giao hàng: lưu hàng trước, xác nhận đơn sau; mỗi token giao một lần; lúc mở game giao hết đơn còn treo"".",todo:unit:test_weekly_pass
+TC_CA_WP_061,"[EDGE] Mất mạng khi mua VIP: popup Mất kết nối, không cấp, không trừ",P1,"Mua lỗi lúc mất mạng thì Main hiện popup 1.6, layer không báo thêm.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 3. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả error; game.test_online = 0.","SKU weekly_pass, Airplane mode giả lập.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm BuyVipButton.
+3. Ở popup Mất kết nối bấm Thử lại (vẫn mất mạng).
+4. Đặt test_online = 1, bấm Thử lại.","- Popup Mất kết nối (wireframe 1.6, popup_no_internet) hiện; layer không có ToastLabel.
+- s.weekly.vip = false; s.buys không đổi; mạng tối đa 10.
+- Thử lại khi vẫn mất mạng: popup giữ; có mạng: popup đóng, layer còn mở.",,Ready,"design.md §6 ""Mua hàng lỗi ... mất mạng thì popup 1.6"".",todo:smoke:WP
+TC_CA_WP_062,[EDGE] Chạm dồn nút mua VIP: một giao dịch,P0,20 lần chạm nút mua trong 1 giây chỉ mở store một lần.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 3. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả ok (có cửa sổ: bấm Mua ở lớp phủ một lần).",20 lần chạm BuyVipButton trong 1 giây.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer.
+3. Bấm BuyVipButton 20 lần trong 1 giây.
+4. Đợi giao dịch xong.","- Platform.iap.calls có đúng 1 lần buy weekly_pass; s.buys +1 đơn.
+- s.lives.bonus = 3; mạng 13 (không phải 16).
+- BuyVipButton disabled trong lúc chờ store.",,Ready,"design.md §7 ""Đang mua: mỗi lúc chỉ một giao dịch""; skill [EDGE] Thao tác dồn dập.",todo:smoke:WP
+TC_CA_WP_063,"[NEG] Không bán VIP lần hai trong mùa, không bán lúc Waiting hoặc Locked",P1,"Chặn mua khi không hợp lệ, không mở hộp thoại store.","Ba save: (a) vip true, mùa Active (ts 1800000000); (b) Waiting (ts 1800230401), vip false; (c) s.level 26 (Locked).",Game.weekly_buy_vip().,1. Với từng save: gọi weekly_buy_vip().,"- Mỗi trường hợp trả {status ""error"", granted false}.
+- Platform.iap.calls không tăng (không mở store); s.buys, s.lives.bonus không đổi.",,Ready,design.md §7 VIP (mua mỗi tuần một lần).,todo:unit:test_weekly_pass
+TC_CA_WP_064,[EDGE] Đơn VIP hoàn tất sau khi mùa đã đổi,P1,"Đơn pending đặt cuối mùa, giao ở mùa sau hoặc lúc Waiting.","s.weekly: cycle ""W20829"", points 20, vip false. Mua lúc ts 1800230390 (CN 23:59:50) trả pending.","Đơn hoàn tất, giao qua resume lúc ts 1800252100 (T2 06:01:40); lần hai (save khác) giao lúc ts 1800231000 (T2 00:10, Waiting).","1. Phát resume với đơn ok trong Platform.pending() ở ts 1800252100.
+2. Save khác: giao lúc ts 1800231000, rồi resume ở 1800252100.","- Giao lúc 06:01:40: mùa W20829 được chốt trước (pending_end points 20); VIP thuộc mùa W20836: cycle ""W20836"", vip true, points 0; s.lives.bonus 3; s.buys 1 đơn (giả định OQ-03).
+- Giao lúc Waiting: vip true, s.lives.bonus 0; resume lúc 06:01:40 (Active): bonus 3, mạng tối đa 13.",,Ready,"design.md §7 VIP, ""Giao hàng"". OQ-03.",todo:unit:test_weekly_pass
+TC_CA_WP_065,[HP] Mùa sau mua VIP lại được (consumable),P1,weekly_pass là consumable: mỗi mùa mua lại được.,"Mùa W20829 đã mua VIP (đơn T1 đã finish consumable = true); giờ ts 1800252001 (mùa W20836 Active), đã refresh.","Game.weekly_buy_vip() ở mùa W20836, store giả ok.","1. Gọi owns_once(""weekly_pass"").
+2. Gọi weekly_buy_vip().","- owns_once(""weekly_pass"") = false.
+- weekly_buy_vip trả {status ""ok"", granted true}; s.weekly.vip = true; s.buys có 2 đơn weekly_pass.",,Ready,"design.md §7 ""SKU weekly_pass, $4.99, consumable vì mua lại mỗi tuần""; §7 ""Mua được nhiều lần"".",todo:unit:test_weekly_pass
+TC_CA_WP_066,"[EDGE] Google Play Billing thật: mua, huỷ, pending, mua lại tuần sau, giá theo vùng",P1,"Phần store giả không giả lập được: hộp thoại Play, thẻ test chậm, consume đơn, giá vùng.","Bản phát hành có Play Billing (docs/BILLING_NOTES.md), tài khoản test của Play Console, máy thật; s.level ≥ 27, đã xem tutorial.","SKU weekly_pass; thẻ test ""luôn thành công"", ""luôn từ chối"", ""chậm"".","1. Mua VIP bằng thẻ thành công.
+2. Mùa sau mua lại.
+3. Huỷ ở hộp thoại Play.
+4. Thẻ từ chối.
+5. Thẻ chậm (pending), tắt app, đợi hoàn tất, mở lại app.
+6. Đổi vùng tài khoản test, xem giá trên nút.","- Mua thành công: VIP và +3 mạng, Play xác nhận và consume đơn.
+- Mùa sau mua lại được, không báo ""đã sở hữu"".
+- Huỷ, từ chối: không trừ tiền, không VIP.
+- Pending: VIP cấp đúng một lần khi đơn hoàn tất, kể cả sau khi mở lại app.
+- Nút ghi giá store theo vùng (không phải ""$4.99"" cứng).",,Ready,"design.md §7 Weekly Pass, ""Giao hàng""; docs/HORUS_HANDOFF.md mục 2; skill [EDGE] Mua hàng.","manual:SDK Play Billing thật (hộp thoại Play, thẻ test, consume, giá vùng) store giả không giả lập được"
+M04.2,+3 mạng tối đa của VIP,,"design.md §7 VIP; src/meta/lives.gd max_for, s.lives.bonus.",,,,,,Ready,,
+TC_CA_WP_067,"[HP] VIP +3 mạng tối đa cộng vào số mạng hiện có, hồi tiếp tới 13",P1,Mạng tối đa 10 → 13 khi VIP; mạng hiện có +3; hồi 5 phút/mạng tới 13.,"Mùa Active (ts 1800000000, tz 0). Ba save: mạng 10/10; 4/10; 0/10.",Mua VIP (grant_purchase weekly_pass) rồi tiến giờ.,"1. Với từng save: cấp VIP, đọc Lives.count, Lives.max_for.
+2. Save 4/10: tiến giờ 6 lần hồi (6 × 300 giây), rồi thêm 300 giây.
+3. Save 13/13: gọi refill bằng gold.","- 10/10 → 13/13; 4/10 → 7/13; 0/10 → 3/13; max_for = 13.
+- Save 4/10: sau 6 lần hồi 13/13; thêm 300 giây vẫn 13 (không vượt max).
+- 13/13: refill bằng gold không cho (đang đầy), gold không đổi.",,Ready,"design.md §7 ""VIP: +3 mạng tối đa trong tuần (cộng luôn vào số mạng hiện có)""; §3 ""Mạng"" (5 phút hồi 1 mạng). Test Data C7.",todo:unit:test_weekly_pass
+TC_CA_WP_068,"[HP] Hết mùa: bỏ +3 mạng, số mạng kẹp về 10",P1,Hết tuần thì mạng tối đa về 10 và số mạng thừa bị kẹp.,"VIP, s.lives.bonus 3, mùa W20829. Ba save: mạng 13/13, 12/13, 8/13.",Game.weekly_refresh() ở ts 1800230400 (T2 00:00).,"1. Với từng save: gọi weekly_refresh, đọc Lives.count, max_for.","- s.lives.bonus = 0; max_for = 10.
+- Mạng: 13 → 10; 12 → 10; 8 → 8.",,Ready,"design.md §7 ""hết tuần hoặc sang Waiting thì bỏ, số mạng kẹp lại"". Test Data C7.",todo:unit:test_weekly_pass
+TC_CA_WP_069,[EDGE] Sang Waiting khi app vẫn mở: +3 mạng bỏ ngay,P2,"Qua T2 00:00 trong lúc đang ở Home (không pause, không resume) thì mạng tối đa về 10.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, vip true, s.lives.bonus 3, mạng 13/13. Giờ giả ts 1800230390. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",game.test_now đổi 1800230390 → 1800230460 lúc đang ở Home.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Đặt game.test_now = 1800230460 (T2 00:01:00).
+3. Đợi 2 giây ở Home, đọc chip mạng và s.lives.","- Lives.max_for = 10; mạng 10; chip mạng hiện 10.
+- Game.weekly_state() = ""waiting""; s.weekly.vip = false (mùa đã chốt).",,Ready,"design.md §7 ""hết tuần hoặc sang Waiting thì bỏ, số mạng kẹp lại"".",todo:smoke:WP
+M04.3,Popup Upsell,,"design.md §7 ""Upsell"" (wireframe 7.5, popup_weekly_upsell); Game.weekly_take_upsell.",,,,,,Ready,,
+TC_CA_WP_070,"[HP] Upsell hiện khi về Home đủ điều kiện, đúng nội dung",P1,"Một lần mỗi mùa, khi về Home lúc Active, đã xem tutorial, có key, chưa VIP.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 28): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 1, không VIP, upsell """". Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Không có popup tự mở khác (L28: chưa Chain Offer, chưa mời Màn đặc biệt, Win Streak tắt).",Về Home từ màn level.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Đọc popup tự mở.","- popup_weekly_upsell hiện; TimePill ""2d 16h left"".
+- Perk1 ""VIP rewards at every milestone""; Perk2 ""Bonus Bank: extra gold for extra keys""; Perk3 ""+3 max lives all season"".
+- BuyButton ""$4.99"".
+- s.weekly.upsell = ""W20829"" (đã lưu); sự kiện weekly_upsell {points 1}.",,Ready,"design.md §7 ""Upsell"". OQ-08 (""lives"" ở Upsell, ""hearts"" ở layer), OQ-13 (thứ tự popup tự mở).",todo:smoke:WP
+TC_CA_WP_071,[HP] Mua VIP ở Upsell rồi mở Weekly Pass,P0,Mua xong ở Upsell thì mở layer Weekly Pass.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 28): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 1, không VIP, upsell """". Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả ok.",BuyButton của Upsell.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Ở Upsell bấm BuyButton, store giả: Mua.","- Popup Upsell đóng; layer Weekly Pass mở: BuyVipButton ẩn, VipLabel hiện, Vip0 có pill Claim.
+- s.weekly.vip = true; s.lives.bonus 3; mạng 10 → 13; s.buys +1 đơn weekly_pass.",,Ready,"design.md §7 ""Mua xong thì mở Weekly Pass"".",todo:smoke:WP
+TC_CA_WP_072,[NEG] Upsell chỉ một lần mỗi mùa,P1,Đóng Upsell thì mùa đó không hiện lại; mùa sau hiện lại khi đủ điều kiện.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 28): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 1, không VIP, upsell """". Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Về Home lần 1, lần 2; mùa sau (ts 1800252001).","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Ở Upsell bấm X.
+3. Bấm Chơi, rồi Cài đặt → Home lần 2.
+4. Phát Platform.paused, đặt test_now = 1800252001, phát resume; thắng L28 (+1 key); Cài đặt → Home.","- X: Upsell đóng; vip false; gold giữ 3.000.
+- Home lần 2: không có Upsell (s.weekly.upsell = ""W20829"").
+- Mùa W20836 có 1 key: Upsell hiện lại; s.weekly.upsell = ""W20836"".",,Ready,"design.md §7 ""một lần mỗi mùa"".",todo:smoke:WP
+TC_CA_WP_073,[NEG] Upsell không hiện khi thiếu điều kiện,P1,"Mỗi điều kiện của Upsell (Active, đã xem tutorial, có key, chưa VIP, đã mở khoá) đều cần.","Năm save: (a) points 0; (b) tut_seen false, points 3; (c) vip true, points 3; (d) Waiting (ts 1800230401), points 0 mùa mới; (e) s.level 26 (Locked). Còn lại: Active, tut_seen true, points 3, upsell """".",Game.weekly_take_upsell().,1. Với từng save: gọi weekly_take_upsell().,"- Trả false mọi trường hợp; s.weekly.upsell giữ """"; không có sự kiện weekly_upsell.",,Ready,"design.md §7 ""Upsell ... khi về Home lúc mùa Active, đã xem tutorial, đã có key và chưa VIP"".",todo:unit:test_weekly_pass
+TC_CA_WP_074,[NEG] Huỷ mua ở Upsell,P1,"Huỷ ở hộp thoại thanh toán của Upsell không cấp VIP, không mở layer.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 28): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 1, không VIP, upsell """". Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả cancel.",BuyButton của Upsell.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Ở Upsell bấm BuyButton, store giả: Huỷ.","- Upsell vẫn mở, BuyButton bấm lại được (giả định OQ-11).
+- s.weekly.vip = false; s.buys không đổi; mạng tối đa 10; không mở layer Weekly Pass.",,Ready,"design.md §7 ""Upsell"". OQ-11.",todo:smoke:WP
+TC_CA_WP_075,[EDGE] Chạm dồn nút giá Upsell,P2,"20 lần chạm nút giá trong 1 giây chỉ một giao dịch, một layer.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 28): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 1, không VIP, upsell """". Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả ok.",20 lần chạm BuyButton trong 1 giây.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Ở Upsell bấm BuyButton 20 lần trong 1 giây.","- Platform.iap.calls 1 lần buy; s.buys +1; mạng 13.
+- Đúng 1 layer Weekly Pass mở sau đó.",,Ready,design.md §7 Upsell; skill [EDGE] Thao tác dồn dập.,todo:smoke:WP
+TC_CA_WP_076,[UI] Upsell: bố cục trên nhiều tỉ lệ màn và ngôn ngữ,P2,"Popup Upsell không tràn chữ, nút bấm được trên mọi tỉ lệ.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 28): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 1, không VIP, upsell """". Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","SMOKE_RES 443x960, 540x1200, 768x1024; ngôn ngữ en, de, ru, hi.","1. Chạy smoke window với từng SMOKE_RES và ngôn ngữ.
+2. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+3. Chụp Upsell.","- Panel trong màn; X cách mép màn ≥ 8 px; r.reachable(BuyButton) đúng.
+- Ba dòng quyền lợi nằm trong giếng kem, không tràn (de, ru); hi không có ô vuông.
+- Giá trên nút không đè chữ khác.",,Ready,design.md §7 Upsell; skill [UI]. OQ-12 (wireframe 7.5 trên Figma không mở được).,todo:smoke:WP
+M05,Sang mùa,,"Chốt mùa: VIP tự nhận mọi thưởng chưa nhận, người không VIP mất phần free chưa nhận, reset, popup cuối mùa. Nguồn: design.md §7 ""Sang mùa""; WeeklyPass.refresh, Game.weekly_refresh (boot, resume, mở layer, mua VIP).",,,,,,Ready,,
+M05.1,Chốt mùa và popup cuối mùa,,"design.md §7 ""Sang mùa"".",,,,,,Ready,,
+TC_CA_WP_077,"[HP] VIP sang mùa: tự nhận mọi thưởng chưa nhận, reset, popup cuối mùa",P0,"VIP không mất thưởng đã đạt: hết mùa thì game tự trao, rồi reset điểm, VIP, danh sách đã nhận.","Save dữ liệu test: s.level 27, gold 3.000, mỗi booster 3; s.weekly: cycle ""W20829"", vip true, points 40, claimed [], tut_seen true; s.lives.bonus 3, mạng 13/13. Giờ ghi save ts 1800000000. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Mở lại app ở ts 1800252001 (T2 18/01/2027 06:00:01).,"1. Phát Platform.paused, tắt tiến trình.
+2. Mở tiến trình Godot mới trên cùng save với giờ ts 1800252001.
+3. Cài đặt → Home → Weekly Pass.
+4. Đọc popup cuối mùa, bấm OK.","- Gold 3.000 → 5.100 (free 450 + VIP 1.650); hint 3 → 5; move 3 → 6; smash 3; s.lives.inf_until = 1800254701 (+45 phút).
+- s.weekly: cycle ""W20836"", points 0, vip false, claimed_free/vip/bank [], end_seen false, tut_seen true.
+- s.lives.bonus 0; mạng 10/10.
+- Sự kiện weekly_end {coins 2100} đúng 1 lần.
+- Layer: EndLabel ""Season ended"" và ""Your unclaimed rewards were collected for you: 2100 gold, Hint x2, +3 Move x3, Unlimited lives 45 min""; OK → pass mùa mới ""0 / 130 keys"", BuyVipButton hiện, Free0 có pill Claim.",,Ready,"design.md §7 ""Sang mùa: chỉ VIP tự nhận mọi thưởng chưa claim ... Sau đó reset điểm, VIP, danh sách đã nhận"". OQ-01, OQ-07. Test Data C5.",todo:smoke:WP
+TC_CA_WP_078,[HP] Không VIP sang mùa: thưởng free chưa nhận mất,P0,Người không VIP không nhận lại phần free chưa nhận; popup cuối mùa báo số key.,"Save dữ liệu test: s.level 27, gold 3.000, mỗi booster 3; s.weekly: cycle ""W20829"", không VIP, points 12, claimed_free [0], tut_seen true. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Mở lại app ở ts 1800252001.,"1. Phát Platform.paused, tắt tiến trình.
+2. Mở tiến trình Godot mới trên cùng save với giờ ts 1800252001.
+3. Cài đặt → Home → Weekly Pass, đọc popup, bấm OK.","- Gold giữ 3.000; booster giữ 3/3/3; s.lives.inf_until không đổi (Free1, Free2 chưa nhận bị mất).
+- s.weekly reset: cycle ""W20836"", points 0, claimed_free [].
+- Sự kiện weekly_end {coins 0}.
+- EndLabel ""You earned 12 keys this season. A new season is coming!"" (weekly_end_free); OK → pass mùa mới, Free1 không có tích.",,Ready,"design.md §7 ""người không VIP không nhận lại phần free chưa claim"". OQ-07.",todo:smoke:WP
+TC_CA_WP_079,[NEG] Mùa không chơi: không có popup cuối mùa,P2,Mùa không có key và không VIP thì không có popup cuối mùa.,"Save dữ liệu test: s.level 27; s.weekly: cycle ""W20829"", points 0, không VIP, claimed_free [0], tut_seen true. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Mở lại app ở ts 1800252001.,"1. Mở tiến trình Godot mới trên cùng save với giờ ts 1800252001.
+2. Cài đặt → Home → Weekly Pass.","- s.weekly.pending_end = {}; không có sự kiện weekly_end.
+- Layer vào thẳng pass mùa mới, không có EndLabel.",,Ready,"design.md §7 ""Mùa không chơi thì không có popup cuối mùa"". OQ-07 (""không chơi"" = 0 key và không VIP).",todo:smoke:WP
+TC_CA_WP_080,[EDGE] Vắng nhiều tuần: chốt mùa một lần,P1,"Quay lại sau 3 tuần chỉ chốt mùa cuối cùng có chơi, một lần.","s.weekly: cycle ""W20829"", points 20, không VIP.","Game.weekly_refresh() ở ts 1802066401 (T2 08/02/2027 06:00:01, 3 tuần sau), gọi hai lần.",1. Gọi weekly_refresh hai lần cùng giờ.,"- Lần 1: settled true; pending_end.points = 20; s.weekly.cycle = ""W20857"".
+- Lần 2: settled false; weekly_end đúng 1 lần.",,Ready,"design.md §7 ""Sang mùa"". Test Data C1.",todo:unit:test_weekly_pass
+TC_CA_WP_081,[EDGE] VIP sang mùa nhận cả Bonus Bank khi chưa mở layer sau mốc cuối,P2,Thưởng Bank đã đạt của VIP không bị mất khi hết mùa.,"s.weekly: cycle ""W20829"", vip true, points 175, mọi ô Main Tree đã nhận, end_seen false, claimed_bank []; gold 3.000.",Game.weekly_refresh() ở ts 1800252001.,1. Gọi weekly_refresh.,"- Thưởng chốt mùa coins 1.200 (3 ô × 400, giả định OQ-04); gold 3.000 → 4.200; pending_end.coins = 1200.",,Ready,"design.md §7 ""chỉ VIP tự nhận mọi thưởng chưa claim"", Bonus Bank. OQ-04. Test Data C4.",todo:unit:test_weekly_pass
+TC_CA_WP_082,[EDGE] App ở nền qua T2 00:00 rồi quay lại: chốt mùa khi resume,P1,"Resume sau mốc tuần chốt mùa ngay, không cần tắt app.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, vip true, points 5, claimed [], s.lives.bonus 3, mạng 13/13. Giờ giả ts 1800230300. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Pause, đổi giờ sang ts 1800230700 (T2 00:05), resume.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Phát Platform.paused.
+3. Đặt game.test_now = 1800230700.
+4. Phát resume, đợi 1 giây ở Home.","- s.weekly.cycle = ""W20836"", vip false, points 0.
+- Gold +450 (free 100 + VIP 350); s.lives.inf_until = 1800233400 (+45 phút); s.lives.bonus 0, mạng 10.
+- Home: Caption ""Weekly Pass"", WeeklyDot hiện (popup cuối mùa đang chờ).",,Ready,"design.md §7 ""Sang mùa"", VIP. Test Data C5, C7.",todo:smoke:WP
+TC_CA_WP_083,[EDGE] Layer đang mở khi qua T2 00:00,P2,Không nhận được thưởng mùa cũ sau mốc tuần dù layer còn mở.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, không VIP, points 5, claimed_free [0]. Giờ giả ts 1800230395. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",game.test_now đổi 1800230395 → 1800230401 lúc layer mở.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer (Free1 có pill Claim).
+3. Đặt test_now = 1800230401, đợi 2 giây.
+4. Đóng layer, mở lại.","- Layer tự chuyển sang WaitingLabel ""... opens in 5:59:59 ...""; không còn thẻ để bấm; gold giữ 3.000.
+- Mở lại: popup cuối mùa ""You earned 5 keys this season. A new season is coming!"", OK → WaitingLabel.",,Ready,"design.md §7 chu kỳ, ""Sang mùa"". OQ-07.",todo:smoke:WP
+M06,Remote Config,,"Tham số Weekly Pass đổi được bằng Remote Config không cần ra bản mới. Nguồn: docs/HORUS_HANDOFF.md mục 4 (weekly_*), Config.apply_remote. Bảng mốc Main Tree (mảng) không ghi đè được.",,,,,,Ready,,
+M06.1,Đổi tham số Weekly Pass,,"docs/HORUS_HANDOFF.md mục 4; design.md §7 ""Mọi số nằm trong Config.WEEKLY"".",,,,,,Ready,,
+TC_CA_WP_084,[HP] RC đổi số key theo độ khó,P2,weekly_points_normal / hard / very_hard đổi số key mỗi lần thắng và chữ của popup How to earn rewards.,"s.weekly.tut_seen = true, points 0, mùa Active. Config.apply_remote trước khi chạy, Config.reset sau.","weekly_points_normal = ""2"", weekly_points_hard = ""4"", weekly_points_very_hard = ""6"".","1. Áp RC.
+2. on_level_won thắng L27, L29, L33.
+3. Dựng popup_weekly_tutorial, đọc Points.
+4. Config.reset.","- Thắng L27 +2, L29 +4, L33 +6 (points 0 → 12).
+- Popup How to earn rewards: ""+2"", ""+4"", ""+6"".
+- Sau Config.reset: points_for trả 1, 3, 5.",,Ready,docs/HORUS_HANDOFF.md mục 4. Test Data C8.,todo:unit:test_weekly_pass
+TC_CA_WP_085,[HP] RC đổi mốc mở khoá (unlock_hard_index = 3),P2,Mốc mở theo level HARD thứ N đổi được bằng RC.,"Config.apply_remote({""weekly_unlock_hard_index"": ""3""}); mùa Active.",HARD thứ 3 là L29.,"1. Áp RC.
+2. Gọi weekly_unlock_level, weekly_state với s.level 27 và 30, Unlocks.levels().","- weekly_unlock_level() = 29.
+- s.level 27: ""locked""; s.level 30: ""active"".
+- Unlocks.levels().weekly_pass = 30.",,Ready,docs/HORUS_HANDOFF.md mục 4; design.md §4. Test Data C8.,todo:unit:test_weekly_pass
+TC_CA_WP_086,[HP] RC weekly_start_hour = 0: không còn Waiting,P2,Giờ mở mùa đổi được; 0 giờ nghĩa là mùa mở ngay T2 00:00.,"Config.apply_remote({""weekly_start_hour"": ""0""}); tz 0.","ts 1800230399, 1800230400.","1. Áp RC.
+2. Gọi state, seconds_left ở hai thời điểm.","- 1800230399: ""active"" (W20829), seconds_left 1.
+- 1800230400: ""active"" (W20836), seconds_left = 604800.",,Ready,docs/HORUS_HANDOFF.md mục 4. Test Data C8.,todo:unit:test_weekly_pass
+TC_CA_WP_087,[HP] RC weekly_vip_bonus_hearts = 5,P2,"Số mạng thêm của VIP đổi được bằng RC, chữ trong UI theo số mới.","Config.apply_remote({""weekly_vip_bonus_hearts"": ""5""}); mùa Active; mạng 10/10.",Cấp VIP (grant_purchase weekly_pass).,"1. Áp RC.
+2. Cấp VIP, đọc Lives.
+3. Dựng popup_weekly_upsell và layer, đọc Perk3, VipLabel.","- Lives.max_for = 15; mạng 10 → 15.
+- Perk3 ""+5 max lives all season""; VipLabel ""VIP active - +5 max hearts this week"".",,Ready,docs/HORUS_HANDOFF.md mục 4. Test Data C8.,todo:unit:test_weekly_pass
+TC_CA_WP_088,"[HP] RC Bonus Bank (bank_step 10, bank_max 5, bank_reward_coins 500)",P2,Công thức Bank theo tham số RC.,"Config.apply_remote({""weekly_bank_step"": ""10"", ""weekly_bank_max"": ""5"", ""weekly_bank_reward_coins"": ""500""}); vip true, end_seen true.",points 160 và 500.,"1. Áp RC.
+2. Với từng points: bank_slots, claim_all_bank.","- 160: 3 ô (INT(30/10)), 1.500 gold.
+- 500: 5 ô (trần 5), 2.500 gold.",,Ready,docs/HORUS_HANDOFF.md mục 4. Test Data C8.,todo:unit:test_weekly_pass
+TC_CA_WP_089,[NEG] Config tắt hoặc SKU sai: Weekly Pass Locked,P1,Công tắc tắt hoặc SKU không phải gói VIP thì cả tính năng khoá an toàn.,"s.level 40, s.weekly.tut_seen = true, points 3, mùa Active. Hai lần: (a) weekly_enabled = ""0""; (b) weekly_sku = ""gold_pack_1"".",Config.apply_remote.,"1. Áp RC.
+2. Gọi weekly_state, weekly_view, on_level_won L40, weekly_take_upsell, weekly_buy_vip.","- weekly_state = ""locked""; weekly_view().unlocked = false (Home ẩn nút).
+- Thắng L40: points giữ 3; weekly_take_upsell false; weekly_buy_vip trả status ""error"" không mở store.",,Ready,"design.md §7 ""Config tắt hoặc SKU sai là Locked""; docs/HORUS_HANDOFF.md mục 4.",todo:unit:test_weekly_pass
+M07,Giao diện chung và ngôn ngữ,,"Layer Weekly Pass, màn Waiting, popup cuối mùa: nội dung, nhiều tỉ lệ màn, 14 ngôn ngữ, thứ tự lớp, trạng thái nút, âm thanh. Nguồn: design.md §7, §2 (chuyển động UI, phần thưởng bay), docs/UI_UNITY.md.",,,,,,Ready,,
+M07.1,Layer Weekly Pass,,"scenes/weekly_pass.tscn, src/ui/weekly_pass.gd.",,,,,,Ready,,
+TC_CA_WP_090,[UI] Layer Active: nội dung đầy đủ ở màn chuẩn,P1,"Mọi thành phần của layer hiện đúng chữ, số và icon.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 4, claimed_free [0], không VIP. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","SMOKE_RES 443x960 (tỉ lệ 886×1920), ngôn ngữ en.","1. Chạy smoke window.
+2. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+3. Mở layer, chụp; cuộn tới cuối, chụp.","- Ruy băng tiêu đề Weekly Pass; TimeLabel ""2d 16h left""; KeysLabel ""4 / 130 keys"".
+- FreeTab ""Free"", VipTab ""VIP""; 11 kim cương ghi 0, 3, 8, 15, 25, 38, 52, 68, 85, 105, 130.
+- Thẻ: Free0 tim vô hạn ""15m""; Vip0 ""150""; Free1 ""100""; Vip1 ""200"" ""30m""; Free2 Gợi ý ""x1""; Vip2 ""300"" ""x1"".
+- BuyVipButton ""Get VIP for $4.99""; VipHint (weekly_vip_hint + ""+3 max hearts this week""); ClaimAllButton ""Claim all"" tương tác.
+- Cuối danh sách: ""Bonus Bank"" và ""Reach the last milestone with VIP to unlock the Bonus Bank.""
+- Ảnh: không chữ đè, không phần tử ra ngoài panel.",,Ready,"design.md §7 Weekly Pass, §9 ""Khung ô thưởng Weekly Pass"". OQ-01, OQ-08 (chữ VipHint), OQ-12.",todo:smoke:WP
+TC_CA_WP_091,[UI] Layer trên nhiều tỉ lệ màn,P2,"Panel, nút X, hàng nút đáy và danh sách cuộn dùng được trên mọi tỉ lệ.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 4. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","SMOKE_RES 443x960, 540x1200 (20:9), 432x1008 (21:9), 768x1024 (4:3).","1. Chạy smoke window với từng SMOKE_RES.
+2. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+3. Mở layer, chụp; cuộn tới Bank9, chụp.","- Panel và ruy băng tiêu đề nằm trong màn; nút X trong màn, cách mép ≥ 8 px.
+- Cuộn tới được Bank9; BuyVipButton, ClaimAllButton không bị thanh dưới che, r.reachable đúng.
+- Census không nhãn ra ngoài màn.",,Ready,"design.md §2 ""Nút X đóng popup""; skill [UI] Layout đa tỉ lệ.",todo:smoke:WP
+TC_CA_WP_092,[UI] 14 ngôn ngữ trên mọi màn của Weekly Pass,P2,"Chữ đã dịch, không tràn, đủ glyph, placeholder thay đúng.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = false, points 0. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Mỗi ngôn ngữ của Game.LANGS (en, vi, pt_BR, tr, de, fr, id, es, ru, ko, ja, hi, uk, it).","1. Với mỗi ngôn ngữ: mở layer (tutorial 3 bước), How to earn rewards, pass Active; save Waiting; popup cuối mùa (VIP và không VIP); Upsell; thẻ thắng có ô chìa.
+2. Census mỗi màn.","- Không nhãn giống key chưa dịch (ví dụ ""weekly_buy_vip"").
+- Không chữ một dòng rộng hơn nhãn (de, ru dài nhất).
+- hi, ko, ja không có ô vuông thiếu glyph.
+- Không lộ ""%d"", ""%s"": số key, giá, thời gian thay đúng.",,Ready,design.md §2 (14 ngôn ngữ); skill [UI] Text và localization.,todo:smoke:WP
+TC_CA_WP_093,[UI] Thứ tự lớp và nút Back,P2,Popup How to earn rewards nằm trên layer; Back đóng lớp trên cùng trước.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.",Nút Back của Android.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer → InfoButton.
+3. Nhấn Back.
+4. Nhấn Back lần nữa.","- Popup How to earn rewards vẽ trên layer, không bị thẻ hay toast che.
+- Back 1: chỉ đóng How to earn rewards, layer còn (giả định OQ-10).
+- Back 2: đóng layer, về Home.",,Ready,"design.md §2 ""Back ở Settings: đang mở popup Language thì chỉ đóng popup đó"" (áp tương tự). OQ-10.",todo:smoke:WP
+TC_CA_WP_094,[UI] Cuộn danh sách mốc bằng kéo không nhận nhầm thưởng,P2,"Kéo bắt đầu trên thẻ nhận được chỉ cuộn, không nhận thưởng.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, không VIP, points 130, claimed []. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Kéo từ Free1 lên 600 px, thả; rồi chạm Free10.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer.
+3. Kéo danh sách bắt đầu trên Free1 lên 600 px, thả.
+4. Kéo tới cuối, chạm (không kéo) Free10.","- Sau kéo: vị trí content đổi; gold giữ 3.000, claimed_free giữ [].
+- Chạm Free10: gold 3.000 → 3.500, smash 3 → 4; claimed_free = [10].",,Ready,design.md §7 Main Tree. OQ-01 (mốc 130: 500 gold + 1 Phá khối).,todo:smoke:WP
+TC_CA_WP_095,[UI] Nút mua VIP mờ và khoá khi đang chờ store,P2,Trạng thái Disabled của nút mua trong lúc giao dịch; layer không nhận thao tác khác.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 3, claimed_free [0]. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Chạy window (lớp phủ store giả).","Bấm BuyVipButton, rồi Free1 lúc lớp phủ store còn hiện.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, bấm BuyVipButton.
+3. Lúc lớp phủ store giả hiện: đọc nút, bấm Free1.
+4. Bấm Huỷ ở lớp phủ.","- Trong lúc chờ: BuyVipButton.disabled = true (mờ).
+- Free1 không nhận lúc chờ: gold giữ 3.000, claimed_free [0].
+- Sau Huỷ: BuyVipButton bấm lại được.",,Ready,"design.md §7 ""Đang mua: ... chỉ nút vừa bấm mờ đi và khoá"" (Shop, áp tương tự).",todo:smoke:WP
+TC_CA_WP_096,[UI] Popup cuối mùa và màn Waiting: bố cục và đếm ngược,P2,Chữ cuối mùa dài nhất vẫn nằm trong giếng kem; đồng hồ Waiting chạy.,"Save dữ liệu test: s.level 27; s.weekly: cycle ""W20829"", vip true, points 130, claimed []. Mở lại ở ts 1800230401 (Waiting). Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Ngôn ngữ en, de, ru; game.test_now tăng 1 giây.","1. Mở game ở ts 1800230401, Cài đặt → Home → Weekly Pass, chụp popup cuối mùa.
+2. OK, chụp WaitingLabel.
+3. Đặt test_now = 1800230402, đợi 1,5 giây, đọc WaitingLabel.","- EndLabel (đủ gold, 3 loại booster, phút mạng vô hạn) nằm trong giếng kem, không tràn; EndOkButton bấm được.
+- WaitingLabel ""... opens in 5:59:59 ..."" rồi ""5:59:58"" sau khi giờ tăng 1 giây.",,Ready,"design.md §7 Waiting, Sang mùa. OQ-07, OQ-08.",todo:smoke:WP
+TC_CA_WP_097,"[UI] Âm thanh và cảm giác khi nhận thưởng, mở và đóng layer",P2,"Âm thanh, độ mượt chuyển động là cảm nhận, không đo bằng code.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = false, points 15, vip true. Máy thật, bật âm thanh.","Mở layer (tutorial), nhận từng ô, Nhận tất cả, đóng layer.","1. Mở layer, xem tutorial.
+2. Nhận Free1, Vip1.
+3. Nhận tất cả.
+4. Đóng layer.","- Tiếng xu phát một lần mỗi lần nhận gold, không chồng âm khi Nhận tất cả; vật phẩm có tiếng sfx_crystal_get khi chạm ô đếm.
+- Popup mở và đóng mượt (đóng: thu 85% và mờ trong 0,18 giây); bàn tay tutorial nhấp đều.
+- Không giật khi thưởng bay.",,Ready,"design.md §2 ""Chuyển động UI"", ""Phần thưởng bay vào ô đếm"".","manual:âm thanh, độ mượt chuyển động là cảm nhận, cần người nghe và nhìn trên máy thật"
+M08,"Dữ liệu, gián đoạn, hiệu năng, analytics",,"Lưu bền s.weekly, bản lưu cũ, cloud, mất mạng, analytics weekly_*, hiệu năng layer. Nguồn: design.md §7, §8 (Bản thử: 30 FPS máy 2 GB); docs/HORUS_HANDOFF.md mục 5; kế hoạch mục 1 (s.weekly).",,,,,,Ready,,
+M08.1,Lưu bền và gián đoạn,,"s.weekly, s.lives.bonus, s.lives.inf_until; smoke G/G2.",,,,,,Ready,,
+TC_CA_WP_098,"[HP] Kill app sau khi nhận thưởng, cộng key và mua VIP: mở lại giữ đúng",P0,"Mọi trạng thái Weekly Pass lưu ngay, bền qua tắt app.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, points 2, claimed_free [0]. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả ok.","Tiến trình Godot thứ hai trên cùng save (như G/G2), giờ +60 giây.","1. Thắng L27 (+1 → 3 key).
+2. Cài đặt → Home → layer: bấm Free1 (+100).
+3. Mua VIP.
+4. Bấm Vip0 (+150).
+5. Ghi gold, s.weekly, s.lives; phát Platform.paused, tắt tiến trình.
+6. Mở tiến trình mới trên cùng save (ts 1800000060); Cài đặt → Home → layer.","- Tiến trình mới: gold bằng số ghi trước khi tắt (3.000 + thưởng thắng L27 + 100 + 150); s.weekly.points 3; claimed_free [0, 1]; claimed_vip [0]; vip true; tut_seen true.
+- s.lives.bonus 3; mạng 13; s.buys có 1 đơn weekly_pass.
+- Layer: Free1, Vip0 có tích; BuyVipButton ẩn; không có tutorial.",,Ready,"design.md §7 Weekly Pass; §3 ""Mỗi lần mua hàng hay xem quảng cáo xong, mạng lưu ngay như gold""; skill [HP] lưu bền sau kill app.",todo:smoke:WP
+TC_CA_WP_099,"[EDGE] Không có mạng: Weekly Pass vẫn chạy đủ, trừ mua",P2,"Game offline: key, tutorial, nhận thưởng không cần mạng.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false). Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 0 (Airplane mode giả lập).",game.test_online = 0.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, xem hết tutorial.
+3. Bấm Free0.
+4. Thắng L27.","- Tutorial, nhận Free0 (s.lives.inf_until = 1800000900), thắng L27 +1 key đều chạy.
+- Không có popup Mất kết nối.",,Ready,"design.md §2 ""Offline""; skill [EDGE] Mạng.",todo:smoke:WP
+TC_CA_WP_100,"[HP] Lưu bền s.weekly qua save, nạp lại và bản cloud",P1,Mọi trường của s.weekly và phần mạng của VIP giữ nguyên sau khi lưu và nạp.,"s.weekly {cycle ""W20829"", points 37, vip true, opened true, end_seen false, tut_seen true, claimed_free [0, 1, 2], claimed_vip [0], claimed_bank [], pending_end {}, upsell ""W20829""}; s.lives.bonus 3, inf_until 1800000900; giờ ts 1800000000.","Game.save_now, nạp lại save; đường save cloud (mock_save).","1. save_now; nạp lại save vào Game mới.
+2. Đẩy lên cloud mock, tải về máy khác (save mới).","- Mọi trường của s.weekly, s.lives.bonus, s.lives.inf_until giống hệt trước khi lưu.
+- weekly_view: points 37, vip true; nạp cùng tuần không chốt mùa (settled false).",,Ready,Kế hoạch mục 1 (s.weekly); skill [HP] lưu bền.,todo:unit:test_weekly_pass
+TC_CA_WP_101,[EDGE] Bản lưu cũ chưa có khối weekly hoặc thiếu trường,P1,"Người chơi cập nhật từ bản cũ không lỗi, Weekly Pass bắt đầu từ trạng thái mặc định.","Hai save JSON: (a) không có ""weekly""; (b) ""weekly"" thiếu ""upsell"", ""tut_seen"", ""pending_end"". s.level 40 và 20.",Boot với từng save.,"1. Boot với save (a), s.level 40.
+2. Boot với save (b), s.level 40.
+3. Boot với save (a), s.level 20.","- Boot không lỗi script; s.weekly có mặc định: points 0, vip false, tut_seen false, upsell """", pending_end {}.
+- s.level 40: weekly_state ""active""; thắng level không cộng key cho tới khi xem tutorial.
+- s.level 20: ""locked"".",,Ready,design.md §7; skill [EDGE] Dữ liệu (tài khoản cũ trước khi cập nhật).,todo:unit:test_weekly_pass
+TC_CA_WP_102,[HP] Đổi thiết bị qua save cloud thật,P2,Trạng thái Weekly Pass đi theo tài khoản sang máy khác.,"Hai máy Android, cùng tài khoản Play Games; máy A: mùa Active, points 20, VIP, đã nhận Free0..Free2.",Save cloud (Play Games Saved Games).,"1. Máy A: lưu, đồng bộ cloud.
+2. Máy B: cài game, đăng nhập, chọn bản cloud.
+3. Máy B: mở Weekly Pass.","- Máy B: points 20, VIP, Free0..Free2 có tích, tut_seen true (không có tutorial).
+- VIP không cấp lại; thưởng đã nhận không nhận lại được.",,Ready,design.md §8; skill [HP] lưu bền qua đổi thiết bị.,manual:cần hai máy thật và tài khoản Play Games (Saved Games) thật
+M08.2,Analytics và hiệu năng,,"docs/HORUS_HANDOFF.md mục 5; design.md §8 ""Bản thử"".",,,,,,Ready,,
+TC_CA_WP_103,"[EDGE] Analytics Weekly Pass đúng tên, tham số, một lần mỗi hành động",P2,Mỗi hành động bắn đúng sự kiện của docs/HORUS_HANDOFF.md mục 5.,"Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly mặc định (tut_seen = false). Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1. Store giả trả ok.",Luồng: mở layer → tutorial → Free0 → thắng L27 → mua VIP → mở lại layer.,"1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. Mở layer, xem hết tutorial.
+3. Bấm Free0, đóng layer.
+4. Thắng L27.
+5. Cài đặt → Home → layer, mua VIP.
+6. Đọc Platform.an (named, count).","- weekly_open {points 0, vip 0} ở lần mở đầu, {points 1, vip 0} ở lần mở thứ hai: mỗi lần mở 1 sự kiện.
+- weekly_tutorial {points 0}: 1 lần.
+- weekly_claim {kind ""free"", coins 0, points 0}: 1 lần.
+- weekly_points {level 27, points 1, total 1}: 1 lần.
+- weekly_vip {points 1}: 1 lần.",,Ready,"docs/HORUS_HANDOFF.md mục 5 (weekly_points, weekly_open, weekly_claim, weekly_vip, weekly_tutorial, weekly_end, weekly_upsell).",todo:smoke:WP
+TC_CA_WP_104,[EDGE] Hiệu năng mở và cuộn layer trên desktop,P2,"Layer 11 hàng mốc và 10 ô Bank mở, cuộn không giật.","Save dữ liệu test (smoke_saves.veteran rồi s.level = 27): gold 3.000, mỗi booster 3, mạng 10/10; s.weekly.tut_seen = true, vip true, points 160, end_seen true. Giờ giả ts 1800000000 (T6 15/01/2027 08:00, tz 0): mùa W20829 Active, còn 230400 giây. Build phát hành (smoke đặt Config.demo_override = 0), store và ads giả (mock_iap, mock_ads), game.test_online = 1.","Mở layer, cuộn tới cuối và về đầu, đóng; lặp 5 lần.","1. Mở game (vào thẳng level đang tới) → nút Cài đặt trong màn → Home.
+2. begin_phase weekly_open: bấm nút, đợi Free0 bấm được.
+3. begin_phase weekly_scroll: kéo tới Bank9 rồi về đầu.
+4. Đóng layer; lặp 5 lần; SMOKE MEM.","- Đề xuất: SMOKE FRAMES weekly_open và weekly_scroll p95 ≤ 33 ms, không SMOKE HITCH > 99 ms.
+- Đề xuất: Free0 bấm được (r.reachable) ≤ 1 giây sau khi bấm nút.
+- SMOKE MEM sau 5 lần mở/đóng: số node không tăng dần, orphan 0.",,Ready,"design.md §8 ""Bản thử"" (30 FPS máy 2 GB); ngưỡng desktop là đề xuất.",todo:smoke:WP
+TC_CA_WP_105,[EDGE] Hiệu năng Weekly Pass trên máy 2 GB,P2,Số khung hình thật trên máy thấp nhất được hỗ trợ.,"Máy Android 2 GB (loại Galaxy A10), bản phát hành; save có Weekly Pass mở, VIP, 160 key.","Mở layer, tutorial, cuộn, Nhận tất cả.","1. Mở layer lần đầu (tutorial).
+2. Cuộn tới Bank9.
+3. Nhận tất cả (thưởng bay).","- Từ 30 khung/giây trong lúc mở layer, tutorial, cuộn và thưởng bay.
+- Đề xuất: layer hiện đủ trong < 1 giây sau khi bấm.",,Ready,"design.md §8 ""Bản thử""; kế hoạch mục 4 (máy 2 GB).",manual:cần máy Android 2 GB thật

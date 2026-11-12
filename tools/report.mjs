@@ -59,7 +59,7 @@ function parseSmoke() {
       const dir = join(mdir, scen);
       const log = read(join(dir, 'smoke.log'));
       if (log === null) continue;
-      const s = { mode, scen, dir, steps: [], shots: [], frames: [], invariants: [], warns: [], states: [], errors: '', end: '', real: false, meta: readJson(join(dir, 'meta.json')) };
+      const s = { mode, scen, dir, steps: [], shots: [], frames: [], invariants: [], warns: [], states: [], cases: [], caseSum: '', errors: '', end: '', real: false, meta: readJson(join(dir, 'meta.json')) };
       for (const raw of log.split(/\r?\n/)) {
         const line = raw.trimEnd();
         let m;
@@ -69,6 +69,8 @@ function parseSmoke() {
         else if ((m = line.match(/^SMOKE INVARIANT (.*)$/))) s.invariants.push(m[1]);
         else if ((m = line.match(/^SMOKE WARN (.*)$/))) s.warns.push(m[1]);
         else if ((m = line.match(/^SMOKE STATE (.*)$/))) s.states.push(m[1]);
+        else if ((m = line.match(/^SMOKE CASE (\S+) (\S+) ?(.*)$/))) s.cases.push({ id: m[1], status: m[2], detail: m[3] });
+        else if ((m = line.match(/^SMOKE CASES (.*)$/))) s.caseSum = m[1];
         else if ((m = line.match(/^SMOKE ERRORS (.*)$/))) s.errors = m[1];
         else if (line.startsWith('SMOKE REAL INPUT')) s.real = true;
         else if (/^SMOKE (OK|FAILED)/.test(line)) s.end = line;
@@ -168,6 +170,21 @@ for (const s of smoke) {
   body += `<article class="card"><h3>${esc(s.scen)} <span class="sub">${esc(s.mode)}</span> ${badge(rc)}</h3>`;
   body += `<p class="sub">${esc(s.mtime.toLocaleString('vi-VN'))} · ${s.steps.length} bước · <code>${esc(s.end || 'không có dòng kết thúc')}</code>${s.errors ? ` · lỗi ${esc(s.errors)}` : ''}${s.real ? ' · <b>có input thật, lần chạy không hợp lệ</b>' : ''}</p>`;
   if (s.states.length) body += `<h4>Trạng thái lúc dừng</h4><pre>${esc(s.states.join(String.fromCharCode(10)))}</pre>`;
+  if (s.cases.length) {
+    // Test case của tests/cases/*.csv: trạng thái nặng nhất mỗi ID (một ID có thể được chấm nhiều lần).
+    const rank = { pass: 0, look: 1, blocked: 2, missing: 3, FAIL: 4 };
+    const cls = { pass: 'ok', look: 'warn', blocked: 'warn', missing: 'bad', FAIL: 'bad' };
+    const worst = new Map();
+    for (const c of s.cases) {
+      const old = worst.get(c.id);
+      if (!old || (rank[c.status] ?? 0) > (rank[old.status] ?? 0)) worst.set(c.id, c);
+    }
+    body += `<h4>Test case <span class="sub">${esc(s.caseSum)}</span></h4><table><thead><tr><th>ID</th><th>Kết quả</th><th>Chi tiết</th></tr></thead><tbody>`;
+    for (const c of [...worst.values()].sort((a, b) => (rank[b.status] ?? 0) - (rank[a.status] ?? 0) || a.id.localeCompare(b.id))) {
+      body += `<tr><td><code>${esc(c.id)}</code></td><td><span class="badge ${cls[c.status] || 'warn'}">${esc(c.status)}</span></td><td>${esc(c.detail)}</td></tr>`;
+    }
+    body += '</tbody></table>';
+  }
   if (s.invariants.length) body += `<h4>Vi phạm bất biến</h4><ul>${s.invariants.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
   if (s.warns.length) body += `<h4>Cảnh báo</h4><ul>${s.warns.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
   if (s.frames.length) body += `<h4>Khung hình</h4><pre>${esc(s.frames.join('\n'))}</pre>`;

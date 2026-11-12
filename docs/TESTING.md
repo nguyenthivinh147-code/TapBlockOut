@@ -64,7 +64,7 @@ Biến khác: `SMOKE_SPEED` (`Engine.time_scale`, mặc định 3 khi headless, 
 - Mã thoát như tầng 1: `0` / `1` (`SMOKE FAILED`: kịch bản dừng, `SMOKE ERRORS` khác 0, vi phạm bất biến) / `2`. Lỗi engine khớp `tests/allow_errors.txt` in `SMOKE ALLOWED`, không tính.
 - Kết quả: `output/smoke/<mode>/<kịch bản>/smoke.log`, ảnh PNG, `census_<ảnh>.json`, `meta.json`.
 
-Dòng log: `SMOKE STEP`, `SMOKE SHOT`, `SMOKE CENSUS`, `SMOKE WARN`, `SMOKE FRAMES <phase> n p50 p95 max hitch` (hitch: khung > 33 ms), `SMOKE HITCH` (khung > 99 ms), `SMOKE MEM`, `SMOKE INVARIANT`, `SMOKE STATE` (màn, popup, level lúc kịch bản dừng), `SMOKE REAL INPUT`, `SMOKE ERROR`, `SMOKE ERRORS script=<n> engine=<n>`, cuối cùng `SMOKE OK` hoặc `SMOKE FAILED <lý do>`.
+Dòng log: `SMOKE STEP`, `SMOKE SHOT`, `SMOKE CENSUS`, `SMOKE WARN`, `SMOKE FRAMES <phase> n p50 p95 max hitch` (hitch: khung > 33 ms), `SMOKE HITCH` (khung > 99 ms), `SMOKE MEM`, `SMOKE INVARIANT`, `SMOKE STATE` (màn, popup, level lúc kịch bản dừng), `SMOKE REAL INPUT`, `SMOKE ERROR`, `SMOKE CASE <id> pass|FAIL|look|blocked|missing`, `SMOKE CASES <kịch bản> pass= fail= look= blocked= missing=` (mục "Test case"), `SMOKE ERRORS script=<n> engine=<n>`, cuối cùng `SMOKE OK` hoặc `SMOKE FAILED <lý do>`.
 
 Kịch bản:
 
@@ -82,6 +82,16 @@ Kịch bản:
 | H | Booster ở L30: hint (có hiệu ứng gợi ý), move (+`ECON.rescue_moves` MOVES), búa (vào chế độ phá, phá một khối chưa đi được), mỗi lần trừ đúng 1 trong kho; hết hint mà đủ gold thì mua (trừ `ECON.booster_price`); hết move và hết gold thì xem video `booster_free` |
 | T | Chuyển cảnh, ảnh mỗi 150 ms (`r.film`, chỉ khi `window`): level → Home, Home → Chơi (curtain kẹo), thẻ thắng → level kế, Home → Shop → Home (trượt tab), mở và đóng Settings |
 | L | Mỗi ngôn ngữ của `Game.LANGS`: Home và popup Settings, census cả headless (chữ rộng hơn nhãn, ra ngoài màn, giống key chưa dịch), ảnh khi `window` |
+| V | Quét level `from`–`to` (mặc định 1–500, `SMOKE_ARGS="from=1 to=40"`): chơi liền bằng solver, mỗi level một dòng `SMOKE LEVEL`; mục "Thiết bị thật" |
+| WP | Weekly Pass (`scen_events.gd`): khoá trước L26 thắng; mùa chưa xem hướng dẫn không cộng key; hướng dẫn 3 bước; nhận mốc free; key theo level thường và HARD; Upsell, mua VIP (thêm mạng tối đa); nhận VIP; sang mùa mới (tự nhận phần VIP còn lại, reset, màn chờ) |
+| CO | Chain Offer (`scen_events.gd`): không bắt đầu trước mốc; bắt đầu, tự mở một lần; gói khoá; nhận đủ 8 bước (free, ads, mua), đóng ads sớm và huỷ mua không thưởng; cửa sổ 6 ô trượt; hết hạn đóng màn, cooldown; chuỗi sau xoay vòng |
+| SP | Special Pack (`scen_events.gd`): ẩn khi chưa mua Starter và dưới `level_appear`; bản sale cuối tuần; huỷ mua không thưởng; mua đúng số; ẩn sau khi mua (giới hạn 1) |
+| RT | Road Trip (`scen_modes.gd`): tab khoá trước L95; hướng dẫn lần đầu; chơi level bằng solver, không đổi gold, mạng, level chính, điểm League, key Weekly Pass; hồi sinh bằng video đúng `revive_max` lần rồi thẻ thua, không mất mạng; hộp quà có avatar và hộp khi avatar đã có |
+| LB | Leaderboard (`scen_modes.gd`): khoá trước L70; vào giải Silver; hướng dẫn; điểm theo crystal; lên giải Gold và nhận thưởng đúng một lần; hết tuần lúc đang mở (kết quả tuần, tuần mới) |
+| SB | Màn đặc biệt (`scen_modes.gd`): không icon trước L50; mời và 1 vé; bom chỉ đếm sau lần chạm đầu, đứng khi mở cài đặt; bom nổ không mất gì; hết vé, vé hồi đúng giờ; thắng +1 booster, x2 miễn phí một lần |
+| DG | Quà 28 ngày (`scen_meta.gd`): khoá trước mốc; thẻ thắng báo mở; chấm đỏ; nhận ô hôm nay đúng số, nhận hai lần không thêm; nhận trước bằng video (đóng sớm không thưởng); qua 00:00 (cả lúc đang ở Home), múi giờ, lùi giờ; ô 28 rồi về tuần 1 |
+| PR | Profile (`scen_meta.gd`): avatar và frame bán bằng video (xem thử, đóng sớm, xem hết rồi đeo), món của Road Trip và league khoá; biệt danh gõ bằng phím thật: mặc định, quá ngắn, ký tự cấm, tên cấm, giới hạn độ dài, cắt khoảng trắng, X không lưu |
+| OFF | Tính năng đang tắt (`scen_meta.gd`, `Config._FEATURES`): Daily Challenge và Win Streak không mở ở level nào, không icon, không có trên thẻ thắng, sự kiện streak đang chạy không đếm |
 
 **Monkey (M).** Mỗi lần: nút bấm được ở lớp trên cùng (popup trên cùng, hoặc popup lồng bên trong nó như hướng dẫn của Weekly Pass, hoặc lớp phủ mock nếu có, không thì màn hiện tại; lúc màn chuyển cảnh `Main.curtain` đang chạy thì không bấm gì, như người chơi đợi nó mở ra), hoặc 40% là toạ độ ngẫu nhiên trên bàn khi đang chơi; hướng dẫn L1 thì chạm theo bàn tay. Không bao giờ bấm: `SupportButton`, `VersionButton` (10 lần chạm mở menu tester), `GalleryButton`, `DebuggerButton`, `WipeButton`, `SaveButton`, `PrivacyButton`, mọi thứ trong menu tester, `popup_update` (mở store), `ui_gallery`; link của Settings đã bị chặn nên bấm được. Đạt khi không có lỗi script hay engine và không kẹt: 20 lần bấm liền không đổi màn, popup (kể cả popup lồng), bàn chơi hay các số người chơi thấy (gold, booster, level, mạng, cài đặt, avatar, quà ngày, mua hàng).
 
@@ -105,6 +115,43 @@ Kịch bản:
 - `tools/compress_textures.gd -- --check`: ảnh chưa nén theo luật kế hoạch mục 1.3.
 - `tests/shot.gd`: chụp màn cố định vào `tests/shots/` (được theo dõi trong git) để so trước và sau.
 - `node tools/sim.mjs`: mô phỏng kinh tế 28 ngày (`design.md` mục 5, "Bảng mô phỏng"). Số đọc thẳng từ `src/config.gd` (mặc định, chưa Remote Config) và `data/levels/`; hành vi người chơi là giả định ghi trong file. Đổi số kinh tế hay sinh lại level thì chạy lại và cập nhật bảng.
+
+## Test case (`tests/cases/`)
+
+Mỗi tính năng có một danh sách test case theo form của skill `/game-testcase-generator`, lưu trong repo. Kịch bản smoke và unit test chấm từng case theo ID, nên bao phủ đếm được bằng máy.
+
+**File.** `tests/cases/<MODULE>.csv`, `<MODULE>` là mã kịch bản smoke viết hoa (`WP`, `RT`...). UTF-8, ô nhiều dòng đặt trong ngoặc kép. Cột: 11 cột của skill (`ID, CASE, PRIORITY, DESCRIPTIONS, PRE COND, INPUT, STEP, EXPECTED RESULT, ACTUAL RESULT, STATUS, NOTE`) cộng `AUTO`. ID Level 3 là `TC_CA_<MODULE>_<3 số>`; dòng Level 1, 2 (`M01`, `M01.1`) để trống `AUTO`. Excel để người duyệt (cả Open Questions và Test Data) sinh từ CSV vào `output/testcase-<module>/`. Thư mục có `.gdignore` để Godot không import CSV thành bản dịch.
+
+**Cột AUTO**, nơi case được chấm:
+
+| Giá trị | Nghĩa |
+|---|---|
+| `smoke:<kịch bản>` | Kịch bản smoke chấm bằng `r.tc`, `r.tc_look` hoặc `r.tc_blocked` với đúng ID |
+| `unit:test_<file>` | `tests/test_<file>.gd` có assert cho case, ID ghi trong comment cạnh assert hoặc trong thông báo của assert |
+| `todo:smoke:<kịch bản>`, `todo:unit:test_<file>` | Đã chọn tầng, chưa viết. Skill sinh case luôn ghi `todo:`; task viết kịch bản đổi thành giá trị thật |
+| `manual:<lý do>` | Không tầng tự động nào quan sát được: âm thanh, rung, cảm giác chơi, SDK quảng cáo và mua hàng thật, máy 2 GB |
+
+Chọn tầng theo cột "Tầng tự động gợi ý" của ma trận bao phủ: công thức, ngưỡng số, chu kỳ thời gian, bảng tỉ lệ đi unit; luồng qua UI (chạm, popup, chuyển màn, số trên màn, lưu qua mở lại app) đi smoke; một case có thể có unit cho công thức và smoke cho luồng, khi đó tách thành hai case.
+
+**Chấm trong smoke** (`tests/smoke/smoke.gd`):
+
+- `r.tc(id, ok, detail)` ngay khi kết quả kỳ vọng thấy được; `detail` ghi số thấy so với số kỳ vọng. In `SMOKE CASE <id> pass|FAIL <detail>`. FAIL không dừng kịch bản, các case sau vẫn chạy; cuối lần chạy còn case FAIL thì `SMOKE FAILED case FAIL: <id>...`.
+- `await r.tc_look(id, shot)` cho case `[UI]` cần mắt (layout, chữ đè, màu, thứ tự lớp): chụp rồi in `look <ảnh>`. Người hoặc agent đọc ảnh rồi chấm. Headless không có ảnh nên case là `blocked`; chạy `window` hoặc `capture=1` để có ảnh.
+- `r.tc_blocked(id, why)` khi bước trước hỏng nên case không chấm được.
+- Cuối lần chạy, case `smoke:<kịch bản>` của CSV chưa được chấm in `missing` và làm kịch bản fail. Một ID chấm nhiều lần lấy kết quả nặng nhất (FAIL > blocked > look > pass).
+
+**Kỳ vọng độc lập với code game.** Số kỳ vọng lấy từ cột EXPECTED RESULT (nguồn `design.md`), ghi thẳng trong kịch bản cạnh ID. Không tính lại kỳ vọng bằng `Config`, `src/meta` hay hàm của game: kịch bản phải chấm đúng cả khi code game tính sai hoặc `config.gd` lệch `design.md`. Dùng `Config` chỉ khi EXPECTED RESULT nói kỳ vọng đi theo cấu hình (Remote Config, dữ liệu level) và ghi rõ khoá.
+
+**Phân loại case FAIL.** NOTE có mã Open Question (`OQ-xx`) thì báo là "OQ chưa chốt" kèm giả định, chưa phải lỗi game. Còn lại: lỗi smoke (chạm trượt, đợi thiếu) sửa trong smoke; lỗi game báo kèm ID, câu luật trong `design.md` và số thấy được.
+
+**Kiểm bằng máy.** `tests/test_cases.gd` (chạy trong `tools/test.sh`): đúng cột, ID không trùng và đúng module, nhãn `[HP]`/`[NEG]`/`[UI]`/`[EDGE]`, `P0`–`P2`, `STATUS`, ô bắt buộc có chữ, `AUTO` đúng dạng; mỗi case `smoke:` có ID trong `tests/smoke/*.gd`, mỗi case `unit:` có ID trong file test đó; mọi ID trong code test có trong CSV. In dòng `CASES <MODULE>: <n> case; smoke, unit, todo, manual; [HP], [NEG], [UI], [EDGE]`. Báo cáo HTML có bảng test case của từng kịch bản smoke.
+
+**Quy trình cho một tính năng:**
+
+1. Sinh case: skill `/game-testcase-generator` ra `tests/cases/<MODULE>.csv` (mọi `AUTO` là `todo:` hoặc `manual:`) và Excel. Xong khi `tools/test.sh test_cases` đạt và dòng `CASES` đủ 4 nhãn.
+2. Duyệt: người dùng xem Excel, chốt Open Questions mức Cao (hoặc chấp nhận giả định).
+3. Viết test: mỗi case `todo:` thành `smoke:` hoặc `unit:` cùng code chấm nó. Xong khi dòng `CASES` có `todo 0`, `tools/test.sh` đạt, `tools/smoke.sh headless <kịch bản>` in `missing=0`, và mỗi case FAIL đã được phân loại.
+4. Case `look`: chạy `tools/smoke.sh window <kịch bản>`, đọc từng ảnh có trong dòng `look`, ghi kết quả vào báo cáo.
 
 ## Ma trận bao phủ
 
@@ -133,24 +180,29 @@ Nhóm case: `[HP]` luồng chuẩn; `[NEG]` vi phạm điều kiện (kỳ vọn
 
 Cài bản demo: `docs/DEMO_NOTES.md`. Ngân sách: ổn định từ 30 khung/giây trên máy 2 GB (`design.md` mục 8, "Bản thử"). Số đo trên desktop không thay cho số trên điện thoại. Âm thanh trễ, rung, cảm giác chơi vẫn là việc thủ công của người dùng (kế hoạch mục 4).
 
-### Smoke trên máy: `tools/device_smoke.sh` (Task 11.5)
+### Smoke trên máy: `tools/device_smoke.sh` (Task 11.5, 11.6)
+
+Chạy trọn bộ trên máy (mọi kịch bản và 500 level) bằng skill `/device-test`. Lệnh rời:
 
 ```bash
 export JAVA_HOME="C:/Program Files/Android/Android Studio/jbr"      # Windows, như export_apk.sh
-GODOT=<Godot tự chứa> tools/device_smoke.sh build                   # ra build/CandyAway-smoke.apk
+GODOT=<exe> SNAP=<thư mục> tools/device_smoke.sh build              # build/CandyAway-demo.apk và build/CandyAway-smoke.apk
 adb install -r build/CandyAway-smoke.apk
 tools/device_smoke.sh run A capture=1                              # cài mới, có ảnh
 tools/device_smoke.sh run S G                                      # soak 10 level; lưu qua lần tắt app thật
-adb install -r build/<APK demo>.apk                                # xong thì cài lại bản demo
+tools/device_smoke.sh run V                                        # 500 level, đợt 50, khoảng 75 phút
+adb install -r build/CandyAway-demo.apk                            # xong thì cài lại bản demo
 ```
 
-- Template Android xuất ra bỏ qua `-s` (kể cả bản debug), nên `build` chép cây code sang snapshot (`SNAP`, mặc định `output/device/snap`; Windows dùng `robocopy`), đổi màn chính của snapshot thành `tests/smoke/device_main.tscn` (gốc là runner `smoke.gd`), cho preset `Android Demo` mang `tests/smoke/`, rồi xuất. Cây code thật không đổi. APK smoke cùng package và chữ ký với bản demo: cài đè lên nhau, giữ dữ liệu; mở app là chạy smoke.
+- `GODOT`: Godot 4.7.2 có export template Android, editor settings trỏ JDK 17, Android SDK và debug keystore. Máy Windows này dùng bản tự chứa (có file `_sc_` cạnh exe, settings riêng trong `editor_data/`) để không đụng editor đang mở: tìm `godot_sc/Godot_v4.7.2-stable_win64.exe` trong `%TEMP%/claude/*/*/scratchpad/`; không còn thì hỏi người dùng. `SNAP`: thư mục snapshot; dùng lại thư mục cũ (đã có `android/build`) thì bỏ được bước cài Gradle template, mỗi lần build khoảng 2–3 phút cho mỗi APK.
+- Template Android xuất ra bỏ qua `-s` (kể cả bản debug), nên `build` chép cây code sang snapshot (`SNAP`, mặc định `output/device/snap`; Windows dùng `robocopy`), xuất bản demo thường, rồi đổi màn chính của snapshot thành `tests/smoke/device_main.tscn` (gốc là runner `smoke.gd`), cho preset `Android Demo` mang `tests/smoke/`, và xuất APK smoke. Code game trong snapshot lấy bản HEAD (phiên song song có thể đang sửa dở), test và tool lấy bản đang sửa; `SNAP_GAME=worktree` lấy cả code game đang sửa. Cây code thật không đổi. APK smoke cùng package và chữ ký với bản demo: cài đè lên nhau, giữ dữ liệu; mở app là chạy smoke.
+- V (quét level, `tests/smoke/scen_levels.gd`): mỗi đợt một lần mở app, chơi liền bằng solver; mỗi level một dòng `SMOKE LEVEL <n> ok taps= moves=<còn>/<đầu> board=` hoặc `SMOKE LEVEL FAIL L<n>: <lý do>` (không vào được, hình ra ngoài khung cổng, khung cổng ra ngoài màn, hết MOVES, solver không có nước); level hỏng thì mở save mới ở level kế và chạy tiếp. `levels.tsv` ở thư mục kết quả gộp mọi đợt (kết quả, chạm, MOVES, cỡ hình, khung hình, solver). Mặc định chạm liên tục (khung hình là trường hợp nặng); `pace=0.5` chạm theo nhịp người chơi để đo khung hình vài level. Desktop: `SMOKE_ARGS="from=1 to=40" tools/smoke.sh headless V`.
 - `run` ghi tham số vào `user://device_smoke_args.txt` bằng `run-as` (APK debug), mở app bằng `GodotAppLauncher` (`GodotApp` không export, `am start` bị từ chối), theo `logcat` tới `SMOKE OK`/`FAILED`, lấy PSS (`dumpsys meminfo`) mỗi 5 giây, kéo census và ảnh về `output/device/<thời điểm>/<kịch bản>/` (`logcat.txt`, `pss.txt`, `summary.txt`). Trên Android smoke không tự thoát; script force-stop.
 - G trên máy (`restart=external`): sau khi ghi số mong đợi, smoke in `SMOKE G READY` và đợi; script bấm Home (onPause thật của Android), force-stop, rồi tự chạy G2 trên cùng save.
 - Kiểm trước khi chạy: đúng một máy (hoặc `ANDROID_SERIAL`), đã cho phép gỡ lỗi USB, không khoá. Bật `svc power stayon usb` trong lúc chạy, xong trả lại như cũ. Không chạm vào máy khi đang chạy (`SMOKE REAL INPUT`).
 - `summary.txt`: thời gian khởi động (từ dòng đầu của Godot tới `SMOKE START` và tới main boot xong; `am start -W` là tới khung đầu), `SMOKE FRAMES` và `SMOKE SOLVER` từng level, `SMOKE MEM`, lỗi, PSS thấp nhất, cao nhất, cuối.
 - Đo khung hình như người chơi: `run S idle=3 pace=0.5` (pha `idle L<n>` 3 giây bàn đứng yên, rồi chạm mỗi 0,5 giây). Mặc định smoke chạm cách 2 khung, nhiều khối trượt cùng lúc: đó là trường hợp chạm liên tục, nặng hơn người chơi thường. Solver của smoke chạy trên luồng chính trong khung đang đo (`SMOKE SOLVER`): khung giật trùng lần solver chạy là của smoke, không phải của game.
-- adb server bị chương trình khác (phiên khác, Unity, Android Studio) khởi động lại thì máy hỏi lại quyền gỡ lỗi USB và `adb devices` báo `unauthorized`: script dừng mã 2, nhờ người dùng bấm Cho phép rồi chạy lại.
+- adb server bị khởi động lại thì máy chưa tích "Luôn cho phép từ máy tính này" sẽ hỏi lại quyền gỡ lỗi USB và `adb devices` báo `unauthorized`. Thủ phạm hay gặp: chính lúc export APK, Godot dò máy bằng adb của Android SDK (`export/android/android_sdk_path`), khác phiên bản với adb trong PATH (máy Windows này: 34.0.3 và 37.0.1), nên thay server; `build` cuối cùng trả server về adb trong PATH. Nhờ người dùng tích "Luôn cho phép" một lần. Lúc bắt đầu: script dừng mã 2, nhờ người dùng bấm Cho phép rồi chạy lại. Giữa chừng: app trên máy vẫn chạy, script in `mất kết nối adb`, chờ, rồi nối logcat từ dòng cuối đã có.
 
 **Lần đo đầu, 2026-11-12** (vivo V2206: Snapdragon 680, Adreno 610, 8 GB, 720×1612, 60 Hz, Android 14; không phải máy 2 GB của ngân sách):
 
@@ -163,7 +215,16 @@ adb install -r build/<APK demo>.apk                                # xong thì c
 | Bàn đứng yên | 16,6–18,5 ms; L38 20,8 ms (48 FPS) |
 | Chạm liên tục (mặc định) | Trung vị 17–27 ms, p95 40–51 ms |
 
-Kết quả từng lần ở `output/device/<thời điểm>/`.
+**Lần chạy đủ, 2026-11-12** (Task 11.6; game bản HEAD 1ee91af):
+
+| | vivo V2206 (720×1612, 60 Hz) | Samsung SM-F731B (Snapdragon 8 Gen 2, 1080×2640, 120 Hz, Android 17) |
+|---|---|---|
+| Kịch bản | 17/21 đạt; RT, LB, DG đỏ vì lỗi game (cũng đỏ trên desktop); D đỏ vì smoke chạm tâm nút "No thanks" phủ cả popup (đã sửa: `tap` thử tâm các Label con) | D (sau khi sửa smoke), A, L đạt |
+| Level | 500/500 đạt (V 1–500, chạm liên tục); p95 trung bình 46,5 ms, ≤ 33 ms chỉ ở 8 level đầu | L165–167, L420–424 theo nhịp `pace=0.5`: trung vị 8,3 ms, p95 10,3–11,3 ms, 2–5 khung > 33 ms mỗi level (L422: 29/4959), lẻ tẻ tới 110 ms |
+| Khởi động | 2,0–2,2 giây tới autoload, 6,3–7,4 giây tới main boot xong | 0,9–1,2 và 3,5–5,1 giây |
+| PSS cao nhất | 424 MB (M, monkey) | 533 MB |
+
+Kết quả từng lần ở `output/device/<thời điểm>/`; bảng 500 level gộp ở `output/device_levels/levels_1-500.tsv`.
 
 Kinh nghiệm từ Butcher Defense (cùng Godot 4.7.2, `gl_compatibility`), dùng khi bắt đầu đo trên máy:
 

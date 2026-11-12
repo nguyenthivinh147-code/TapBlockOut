@@ -58,6 +58,8 @@ for S in "${SCENS[@]}"; do
   [ "$MODE" = headless ] && ARGS=(--headless "${ARGS[@]}")
   ARGS+=("scen=$S" "out=$ROOT_ABS/$DIR" "speed=$SPEED" "seed=${SMOKE_SEED:-1}" "taps=${SMOKE_TAPS:-250}"
     "window=$([ "$MODE" = window ] && echo 1 || echo 0)" "max=$(( TIMEOUT_SEC - 30 ))")
+  # SMOKE_ARGS="from=1 to=30": key=value thêm cho kịch bản (V: from, to; mọi kịch bản: idle, pace, capture).
+  [ -n "${SMOKE_ARGS:-}" ] && ARGS+=($SMOKE_ARGS)
   START=$(date +%s)
   timeout --kill-after=10 "$TIMEOUT_SEC" tools/godot.sh "${ARGS[@]}" > "$DIR/smoke.log" 2>&1
   CODE=$?
@@ -76,7 +78,7 @@ for S in "${SCENS[@]}"; do
   printf '{"kind":"smoke","mode":"%s","scen":"%s","seconds":%d,"exit":%d,"rc":%d,"why":"%s"}\n' \
     "$MODE" "$S" "$USED" "$CODE" "$RC" "${WHY//\"/}" > "$DIR/meta.json"
   echo "== $S ($MODE, ${USED} giây): $WHY"
-  grep -E '^SMOKE (FAILED|INVARIANT|ERRORS|WARN|REAL INPUT|FRAMES|SOLVER|MEM)' "$DIR/smoke.log" | head -n 40
+  grep -E '^SMOKE (FAILED|INVARIANT|ERRORS|WARN|REAL INPUT|FRAMES|SOLVER|MEM|CASES|CASE [^ ]+ (FAIL|blocked|missing|look))' "$DIR/smoke.log" | head -n 60
   [ "$RC" -eq 2 ] && tail -n 20 "$DIR/smoke.log"
   [ "$RC" -gt "$WORST" ] && WORST=$RC
 done

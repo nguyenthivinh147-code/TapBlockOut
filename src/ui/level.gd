@@ -52,9 +52,7 @@ const POPUP_KEEP := "res://scenes/popup_keep_playing.tscn"
 const POPUP_STREAK_KEEP := "res://scenes/popup_streak_keep.tscn"
 const POPUP_NOTICE := "res://scenes/popup_notice.tscn"
 const POPUP_RATE := "res://scenes/popup_rate.tscn"
-const BOOSTER_SOON := "res://scenes/booster_soon.tscn"
 const HELPER_PACK := "res://scenes/popup_helper_pack.tscn"
-const LOAD_TRANSITION := "res://scenes/load_transition.tscn"
 const TUTORIAL_INTRO := "res://scenes/tutorial_intro.tscn"
 const POPUP_SPECIAL := "res://scenes/popup_special.tscn"
 const POPUP_SPECIAL_END := "res://scenes/popup_special_end.tscn"
@@ -815,10 +813,6 @@ func _badge_box(has_stock: bool) -> StyleBoxTexture:
 	return ThemeKit.sprite_box("hud_badge_count" if has_stock else "hud_badge_plus")
 
 
-func _unlock_level(kind: String) -> int:
-	return int(Config.UNLOCK.get(kind, 0))
-
-
 func _toast(text: String) -> void:
 	toast_label.text = text
 	toast_label.visible = true
@@ -1111,7 +1105,6 @@ func _lose_flow() -> void:
 		return
 	if str(r) == "retry":
 		if _can_play():
-			_reveal_level(_level)
 			await _start_level()
 		else:
 			_leave("no_lives")
@@ -1209,19 +1202,7 @@ func _win_flow() -> void:
 	elif not _can_play():
 		_leave("no_lives")
 	else:
-		_reveal_level(int(Game.s.level))
 		await _start_level()
-
-
-## Load Level Transition (wireframe 3.1, LoadLevelProcessVer2): level kế hoặc chơi lại mở ra từ màn đen qua lỗ hình
-## bom lớn dần trên bàn mới, kèm tên level. Road Trip dùng màn nắp hộp quà của nó, không có màn này.
-func _reveal_level(level_no: int) -> void:
-	if _road_trip or UnityUI.baking:
-		return
-	var node := (load(LOAD_TRANSITION) as PackedScene).instantiate() as Control
-	node.name = "LoadTransition"
-	add_child(node)
-	node.call("setup", {"view": {"level": level_no, "open": true}})
 
 
 # --- Home và restart ---
@@ -1321,13 +1302,7 @@ func _on_booster_pressed(kind: String) -> void:
 		return
 	Sfx.play("button")
 	if not Unlocks.is_open(kind, _unlock_ref()):
-		# Booster còn khoá (wireframe 3.7): popup báo level mở, chạm đâu cũng đóng.
-		_set_state("dialog")
-		await _popup_scene(BOOSTER_SOON, {"view": {"kind": kind, "level": _unlock_level(kind)}})
-		if _left:
-			return
-		_set_state("playing")
-		_reset_think()
+		# A locked booster only clicks: no popup 3.7 (design.md mục 4 "Mở khoá theo level", 2026-11-12).
 		return
 	if kind == "hint" and is_instance_valid(_hint_fx):
 		return
@@ -1743,8 +1718,8 @@ func _special_win(res: Dictionary) -> void:
 	_leave("home")
 
 
-## Rời Màn đặc biệt sang level chính kế ngay trong màn này (màn chuyển cảnh load_transition), hoặc về Home khi hết
-## level, sang màn hết mạng khi hết mạng.
+## Rời Màn đặc biệt sang level chính kế ngay trong màn này (không màn chuyển cảnh), hoặc về Home khi hết level, sang
+## màn hết mạng khi hết mạng.
 func _continue_main() -> void:
 	_special = false
 	bombs.call("clear")
@@ -1755,7 +1730,6 @@ func _continue_main() -> void:
 		_leave("no_lives")
 		return
 	_warm_result_card()
-	_reveal_level(int(Game.s.level))
 	await _start_level()
 
 

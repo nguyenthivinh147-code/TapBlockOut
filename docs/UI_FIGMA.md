@@ -4,6 +4,8 @@
 
 Nguồn: file Figma `Tapblock`. Layout lấy từ page **Overview** (wireframe 11 nhóm, khung 390x844). Màu, chữ, component, icon lấy từ page **02 · Foundations**.
 
+Wireframe v2 (2026-11-12) nằm cùng page Overview, bên phải wireframe gốc (từ x = 4000, các section "Wireframe v2 (2026-11-12) · …"). Bản này vẽ theo game đang chạy: mỗi màn đánh số thành phần, có bảng giải thích, trạng thái phụ và cột so với frame gốc. Spec và công cụ sinh lại nằm ở `output/wireframe/` (không vào git, xem `output/wireframe/tools/README.md`).
+
 ## Quy tắc
 
 - Mọi chữ hiển thị qua `tr()`. Không dùng ảnh có chữ "nướng" sẵn (nút PLAY, tab HOME, tiêu đề popup, giá OK/100...). Chỉ dùng sprite không chữ.
@@ -76,9 +78,9 @@ Nối logic cho một màn: thêm logic và save vào `src/meta` và `Game`, đ�
 | 1.6 | `popup_no_internet` | Xong, có logic (design.md mục 6): video hay mua hàng lỗi vì mất mạng; Thử lại kiểm lại mạng |
 | 2.3 | ADS Daily | Xong, có logic, nằm trong Shop (khối `AdsDaily`, dùng video gold `shop_coins`: 5 ô mỗi ngày, mỗi ô 200 gold). Không có lối vào trên Home; `popup_ads_daily` chỉ còn trong danh sách xem trước |
 | 2.4 | `popup_remove_ads` | Xong, có logic (design.md mục 7): icon Remove Ads ở cột phải Home và offer Remove Ads; thẻ bundle bán `remove_ads_bundle`, thẻ thường `remove_ads`, có Restore. Shop có cùng hai thẻ (mục No Ads, ẩn cả mục khi đã có `no_ads`), thẻ bundle dùng chung `Shop.fill_no_ads_bundle` |
-| 3.1 | `load_transition` | Xong, có logic: sang level kế hoặc chơi lại thì mở ra qua lỗ hình bom (`view.open`); Road Trip giữ màn hộp quà |
+| 3.1 | `load_transition` | Bỏ (2026-11-12, người dùng yêu cầu): sang level kế, chơi lại, Special sang level chính không có màn chuyển cảnh; xoá scene và script |
 | 3.3 | `popup_mechanic` | Bỏ (2026-11-09): giới thiệu cơ chế dùng `booster_unlocked` từ 2026-11-08 |
-| 3.7 | `booster_soon` | Xong, có logic: chạm booster còn khoá; ba ô theo hàng booster, ô khoá hiện ổ khoá, dòng "<Tên> mở ở Level N" |
+| 3.7 | `booster_soon` | Xong, game không mở (2026-11-12: chạm booster còn khoá chỉ phát tiếng bấm); chỉ xem trong UI gallery: ba ô theo hàng booster, ô khoá hiện ổ khoá, dòng "<Tên> mở ở Level N" |
 | 3.9 | `popup_free_pick` | Bỏ (2026-11-10, người dùng yêu cầu): quà booster chỉ còn scene giới thiệu `booster_unlocked`, không mời dùng thử, không bàn tay chỉ nút booster |
 | 3.11 | `speedup_tutorial` | Bỏ (2026-11-09): game không có tăng tốc |
 | 3.8 | `booster_unlocked` | Xong, có logic (design.md mục 3, quà hướng dẫn). `level.gd` mở khi tặng booster ở level mở, thay hộp thoại "Mới: …" cũ; `view = {kind, count}`. Nút vàng (ClaimButton) ẩn, dòng "Chạm để tiếp tục" sát lề dưới màn hình (`Config.TAP_CONTINUE_BOTTOM`, 2026-11-10); chạm đâu cũng đóng. Chữ "Capacity", "băng chuyền" của wireframe đã thay bằng tên và lời tặng của booster. Từ 2026-11-08 cũng giới thiệu cơ chế mới ở level dạy: `view = {mech}`, tiêu đề `mech_new_title`, tên, icon và luật của cơ chế, ẩn số lượng, luật dời lên chỗ số lượng |

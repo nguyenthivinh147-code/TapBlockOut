@@ -153,7 +153,6 @@ Sprite hay dùng (`m:` là `Resources_moved_UI_Maincenter:`):
 | `popup_no_internet` | `MaintainInternetLayer` |
 | `tutorial_intro` | `MainTutorialLayer` |
 | `booster_unlocked`, `booster_soon` | `BoosterTutorialLayer` |
-| `load_transition` | `LoadLevelProcessVer2` |
 | `popup_change_name` | `PopupEditNameLayer` |
 | `popup_rate` | `PopupRatingLayer` |
 | `popup_keep_playing` | `PopupKeepPlaying` |

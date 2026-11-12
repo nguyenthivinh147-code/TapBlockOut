@@ -1,11 +1,13 @@
 ---
 name: game-testcase-generator
-description: "Sinh bộ test case QA chạy tay cho Candy Away từ design.md hoặc tài liệu thiết kế, xuất Excel 3 sheet (Test Cases, Open Questions, Test Data)."
+description: "Sinh bộ test case Candy Away từ design.md hoặc tài liệu thiết kế: CSV trong tests/cases/ (nguồn để viết kịch bản smoke và unit test) và Excel 3 sheet để duyệt (Test Cases, Open Questions, Test Data)."
 disable-model-invocation: true
 ---
 # Game Test Case Generator
 
-Phân tích tài liệu thiết kế, xác định phạm vi kiểm thử và sinh bộ test case chuẩn hoá bám sát logic gameplay, UI/UX và các tình huống gián đoạn hệ thống. Đầu ra mặc định là **một file Excel gồm đúng 3 sheet** (mục "Cấu trúc file Excel 3 sheet").
+Phân tích tài liệu thiết kế, xác định phạm vi kiểm thử và sinh bộ test case chuẩn hoá bám sát logic gameplay, UI/UX và các tình huống gián đoạn hệ thống. Đầu ra:
+- **`tests/cases/<MODULE>.csv`**: nguồn của sheet Test Cases, có thêm cột `AUTO`. Kịch bản smoke và unit test chấm từng case theo ID. Định dạng, cột `AUTO` và cách chấm: `docs/TESTING.md` mục "Test case"; đọc mục đó trước Bước 4.
+- **Một file Excel gồm đúng 3 sheet** (mục "Cấu trúc file Excel 3 sheet"), sheet Test Cases dựng từ CSV.
 
 ## Nguyên tắc cốt lõi
 
@@ -88,29 +90,31 @@ Luật cứng khi liệt kê test case cho từng thành phần: bảng ở `doc
 3. Phân bổ tham khảo toàn bộ: `[HP]` 30-40%, `[NEG]` 12-18%, `[UI]` 15-20%, `[EDGE]` 25-35%. Lệch nhiều thì rà lại xem có bỏ sót nhóm không.
 4. P0 chỉ dành cho case chặn gameplay hoặc ảnh hưởng tiền tệ/dữ liệu người chơi; P0 vượt khoảng 35% tổng số thì hạ bớt case ít nghiêm trọng xuống P1.
 5. Mỗi Open Question được nhắc trong NOTE của ít nhất 1 test case, và mỗi case dựa trên giả định đều có mã OQ.
+6. Case `manual:` quá khoảng 15% tổng số thì rà lại: phần lớn hành vi thấy được trên màn hoặc trong save đều chấm được bằng smoke.
 
 ## Định dạng bảng Test Case chuẩn
 
 Cấu trúc cột của sheet `Test Cases`:
 
-| **ID** | **CASE** | **PRIORITY** | **DESCRIPTIONS** | **PRE COND** | **INPUT** | **STEP** | **EXPECTED RESULT** | **ACTUAL RESULT** | **STATUS** | **NOTE** |
-|:---:|:---:|:---:|:---|:---|:---|:---|:---|:---:|:---:|:---|
-| **Level 1** | | | | | | | | | Ready | |
-| **Level 2** | | | | | | | | | Ready | |
-| **Level 3** | | | | | | | | | Ready | |
+| **ID** | **CASE** | **PRIORITY** | **DESCRIPTIONS** | **PRE COND** | **INPUT** | **STEP** | **EXPECTED RESULT** | **ACTUAL RESULT** | **STATUS** | **NOTE** | **AUTO** |
+|:---:|:---:|:---:|:---|:---|:---|:---|:---|:---:|:---:|:---|:---|
+| **Level 1** | | | | | | | | | Ready | | |
+| **Level 2** | | | | | | | | | Ready | | |
+| **Level 3** | | | | | | | | | Ready | | `todo:smoke:WP` |
 
 ### Giải thích các trường
-- **ID:** mã duy nhất. Level 3: `TC_CA_<MODULE>_<NNN>` (ví dụ `TC_CA_SHOP_007`); Level 1: `M01`, `M02`...; Level 2: `M01.1`, `M01.2`... Tiền tố `TC_` chỉ dùng cho Level 3 để đếm đúng số test case thật bằng `=COUNTIF('Test Cases'!$A:$A,"TC_*")`. Không trùng ID.
+- **ID:** mã duy nhất. Level 3: `TC_CA_<MODULE>_<NNN>` (ví dụ `TC_CA_SHOP_007`), `<MODULE>` trùng tên file CSV (mã kịch bản smoke của tính năng nếu có); Level 1: `M01`, `M02`...; Level 2: `M01.1`, `M01.2`... Tiền tố `TC_` chỉ dùng cho Level 3 để đếm đúng số test case thật bằng `=COUNTIF('Test Cases'!$A:$A,"TC_*")`. Không trùng ID.
 - **CASE:** `[HP|NEG|UI|EDGE] Tên trường hợp ngắn gọn`. Dòng Level 1/2 ghi tên module/nhóm, không có tag.
 - **PRIORITY:** `P0` (Blocker / Critical: chặn gameplay hoặc ảnh hưởng tiền tệ/dữ liệu), `P1` (Major), `P2` (Minor / Trivial). Để trống ở Level 1/2.
 - **DESCRIPTIONS:** mục tiêu cần xác minh. Ở Level 1/2: phạm vi và mục tài liệu tương ứng.
 - **PRE COND:** trạng thái tài khoản (level, gold, mạng, booster), build và config áp dụng. Bản debug có menu tester để dựng nhanh trạng thái (`docs/DEMO_NOTES.md` mục 3b).
 - **INPUT:** dữ liệu cụ thể nhập vào hoặc chọn (SKU, số gold, số level); với case công thức ghi cách tính (ví dụ `+3 MOVES lần 2: 2.200 gold`).
 - **STEP:** các bước đánh số `1.`, `2.`, `3.`, mỗi bước một dòng.
-- **EXPECTED RESULT:** mỗi ý một dòng bắt đầu bằng `- `: dữ liệu thay đổi (số trước → sau), UI phản hồi, thông báo. Case thất bại nêu rõ dữ liệu nào giữ nguyên. Case mạng hoặc kill app nêu bất biến phải đúng ("hoặc hoàn tất đầy đủ, hoặc không đổi gì").
+- **EXPECTED RESULT:** mỗi ý một dòng bắt đầu bằng `- `: dữ liệu thay đổi (số trước → sau), UI phản hồi, thông báo. Case thất bại nêu rõ dữ liệu nào giữ nguyên. Case mạng hoặc kill app nêu bất biến phải đúng ("hoặc hoàn tất đầy đủ, hoặc không đổi gì"). Case tự động (`AUTO` không phải `manual:`): mỗi ý là thứ code đọc được, gồm số trong save hoặc trên màn, popup hay nút nào hiện hoặc ẩn, chữ của khoá i18n nào, và số viết ra (tính từ `design.md`), không viết "theo config".
 - **ACTUAL RESULT:** để trống khi khởi tạo.
 - **STATUS:** mặc định `Ready`. Giá trị hợp lệ: `Ready`, `Pass`, `Fail`, `Blocked`, `N/A`.
 - **NOTE:** mục tài liệu (`design.md §7`), mã Open Question (`OQ-05`), `CẦN XÁC NHẬN` khi tài liệu chưa quy định, thiết bị hoặc tài khoản test, bug liên quan, test tự động đã có.
+- **AUTO:** tầng sẽ chấm case. Skill chỉ ghi `todo:smoke:<kịch bản>`, `todo:unit:test_<file>` hoặc `manual:<lý do>`; task viết test đổi `todo:` thành giá trị thật cùng code chấm. Chọn tầng theo `docs/TESTING.md` mục "Test case". `manual:` chỉ cho thứ không tầng tự động nào quan sát được (âm thanh, rung, cảm giác chơi, SDK thật, máy 2 GB) và ghi lý do. Dòng Level 1/2 để trống.
 
 ### Quy tắc đặt số liệu trong test case
 - Số lấy từ tài liệu hoặc `src/config.gd` thì dùng nguyên; số tự đặt để test (số dư gold, số booster, level mẫu) ghi rõ "giả định" hoặc "dữ liệu test" trong PRE COND/INPUT để người test thay bằng giá trị thật của build.
@@ -127,9 +131,9 @@ Xuất **một file `.xlsx` gồm đúng 3 sheet, đúng tên và thứ tự sau
 | 3 | `Test Data` | Tham số, công thức, bảng tỷ lệ, config giả định để tính giá trị kỳ vọng |
 
 ### Sheet 1 - `Test Cases`
-- Hàng 1 là tiêu đề 11 cột đúng tên: `ID, CASE, PRIORITY, DESCRIPTIONS, PRE COND, INPUT, STEP, EXPECTED RESULT, ACTUAL RESULT, STATUS, NOTE`.
+- Hàng 1 là tiêu đề 12 cột đúng tên: `ID, CASE, PRIORITY, DESCRIPTIONS, PRE COND, INPUT, STEP, EXPECTED RESULT, ACTUAL RESULT, STATUS, NOTE, AUTO`. Nội dung đọc từ `tests/cases/<MODULE>.csv`, không gõ lại.
 - Dòng Level 1 nền xanh đậm chữ trắng đậm; Level 2 nền xanh nhạt chữ đậm; Level 3 không tô nền. Level 1/2 có `STATUS = Ready`.
-- Độ rộng cột: ID 19, CASE 42, PRIORITY 10, DESCRIPTIONS 40, PRE COND 38, INPUT 34, STEP 52, EXPECTED RESULT 58, ACTUAL RESULT 22, STATUS 11, NOTE 38. Mọi ô xuống dòng, căn trên.
+- Độ rộng cột: ID 19, CASE 42, PRIORITY 10, DESCRIPTIONS 40, PRE COND 38, INPUT 34, STEP 52, EXPECTED RESULT 58, ACTUAL RESULT 22, STATUS 11, NOTE 38, AUTO 22. Mọi ô xuống dòng, căn trên.
 - Đóng băng khung tại `C2`, bật AutoFilter cho cả bảng.
 - Nhóm dòng (outline) theo Level: Level 1 = 0, Level 2 = 1, Level 3 = 2, nút +/- ở dòng tiêu đề nhóm (`summaryBelow = False`).
 - Dropdown (data validation): cột STATUS (`Ready,Pass,Fail,Blocked,N/A`) và PRIORITY (`P0,P1,P2`).
@@ -158,6 +162,11 @@ Nơi tính mọi giá trị kỳ vọng. Ô tham số nhập tay nền vàng nh�
 - Kiểm chứng sau khi tính: (a) giá trị trong Test Data khớp các con số trong test case, đặc biệt các biên làm tròn; (b) số dòng `TC_` đếm bằng `COUNTIF` khớp số dòng Level 3 đếm bằng chương trình và khớp số báo ở Bước 7; (c) không trùng ID; (d) không ô bắt buộc nào trống ở Level 3 (trừ ACTUAL RESULT); (e) mọi OQ có tham chiếu.
 - Lưu file vào `output/testcase-<tên tính năng>/` ở gốc repo, rồi trình bày file cho người dùng.
 
+### CSV `tests/cases/<MODULE>.csv`
+- 12 cột như sheet Test Cases, UTF-8, dấu phẩy, ô có xuống dòng hoặc dấu phẩy đặt trong ngoặc kép (`csv` của Python với `quoting=csv.QUOTE_MINIMAL`). Gồm cả dòng Level 1/2.
+- Viết CSV trước, dựng Excel từ CSV. Sửa case thì sửa CSV rồi dựng lại Excel.
+- Kiểm: `tools/test.sh test_cases` đạt và dòng `CASES <MODULE>` trong log khớp số case theo nhóm.
+
 ## Quy trình xử lý đầu ra
 
 1. **Bước 1 - Đọc và phân tích:** nhận mục `design.md` hoặc tài liệu từ người dùng, thực hiện Bước 0, tóm tắt Scope (In/Out) và kỹ thuật test áp dụng.
@@ -165,5 +174,5 @@ Nơi tính mọi giá trị kỳ vọng. Ô tham số nhập tay nền vàng nh�
 3. **Bước 3 - Tính dữ liệu kiểm thử:** dựng tham số, bảng công thức, bảng tỷ lệ và config giả định (nội dung sheet Test Data).
 4. **Bước 4 - Sinh test case:** với từng module và nhóm chức năng, sinh case theo 4 nhóm bao phủ và ma trận tối thiểu, theo template Level 1 / Level 2 / Level 3. Người dùng chỉ muốn xem trong chat thì xuất bảng Markdown đúng cột chuẩn; bộ lớn (trên khoảng 30 case) chỉ hiện sườn Level 1/2 cùng vài case mẫu mỗi module, phần đầy đủ để trong file.
 5. **Bước 5 - Tự kiểm tra bao phủ:** chạy checklist "Tự kiểm tra bao phủ" và bổ sung chỗ thiếu.
-6. **Bước 6 - Xuất file Excel 3 sheet:** dựng đúng 3 sheet `Test Cases`, `Open Questions`, `Test Data`, rồi chạy các bước kiểm chứng kỹ thuật.
-7. **Bước 7 - Báo cáo ngắn:** cùng ngôn ngữ với người dùng: số test case theo nhóm và priority, Open Questions mức Cao, số liệu giả định cần thay bằng giá trị thật, hạn chế đã gặp (ví dụ liên kết không mở được). Bảng đầy đủ nằm trong file.
+6. **Bước 6 - Xuất CSV rồi Excel 3 sheet:** ghi `tests/cases/<MODULE>.csv`, dựng đúng 3 sheet `Test Cases`, `Open Questions`, `Test Data` từ CSV, rồi chạy các bước kiểm chứng kỹ thuật và `tools/test.sh test_cases`.
+7. **Bước 7 - Báo cáo ngắn:** cùng ngôn ngữ với người dùng: số test case theo nhóm, priority và tầng `AUTO` (dòng `CASES`), Open Questions mức Cao, số liệu giả định cần thay bằng giá trị thật, hạn chế đã gặp (ví dụ liên kết không mở được). Bảng đầy đủ nằm trong file.
