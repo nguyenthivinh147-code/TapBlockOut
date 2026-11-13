@@ -685,6 +685,11 @@ const CLOSE_EDGE_GAP := 8.0
 ## bottom of the screen to the bottom of the line (reference screen 886x1920).
 const TAP_CONTINUE_BOTTOM := 90.0
 
+## A popup takes no tap for this long after it opens (Main.add_popup; design.md mục 2 "Chạm vào UI", 2026-11-13), as
+## Unity's BaseUISystem keeps a showing popup not interactable. Seconds: Android's double-tap timeout
+## (ViewConfiguration.getDoubleTapTimeout), so the second tap of a double tap on the button that opened it is dropped.
+const POPUP_OPEN_GUARD_SEC := 0.3
+
 ## Player nickname length (design.md mục 5 "Biệt danh"), counted after trimming spaces at both ends. NAME_MAX matches the
 ## characterLimit of the input field in PopupEditNameLayer.
 const NAME_MIN := 3

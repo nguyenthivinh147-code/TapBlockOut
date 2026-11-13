@@ -116,6 +116,13 @@ func _bind() -> void:
 	($LivesPanel/LivesPlus as Button).pressed.connect(_on_lives_plus)
 	($GoldPanel/GoldPlus as Button).pressed.connect(_fire.bind("shop"))
 	settings_btn.pressed.connect(_fire.bind("settings"))
+	# Pressed look (design.md mục 2 "Chạm vào UI"): the avatar and the gear press themselves; the lives and gold
+	# buttons are invisible over their chips, which press instead.
+	for pair in [[profile_btn, profile_btn], [$LivesPanel/LivesPlus, lives_panel], [$GoldPanel/GoldPlus, $GoldPanel],
+			[settings_btn, settings_btn]]:
+		var b := pair[0] as Button
+		b.button_down.connect(Callable(UiTween, "press").bind(pair[1], true))
+		b.button_up.connect(Callable(UiTween, "press").bind(pair[1], false))
 	($Tick as Timer).timeout.connect(refresh_lives)
 	_fb.adopt(self)
 	_layout()

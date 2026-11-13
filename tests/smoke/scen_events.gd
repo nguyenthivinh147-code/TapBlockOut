@@ -540,7 +540,8 @@ static func _wpp_tutorial(r) -> bool:
 	return true
 
 
-## TC_CA_WP_017. Save L27, tut_seen false, ts 1800000000: Back ở bước 2.
+## TC_CA_WP_017. Save L27, tut_seen false, ts 1800000000: Back ở bước 2 không làm gì (tutorial khoá Back, design.md mục 2
+## "Back Android và ESC"), chạm nền thì sang bước 3.
 static func _wpp_back_tut(r) -> bool:
 	if not await _wp_open(r, {"level": 27}):
 		return false
@@ -556,29 +557,21 @@ static func _wpp_back_tut(r) -> bool:
 	if await _tut_ready(r, wp, 1) == null:
 		return r.fail("tutorial không sang bước 2")
 	await r.back()
-	var closed: bool = await Scen.wait_for(r, func() -> bool: return r.popup_script("weekly_pass.gd") == null, 4000)
 	await r.wait_sec(0.5)
+	var open: bool = is_instance_valid(wp) and r.popup_script("weekly_pass.gd") == wp
+	var st := _tut_step(wp.get("tutorial") as Control if open else null)
 	var howto: bool = r.main.find_children("PopupWeeklyTutorial", "", true, false).size() > 0
-	r.tc("TC_CA_WP_017", closed and r.screen_name() == "home" and not r.game.weekly_tutorial_seen() and not howto,
-		"sau Back: layer %s, màn %s, tut_seen %s, popup How to earn rewards %s; mong đợi đóng, home, false, không có" % [
-		"đóng" if closed else "còn", r.screen_name(), r.game.weekly_tutorial_seen(), _yes(howto)])
-	if (await _wp_win(r, 27)).is_empty():
-		return false
-	var key := _cell(r, "WeeklyKeyReward")
-	r.tc("TC_CA_WP_017", WeeklyPass.points(r.game.s) == 0 and key == null,
-		"thắng L27: points %d, ô WeeklyKeyReward %s; mong đợi 0, không có" % [WeeklyPass.points(r.game.s), _shown(key)])
-	if not await Scen.after_win(r, 27):
-		return false
-	if not await _wp_home(r):
-		return false
-	wp = await _wp_layer(r)
-	if wp == null:
-		return false
-	var st := _tut_step(await _tut_ready(r, wp, 0))
-	r.tc("TC_CA_WP_017", st.target == "Free0" and bool(st.hole)
-		and st.text == "Welcome to Weekly Pass! Claim your first reward!",
-		"mở lại: bước %d, lỗ quanh %s, \"%s\"; mong đợi bước 1, Free0, weekly_tut_free_claim" % [int(st.index) + 1,
-		st.target, st.text])
+	r.tc("TC_CA_WP_017", open and int(st.index) == 1 and st.target == "Vip0" and not r.game.weekly_tutorial_seen()
+		and not howto,
+		"sau Back: layer %s, bước %d (lỗ quanh %s), tut_seen %s, popup How to earn rewards %s; mong đợi còn mở, bước 2 "
+		% ["còn mở" if open else "đóng", int(st.index) + 1, st.target, r.game.weekly_tutorial_seen(), _yes(howto)]
+		+ "(Vip0), false, không có")
+	if not open or not is_instance_valid(wp.get("tutorial")):
+		return true
+	await _tap_bg(r, wp.get("tutorial") as Control)
+	var st3 := _tut_step(await _tut_ready(r, wp, 2))
+	r.tc("TC_CA_WP_017", int(st3.index) == 2 and st3.target == "ProgressRow",
+		"chạm nền sau Back: bước %d, lỗ quanh %s; mong đợi bước 3, ProgressRow" % [int(st3.index) + 1, st3.target])
 	return true
 
 

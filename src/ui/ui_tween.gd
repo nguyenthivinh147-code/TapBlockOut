@@ -48,6 +48,12 @@ const BAR_PAST := 8.0
 ## Main starts a screen's bars this long after the screen opens (with its 0.25 s fade).
 const BAR_DELAY := 0.05
 const META_SLIDE := "ui_slide"
+## Press (press): the art dips to PRESS_SCALE around its centre and darkens to PRESS_TINT over PRESS_SEC; released, it
+## springs back in the same time. Same as hub_nav's tabs.
+const PRESS_SCALE := 0.92
+const PRESS_SEC := 0.1
+const PRESS_TINT := Color(0.85, 0.85, 0.85)
+const META_PRESS := "ui_press"
 ## Unity prefab scripts that already animate a node's scale: such a node does not pop.
 const OWN_SCALE_ANIMS := ["UIAnim_ScaleAppear", "UIAnim_Pulse", "UIAnimScale", "AnimScaleButton"]
 
@@ -122,6 +128,27 @@ static func fade_in(c: Control, dur: float = OPEN_FADE_SEC) -> void:
 	var tw := c.create_tween()
 	tw.tween_property(c, "modulate:a", 1.0, dur).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	c.set_meta(META_REVEAL, {"tween": tw})
+
+
+# --- press ---
+
+## Pressed look for a button with no art of its own (hub_top: the avatar, the gear, the lives and gold chips under
+## invisible buttons): connect button_down to press(art, true) and button_up to press(art, false).
+static func press(art: Control, down: bool) -> void:
+	if not is_instance_valid(art):
+		return
+	art.modulate = PRESS_TINT if down else Color.WHITE
+	var old: Variant = art.get_meta(META_PRESS) if art.has_meta(META_PRESS) else null
+	if old is Tween and (old as Tween).is_valid():
+		(old as Tween).kill()
+	art.pivot_offset = art.size * 0.5
+	var to := Vector2.ONE * (PRESS_SCALE if down else 1.0)
+	if not art.is_inside_tree():
+		art.scale = to
+		return
+	var tw := art.create_tween().set_trans(Tween.TRANS_QUAD if down else Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(art, "scale", to, PRESS_SEC)
+	art.set_meta(META_PRESS, tw)
 
 
 # --- pop in ---

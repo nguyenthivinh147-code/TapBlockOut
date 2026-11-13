@@ -598,6 +598,11 @@ func start_tutorial() -> bool:
 	return true
 
 
+## Main: Back không làm gì khi overlay tutorial đang chạy (design.md mục 2 "Back Android và ESC", mục 7).
+func blocks_back() -> bool:
+	return tutorial != null and is_instance_valid(tutorial)
+
+
 ## Dừng overlay mà không tính là đã xem (layer dựng lại hoặc đóng giữa chừng).
 func _stop_tutorial() -> void:
 	if tutorial != null and is_instance_valid(tutorial):

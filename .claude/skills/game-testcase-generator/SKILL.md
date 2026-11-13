@@ -59,18 +59,32 @@ Người chơi vi phạm điều kiện tiên quyết. Checklist:
 #### 3. UI / UX & Visual Verification `[UI]`
 - **Nội dung hiển thị:** đối chiếu từng thành phần với mock (tên, icon, chỉ số, nhãn, thanh tiến trình, bộ đếm).
 - **Layout và vị trí** trên các tỉ lệ màn hình: màn chuẩn 886×1920, tai thỏ, màn dài 20:9/21:9, máy tính bảng 4:3; safe area, gesture bar.
-- **Text và localization:** 14 ngôn ngữ trong `i18n/strings.csv`; tràn chữ (tiếng Đức, Nga dài nhất), font fallback (Hindi, Hàn, Nhật), thiếu glyph hiện ô vuông, key `tr()` thô lộ ra, định dạng số và tiền tệ thống nhất toàn game.
+- **Text và localization:** 14 ngôn ngữ trong `i18n/strings.csv`; mọi chữ hiển thị đi qua `tr()` (tương đương I2 của Unity); tràn chữ (tiếng Đức, Nga dài nhất), chữ tự co vừa khung (bestfit) ở mọi chỗ sau khi căn chỉnh, font fallback (Hindi, Hàn, Nhật), thiếu glyph hiện ô vuông, key `tr()` thô lộ ra, font và cỡ chữ khớp mock/ref, định dạng số và tiền tệ thống nhất toàn game.
 - **Trạng thái phần tử UI:** Normal, Pressed, Disabled; hết lượt, đã đạt max; highlight khi đủ/thiếu điều kiện.
-- **Layering:** popup đè nhau, phần tử bị che bởi HUD hoặc tai thỏ, overlay quảng cáo, thứ tự đóng popup.
+- **Nút:** phản hồi khi nhấn và suốt lúc giữ (tối màu hoặc nhún); giữ rồi thả trên nút kích hoạt đúng 1 lần; đang giữ mà kéo ngón ra ngoài nút rồi thả, và kéo ngón từ ngoài vào nút. Kỳ vọng `design.md` không nêu thì ghi OQ (mục Open Questions).
+- **Popup:**
+  - Có lớp dim phía sau; chạm vào UI dưới dim không có tác dụng.
+  - Chạm nền tối: đóng popup hay không theo `design.md` của popup đó.
+  - Giữ cỡ và tỉ lệ khung của màn chuẩn trên mọi tỉ lệ màn, không kéo giãn theo màn; popup mà `design.md` cho cỡ theo màn (Leaderboard cao 85% màn) thì theo `design.md`.
+  - Popup đè nhau, phần tử bị che bởi HUD hoặc tai thỏ, overlay quảng cáo, thứ tự đóng popup.
+  - Chuỗi popup mở popup, đi trọn từ đầu đến cuối (ví dụ hết MOVES mà thiếu gold: popup cứu lượt → bấm mua mở shop mini → mua gói → popup thưởng → đóng shop về popup cứu lượt): mỗi lớp đúng nội dung, đóng lớp trên thì về đúng lớp dưới, số dư ở lớp dưới cập nhật ngay.
+- **Thứ tự popup tự mở:** tính năng có popup tự mở ở Home hoặc sau thẻ thắng/thua cần case trùng lúc với các popup tự mở khác (quà booster, giới thiệu cơ chế, mời tính năng, offer, kết quả tuần Leaderboard): hiện lần lượt, không đè nhau, không mất popup nào. `design.md` chưa có bảng thứ tự chung: thứ tự giả định ghi thành OQ.
+- **Back Android và ESC** (`design.md` mục 2 "Back Android và ESC"): ở mọi màn và popup, trừ lớp loading và lúc đang chuyển cảnh, Back đóng popup trên cùng hoặc làm như nút quay lại của màn. ESC trên máy tính không bắt buộc làm như Back (game chỉ ra Android), nhưng chỗ Back bị khoá thì ESC cũng không được làm gì. Hướng dẫn khoá màn hình (bàn tay chỉ, tutorial) đang chạy thì Back và ESC bị khoá. Tính năng mới có hướng dẫn: thêm case Back và ESC lúc hướng dẫn.
+- **Ô nhập chữ** (biệt danh): chạm vào mở bàn phím ảo của máy. Chỉ máy thật thấy được (`manual:`).
 - **Animation, VFX, SFX, rung:** mở/đóng popup mượt, âm click phát đúng 1 lần, không chồng âm, rung đúng chỗ, không giật (ngưỡng FPS ghi rõ là đề xuất nếu tài liệu không nêu).
 - **Tutorial:** bàn tay chỉ và vùng highlight trùng đúng nút hoặc khối cần bấm trên mọi tỉ lệ màn.
-- Mỗi màn hoặc popup có ít nhất 1 case về nội dung và layout đa tỉ lệ, và mỗi nhóm nút có 1 case về trạng thái.
+- Mỗi màn hoặc popup có ít nhất 1 case về nội dung và layout đa tỉ lệ, và mỗi nhóm nút có 1 case về trạng thái. Mỗi popup thêm 1 case dim và chạm nền, 1 case Back; mỗi nút mở màn, mở popup hoặc giao dịch có 1 case bấm đúp (`[EDGE]`).
 
 #### 4. Edge Cases & Mobile Spec `[EDGE]`
 Mỗi mảng liên quan tới tài liệu phải có case:
 - **Mạng và đồng bộ:** mất mạng đột ngột, Airplane mode bật/tắt, mạng chập chờn, hai thiết bị cùng tài khoản. Với mọi giao dịch, kiểm bất biến: không "trừ tiền mà không nhận hàng", không "nhận hàng mà không trừ tiền", không trừ hai lần.
-- **Gián đoạn thiết bị:** app xuống background, kill app giữa thao tác, cuộc gọi đến, thông báo hệ thống, thiếu bộ nhớ.
-- **Thao tác dồn dập:** tap liên tục vào nút hoặc vùng chuyển cảnh (tap 20 lần/giây khi tài nguyên chỉ đủ 1 lần: chỉ 1 giao dịch xảy ra, không số âm); tap nhiều khối cùng lúc trên bàn.
+- **Gián đoạn thiết bị:** app xuống background, kill app giữa thao tác, cuộc gọi đến, thông báo hệ thống, thiếu bộ nhớ. Để yên lâu ở một màn, màn hình vẫn bật (đề xuất 30 phút), rồi chơi tiếp: không treo, đồng hồ đếm ngược và mốc giờ vẫn đúng.
+- **Thao tác dồn dập:**
+  - Tap liên tục vào nút hoặc vùng chuyển cảnh (tap 20 lần/giây khi tài nguyên chỉ đủ 1 lần: chỉ 1 giao dịch xảy ra, không số âm); tap nhiều khối cùng lúc trên bàn.
+  - Bấm đúp nhanh nút mở popup hoặc chuyển màn: chỉ lần 1 có tác dụng, màn hoặc popup sau mở đúng 1 lần.
+  - Bấm nút khác hoặc Back khi màn đang chuyển hoặc đang tải (màn chuyển cảnh, lớp loading, "Đang tải video"): chạm bị bỏ qua, cuối cùng đứng ở đúng màn.
+  - Nhiều ngón chạm nhiều nút cùng lúc: chỉ một hành động xảy ra.
+- **Vòng lặp giữa các màn:** màn hoặc popup A có nút mở B, B lại có nút mở A: đi vòng nhiều lần, chồng popup không tăng mãi (smoke giới hạn 3 lớp), Back lùi đúng từng lớp.
 - **Giá trị biên:** tài nguyên bằng 0, ngưỡng−1 / ngưỡng / ngưỡng+1, level cuối, giá trị rất lớn.
 - **Thời gian:** mốc reset ngày/tuần (23:59:59 → 00:00:00, tuần giao năm, tháng 28/29/30/31, năm nhuận), không reset sai thời điểm, hồi mạng theo thời gian, đổi giờ máy để gian lận, múi giờ.
 - **Ngẫu nhiên:** kiểm thống kê theo N lượt với biên kỳ vọng ± 3σ (σ = √(N·p·(1−p))), tổng tỷ lệ bằng 100%, mọi kết quả ánh xạ ra vật phẩm tồn tại.
