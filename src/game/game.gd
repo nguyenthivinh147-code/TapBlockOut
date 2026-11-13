@@ -52,6 +52,8 @@ const SAVE_PATH := "user://save.json"
 const LEVEL_PATH := "res://data/levels/level_%04d.json"
 ## Gộp ghi: có thay đổi nhỏ (queue) thì ghi sau chừng này giây.
 const FLUSH_SEC := 2.5
+## Weekly Pass đổi theo giờ cả khi app vẫn mở (T2 00:00 sang mùa, 06:00 mở): kiểm mỗi chừng này giây.
+const WEEKLY_TICK_SEC := 1.0
 ## Mã locale theo thứ tự cột của i18n/strings.csv và ô của popup Language.
 const LANGS := ["en", "vi", "pt_BR", "tr", "de", "fr", "id", "es", "ru", "ko", "ja", "hi", "uk", "it"]
 ## Large icon of the evening notifications, one per text (notif_evening_NN_title / _body, NN = index + 1).
@@ -90,6 +92,7 @@ var _session_start: int = 0
 var _first_session: bool = false
 var _in_ad: bool = false
 var _flush_timer: Timer = null
+var _weekly_timer: Timer = null
 var _name_rng := RandomNumberGenerator.new()  # default nickname code (profile_name)
 var _offered: Dictionary = {}  # placement -> true (đã log rv_offer)
 var _last_win_level: int = 0
@@ -125,6 +128,11 @@ func _ready() -> void:
 	_flush_timer.wait_time = FLUSH_SEC
 	_flush_timer.timeout.connect(_on_flush_timer)
 	add_child(_flush_timer)
+	_weekly_timer = Timer.new()
+	_weekly_timer.wait_time = WEEKLY_TICK_SEC
+	_weekly_timer.timeout.connect(_on_weekly_timer)
+	add_child(_weekly_timer)
+	_weekly_timer.start()
 	if not _connected:
 		_connected = true
 		Platform.paused.connect(_on_paused)
@@ -693,6 +701,7 @@ func on_level_won(attempt: Dictionary) -> Dictionary:
 	_earn(coins, "challenge_win" if is_challenge else "level_win")
 	var weekly_pts := 0
 	if not is_challenge:
+		weekly_refresh()  # chơi liền qua T2 00:00: key vào mùa mới, không vào mùa đã hết
 		weekly_pts = WeeklyPass.add_points(s, weekly_state(), difficulty_of(level))
 		if weekly_pts > 0:
 			log_event("weekly_points", {"level": level, "points": weekly_pts, "total": WeeklyPass.points(s)})
@@ -1454,6 +1463,16 @@ func weekly_refresh() -> Dictionary:
 	if bool(r.settled):
 		save_now()
 	return r
+
+
+## App vẫn mở qua T2 00:00 hay 06:00 (ngồi ở Home, đang chơi level): chốt mùa, bỏ hay cộng mạng VIP như lúc mở
+## game. Bỏ qua khi boot đang chạy dở (save, cloud, Remote Config chưa xong) và khi save chưa có mùa (trước boot).
+func _on_weekly_timer() -> void:
+	if _booted and not _boot_done:
+		return
+	if str((s.get("weekly", {}) as Dictionary).get("cycle", "")) == "":
+		return
+	weekly_refresh()
 
 
 ## Đặt s.lives.bonus theo state; tăng thì cộng luôn vào số mạng hiện có.

@@ -1533,9 +1533,11 @@ static func _wpp_buy_wait(r) -> bool:
 	return true
 
 
-## TC_CA_WP_069. Save L27, tut_seen true, VIP, bonus 3, mạng 13/13, ts 1800230390: đổi giờ sang T2 00:01 lúc ở Home.
+## TC_CA_WP_069. Save L27, tut_seen true, VIP, mốc 0 đã nhận, bonus 3, mạng 13/13, ts 1800230390: đổi giờ sang T2 00:01
+## lúc ở Home. Mốc 0 chưa nhận thì lúc chốt mùa VIP tự nhận 15 phút mạng vô hạn và chip mạng hiện đồng hồ, không hiện số.
 static func _wpp_waiting_open(r) -> bool:
-	if not await _wp_open(r, {"level": 27, "tut_seen": true, "vip": true, "bonus": 3, "count": 13, "t": 1800230390}):
+	if not await _wp_open(r, {"level": 27, "tut_seen": true, "vip": true, "claimed_free": [0], "claimed_vip": [0],
+			"bonus": 3, "count": 13, "t": 1800230390}):
 		return false
 	if not await _wp_home(r):
 		return false
@@ -2530,13 +2532,22 @@ static func _hud(r) -> Dictionary:
 	return out
 
 
-## Bấm nút Weekly Pass ở Home, đợi layer mở xong.
+## Bấm nút Weekly Pass ở Home, đợi layer mở xong. Smoke vừa đổi giờ qua thứ Hai 00:00 thì đợi Game chốt mùa trước
+## (Timer mỗi giây, design.md mục 7): chốt xong Home làm mới và xếp lại cột bên, bấm giữa chừng thì trượt sang nút khác.
 static func _wp_layer(r) -> Node:
+	await Scen.wait_for(r, func() -> bool: return not _wp_season_due(r), 3000, "*")
 	await Scen.settle_all(r)
 	var wp := await _open_from_home(r, "WeeklyPassButton", "weekly_pass.gd")
 	if wp != null:
 		await r.wait_sec(0.7)
 	return wp
+
+
+## Mùa đã lưu cũ hơn tuần của giờ hiện tại: Game sắp chốt mùa. Giờ lùi (mùa đã lưu mới hơn) thì không chốt (OQ-05).
+static func _wp_season_due(r) -> bool:
+	var saved := WeeklyPass.cycle_day(str(r.game.s.weekly.get("cycle", "")))
+	var cur := WeeklyPass.cycle_day(str(WeeklyPass.window(r.game.now(), int(r.game.call("_tz"))).cycle))
+	return saved >= 0 and cur > saved
 
 
 ## Đóng layer bằng X, đợi Home làm mới nút (mỗi giây).
