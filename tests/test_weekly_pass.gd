@@ -287,6 +287,16 @@ func _flat(r: Dictionary) -> Array:
 		int(items.get("smash", 0)), int(r.get("inf_min", 0))]
 
 
+## Đợi khung hình tới khi `cond` đúng hay hết `ms` mili giây giờ thật. Không dùng create_timer: test trước (như
+## test_static_check) chặn vòng lặp vài giây trong một khung, khung sau có delta lớn nên SceneTreeTimer hết ngay,
+## trước khi Timer của Game (WEEKLY_TICK_SEC) kịp chạy.
+func _wait(cond: Callable, ms: int) -> bool:
+	var deadline := Time.get_ticks_msec() + ms
+	while not cond.call() and Time.get_ticks_msec() < deadline:
+		await _root().get_tree().process_frame
+	return cond.call()
+
+
 func _open(path: String) -> Control:
 	var node := (load(path) as PackedScene).instantiate() as Control
 	_root().add_child(node)
@@ -399,20 +409,8 @@ func test_year_end_and_leap_week(t: T) -> void:
 	t.eq(int(leap.end) - int(leap.start), 604800, "TC_CA_WP_011 29/02/2028: end - start = 604800")
 
 
-## Assert đỏ đã biết (lỗi game chờ sửa, hoặc Open Question chưa chốt). Còn sai thì ghi bằng t.allow: run_all in
-## dòng ALLOWED, báo cáo hiện Skipped, không ẩn đi. Đã đúng thì fail để bỏ đánh dấu, như dòng thừa của
-## tests/static_allow.txt.
-func _known(t: T, actual: Variant, expected: Variant, msg: String, why: String) -> void:
-	if typeof(actual) == typeof(expected) and actual == expected:
-		t.fail("%s: đã đúng, bỏ đánh dấu đã biết (%s)" % [msg, why])
-	else:
-		t.allow("%s: mong đợi %s, nhận %s; %s" % [msg, str(expected), str(actual), why])
-
-
-## Lùi giờ máy về tuần trước: WeeklyPass.refresh chốt và reset mùa mỗi khi cycle khác, kể cả cycle cũ hơn.
-const OQ05 := "OQ-05 chưa chốt, chờ designer; chốt theo giả định của case thì là lỗi game, chờ sửa (2026-11-12)"
-
-
+## Lùi giờ máy về tuần trước (OQ-05 chốt 2026-11-13: như quà 28 ngày, không reset mùa). Trước khi sửa,
+## WeeklyPass.refresh chốt và reset mùa mỗi khi cycle khác, kể cả cycle cũ hơn: chỉnh giờ tới lui là nhận lại mốc 0.
 func test_clock_back_keeps_new_season(t: T) -> void:
 	var g := _g(27, 1800252001)
 	g.weekly_refresh()  # mùa W20836
@@ -423,16 +421,94 @@ func test_clock_back_keeps_new_season(t: T) -> void:
 	t.eq(g.s.weekly.cycle, "W20836", "TC_CA_WP_012 dữ liệu: mùa W20836")
 	g.test_now = TS  # lùi giờ về tuần W20829
 	g.weekly_refresh()
-	_known(t, g.s.weekly.cycle, "W20836", "TC_CA_WP_012 lúc giờ lùi: cycle giữ W20836", OQ05)
-	_known(t, int(g.s.weekly.points), 2, "TC_CA_WP_012 lúc giờ lùi: points giữ 2", OQ05)
-	_known(t, g.s.weekly.claimed_free, [0], "TC_CA_WP_012 lúc giờ lùi: claimed_free giữ [0]", OQ05)
-	_known(t, g.s.weekly.pending_end, {}, "TC_CA_WP_012 lúc giờ lùi: không có pending_end mới", OQ05)
-	_known(t, g.weekly_claim_free(0), {}, "TC_CA_WP_012 lúc giờ lùi: weekly_claim_free(0) trả {}", OQ05)
-	_known(t, int(g.s.lives.inf_until), 1800252901, "TC_CA_WP_012 lúc giờ lùi: inf_until giữ 1800252901", OQ05)
+	t.eq(g.s.weekly.cycle, "W20836", "TC_CA_WP_012 lúc giờ lùi: cycle giữ W20836")
+	t.eq(int(g.s.weekly.points), 2, "TC_CA_WP_012 lúc giờ lùi: points giữ 2")
+	t.eq(g.s.weekly.claimed_free, [0], "TC_CA_WP_012 lúc giờ lùi: claimed_free giữ [0]")
+	t.eq(g.s.weekly.pending_end, {}, "TC_CA_WP_012 lúc giờ lùi: không có pending_end mới")
+	t.eq(g.weekly_claim_free(0), {}, "TC_CA_WP_012 lúc giờ lùi: weekly_claim_free(0) trả {}")
+	t.eq(int(g.s.lives.inf_until), 1800252901, "TC_CA_WP_012 lúc giờ lùi: inf_until giữ 1800252901")
 	g.test_now = 1800252100
 	g.weekly_refresh()
-	_known(t, g.weekly_claim_free(0), {}, "TC_CA_WP_012 lúc trở lại: weekly_claim_free(0) trả {}", OQ05)
-	_known(t, int(g.s.lives.inf_until), 1800252901, "TC_CA_WP_012 lúc trở lại: inf_until giữ 1800252901", OQ05)
+	t.eq(g.s.weekly.cycle, "W20836", "TC_CA_WP_012 lúc trở lại: cycle W20836")
+	t.eq(g.weekly_claim_free(0), {}, "TC_CA_WP_012 lúc trở lại: weekly_claim_free(0) trả {}")
+	t.eq(int(g.s.lives.inf_until), 1800252901, "TC_CA_WP_012 lúc trở lại: inf_until giữ 1800252901")
+
+
+## Lùi múi giờ qua 00:00 thứ Hai (OQ-05: "hoặc đổi múi giờ") cũng không reset mùa: logic thuần.
+func test_tz_back_keeps_new_season(t: T) -> void:
+	Config.reset()
+	var s := SaveSchema.defaults()
+	WeeklyPass.refresh(s, 1800252001, 0)  # T2 18/01/2027 06:00:01, tz 0: mùa W20836
+	s.weekly.points = 4
+	var r := WeeklyPass.refresh(s, 1800252001, -7 * 3600)  # UTC-7: còn CN 17/01 23:00 giờ máy, tuần W20829
+	t.eq(r.settled, false, "OQ-05 tz lùi: không chốt mùa")
+	t.eq(s.weekly.cycle, "W20836", "OQ-05 tz lùi: cycle giữ W20836")
+	t.eq(int(s.weekly.points), 4, "OQ-05 tz lùi: points giữ 4")
+
+
+# --- Hồi quy: lỗi tìm thấy khi chấm case WP (2026-11-13) ---
+
+## TC_CA_WP_033. Chơi liền qua 00:00 thứ Hai không tắt app. Trước khi sửa, Game chỉ chốt mùa lúc mở game, lúc app quay
+## lại từ nền và lúc mở layer, nên key của L29 (T2 06:01) vào mùa cũ: cycle W20829, points 7.
+func test_win_across_monday_goes_to_new_season(t: T) -> void:
+	var g := _g(27, 1800230300)  # CN 17/01/2027 23:58:20
+	g.weekly_refresh()  # mùa W20829
+	g.s.weekly.tut_seen = true
+	g.s.weekly.points = 3
+	g.test_now = 1800230390
+	var r := _win(g, g.start_attempt())
+	t.eq(int(r.get("weekly_points", -1)), 1, "TC_CA_WP_033 bước 1: thẻ \"+1 key\"")
+	t.eq(int(g.s.weekly.points), 4, "TC_CA_WP_033 bước 1: points 3 -> 4")
+	g.test_now = 1800230460  # T2 00:01:00, Waiting
+	r = _win(g, g.start_attempt())
+	t.eq(int(r.get("weekly_points", -1)), 0, "TC_CA_WP_033 bước 2: Waiting không có key")
+	g.test_now = 1800252060  # T2 06:01:00
+	r = _win(g, g.start_attempt())
+	t.eq(int(r.get("weekly_points", -1)), 3, "TC_CA_WP_033 bước 3: thẻ \"+3 keys\"")
+	t.eq(g.s.weekly.cycle, "W20836", "TC_CA_WP_033 bước 3: cycle W20836")
+	t.eq(int(g.s.weekly.points), 3, "TC_CA_WP_033 bước 3: points 3 (chỉ key của L29)")
+	t.eq(int(g.s.weekly.pending_end.get("points", -1)), 4, "TC_CA_WP_033 popup cuối mùa: 4 key")
+
+
+## TC_CA_WP_069. Sang Waiting khi app vẫn mở (ngồi ở Home). Trước khi sửa, mùa chưa chốt nên VIP và +3 mạng tối đa
+## giữ tới lần mở game hay quay lại app sau.
+func test_monday_while_open_drops_vip_hearts(t: T) -> void:
+	var g := _g(27, 1800230390)  # CN 17/01/2027 23:59:50
+	g.weekly_refresh()
+	g.s.weekly.tut_seen = true
+	g.s.weekly.vip = true
+	g.s.weekly.claimed_free = [0]  # mốc 0 đã nhận: lúc chốt mùa VIP không tự nhận 15 phút mạng vô hạn
+	g.s.weekly.claimed_vip = [0]
+	g.weekly_refresh()  # +3 mạng tối đa của VIP
+	t.eq(int(g.lives_view().max), 13, "TC_CA_WP_069 dữ liệu: Lives.max_for = 13")
+	t.eq(int(g.lives_view().count), 13, "TC_CA_WP_069 dữ liệu: mạng 13")
+	g.test_now = 1800230460  # T2 00:01:00
+	await _wait(func() -> bool: return not bool(g.s.weekly.vip), 3000)  # Timer của Game, không gọi hàm nào
+	t.eq(g.weekly_state(), "waiting", "TC_CA_WP_069 weekly_state = waiting")
+	t.eq(g.s.weekly.vip, false, "TC_CA_WP_069 s.weekly.vip = false (mùa đã chốt)")
+	t.eq(int(g.lives_view().max), 10, "TC_CA_WP_069 Lives.max_for = 10")
+	t.eq(int(g.lives_view().count), 10, "TC_CA_WP_069 mạng 10")
+	t.eq(bool(g.lives_view().infinite), false, "TC_CA_WP_069 không có mạng vô hạn (chip mạng hiện số)")
+
+
+## TC_CA_WP_096. Đếm ngược của màn Waiting trong layer. Trước khi sửa, _tick chỉ cập nhật TimeLabel của mùa Active nên
+## WaitingLabel đứng ở 5:59:59.
+func test_waiting_countdown_ticks(t: T) -> void:
+	var g := _g(27, 1800230401)  # T2 18/01/2027 00:00:01, Waiting
+	g.weekly_refresh()
+	var locale := TranslationServer.get_locale()
+	TranslationServer.set_locale("en")
+	var layer := _open("res://scenes/weekly_pass.tscn")
+	var label := layer.find_child("WaitingLabel", true, false) as Label
+	t.ok(label != null, "TC_CA_WP_096 có WaitingLabel")
+	if label != null:
+		t.ok(label.text.contains("opens in 5:59:59"), "TC_CA_WP_096 WaitingLabel \"... 5:59:59 ...\" (nhận \"%s\")" % label.text)
+		g.test_now = 1800230402
+		await _wait(func() -> bool: return label.text.contains("opens in 5:59:58"), 2500)  # Timer của layer
+		t.ok(label.text.contains("opens in 5:59:58"),
+			"TC_CA_WP_096 giờ tăng 1 giây: \"... 5:59:58 ...\" (nhận \"%s\")" % label.text)
+	layer.queue_free()
+	TranslationServer.set_locale(locale)
 
 
 func test_tutorial_flag_kept_next_season(t: T) -> void:

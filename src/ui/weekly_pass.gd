@@ -93,6 +93,7 @@ var _list_scroll: UScroll = null
 var _list: Control = null  # content of the reward list
 var _slider: RefCounted = null  # view of the progress slider
 var _time_label: Label = null
+var _waiting_label: Label = null  # countdown to 06:00 while Waiting
 var _timer: Timer = null
 var _busy: bool = false
 var _closed: bool = false
@@ -126,6 +127,9 @@ func _tick() -> void:
 	if Game.weekly_state() != str(view.get("state", "")):
 		_rebuild()
 		return
+	if _waiting_label != null and is_instance_valid(_waiting_label):
+		UnityUI.set_text(_waiting_label, _waiting_text(int(Game.weekly_view().seconds_left)))
+		return
 	if _time_label == null or not is_instance_valid(_time_label):
 		return
 	UnityUI.set_text(_time_label, _time_text(int(Game.weekly_view().seconds_left)))
@@ -142,6 +146,10 @@ static func fmt_time(sec: int) -> String:
 
 func _time_text(sec: int) -> String:
 	return tr("weekly_time_left") % fmt_time(sec)
+
+
+func _waiting_text(sec: int) -> String:
+	return "%s\n%s" % [tr("weekly_waiting_title"), tr("weekly_waiting_body") % fmt_time(sec)]
 
 
 ## Wires the frame and the pass's nodes of scenes/weekly_pass.tscn once; _rebuild shows the state in them.
@@ -176,6 +184,7 @@ func _rebuild() -> void:
 	progress_row = null
 	_scroll = null
 	_time_label = null
+	_waiting_label = null
 	view = Game.weekly_view()
 	# Milestone rows and the bank follow the season; out of the tree now so the new ones keep their names.
 	for c in _list.get_children():
@@ -190,8 +199,8 @@ func _rebuild() -> void:
 		_show_active()
 		_restore_scroll(keep_y)
 	elif str(view.state) == WeeklyPass.WAITING:
-		_show_message(tr("weekly_title"), "%s\n%s" % [tr("weekly_waiting_title"),
-			tr("weekly_waiting_body") % fmt_time(int(view.seconds_left))], "WaitingLabel")
+		_show_message(tr("weekly_title"), _waiting_text(int(view.seconds_left)), "WaitingLabel")
+		_waiting_label = _content.find_child("WaitingLabel", true, false) as Label
 	else:
 		_show_message(tr("weekly_title"), tr("weekly_locked"), "LockedLabel")
 	_auto_tutorial.call_deferred()
@@ -689,3 +698,12 @@ func close() -> void:
 		return
 	_closed = true
 	closed.emit({})
+
+
+## Android Back (Main): How to earn rewards over the pass closes first (a child of the pass, not a Main popup), then
+## the pass (OQ-10, like Language over Settings).
+func on_back() -> void:
+	if howto != null and is_instance_valid(howto):
+		howto.call("close")
+	else:
+		close()

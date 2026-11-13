@@ -295,16 +295,27 @@ static func progress_ratio(s: Dictionary) -> float:
 
 # --- sang mùa ---
 
-## So chu kỳ đã lưu với chu kỳ hiện tại. Khác nhau thì chốt mùa cũ rồi reset.
+## Ngày bắt đầu (số ngày giờ máy) của mã chu kỳ "W<ngày>"; -1 nếu mã rỗng hay hỏng.
+static func cycle_day(cycle: String) -> int:
+	if not cycle.begins_with("W") or not cycle.substr(1).is_valid_int():
+		return -1
+	return cycle.substr(1).to_int()
+
+
+## So chu kỳ đã lưu với chu kỳ hiện tại. Chu kỳ hiện tại mới hơn thì chốt mùa cũ rồi reset.
 ## Chỉ VIP tự nhận mọi thưởng chưa claim (Main free, Main VIP, Bonus Bank). Người không VIP
 ## không nhận lại phần free chưa claim. Trả {settled, reward} (reward {coins, items}).
 ## Ghi s.weekly.pending_end để UI hiện popup cuối mùa một lần.
+## Giờ máy hay múi giờ lùi về tuần trước (chu kỳ hiện tại cũ hơn): giữ nguyên mùa, không thưởng mới cho tới khi giờ
+## vượt mốc cũ (như quà 28 ngày, OQ-05).
 static func refresh(s: Dictionary, now: int, tz: int) -> Dictionary:
 	var w := _w(s)
 	var cycle: String = window(now, tz).cycle
 	if str(w.get("cycle", "")) == cycle:
 		return {"settled": false, "reward": _empty()}
 	var old: String = str(w.get("cycle", ""))
+	if cycle_day(old) >= 0 and cycle_day(cycle) < cycle_day(old):
+		return {"settled": false, "reward": _empty()}
 	var result := {"settled": false, "reward": _empty()}
 	if old != "" and (int(w.points) > 0 or is_vip(s)):
 		var was_vip := is_vip(s)
