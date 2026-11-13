@@ -3507,13 +3507,7 @@ static func _offer_buy(r, pop: Node, sku: String) -> bool:
 
 ## Level `lvl` đang chơi; đang ở Home thì bấm Chơi.
 static func _ensure_playing(r, lvl: int) -> bool:
-	if r.screen_name() == "home":
-		await Scen.settle_all(r)
-		if not await Scen.tap_named(r, "PlayButton", r.main.current_screen):
-			return false
-	if not await Scen.wait_for(r, func() -> bool: return Scen._playing(r) == lvl, 20000):
-		return r.fail("không vào được L%d (đang %s, level %d)" % [lvl, r.screen_name(), Scen._playing(r)])
-	return true
+	return await Scen.ensure_playing(r, lvl)
 
 
 ## Như Scen.go_home_from_level nhưng giữ popup `keep` (popup tự mở khi về Home: Upsell, Chain Offer) thay vì đóng nó

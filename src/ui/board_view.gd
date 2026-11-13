@@ -81,6 +81,21 @@ const CHOCO_BREAK_CHIPS := 5  # vụn mỗi đoạn dài một ô dọc thanh l�
 const CHOCO_CHIP_CELL := 0.8  # vụn socola cỡ như vụn của khối rộng chừng này ô
 const HINT_POP := 1.22  # khối được Gợi ý nảy to chừng này lúc sao chạm
 const HINT_POP_GLOW := 3.0  # độ loé trắng lúc chạm, tắt dần về mức nhấp nháy (1)
+## Level entry (lift_all, drop_in; design.md mục 8 "Khối rơi lúc vào màn"): blocks fall onto the board one after another.
+const DROP_FALL := 0.3  # seconds one block takes from the top to the board, speeding up like gravity
+const DROP_GAP := 0.035  # each block starts falling this many seconds after the one before...
+const DROP_SPREAD := 0.7  # ...but the last one starts within this many seconds (big boards fall closer together)
+const DROP_SLANT := 0.2  # fall order: top rows first; within a row from the left, each column counting as this many rows
+const DROP_JITTER := 0.6  # the order shifts at random by up to this many rows, so it does not read as a sweep
+const DROP_SCALE := 0.4  # at the top a block is this much bigger (closer to the eye)...
+const DROP_RISE := 0.5  # ...and this many cells above its cells
+const DROP_FADE := 0.35  # a block fades in over this share of its fall
+const DROP_LAND := 0.13  # landing: the jelly squashes this much (like WOBBLE_SELF) and springs back
+const DROP_SHAKE := 0.04  # the board shakes this many cells on a landing
+const DROP_SHAKE_TIME := 0.12
+const DROP_THUD_GAP := 0.08  # board shake and thud at most once per this many seconds
+const DROP_THUD_DB := -8.0  # the thud (sfx_bump) this many dB under a bump
+const DROP_SETTLE := 0.15  # seconds after the last landing before touch opens (the bounce goes on)
 const GHOST_NAME := "Ghost"
 const SIDE_OF_DIR := {"up": Vector2(0, -1), "left": Vector2(-1, 0), "right": Vector2(1, 0), "down": Vector2(0, 1)}
 
@@ -88,6 +103,7 @@ const SIDE_OF_DIR := {"up": Vector2(0, -1), "left": Vector2(-1, 0), "right": Vec
 ## Bóng đổ của một khối: ở lớp riêng dưới mọi khối nên không đổ lên khối bên cạnh; bám theo khối mỗi khung, xoá theo khối.
 class ShadowNode extends Control:
 	const BoardFx := preload("res://src/ui/board_fx.gd")
+	const LIFT_SHRINK := 0.3  # shadow of a block at the top of the entry drop is this much smaller
 	var source: Control = null
 	var body: Control = null
 
@@ -100,11 +116,18 @@ class ShadowNode extends Control:
 		if not is_instance_valid(source) or source.is_queued_for_deletion():
 			queue_free()
 			return
-		position = source.position + source.get_parent().position
+		# A block lifted by the entry drop (BlockNode.lift): the shadow stays on its cells, smaller and fainter the
+		# higher the block, and darkens as it comes down.
+		var lift := float(source.get("lift"))
+		position = source.position - (source.get("lift_offset") as Vector2) + source.get_parent().position
 		pivot_offset = source.pivot_offset
-		scale = source.scale
 		rotation = source.rotation
 		modulate = source.modulate
+		if lift > 0.0:
+			scale = Vector2.ONE * (1.0 - LIFT_SHRINK * lift)
+			modulate.a = 1.0 - lift
+		else:
+			scale = source.scale
 
 
 ## Một khối trên bàn: Control vẽ bằng BoardFx.draw_block, toạ độ ô tính từ góc trên trái của khối.
@@ -117,6 +140,8 @@ class BlockNode extends Control:
 	var view: Dictionary = {}
 	var glow: float = 0.0
 	var busy: bool = false
+	var lift: float = 0.0  # entry drop (drop_in): 0 on the board .. 1 at the top
+	var lift_offset: Vector2 = Vector2.ZERO  # px the drop raises the block above its cells; its shadow stays below
 
 	var shadow: ShadowNode = null  # null với khối "bóng" trong hiệu ứng
 	var _body: Control = null
@@ -180,6 +205,12 @@ class BlockNode extends Control:
 		var f := amp * exp(-5.5 * t) * cos(t * TAU * 2.4)
 		scale = Vector2.ONE - axis * f + Vector2(axis.y, axis.x) * f * 0.65
 
+	## Stops a wobble where it is (the exit tween takes over the scale).
+	func stop_wobble() -> void:
+		if _wobble_tw != null:
+			_wobble_tw.kill()
+			_wobble_tw = null
+
 
 var input_enabled: bool = true
 
@@ -230,6 +261,11 @@ var _pop_due: Dictionary = {}  # lượt -> {"cells": ô của bom kẹo, "ids":
 var _pop_gen: int = 0  # tăng khi setup: lời gọi hẹn giờ của bàn cũ bỏ qua
 var _sfx_db: float = 0.0  # tiếng vỡ lớp phủ, sương tan nhỏ hơn chừng này dB (lúc bom kẹo nổ)
 var _sfx_mute: bool = false  # bỏ tiếng vỡ (bom kẹo nổ đã đủ Config.POP_SFX_MAX tiếng)
+## Entry drop (lift_all, drop_in): one entry per block in fall order, {"node", "at": seconds after the drop starts,
+## "landed"}; empty when no block is lifted.
+var _drop_plan: Array = []
+var _drop_tw: Tween = null
+var _drop_thud_ms: int = -1000000  # Time.get_ticks_msec() of the last landing shake and thud
 
 static var _fx_prewarmed: bool = false
 
@@ -426,6 +462,102 @@ func is_animating() -> bool:
 	return _pending > 0
 
 
+# --- entry drop ---
+
+## Level entry, right after setup(): every block hangs hidden above its cells until drop_in().
+func lift_all() -> void:
+	_drop_plan = _drop_order()
+	for e: Dictionary in _drop_plan:
+		_set_lift(e.node, 1.0, 0.0)
+
+
+## Lets the lifted blocks fall onto the board one after another, top rows first (_drop_order): each speeds up, shrinks
+## to its size and fades in as it comes down; on the board it squashes like jelly and the board shakes with a thud.
+## Returns DROP_SETTLE after the last landing; at once when nothing is lifted. A new setup() drops the old plan.
+func drop_in() -> void:
+	if _drop_plan.is_empty() or _drop_tw != null:
+		return
+	var total := float(_drop_plan[-1].at) + DROP_FALL
+	var tw := create_tween()
+	_drop_tw = tw
+	tw.tween_method(_drop_step, 0.0, total, total)
+	tw.tween_interval(DROP_SETTLE)
+	await tw.finished
+	if _drop_tw != tw:
+		return
+	_drop_tw = null
+	_drop_plan.clear()
+
+
+## Blocks are still lifted or falling (lift_all called, drop_in not finished).
+func is_dropping() -> bool:
+	return not _drop_plan.is_empty()
+
+
+## Fall order: by the block's centre, top row first, a little from the left (DROP_SLANT), shuffled by DROP_JITTER rows;
+## start times DROP_GAP apart, squeezed so the last one starts within DROP_SPREAD.
+func _drop_order() -> Array:
+	var out: Array = []
+	for id in _nodes:
+		var n: BlockNode = _nodes[id]
+		var c := Vector2.ZERO
+		for cell: Vector2i in n.cells:
+			c += Vector2(cell)
+		c /= float(maxi(1, n.cells.size()))
+		out.append({"node": n, "key": c.y + c.x * DROP_SLANT + _rng.randf() * DROP_JITTER, "at": 0.0, "landed": false})
+	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return float(a.key) < float(b.key))
+	var gap := DROP_GAP
+	if out.size() > 1:
+		gap = minf(DROP_GAP, DROP_SPREAD / float(out.size() - 1))
+	for i in out.size():
+		out[i].at = gap * i
+	return out
+
+
+## Drop at `time` seconds: places every falling block; a block whose fall is over lands.
+func _drop_step(time: float) -> void:
+	for e: Dictionary in _drop_plan:
+		if bool(e.landed):
+			continue
+		if not is_instance_valid(e.node):
+			e.landed = true
+			continue
+		var t := (time - float(e.at)) / DROP_FALL
+		if t >= 1.0:
+			_drop_land(e)
+		elif t > 0.0:
+			_set_lift(e.node, 1.0 - t * t, clampf(t / DROP_FADE, 0.0, 1.0))
+
+
+## Block `n` at height `h` (0 on its cells .. 1 at the top), shown at `alpha`. Its place comes from the layout each
+## time, so a resize mid-drop (_layout) keeps it over its cells.
+func _set_lift(n: BlockNode, h: float, alpha: float) -> void:
+	n.lift = h
+	n.lift_offset = Vector2(0.0, -DROP_RISE * _cell * h)
+	n.pivot_offset = n.size * 0.5
+	n.scale = Vector2.ONE * (1.0 + DROP_SCALE * h)
+	n.position = _origin + Vector2(n.origin_cell) * _cell + n.lift_offset
+	n.modulate.a = alpha
+	# In the air it draws over the blocks already down.
+	n.z_index = 1 if h > 0.0 else 0
+
+
+func _drop_land(e: Dictionary) -> void:
+	e.landed = true
+	var n: BlockNode = e.node
+	_set_lift(n, 0.0, 1.0)
+	n.wobble(Vector2(0, 1), DROP_LAND, WOBBLE_TIME)
+	var now := Time.get_ticks_msec()
+	if now - _drop_thud_ms < int(DROP_THUD_GAP * 1000.0):
+		return
+	_drop_thud_ms = now
+	Sfx.play("bump", DROP_THUD_DB)
+	if _shake_tw != null:
+		_shake_tw.kill()
+	_blocks_root.position = Vector2.ZERO
+	_shake_tw = BoardFx.shake(_blocks_root, maxf(1.5, _cell * DROP_SHAKE), DROP_SHAKE_TIME, Vector2(0, 1))
+
+
 ## Cổng nhịp của cạnh này đang mở (theo board, không chờ hoạt ảnh)?
 func gate_is_open(side: String) -> bool:
 	return bool(_gate_state.get(side, true))
@@ -456,6 +588,10 @@ func ghost_count() -> int:
 
 func _clear() -> void:
 	clear_highlight()
+	if _drop_tw != null:
+		_drop_tw.kill()
+		_drop_tw = null
+	_drop_plan.clear()
 	_specials.clear()
 	for id in _nodes:
 		_nodes[id].queue_free()
@@ -784,6 +920,8 @@ func _anim_exit(node: BlockNode, dir: Vector2, seq: int, strips: Array = []) -> 
 	_unmap(node.id)
 	_nodes.erase(node.id)
 	node.busy = true
+	# Tapped while still bouncing (from a bump or the entry drop): the dash owns the scale from here.
+	node.stop_wobble()
 	_begin()
 	_move_begin(seq)
 	var side := LevelData.block_side(node.view)

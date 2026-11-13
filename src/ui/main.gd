@@ -93,14 +93,18 @@ func _boot() -> void:
 	is_booted = true
 	booted.emit()
 	_boot_popups()
-	_home_autoshow()
+	_home_autoshow(true)
 
 
 ## After loading, the game opens on the level when the player can start it: lives (as Play on Home) and a level
-## to play (the demo ends at demo_max_level). Otherwise Home.
+## to play (the demo ends at demo_max_level). Otherwise Home, and always Home once the special level is unlocked
+## (Config.UNLOCK.special_bomb).
 func boot_to_level() -> bool:
+	if Unlocks.is_open("special_bomb", int(Game.s.level)):
+		return false
 	# A save conflict (select_account) is settled on Home first: the level would run on the save being replaced.
-	return bool(Game.lives_view().get("can_play", true)) and Game.level_exists(int(Game.s.level)) 		and Game.cloud_conflict_view().is_empty()
+	return bool(Game.lives_view().get("can_play", true)) and Game.level_exists(int(Game.s.level)) \
+		and Game.cloud_conflict_view().is_empty()
 
 
 ## Sau khi mở game: chọn bản lưu khi cloud xung đột (1.4), rồi popup cập nhật (1.2).
@@ -173,12 +177,14 @@ func _version() -> String:
 
 ## Popup tự mở khi về Home, nhiều nhất một cái mỗi lần: chọn bản lưu (1.4), Chain Offer (một lần mỗi chuỗi), giới
 ## thiệu Win Streak (một lần mỗi lượt, khi chưa bấm Start), Weekly Pass Upsell (một lần mỗi mùa).
-func _home_autoshow() -> void:
+## `at_boot`: the game just opened on Home; sales popups (Chain Offer, Upsell) wait for the next time Home shows
+## (design.md mục 3: no sales popup when the game opens).
+func _home_autoshow(at_boot: bool = false) -> void:
 	if current_name != "home":
 		return
 	if not Game.cloud_conflict_view().is_empty():
 		_on_cloud_conflict()
-	elif Game.chain_take_autoshow():
+	elif not at_boot and Game.chain_take_autoshow():
 		_popup_then(CHAIN_OFFER, {}, false)
 	elif popup_count() > 0:
 		return
@@ -186,7 +192,7 @@ func _home_autoshow() -> void:
 		_open_special()
 	elif Game.streak_take_auto_intro():
 		_open_streak("intro")
-	elif Game.weekly_take_upsell():
+	elif not at_boot and Game.weekly_take_upsell():
 		var p := open_popup(WEEKLY_UPSELL)
 		if p != null:
 			p.connect("closed", func(r: Variant) -> void:

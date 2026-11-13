@@ -28,7 +28,9 @@ static func scen_v(r) -> bool:
 	var next := from
 	while next <= to:
 		var start := next
-		if not await r.open_game("V", func(g: Node) -> void: _prepare(g, start)):
+		# From the special level's unlock the game opens on Home: Play enters the level.
+		if not await r.open_game("V", func(g: Node) -> void: _prepare(g, start)) \
+				or not await Scen.ensure_playing(r, start):
 			bad.append(_take_fail(r, "L%d" % next, "không mở được game"))
 			next += 1
 			continue

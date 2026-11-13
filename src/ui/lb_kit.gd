@@ -38,11 +38,6 @@ const INF_SPRITE := "Resources_moved_UI_Maincenter:UI_Maincenter_16"
 ## Preview tile of the random league avatar/frame (design.md mục 7 "League"): this avatar in this frame.
 const COS_RANDOM_ICON := ["avatar_08", "frame_08"]
 
-## Màu nền huy hiệu theo league (chưa có ảnh cúp riêng cho từng league).
-const LEAGUE_COLORS := {
-	"silver": Color("AEB8CC"), "gold": Color("FFB82E"), "platinum": Color("6FCFE3"), "emerald": Color("2FBF71"),
-	"diamond": Color("4E8DF5"), "immortal": Color("B05CF0"), "one_above_all": Color("F2456B"),
-}
 ## Màu số hạng 1, 2, 3.
 const MEDAL_COLORS := [Color("FFC933"), Color("C9D3E6"), Color("E8975A")]
 const AVATAR_PX := 76
@@ -50,31 +45,6 @@ const AVATAR_PX := 76
 
 static func league_name(id: String) -> String:
 	return TranslationServer.translate("lb_league_" + id)
-
-
-static func league_color(id: String) -> Color:
-	return LEAGUE_COLORS.get(id, ThemeKit.TEXT_DIM)
-
-
-## Huy hiệu league: cúp của league (LeaderboardRankBadgesSO, xem LEAGUE_SPRITES), khung vuông px.
-static func league_badge(id: String, px: float) -> Control:
-	var p := Control.new()
-	p.name = "LeagueBadge"
-	p.custom_minimum_size = Vector2(px, px)
-	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	p.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var img := UImage.new()
-	img.name = "Trophy"
-	img.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	img.set_anchors_preset(Control.PRESET_FULL_RECT)
-	img.preserve_aspect = true
-	var sp := UnityUI.sprite_info(league_sprite(id))
-	if not sp.is_empty():
-		img.set_texture(sp.tex, sp.region)
-	img.color = league_tint(id)
-	p.add_child(img)
-	return p
 
 
 ## Số hạng: 1-3 trong vòng màu huy chương, còn lại chữ mực.
@@ -195,26 +165,6 @@ static func row(row_view: Dictionary, sub: String = "") -> PanelContainer:
 	p.add_theme_stylebox_override("panel", _row_box(bool(row_view.get("me", false))))
 	p.add_child(row_content(row_view, sub))
 	return p
-
-
-## Hàng bấm được (World Ranking: chạm để xem người chơi).
-static func row_button(row_view: Dictionary) -> Button:
-	var b := Button.new()
-	b.name = "WorldRow_%d" % int(row_view.get("rank", 0))
-	b.focus_mode = Control.FOCUS_NONE
-	b.custom_minimum_size = Vector2(ThemeKit.MIN_BUTTON.x, 96)
-	b.mouse_filter = Control.MOUSE_FILTER_PASS
-	for st in ["normal", "hover", "pressed", "disabled"]:
-		var s := _row_box(bool(row_view.get("me", false)))
-		if st == "pressed":
-			s.bg_color = s.bg_color.darkened(0.08)
-		b.add_theme_stylebox_override(st, s)
-	var c := row_content(row_view)
-	c.set_anchors_preset(Control.PRESET_FULL_RECT)
-	c.offset_left = 12
-	c.offset_right = -14
-	b.add_child(c)
-	return b
 
 
 ## Podium 3 người đầu: thứ tự 2 - 1 - 3, bục giữa cao nhất.

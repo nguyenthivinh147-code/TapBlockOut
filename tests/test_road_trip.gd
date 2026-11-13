@@ -11,6 +11,7 @@ const RoadTrip := preload("res://src/meta/road_trip.gd")
 const SaveSchema := preload("res://src/meta/save_schema.gd")
 const ThemeKit := preload("res://src/ui/theme_kit.gd")
 const UiTween := preload("res://src/ui/ui_tween.gd")
+const Probe := preload("res://tests/ui_probe.gd")
 
 const DIR := "user://test_road_trip"
 const NOW := 1800000000
@@ -422,11 +423,8 @@ func _won_rt(g: Node) -> void:
 
 func test_interstitial_after_win(t: T) -> void:
 	var g := _g(MAIN, 1)
-	g.s.runs = 3
 	g.set("_session_start", NOW - 10000)
-	g.set("_first_session", false)
 	_won_rt(g)
-	t.eq(int(g.s.runs), 4, "level Road Trip tính một lượt")
 	await g.road_trip_leave_win(1)
 	var calls: Array = _plat().ads.calls
 	t.eq(calls.size(), 1, "có interstitial")
@@ -437,20 +435,17 @@ func test_interstitial_after_win(t: T) -> void:
 	t.eq(int(g.s.ads.inter_today), 1, "đếm trong ngày")
 	_won_rt(g)
 	await g.road_trip_leave_win(2)
-	t.eq(_plat().ads.calls.size(), 1, "cách 2 lượt và 120 giây")
-	# Phiên đầu: chặn tới khi qua L10 của đường chính, dù Road Trip đã qua nhiều level.
-	g.s.ads.last_inter_run = -99
-	g.s.ads.last_inter_at = 0
-	g.set("_first_session", true)
-	g.s.level = 8
+	t.eq(_plat().ads.calls.size(), 1, "chưa qua 90 giây")
+	g.test_now += 90
+	await g.road_trip_leave_win(2)
+	t.eq(_plat().ads.calls.size(), 2, "qua 90 giây: có, không cần cách lượt")
+	# The level gate reads the main level (> 35), not the Road Trip level.
+	g.test_now += 90
+	g.s.level = 35
 	await g.road_trip_leave_win(3)
-	t.eq(_plat().ads.calls.size(), 1, "phiên đầu, level chính 8: không có")
-	g.s.level = 12
-	await g.road_trip_leave_win(3)
-	t.eq(_plat().ads.calls.size(), 2, "phiên đầu, đã qua L11 chính: có")
+	t.eq(_plat().ads.calls.size(), 2, "level chính 35: không có")
+	g.s.level = 36
 	g.s.no_ads = true
-	g.s.ads.last_inter_run = -99
-	g.s.ads.last_inter_at = 0
 	await g.road_trip_leave_win(3)
 	t.eq(_plat().ads.calls.size(), 2, "no_ads chặn")
 
@@ -521,12 +516,50 @@ func test_home_guide_once(t: T) -> void:
 	var ev := InputEventMouseButton.new()
 	ev.button_index = MOUSE_BUTTON_LEFT
 	ev.pressed = true
-	home.road_trip_guide.gui_input.emit(ev)
-	t.ok(home.road_trip_guide == null, "chạm thì tắt")
+	(home.road_trip_guide.get_node("Dim/Top") as Control).gui_input.emit(ev)
+	t.ok(home.road_trip_guide == null, "chạm vùng tối thì tắt")
 	t.eq(bool(g.s.road_trip.guide), true, "ghi đã xem")
 	home.free()
 	home = _mount("home")
 	t.ok(home.road_trip_guide == null, "không hiện lại")
+	home.free()
+
+
+## Guide look (2026-11-13, user request): the dim also covers the bottom bar's Shop and Home tabs, with a hole over
+## the Road Trip tab only; the bubble is mirrored so its tail points right, toward the tab; the hand is turned 180
+## degrees, above the Road Trip icon, finger down onto it. Real taps go through GUI hit-testing (tests/ui_probe.gd).
+func test_home_guide_spotlight(t: T) -> void:
+	var g := _g(95)
+	g.s.road_trip.guide = false
+	var home := _mount("home")
+	await Probe.frames(3)
+	var guide: Control = home.road_trip_guide
+	var nav: Control = home.find_child("NavBar", true, false)
+	t.ok(guide.get_index() > nav.get_index(), "lớp hướng dẫn vẽ trên thanh dưới")
+	for n in ["ShopButton", "HomeTab"]:
+		var b := nav.find_child(n, true, false) as Control
+		var h := await Probe.hovered_at(Probe.center(b))
+		t.ok(Probe.inside(h, guide), "dim phủ %s (chạm tới %s)" % [n, Probe.label(h)])
+	var rt := nav.find_child("RoadTripTab", true, false) as Control
+	var icon := rt.get_node("Icon") as Control
+	var hit := await Probe.hovered_at(Probe.center(icon))
+	t.ok(Probe.inside(hit, rt), "lỗ dim ở tab Road Trip: chạm tới tab (tới %s)" % Probe.label(hit))
+	var bg := guide.get_node_or_null("Bubble/Bg") as Control
+	t.ok(bg != null and bg.scale.x < 0.0, "khung bong bóng lật ngang: đuôi quay về phải")
+	var holder := guide.get_node("HandHolder") as Control
+	var hand := holder.get_node("Hand") as TextureRect
+	t.ok(hand.flip_h and hand.flip_v, "bàn tay quay 180 độ: ngón chỉ xuống")
+	var hr := holder.get_global_rect()
+	var ir := icon.get_global_rect()
+	t.ok(hr.get_center().y < ir.get_center().y, "bàn tay ở trên icon Road Trip")
+	var tip: Vector2 = hr.position + hr.size * (Vector2.ONE - home.HAND_TIP)
+	t.ok(ir.has_point(tip), "đầu ngón chạm icon Road Trip (ngón %s, icon %s)" % [tip, ir])
+	var got := []
+	home.closed.connect(func(r: Variant) -> void: got.append(r))
+	Probe.click(Probe.center(nav.find_child("ShopButton", true, false) as Control))
+	await Probe.frames(2)
+	t.ok(home.road_trip_guide == null, "chạm vùng dim trên tab Shop thì tắt hướng dẫn")
+	t.eq(got, [], "chạm tab Shop dưới dim không mở Shop")
 	home.free()
 
 

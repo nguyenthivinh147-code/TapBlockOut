@@ -14,7 +14,7 @@ mkdir -p assets/sfx assets/music
 declare -A MAXSEC=(
   [sfx_button]=0.2 [sfx_tap]=0.2 [sfx_exit]=0.4 [sfx_blocked]=0.3 [sfx_shatter]=0.7 [sfx_bump]=0.3
   [sfx_coin]=1.0 [sfx_hint]=1.0 [sfx_moves]=1.0 [sfx_smash]=1.0 [sfx_life_lost]=1.0
-  [sfx_win]=3.0 [sfx_lose]=3.0 [sfx_clap]=3.0
+  [sfx_win]=4.0 [sfx_lose]=3.0 [sfx_clap]=3.0
 )
 
 # Music loops (docs/AUDIO_MUSIC.md): start=, len= (whole bars, starting on a downbeat) and xfade= in seconds of the

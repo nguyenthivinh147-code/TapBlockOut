@@ -266,12 +266,6 @@ func gate_color_at(side: String, pos: float) -> String:
 	return ""
 
 
-## Màu vành của thanh tại điểm `pos` (px của khung dọc trục thanh): màu cổng ở đó, hoặc màu của cạnh.
-func end_color_at(side: String, pos: float) -> Color:
-	var c := gate_color_at(side, pos)
-	return color_end(c) if c != "" else tone(END_COLORS[side])
-
-
 func _apply_segments(side: String) -> void:
 	var m: ShaderMaterial = (_bars[side] as ColorRect).material
 	var segs: Array = _segs.get(side, [])

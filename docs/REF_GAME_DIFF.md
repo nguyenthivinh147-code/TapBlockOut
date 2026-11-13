@@ -4,7 +4,7 @@ So sánh Candy Away với "Tap Block Out: Color Puzzle" 2.2.1 (Funjo/FunSmith) t
 
 - Phía Candy Away là code đang có trên nhánh `Theme_candy`, gồm cả thay đổi chưa commit ngày 2026-11-05, và 100 level trong `data/levels`.
 - Số khối và dư MOVES đo trực tiếp trên file level, không lấy từ tài liệu.
-- Phía game gốc lấy nguyên từ báo cáo, không kiểm lại.
+- Phía game gốc lấy nguyên từ báo cáo, không kiểm lại, trừ mục 6 Quảng cáo: mục này kiểm lại trên code của game ngày 2026-11-13 (mục 6, "Logic quảng cáo game gốc"), và đã sửa vài chỗ báo cáo ghi sai.
 
 Bảng này chỉ ghi chỗ khác, không phải danh sách việc phải làm. Muốn đổi điểm nào theo game gốc thì quyết trước, rồi sửa `design.md` và config trong cùng thay đổi.
 
@@ -88,9 +88,80 @@ Bảng tính "số level để đủ tiền" dùng thưởng một level chơi h
 
 | Mục | Game gốc | Candy Away |
 |---|---|---|
-| Interstitial | Từ L22 (nhóm B: L35), cách nhau 90 giây (bản thử 110 / 180 giây). 9 chỗ hiện: đóng thẻ thắng, đóng popup thưởng, về Home, Challenge, Rank, Road Trip… | Chỉ khi rời thẻ thắng mà không lấy x2, hoặc đóng popup thắng Road Trip. Từ lượt 4, cách 2 lượt và 120 giây, không trong 90 giây đầu phiên, không trong 45 giây sau rewarded. Phiên đầu phải qua L10 |
-| Banner | Từ L81, khi đang chơi | Không có |
-| Popup bán bỏ quảng cáo | Sau interstitial đầu tiên trong ngày | Sau interstitial thứ 3 trong ngày; tối đa 1 lần/ngày, 3 lần tổng |
+| Interstitial: mốc mở | Từ lúc rời thẻ thắng L35 (tải trước từ L30) | Như game gốc từ 2026-11-14 (L35), nhưng interstitial tải ngay khi SDK khởi tạo. Trước đó: phiên đầu phải qua L10, và không trước lượt 4 |
+| Interstitial: nhịp | Chỉ có 90 giây giữa hai lần. Đồng hồ đếm từ lúc vào game, và xem xong rewarded cũng đếm lại từ đầu. Không giới hạn số lần mỗi ngày, không đếm lượt | Như game gốc từ 2026-11-14. Trước đó: cách ít nhất 2 lượt và 120 giây, không trong 90 giây đầu phiên, không trong 45 giây sau rewarded |
+| Interstitial: chỗ hiện | 9 chỗ: rời thẻ thắng level thường (3 nhánh), nút Return của bảng Rank, thắng Challenge, nút Home ở popup thắng Road Trip, màn Special (nhận hộp khi thắng, popup bom nổ, popup thua). Thua level thường hay Challenge thì không có | Rời thẻ thắng level thường và Daily Challenge, nút Trang chủ của popup thắng Road Trip, Màn đặc biệt (rời thẻ thắng, popup thua bom nổ, popup thua hết bước; thêm hai popup thua 2026-11-14). Không có: bảng Rank (Leaderboard là popup ở Home), lấy x2 (thẻ tự đóng), thua level thường, Challenge, Road Trip |
+| Banner | Từ L81, chỉ khi đang chơi (ẩn khi pause, thắng, thua), ở mọi chế độ kể cả Challenge, Special, Road Trip | Không có |
+| Popup bán bỏ quảng cáo | Sau interstitial đầu tiên trong ngày (theo giờ máy), tối đa 1 lần/ngày, không giới hạn tổng. Lần đó game đưa người chơi về Home thay vì sang level kế, popup hiện ở Home | Sau interstitial thứ 3 trong ngày; tối đa 1 lần/ngày, 3 lần tổng |
+| Rewarded | Không có mốc level, thời gian chờ hay giới hạn chung; mua bỏ quảng cáo không tắt rewarded. Chưa có video thì báo ngay "No videos". Thưởng ngay khi SDK báo người chơi đã nhận thưởng; đóng sớm thì không có thưởng | Giới hạn riêng từng chỗ (`design.md` mục 6). Chưa có video thì chờ tối đa `ADS.rv_wait_sec` giây rồi mới báo. Chỉ thưởng khi xem hết; app bị đóng giữa chừng thì trao lại lúc mở |
+
+### Logic quảng cáo game gốc (kiểm lại trên code, 2026-11-13)
+
+Nguồn: mã IL của `GameBlockGO.dll` và `GameLogic.dll` (bản hot-update HybridCLR, có đủ thân hàm, đọc bằng `dnfile`/`dncil`), cùng tầng Java trong APK 2.2.1. Đây là phân tích tĩnh, chưa chạy game. Tên hàm dưới đây là tên trong code của game gốc.
+
+**Interstitial** (`BlockGOAdManager.CanRequestInterstitial`, `TryShowInterstitial`)
+
+- Hiện khi đủ ba điều kiện: chưa mua bỏ quảng cáo, `CurrentLevel > 35`, đã qua 90 giây. `CurrentLevel` tăng ngay lúc thắng (`LevelManager.SettleCurrentLevelWin`), trước khi hiện thẻ thắng. Vì vậy lần đầu có thể hiện là lúc rời thẻ thắng L35.
+- Code có hai thử nghiệm A/B, nhưng static constructor của `BlockGOABTest` ép cứng nhóm:
+  - `int_opentime_20260929` luôn nhóm B: tải trước từ L30, mở từ L35. Nhóm A (L10 / L22) không bao giờ chạy. Giá trị mặc định `int_opentime_20260929 = 100` (nhóm A) trong `funsmith_config.json` không có tác dụng.
+  - `ab20260910_ios_interad_interval` luôn nhóm A: 90 giây. Nhóm B (180 giây cho lần đầu trong 24 giờ) và nhóm 300 (110 giây) không bao giờ chạy.
+- Đồng hồ 90 giây dùng `Time.realtimeSinceStartup`:
+  - Bắt đầu khi vào game (`InitializeInterstitialCooldownOnGameEntry`, gọi từ `GameApp.StartGameLogicAsync` sau khi tải xong Home), nên quảng cáo đầu phiên cách lúc mở app ít nhất 90 giây.
+  - Đếm lại khi interstitial đóng (`OnInterstitialSuccess`) và khi rewarded trao thưởng (`OnRewardedSuccess`).
+  - Interstitial lỗi thì không đếm lại.
+  - Tham số bỏ qua đồng hồ (`bypassCooldown`) chỉ panel cheat dùng.
+- Lấy x2 bằng video thì đồng hồ vừa đếm lại, nên interstitial ngay sau đó bị chặn. Code không có luật riêng "đã x2 thì bỏ interstitial"; đây là hệ quả của đồng hồ. Người chơi ngồi ở thẻ thắng quá 90 giây sau khi xem video thì vẫn có interstitial.
+- Hỏi SDK có quảng cáo chưa: chưa có thì bỏ qua ngay, không chờ. Chờ SDK trả lời tối đa 10 giây.
+- 9 chỗ gọi (`BlockGOAdPlace`):
+
+| Chỗ | Ad place | Ghi chú |
+|---|---|---|
+| Thẻ thắng level thường, bấm Claim: sang level kế, về Home, hoặc vào luồng Rank bắt buộc | 6 | Ba hàm `ContinueAfterLevelWinPanelClosed`, `ContinueHomeAfterLevelWinPanelClosed`, `ContinueMandatoryRankFlowAfterLevelWinPanelClosed` |
+| Nút Return của bảng Rank | 6 | Về Home. Đây là chỗ duy nhất có cờ "app bị tắt giữa lúc quảng cáo thì lần mở sau vào Home" |
+| Thắng Challenge | 7 | Về lịch Challenge |
+| Màn Special: nhận hộp khi thắng, popup bom nổ, popup thua (nút X và Next) | 8 | Thua Special cũng có interstitial |
+| Popup thắng Road Trip, nút Home | 9 | |
+
+**Popup bán bỏ quảng cáo** (`OnInterstitialSuccess`, `GetInterstitialSuccessResult`)
+
+- Interstitial thành công đầu tiên trong ngày, khi chưa mua bỏ quảng cáo: đặt cờ "hôm nay đã hiện" và cờ chờ popup, rồi trả kết quả 2 cho màn gọi. Các cờ lưu theo ngày `DateTime.Now`, tức ngày của máy.
+- Kết quả 2 làm game gọi `ExitLevelToHomeAfterInterstitial` (về Home) thay vì sang level kế. Home hiện popup trong `UIHomePanel0910.TryShowDailyPopPanel`.
+- Cờ chờ cũng theo ngày: qua ngày mà người chơi chưa về Home thì popup không hiện nữa.
+
+**Banner** (`CanRequestBanner`, `LevelManager.RefreshBannerByLevelState`)
+
+- Mỗi lần trạng thái level đổi: đang chơi thì hiện, trạng thái khác (pause, thắng, thua) thì ẩn.
+- Điều kiện: `CurrentLevel >= 81`, chưa mua bỏ quảng cáo. Code không xét loại level.
+
+**Rewarded** (`TryShowRewarded`)
+
+- Không có mốc level, thời gian chờ hay giới hạn chung. Mua bỏ quảng cáo không tắt rewarded.
+- Hỏi SDK có video chưa; chưa có thì báo `UI/Ads/NoVideos`.
+- Màn Special: đồng hồ bom dừng trong lúc xem.
+- 7 chỗ: mua booster bằng video (Gợi ý, +bước, Búa), hồi sinh level thường và Challenge, x2 khi thắng level thường và Challenge, x2 hộp Special.
+
+**Tầng Java** (`com.xy.fusiontsjl.SDKHelper` → SDK FunSmith `com.hhhy.gamesdk` → AppLovin MAX)
+
+- Không thêm điều kiện nào về thời gian, số lần hay level. SDK chỉ chặn khi:
+  - cờ bỏ quảng cáo của SDK bật;
+  - MAX chưa khởi tạo;
+  - đang có quảng cáo trên màn;
+  - app ở nền;
+  - chưa biết nhóm của thử nghiệm chiến lược `ab20261010_ad_strategy` (thử nghiệm này chỉ chọn ad unit theo CPM).
+- Cờ `AD_TYPE_SWAP` chỉ đổi cách đọc mã `ad_type` cho sự kiện analytics `ad_touch`. Nó không đổi loại quảng cáo hiện ra, và không có chuyện chưa có interstitial thì hiện rewarded thay.
+- Cờ `AD_PRELOAD_BY_GAME`: SDK không tự tải interstitial và banner, chỉ tải khi game gọi (interstitial từ L30). Rewarded vẫn tự tải.
+- Interstitial báo thành công lúc quảng cáo đóng. Rewarded báo thành công lúc người chơi nhận thưởng, khi quảng cáo còn trên màn; đóng sớm thì báo lỗi.
+
+**Báo cáo REA ghi sai hoặc thiếu** (`REPORT_economy_monetization.md` mục 4)
+
+- Mốc L22 và nhịp 110 / 180 giây nằm trong nhánh không bao giờ chạy. Báo cáo còn ghi ngược điều kiện 110 giây: ghi `!= 300`, code là `== 300`.
+- Báo cáo không ghi ba điểm: rewarded cũng làm đồng hồ interstitial đếm lại, đồng hồ đếm từ lúc vào game, và thua màn Special có interstitial.
+- Popup bán bỏ quảng cáo: báo cáo để là suy luận. Code xác nhận đúng, và cho thấy thêm việc game đưa người chơi về Home.
+
+**Chưa kiểm được**
+
+- Nhóm thực tế của `ab20261010_ad_strategy`: server quyết định lúc chạy. Thử nghiệm này không đổi nhịp quảng cáo.
+- Trên Android, `Time.realtimeSinceStartup` có tính thời gian app ở nền hay không, tức để app ở nền 90 giây có làm hết thời gian chờ không.
 
 ## 7. Mua hàng (IAP)
 

@@ -30,6 +30,19 @@ static func solve_state(board: BoardState) -> Dictionary:
 	return _greedy(b)
 
 
+## Low-moves warning (design.md section 8, level HUD): `moves` (the count on the MOVES chip) is at most
+## Config.LOW_MOVES_MAX and below the fewest taps that still clear `board` (exits, ribbon and box layers, knocks on a
+## locked pulse gate). A board that cannot be cleared is always short. Each tap removes at most one block, so the
+## solver only runs when the board has no more blocks than moves, i.e. at most LOW_MOVES_MAX blocks.
+static func short_of_moves(board: BoardState, moves: int) -> bool:
+	if board.is_won() or moves > Config.LOW_MOVES_MAX:
+		return false
+	if board.remaining_count() > moves:
+		return true
+	var r := solve_state(board)
+	return not bool(r["ok"]) or int(r["min_taps"]) > moves
+
+
 ## Có khối thoát (hoặc bóc lớp) được ngay lúc đầu; cú dội vào cổng nhịp không tính.
 static func immediate_exit_exists(level: Dictionary) -> bool:
 	return BoardState.new(level).first_exit() != ""

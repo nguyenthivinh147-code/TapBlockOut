@@ -709,34 +709,6 @@ static func _draw_band(ci: CanvasItem, r: Rect2, at: float, w: float, col: Color
 
 # --- hiệu ứng ---
 
-## Hạt màu bắn ra theo `dir` từ điểm `pos` (toạ độ của `parent`). Tự xoá khi xong.
-static func burst(parent: Node, pos: Vector2, color: Color, dir: Vector2, strength: float = 1.0, amount: int = 16) -> CPUParticles2D:
-	var p := CPUParticles2D.new()
-	p.position = pos
-	p.one_shot = true
-	p.amount = amount
-	p.lifetime = 0.5
-	p.explosiveness = 1.0
-	p.direction = dir if dir != Vector2.ZERO else Vector2.UP
-	p.spread = 70.0 if dir != Vector2.ZERO else 180.0
-	p.gravity = Vector2.ZERO
-	p.initial_velocity_min = 140.0 * strength
-	p.initial_velocity_max = 320.0 * strength
-	p.damping_min = 80.0
-	p.damping_max = 160.0
-	p.scale_amount_min = 5.0
-	p.scale_amount_max = 10.0
-	p.color = color
-	var g := Gradient.new()
-	g.set_color(0, Color(1, 1, 1, 1))
-	g.set_color(1, Color(1, 1, 1, 0))
-	p.color_ramp = g
-	p.finished.connect(p.queue_free)
-	parent.add_child(p)
-	p.emitting = true
-	return p
-
-
 ## Loé sáng tại `pos` (toạ độ canvas): quầng tròn, sao bốn cánh, vòng sóng. Nằm trên mọi thứ, tự xoá khi xong.
 static func impact_flash(parent: Node, pos: Vector2, tint: Color, size: float, dur: float = 0.34, ring: float = 0.7) -> ColorRect:
 	var r := ColorRect.new()

@@ -818,29 +818,26 @@ func claim_x2() -> bool:
 	return true
 
 
-## Rời thẻ thắng: chạy luật interstitial (result_exit), rồi offer, rồi xin quyền thông báo.
-func leave_win_card(x2_offered: bool, x2_taken: bool) -> void:
+## Leaving the win card (main level or Daily Challenge): the result_exit interstitial (AdPacing), then the offer, then
+## the notification permission ask.
+func leave_win_card(x2_taken: bool) -> void:
 	_x2_pending = 0
-	await _result_exit_inter(_last_win_level, x2_offered, x2_taken, {"level": _last_win_level})
+	await _result_exit_inter(x2_taken, {"level": _last_win_level})
 	check_offer(false)
 	await _maybe_ask_notifications()
 
 
-## Rời popup thắng Road Trip: cùng luật interstitial result_exit như thẻ thắng (không có x2 nên coi như đã bỏ qua
-## x2; level Road Trip là một lượt trong s.runs). Cổng phiên đầu tính theo level chính đã qua, không theo số level
-## Road Trip. Không offer, không xin quyền thông báo.
+## Leaving the Road Trip win popup: the same result_exit interstitial as the win card. The level gate reads the main
+## level, not the Road Trip level. No offer, no notification ask.
 func road_trip_leave_win(rt_level: int) -> void:
 	var main_done := int(s.level) - 1
-	await _result_exit_inter(main_done, true, false, {"level": main_done, "mode": "road_trip", "rt_level": rt_level})
+	await _result_exit_inter(false, {"level": main_done, "mode": "road_trip", "rt_level": rt_level})
 
 
-## Hiện interstitial result_exit nếu AdPacing cho phép (level: level chính dùng cho cổng phiên đầu); log inter_show
-## kèm params và runs.
-func _result_exit_inter(level: int, x2_offered: bool, x2_taken: bool, params: Dictionary) -> void:
-	var ctx := {
-		"now": now(), "session_start": _session_start, "first_session": _first_session,
-		"level": level, "x2_offered": x2_offered, "x2_taken": x2_taken, "day": today(),
-	}
+## Shows the result_exit interstitial when AdPacing allows it and the SDK has one; logs inter_show with params and runs.
+## A failed interstitial does not restart the clock.
+func _result_exit_inter(x2_taken: bool, params: Dictionary) -> void:
+	var ctx := {"now": now(), "session_start": _session_start, "x2_taken": x2_taken}
 	if not (AdPacing.inter_due(s, ctx) and Platform.ready_inter()):
 		return
 	var shown := await _show_inter("result_exit")
@@ -2279,11 +2276,18 @@ func special_lost(attempt: Dictionary, reason: String, bombs_left: int = 0) -> v
 	_end_lost(attempt, false)
 
 
-## Rời popup thắng Special: interstitial result_exit theo nhịp thẻ thắng (đã lấy x2 thì không có).
+## Leaving the Special win card: the result_exit interstitial under the win card pacing (none after x2).
 func special_leave_win(x2_taken: bool) -> void:
 	_sp_reward = ""
 	var main_done := int(s.level) - 1
-	await _result_exit_inter(main_done, true, x2_taken, {"level": main_done, "mode": "special"})
+	await _result_exit_inter(x2_taken, {"level": main_done, "mode": "special"})
+
+
+## Leaving a Special lose popup ("boom": the bomb went off, "fail": out of steps), either button: the result_exit
+## interstitial under the same pacing (design.md mục 7, as the reference game). Leaving mid-level has none.
+func special_leave_lose(mode: String) -> void:
+	var main_done := int(s.level) - 1
+	await _result_exit_inter(false, {"level": main_done, "mode": "special", "end": mode})
 
 
 var _sp_invite_queued: bool = false

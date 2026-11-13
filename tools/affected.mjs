@@ -13,10 +13,17 @@
 // the changed file itself. Smoke: from each changed file, walk up the graph and stop at files a map rule names
 // (tests/affected_map.txt); scen_* functions that quote the file name add their scenario. An edit inside
 // tests/smoke/*.gd maps to the scen_* functions that reach the edited lines through calls.
+//
+// With a coverage map (output/coverage/map.json, built by --coverage) tests come from what they ran instead: a
+// changed method selects the tests that entered it; a changed const/var/signal the tests of the methods naming it;
+// a scene the tests that created its own script; other files walk the graph up to the nearest covered script.
+// Tests the map does not know (new, or failed during the coverage run) still come from the graph.
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { COV_MAP, NEW_ID, runCoverage } from './coverage.mjs';
+import { gdMembers, isCommentOrBlank, memberAt } from './gd_members.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const MAP_PATH = 'tests/affected_map.txt';
@@ -41,6 +48,10 @@ const NAME_JSON = /^data\/ui_unity\/[^_/][^/]*\.json$/;
 // Name → file indexes (every sprite, every prefab): the files that ask for a name use it, not the index's readers.
 const INDEXES = /^data\/ui_unity\/_[^/]+\.json$/;
 const TEST_FILE = /^tests\/(test_[^/]+)\.gd$/;
+// Scripts the coverage run instruments (tools/coverage.mjs).
+const COVERED = /^src\/.+\.gd$/;
+// Methods allowed to have no test (tools/affected.sh --run fails on the others).
+const ALLOW_PATH = 'tests/untested_allow.txt';
 
 // ------------------------------------------------------------------ helpers
 
@@ -184,8 +195,9 @@ function buildGraph(files) {
         p += '/';
         isPrefix = true;
       }
+      // A prefix is a directory the file lists ("res://scenes/") or a path built at run time ("res://scenes/%s").
       if (!isPrefix) link(f, p);
-      else if (p.includes('/')) prefixes.push([p, f]);
+      else if (p.includes('/')) prefixes.push([p, f, cut < 0]);
     }
     for (const m of t.matchAll(/uid:\/\/[a-z0-9]+/g)) {
       const p = uids.get(m[0]);
@@ -214,8 +226,13 @@ function dependents(g, p) {
   if (g.memo.has(p)) return g.memo.get(p);
   const exactDeps = new Set([...(g.exact.get(p) || [])].filter((d) => !ROOTS.has(d)));
   const prefixDeps = new Set();
-  for (const [pre, src] of g.prefixes) if (p.startsWith(pre) && src !== p && !ROOTS.has(src)) prefixDeps.add(src);
-  const r = { exact: exactDeps, prefix: prefixDeps };
+  const dirDeps = new Set();
+  for (const [pre, src, dir] of g.prefixes) {
+    if (!p.startsWith(pre) || src === p || ROOTS.has(src)) continue;
+    prefixDeps.add(src);
+    if (dir) dirDeps.add(src);
+  }
+  const r = { exact: exactDeps, prefix: prefixDeps, dir: dirDeps };
   g.memo.set(p, r);
   return r;
 }
@@ -446,7 +463,7 @@ function smokeFor(ctx, file, lines) {
   return res;
 }
 
-function testsFor(ctx, file) {
+function staticTests(ctx, file) {
   const out = new Set();
   let all = false;
   for (const r of rulesFor(ctx, file)) {
@@ -476,6 +493,264 @@ function testsFor(ctx, file) {
   return { tests: out, all, via };
 }
 
+// ------------------------------------------------------------------ coverage map
+
+function loadCoverage(rel) {
+  let text;
+  try {
+    text = fs.readFileSync(path.resolve(ROOT, rel), 'utf8');
+  } catch {
+    return null;
+  }
+  let map;
+  try {
+    map = JSON.parse(text);
+  } catch {
+    return { path: rel, broken: true };
+  }
+  if (map.version !== 1 || !Array.isArray(map.tests) || !map.files) return { path: rel, broken: true };
+  const names = map.tests.map((t) => t.name);
+  // A test that failed or stopped during the coverage run may not have reached all it normally reaches.
+  const trusted = new Set(map.tests.filter((t) => !t.failed).map((t) => t.name));
+  const count = git(['rev-list', '--count', `${map.commit}..HEAD`], true).trim();
+  return { path: rel, ...map, names, trusted, behind: count === '' ? null : Number(count) };
+}
+
+// Members and lines of a script: the working copy, or `ref`'s version when `ref` is given.
+function parsed(ctx, file, ref = null) {
+  const key = `${ref ?? ''}:${file}`;
+  if (!ctx.parsed.has(key)) {
+    const text = ref ? git(['show', `${ref}:${file}`], true) : readText(file);
+    ctx.parsed.set(key, text == null || text === '' ? null : { members: gdMembers(text), lines: text.split('\n') });
+  }
+  return ctx.parsed.get(key);
+}
+
+// Test names that entered `id` of `file`, or every method of it when id is null.
+function covTests(ctx, file, id = null) {
+  const funcs = ctx.cov.files[file]?.funcs || {};
+  const out = new Set();
+  for (const [k, idx] of Object.entries(funcs)) {
+    if (id != null && k !== id) continue;
+    for (const i of idx) if (ctx.g.fileSet.has(`tests/${ctx.cov.names[i]}.gd`)) out.add(ctx.cov.names[i]);
+  }
+  return out;
+}
+
+// Covered methods that name `name`: anywhere in `file` and in scripts extending it, after a dot elsewhere among
+// the scripts that refer to `file` (Wallet.KINDS, Game.wallet, shop.refresh()).
+function symbolUsers(ctx, file, name, skipId = null) {
+  const bare = new RegExp(`\\b${esc(name)}\\b`);
+  const dotted = new RegExp(`\\.${esc(name)}\\b`);
+  const out = [];
+  for (const f of new Set([file, ...dependents(ctx.g, file).exact])) {
+    if (!ctx.cov.files[f]) continue;
+    const p = parsed(ctx, f);
+    if (!p) continue;
+    const re = f === file || new RegExp(`^extends\\s+"res://${esc(file)}"`, 'm').test(p.lines.join('\n')) ? bare : dotted;
+    for (const m of p.members) {
+      if (m.kind !== 'func' || (f === file && m.id === skipId)) continue;
+      if (re.test(p.lines.slice(m.start - 1, m.end).join('\n'))) out.push([f, m.id]);
+    }
+  }
+  return out;
+}
+
+// Scripts a scene or resource uses that no other scene or resource uses: their tests are the ones creating it.
+function ownedScripts(ctx, scene) {
+  const t = ctx.g.texts.get(scene) || '';
+  const out = [];
+  for (const m of t.matchAll(/res:\/\/([^"]+\.gd)"/g)) {
+    const s = m[1];
+    if (!ctx.cov.files[s] || out.includes(s)) continue;
+    const users = [...dependents(ctx.g, s).exact].filter((d) => /\.(tscn|tres)$/.test(d));
+    if (users.every((u) => u === scene)) out.push(s);
+  }
+  return out;
+}
+
+// What the changed lines of a covered script touch. sides: {neu, old} line sets of the working copy and of `ref`.
+function changedMembers(ctx, file, sides, ref) {
+  const r = { funcs: new Map(), syms: [], classes: new Set(), whole: false };
+  for (const [ver, lines] of [[null, sides.neu], [ref, sides.old]]) {
+    if (!lines.size) continue;
+    const p = parsed(ctx, file, ver);
+    if (!p) {
+      r.whole = true;
+      continue;
+    }
+    for (const ln of lines) {
+      if (isCommentOrBlank(p.lines[ln - 1])) continue;
+      const m = memberAt(p.members, ln);
+      if (!m) r.whole = true;
+      else if (m.kind === 'func') r.funcs.set(m.id, m.name);
+      else if (['const', 'enum', 'signal', 'var'].includes(m.kind)) r.syms.push(m);
+      else if (m.kind === 'class') r.classes.add(m.id);
+      else r.whole = true;
+    }
+  }
+  return r;
+}
+
+function coverageTests(ctx, file, sides, ref, st) {
+  const out = new Map();
+  const add = (names, why) => { for (const t of names) if (!out.has(t)) out.set(t, why); };
+  for (const r of rulesFor(ctx, file)) add(r.tests, MAP_PATH);
+  // New tests, and tests whose coverage is partial: the graph decides for them.
+  add([...st.tests].filter((t) => !ctx.cov.trusted.has(t)), 'đồ thị (test chưa có trong bản đo)');
+  const queue = [file];
+  const seen = new Set(queue);
+  while (queue.length) {
+    const n = queue.shift();
+    const d = dependents(ctx.g, n);
+    const own = /\.(tscn|tres)$/.test(n) && !ctx.cov.files[n] ? ownedScripts(ctx, n) : [];
+    // Tests that name the file or list its directory read it themselves. A test building the path at run time
+    // ("res://scenes/%s.tscn") only counts when coverage cannot tell whether it loaded this file.
+    const measured = !!ctx.cov.files[n] || own.length > 0;
+    const of = n === file ? 'file' : n;
+    for (const x of [...d.exact, ...d.prefix]) {
+      const m = TEST_FILE.exec(x);
+      if (!m || !ctx.g.fileSet.has(x)) continue;
+      if (d.exact.has(x)) add([m[1]], `nhắc tên ${of}`);
+      else if (d.dir.has(x)) add([m[1]], `đọc thư mục của ${of}`);
+      else if (!measured) add([m[1]], `dựng đường dẫn tới ${of} lúc chạy`);
+    }
+    if (ctx.cov.files[n]) {
+      if (n !== file || !sides) {
+        add(covTests(ctx, n), n === file ? 'chạy qua file' : `chạy qua ${n}`);
+        continue;
+      }
+      const ch = changedMembers(ctx, file, sides, ref);
+      const funcs = ctx.cov.files[file].funcs;
+      for (const [id, name] of ch.funcs) {
+        if (funcs[id]) {
+          add(covTests(ctx, file, id), `chạy qua ${id}`);
+          continue;
+        }
+        // A method added after the coverage run: the tests of its callers, or of the whole file.
+        const callers = symbolUsers(ctx, file, name, id);
+        if (callers.length) for (const [f, c] of callers) add(covTests(ctx, f, c), `${id} mới, gọi từ ${f === file ? '' : `${f}:`}${c}`);
+        else ch.whole = true;
+      }
+      for (const m of ch.syms) {
+        const users = symbolUsers(ctx, file, m.name);
+        for (const [f, c] of users) add(covTests(ctx, f, c), `${m.name} dùng ở ${f === file ? '' : `${f}:`}${c}`);
+        // A member var is set up when an object is created.
+        const made = m.kind === 'var' ? covTests(ctx, file, NEW_ID) : new Set();
+        add(made, `${m.name}: tạo object`);
+        if (!users.length && !made.size) ch.whole = true;
+      }
+      for (const c of ch.classes) {
+        const tests = new Set(Object.keys(funcs).filter((k) => k.startsWith(`${c}.`)).flatMap((k) => [...covTests(ctx, file, k)]));
+        if (tests.size) add(tests, `chạy qua class ${c}`);
+        else ch.whole = true;
+      }
+      if (ch.whole) add(covTests(ctx, file), 'chạy qua file');
+      continue;
+    }
+    if (own.length) {
+      for (const s of own) add(covTests(ctx, s), `tạo ${n} (${s})`);
+      continue;
+    }
+    if (TEST_FILE.test(n) && n !== file) continue;
+    for (const x of [...d.exact, ...d.prefix]) {
+      if (!seen.has(x)) {
+        seen.add(x);
+        queue.push(x);
+      }
+    }
+  }
+  return { tests: new Set(out.keys()), why: Object.fromEntries(out) };
+}
+
+function testsFor(ctx, file, sides, ref) {
+  const st = staticTests(ctx, file);
+  // Test code, test infrastructure and map rules that pick every test keep the graph.
+  if (!ctx.cov || ctx.cov.broken || st.all || file.startsWith('tests/') || file.startsWith('tools/')) {
+    return { ...st, mode: 'static' };
+  }
+  return { ...coverageTests(ctx, file, sides, ref, st), all: false, mode: 'coverage', staticCount: st.tests.size };
+}
+
+// ------------------------------------------------------------------ methods without a test
+
+// tests/untested_allow.txt: "<file>:<method> ## <reason> (YYYY-MM-DD)"; * stands for any characters in either part.
+function parseAllow(text, name = ALLOW_PATH) {
+  const rules = [];
+  const errors = [];
+  (text || '').split(/\r?\n/).forEach((raw, i) => {
+    const line = raw.trim();
+    if (!line || line.startsWith('#')) return;
+    const where = `${name}:${i + 1}`;
+    const m = /^([^\s:]+):(\S+)\s+##\s+(.*\S)\s*$/.exec(line);
+    if (!m || !/\(\d{4}-\d{2}-\d{2}\)$/.test(m[3])) {
+      errors.push(`${where}: cần dạng "<file>:<hàm> ## <lý do> (YYYY-MM-DD)"`);
+      return;
+    }
+    const re = (glob) => new RegExp(`^${glob.split('*').map(esc).join('.*')}$`);
+    rules.push({ where, file: m[1], func: m[2], fileRe: re(m[1]), funcRe: re(m[2]) });
+  });
+  return { rules, errors };
+}
+
+const allowRule = (ctx, file, id) => ctx.allow.rules.find((r) => r.fileRe.test(file) && r.funcRe.test(id));
+
+// Methods of an instrumented script whose code changed in the working copy; every method of a new or whole file.
+function changedFuncs(ctx, file, sides) {
+  if (!COVERED.test(file)) return [];
+  const p = parsed(ctx, file);
+  if (!p) return [];
+  if (!sides) return p.members.filter((m) => m.kind === 'func' && !m.abstract).map((m) => m.id);
+  const out = new Set();
+  for (const ln of sides.neu) {
+    if (isCommentOrBlank(p.lines[ln - 1])) continue;
+    const m = memberAt(p.members, ln);
+    if (m?.kind === 'func' && !m.abstract) out.add(m.id);
+  }
+  return [...out];
+}
+
+// allowed: listed in untested_allow.txt. tested: some test entered it. untested: the measured tests never did.
+// unmeasured: no map, or the method is newer than the map (or the map is partial). measured: tests just ran with
+// coverage (--run), so a method they never entered is untested even in a partial map.
+function funcStatus(ctx, file, id, measured = false) {
+  if (allowRule(ctx, file, id)) return 'allowed';
+  const funcs = ctx.cov && !ctx.cov.broken ? ctx.cov.files[file]?.funcs : null;
+  if (!funcs || !(id in funcs)) return 'unmeasured';
+  if (covTests(ctx, file, id).size) return 'tested';
+  return ctx.cov.complete || measured ? 'untested' : 'unmeasured';
+}
+
+function diffHunks(ref, file) {
+  const out = git(['diff', '-U0', '--no-renames', ref, '--', file], true);
+  return [...out.matchAll(/^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/gm)].map((m) => ({
+    oldStart: Number(m[1]), oldCount: m[2] === undefined ? 1 : Number(m[2]),
+    newStart: Number(m[3]), newCount: m[4] === undefined ? 1 : Number(m[4]) }));
+}
+
+// Lines of the working copy (and, for a pure deletion, the lines around it): what the smoke code needs.
+function changedLines(hunks) {
+  const lines = new Set();
+  for (const h of hunks) {
+    if (h.newCount === 0) {
+      lines.add(Math.max(1, h.newStart));
+      lines.add(h.newStart + 1);
+    } else for (let k = 0; k < h.newCount; k++) lines.add(h.newStart + k);
+  }
+  return lines;
+}
+
+// Added or changed lines of the working copy, removed or changed lines of ref's version.
+function changedSides(hunks) {
+  const neu = new Set();
+  const old = new Set();
+  for (const h of hunks) {
+    for (let k = 0; k < h.newCount; k++) neu.add(h.newStart + k);
+    for (let k = 0; k < h.oldCount; k++) old.add(h.oldStart + k);
+  }
+  return { neu, old };
+}
+
 function changedFiles(ref) {
   const out = [];
   const seen = new Set();
@@ -488,20 +763,6 @@ function changedFiles(ref) {
   for (let i = 0; i + 1 < diff.length; i += 2) push(diff[i][0], diff[i + 1]);
   for (const p of git(['ls-files', '-z', '-o', '--exclude-standard']).split('\0')) push('?', p);
   return out;
-}
-
-function changedLines(ref, file) {
-  const out = git(['diff', '-U0', '--no-renames', ref, '--', file], true);
-  const lines = new Set();
-  for (const m of out.matchAll(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/gm)) {
-    const start = Number(m[1]);
-    const n = m[2] === undefined ? 1 : Number(m[2]);
-    if (n === 0) {
-      lines.add(Math.max(1, start));
-      lines.add(start + 1);
-    } else for (let k = 0; k < n; k++) lines.add(start + k);
-  }
-  return lines;
 }
 
 function parseFileArg(a) {
@@ -533,11 +794,30 @@ function select(ctx, changed, ref) {
   const device = [];
   const levels = [];
   const perFile = [];
+  const funcs = [];
   for (const c of changed) {
     const p = owner(c.path);
     let lines = c.lines;
-    if (lines === undefined) lines = c.status === '?' || c.status === 'A' ? null : changedLines(ref, c.path);
-    const t = testsFor(ctx, p);
+    // null: the whole file (new file, --files without lines, foo.gd.uid standing for foo.gd).
+    let sides = lines == null ? null : { neu: lines, old: new Set() };
+    if (lines === undefined) {
+      if (c.status === '?' || c.status === 'A') lines = sides = null;
+      else {
+        const hunks = diffHunks(ref, c.path);
+        lines = changedLines(hunks);
+        sides = changedSides(hunks);
+      }
+    }
+    // foo.gd.uid stands for foo.gd for the tests, but no method of it changed.
+    const methods = p === c.path ? changedFuncs(ctx, p, sides) : [];
+    if (p !== c.path) sides = null;
+    const t = testsFor(ctx, p, sides, ref);
+    const status = {};
+    for (const id of methods) {
+      status[id] = funcStatus(ctx, p, id);
+      funcs.push({ file: p, id, status: status[id] });
+    }
+    const having = (st) => methods.filter((id) => status[id] === st);
     if (t.all) allTests = true;
     for (const x of t.tests) tests.add(x);
     const s = smokeFor(ctx, p, lines);
@@ -549,7 +829,9 @@ function select(ctx, changed, ref) {
     if (DEVICE_ONLY.some((re) => re.test(p))) device.push(p);
     const lv = /^data\/levels\/level_(\d+)\.json$/.exec(p);
     if (lv) levels.push(Number(lv[1]));
-    perFile.push({ status: c.status, path: c.path, tests: [...t.tests].sort(), allTests: t.all,
+    perFile.push({ status: c.status, path: c.path, tests: [...t.tests].sort(), allTests: t.all, testMode: t.mode,
+      staticTests: t.staticCount ?? t.tests.size, testWhy: t.why || {}, untested: having('untested'),
+      unmeasured: having('unmeasured'),
       smoke: order(ctx, s.scens.keys()), dflt: s.dflt, via: Object.fromEntries(s.scens), why: s.why });
   }
   let vRange = null;
@@ -557,7 +839,21 @@ function select(ctx, changed, ref) {
     vRange = levels.length ? [Math.min(...levels), Math.max(...levels)] : V_SAMPLE;
   }
   return { tests: allTests ? [] : [...tests].sort(), allTests, smoke: order(ctx, smoke.keys()),
-    window: order(ctx, window), vRange, unmapped, device, perFile };
+    window: order(ctx, window), vRange, unmapped, device, ...gateLists(funcs), funcs, perFile };
+}
+
+// "file:method" lists by status, for the report and the gate.
+function gateLists(funcs) {
+  const of = (st) => funcs.filter((f) => f.status === st).map((f) => `${f.file}:${f.id}`);
+  return { untested: of('untested'), unmeasured: of('unmeasured'), allowed: of('allowed') };
+}
+
+// Seconds the selected tests took in the coverage run (instrumented, so slower than a plain run).
+function estimate(ctx, sel) {
+  if (!ctx.cov || ctx.cov.broken) return null;
+  const ms = new Map(ctx.cov.tests.map((t) => [t.name, t.ms]));
+  const sum = (names) => Math.round(names.reduce((a, n) => a + (ms.get(n) || 0), 0) / 1000);
+  return { selected: sum(sel.allTests ? ctx.cov.names : sel.tests), all: sum(ctx.cov.names) };
 }
 
 // test.sh matches file name prefixes, so "test_ui_shop.gd" runs that file only (not test_ui_shop_fx.gd).
@@ -603,27 +899,45 @@ function check(ctx) {
       problems.push(`${f}: không tới được file nào có trong ${MAP_PATH} (thêm dòng, hoặc "-" nếu không kịch bản nào chạy tới)`);
     }
   }
+  problems.push(...ctx.allow.errors);
+  for (const r of ctx.allow.rules) {
+    const files = ctx.g.files.filter((f) => COVERED.test(f) && r.fileRe.test(f));
+    if (!files.length) problems.push(`${r.where}: "${r.file}" không khớp script nào trong src/`);
+    else if (!files.some((f) => (parsed(ctx, f)?.members || []).some((m) => m.kind === 'func' && r.funcRe.test(m.id)))) {
+      problems.push(`${r.where}: "${r.file}:${r.func}" không khớp hàm nào (đổi tên hay đã xoá?)`);
+    }
+  }
   return { problems, orphans };
 }
 
 // ------------------------------------------------------------------ main
 
 function usage() {
-  console.log(`tools/affected.sh [ref] [--run] [--json] [-v] [--files <file[:dòng]>...]
+  console.log(`tools/affected.sh [ref] [--run] [--json] [-v] [--static] [--files <file[:dòng]>...]
 tools/affected.sh --check
+tools/affected.sh --coverage [--keep] [lọc test...]
   ref        so với merge-base của ref và HEAD (mặc định HEAD), cộng file chưa commit và file mới
   --files    các file này (và dòng, ví dụ tests/smoke/scen_events.gd:120-140) thay cho git diff
   --run      chạy luôn test rồi smoke headless (window vẫn phải chạy tay và đọc ảnh)
   --json     in kết quả dạng JSON
   -v         in đủ test và đường dẫn chọn từng kịch bản
-  --check    kiểm ${MAP_PATH}: mẫu khớp file, mã kịch bản và test có thật, mọi file src/ scenes/ có kịch bản`);
+  --static   chọn test theo đồ thị tĩnh, bỏ qua bản đo độ phủ
+  --coverage-map <file>   bản đo khác ${COV_MAP}
+  --allow-file <file>     danh sách miễn trừ khác ${ALLOW_PATH}
+  --check    kiểm ${MAP_PATH}: mẫu khớp file, mã kịch bản và test có thật, mọi file src/ scenes/ có kịch bản
+  --coverage đo test nào chạy qua hàm nào của src/ (chạy cả bộ test trên bản sao có chèn lệnh, khoảng 10 phút),
+             ghi ${COV_MAP}; --keep giữ bản sao ở output/coverage/snap`);
 }
 
 function main(argv) {
-  const opts = { ref: null, run: false, json: false, verbose: false, check: false, files: null };
+  const opts = { ref: null, run: false, json: false, verbose: false, check: false, files: null, static: false,
+    covMap: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--run') opts.run = true;
+    else if (a === '--static') opts.static = true;
+    else if (a === '--coverage-map' && i + 1 < argv.length) opts.covMap = argv[++i];
+    else if (a === '--allow-file' && i + 1 < argv.length) opts.allowFile = argv[++i];
     else if (a === '--json') opts.json = true;
     else if (a === '-v' || a === '--verbose') opts.verbose = true;
     else if (a === '--check') opts.check = true;
@@ -642,14 +956,18 @@ function main(argv) {
   const map = parseMap(readText(MAP_PATH) || '');
   const parsedDefault = defaultScenarios();
   const ctx = { g, rules: map.rules, mapErrors: map.errors, model: smokeModel(g.texts),
-    dflt: parsedDefault || ['A', 'B', 'C', 'D', 'E', 'M', 'S'], dfltParsed: parsedDefault != null };
+    dflt: parsedDefault || ['A', 'B', 'C', 'D', 'E', 'M', 'S'], dfltParsed: parsedDefault != null,
+    cov: opts.static ? null : loadCoverage(opts.covMap ?? COV_MAP), parsed: new Map(),
+    allow: opts.allowFile ? parseAllow(fs.readFileSync(path.resolve(ROOT, opts.allowFile), 'utf8'), opts.allowFile)
+      : parseAllow(readText(ALLOW_PATH)) };
 
   if (opts.check) {
     const { problems } = check(ctx);
     if (opts.json) console.log(JSON.stringify({ ok: problems.length === 0, problems }, null, 1));
     else {
       for (const p of problems) console.log(`AFFECTED MAP ${p}`);
-      console.log(problems.length ? `AFFECTED MAP FAILED (${problems.length})` : `AFFECTED MAP OK (${ctx.rules.length} dòng, ${ctx.model.registry.size} kịch bản)`);
+      console.log(problems.length ? `AFFECTED MAP FAILED (${problems.length})`
+        : `AFFECTED MAP OK (${ctx.rules.length} dòng, ${ctx.model.registry.size} kịch bản, ${ctx.allow.rules.length} dòng ${ALLOW_PATH})`);
     }
     return problems.length ? 1 : 0;
   }
@@ -660,27 +978,50 @@ function main(argv) {
   const sel = select(ctx, changed, ref);
   const cmds = commands(sel);
   if (opts.json) {
-    console.log(JSON.stringify({ ref: opts.files ? null : (opts.ref || 'HEAD'), changed: changed.length, ...sel,
-      commands: cmds.map(show) }, null, 1));
+    const cov = ctx.cov && { path: ctx.cov.path, broken: !!ctx.cov.broken, commit: ctx.cov.commit,
+      created: ctx.cov.created, behind: ctx.cov.behind, complete: ctx.cov.complete };
+    console.log(JSON.stringify({ ref: opts.files ? null : (opts.ref || 'HEAD'), changed: changed.length, coverage: cov,
+      ...sel, estimate: estimate(ctx, sel), commands: cmds.map(show) }, null, 1));
     if (!opts.run) return 0;
   } else report(ctx, opts, changed, sel, cmds);
-  return opts.run ? runAll(cmds) : 0;
+  return opts.run ? runAll(ctx, opts, sel, cmds) : 0;
+}
+
+function printList(title, items, max = 20) {
+  if (!items.length) return;
+  console.log(`\n${title}`);
+  for (const x of items.slice(0, max)) console.log(`  ${x}`);
+  if (items.length > max) console.log(`  ... và ${items.length - max} hàm nữa`);
 }
 
 function report(ctx, opts, changed, sel, cmds) {
   const what = opts.files ? 'các file đưa vào' : `so với ${opts.ref ? `merge-base với ${opts.ref}` : 'HEAD'} (gồm chưa commit)`;
+  const cov = ctx.cov;
+  if (opts.static) console.log('Chọn test theo đồ thị tĩnh (--static).');
+  else if (!cov) console.log(`Chọn test theo đồ thị tĩnh: chưa có ${opts.covMap ?? COV_MAP} (đo bằng tools/affected.sh --coverage, khoảng 10 phút).`);
+  else if (cov.broken) console.log(`${cov.path} không đọc được: chọn test theo đồ thị tĩnh; đo lại bằng tools/affected.sh --coverage.`);
+  else {
+    const age = cov.behind == null ? `commit ${String(cov.commit).slice(0, 7)} không còn trong lịch sử`
+      : cov.behind ? `sau đó ${cov.behind} commit` : 'đúng HEAD';
+    console.log(`Chọn test theo độ phủ: ${cov.path} (đo ${String(cov.created).slice(0, 10)}, ${age}${cov.complete ? '' : ', đo một phần'}).`);
+  }
   console.log(`Thay đổi ${what}: ${changed.length} file`);
   for (const f of sel.perFile) {
-    const tests = f.allTests ? 'mọi test' : `${f.tests.length} test`;
+    let tests = f.allTests ? 'mọi test' : `${f.tests.length} test`;
+    if (f.testMode === 'coverage' && f.staticTests !== f.tests.length) tests += ` (đồ thị tĩnh: ${f.staticTests})`;
     let smoke = [...f.smoke, ...(f.dflt ? ['bộ mặc định'] : [])].join(' ') || 'không';
     const vias = [...new Set(Object.values(f.via).filter((v) => v !== owner(f.path)))];
     if (vias.length && !opts.verbose) smoke += ` (từ ${vias.slice(0, 3).join(', ')}${vias.length > 3 ? ', ...' : ''})`;
     console.log(`  ${f.status} ${f.path} → ${tests}; smoke: ${smoke}${f.why ? `; ${f.why}` : ''}`);
     if (opts.verbose) {
-      if (f.tests.length) console.log(`      test: ${f.tests.join(' ')}`);
+      if (f.testMode === 'coverage') for (const t of f.tests) console.log(`      ${t} ← ${f.testWhy[t]}`);
+      else if (f.tests.length) console.log(`      test: ${f.tests.join(' ')}`);
       for (const [code, via] of Object.entries(f.via)) if (via !== f.path) console.log(`      ${code} ← ${via}`);
     }
   }
+  printList(`Hàm đã sửa mà không test nào chạy tới (viết test, hoặc ghi vào ${ALLOW_PATH} kèm lý do; --run báo lỗi):`,
+    sel.untested);
+  if (!opts.static) printList('Hàm đã sửa chưa có trong bản đo (hàm mới, hoặc bản đo một phần; --run đo luôn):', sel.unmeasured);
   if (sel.unmapped.length) {
     console.log(`\nChưa có kịch bản nào phủ (thêm dòng vào ${MAP_PATH}):`);
     for (const p of sel.unmapped) console.log(`  ${p}`);
@@ -688,22 +1029,55 @@ function report(ctx, opts, changed, sel, cmds) {
   console.log('');
   if (!cmds.length) console.log('Không cần chạy test.');
   for (const c of cmds) console.log(show(c));
+  const est = estimate(ctx, sel);
+  if (est && (sel.tests.length || sel.allTests)) {
+    console.log(`# test đã chọn mất khoảng ${est.selected} giây trong lần đo độ phủ (cả bộ ${est.all} giây)`);
+  }
   if (sel.window.length) {
     console.log(`tools/smoke.sh window ${sel.window.join(' ')}    # rồi đọc ảnh PNG (docs/TESTING.md bước 4)`);
   }
   if (sel.device.length) console.log(`Máy thật: ${sel.device.join(', ')} chỉ chạy trên điện thoại → người dùng gọi /device-test`);
 }
 
-// Exit code like test.sh and smoke.sh: the worst of all commands (2 > 1 > 0).
-function runAll(cmds) {
+// Exit code like test.sh and smoke.sh: the worst of all commands (2 > 1 > 0). Unless --static the selected tests run
+// on the instrumented copy (their rows go into the map), and a changed method none of them entered fails the run
+// unless tests/untested_allow.txt lists it.
+function runAll(ctx, opts, sel, cmds) {
   let worst = 0;
+  let measured = false;
   for (const c of cmds) {
+    if (!opts.static && c.argv[0] === 'tools/test.sh') {
+      const filters = c.argv.slice(1);
+      console.log(`\n$ tools/affected.sh --coverage ${filters.join(' ')}    # test đã chọn, đo độ phủ luôn`);
+      const r = runCoverage({ filters, keep: false });
+      worst = Math.max(worst, Math.min(r.rc, 2));
+      measured = r.map != null;
+      continue;
+    }
     console.log(`\n$ ${show(c)}`);
     const r = spawnSync('bash', c.argv, { cwd: ROOT, stdio: 'inherit', env: { ...process.env, ...(c.env || {}) } });
     const rc = r.status ?? 2;
     worst = Math.max(worst, rc > 2 ? 2 : rc);
   }
+  if (opts.static || !sel.funcs.length) return worst;
+  if (measured) ctx.cov = loadCoverage(COV_MAP);
+  const now = sel.funcs.map((f) => ({ ...f, status: funcStatus(ctx, f.file, f.id, measured) }));
+  const missing = now.filter((f) => f.status === 'untested').map((f) => `${f.file}:${f.id}`);
+  const unknown = now.filter((f) => f.status === 'unmeasured').map((f) => `${f.file}:${f.id}`);
+  const allowed = now.filter((f) => f.status === 'allowed').length;
+  printList(`Cổng test: ${missing.length} hàm đã sửa không test nào chạy tới (viết test, hoặc ghi vào ${ALLOW_PATH} kèm lý do):`,
+    missing);
+  printList('Chưa đo được (lần đo lỗi):', unknown);
+  if (missing.length) {
+    console.log(`affected: thiếu test cho ${missing.length} hàm (mã 1)`);
+    worst = Math.max(worst, 1);
+  } else {
+    console.log(`\nCổng test: ${now.length - allowed - unknown.length}/${now.length} hàm đã sửa có test chạy tới${allowed ? `, ${allowed} miễn trừ` : ''}.`);
+  }
   return worst;
 }
 
-process.exitCode = main(process.argv.slice(2));
+const ARGV = process.argv.slice(2);
+if (ARGV.includes('--coverage')) {
+  process.exitCode = (await import('./coverage.mjs')).main(ARGV.filter((a) => a !== '--coverage'));
+} else process.exitCode = main(ARGV);

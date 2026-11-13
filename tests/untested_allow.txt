@@ -1,0 +1,4 @@
+# Hàm được phép không có test nào chạy tới (tools/affected.sh --run, docs/TESTING.md "Chọn test theo thay đổi").
+# Dòng: <file>:<hàm> ## <lý do> (YYYY-MM-DD). * thay cho chuỗi bất kỳ trong tên file hoặc tên hàm; hàm của inner
+# class viết Class.hàm. Chỉ ghi hàm mà test tự động không chạy tới được (máy thật, chỉ có hình); hàm có logic thì
+# viết test. `tools/affected.sh --check` (test_affected) báo dòng sai dạng hoặc không còn khớp hàm nào.

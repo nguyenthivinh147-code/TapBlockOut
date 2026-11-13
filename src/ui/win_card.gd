@@ -18,7 +18,7 @@ extends Control
 ## gọi Game.special_claim_x2 (xem quảng cáo, thêm 1 booster cùng loại), thẻ không tự đóng; nút dưới là Trang chủ (thay Tiếp tục); đóng thì booster bay về nút
 ## booster của màn (RewardFly).
 ## closed(result): {x2_offered, x2_taken, rate_prompt, coins}. Bên gọi (level) gọi
-## Game.leave_win_card(result.x2_offered, result.x2_taken) rồi mới sang level kế.
+## Game.leave_win_card(result.x2_taken) rồi mới sang level kế.
 
 signal closed(result: Variant)
 

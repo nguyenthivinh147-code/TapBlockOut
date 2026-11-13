@@ -5,8 +5,8 @@ extends Control
 ## Chỉ đọc Game; không tự mở popup. Điều hướng qua closed({"action": ...}):
 ## play, no_lives, lives, profile, gift, shop, ranking (icon Bảng xếp hạng ở cột trái), road_trip (tab dưới), settings,
 ## challenge, offer (kèm "id"), streak (icon Win Streak, cột trái), remove_ads (icon Remove Ads, cột phải).
-## Road Trip vừa mở (Game.road_trip_view().guide): lớp hướng dẫn RoadTripGuide phủ tối Home trừ thanh dưới, bàn tay
-## chỉ vào tab Road Trip; chạm đâu cũng tắt và không hiện lại.
+## Road Trip vừa mở (Game.road_trip_view().guide): lớp hướng dẫn RoadTripGuide phủ tối Home và thanh dưới, chừa lỗ ở
+## tab Road Trip; bàn tay từ trên chỉ xuống icon tab; chạm đâu cũng tắt và không hiện lại.
 ## Mọi node tĩnh nằm trong scenes/home.tscn (toạ độ Figma trong meta fb_rect, fb_font của FigmaBox; thanh trên, thanh dưới
 ## là instance scenes/hub_top.tscn, scenes/hub_nav.tscn); script chỉ tìm node, điền chữ, dữ liệu và nối nút.
 
@@ -62,6 +62,23 @@ const NAV_SIDE_TOP := 1654.0
 const ENTER_DELAY := 0.05
 ## Icon cột nhún lần đầu sau IDLE_DELAY s (qua lúc bật vào), các icon lệch nhau UiMotion.NUDGE_GAP s.
 const IDLE_DELAY := 0.9
+## Road Trip guide, design px (2026-11-13): bubble (grows upward when the text needs more), its right edge past the
+## point the finger touches (the mirrored tail, near that edge, then sits over the hand), the gap from its bottom
+## to the hand's box; the hand's box. HAND_TIP: fingertip of hand_tap as a fraction of the sprite as drawn in the
+## atlas (finger up-left); the guide turns it 180 degrees. GUIDE_TOUCH_Y: the point it touches, below the top
+## centre of the Road Trip icon.
+const GUIDE_BUBBLE := Vector2(520, 250)
+const GUIDE_BUBBLE_RIGHT := 40.0
+const GUIDE_BUBBLE_GAP := 10.0
+const GUIDE_HAND := 150.0
+const HAND_TIP := Vector2(38, 10) / 168.0
+const GUIDE_TOUCH_Y := 30.0
+## Pieces of the guide's dim around the hole over the Road Trip slot.
+const GUIDE_DIM := ["Top", "Bottom", "Left", "Right"]
+## The hole follows the slot's sprite (panel_purple_star, 9-slice corners drawn 1:1, px): it starts this far below
+## the slot's rect and has top corners of this radius, so no undimmed strip shows around the slot.
+const GUIDE_HOLE_TOP := 11.5
+const GUIDE_HOLE_RADIUS := 24.0
 
 # Nền (mọi độ khó như khung Hard: dải #3454AC -> #DEE1F2, phủ TopShade), hoạ tiết kẹo chìm (lớp sáng lệch 2 px xuống,
 # lớp #F2C2D2 trên, độ mờ 7%), ray kẹo mờ hai đầu, viền chữ ribbon #9E4D0F: lưu trong scenes/home.tscn.
@@ -95,6 +112,8 @@ var leaderboard_btn: Button = null
 var leaderboard_caption: Label = null
 ## Chấm đỏ: kết quả tuần chờ xem hoặc thưởng league chờ nhận (Game.lb_badge).
 var leaderboard_dot: Control = null
+## Hole of the Road Trip guide's dim, Home px (_layout_guide).
+var _guide_hole := Rect2()
 ## Lớp hướng dẫn Road Trip vừa mở (null khi không hiện).
 var road_trip_guide: Control = null
 var offer_chip: Button = null
@@ -645,49 +664,68 @@ func _refresh_guide() -> void:
 		road_trip_guide = null
 
 
-## Phủ tối Home dưới thanh dưới (thanh vẫn sáng và bấm được), bong bóng chữ trên tab Road Trip, bàn tay nhún chỉ
-## vào tab. Chạm vùng tối thì tắt.
+## Phủ tối cả Home lẫn thanh dưới (tab Shop, Home), chừa một lỗ đúng ô tab Road Trip (tab sáng và bấm được qua lỗ);
+## bong bóng chữ lật ngang cho đuôi quay về phải, phía tab; bàn tay quay 180 độ, ở trên icon Road Trip, nhún chỉ
+## ngón xuống icon. Chạm vùng tối thì tắt.
 func _open_guide() -> void:
 	var g := Control.new()
 	g.name = "RoadTripGuide"
 	g.set_anchors_preset(Control.PRESET_FULL_RECT)
-	g.mouse_filter = Control.MOUSE_FILTER_STOP
-	var dim := ColorRect.new()
+	# Taps in the hole fall through to the Road Trip tab; the dim pieces take the rest.
+	g.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var dim := Control.new()
 	dim.name = "Dim"
-	dim.color = ThemeKit.SCRIM
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dim.draw.connect(_draw_guide_corners.bind(dim))
 	g.add_child(dim)
+	for side: String in GUIDE_DIM:
+		var piece := ColorRect.new()
+		piece.name = side
+		piece.color = ThemeKit.SCRIM
+		piece.gui_input.connect(_on_guide_input)
+		dim.add_child(piece)
 	var bubble := Label.new()
 	bubble.name = "Bubble"
 	bubble.text = tr("rt_guide")
 	bubble.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	bubble.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	bubble.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	bubble.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	bubble.add_theme_color_override("font_color", ThemeKit.INK)
-	bubble.add_theme_stylebox_override("normal", UiAtlas.box("bubble_cream", Vector4(40, 40, 40, 40)))
+	# The frame is a child drawn behind the text and mirrored, so the tail is at the bottom right; the text keeps
+	# the frame's 40 px margins.
+	var pad := StyleBoxEmpty.new()
+	pad.set_content_margin_all(40)
+	bubble.add_theme_stylebox_override("normal", pad)
 	bubble.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var frame := Panel.new()
+	frame.name = "Bg"
+	frame.add_theme_stylebox_override("panel", UiAtlas.box("bubble_cream", Vector4(40, 40, 40, 40)))
+	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+	frame.pivot_offset_ratio = Vector2(0.5, 0.5)
+	frame.scale = Vector2(-1, 1)
+	frame.show_behind_parent = true
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bubble.add_child(frame)
 	g.add_child(bubble)
-	# The holder is placed by _layout_guide; the hand bobs inside it. Drawn over the bottom bar, which sits above
-	# this layer.
+	# The holder is placed by _layout_guide; the hand bobs inside it.
 	var holder := Control.new()
 	holder.name = "HandHolder"
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	holder.z_index = 5
 	g.add_child(holder)
 	var hand := TextureRect.new()
 	hand.name = "Hand"
 	hand.texture = UiAtlas.tex("hand_tap")
 	hand.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	hand.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	hand.flip_h = true
+	hand.flip_v = true
 	hand.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hand.set_anchors_preset(Control.PRESET_FULL_RECT)
 	holder.add_child(hand)
-	g.gui_input.connect(func(ev: InputEvent) -> void:
-		if ev is InputEventMouseButton and (ev as InputEventMouseButton).pressed:
-			_close_guide())
+	# Over the bottom bar, so the dim covers its Shop and Home tabs.
 	add_child(g)
-	move_child(g, _nav.get_index())
 	road_trip_guide = g
 	_layout_guide()
 	var tw := hand.create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
@@ -695,19 +733,64 @@ func _open_guide() -> void:
 	tw.tween_property(hand, "position:y", 0.0, 0.45)
 
 
-## Bong bóng và bàn tay theo tab Road Trip (ô phải của thanh dưới, toạ độ Figma theo đáy khung).
+## Lỗ dim, bàn tay, bong bóng theo ô và icon tab Road Trip (rect thiết kế trong meta fb_rect của thanh dưới, thanh
+## neo đáy Home).
 func _layout_guide() -> void:
 	if road_trip_guide == null or size.x <= 0.0:
 		return
 	var s := size.x / DESIGN_W
 	var nav_top := size.y - HubNav.DESIGN_H * s
+	var tab := _nav.road_trip_btn
+	var slot: Rect2 = (_nav.get_node("RoadTripPanel") as Control).get_meta(FigmaBox.META_RECT)
+	var icon: Rect2 = (tab.get_node("Icon") as Control).get_meta(FigmaBox.META_RECT)
+	icon.position += (tab.get_meta(FigmaBox.META_RECT) as Rect2).position
+	slot = Rect2(Vector2(slot.position.x * s, nav_top + slot.position.y * s), slot.size * s)
+	icon = Rect2(Vector2(icon.position.x * s, nav_top + icon.position.y * s), icon.size * s)
+	var hole := slot.intersection(Rect2(Vector2.ZERO, size)).grow_side(SIDE_TOP, -GUIDE_HOLE_TOP)
+	# Whole pixels: controls snap to pixels, so a fractional edge left an undimmed line between two pieces.
+	hole = Rect2(hole.position.round(), hole.end.round() - hole.position.round())
+	_guide_hole = hole
+	(road_trip_guide.get_node("Dim") as Control).queue_redraw()
+	var pieces := {"Top": Rect2(0, 0, size.x, hole.position.y),
+		"Bottom": Rect2(0, hole.end.y, size.x, size.y - hole.end.y),
+		"Left": Rect2(0, hole.position.y, hole.position.x, hole.size.y),
+		"Right": Rect2(hole.end.x, hole.position.y, size.x - hole.end.x, hole.size.y)}
+	for side: String in pieces:
+		var piece := road_trip_guide.get_node("Dim/" + side) as Control
+		piece.position = (pieces[side] as Rect2).position
+		piece.size = (pieces[side] as Rect2).size
+	# Turned 180 degrees, the fingertip sits at (1 - HAND_TIP) of the hand's box.
+	var touch := Vector2(icon.get_center().x, icon.position.y + GUIDE_TOUCH_Y * s)
+	var holder := road_trip_guide.get_node("HandHolder") as Control
+	holder.size = Vector2.ONE * GUIDE_HAND * s
+	holder.position = touch - holder.size * (Vector2.ONE - HAND_TIP)
 	var bubble := road_trip_guide.get_node("Bubble") as Label
 	bubble.add_theme_font_size_override("font_size", roundi(40.0 * s))
-	bubble.size = Vector2(520, 170) * s
-	bubble.position = Vector2(DESIGN_W - 540.0, 0) * s + Vector2(0, nav_top - 330.0 * s)
-	var holder := road_trip_guide.get_node("HandHolder") as Control
-	holder.size = Vector2(150, 150) * s
-	holder.position = Vector2(DESIGN_W - HubNav.SLOT_W * 0.5 - 30.0, 0) * s + Vector2(0, nav_top - 110.0 * s)
+	bubble.size = GUIDE_BUBBLE * s
+	bubble.position = Vector2(touch.x + GUIDE_BUBBLE_RIGHT * s - bubble.size.x,
+		holder.position.y - GUIDE_BUBBLE_GAP * s - bubble.size.y)
+
+
+## Dims the hole's top corners outside the slot's rounded corners (the arc, from the side to the top edge).
+func _draw_guide_corners(dim: Control) -> void:
+	var h := _guide_hole
+	var r := minf(GUIDE_HOLE_RADIUS, minf(h.size.x, h.size.y) * 0.5)
+	if r <= 0.0:
+		return
+	for dir: Vector2 in [Vector2(-1, -1), Vector2(1, -1)]:
+		var center := Vector2(h.position.x + r if dir.x < 0.0 else h.end.x - r, h.position.y + r)
+		var pts := PackedVector2Array([center + dir * r])
+		var a0 := Vector2(dir.x, 0).angle()
+		var sweep := fposmod(Vector2(0, dir.y).angle() - a0 + PI, TAU) - PI
+		for i in 9:
+			var a := a0 + sweep * float(i) / 8.0
+			pts.append(center + Vector2(cos(a), sin(a)) * r)
+		dim.draw_colored_polygon(pts, ThemeKit.SCRIM)
+
+
+func _on_guide_input(ev: InputEvent) -> void:
+	if ev is InputEventMouseButton and (ev as InputEventMouseButton).pressed:
+		_close_guide()
 
 
 func _close_guide() -> void:

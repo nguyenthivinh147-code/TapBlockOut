@@ -46,6 +46,36 @@
 			"centre": 308,
 			"half": 11,
 			"feather": 6
+		},
+		"candy_red": {
+			"centre": 5,
+			"half": 180,
+			"feather": 1
+		},
+		"candy_orange": {
+			"centre": 31,
+			"half": 180,
+			"feather": 1
+		},
+		"candy_yellow": {
+			"centre": 54,
+			"half": 180,
+			"feather": 1
+		},
+		"candy_green": {
+			"centre": 94,
+			"half": 180,
+			"feather": 1
+		},
+		"candy_cyan": {
+			"centre": 195,
+			"half": 180,
+			"feather": 1
+		},
+		"candy_purple": {
+			"centre": 279,
+			"half": 180,
+			"feather": 1
 		}
 	},
 	"targets": {
@@ -81,6 +111,55 @@
 			"sat_max": 0.33,
 			"lift": 0.36,
 			"keep_hue": 0.1
+		},
+		"candy_strawberry": {
+			"hue": 345,
+			"sat": 0.66,
+			"sat_max": 0.66,
+			"lift": 0.8,
+			"keep_hue": 0.5
+		},
+		"candy_peach": {
+			"hue": 20,
+			"sat": 0.62,
+			"sat_max": 0.62,
+			"lift": 0.8,
+			"keep_hue": 0.5
+		},
+		"candy_butter": {
+			"hue": 47,
+			"sat": 0.58,
+			"sat_max": 0.58,
+			"lift": 0.8,
+			"keep_hue": 0.5
+		},
+		"candy_mint": {
+			"hue": 150,
+			"sat": 0.5,
+			"sat_max": 0.5,
+			"lift": 0.6,
+			"keep_hue": 0.4
+		},
+		"candy_lavender": {
+			"hue": 262,
+			"sat": 0.62,
+			"sat_max": 0.62,
+			"lift": 0.8,
+			"keep_hue": 0.5
+		},
+		"candy_sky": {
+			"hue": 210,
+			"sat": 0.64,
+			"sat_max": 0.64,
+			"lift": 0.8,
+			"keep_hue": 0.5
+		},
+		"candy_lilac": {
+			"hue": 284,
+			"sat": 0.56,
+			"sat_max": 0.56,
+			"lift": 0.8,
+			"keep_hue": 0.5
 		}
 	},
 	"maps": {
@@ -114,6 +193,27 @@
 			"cyan": "lavender_light",
 			"purple": "lavender_light",
 			"magenta": "lavender_light"
+		},
+		"candy_strawberry": {
+			"candy_red": "candy_strawberry"
+		},
+		"candy_peach": {
+			"candy_orange": "candy_peach"
+		},
+		"candy_butter": {
+			"candy_yellow": "candy_butter"
+		},
+		"candy_mint": {
+			"candy_green": "candy_mint"
+		},
+		"candy_lavender": {
+			"candy_cyan": "candy_lavender"
+		},
+		"candy_sky": {
+			"candy_cyan": "candy_sky"
+		},
+		"candy_lilac": {
+			"candy_purple": "candy_lilac"
 		}
 	},
 	"files": {
@@ -728,6 +828,27 @@
 					"frame"
 				]
 			]
+		},
+		"ui/candy_drop/candy_drop_00.png": {
+			"map": "candy_strawberry"
+		},
+		"ui/candy_drop/candy_drop_01.png": {
+			"map": "candy_lavender"
+		},
+		"ui/candy_drop/candy_drop_02.png": {
+			"map": "candy_peach"
+		},
+		"ui/candy_drop/candy_drop_04.png": {
+			"map": "candy_butter"
+		},
+		"ui/candy_drop/candy_drop_05.png": {
+			"map": "candy_mint"
+		},
+		"ui/candy_drop/candy_drop_06.png": {
+			"map": "candy_lilac"
+		},
+		"ui/candy_drop/candy_drop_07.png": {
+			"map": "candy_sky"
 		}
 	},
 	"code_colors": {

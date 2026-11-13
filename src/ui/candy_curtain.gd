@@ -6,11 +6,13 @@ extends Control
 ## the top down. A backing in the candy's tone fills the pile from the bottom up to the highest row at rest (every row
 ## below it at rest too), so no gap between two candies shows what is behind. Blocks input for its whole life.
 ## Same interface as level_curtain.gd: close() returns once the screen is covered, open() frees the node at the end.
-## Rows overlap like a hex grid; a candy draws in front of the ones that landed before it.
+## Rows overlap like a hex grid; a candy draws behind the ones that landed before it.
 
 const Config := preload("res://src/config.gd")
 ## Candy sprites, ComfyUI art in the style of the loading art's candy pile (art/manifest.json, candy_drop_*), and the
-## backing under each: a darker tone of the candy, so the gaps read as shade between candies.
+## backing under each: a darker tone of the candy, so the gaps read as shade between candies. The pastel theme has
+## twins of the candies (tools/theme_pastel.json, candy_* maps); each backing went through its candy's map
+## (base art: e98d94, 8cc8ea, f0a050, e27aa6, e9c22c, 7cc23a, 9a66d6, 4aa8e0).
 const CANDY_TEX: Array[String] = [
 	"res://assets/ui/candy_drop/candy_drop_00.png",
 	"res://assets/ui/candy_drop/candy_drop_01.png",
@@ -22,8 +24,8 @@ const CANDY_TEX: Array[String] = [
 	"res://assets/ui/candy_drop/candy_drop_07.png",
 ]
 const BACKING: Array[Color] = [
-	Color("e98d94"), Color("8cc8ea"), Color("f0a050"), Color("e27aa6"),
-	Color("e9c22c"), Color("7cc23a"), Color("9a66d6"), Color("4aa8e0"),
+	Color("edb0c4"), Color("ccb3ee"), Color("f3af8f"), Color("e27aa6"),
+	Color("edcf7e"), Color("8edab3"), Color("c79dde"), Color("84afe6"),
 ]
 ## Bottom row's centre above the bottom edge, in row gaps; rows go up until one has its centre at or above the top.
 const FIRST_ROW := 0.3
@@ -55,6 +57,10 @@ var kind := -1
 ## Sprite used instead of a candy kind (bomb_curtain.gd: the Special Bomb rain), with its own backing tone.
 var custom_tex: String = ""
 var custom_backing: Color = Color.BLACK
+## Sprite size and row gap in column gaps; 0 takes Config.CONTENT.candy_curtain_size / candy_curtain_row_gap
+## (bomb_curtain.gd sets its own).
+var size_gaps := 0.0
+var row_gaps := 0.0
 var _rng := RandomNumberGenerator.new()
 var _backing: ColorRect = null
 ## Rows from the bottom; each an Array of {node, slot (centre), scale, tilt}, in landing order.
@@ -99,9 +105,9 @@ func _build() -> void:
 	var tex: Texture2D = load(path) if ResourceLoader.exists(path) else null
 	var cols := maxi(int(c.candy_curtain_cols), 1)
 	var dx := _screen.x / cols
-	var dy := dx * float(c.candy_curtain_row_gap)
+	var dy := dx * (row_gaps if row_gaps > 0.0 else float(c.candy_curtain_row_gap))
 	_row_gap = dy
-	_candy = dx * float(c.candy_curtain_size)
+	_candy = dx * (size_gaps if size_gaps > 0.0 else float(c.candy_curtain_size))
 	var y := _screen.y - dy * FIRST_ROW
 	var r := 0
 	while true:
@@ -126,6 +132,8 @@ func _build() -> void:
 			n.pivot_offset = n.size * 0.5
 			n.position = Vector2(e.slot.x, -_candy * 2.0) - n.pivot_offset
 			add_child(n)
+			# Built in landing order: each one goes just above the backing, under the ones that land before it.
+			move_child(n, 1)
 			e["node"] = n
 		_rows.append(row)
 		if y <= 0.0:

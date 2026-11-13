@@ -18,8 +18,9 @@ const MUSIC_DB := -8.0
 const MUSIC_FADE_DB := -30.0
 ## Rung nhẹ (ms) theo tên hiệu ứng; không có trong bảng thì không rung.
 ## "grind" không có tiếng: nhịp rung lặp lại suốt lúc khối nghiền qua thanh (BoardView.GRIND_HAPTIC_EVERY), gọi bằng pulse().
+## "low_moves" không có tiếng: một nhịp lúc cảnh báo sắp hết lượt bật (level.gd _set_low_moves).
 const HAPTIC_MS := {"tap": 10, "blocked": 25, "bump": 25, "shatter": 15, "grind": 12, "box_tear": 15, "smash": 30, "life_lost": 30,
-	"choco": 15, "pop": 25, "pop_hit": 10}
+	"choco": 15, "pop": 25, "pop_hit": 10, "low_moves": 30}
 
 var sfx_on: bool = true
 var music_on: bool = true
@@ -119,7 +120,7 @@ func play(sfx_name: String, volume_db: float = 0.0) -> void:
 	if stream == null:
 		return
 	last_played = sfx_name
-	var p := _free_player()
+	var p := _free_player(stream)
 	p.stream = stream
 	p.volume_db = volume_db
 	p.play()
@@ -219,11 +220,23 @@ func _stop_music_fade() -> void:
 		_music_fade = null
 
 
-func _free_player() -> AudioStreamPlayer:
+## An idle player; with the pool full, the copy of `stream` closest to its end, else any player closest to its end.
+## A burst of one sound (the win card's MOVES coins, up to 10 sfx_coin in 0.75 s) cuts its own copies, not the
+## sfx_win that started before it.
+func _free_player(stream: AudioStream) -> AudioStreamPlayer:
+	var best: AudioStreamPlayer = _pool[0]
+	var best_key := Vector2(INF, INF)
 	for p in _pool:
 		if not p.playing:
 			return p
-	return _pool[0]
+		var left := INF
+		if p.stream != null:
+			left = p.stream.get_length() - p.get_playback_position()
+		var key := Vector2(0.0 if p.stream == stream else 1.0, left)
+		if key < best_key:
+			best_key = key
+			best = p
+	return best
 
 
 func _load_sfx(sfx_name: String) -> AudioStream:

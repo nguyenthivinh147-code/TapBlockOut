@@ -19,7 +19,8 @@ Nhánh `Theme_pastel`, làm 2026-11-13. Áp concept A đã duyệt (`output/past
 
 - Icon vật phẩm (xu, ADS, booster, tim, quà, gói) giữ màu thật; chỉ hạ độ bão hoà phần trên 0,76 (map `icon`), cho tươi mà không chói.
 - Chỉ khung, nền, nút trang trí và ruy băng chuyển pastel. Màu mang nghĩa giữ nguyên: nút mua xanh lá, nút đỏ, nút xem video xanh dương (`shop.gd` `VIDEO_PILL_COLOR`), pill vàng, dải cảnh báo Hard/VeryHard, viền số level đã qua `076F87`.
-- Không đổi: khối, mảnh vỡ, cơ chế trên bàn, avatar, khung avatar, kẹo rơi, minh hoạ Win Streak (giữ ảnh gốc).
+- Không đổi: khối, mảnh vỡ, cơ chế trên bàn, avatar, khung avatar, minh hoạ Win Streak (giữ ảnh gốc).
+- Kẹo của màn chuyển cảnh kẹo rơi (`candy_curtain.gd`, `assets/ui/candy_drop/`, người dùng yêu cầu 2026-11-13) phủ kín màn nên theo tông concept, mỗi loại một màu pastel: bạc hà đỏ → dâu, bạc hà xanh → oải hương, kẹo mút cam → đào, sao vàng → bơ, gumdrop xanh lá → bạc hà, kẹo vuông tím → lilac, kẹo vuông cyan → xanh dương nhạt; tim hồng vốn đã pastel nên giữ ảnh gốc. Trắng và vệt bóng giữ nguyên. Nền lót dưới đống kẹo (`CandyCurtain.BACKING`) là màu cũ đi qua cùng map của loại kẹo đó. `candy_drop_00` còn là icon chạy trên thanh tải của màn loading nên cũng thành bạc hà dâu. Ảnh trước/sau: `output/candy_curtain_theme/` (gitignored).
 
 ## Cơ chế
 
@@ -39,7 +40,8 @@ tools/godot.sh --headless --path . --import                                     
 ```
 
 - Đổi màu tất định, không dùng AI: mỗi pixel thuộc một họ sắc (`families`: red, orange, yellow, green, cyan, blue, purple, magenta) được đưa về họ đích (`targets`: lavender, strawberry, cream, butter): hue về hue đích, saturation nhân và chặn trần, value nâng `1 - (1 - v) × lift` nên bóng đổ, viền tối, vệt sáng giữ thứ tự. Trọng số mờ dần ở mép họ sắc và ở saturation thấp, nên trắng, kem, viền xám không đổi và không có đường nối.
-- `maps`: `frame` (xanh, cyan, tím, magenta → lavender), `frame_light` (cùng họ → lavender sáng), `frame_warm` (thêm cam → dâu), `ribbon` (mọi họ trừ đỏ, xanh lá → dâu), `label` (cam, vàng → kem), `icon` (chỉ hạ saturation trên `icon_sat_cap`).
+- `maps`: `frame` (xanh, cyan, tím, magenta → lavender), `frame_light` (cùng họ → lavender sáng), `frame_warm` (thêm cam → dâu), `ribbon` (mọi họ trừ đỏ, xanh lá → dâu), `label` (cam, vàng → kem), `icon` (chỉ hạ saturation trên `icon_sat_cap`), `candy_*` (kẹo rơi, mỗi loại một map).
+- Họ sắc có `half` 180 phủ cả vòng hue (`candy_red`, `candy_cyan`, ...): đặt `centre` ở hue chính của một ảnh một màu thì cả ảnh về một đích, `keep_hue` giữ một phần độ lệch hue quanh tâm đó. Đích của kẹo đặt `sat` = `sat_max` nên saturation chỉ bị nhân, không chạm trần: kẹo vẽ bóng bằng saturation (cyan, vàng gần như S 1 cả viên) vẫn giữ thứ tự sáng tối.
 - `files`: `"map"` cho cả file, `"regions": [[x, y, w, h, map], ...]` cho atlas (chỉ đổi trong các ô đó). Ô lấy từ inventory (dưới). Xoá một rule thì lần chạy sau xoá twin tương ứng. `--only <chuỗi>` chỉ sinh lại file có chuỗi đó trong đường dẫn.
 - `.import` của twin chép tham số từ ảnh gốc nhưng giữ `uid`, `path` của twin đã có, nên chạy lại không đổi uid; ảnh đổi thì Godot tự import lại (cần `--import` hoặc mở editor).
 - `code_colors`: `{màu cũ: màu mới}` viết lại trong `data/ui_unity/*.json` (hex), scene (`Color(...)`, `PackedColorArray`, khớp theo giá trị 8 bit) và `src/**/*.gd`. Chạy lại không đổi gì thêm. Danh sách hiện có: chữ thân xanh mực `1c4a83` → mận `4a2a6b`; chữ nhấn xanh `166dcc`, `126dcc` → `7a4fc0`; chữ mô tả `476b97`, `295487` → `6b4f8a`; dải tab `1f3e7e`, chữ hướng dẫn `27306a` → `4a2a6b`; nền Road Trip `5a70e0` → `b9a0f0`; nền xanh `3967bf`, `3454ac` → `e9d9ff`, `7b9edd`, `dee1f2` → `ffe3ec`.

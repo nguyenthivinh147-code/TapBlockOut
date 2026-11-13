@@ -23,6 +23,7 @@ const UiAtlas := preload("res://src/ui/ui_atlas.gd")
 const Config := preload("res://src/config.gd")
 const Unlocks := preload("res://src/meta/unlocks.gd")
 const BoardState := preload("res://src/core/board_state.gd")
+const Solver := preload("res://src/core/solver.gd")
 const HintFx := preload("res://src/ui/hint_fx.gd")
 const MoveFx := preload("res://src/ui/move_fx.gd")
 const RewardFly := preload("res://src/ui/reward_fly.gd")
@@ -532,8 +533,13 @@ func _start_level(warn: bool = true) -> void:
 	board_view.setup(board)
 	board_view.set_specials(attempt.get("specials", []))
 	bombs.call("setup", board_view, attempt.get("bombs", []))
+	# Entry: the blocks fall onto the board before any popup and before touch opens (design.md mục 8).
+	board_view.lift_all()
 	_place_captions()
 	_refresh_hud()
+	await _drop_blocks()
+	if _left:
+		return
 	while not _special:
 		var kind := Game.claim_gift()
 		if kind == "":
@@ -587,6 +593,17 @@ func _start_level(warn: bool = true) -> void:
 	elif _level == 1 and not _road_trip and not _special:
 		_set_tut(tr("tut_tap"))
 		board_view.highlight(board.hint())
+
+
+## The lifted blocks fall onto the board (BoardView.drop_in) once the level shows: after the host's curtain
+## (main.gd curtain_swap) has opened, so the drop does not run behind it.
+func _drop_blocks() -> void:
+	var h := _host()
+	while h != null and is_instance_valid(h.get("curtain")):
+		await get_tree().process_frame
+		if _left:
+			return
+	await board_view.drop_in()
 
 
 ## View of tutorial_intro for block `id`: aim() is the global rect of the cell the hand pokes (the block's cell nearest
@@ -744,7 +761,7 @@ func _refresh_hud() -> void:
 		return
 	var shown := maxi(0, board.moves_left() - _moves_pending - _moves_cashed)
 	moves_label.text = str(shown)
-	_set_low_moves(shown == Config.LOW_MOVES and not board.is_won() and state != "over" and state != "left")
+	_set_low_moves(state != "over" and state != "left" and Solver.short_of_moves(board, shown))
 	var total := (attempt.get("specials", []) as Array).size()
 	piece_chip.visible = total > 0
 	piece_label.text = "%d/%d" % [int(attempt.get("pieces", 0)) - _pieces_pending, total]
@@ -779,7 +796,8 @@ func _build_warn() -> void:
 	move_child(_warn, %IdleTip.get_index())
 
 
-## Last move: the vignette fades in and the MOVES chip pulses until the count changes or the level ends.
+## Low moves (Solver.short_of_moves): the vignette fades in, the phone buzzes once and the MOVES chip pulses until the
+## moves cover the board again, the count rises above Config.LOW_MOVES_MAX, or the level ends.
 func _set_low_moves(on: bool) -> void:
 	if _warn == null or on == _warn_on:
 		return
@@ -793,6 +811,7 @@ func _set_low_moves(on: bool) -> void:
 	_warn_fade_tw = create_tween()
 	if on:
 		_warn.visible = true
+		Sfx.pulse("low_moves")
 		_warn_fade_tw.tween_property(mat, "shader_parameter/amount", 1.0, Config.LOW_MOVES_FADE)
 		var half := Config.LOW_MOVES_PERIOD * 0.5
 		var peak := Vector2.ONE * Config.LOW_MOVES_CHIP_SCALE
@@ -1134,7 +1153,6 @@ func _win_flow() -> void:
 		if not _left:
 			_leave("home")
 		return
-	var x2_offered := bool(res.get("x2_available", false))
 	var x2_taken := false
 	var rate := bool(res.get("rate_prompt", false))
 	if bool(res.get("card", true)):
@@ -1147,7 +1165,6 @@ func _win_flow() -> void:
 		if _left:
 			return
 		if wr is Dictionary:
-			x2_offered = bool(wr.get("x2_offered", x2_offered))
 			x2_taken = bool(wr.get("x2_taken", false))
 			rate = bool(wr.get("rate_prompt", rate))
 	else:
@@ -1162,7 +1179,7 @@ func _win_flow() -> void:
 		if _left:
 			return
 	_offer_id = ""
-	await Game.leave_win_card(x2_offered, x2_taken)
+	await Game.leave_win_card(x2_taken)
 	if _left:
 		return
 	if _offer_id != "":
@@ -1695,9 +1712,13 @@ func _special_fail(reason: String) -> void:
 	await _special_end_popup("fail")
 
 
-## Popup thua: "Level N" vào level chính kế (đổi tại chỗ), X về Home. Không interstitial.
+## Lose popup ("boom" or "fail"): either button runs the result_exit interstitial (design.md mục 7, as the reference
+## game), then "Level N" goes on to the next main level in place, X goes Home.
 func _special_end_popup(mode: String) -> void:
 	var r: Variant = await _popup_scene(POPUP_SPECIAL_END, {"mode": mode, "level": int(Game.s.level)})
+	if _left:
+		return
+	await Game.special_leave_lose(mode)
 	if _left:
 		return
 	if r is Dictionary and str(r.get("action", "")) == "level":

@@ -263,7 +263,7 @@ func test_x2_needs_video_and_retry(t: T) -> void:
 	t.eq(_p().an.count("rv_offer"), 1, "rv_offer một lần")
 	t.eq(_p().an.count("rv_cancel"), 1, "rv_cancel")
 	t.eq(_p().an.count("rv_done"), 1, "rv_done")
-	t.ok(int(g.s.ads.last_rv_at) > 0, "ghi last_rv_at")
+	t.ok(int(g.s.ads.last_rv_at) > 0, "ghi last_rv_at (đồng hồ interstitial đếm lại)")
 
 
 func test_purchase_delivered_once(t: T) -> void:
@@ -391,29 +391,86 @@ func test_ad_pend_cleared_on_boot_without_lost(t: T) -> void:
 	t.eq(int(g.s.coins), 1000, "không thưởng khi không có xác nhận")
 
 
+## Interstitial result_exit (design.md mục 6): no Remove Ads, current level > 35 (it goes up at the win, so leaving
+## the L35 card is the first chance), and 90 s since game entry, the last interstitial or the last rewarded paid out.
+## No run spacing, no daily cap; a failed interstitial does not restart the clock.
 func test_interstitial_rules(t: T) -> void:
 	var g := _g()
-	g.s.runs = 3
-	g.s.level = 12
+	var t0 := int(Time.get_unix_time_from_system())
+	g.test_now = t0 + 1000
+	g.s.level = 34
 	var a: Dictionary = g.start_attempt()
 	_win(g, a)
 	g.on_level_won(a)
-	t.eq(int(g.s.runs), 4, "lượt 4")
-	g.test_now = int(Time.get_unix_time_from_system()) + 1000
-	await g.leave_win_card(true, true)
+	t.eq(int(g.s.level), 35, "thắng L34: level hiện tại 35")
+	await g.leave_win_card(false)
+	t.eq(_p().ads.calls.size(), 0, "rời thẻ thắng L34: chưa có")
+	a = g.start_attempt()
+	_win(g, a)
+	g.on_level_won(a)
+	t.eq(int(g.s.level), 36, "thắng L35: level hiện tại 36")
+	await g.leave_win_card(true)
 	t.eq(_p().ads.calls.size(), 0, "đã nhận x2: không interstitial")
-	await g.leave_win_card(true, false)
-	t.eq(_p().ads.calls.size(), 1, "bỏ x2: có interstitial")
+	await g.leave_win_card(false)
+	t.eq(_p().ads.calls.size(), 1, "rời thẻ thắng L35: có interstitial")
 	t.eq(_p().ads.calls[0].placement, "result_exit", "placement")
 	t.eq(_p().an.count("inter_show"), 1, "inter_show")
 	t.eq(int(g.s.ads.inter_today), 1, "đếm trong ngày")
-	await g.leave_win_card(true, false)
-	t.eq(_p().ads.calls.size(), 1, "cách 2 lượt và 120 giây")
+	g.test_now += 89
+	await g.leave_win_card(false)
+	t.eq(_p().ads.calls.size(), 1, "89 giây sau interstitial: chưa")
+	g.test_now += 1
+	await g.leave_win_card(false)
+	t.eq(_p().ads.calls.size(), 2, "90 giây sau interstitial: có, không cần cách lượt")
+	# A rewarded paid out restarts the clock.
+	g.test_now += 200
+	t.ok(await g.watch("x2_coins"), "xem hết rewarded")
+	g.test_now += 89
+	await g.leave_win_card(false)
+	t.eq(_p().ads.calls.filter(func(c: Dictionary) -> bool: return c.kind == "inter").size(), 2,
+		"89 giây sau rewarded: chưa")
+	# A failed interstitial does not restart it.
+	g.test_now += 1
+	_p().ads.simulate(false)
+	await g.leave_win_card(false)
+	t.eq(_p().an.count("inter_show"), 2, "interstitial lỗi: không ghi inter_show")
+	await g.leave_win_card(false)
+	t.eq(_p().an.count("inter_show"), 3, "lỗi không đếm lại đồng hồ: lần sau hiện ngay")
 	g.s.no_ads = true
-	g.s.ads.last_inter_run = -99
-	g.s.ads.last_inter_at = 0
-	await g.leave_win_card(true, false)
-	t.eq(_p().ads.calls.size(), 1, "no_ads chặn")
+	g.test_now += 1000
+	await g.leave_win_card(false)
+	t.eq(_p().an.count("inter_show"), 3, "no_ads chặn")
+
+
+## The clock starts at game entry: right after boot no interstitial for 90 s, even past L35.
+func test_interstitial_session_clock(t: T) -> void:
+	var g := _g()
+	g.s.level = 80
+	g.test_now = int(Time.get_unix_time_from_system()) + 1000
+	g.set("_session_start", g.test_now - 89)
+	await g.leave_win_card(false)
+	t.eq(_p().ads.calls.size(), 0, "89 giây sau khi vào game: chưa")
+	g.test_now += 1
+	await g.leave_win_card(false)
+	t.eq(_p().ads.calls.size(), 1, "90 giây: có")
+
+
+## Special Bomb: the lose popups (bomb went off, out of steps) end with an interstitial on either button, under the
+## same pacing; leaving mid-level does not.
+func test_interstitial_special_lose(t: T) -> void:
+	var g := _g()
+	g.s.level = 60
+	g.test_now = int(Time.get_unix_time_from_system()) + 1000
+	await g.special_leave_lose("boom")
+	t.eq(_p().ads.calls.size(), 1, "popup bom nổ: có interstitial")
+	var ev: Array = _p().an.named("inter_show")
+	t.eq(str(ev[0].params.get("mode", "")), "special", "inter_show ghi mode special")
+	t.eq(str(ev[0].params.get("end", "")), "boom", "inter_show ghi end")
+	g.test_now += 90
+	await g.special_leave_lose("fail")
+	t.eq(_p().ads.calls.size(), 2, "popup thua hết bước: có interstitial")
+	await g.special_leave_lose("fail")
+	t.eq(_p().ads.calls.size(), 2, "cùng đồng hồ 90 giây")
 
 
 func test_demo_end_returns_empty(t: T) -> void:
@@ -584,11 +641,11 @@ func test_toggle_notif_asks_permission(t: T) -> void:
 func test_notifications(t: T) -> void:
 	var g := _g()
 	g.s.runs = 2
-	await g.leave_win_card(false, false)
+	await g.leave_win_card(false)
 	t.eq(_p().notif.asked, true, "đã xin quyền")
 	t.eq(bool(g.s.notify.asked), true, "ghi asked")
 	_p().notif.asked = false
-	await g.leave_win_card(false, false)
+	await g.leave_win_card(false)
 	t.eq(_p().notif.asked, false, "chỉ một lần")
 	g.s.level = 5
 	g.set_setting("notif", true)

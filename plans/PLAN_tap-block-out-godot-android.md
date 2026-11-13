@@ -317,7 +317,7 @@ func next_after_win(res: Dictionary, challenge: bool) -> String  # "home" khi th
 func on_level_lost(attempt: Dictionary) -> void
 func restart_cost_life(attempt: Dictionary) -> bool
 func claim_x2() -> bool             # coroutine: video x2_coins, thẻ đầu tiên (ECON.win_card_from_level) miễn phí
-func leave_win_card(x2_offered: bool, x2_taken: bool) -> void  # coroutine: interstitial result_exit, rồi offer, rồi xin quyền thông báo
+func leave_win_card(x2_taken: bool) -> void  # coroutine: interstitial result_exit, rồi offer, rồi xin quyền thông báo
 func rate_now() -> void             # hộp đánh giá của store, sau popup đánh giá (popup_rate, 4.3)
 func leave_attempt(attempt: Dictionary) -> void  # về Home giữa ván đã chạm: chuỗi Win Streak tụt (kể cả không mất mạng)
 func helper_pack_due(attempt: Dictionary, offer: Dictionary) -> bool  # popup hết MOVES kèm Helper Pack (4.7) thay popup thường
@@ -438,6 +438,7 @@ func special_start() -> Dictionary  # dùng 1 vé (ngăn chờ trước), đặt
 func special_lost(attempt: Dictionary, reason: String, bombs_left: int = 0) -> void  # steps | bomb | quit, không mất mạng
 func special_claim_x2() -> bool  # coroutine: video special_x2, +1 booster cùng loại
 func special_leave_win(x2_taken: bool) -> void  # coroutine: interstitial result_exit
+func special_leave_lose(mode: String) -> void  # coroutine: interstitial result_exit khi rời popup thua (boom | fail)
 func special_queue_invite() -> void  # vé từ Hard / VeryHard mà sau thẻ thắng về Home: Home mời
 func special_take_invite() -> bool  # lần đầu sau khi mở, hoặc lời mời đang chờ khi còn vé
 func special_mark_guide() -> void
@@ -454,7 +455,7 @@ func tester_wipe() -> bool          # coroutine: xoá file lưu, Platform.wipe()
 ```gdscript
 func go(screen: String, args: Dictionary = {}) -> void  # "splash", "home", "level", "no_lives", "profile", "shop", "challenge", "road_trip" (Leaderboard là popup, open_popup)
 func open_popup(scene_path: String, args: Dictionary = {}) -> Node
-func boot_to_level() -> bool  # sau màn loading: vào thẳng level khi chơi được (còn mạng, còn level), không thì Home
+func boot_to_level() -> bool  # sau màn loading: vào thẳng level khi chơi được (còn mạng, còn level) và Màn đặc biệt chưa mở, không thì Home
 ```
 
 Mọi màn và popup là scene có script `func setup(args: Dictionary) -> void` và signal `closed(result: Variant)`. UI tĩnh của màn là node trong scene (layout Unity instance từ `scenes/unity/<Prefab>.tscn`); script chỉ tìm node, điền chữ, dữ liệu, signal, còn phần theo dữ liệu thì sinh lúc chạy (`docs/UI_NODES.md`). Nút Back Android đóng popup trên cùng (`closed(null)`); popup có `on_back()` thì Main gọi nó thay vào đó (Settings đóng popup Language trước, popup kết quả Leaderboard nhận thưởng), popup có `blocks_back()` true thì Back không làm gì. Main xử lý Back ở bước sau notification (`call_deferred`), vì lúc notification đi qua cây Main không thêm được màn mới. Đường dẫn scene: `scenes/<tên>.tscn`, script `src/ui/<tên>.gd`. Kích thước gốc 720×1280, stretch `canvas_items`, aspect `expand`, nút tối thiểu 96×96 ở độ phân giải gốc (tương đương khoảng 48dp).
@@ -669,7 +670,7 @@ Các module chỉ phụ thuộc `src/config.gd` và `save_schema.gd`. Test tự 
 
 - [x] **Task 2.6: Nhịp interstitial**
   - **Allowed Files:** `src/meta/ad_pacing.gd`, `tests/test_ad_pacing.gd`.
-  - **Specs:** `inter_due(s, ctx) -> bool` với `ctx {now, session_start, first_session, level, x2_offered, x2_taken, day}`. Luật trong `design.md` mục 6 (viết lại theo `monetize.interDue` trong `reference/horus/horus-sdk.d.ts` dòng 839). `note_inter(s, now, day)`, `note_rewarded(s, now)`, `inter_count_today(s, day)`. Có `no_ads` thì luôn sai.
+  - **Specs:** `inter_due(s, ctx) -> bool` với `ctx {now, session_start, x2_taken}`, level đọc từ `s.level`. Luật trong `design.md` mục 6 (2026-11-14 đổi theo game gốc: level > 35, đồng hồ 90 giây đếm lại lúc vào game, interstitial đóng, rewarded trao thưởng; trước đó viết theo `monetize.interDue` của Horus). `clock_start(s, ctx)`, `note_inter(s, now, day)`, `note_rewarded(s, now)`, `inter_count_today(s, day)`. Có `no_ads` thì luôn sai.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ad_pacing`
 
 - [x] **Task 2.7: Offer và sale**
@@ -719,7 +720,7 @@ Mỗi màn có `setup(args)` và signal `closed`, chạy được khi `Game` dù
 
 - [x] **Task 5.1: BoardView**
   - **Allowed Files:** `scenes/board_view.tscn`, `src/ui/board_view.gd`, `src/ui/board_fx.gd`, `src/ui/pudding.gd`, `src/ui/pudding.gdshader`, `tests/test_ui_board.gd`.
-  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 đơn vị khung mỗi bên và 0,61 đơn vị trên dưới, `frame_rect()` trả về trọn khung, `frame_unit()` là đơn vị khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; khung cố định theo màn: `board_rect()` là `Config.BOARD_AREA` ở màn chuẩn `BOARD_SCREEN` nhân theo màn, chỉ co khi vùng chứa nhỏ hơn khung; cỡ ô là số nguyên, theo hình của level `content_box()` cộng một ô lề mỗi phía, tối đa 14×18 ô, vừa `board_rect()`, to nhất `BOARD_CELL_MAX`; hình ở giữa khung, `content_rect()`). Khối thoát lao nhanh dần tới thanh cùng màu (0,20–0,35 giây theo quãng đường, `SLIDE_MIN`–`SLIDE_TIME`), 0,3 giây cuối chậm dần về đúng tốc độ nghiền (`EXIT_BRAKE`; từ 4 ô trở xuống không đủ đường hãm thì đi đều ở tốc độ nghiền; khối cuối trên bàn không hãm) rồi trôi qua thanh và bị nghiền thành khối vuông kẹo nhỏ phun ra ngoài thanh (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)` (khối vỡ thành mảnh kẹo, gọi lúc búa kẹo mút của `src/ui/smash_fx.gd` gõ), `strike_point(id)` (tâm ô của khối gần tâm khối nhất, nơi búa gõ). Cơ chế mới để Task 9.2.
+  - **Specs:** `setup(board: BoardState)`, signal `block_tapped(id)`, `animation_done`, `apply_result(result: Dictionary)`. Vẽ nền trơn, khung cổng gồm bốn thanh capsule theo màu và bốn ống góc (`src/ui/candy_frame.gd`, chiếm thêm 0,77 đơn vị khung mỗi bên và 0,61 đơn vị trên dưới, `frame_rect()` trả về trọn khung, `frame_unit()` là đơn vị khung), khối kẹo sọc bóng (thân bằng shader từ SDF trong `src/ui/pudding.gd`, bóng đổ ở lớp riêng dưới mọi khối, vệt bóng và phần phủ bằng code; concept theme trong `design.md` mục 8; khung cố định theo màn: `board_rect()` là `Config.BOARD_AREA` ở màn chuẩn `BOARD_SCREEN` nhân theo màn, chỉ co khi vùng chứa nhỏ hơn khung; cỡ ô là số nguyên, theo hình của level `content_box()` cộng một ô lề mỗi phía, tối đa 14×18 ô, vừa `board_rect()`, to nhất `BOARD_CELL_MAX`; hình ở giữa khung, `content_rect()`). Khối thoát lao nhanh dần tới thanh cùng màu (0,20–0,35 giây theo quãng đường, `SLIDE_MIN`–`SLIDE_TIME`), 0,3 giây cuối chậm dần về đúng tốc độ nghiền (`EXIT_BRAKE`; từ 4 ô trở xuống không đủ đường hãm thì đi đều ở tốc độ nghiền; khối cuối trên bàn không hãm) rồi trôi qua thanh và bị nghiền thành khối vuông kẹo nhỏ phun ra ngoài thanh (`src/ui/candy_shards.gd`, chi tiết ở `design.md` mục 8); bị chặn thì lao tới vật cản, nhún, văng vụn, bật về, rung nhẹ, không màn đỏ. Vùng chạm đúng ô của khối. `highlight(id)` cho Gợi ý, `smash_anim(id)` (khối vỡ thành mảnh kẹo, gọi lúc búa kẹo mút của `src/ui/smash_fx.gd` gõ), `strike_point(id)` (tâm ô của khối gần tâm khối nhất, nơi búa gõ). Khối rơi lúc vào màn (2026-11-13, `design.md` mục 8): `lift_all()` ngay sau `setup` treo mọi khối, `await drop_in()` cho rơi và trả về khi xong, `is_dropping()`; `level.gd` `_drop_blocks` đợi `curtain` của Main về null rồi mới gọi, trước mọi popup đầu level. Cơ chế mới để Task 9.2.
   - **Verification:** `tools/godot.sh --headless --path . -s res://tests/run_all.gd -- test_ui_board`
 
 - [x] **Task 5.2: Home và Profile**

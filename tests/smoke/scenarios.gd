@@ -149,8 +149,8 @@ static func scen_c(r) -> bool:
 		g.s.lives["count"] = 2
 	if not await r.open_game("C", prep):
 		return false
-	if not await wait_for(r, func() -> bool: return _playing(r) == lvl, 20000):
-		return r.fail("không vào được L%d" % lvl)
+	if not await ensure_playing(r, lvl):
+		return false
 	r.step("L%d, khối %s bị chặn từ đầu" % [lvl, target[1]])
 	# Lượt 1: cứu bằng video rồi bỏ cuộc.
 	if not await burn_to_rescue(r, str(target[1])):
@@ -970,6 +970,17 @@ static func after_win(r, from_level: int) -> bool:
 		await r.tap(cont, "Tiếp tục")
 	var moved: bool = await wait_for(r, next_or_home, 20000)
 	return moved or r.fail("sau thẻ thắng L%d không sang level kế hay Home" % from_level)
+
+
+## Đợi L`lvl` vào trạng thái chơi; đang ở Home (mở game từ khi Màn đặc biệt mở, design.md mục 2) thì bấm Chơi trước.
+static func ensure_playing(r, lvl: int) -> bool:
+	if r.screen_name() == "home":
+		await settle_all(r)
+		if not await tap_named(r, "PlayButton", r.main.current_screen):
+			return false
+	if not await wait_for(r, func() -> bool: return _playing(r) == lvl, 20000):
+		return r.fail("không vào được L%d (đang %s, level %d)" % [lvl, r.screen_name(), _playing(r)])
+	return true
 
 
 ## Từ màn level: Cài đặt → Home, xác nhận nếu game hỏi (mất mạng), đợi Home.

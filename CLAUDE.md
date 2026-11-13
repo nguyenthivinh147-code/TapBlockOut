@@ -11,7 +11,8 @@ Game xếp khối trên Android gốc, làm bằng Godot (không phải bản we
 ```bash
 tools/test.sh                                      # toàn bộ test, kể cả kiểm tra tĩnh; log output/test/, báo cáo output/report/
 tools/test.sh test_board                           # chỉ tests/test_board*.gd
-tools/affected.sh [--run]                          # test và kịch bản smoke theo git diff (docs/TESTING.md); bảng tests/affected_map.txt
+tools/affected.sh [--run]                          # test và kịch bản smoke theo git diff (docs/TESTING.md); --run báo hàm đã sửa chưa có test
+tools/affected.sh --coverage                       # đo test nào chạy qua hàm nào (~10 phút); có bản đo thì affected.sh chọn test theo nó
 tools/godot.sh --headless --path . --quit          # nạp autoload và main scene, chạy 1 khung
 tools/godot.sh --headless --path . --import        # chỉ khi editor đóng
 ```

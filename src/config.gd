@@ -33,13 +33,12 @@ const _LIVES := {
 	"from_level": 10,
 }
 
+## Interstitial result_exit as the reference game (design.md mục 6, 2026-11-13): only while the current level is above
+## inter_after_level (the level goes up at the win, so leaving the L35 card is the first chance), and inter_cooldown
+## seconds after the clock restarts (game entry, an interstitial closed, a rewarded paid out). No run spacing, no daily cap.
 const _ADS := {
-	"inter_from_run": 4,
-	"inter_every": 2,
-	"inter_cooldown": 120,
-	"session_warmup": 90,
-	"rewarded_grace": 45,
-	"first_session_block_until_level": 10,
+	"inter_after_level": 35,
+	"inter_cooldown": 90,
 }
 
 ## Level the feature opens at (design.md mục 4 "Mở khoá theo level"). 2026-11-10 (user): shop 5 -> 11, leaderboard
@@ -457,11 +456,16 @@ const _CONTENT := {
 	# candy_curtain_drop_sec có một viên chạm chỗ, mỗi viên lệch thêm tới candy_curtain_jitter_sec. Phủ kín thì giữ
 	# candy_curtain_hold_sec, rồi cả đống rơi qua đáy màn (hàng trên trễ candy_curtain_out_row_sec so với hàng dưới,
 	# rơi hết màn trong candy_curtain_out_fall_sec).
-	"candy_curtain_cols": 4,
-	"candy_curtain_size": 1.6,
-	"candy_curtain_row_gap": 0.82,
+	"candy_curtain_cols": 3,
+	"candy_curtain_size": 1.2,
+	# Màn mưa bom (bomb_curtain.gd) dùng cùng số cột nhưng bom to hơn và ít hàng hơn (hàng cách nhau
+	# bomb_curtain_row_gap lần khoảng cột): thân bom nằm thấp trong ảnh (ngòi chiếm phần trên), nên ở cỡ này các quả
+	# bom nằm yên tự che kín màn, không lộ nền dưới (test_candy_curtain).
+	"bomb_curtain_size": 2.6,
+	"bomb_curtain_row_gap": 1.05,
+	"candy_curtain_row_gap": 0.72,
 	"candy_curtain_fall_sec": 0.45,
-	"candy_curtain_drop_sec": 0.025,
+	"candy_curtain_drop_sec": 0.04,
 	"candy_curtain_jitter_sec": 0.03,
 	"candy_curtain_hold_sec": 0.05,
 	"candy_curtain_out_row_sec": 0.01,
@@ -662,11 +666,13 @@ const HUD_TONE_SAT := 0.8
 const HUD_TONE_VAL := 0.97
 const HUD_TONE_GLOSS := 0.5
 
-## Last-move warning (level screen): with 1 move left a red vignette (src/ui/low_moves.gdshader) rims the screen and the
-## MOVES chip pulses. LOW_MOVES_PERIOD is one pulse cycle in seconds, LOW_MOVES_CHIP_SCALE the chip's peak scale,
-## LOW_MOVES_REACH how far the glow reaches in from the screen edge (canvas px), LOW_MOVES_ALPHA its peak opacity,
-## LOW_MOVES_FADE the fade in/out time in seconds.
-const LOW_MOVES := 1
+## Low-moves warning (level screen): while the MOVES chip shows at most LOW_MOVES_MAX and fewer moves than the fewest
+## taps that still clear the board (Solver.short_of_moves), a red vignette (src/ui/low_moves.gdshader) rims the screen,
+## the MOVES chip pulses, and the phone buzzes once each time it turns on (Sfx.HAPTIC_MS.low_moves).
+## LOW_MOVES_PERIOD is one pulse cycle in seconds, LOW_MOVES_CHIP_SCALE the chip's peak scale, LOW_MOVES_REACH how far
+## the glow reaches in from the screen edge (canvas px), LOW_MOVES_ALPHA its peak opacity, LOW_MOVES_FADE the fade
+## in/out time in seconds.
+const LOW_MOVES_MAX := 2
 const LOW_MOVES_PERIOD := 0.9
 const LOW_MOVES_CHIP_SCALE := 1.12
 const LOW_MOVES_REACH := 80.0

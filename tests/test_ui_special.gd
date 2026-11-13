@@ -72,6 +72,12 @@ func _blocked(lv: Control) -> String:
 	return ""
 
 
+## Interstitial calls so far (mock ads log).
+func _inters() -> Array:
+	var calls: Array = _tree().root.get_node("Platform").ads.calls
+	return calls.filter(func(c: Dictionary) -> bool: return c.kind == "inter")
+
+
 func _inv_total(g: Node) -> int:
 	return int(g.s.inv.hint) + int(g.s.inv.move) + int(g.s.inv.smash)
 
@@ -195,9 +201,13 @@ func test_bomb_explodes(t: T) -> void:
 	t.eq(SpecialBomb.wins(g.s), 0, "không tính thắng")
 	t.eq(SpecialBomb.board(g.s), 1, "lần sau gặp lại bàn 1")
 	t.eq(int(g.lives_view().count), lives0, "không mất mạng")
+	t.eq(_inters().size(), 0, "popup Bùm đang mở: chưa có interstitial")
 	_press(lv, "LevelButton")
 	t.ok(await _wait_until(func() -> bool: return lv.state == "playing" and not bool(lv.attempt.get("special", false))),
 		"Level N vào level chính")
+	# design.md mục 7: leaving the lose popup runs the result_exit interstitial (level > 35, clock past 90 s).
+	t.eq(_inters().size(), 1, "rời popup Bùm: có interstitial")
+	t.eq(str(_inters()[0].placement), "result_exit", "placement result_exit")
 	await _tree().process_frame
 	t.ok(not cracked.call(), "level chính không còn kính vỡ")
 	lv.free()
@@ -225,6 +235,7 @@ func test_out_of_steps_no_rescue(t: T) -> void:
 		popup.call("_send", "close")
 	t.ok(await _wait_until(func() -> bool: return not closed.is_empty()), "X về Home")
 	t.eq(str((closed[0] as Dictionary).get("action", "")), "home", "action home")
+	t.eq(_inters().size(), 1, "X ở popup thua hết bước: có interstitial")
 	lv.free()
 
 
@@ -243,6 +254,7 @@ func test_leave_asks_then_home(t: T) -> void:
 	_press(lv, "LeaveButton")
 	t.ok(await _wait_until(func() -> bool: return not closed.is_empty()), "về Home")
 	t.eq(SpecialBomb.tickets(g.s, NOW), 0, "vé đã mất")
+	t.eq(_inters().size(), 0, "rời màn giữa chừng: không interstitial")
 	lv.free()
 
 

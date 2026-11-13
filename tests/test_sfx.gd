@@ -80,6 +80,39 @@ func test_real_stream_playback_state(t: T) -> void:
 	s.queue_free()
 
 
+## Silent 16-bit mono clip `sec` seconds long.
+func _silence(sec: float) -> AudioStreamWAV:
+	var wav := AudioStreamWAV.new()
+	wav.format = AudioStreamWAV.FORMAT_16_BITS
+	wav.mix_rate = 22050
+	var data := PackedByteArray()
+	data.resize(int(sec * 22050.0) * 2)
+	wav.data = data
+	return wav
+
+
+## Win card: sfx_win starts first, then up to 10 coins of the leftover MOVES land 0.075 s apart, each sfx_coin 1 s
+## long. Once the pool is full the burst must cut one of its own coins, not the win, even when the win has less time
+## left (the 1.97 s sfx_win had 0.44 s left when the 8th coin landed, the oldest coin 0.475 s).
+func test_full_pool_keeps_other_sound(t: T) -> void:
+	for win_sec: float in [2.0, 0.5]:
+		var s := _make()
+		var win_wav := _silence(win_sec)
+		s._cache["s:win_tone"] = win_wav
+		s._cache["s:coin_tone"] = _silence(1.0)
+		s.play("win_tone")
+		var win_player: AudioStreamPlayer = null
+		for p: AudioStreamPlayer in s._pool:
+			if p.playing and p.stream == win_wav:
+				win_player = p
+		t.ok(win_player != null, "âm thắng đang phát (%s s)" % win_sec)
+		for i in s.POOL_SIZE:
+			s.play("coin_tone")
+		t.ok(win_player != null and win_player.playing and win_player.stream == win_wav,
+				"hết player thì loạt coin tự cắt coin của nó, không cắt âm thắng (%s s)" % win_sec)
+		s.queue_free()
+
+
 ## The candy grind at the bar has its own sound; the paper box must not borrow it (design.md mục 8, Âm thanh).
 func test_grind_and_box_sounds(t: T) -> void:
 	var s := _make()

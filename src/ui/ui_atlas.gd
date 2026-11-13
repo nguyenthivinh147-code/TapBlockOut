@@ -141,23 +141,6 @@ static func tex(region: String) -> Texture2D:
 	return t
 
 
-## Ảnh rời trong assets/ui/figma/ (không qua atlas). File mới chưa được editor import thì đọc thẳng png.
-static func file_tex(file_name: String) -> Texture2D:
-	var key := "file:" + file_name
-	if _tex_cache.has(key):
-		return _tex_cache[key]
-	var path := DIR + file_name
-	var t: Texture2D = null
-	if ResourceLoader.exists(path):
-		t = load(path) as Texture2D
-	elif FileAccess.file_exists(path):
-		var img := Image.load_from_file(ProjectSettings.globalize_path(path))
-		if img != null:
-			t = ImageTexture.create_from_image(img)
-	_tex_cache[key] = t
-	return t
-
-
 static func size_of(region: String) -> Vector2:
 	if not REGIONS.has(region):
 		return Vector2.ZERO
@@ -233,31 +216,6 @@ static func _region_image(region: String) -> Image:
 	if full.is_compressed():
 		full.decompress()
 	return full.get_region(Rect2i(r[1]))
-
-
-## Sprite co đều về cao h (giữ tỉ lệ), 9-slice chỉ theo chiều ngang với hai đầu bằng nửa chiều cao.
-## Dùng cho nút viên thuốc và tab đặt đúng cỡ Figma: đổi rộng không làm méo đầu tròn.
-static func fit_box(region: String, h: float) -> StyleBoxTexture:
-	var key := "%s@%d" % [region, roundi(h)]
-	var t: Texture2D = _tex_cache.get(key)
-	if t == null:
-		var r: Array = REGIONS.get(region, [])
-		var sheet := _sheet(str(r[0])) if not r.is_empty() else null
-		if sheet == null:
-			return StyleBoxTexture.new()
-		var src: Rect2 = r[1]
-		var full := sheet.get_image()
-		if full.is_compressed():
-			full.decompress()
-		var img := full.get_region(Rect2i(src))
-		img.resize(maxi(roundi(src.size.x * h / src.size.y), 1), maxi(roundi(h), 1), Image.INTERPOLATE_LANCZOS)
-		t = ImageTexture.create_from_image(img)
-		_tex_cache[key] = t
-	var s := StyleBoxTexture.new()
-	s.texture = t
-	s.texture_margin_left = h * 0.5
-	s.texture_margin_right = h * 0.5
-	return s
 
 
 static func clear_cache() -> void:

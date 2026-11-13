@@ -81,6 +81,12 @@ func _settle(sec: float = 0.8) -> void:
 	for i in 6:
 		await process_frame
 	await create_timer(sec).timeout
+	# Level entry: shoot once the blocks have fallen onto the board (BoardView.drop_in).
+	var s: Variant = _main.current_screen if _main != null else null
+	var bv: Variant = s.get("board_view") if is_instance_valid(s) else null
+	var deadline := Time.get_ticks_msec() + 3000
+	while bv is Node and is_instance_valid(bv) and bool((bv as Node).call("is_dropping")) and Time.get_ticks_msec() < deadline:
+		await process_frame
 	for i in 3:
 		await process_frame
 

@@ -19,7 +19,7 @@ static func defaults() -> Dictionary:
 		"shop": {"day": -1, "videos": 0},
 		"cos": {"owned": ["avatar_00", "frame_00"], "avatar": "avatar_00", "frame": "frame_00"},
 		"profile": {"name": ""},
-		"ads": {"last_inter_run": -99, "last_inter_at": 0, "last_rv_at": 0, "inter_today": 0, "inter_day": -1},
+		"ads": {"last_inter_at": 0, "last_rv_at": 0, "inter_today": 0, "inter_day": -1},
 		"ad_pend": {}, "ad_credit": {},
 		"offers": {"last_run": -999, "items": {}},
 		"buys": [], "no_ads": false,

@@ -35,12 +35,9 @@ func _win_coins(d: D) -> int:
 	return int(d.plat().an.named("level_end").back().params.coins)
 
 
-## Đưa trạng thái về "đến lượt interstitial" cho lần thắng kế (trừ chuyện x2).
+## Đưa trạng thái về "đến lượt interstitial" cho lần thắng kế (trừ chuyện x2): đồng hồ 90 giây đã qua.
 func _prep_inter(d: D) -> void:
-	var g := d.game()
-	g.s.ads["last_inter_run"] = -99
-	g.s.ads["last_inter_at"] = 0
-	g.test_now += 1000
+	d.game().test_now += 1000
 
 
 func test_full_demo_l1_to_l20(t: T) -> void:
@@ -93,20 +90,9 @@ func test_full_demo_l1_to_l20(t: T) -> void:
 	t.eq(g.s.mech_seen, ["stone"], "đã ghi xem thùng sắt")
 	t.ok(bool(g.s.meta.rated), "đã hỏi đánh giá (reset_for_test coi như đã hỏi; luồng popup Rate ở test_ui_streak)")
 	t.eq(_rewarded(d, "x2_coins").size(), 0, "không xem video x2 trong lượt chơi này")
-	# luật interstitial: phiên đầu chặn tới hết L10, cách nhau >= inter_every lượt, chỉ ở result_exit
-	var shows: Array = d.plat().an.named("inter_show")
-	var levels: Array = []
-	var prev_run := -99
-	for e in shows:
-		levels.append(int(e.params.level))
-		t.ok(int(e.params.level) > int(Config.ADS.first_session_block_until_level), "phiên đầu không inter ở L<=10")
-		t.ok(int(e.params.runs) >= int(Config.ADS.inter_from_run), "không inter trước lượt %d" % int(Config.ADS.inter_from_run))
-		t.ok(int(e.params.runs) - prev_run >= int(Config.ADS.inter_every), "cách nhau >= %d lượt" % int(Config.ADS.inter_every))
-		prev_run = int(e.params.runs)
-	t.eq(levels, [11, 13, 15, 17, 19], "inter ở L11, 13, 15, 17, 19")
-	t.eq(_inters(d).size(), shows.size(), "mỗi inter hiện đều ghi sự kiện")
-	for c in _inters(d):
-		t.eq(str(c.placement), "result_exit", "đúng placement")
+	# luật interstitial (design.md mục 6): chỉ khi level hiện tại > 35, nên bản demo (tới L20) không có
+	t.eq(d.plat().an.named("inter_show").size(), 0, "L1-20 không có interstitial")
+	t.eq(_inters(d).size(), 0, "không gọi interstitial")
 	t.eq(d.main.popup_count(), 0, "không còn popup")
 	d.finish()
 	print("e2e full demo: %d ms, offers bỏ qua %d" % [Time.get_ticks_msec() - t0, d.offers_seen])
@@ -339,53 +325,53 @@ func test_x2_free_video_and_closed_early(t: T) -> void:
 	d.finish()
 
 
+## Interstitial result_exit from the L35 card on (release build, design.md mục 6): x2 by video closes the card with no
+## interstitial; a rewarded closed early does not restart the 90 s clock; no run spacing, only the clock.
 func test_interstitial_rules_with_x2(t: T) -> void:
 	var d := D.new()
-	await d.begin(DIR + "/inter", 12, -1, true)
+	await d.begin(DIR + "/inter", 35, -1, true, false)
 	var g := d.game()
-	g._first_session = false
-	g.s.runs = 10
 	g.test_now += 1000
-	t.ok(await d.play_from_home(12), "vào L12")
-	# L12: không x2, đến lượt: có interstitial
-	t.ok(await d.win_level(), "thắng L12")
-	t.ok(await d.continue_to(13), "sang L13")
-	t.eq(_inters(d).size(), 1, "L12 đến lượt thì hiện inter")
+	t.ok(await d.play_from_home(35), "vào L35")
+	# L35: không x2, đã qua 90 giây: rời thẻ thắng L35 là lần đầu có interstitial
+	t.ok(await d.win_level(), "thắng L35")
+	t.ok(await d.continue_to(36), "sang L36")
+	t.eq(_inters(d).size(), 1, "rời thẻ thắng L35 thì hiện inter")
 	t.eq(str(_inters(d)[0].placement), "result_exit", "placement result_exit")
-	# L13: đã sẵn lượt nhưng lấy x2 bằng video thì không inter
+	# L36: đồng hồ đã qua nhưng lấy x2 bằng video thì không inter
 	_prep_inter(d)
-	t.ok(await d.win_level(), "thắng L13")
-	var coins13: int = int(g.s.coins)
+	t.ok(await d.win_level(), "thắng L36")
+	var coins36: int = int(g.s.coins)
 	d.press("X2Button")
-	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == coins13 + _win_coins(d)), "x2 L13 cộng gold")
-	t.eq(_rewarded(d, "x2_coins").size(), 1, "xem video x2 L13")
-	t.ok(await d.x2_to(14), "x2 xong tự sang L14")
+	t.ok(await d.wait_until(func() -> bool: return int(g.s.coins) == coins36 + _win_coins(d)), "x2 L36 cộng gold")
+	t.eq(_rewarded(d, "x2_coins").size(), 1, "xem video x2 L36")
+	t.ok(await d.x2_to(37), "x2 xong tự sang L37")
 	t.eq(_inters(d).size(), 1, "lấy x2 thì không hiện inter")
-	# L14: cùng điều kiện, không x2: hiện (đối chứng)
+	# L37: cùng điều kiện, không x2: hiện (đối chứng), không cần cách lượt
 	_prep_inter(d)
-	t.ok(await d.win_level(), "thắng L14")
-	t.ok(await d.continue_to(15), "sang L15")
+	t.ok(await d.win_level(), "thắng L37")
+	t.ok(await d.continue_to(38), "sang L38")
 	t.eq(_inters(d).size(), 2, "không x2 thì hiện inter")
-	# L15: mời x2, đóng video sớm (không lấy): vẫn tới lượt inter
+	# L38: mời x2, đóng video sớm (không lấy): đồng hồ không đếm lại, vẫn có inter
 	_prep_inter(d)
-	t.ok(await d.win_level(), "thắng L15")
+	t.ok(await d.win_level(), "thắng L38")
 	d.plat().ads.simulate("closed")
 	d.press("X2Button")
 	var msg := d.popup("MessageLabel") as Label
 	await d.wait_until(func() -> bool: return msg.visible)
 	t.ok(msg.visible, "đóng sớm có báo")
-	t.ok(await d.continue_to(16), "sang L16")
-	t.eq(_inters(d).size(), 3, "đóng x2 sớm thì inter vẫn tới lượt")
-	# L16: vừa hiện inter, chưa đủ cách quãng: không hiện nữa
-	g.test_now += 1000
-	t.ok(await d.win_level(), "thắng L16")
-	t.ok(await d.continue_to(17), "sang L17")
-	t.eq(_inters(d).size(), 3, "cách nhau chưa đủ lượt thì không inter")
+	t.ok(await d.continue_to(39), "sang L39")
+	t.eq(_inters(d).size(), 3, "đóng x2 sớm thì inter vẫn có")
+	# L39: vừa hiện inter, chưa qua 90 giây: không hiện nữa
+	g.test_now += 30
+	t.ok(await d.win_level(), "thắng L39")
+	t.ok(await d.continue_to(40), "sang L40")
+	t.eq(_inters(d).size(), 3, "chưa qua 90 giây thì không inter")
 	t.eq(AdPacing.inter_count_today(g.s, g.today()), 3, "đếm inter trong ngày")
-	# không quảng cáo: không inter dù đến lượt
+	# không quảng cáo: không inter dù đồng hồ đã qua
 	g.s.no_ads = true
 	_prep_inter(d)
-	t.ok(await d.win_level(), "thắng L17")
-	t.ok(await d.continue_to(18), "sang L18")
+	t.ok(await d.win_level(), "thắng L40")
+	t.ok(await d.continue_to(41), "sang L41")
 	t.eq(_inters(d).size(), 3, "đã mua bỏ quảng cáo thì không inter")
 	d.finish()

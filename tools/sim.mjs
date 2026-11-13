@@ -114,14 +114,14 @@ function play(p, seed) {
   const rnd = mulberry(seed);
   const s = {
     gold: E.start_coins, level: 1, lives: LIVES.max, inv: { hint: 0, move: 0, smash: 0 }, cal: 0, owned: 0,
-    t: 0, runs: 0, wins: 0, lastInterRun: -99, lastInterT: -999, lastRvT: -999, sessionStart: 0, firstSession: true,
+    t: 0, runs: 0, wins: 0, adClock: 0,
     attempts: 0, losses: 0, rv: 0, inter: 0, waits: 0,
     rShown: 0, rInv: 0, rVideo: 0, rGold: 0, rShort: 0,
     earn: { win: 0, x2: 0, cal: 0, shop: 0 }, spend: { rescue: 0, refill: 0 },
     dry: 0, maxDry: 0, canRescue: 0, gifts: {},
   };
   const out = { days: {}, chap: {}, l20: null };
-  const rv = () => { s.rv++; s.t += AD_SEC; s.lastRvT = s.t; };
+  const rv = () => { s.rv++; s.t += AD_SEC; s.adClock = s.t; };
 
   // Quà hướng dẫn: 1 booster vào kho khi tới level mở booster đó.
   function gifts() {
@@ -135,13 +135,12 @@ function play(p, seed) {
     for (const [k, n] of Object.entries(r.items)) s.inv[k] += n;
     s.cal++;
   }
-  // Interstitial result_exit (design.md mục 6): rời thẻ thắng đã bỏ qua x2; L1–10 không có thẻ, tính như bỏ qua x2.
+  // Interstitial result_exit (design.md mục 6): rời thẻ thắng đã bỏ qua x2, level hiện tại (đã tăng lúc thắng, nên là
+  // s.level + 1 ở chỗ gọi) > inter_after_level, và đã qua inter_cooldown giây từ lúc vào phiên, interstitial hay rewarded.
   function maybeInter(x2Taken) {
-    if (x2Taken || s.runs < ADS.inter_from_run || s.runs - s.lastInterRun < ADS.inter_every) return;
-    if (s.t - s.lastInterT < ADS.inter_cooldown || s.t - s.sessionStart < ADS.session_warmup) return;
-    if (s.t - s.lastRvT < ADS.rewarded_grace) return;
-    if (s.firstSession && s.level <= ADS.first_session_block_until_level) return;
-    s.inter++; s.t += AD_SEC; s.lastInterRun = s.runs; s.lastInterT = s.t;
+    if (x2Taken || s.level + 1 <= ADS.inter_after_level) return;
+    if (s.t - s.adClock < ADS.inter_cooldown) return;
+    s.inter++; s.t += AD_SEC; s.adClock = s.t;
   }
   // Hết MOVES (design.md mục 3): mỗi lần một popup +rescue_moves, giá theo rescue_prices, video được
   // rescue_video_max lần đầu, +3 Move trong kho dùng miễn phí và vẫn tính một lần.
@@ -231,14 +230,13 @@ function play(p, seed) {
     let state = { claimed: false, shop: 0 };
     cosmetic();
     for (let ss = 0; ss < SESSIONS_PER_DAY; ss++) {
-      s.sessionStart = s.t; s.lives = LIVES.max;
+      s.adClock = s.t; s.lives = LIVES.max;
       const end = s.t + SESSION_SEC;
       while (s.t < end) {
         if (s.level >= LIVES.from_level && s.lives <= 0 && !refill()) break;
         attempt();
         state = daily(state);
       }
-      s.firstSession = false;
     }
     if ([1, 7, 14, 28].includes(day)) {
       out.days[day] = {

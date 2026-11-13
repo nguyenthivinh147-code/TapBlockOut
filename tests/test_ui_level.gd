@@ -1025,6 +1025,50 @@ func test_main_boot_home_when_cannot_play(t: T) -> void:
 	m.free()
 
 
+## Từ khi Màn đặc biệt mở (Config.UNLOCK.special_bomb), mở game vào Home dù còn mạng; trước mốc, hoặc khi tính năng
+## tắt, vẫn vào thẳng level (design.md mục 2).
+func test_main_boot_home_after_special_unlock(t: T) -> void:
+	var unlock := int(Config.UNLOCK.special_bomb)
+	var g := _g(unlock)
+	g.s.special["invited"] = true
+	g.save_now()
+	var m := _main()
+	t.ok(await _wait_until(func() -> bool: return m.is_booted), "boot xong")
+	t.eq(int(g.s.level), unlock, "boot nạp bản lưu")
+	t.ok(bool(g.lives_view().get("can_play", false)), "còn mạng")
+	t.eq(m.current_name, "home", "L%d, Màn đặc biệt đã mở: vào Home" % unlock)
+	t.eq(m.curtain, null, "không màn chuyển cảnh")
+	t.eq(m.popup_count(), 0, "không popup tự mở")
+	g.s.level = unlock - 1
+	t.ok(m.boot_to_level(), "L%d, chưa mở: vào thẳng level" % (unlock - 1))
+	g.s.level = unlock
+	Config.FEATURES["special_bomb"] = false
+	t.ok(m.boot_to_level(), "Màn đặc biệt tắt (Config.FEATURES): vào thẳng level")
+	Config.FEATURES.erase("special_bomb")
+	m.free()
+
+
+## Mở game vào Home không tự mở popup bán hàng (design.md mục 3 "Không quảng cáo hay popup bán hàng khi mở game"):
+## Chain Offer đợi lần về Home sau.
+func test_main_boot_home_no_sales_popup(t: T) -> void:
+	var g := _g(int(Config.CHAIN.level_unlock))
+	g.s.special["invited"] = true
+	g.on_level_lost(g.start_attempt())
+	t.ok(not g.chain_view().is_empty(), "save có Chain Offer chờ tự mở")
+	g.save_now()
+	var m := _main()
+	t.ok(await _wait_until(func() -> bool: return m.is_booted), "boot xong")
+	t.eq(m.current_name, "home", "mở game vào Home")
+	await _tree().process_frame
+	await _tree().process_frame
+	t.ok(not m.call("_has_popup", m.CHAIN_OFFER), "mở game: Chain Offer không tự mở")
+	t.eq(bool(g.s.chain.get("shown", false)), false, "Chain Offer chưa tính là đã hiện")
+	m.go("home")
+	t.ok(await _wait_until(func() -> bool: return m.call("_has_popup", m.CHAIN_OFFER)),
+		"về Home lần sau: Chain Offer tự mở")
+	m.free()
+
+
 func test_main_routes_challenge_action(t: T) -> void:
 	var g := _g(60)
 	var m := _main()
@@ -1208,15 +1252,65 @@ func test_last_move_warning(t: T) -> void:
 	t.ok(warn != null and not warn.visible, "nhiều lượt: chưa có viền đỏ")
 	t.eq(warn.mouse_filter, Control.MOUSE_FILTER_IGNORE, "viền đỏ không nuốt chạm")
 	t.ok(warn.get_index() < lv.get_node("LocalPopups").get_index(), "viền đỏ nằm dưới popup")
-	lv.board.add_moves(1 - lv.board.moves_left())
+	var sfx: Node = _tree().root.get_node("Sfx")
+	var was_on: bool = sfx.haptics_on
+	sfx.haptics_on = true
+	var buzz0: int = sfx.haptic_count
+	var buzzes := func() -> int: return int(sfx.haptic_count) - buzz0
+	var b: BoardState = lv.board
+	t.eq(b.remaining_count(), 4, "L1 có 4 khối")
+	# Bật khi MOVES ≤ Config.LOW_MOVES_MAX và ít hơn số chạm tối thiểu; rung một lần mỗi lần bật.
+	b.add_moves(2 - b.moves_left())
 	lv._refresh_hud()
-	t.eq(lv.moves_label.text, "1", "còn 1 lượt")
-	t.ok(warn.visible, "còn 1 lượt: viền đỏ hiện")
+	t.eq(lv.moves_label.text, "2", "còn 2 lượt")
+	t.ok(warn.visible, "2 lượt, 4 khối: viền đỏ hiện")
+	t.eq(buzzes.call(), 1, "rung một lần lúc viền đỏ hiện")
 	await _wait_until(func() -> bool: return lv.moves_chip.scale.x > 1.01, 1500)
 	t.ok(lv.moves_chip.scale.x > 1.01, "chip lượt phập phồng")
-	lv.board.add_moves(3)
+	b.add_moves(-1)
+	lv._refresh_hud()
+	t.ok(warn.visible, "1 lượt, 4 khối: viền đỏ vẫn còn")
+	t.eq(buzzes.call(), 1, "đang đỏ thì không rung lại")
+	b.add_moves(2)
 	lv._refresh_hud()
 	await _wait_until(func() -> bool: return not warn.visible, 1500)
-	t.ok(not warn.visible, "thêm lượt: viền đỏ tắt")
+	t.ok(not warn.visible, "thêm lượt lên 3 (vẫn ít hơn 4 khối): trên ngưỡng nên tắt")
 	t.eq(lv.moves_chip.scale, Vector2.ONE, "chip về cỡ thường")
+	b.add_moves(-1)
+	lv._refresh_hud()
+	t.ok(warn.visible, "xuống lại 2 lượt: viền đỏ hiện lại")
+	t.eq(buzzes.call(), 2, "hiện lại thì rung lại")
+	for id in b.block_ids().slice(0, 2):
+		b.smash(id)
+	lv._refresh_hud()
+	await _wait_until(func() -> bool: return not warn.visible, 1500)
+	t.ok(not warn.visible, "2 lượt, 2 khối: đủ lượt nên tắt")
+	b.add_moves(-1)
+	lv._refresh_hud()
+	t.ok(warn.visible, "1 lượt, 2 khối: viền đỏ hiện")
+	t.eq(buzzes.call(), 3, "rung lần ba")
+	b.smash(b.block_ids()[0])
+	lv._refresh_hud()
+	await _wait_until(func() -> bool: return not warn.visible, 1500)
+	t.ok(not warn.visible, "1 lượt, 1 khối: tắt (bỏ luật cũ còn 1 lượt là đỏ)")
+	# Đếm số chạm tối thiểu, không đếm khối: 2 khối, một khối còn 1 lớp ruy băng thì cần 3 chạm.
+	var blk := {"ice": 0, "chained_by": "", "inner_color": "", "fog": false}
+	var y := blk.duplicate()
+	y.merge({"id": "y", "color": "yellow", "cells": [[2, 0]]}, true)
+	var r := blk.duplicate()
+	r.merge({"id": "r", "color": "yellow", "cells": [[0, 2]], "ribbons": ["green"]}, true)
+	lv.board = BoardState.new({"id": 7, "w": 5, "h": 5, "hard": false, "min_taps": 0, "moves": 2, "seed": 0,
+		"stones": [], "pulse_sides": [], "blocks": [y, r]})
+	lv._refresh_hud()
+	t.ok(warn.visible, "2 lượt, 2 khối có ruy băng (3 chạm): viền đỏ hiện")
+	t.eq(buzzes.call(), 4, "rung lần bốn")
+	sfx.haptics_on = false
+	lv.board.add_moves(1)
+	lv._refresh_hud()
+	await _wait_until(func() -> bool: return not warn.visible, 1500)
+	lv.board.add_moves(-1)
+	lv._refresh_hud()
+	t.ok(warn.visible, "tắt rung trong cài đặt: viền đỏ vẫn hiện")
+	t.eq(buzzes.call(), 4, "tắt rung trong cài đặt: không rung")
+	sfx.haptics_on = was_on
 	lv.free()

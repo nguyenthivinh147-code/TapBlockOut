@@ -639,7 +639,7 @@ func tap_next_move() -> bool:
 # ---------------------------------------------------------------- ảnh và census
 
 ## Đợi màn yên để ảnh không dính chuyển cảnh: không popup nào đang đóng, không curtain, không màn cũ đang mờ hay trượt
-## ra (main._slide_out), rồi thêm một nhịp cho hiệu ứng mở popup.
+## ra (main._slide_out), khối của level đã rơi xong (board_dropping), rồi thêm một nhịp cho hiệu ứng mở popup.
 func quiet(ms: int = 4000) -> void:
 	await wait_until(func() -> bool:
 		if main == null or not is_instance_valid(main):
@@ -647,8 +647,20 @@ func quiet(ms: int = 4000) -> void:
 		for c in main.popup_layer.get_children():
 			if UiTween.closing(c):
 				return false
-		return main.curtain == null and not is_instance_valid(main.get("_slide_out")), ms)
+		return main.curtain == null and not is_instance_valid(main.get("_slide_out")) and not board_dropping(), ms)
 	await wait_sec(0.4)
+
+
+## The level on screen (also the one inside Daily Challenge or Road Trip) still drops its blocks in
+## (BoardView.drop_in, design.md mục 8 "Khối rơi lúc vào màn").
+func board_dropping() -> bool:
+	var s: Variant = main.current_screen if main != null else null
+	if is_instance_valid(s) and is_instance_valid(s.get("level_node")):
+		s = s.get("level_node")
+	if not is_instance_valid(s):
+		return false
+	var bv: Variant = s.get("board_view")
+	return bv is Node and is_instance_valid(bv) and bool((bv as Node).call("is_dropping"))
 
 
 ## Chụp màn (chỉ khi `capture`: có cửa sổ hoặc máy thật) và ghi census chữ đang hiện (mọi chế độ), sau khi màn yên.

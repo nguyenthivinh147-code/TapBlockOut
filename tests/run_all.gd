@@ -40,10 +40,23 @@ var _allowed := 0
 var _errlog := ErrorLog.new()
 ## Mỗi phần tử {"text": chuỗi con, "line": số dòng} của allow_errors.txt.
 var _allow: Array[Dictionary] = []
+## Per-file limit; TEST_FILE_TIMEOUT=<seconds> raises it (the coverage run is slower).
+var _timeout_msec := TIMEOUT_MSEC
+## Coverage run (tools/affected.sh --coverage): CANDY_COV_OUT names a JSONL file; after each test file one line
+## {test, ms, failed, hits} lists the methods of the instrumented src/**/*.gd it entered (tests/coverage_hits.gd).
+var _cov: Object = null
+var _cov_out: FileAccess = null
 
 
 func _initialize() -> void:
 	OS.add_logger(_errlog)
+	var limit := OS.get_environment("TEST_FILE_TIMEOUT")
+	if limit.is_valid_int() and int(limit) > 0:
+		_timeout_msec = int(limit) * 1000
+	var cov_path := OS.get_environment("CANDY_COV_OUT")
+	if not cov_path.is_empty():
+		_cov = load("res://tests/coverage_hits.gd")
+		_cov_out = FileAccess.open(cov_path, FileAccess.WRITE)
 	_run.call_deferred()
 
 
@@ -77,7 +90,13 @@ func _run() -> void:
 		printerr("FAIL không có file test nào khớp %s" % str(filters))
 		_failed_files += 1
 	for f in files:
+		var started := Time.get_ticks_msec()
+		var failed_before := _failed_tests + _failed_files
+		if _cov_out != null:
+			(_cov.get("hits") as Dictionary).clear()
 		await _run_file(f)
+		if _cov_out != null:
+			_cov_write(f, Time.get_ticks_msec() - started, _failed_tests + _failed_files - failed_before)
 	await _release_all()
 	_report_stray("sau test cuối")
 	_finish()
@@ -132,6 +151,14 @@ func _release_all() -> void:
 		await create_timer(0.05).timeout
 
 
+func _cov_write(f: String, ms: int, failed: int) -> void:
+	var ids := PackedStringArray()
+	for k in (_cov.get("hits") as Dictionary):
+		ids.append(str(k))
+	_cov_out.store_line(JSON.stringify({"test": f.get_basename(), "ms": ms, "failed": failed, "hits": ids}))
+	_cov_out.flush()
+
+
 func _run_file(f: String) -> void:
 	_report_stray("trước " + f)
 	var path := "res://tests/" + f
@@ -146,7 +173,7 @@ func _run_file(f: String) -> void:
 		for msg in init_errors:
 			printerr("FAIL %s: %s" % [f, msg])
 		_failed_files += 1
-	var deadline := Time.get_ticks_msec() + TIMEOUT_MSEC
+	var deadline := Time.get_ticks_msec() + _timeout_msec
 	for m in script.get_script_method_list():
 		var name: String = m["name"]
 		if not name.begins_with("test_"):
@@ -157,7 +184,7 @@ func _run_file(f: String) -> void:
 		_invoke(inst, name, t, state)
 		while not state["done"]:
 			if Time.get_ticks_msec() > deadline:
-				printerr("FAIL %s::%s: quá 120 giây" % [f, name])
+				printerr("FAIL %s::%s: quá %d giây" % [f, name, _timeout_msec / 1000])
 				_failed_tests += 1
 				_failed_files += 1
 				return

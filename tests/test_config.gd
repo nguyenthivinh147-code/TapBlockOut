@@ -99,7 +99,7 @@ func test_apply_remote(t: T) -> void:
 		"econ_win_coins": "55",
 		"econ_booster_price_hint": "800",
 		"econ_rescue_prices": "100, 200,300",
-		"ads_inter_every": "3",
+		"ads_inter_cooldown": "120",
 		"lives_regen_sec": "600",
 		"content_build": "v2",
 		"content_ftue_steps": "a,b",
@@ -113,7 +113,7 @@ func test_apply_remote(t: T) -> void:
 	t.eq(Config.ECON.booster_price.hint, 800, "dict lồng")
 	t.eq(Config.ECON.booster_price.move, 1900, "move giữ nguyên")
 	t.eq(Config.ECON.rescue_prices, [100, 200, 300], "mảng")
-	t.eq(Config.ADS.inter_every, 3, "ads")
+	t.eq(Config.ADS.inter_cooldown, 120, "ads")
 	t.eq(Config.LIVES.regen_sec, 600, "lives")
 	t.eq(Config.CONTENT.build, "v2", "chuỗi")
 	t.eq(Config.CONTENT.ftue_steps, ["a", "b"], "mảng chuỗi")
@@ -134,7 +134,7 @@ func test_apply_remote_bad_values(t: T) -> void:
 		"econ_refill_coins": "-5",
 		"econ_unknown_key": "1",
 		"nogroup_x": "1",
-		"ads_inter_every": "1.5",
+		"ads_inter_cooldown": "1.5",
 		"econ_rescue_prices": "100,xyz",
 		"econ_booster_price": "5",
 		"econ_challenge_coins": 7,
@@ -145,7 +145,7 @@ func test_apply_remote_bad_values(t: T) -> void:
 	t.eq(Config.ECON.start_coins, 1000, "rỗng")
 	t.eq(Config.ECON.refill_coins, 900, "số âm")
 	t.eq(Config.ECON.has("unknown_key"), false, "khoá lạ không thêm")
-	t.eq(Config.ADS.inter_every, 2, "float vào int")
+	t.eq(Config.ADS.inter_cooldown, 90, "float vào int")
 	t.eq(Config.ECON.rescue_prices, [1900, 2200, 2500, 2800], "mảng hỏng giữ nguyên")
 	t.eq(Config.ECON.booster_price, {"hint": 900, "move": 1900, "smash": 2900}, "dict không bị thay")
 	t.eq(Config.ECON.challenge_coins, 100, "giá trị không phải chuỗi bị bỏ")

@@ -2,6 +2,7 @@ extends RefCounted
 ## Candy-rain curtain (src/ui/candy_curtain.gd) used by Home's Play and the No Lives refill.
 const T := preload("res://tests/t.gd")
 const CandyCurtain := preload("res://src/ui/candy_curtain.gd")
+const BombCurtain := preload("res://src/ui/bomb_curtain.gd")
 const Config := preload("res://src/config.gd")
 
 const SCREEN := Vector2(886, 1920)
@@ -54,6 +55,27 @@ func test_one_random_kind_per_curtain(t: T) -> void:
 	host.free()
 
 
+## A candy that lands later draws behind every candy that landed before it (design.md mục 2, 2026-11-13); the
+## backing stays behind them all. Landing order is close()'s: rows from the bottom, each row in its shuffled order.
+func test_later_candy_draws_behind(t: T) -> void:
+	var host := _host()
+	for curtain: Control in [CandyCurtain.new(), BombCurtain.new()]:
+		host.add_child(curtain)
+		var order: Array[TextureRect] = []
+		for row: Array in curtain._rows:
+			for e: Dictionary in row:
+				order.append(e.node)
+		t.ok(order.size() > 10, "có kẹo")
+		t.eq(curtain.get_node("Backing").get_index(), 0, "nền dưới mọi viên")
+		var behind := 0
+		for i in range(1, order.size()):
+			if order[i].get_index() < order[i - 1].get_index():
+				behind += 1
+		t.eq(behind, order.size() - 1, "viên chạm sau vẽ sau viên chạm trước (%s)" % curtain.get_script().resource_path)
+		curtain.free()
+	host.free()
+
+
 ## close() drops the candies bottom row first and leaves every one at rest on its slot; the candies alone reach
 ## every point of the screen and the backing fills it. open() drops the pile off the screen and frees the curtain.
 func test_close_fills_from_bottom_then_open_frees(t: T) -> void:
@@ -88,8 +110,9 @@ func test_close_fills_from_bottom_then_open_frees(t: T) -> void:
 	var backing: ColorRect = curtain.get_node("Backing")
 	t.ok(backing.position.y <= 0.0 and backing.position.y + backing.size.y >= SCREEN.y
 		and backing.size.x >= SCREEN.x, "nền phủ kín màn")
-	# Every point is within the round core (0.4 of the sprite) of some candy, so the backing barely shows.
-	var reach: float = curtain._candy * 0.4
+	# Every point is within the circle inscribed in some candy's sprite box (half its size): the sparse layout
+	# (2026-11-13) lets the backing show between candies, but no wide hole opens.
+	var reach: float = curtain._candy * 0.5
 	var gaps := 0
 	for gy in range(0, int(SCREEN.y) + 1, 40):
 		for gx in range(0, int(SCREEN.x) + 1, 40):
@@ -101,6 +124,45 @@ func test_close_fills_from_bottom_then_open_frees(t: T) -> void:
 	curtain.open()
 	var ref: WeakRef = weakref(curtain)
 	t.ok(await _wait(func() -> bool: return ref.get_ref() == null, 4000), "mở xong thì tự giải phóng")
+	host.free()
+
+
+## The Special Bomb rain: the bomb body sits low in its sprite box (the fuse takes the top), so the bombs are drawn
+## bigger than the candies (Config.CONTENT.bomb_curtain_size) until, at rest, their opaque pixels alone cover every
+## point of the screen and none of the backing shows (2026-11-13). Each point is mapped into every bomb's sprite
+## through the node's transform (tilt, scale) and must land on an opaque pixel of one of them.
+func test_bombs_cover_screen(t: T) -> void:
+	var img: Image = (load(BombCurtain.BOMB_TEX) as Texture2D).get_image()
+	if img.is_compressed():
+		img.decompress()
+	var host := _host()
+	var curtain: Control = BombCurtain.new()
+	host.add_child(curtain)
+	curtain.close()
+	t.ok(await _wait(func() -> bool: return not curtain._filling, 4000), "khép trong 4 giây")
+	var bombs := _candies(curtain)
+	var holes: Array[Vector2] = []
+	for gy in range(0, int(SCREEN.y) + 1, 20):
+		for gx in range(0, int(SCREEN.x) + 1, 20):
+			var p := Vector2(gx, gy)
+			var hit := false
+			for n in bombs:
+				var local: Vector2 = n.get_transform().affine_inverse() * p
+				var uv := local / n.size * Vector2(img.get_size())
+				if uv.x >= 0.0 and uv.y >= 0.0 and uv.x < img.get_width() and uv.y < img.get_height() \
+						and img.get_pixelv(Vector2i(uv)).a > 0.5:
+					hit = true
+					break
+			if not hit:
+				holes.append(p)
+	t.eq(holes.size(), 0, "bom che kín màn, không lộ nền (lỗ đầu: %s)" % str(holes.slice(0, 5)))
+	# Bigger bombs, fewer rows than the candies (Config.CONTENT.bomb_curtain_row_gap, 2026-11-13).
+	var candy: Control = CandyCurtain.new()
+	host.add_child(candy)
+	t.ok(curtain._rows.size() < candy._rows.size(),
+		"ít hàng bom hơn hàng kẹo (%d / %d)" % [curtain._rows.size(), candy._rows.size()])
+	candy.free()
+	curtain.free()
 	host.free()
 
 

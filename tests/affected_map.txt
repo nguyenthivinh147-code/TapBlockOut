@@ -17,7 +17,8 @@
 test:* : tools/test.sh tools/godot.sh tests/run_all.gd tests/t.gd tests/allow_errors.txt project.godot
 test:test_static_check : **                          ## parse mọi script, dò bí mật trong mọi file git theo dõi
 test:test_cases : tests/cases/** tests/smoke/*.gd tests/test_*.gd
-test:test_affected : tools/affected.mjs tools/affected.sh tests/affected_map.txt
+test:test_affected : tools/affected.mjs tools/affected.sh tests/affected_map.txt tools/coverage.mjs tools/gd_members.mjs
+test:test_affected : tests/untested_allow.txt
 test:test_smoke : tests/smoke/**
 * : tools/smoke.sh project.godot
 

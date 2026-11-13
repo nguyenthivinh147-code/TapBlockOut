@@ -240,6 +240,41 @@ func test_solve_state_ignores_moves(t: T) -> void:
 	t.eq(b.moves_left(), 0, "bàn gốc không bị đổi")
 
 
+## Cảnh báo sắp hết lượt (design.md mục 8, HUD màn level): MOVES ≤ Config.LOW_MOVES_MAX và ít hơn số chạm
+## tối thiểu còn lại (khối thoát, lớp ruy băng/hộp giấy, cú dội cổng nhịp); bàn không giải được thì luôn thiếu.
+func test_short_of_moves(t: T) -> void:
+	t.eq(Config.LOW_MOVES_MAX, 2, "ngưỡng 2 lượt")
+	var b := BoardState.new(_lv(5, 5, [_b("a", "yellow", [[0, 0]]), _b("b", "yellow", [[2, 0]]),
+		_b("c", "yellow", [[4, 0]])]))
+	t.eq(Solver.short_of_moves(b, 2), true, "2 lượt, 3 khối: thiếu")
+	t.eq(Solver.short_of_moves(b, 3), false, "3 lượt: trên ngưỡng")
+	t.eq(Solver.short_of_moves(b, 5), false, "5 lượt: trên ngưỡng")
+	b.tap("a")
+	t.eq(Solver.short_of_moves(b, 2), false, "2 lượt, 2 khối: đủ")
+	t.eq(Solver.short_of_moves(b, 1), true, "1 lượt, 2 khối: thiếu")
+	b.tap("b")
+	t.eq(Solver.short_of_moves(b, 1), false, "1 lượt, 1 khối: đủ")
+	b.tap("c")
+	t.eq(b.is_won(), true, "thắng")
+	t.eq(Solver.short_of_moves(b, 1), false, "đã thắng: không cảnh báo")
+	# Ruy băng 1 lớp: 2 khối nhưng cần 3 chạm.
+	var rib := BoardState.new(_lv(5, 5, [_b("y", "yellow", [[2, 0]]),
+		_b("r", "yellow", [[0, 2]], {"ribbons": ["green"]})]))
+	t.eq(Solver.short_of_moves(rib, 2), true, "2 lượt, 2 khối có 1 lớp ruy băng: thiếu")
+	rib.tap("r")
+	t.eq(Solver.short_of_moves(rib, 2), false, "bóc ruy băng xong: 2 lượt, 2 chạm: đủ")
+	# Hộp giấy: bóc vỏ là một chạm.
+	var box := BoardState.new(_lv(5, 5, [_b("x", "green", [[0, 2]], {"inner_color": "yellow"})]))
+	t.eq(Solver.short_of_moves(box, 1), true, "1 lượt, hộp giấy cần 2 chạm: thiếu")
+	t.eq(Solver.short_of_moves(box, 2), false, "2 lượt: đủ")
+	# Cổng nhịp khoá: dội rồi qua.
+	var gate := BoardState.new(_lv(5, 5, [_b("y", "yellow", [[2, 2]])],
+		{"pulse_sides": [{"side": "up", "open": false}]}))
+	t.eq(Solver.short_of_moves(gate, 1), true, "1 lượt, cổng khoá cần 2 chạm: thiếu")
+	t.eq(Solver.short_of_moves(gate, 2), false, "2 lượt: đủ")
+	t.eq(Solver.short_of_moves(BoardState.new(_load("unsolvable")), 2), true, "bàn không giải được: thiếu")
+
+
 func test_slack_and_compute_moves(t: T) -> void:
 	Config.reset()
 	var one := [_b("a", "yellow", [[0, 0]])]

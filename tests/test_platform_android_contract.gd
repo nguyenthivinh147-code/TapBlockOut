@@ -161,6 +161,9 @@ class FakeBilling extends RefCounted:
 	var start_reply: Dictionary = {"response_code": 0}
 	var buy_reply: Dictionary = {"response_code": 0}
 	var hang_buy: bool = false
+	## Trả kết quả query_purchases ở khung sau, như Play Billing thật (hai lần đồng bộ có thể chồng nhau).
+	var defer_query: bool = false
+	var queries: int = 0
 	var consumed: Array[String] = []
 	var acked: Array[String] = []
 	var finish_code: int = 0
@@ -184,7 +187,12 @@ class FakeBilling extends RefCounted:
 			"unfetched_products": []})
 
 	func query_purchases(_type: int, _susp: bool = false) -> void:
-		query_purchases_response.emit({"response_code": 0, "debug_message": "", "purchases": owned.duplicate(true)})
+		queries += 1
+		var resp := {"response_code": 0, "debug_message": "", "purchases": owned.duplicate(true)}
+		if defer_query:
+			query_purchases_response.emit.call_deferred(resp)
+		else:
+			query_purchases_response.emit(resp)
 
 	func purchase(_id: String, _a: String = "", _b: String = "", _c: bool = false) -> Dictionary:
 		if int(start_reply.get("response_code", 0)) == 0 and not hang_buy:
@@ -597,6 +605,68 @@ func test_iap_finish_failure_keeps_order_for_next_boot(t: T) -> void:
 	b.owned = [_purchase("gold_pack_1", "tokf")]
 	await iap._refresh_purchases(false)
 	t.eq(iap.pending().size(), 1, "consume lỗi: đơn còn ở Play nên giao lại")
+
+
+## Platform gọi on_resume khi app quay lại: đơn hoàn tất lúc app ở nền vào pending; hai lần quay lại liền nhau
+## thì lần sau đợi lần trước (không trùng đơn); đang mua thì không đồng bộ; thiếu billing thì không lỗi.
+func test_iap_resume_picks_up_background_purchase(t: T) -> void:
+	_keys()
+	var b := _billing()
+	var iap := _iap(b, _pub_b64)
+	b.owned = [_purchase("gold_pack_1", "tokr")]
+	iap.on_resume()
+	for i in 3:
+		await Engine.get_main_loop().process_frame
+	t.eq(iap.pending().size(), 1, "đơn hoàn tất lúc app ở nền vào pending")
+
+	b.defer_query = true
+	b.owned = [_purchase("gold_pack_1", "tokr"), _purchase("rescue_pack", "toks")]
+	var before := b.queries
+	iap.on_resume()
+	iap.on_resume()
+	for i in 8:
+		await Engine.get_main_loop().process_frame
+	t.eq(b.queries - before, 2, "hai lần quay lại: hai lần hỏi Play, lần sau đợi lần trước xong")
+	t.eq(iap.pending().size(), 2, "không trùng đơn: %s" % str(iap.pending()))
+
+	iap._busy = true
+	before = b.queries
+	iap.on_resume()
+	await Engine.get_main_loop().process_frame
+	t.eq(b.queries, before, "đang mua thì không đồng bộ")
+	iap._busy = false
+	AndroidIap.new(null).on_resume()
+
+
+## Hàm chỉ để giống mock (simulate, set_ready, named, count, load_state, wipe, clear): trên Android không đổi kết quả
+## của plugin hay Play, không lỗi.
+func test_mock_only_methods_are_safe(t: T) -> void:
+	var f := FakePlugin.new()
+	var ads := AndroidAds.new(f)
+	ads.timeout_scale = SCALE
+	ads.simulate({"ok": false, "reason": "closed"})
+	ads.set_ready(false, false)
+	t.eq(ads.ready_rewarded(), true, "set_ready không ghi đè trạng thái của plugin")
+	t.eq(await ads.rewarded("a"), {"ok": true, "reason": ""}, "simulate không ép kết quả")
+
+	_keys()
+	var b := _billing()
+	var iap := _iap(b, _pub_b64)
+	iap.simulate("cancel")
+	b.buy_reply = _buy_reply([_purchase("gold_pack_1", "tokm")])
+	t.eq(str((await iap.buy("gold_pack_1"))["status"]), "ok", "simulate không ép kết quả mua")
+	iap.load_state()
+	iap.wipe()
+	t.eq(iap.pending().size(), 1, "load_state, wipe không xoá đơn của Play")
+
+	var an := AndroidAn.new(f)
+	an.log_event("level_win", {"level": 1})
+	t.eq(an.named("level_win"), [], "named: Android không lưu sự kiện")
+	t.eq(an.count("level_win"), 0, "count: Android không đếm")
+	an.user({"level": 2})
+	an.clear()
+	t.eq(an.user_props, {}, "clear xoá user_props bản địa phương")
+	t.eq(f.events.size(), 1, "clear không đụng sự kiện đã gửi")
 
 
 # --- rc, an, notif ---

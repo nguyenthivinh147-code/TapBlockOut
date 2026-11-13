@@ -688,8 +688,8 @@ static func _lb_promote(r) -> bool:
 		g.s.lb["points"] = up_min - 1
 	if not await r.open_game("LB_promote", prep):
 		return false
-	if not await Scen.wait_for(r, func() -> bool: return Scen._playing(r) == lvl, 20000):
-		return r.fail("không vào được L%d" % lvl)
+	if not await Scen.ensure_playing(r, lvl):
+		return false
 	var s: Dictionary = r.game.s
 	if Leaderboard.league(s) != 0 or not Leaderboard.pending(s).is_empty():
 		return r.fail("save %d điểm mà giải %s, thưởng chờ %s" % [up_min - 1, Leaderboard.league_id(Leaderboard.league(s)),

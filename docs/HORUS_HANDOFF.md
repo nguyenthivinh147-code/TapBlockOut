@@ -78,12 +78,8 @@ Chỉ thưởng khi xem hết (`ok == true`). Cần ít nhất một ad unit rew
 | `econ_rescue_video_max` | 4 |
 | `econ_challenge_coins` | 100 |
 | `lives_max` / `lives_regen_sec` / `lives_from_level` | 10 / 300 / 10 |
-| `ads_inter_from_run` | 4 |
-| `ads_inter_every` | 2 |
-| `ads_inter_cooldown` (giây) | 120 |
-| `ads_session_warmup` (giây) | 90 |
-| `ads_rewarded_grace` (giây) | 45 |
-| `ads_first_session_block_until_level` | 10 |
+| `ads_inter_after_level` (interstitial khi level hiện tại lớn hơn số này) | 35 |
+| `ads_inter_cooldown` (giây; đếm lại lúc vào game, interstitial đóng, rewarded trao thưởng) | 90 |
 | `unlock_daily_gift`, `unlock_hint`, `unlock_shop`, `unlock_move`, `unlock_smash`, `unlock_lives`, `unlock_starter`, `unlock_review`, `unlock_challenge`, `unlock_leaderboard`, `unlock_win_streak` | 14, 5, 11, 12, 17, 10, 10, 10, 50, 70, 45 (level mở khoá; đổi 2026-11-10, trước shop 5, leaderboard 8, win_streak 40) |
 | `unlock_stone`, `unlock_ice`, `unlock_chain`, `unlock_layer`, `unlock_fog`, `unlock_pulse`, `unlock_frost`, `unlock_pop`, `unlock_choco`, `unlock_ribbon` | 14, 30, 45, 65, 85, 115, 165, 220, 300, 350 (level dạy cơ chế; đổi 2026-11-10, trước 14, 30, 40, 55, 70, 90, 110, 150, 130; Bom kẹo `pop` thêm 2026-11-10). Đổi mốc cơ chế qua Remote Config chỉ dời popup giới thiệu, không đổi level đã đóng gói |
 | `features_pop` (bật/tắt Bom kẹo, "1" hoặc "0"; tắt thì khối bom kẹo thành khối thường, MOVES không đổi) | true |

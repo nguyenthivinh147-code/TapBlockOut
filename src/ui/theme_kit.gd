@@ -388,50 +388,6 @@ static func button_text_area(frame: Vector2) -> Rect2:
 	return Rect2(pad, 0.0, maxf(frame.x - pad * 2.0, 0.0), frame.y)
 
 
-## Nút trong ô hẹp (lưới 3 cột): bớt lề trái phải để chữ không đẩy rộng ô.
-static func tighten(b: Button, margin: float = 8.0) -> void:
-	for st in ["normal", "hover", "pressed", "disabled"]:
-		var s := b.get_theme_stylebox(st).duplicate() as StyleBox
-		s.content_margin_left = margin
-		s.content_margin_right = margin
-		b.add_theme_stylebox_override(st, s)
-
-
-## Gắn icon trước chữ của nút, cao px.
-static func set_button_icon(b: Button, icon_name: String, px: int = 48) -> void:
-	b.icon = icon(icon_name)
-	b.add_theme_constant_override("icon_max_width", px)
-	b.add_theme_constant_override("h_separation", 10)
-
-
-## Nút chỉ có icon (vuông, nền tile), cỡ tối thiểu 96.
-static func make_icon_button(icon_name: String, px: int = 96, kind: String = "icon") -> Button:
-	var b := make_button("", kind)
-	b.icon = icon(icon_name)
-	b.expand_icon = true
-	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	b.custom_minimum_size = Vector2(px, px)
-	return b
-
-
-## Nút mà sprite là cả nút (assets/ui/hud/): không nền tile, hover sáng hơn, pressed tối hơn, disabled xám.
-static func make_sprite_button(icon_name: String, px: Vector2) -> Button:
-	var b := Button.new()
-	b.focus_mode = Control.FOCUS_NONE
-	b.icon = icon(icon_name)
-	b.expand_icon = true
-	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	b.custom_minimum_size = px
-	for st in ["normal", "hover", "pressed", "disabled", "focus"]:
-		b.add_theme_stylebox_override(st, StyleBoxEmpty.new())
-	b.add_theme_color_override("icon_normal_color", Color.WHITE)
-	b.add_theme_color_override("icon_hover_color", Color(1.08, 1.08, 1.08))
-	b.add_theme_color_override("icon_pressed_color", Color(0.82, 0.82, 0.82))
-	b.add_theme_color_override("icon_hover_pressed_color", Color(0.82, 0.82, 0.82))
-	b.add_theme_color_override("icon_disabled_color", Color(0.55, 0.55, 0.6, 0.9))
-	return b
-
-
 ## StyleBox 9-slice từ sprite HUD. margin = lề cắt (trái, trên, phải, dưới) theo px ảnh; content = lề chữ.
 static func sprite_box(icon_name: String, margin: Vector4 = Vector4.ZERO, content: Vector4 = Vector4.ZERO) -> StyleBoxTexture:
 	var s := StyleBoxTexture.new()
@@ -489,31 +445,9 @@ static func gold_label(text: String, size: int = FS_TITLE) -> Label:
 	return l
 
 
-## Ô nền trên thân popup (warm/tan). border để trống thì không viền.
-static func make_well(fill: Color = WELL, border: Color = Color(0, 0, 0, 0), radius: int = 18) -> PanelContainer:
-	var p := PanelContainer.new()
-	var s := StyleBoxFlat.new()
-	s.bg_color = fill
-	s.set_corner_radius_all(radius)
-	if border.a > 0.0:
-		s.set_border_width_all(4)
-		s.border_color = border
-	s.content_margin_left = 14
-	s.content_margin_right = 14
-	s.content_margin_top = 10
-	s.content_margin_bottom = 10
-	p.add_theme_stylebox_override("panel", s)
-	return p
-
-
 ## Icon theo tên, co vừa ô px.
 static func make_icon(icon_name: String, px: float = 72.0) -> TextureRect:
 	return _rect(icon(icon_name), px)
-
-
-## Sprite atlas theo tên (ui_atlas.gd), co vừa ô px.
-static func make_sprite(region: String, px: float = 96.0) -> TextureRect:
-	return _rect(UiAtlas.tex(region), px)
 
 
 static func _rect(tex: Texture2D, px: float) -> TextureRect:
@@ -526,19 +460,6 @@ static func _rect(tex: Texture2D, px: float) -> TextureRect:
 	r.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	r.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	return r
-
-
-## Thanh tiến trình bo tròn. fill mặc định xanh (Button/Green).
-static func style_bar(bar: ProgressBar, fill: Color = Color("3CD020")) -> void:
-	bar.show_percentage = false
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color(INK, 0.25)
-	bg.set_corner_radius_all(14)
-	var fg := StyleBoxFlat.new()
-	fg.bg_color = fill
-	fg.set_corner_radius_all(14)
-	bar.add_theme_stylebox_override("background", bg)
-	bar.add_theme_stylebox_override("fill", fg)
 
 
 ## Theme chung (đặt vào gốc UI): chữ và nút mặc định cùng bảng màu.
