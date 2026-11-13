@@ -9,7 +9,7 @@ Mục ghi *(Task 11.x)* là phần chưa làm xong; khi task xong thì bỏ ghi 
 1. **Có luật hoặc số mới** → `/design-note` (sửa `design.md` và thêm dòng vào mục 9 "Nhật ký quyết định"). Sửa nhỏ thì bỏ qua.
 2. **Code và test.** Sửa lỗi thì test hồi quy đỏ trước (luật trong `CLAUDE.md`). Số case tối thiểu cho từng thành phần: mục **Ma trận bao phủ**.
 3. **`tools/test.sh [lọc]`** → dòng cuối `ALL TESTS PASSED (<n>)`, thoát 0. Bộ này gồm cả kiểm tra tĩnh. Lọc và kịch bản smoke headless theo thay đổi: `tools/affected.sh` (mục **Chọn test theo thay đổi**).
-4. **Người chơi nhìn thấy thay đổi** (UI, VFX, animation, chữ) → `tools/smoke.sh window <kịch bản>` (`tools/affected.sh` in dòng này) và **đọc ảnh PNG**. Log có `SMOKE OK` và `SMOKE ERRORS script=0 engine=0`. Test đạt chưa có nghĩa là màn đã hiện đúng.
+4. **Người chơi nhìn thấy thay đổi** (UI, VFX, animation, chữ) → `tools/smoke.sh window <kịch bản>` (`tools/affected.sh` in dòng này) và **đọc ảnh PNG**. Log có `SMOKE OK` và `SMOKE ERRORS script=0 engine=0`. Test đạt chưa có nghĩa là màn đã hiện đúng. Luật chụp, đọc ảnh, dò chạm: `.claude/rules/ui-testing.md`.
 5. **Có quyết định đáng nhớ** → một dòng trong `design.md` mục 9.
 
 Thứ tự mặc định: headless trước (`tools/test.sh`, `tools/smoke.sh headless`). Chế độ `window` chỉ khi thay đổi hiện lên màn hình, và chỉ chạy kịch bản liên quan. MCP `godot-ai` dùng để xem và thử nhanh trong editor, không thay bước 3 và 4.
@@ -59,6 +59,7 @@ tools/test.sh test_board       # chỉ file bắt đầu bằng test_board
 - Không dùng golden JSON: level được sinh lại thường xuyên (500 level, Road Trip, Special).
 - Test dùng file ghi trong `user://test_<tên_test>/` qua `Game.reset_for_test(path)`; ads, mua hàng, analytics, remote config, save cloud, thông báo chạy bằng mock của `Platform` (`src/platform/mock_*.gd`, `simulate()`, `calls`).
 - E2E (`tests/test_e2e_demo.gd`, `tests/e2e_driver.gd`) chơi bằng solver, gọi thẳng signal `block_tapped` và `pressed`: nhanh, nhưng không qua hit-test. Lỗi kiểu "phải bấm mấy lần mới ăn" chỉ smoke bắt được.
+- Luật UI chung (`design.md` mục 2 "Back Android và ESC", "Chạm vào UI"): `tests/test_ui_back_rules.gd` (Back lúc hướng dẫn, ở popup, dưới lớp đang tải; ESC chỉ kiểm không lọt qua hướng dẫn và lớp đang tải) và `tests/test_ui_tap_rules.gd` (dim, bấm đúp, chạm dưới màn chuyển cảnh, hai ngón, giữ rồi kéo ra). Bấm thật qua hit-test bằng `tests/ui_probe.gd` (chuột, touch nhiều ngón, Back, ESC). Chỗ game chưa theo luật nằm trong `KNOWN` đầu mỗi file: in `ALLOWED` thay vì fail, để `tools/test.sh` vẫn là cổng chung; mục nào đã đúng luật thì test fail đòi xoá khỏi `KNOWN`. Sửa một lỗi trong đó: xoá mục khỏi `KNOWN`, thấy test đỏ, rồi sửa game.
 
 ### Kiểm tra tĩnh: `tests/test_static_check.gd`
 
@@ -119,6 +120,7 @@ Kịch bản:
 | SB | Màn đặc biệt (`scen_modes.gd`): không icon trước L50; mời và 1 vé; bom chỉ đếm sau lần chạm đầu, đứng khi mở cài đặt; bom nổ không mất gì; hết vé, vé hồi đúng giờ; thắng +1 booster, x2 miễn phí một lần |
 | DG | Quà 28 ngày (`scen_meta.gd`): khoá trước mốc; thẻ thắng báo mở; chấm đỏ; nhận ô hôm nay đúng số, nhận hai lần không thêm; nhận trước bằng video (đóng sớm không thưởng); qua 00:00 (cả lúc đang ở Home), múi giờ, lùi giờ; ô 28 rồi về tuần 1 |
 | PR | Profile (`scen_meta.gd`): avatar và frame bán bằng video (xem thử, đóng sớm, xem hết rồi đeo), món của Road Trip và league khoá; biệt danh gõ bằng phím thật: mặc định, quá ngắn, ký tự cấm, tên cấm, giới hạn độ dài, cắt khoảng trắng, X không lưu |
+| IDLE | Để yên lâu (`scen_ui.gd`, chạy tay): Home, Shop, màn chơi, mỗi nơi đứng yên `stay` giây thật (mặc định 60; `SMOKE_ARGS="stay=1800" SMOKE_TIMEOUT=6000` là 30 phút mỗi nơi), `SMOKE FRAMES idle <nơi>` và `SMOKE MEM` trước, sau; object không tăng quá 200; rồi vẫn nhận chạm (Settings mở và đóng, tab Home, thắng level). Trên máy: `tools/device_smoke.sh run IDLE stay=1800` với `DEVICE_MAX` đủ lớn |
 | OFF | Tính năng đang tắt (`scen_meta.gd`, `Config._FEATURES`): Daily Challenge và Win Streak không mở ở level nào, không icon, không có trên thẻ thắng, sự kiện streak đang chạy không đếm |
 
 **Monkey (M).** Mỗi lần: nút bấm được ở lớp trên cùng (popup trên cùng, hoặc popup lồng bên trong nó như hướng dẫn của Weekly Pass, hoặc lớp phủ mock nếu có, không thì màn hiện tại; lúc màn chuyển cảnh `Main.curtain` đang chạy thì không bấm gì, như người chơi đợi nó mở ra), hoặc 40% là toạ độ ngẫu nhiên trên bàn khi đang chơi; hướng dẫn L1 thì chạm theo bàn tay. Không bao giờ bấm: `SupportButton`, `VersionButton` (10 lần chạm mở menu tester), `GalleryButton`, `DebuggerButton`, `WipeButton`, `SaveButton`, `PrivacyButton`, mọi thứ trong menu tester, `popup_update` (mở store), `ui_gallery`; link của Settings đã bị chặn nên bấm được. Đạt khi không có lỗi script hay engine và không kẹt: 20 lần bấm liền không đổi màn, popup (kể cả popup lồng), bàn chơi hay các số người chơi thấy (gold, booster, level, mạng, cài đặt, avatar, quà ngày, mua hàng).
@@ -195,12 +197,14 @@ Nguồn duy nhất của ma trận (skill `/game-testcase-generator` trỏ tới
 | Mỗi giao dịch gold / booster / mạng / mua hàng | Mất mạng, kill app, spam tap | Smoke E với store giả; mất mạng, kill app thật: thiết bị |
 | Mỗi bảng tỉ lệ / RNG | Kiểm thống kê từng dòng (±3σ, σ = √(N·p·(1−p))) và tổng tỉ lệ = 100% | Unit, seed cố định |
 | Mỗi chu kỳ reset (quà ngày, ads daily, Weekly Pass, league, hồi mạng) | Biên thời điểm, không reset sai mốc, đổi giờ máy | Unit với đồng hồ giả (`test_now`, `src/meta/clock.gd`); smoke G |
-| Mỗi màn hình / popup | `[UI]`: nội dung, layout nhiều tỉ lệ, ngôn ngữ, trạng thái nút, thứ tự lớp | Smoke `window` + đọc PNG + census; `SMOKE_RES`; L |
+| Mỗi màn hình / popup | `[UI]`: nội dung, layout nhiều tỉ lệ, ngôn ngữ, trạng thái nút, thứ tự lớp; popup: dim chặn chạm phía sau, chạm nền, Back Android, thứ tự với popup tự mở khác | Smoke `window` + đọc PNG + census; `SMOKE_RES`; L; dim, Back của popup mở từ Home: `test_ui_tap_rules`, `test_ui_back_rules` |
+| Mỗi nút mở màn, mở popup hoặc giao dịch | `[EDGE]`: bấm đúp nhanh (chỉ lần 1 có tác dụng), bấm trong lúc chuyển cảnh hoặc đang tải, nhiều ngón cùng lúc, giữ rồi kéo ra | `test_ui_tap_rules` (nút ở Home, nút Chơi), `test_ui_back_rules` (lớp đang tải); nút ở màn khác: thêm vào hai file đó |
+| Mỗi cặp màn hoặc popup mở được nhau | `[EDGE]`: đi vòng nhiều lần, chồng popup không tăng, Back lùi đúng từng lớp | Smoke (bất biến chồng popup ≤ 3) |
 | Mỗi trạng thái cần lưu | Bền qua kill app, save cloud, thiết bị khác | Unit (`test_save`, `test_cloud`); smoke G; thiết bị khác: chạy tay |
 | Mỗi mục "chưa có ở bản đầu" (cơ chế sau demo, SKU ẩn) | 1 `[NEG]`: không xuất hiện hoặc được xử lý an toàn | Unit trên `Config` và dữ liệu level |
 | Mỗi vị trí quảng cáo có thưởng | Xem xong thưởng đúng 1 lần, đóng sớm không thưởng, ads không tải được, spam nút | Unit với `mock_ads.simulate`; smoke F; ads thật: thiết bị (test device) |
 | Mỗi gói IAP | Thành công, huỷ, thất bại, pending; restore gói không tiêu hao | Smoke E (`mock_iap`); trường hợp mock không giả lập được: thiết bị |
-| Mỗi cảnh nặng / luồng tải | FPS trên máy thấp nhất, thời gian tải lần đầu và các lần sau, RAM sau nhiều level | `SMOKE FRAMES`, `SMOKE HITCH`, `SMOKE MEM`, kịch bản S; số thật: thiết bị |
+| Mỗi cảnh nặng / luồng tải | FPS trên máy thấp nhất, thời gian tải lần đầu và các lần sau, RAM sau nhiều level, để yên lâu (đề xuất 30 phút) rồi chơi tiếp | `SMOKE FRAMES`, `SMOKE HITCH`, `SMOKE MEM`, kịch bản S; số thật: thiết bị; để yên lâu: kịch bản IDLE |
 
 Nhóm case: `[HP]` luồng chuẩn; `[NEG]` vi phạm điều kiện (kỳ vọng gồm dữ liệu không đổi và phản hồi UI); `[UI]` hiển thị, layout, trạng thái nút; `[EDGE]` mạng, gián đoạn, spam tap, giá trị biên, thời gian, RNG, dữ liệu. Checklist chi tiết từng nhóm nằm trong skill `/game-testcase-generator`.
 

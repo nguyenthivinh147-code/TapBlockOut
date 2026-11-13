@@ -39,6 +39,8 @@ const SceneCache := preload("res://src/ui/scene_cache.gd")
 const UiTween := preload("res://src/ui/ui_tween.gd")
 ## Hub screens left to right, as on the bottom bar: going between two of them slides the screens (_slide_screens).
 const HUB_SCREENS := ["shop", "home", "road_trip"]
+## On a popup for Config.POPUP_OPEN_GUARD_SEC after add_popup: it takes no tap yet.
+const META_OPENING := "popup_opening"
 
 var current_screen: Node = null
 var current_name: String = ""
@@ -392,7 +394,23 @@ func add_popup(node: Node) -> Node:
 	popup_layer.add_child(node)
 	if node.has_signal("closed"):
 		node.connect("closed", func(_r: Variant) -> void: UiTween.close_popup(node))
+	_guard_opening(get_tree(), node)
 	return node
+
+
+## Opening: the popup drops taps for a moment (_input), so the second tap of a double tap on the button that opened it
+## does not land on it (design.md mục 2 "Chạm vào UI"). The time counts from the second frame on: the frame that built
+## the popup can be long (Weekly Pass), and the next frame's delta would use the guard up at once. Static: Main may be
+## freed meanwhile (tests), the popup too.
+static func _guard_opening(tree: SceneTree, node: Node) -> void:
+	node.set_meta(META_OPENING, true)
+	var id := node.get_instance_id()
+	for i in 2:
+		await tree.process_frame
+	await tree.create_timer(Config.POPUP_OPEN_GUARD_SEC).timeout
+	var n := instance_from_id(id)
+	if n != null:
+		n.remove_meta(META_OPENING)
 
 
 func open_popup(scene_path: String, args: Dictionary = {}) -> Node:
@@ -549,11 +567,36 @@ func _popup_then(path: String, args: Dictionary, rebuild: bool) -> void:
 
 
 ## F1 (a device with a keyboard): toggles the tester menu over any screen, like 10 taps on the version in Settings.
+## Taps (design.md mục 2 "Chạm vào UI"; seen after the nodes' own _input, before the GUI): only the first finger
+## reaches the UI, and a popup still opening takes no tap.
 func _input(event: InputEvent) -> void:
 	var k := event as InputEventKey
 	if k != null and k.pressed and not k.echo and k.keycode == KEY_F1:
 		get_viewport().set_input_as_handled()
 		toggle_tester()
+	elif _second_finger(event) or _tap_on_opening_popup(event):
+		get_viewport().set_input_as_handled()
+
+
+## Touch of a finger other than the first. Godot makes mouse events from the first finger only, and the board and
+## buttons take those; a later finger would press a second button.
+static func _second_finger(event: InputEvent) -> bool:
+	var st := event as InputEventScreenTouch
+	if st != null:
+		return st.index > 0
+	var sd := event as InputEventScreenDrag
+	return sd != null and sd.index > 0
+
+
+## A press while the top popup opened less than Config.POPUP_OPEN_GUARD_SEC ago (add_popup). Its release then reaches
+## no control (Godot sends a release only to the control that took the press).
+func _tap_on_opening_popup(event: InputEvent) -> bool:
+	var mb := event as InputEventMouseButton
+	var st := event as InputEventScreenTouch
+	if not ((mb != null and mb.pressed) or (st != null and st.pressed)):
+		return false
+	var top := _top_popup() if popup_layer != null else null
+	return top != null and top.has_meta(META_OPENING)
 
 
 func toggle_tester() -> Node:
@@ -597,7 +640,7 @@ func _notification(what: int) -> void:
 
 
 func _back_allowed() -> bool:
-	return popup_layer != null and curtain == null and _slide_out == null
+	return popup_layer != null and curtain == null and _slide_out == null and ad_loading == null
 
 
 func _on_go_back() -> void:

@@ -115,6 +115,11 @@ func _poke(k: float) -> void:
 		UnityUI.set_color_channel(_dot, "a", DOT_ALPHA * (1.0 - dot))
 
 
+## Main: Back does nothing, the tutorial only goes on with the tap it waits for (design.md mục 2 "Back Android và ESC").
+func blocks_back() -> bool:
+	return true
+
+
 ## Global point (fingertip) the hand pokes; the popup's own centre without aim.
 func aim_point() -> Vector2:
 	return _aim_rect.get_center() if _aim_rect.size != Vector2.ZERO else get_global_rect().get_center()

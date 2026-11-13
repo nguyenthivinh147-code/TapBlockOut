@@ -23,7 +23,7 @@ test:test_smoke : tests/smoke/**
 
 # ---------------------------------------------------------------- lõi: đổi là mọi kịch bản có thể hỏng
 * : src/game/game.gd src/config.gd src/platform/platform.gd src/platform/mock_rc.gd
-* T : src/ui/main.gd scenes/main.tscn
+* T IDLE : src/ui/main.gd scenes/main.tscn      ## IDLE: để yên lâu ở Home, Shop, màn chơi (chạy tay, stay=)
 B : src/game/sfx.gd src/platform/mock_an.gd assets/music/** assets/sfx/**
 B G : src/platform/mock_notif.gd src/meta/notif_plan.gd    ## lịch thông báo đặt lúc app vào nền (G phát Platform.paused)
 G : src/platform/mock_save.gd src/ui/select_account.gd scenes/select_account.tscn

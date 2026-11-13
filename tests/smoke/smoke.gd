@@ -364,8 +364,11 @@ func wait_frames(n: int) -> void:
 		await get_tree().process_frame
 
 
-## Đợi theo thời gian game (đã nhân time_scale).
+## Đợi theo thời gian game (đã nhân time_scale). Đồng hồ chạy từ khung thứ hai: khung vừa dựng popup có thể dài, delta
+## của khung sau ăn hết thời gian đợi và smoke bấm khi popup mới hiện vài khung, nhanh hơn người thật (game bỏ chạm
+## lúc popup đang mở theo cùng cách, Main._guard_opening).
 func wait_sec(sec: float) -> void:
+	await wait_frames(2)
 	await get_tree().create_timer(sec, true, false, false).timeout
 
 
@@ -441,7 +444,12 @@ func hovered_at(p: Vector2) -> Control:
 
 ## Nhấn rồi thả ở `p` (toạ độ viewport). Có `target`: trả "" khi cú nhấn rơi vào `target` hoặc con của nó, không thì
 ## tên node nhận cú nhấn (hover ngay sau khi nhấn, trước khi nút kịp đóng popup).
+## Popup trên cùng vừa mở thì đợi nó mở xong trước (tối đa 2 giây): game bỏ chạm lúc đó (Main.META_OPENING, design.md
+## mục 2 "Chạm vào UI"), người chơi cũng chỉ chạm khi đã thấy popup.
 func click_at(p: Vector2, target: Control = null) -> String:
+	var deadline := Time.get_ticks_msec() + 2000
+	while _popup_opening() and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
 	var missed := ""
 	for pressed in [true, false]:
 		var ev := InputEventMouseButton.new()
@@ -456,6 +464,14 @@ func click_at(p: Vector2, target: Control = null) -> String:
 				missed = node_label(got)
 		await get_tree().process_frame
 	return missed
+
+
+## Popup trên cùng của Main còn trong lúc mở (Main.add_popup đặt meta "popup_opening" = Main.META_OPENING).
+func _popup_opening() -> bool:
+	if main == null or not is_instance_valid(main) or main.popup_layer == null:
+		return false
+	var top: Node = main.call("_top_popup")
+	return top != null and top.has_meta("popup_opening")
 
 
 ## Kéo bằng chuột (cuộn danh sách): nhấn ở `from`, di qua `steps` bước, thả ở `to` (toạ độ viewport).

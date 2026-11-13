@@ -43,6 +43,7 @@ const SCEN_FILES := {
 	"SB": "res://tests/smoke/scen_modes.gd",
 	"DG": "res://tests/smoke/scen_meta.gd", "PR": "res://tests/smoke/scen_meta.gd",
 	"OFF": "res://tests/smoke/scen_meta.gd",
+	"IDLE": "res://tests/smoke/scen_ui.gd",
 }
 
 
@@ -1119,6 +1120,14 @@ static func monkey(r, rng: RandomNumberGenerator, taps: int) -> bool:
 		elif r.popups().is_empty() and lv != null and str(lv.state) == "playing" and rng.randf() < 0.4:
 			var bv: Control = lv.board_view
 			var p := Vector2(rng.randf() * bv.size.x, rng.randf() * bv.size.y)
+			# Half the board taps go to a block, as a player's do: random points on a nearly cleared board hit nothing,
+			# and with locked boosters the monkey would stall there.
+			var ids: Array = lv.board.block_ids()
+			if not ids.is_empty() and rng.randf() < 0.5:
+				var node: Control = bv.block_node(str(ids[rng.randi() % ids.size()]))
+				var cells: Array = node.get("cells") if node != null else []
+				if not cells.is_empty():
+					p = bv.cell_center(cells[0])
 			r.step("monkey %d: chạm bàn (%d, %d)" % [i, int(p.x), int(p.y)])
 			await r.click_at(r.to_viewport(bv, p))
 		else:
