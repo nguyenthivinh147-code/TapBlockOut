@@ -93,11 +93,17 @@
 			"lift": 0.35,
 			"keep_hue": 0.1
 		},
-		"cream": {
-			"hue": 32,
-			"sat": 0.3,
-			"sat_max": 0.26,
-			"lift": 0.55
+		"peach": {
+			"hue": 22,
+			"sat": 0.6,
+			"sat_max": 0.42,
+			"lift": 0.9
+		},
+		"peach_rim": {
+			"hue": 16,
+			"sat": 0.8,
+			"sat_max": 0.62,
+			"lift": 1.0
 		},
 		"butter": {
 			"hue": 45,
@@ -111,6 +117,52 @@
 			"sat_max": 0.33,
 			"lift": 0.36,
 			"keep_hue": 0.1
+		},
+		"pink_pill": {
+			"hue": 347,
+			"sat": 1.0,
+			"sat_max": 0.72,
+			"lift": 0.32,
+			"keep_hue": 0.3
+		},
+		"lilac_steel": {
+			"hue": 256,
+			"sat": 0.8,
+			"sat_max": 0.26,
+			"lift": 0.78
+		},
+		"butter_bright": {
+			"hue": 46,
+			"sat": 0.78,
+			"sat_max": 0.62,
+			"lift": 0.5
+		},
+		"periwinkle": {
+			"hue": 214,
+			"sat": 0.8,
+			"sat_max": 0.3,
+			"lift": 0.42
+		},
+		"lavender_nav": {
+			"hue": 270,
+			"sat": 0.5,
+			"sat_max": 0.26,
+			"lift": 0.15,
+			"keep_hue": 0.1
+		},
+		"apple_play": {
+			"hue": 100,
+			"sat": 0.52,
+			"sat_max": 0.58,
+			"lift": 1.0,
+			"keep_hue": 0.3
+		},
+		"lilac": {
+			"hue": 274,
+			"sat": 0.37,
+			"sat_max": 0.3,
+			"lift": 0.55,
+			"keep_hue": 0.15
 		},
 		"candy_strawberry": {
 			"hue": 345,
@@ -185,14 +237,46 @@
 			"yellow": "strawberry"
 		},
 		"label": {
-			"orange": "cream",
-			"yellow": "cream"
+			"orange": "peach_rim",
+			"yellow": "peach"
 		},
 		"frame_light": {
 			"blue": "lavender_light",
 			"cyan": "lavender_light",
 			"purple": "lavender_light",
 			"magenta": "lavender_light"
+		},
+		"pill_pink": {
+			"red": "pink_pill",
+			"magenta": "pink_pill"
+		},
+		"lock": {
+			"blue": "lilac_steel",
+			"cyan": "lilac_steel"
+		},
+		"highlight": {
+			"yellow": "butter_bright",
+			"orange": "butter_bright"
+		},
+		"calendar": {
+			"blue": "periwinkle",
+			"cyan": "periwinkle"
+		},
+		"frame_nav": {
+			"blue": "lavender_nav",
+			"cyan": "lavender_nav",
+			"purple": "lavender_nav",
+			"magenta": "lavender_nav"
+		},
+		"play_green": {
+			"green": "apple_play",
+			"yellow": "apple_play"
+		},
+		"frame_lilac": {
+			"blue": "lilac",
+			"cyan": "lilac",
+			"purple": "lilac",
+			"magenta": "lilac"
 		},
 		"candy_strawberry": {
 			"candy_red": "candy_strawberry"
@@ -244,14 +328,32 @@
 		"ui/figma/ic_setting.png": {
 			"map": "frame_light"
 		},
+		"ui/figma/ic_lock.png": {
+			"map": "lock"
+		},
+		"ui/figma/home_play_normal.png": {
+			"map": "play_green"
+		},
+		"ui/figma/pill/pill_green_96.png": {
+			"map": "play_green"
+		},
+		"ui/cc/UI_Shop_Popup_Atlas.png": {
+			"regions": [[816, 767, 204, 100, "play_green"]]
+		},
+		"ui/figma/pill/pill_red_96.png": {
+			"map": "pill_pink"
+		},
+		"ui/figma/home_rail_straight.png": {
+			"source": "art/themes/pastel/home_rail_straight.png"
+		},
 		"ui/figma/popup_frame1.png": {
-			"map": "frame"
+			"map": "frame_lilac"
 		},
 		"ui/figma/popup_frame2.png": {
-			"map": "frame"
+			"map": "frame_lilac"
 		},
 		"ui/figma/popup_frame3.png": {
-			"map": "frame"
+			"map": "frame_lilac"
 		},
 		"ui/figma/bg_shop.png": {
 			"map": "frame"
@@ -266,7 +368,7 @@
 			"map": "label"
 		},
 		"ui/cc/Popup2.png": {
-			"map": "frame"
+			"map": "frame_lilac"
 		},
 		"ui/cc/PopupDailyRewardAd.png": {
 			"map": "frame"
@@ -335,7 +437,8 @@
 			"map": "icon"
 		},
 		"ui/figma/ic_dailygift.png": {
-			"map": "icon"
+			"map": "icon",
+			"regions": [[0, 0, 192, 192, "calendar"]]
 		},
 		"ui/figma/ic_leaderboard.png": {
 			"map": "icon"
@@ -437,12 +540,15 @@
 			"map": "icon"
 		},
 		"ui/booster_hint.png": {
+			"source": "art/themes/pastel/booster_hint.png",
 			"map": "icon"
 		},
 		"ui/booster_move.png": {
+			"source": "art/themes/pastel/booster_move.png",
 			"map": "icon"
 		},
 		"ui/booster_smash.png": {
+			"source": "art/themes/pastel/booster_smash.png",
 			"map": "icon"
 		},
 		"ui/ic_chain_offer.png": {
@@ -473,7 +579,12 @@
 			"map": "icon"
 		},
 		"ui/cc/Resources_moved_UI_Maincenter.png": {
+			"overlays": [
+				[384, 1332, 368, 108, "art/themes/pastel/popup_title_maincenter.png"]
+			],
 			"regions": [
+				[0, 816, 380, 168, "play_green"],
+				[384, 817, 368, 168, "play_green"],
 				[
 					384,
 					1332,
@@ -582,14 +693,22 @@
 			]
 		},
 		"ui/figma/atlas_main.png": {
+			"overlays": [
+				[384, 1332, 368, 108, "art/themes/pastel/popup_title_main.png"],
+				[1645, 288, 200, 200, "art/themes/pastel/node_hex_red.png"],
+				[1847, 288, 201, 200, "art/themes/pastel/node_hex_purple.png"],
+				[1040, 288, 201, 200, "art/themes/pastel/node_hex_green.png"],
+				[1749, 1751, 282, 282, "art/themes/pastel/node_node_green.png"],
+				[1443, 288, 201, 200, "art/themes/pastel/node_hex_gray.png"],
+				[1511, 1831, 216, 216, "art/themes/pastel/node_node_gray.png"],
+				[1242, 288, 200, 200, "art/themes/pastel/node_hex_blue.png"]
+			],
 			"regions": [
-				[
-					937,
-					524,
-					226,
-					144,
-					"frame_light"
-				],
+				[0, 988, 380, 168, "pill_pink"],
+				[0, 816, 380, 168, "play_green"],
+				[384, 816, 368, 168, "play_green"],
+				[937, 672, 226, 140, "highlight"],
+				[937, 524, 226, 144, "frame_nav"],
 				[
 					384,
 					1332,
@@ -678,6 +797,7 @@
 		},
 		"ui/cc/Resources_UI_Maincenter.png": {
 			"regions": [
+				[1792, 809, 256, 270, "play_green"],
 				[
 					1792,
 					536,
@@ -738,52 +858,16 @@
 					180,
 					"frame_warm"
 				],
-				[
-					0,
-					150,
-					132,
-					180,
-					"frame"
-				],
-				[
-					0,
-					340,
-					466,
-					256,
-					"frame"
-				],
-				[
-					0,
-					808,
-					1024,
-					216,
-					"frame"
-				]
+				[0, 150, 132, 180, "frame_lilac"],
+				[0, 340, 466, 256, "frame_lilac"],
+				[0, 808, 1024, 216, "frame_lilac"]
 			]
 		},
 		"ui/cc/UI_Shop_Packs_Atlas.png": {
 			"regions": [
-				[
-					0,
-					0,
-					512,
-					312,
-					"frame"
-				],
-				[
-					0,
-					633,
-					512,
-					312,
-					"frame"
-				],
-				[
-					0,
-					948,
-					108,
-					76,
-					"frame"
-				]
+				[0, 0, 512, 312, "frame_lilac"],
+				[0, 633, 512, 312, "frame_lilac"],
+				[0, 948, 108, 76, "frame_lilac"]
 			]
 		},
 		"ui/cc/UI_WinLose_Atlas.png": {

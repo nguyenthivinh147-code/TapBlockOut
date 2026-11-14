@@ -69,6 +69,7 @@ A D OFF : src/meta/unlocks.gd
 G A : src/meta/save_schema.gd src/meta/save_store.gd
 L : i18n/** assets/fonts/**
 test:test_i18n test:test_shipped_assets : i18n/** assets/fonts/**
+test:test_popup_titles : i18n/strings.csv scenes/** data/ui_unity/**   ## tiêu đề popup không in hoa, chuỗi kiểu câu
 - : src/ui/tester_menu.gd scenes/tester_menu.tscn src/ui/ui_gallery.gd scenes/ui_gallery.tscn src/ui/sample_data.gd
 - : src/ui/popup_heart_*.gd scenes/popup_heart_*.tscn src/ui/popup_ads_daily.gd scenes/popup_ads_daily.tscn  ## chưa nối logic, chỉ mở từ ui_gallery
 - : scenes/unity/LoadLevelProcess*.tscn data/ui_unity/LoadLevelProcess*.json  ## layer Unity không màn nào nạp

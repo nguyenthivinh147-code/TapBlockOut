@@ -39,10 +39,13 @@ func test_play_shows_level(t: T) -> void:
 	var g := _g(7)
 	g.s.coins = 1234
 	var h := _home()
-	t.eq(h.path_nodes[1].num.text, "7", "mốc hiện tại ghi số level")
+	t.eq(h.path_nodes[2].num.text, "7", "mốc hiện tại (dưới cùng) ghi số level")
 	t.eq(h.play_label.text, "PLAY", "nút Chơi ghi PLAY")
 	var shine: Node = h.play_btn.get_node_or_null("Motion")
 	t.ok(shine != null and int(shine.get("kind")) == HomeScript.UiMotion.SHINE, "nút Chơi có dải sáng quét dọc")
+	var breathe: Node = h.play_btn.get_node_or_null(HomeScript.UiMotion.BREATHE_NODE)
+	t.ok(breathe != null and int(breathe.get("kind")) == HomeScript.UiMotion.BREATHE, "nút Chơi phập phồng nhẹ")
+	t.eq(h.play_btn.pivot_offset_ratio, Vector2(0.5, 0.5), "nút Chơi phồng quanh tâm")
 	t.ok(not h.hard_tag.visible, "level thường không ghi độ khó")
 	t.eq(h.gold_label.text, "1234", "gold")
 	t.ok(not h.play_btn.disabled, "nút Chơi bấm được")
@@ -206,11 +209,40 @@ func test_difficulty_tiers(t: T) -> void:
 		h = _home()
 		t.ok(h.hard_tag.visible, "%s: nút Chơi ghi độ khó" % tier)
 		t.eq(h.hard_tag.text, "VERY HARD" if tier == "very_hard" else "HARD", "%s: chữ độ khó" % tier)
-		t.ok(h.path_nodes[1].skull.texture != null, "%s: mốc hiện tại có đầu lâu" % tier)
-		t.eq(h.path_nodes[2].num.text, str(lv - 1), "%s: mốc vừa qua ở dưới" % tier)
-		t.ok(h.path_nodes[2].badge.texture != null, "%s: mốc vừa qua có dấu tích" % tier)
+		t.ok(h.path_nodes[2].skull.texture != null, "%s: mốc hiện tại (dưới cùng) có đầu lâu" % tier)
+		_check_path(t, h, lv, tier)
 		_check_background(t, h, tier)
 		h.queue_free()
+
+
+## Chữ PLAY và chữ độ khó viền (cả bóng) cùng tông với nút theo độ khó: màu đậm của nút, trùng viền số mốc hiện tại.
+## Cùng một Home đổi level (Home được giữ lại giữa các lượt) thì bóng chữ cũng đổi theo.
+func test_play_outline_matches_button(t: T) -> void:
+	var g := _g(7)
+	var lv := {"": 7}
+	for tier in ["hard", "very_hard"]:
+		var n := 2
+		while n < 400 and g.difficulty_of(n) != tier:
+			n += 1
+		lv[tier] = n
+	# hue của nút: xanh lá, hồng dâu, tím
+	var hue := {"": [0.22, 0.32], "hard": [0.90, 0.98], "very_hard": [0.72, 0.80]}
+	var h := _home()
+	for tier in ["", "hard", "very_hard", ""]:
+		g.s.level = int(lv[tier])
+		h.refresh()
+		var name: String = tier if tier != "" else "normal"
+		var want: Color = (h.path_nodes[2].num as Label).get_theme_color("font_outline_color")
+		var got: Color = h.play_label.get_theme_color("font_outline_color")
+		t.eq(got, want, "%s: viền chữ PLAY trùng viền số mốc hiện tại" % name)
+		t.eq(h.play_label.get_theme_color("font_shadow_color"), got, "%s: bóng chữ PLAY cùng màu viền" % name)
+		t.ok(got.h >= float(hue[tier][0]) and got.h <= float(hue[tier][1]),
+			"%s: viền PLAY cùng tông nút (hue %.3f)" % [name, got.h])
+		t.ok(got.v < 0.5, "%s: viền PLAY đậm hơn nút (value %.2f)" % [name, got.v])
+		if tier != "":
+			t.eq(h.hard_tag.get_theme_color("font_outline_color"), got, "%s: viền chữ độ khó như PLAY" % name)
+			t.eq(h.hard_tag.get_theme_color("font_shadow_color"), got, "%s: bóng chữ độ khó như PLAY" % name)
+	h.queue_free()
 
 
 ## Chữ độ khó trên nút Chơi (cả viền) không đè vệt bóng trắng ở góc trái trên của nút, ở mọi ngôn ngữ (tiếng Nga,
@@ -240,6 +272,48 @@ func test_hard_tag_clears_gloss(t: T) -> void:
 	g.set_setting("lang", "en")
 
 
+## Đường level ở mọi level: mốc hiện tại dưới cùng, hai level tiếp theo khoá ở trên; không có mốc level đã qua.
+func test_path_current_and_next_two(t: T) -> void:
+	for level in [1, 2, 7, 150]:
+		_g(level)
+		var h := _home()
+		_check_path(t, h, level, "L%d" % level)
+		h.queue_free()
+
+
+## Số và trạng thái ba mốc từ trên xuống: level + 2, level + 1 khoá; level hiện tại không khoá, không dấu tích.
+func _check_path(t: T, h: Control, level: int, label: String) -> void:
+	var lock: Texture2D = HomeScript.ThemeKit.icon("ui_lock")
+	for i in 3:
+		var pn: Dictionary = h.path_nodes[i]
+		t.eq((pn.num as Label).text, str(level + 2 - i), "%s: mốc %d từ trên ghi level %d" % [label, i + 1, level + 2 - i])
+		if i < 2:
+			t.eq((pn.badge as TextureRect).texture, lock, "%s: mốc level %d có ổ khoá" % [label, level + 2 - i])
+			t.eq((pn.sprite as TextureRect).texture, UiAtlas.tex("hex_gray"), "%s: mốc level %d là lục giác xám" % [label, level + 2 - i])
+		else:
+			t.ok((pn.badge as TextureRect).texture == null, "%s: mốc hiện tại không có huy hiệu" % label)
+
+
+## Hai mốc khoá nhỏ hơn hẳn mốc hiện tại (khoảng 62%), ổ khoá co theo; tâm ba mốc vẫn ở chỗ cũ trên ray
+## (khoảng tâm 314 và 378 như khung Figma).
+func test_locked_nodes_smaller(t: T) -> void:
+	for level in [1, 7]:
+		_g(level)
+		var h := _home()
+		var cur := h.path_nodes[2].root as Control
+		var c: Array[float] = []
+		for i in 3:
+			c.append((h.path_nodes[i].root as Control).get_rect().get_center().y)
+		for i in 2:
+			var node := h.path_nodes[i].root as Control
+			var r := node.size.x / cur.size.x
+			t.ok(r >= 0.58 and r <= 0.66, "L%d: mốc khoá %d bằng %.2f mốc hiện tại" % [level, i + 1, r])
+			var badge := h.path_nodes[i].badge as Control
+			t.near(badge.size.x / node.size.x, 104.0 / 220.0, 0.01, "L%d: ổ khoá co theo mốc" % level)
+		t.near((c[2] - c[1]) / (c[1] - c[0]), 378.0 / 314.0, 0.01, "L%d: tâm các mốc giữ khoảng như cũ" % level)
+		h.queue_free()
+
+
 ## Ba mốc thẳng hàng trên đường giữa ray kẹo thẳng đứng; mốc khoá là lục giác xám ở mọi độ khó.
 func test_nodes_on_rail(t: T) -> void:
 	for level in [1, 7]:
@@ -253,7 +327,7 @@ func test_nodes_on_rail(t: T) -> void:
 			var c: Vector2 = (pn.root as Control).get_rect().get_center()
 			t.near(c.x, mid, 1.0, "L%d: mốc %s nằm trên ray" % [level, (pn.num as Label).text])
 			t.ok(c.y > rail.position.y and c.y < rail.get_rect().end.y, "L%d: mốc %s trong chiều dài ray" % [level, (pn.num as Label).text])
-		var cur := 2 if level == 1 else 1
+		var cur := 2
 		var locked: Dictionary = h.path_nodes[0]
 		t.eq((locked.sprite as TextureRect).texture, UiAtlas.tex("hex_gray"), "L%d: mốc khoá là lục giác xám" % level)
 		var glow := h.get_node("%Glow") as Control

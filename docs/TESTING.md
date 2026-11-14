@@ -11,8 +11,34 @@ Mục ghi *(Task 11.x)* là phần chưa làm xong; khi task xong thì bỏ ghi 
 3. **`tools/test.sh [lọc]`** → dòng cuối `ALL TESTS PASSED (<n>)`, thoát 0. Bộ này gồm cả kiểm tra tĩnh. Lọc và kịch bản smoke headless theo thay đổi: `tools/affected.sh` (mục **Chọn test theo thay đổi**); `tools/affected.sh --run` chạy chúng và thoát 1 khi một hàm đã sửa hay thêm trong `src/` không test nào chạy tới (mục **Cổng test**).
 4. **Người chơi nhìn thấy thay đổi** (UI, VFX, animation, chữ) → `tools/smoke.sh window <kịch bản>` (`tools/affected.sh` in dòng này) và **đọc ảnh PNG**. Log có `SMOKE OK` và `SMOKE ERRORS script=0 engine=0`. Test đạt chưa có nghĩa là màn đã hiện đúng. Luật chụp, đọc ảnh, dò chạm: `.claude/rules/ui-testing.md`.
 5. **Có quyết định đáng nhớ** → một dòng trong `design.md` mục 9.
+6. **Xong task (code, design, art)** → báo QA: tính năng, commit hoặc nhánh, mục `design.md`, chỗ cần nhìn. QA chạy `/qa feature` (mục **Agent test (QA)**).
 
 Thứ tự mặc định: headless trước (`tools/test.sh`, `tools/smoke.sh headless`). Chế độ `window` chỉ khi thay đổi hiện lên màn hình, và chỉ chạy kịch bản liên quan. MCP `godot-ai` dùng để xem và thử nhanh trong editor, không thay bước 3 và 4.
+
+## Agent test (QA)
+
+Agent test kiểm game độc lập với người làm task, bằng skill `/qa`. Các bước, cách phân loại kết quả đỏ, báo cáo và thông báo nằm trong skill.
+
+| Chế độ | Khi nào |
+|---|---|
+| `/qa onboard` | Agent test lần đầu tham gia: kê tính năng đang có, so với `design.md`. Tính năng đã có design thì tạo test case và script; chưa có thì QA tự viết design, gửi duyệt, duyệt xong mới tạo script |
+| `/qa feature <tính năng> [ref]` | Code, design hoặc art xong task và báo (bước 6 ở trên) |
+| `/qa daily` | 16:00 hằng ngày, Task Scheduler gọi `tools/qa_daily.sh`: full game và duyệt các commit từ 16:00 hôm trước |
+| `/qa full [ref]` | Khi được yêu cầu test full game |
+
+- Tính năng đang tắt (`Config._FEATURES`, cơ chế chưa có trong level, SKU ẩn) không cần script: kịch bản OFF kiểm chúng vẫn tắt. Tính năng đã có script chạy được thì QA chạy script đó.
+- Sổ tính năng `tests/cases/FEATURES.md`: mỗi tính năng một dòng (mục `design.md`, MODULE, trạng thái). QA ghi, người khác đọc.
+- Duyệt design QA tự viết: tiêu đề mục trong `design.md` mang nhãn `(đề xuất, chờ duyệt)`. Người duyệt bỏ nhãn (sửa nội dung nếu cần) là đã duyệt; lần chạy QA sau tạo test case và script.
+- Full game chạy trên desktop (`tools/test.sh`, mọi kịch bản smoke, V 1–500, `window` cho case `look`). Máy thật: người dùng gọi `/device-test`.
+
+Đăng ký lịch 16:00 một lần trên máy Windows (PowerShell, `<repo>` là đường dẫn Git Bash của repo, ví dụ `/e/...`). Máy tắt lúc 16:00 thì task chạy khi máy bật lại; cần đăng nhập Windows vì smoke `window` mở cửa sổ. Log mỗi lần ở `output/qa/scheduler/`.
+
+```powershell
+$a = New-ScheduledTaskAction -Execute "C:\Program Files\Git\bin\bash.exe" -Argument '-l "<repo>/tools/qa_daily.sh"'
+$t = New-ScheduledTaskTrigger -Daily -At 16:00
+$s = New-ScheduledTaskSettingsSet -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Hours 4) -MultipleInstances IgnoreNew
+Register-ScheduledTask -TaskName "CandyAway QA daily" -Action $a -Trigger $t -Settings $s
+```
 
 ## Chọn test theo thay đổi: `tools/affected.sh`
 
@@ -301,4 +327,4 @@ Kinh nghiệm từ Butcher Defense (cùng Godot 4.7.2, `gl_compatibility`), dùn
 
 ## File sinh ra
 
-Ảnh, log, video, Excel test case, báo cáo ghi vào `output/<việc>/` ở gốc repo (`.gitignore` bỏ qua). Riêng `tests/shots/` là ảnh của `tests/shot.gd`, được theo dõi trong git.
+Ảnh, log, video, Excel test case, báo cáo ghi vào `output/<việc>/` ở gốc repo (`.gitignore` bỏ qua); báo cáo của QA ở `output/qa/`. Riêng `tests/shots/` là ảnh của `tests/shot.gd`, được theo dõi trong git.

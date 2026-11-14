@@ -114,8 +114,8 @@ Label/styles/normal = SubResource("StyleBoxEmpty_v8i26")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_jbfel")
 
 [sub_resource type="Gradient" id="Gradient_vwpem"]
-offsets = PackedFloat32Array(0, 0.844)
-colors = PackedColorArray(0.91372549, 0.85098039, 1, 1, 1, 0.89019608, 0.9254902, 1)
+offsets = PackedFloat32Array(0, 0.18, 0.34, 0.5, 0.68, 0.84)
+colors = PackedColorArray(0.9372549, 0.83137256, 0.9882353, 1, 0.95686275, 0.85490197, 0.98039216, 1, 0.9843137, 0.8745098, 0.9372549, 1, 0.99607843, 0.89411765, 0.8980392, 1, 1, 0.8901961, 0.84705883, 1, 1, 0.85882354, 0.80784315, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_hsf4p"]
 gradient = SubResource("Gradient_vwpem")
@@ -150,7 +150,7 @@ region = Rect2(1242, 288, 200, 200)
 
 [sub_resource type="Gradient" id="Gradient_tilxw"]
 offsets = PackedFloat32Array(0, 0.494, 1)
-colors = PackedColorArray(0.91372549, 0.85098039, 1, 1, 0.91372549, 0.85098039, 1, 0.77, 0.91372549, 0.85098039, 1, 0)
+colors = PackedColorArray(0.9372549, 0.83137256, 0.9882353, 1, 0.9372549, 0.83137256, 0.9882353, 0.77, 0.9372549, 0.83137256, 0.9882353, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_dy5n5"]
 gradient = SubResource("Gradient_tilxw")
@@ -160,7 +160,7 @@ fill_from = Vector2(0.5, 0)
 fill_to = Vector2(0.5, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1yme"]
-bg_color = Color(0.9490196, 0.34509805, 0.12156863, 1)
+bg_color = Color(1, 0.3882353, 0.43529412, 1)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -172,7 +172,7 @@ corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00fub"]
-bg_color = Color(0.9490196, 0.34509805, 0.12156863, 1)
+bg_color = Color(1, 0.3882353, 0.43529412, 1)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -184,7 +184,7 @@ corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8iyx7"]
-bg_color = Color(0.9490196, 0.34509805, 0.12156863, 1)
+bg_color = Color(1, 0.3882353, 0.43529412, 1)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -230,7 +230,7 @@ layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color(1, 0.93333334, 0.95686275, 1)
+color = Color(1, 0.85882354, 0.80784315, 1)
 
 [node name="Gradient" type="TextureRect" parent="Background" unique_id=447067345]
 unique_name_in_owner = true
@@ -284,6 +284,16 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("5_rqor2")
 
+[node name="TopShade" type="TextureRect" parent="." unique_id=2004564107]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 720.0
+offset_bottom = 459.95486
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_dy5n5")
+expand_mode = 1
+metadata/fb_rect = Rect2(0, 0, 886, 566)
+
 [node name="Rail" type="TextureRect" parent="." unique_id=30625922]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_5k1al")
@@ -336,8 +346,8 @@ offset_top = 2.5521333
 offset_right = 140.36732
 offset_bottom = 142.91946
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.47058824, 0.47058824, 0.47058824, 1)
-theme_override_colors/font_outline_color = Color(0.47058824, 0.47058824, 0.47058824, 1)
+theme_override_colors/font_shadow_color = Color(0.64705884, 0.48235294, 0.74509805, 1)
+theme_override_colors/font_outline_color = Color(0.64705884, 0.48235294, 0.74509805, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
@@ -397,8 +407,8 @@ offset_top = 2.5521333
 offset_right = 185.02965
 offset_bottom = 187.58179
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.30980393, 0.49803922, 0.0627451, 1)
-theme_override_colors/font_outline_color = Color(0.30980393, 0.49803922, 0.0627451, 1)
+theme_override_colors/font_shadow_color = Color(0.1764706, 0.36862746, 0.07058824, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.36862746, 0.07058824, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
@@ -459,8 +469,8 @@ offset_top = 2.5521333
 offset_right = 140.36732
 offset_bottom = 142.91946
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.02745098, 0.43529412, 0.5294118, 1)
-theme_override_colors/font_outline_color = Color(0.02745098, 0.43529412, 0.5294118, 1)
+theme_override_colors/font_shadow_color = Color(0.21176471, 0.40784314, 0.4117647, 1)
+theme_override_colors/font_outline_color = Color(0.21176471, 0.40784314, 0.4117647, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
@@ -494,16 +504,6 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 metadata/fb_rect = Rect2(62.0257, -26.694605, 102.85274, 102.85274)
-
-[node name="TopShade" type="TextureRect" parent="." unique_id=2004564107]
-unique_name_in_owner = true
-layout_mode = 0
-offset_right = 720.0
-offset_bottom = 459.95486
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_dy5n5")
-expand_mode = 1
-metadata/fb_rect = Rect2(0, 0, 886, 566)
 
 [node name="GiftItem" type="Control" parent="." unique_id=1038701733]
 unique_name_in_owner = true
@@ -568,8 +568,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5
@@ -593,7 +593,6 @@ metadata/fb_rect = Rect2(12, 434, 194, 176)
 
 [node name="ChallengeButton" type="Button" parent="ChallengeItem" unique_id=723939885]
 unique_name_in_owner = true
-modulate = Color(0.75, 0.75, 0.82, 1)
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 0
 offset_left = 17.065462
@@ -648,8 +647,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5
@@ -741,8 +740,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5
@@ -805,8 +804,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5
@@ -868,8 +867,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5
@@ -931,8 +930,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5
@@ -1007,8 +1006,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5
@@ -1085,8 +1084,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5
@@ -1148,8 +1147,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5
@@ -1211,8 +1210,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5
@@ -1299,8 +1298,8 @@ offset_top = 95.89165
 offset_right = 157.65237
 offset_bottom = 136.5237
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
-theme_override_colors/font_outline_color = Color(0.61960787, 0.3019608, 0.05882353, 1)
+theme_override_colors/font_shadow_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
+theme_override_colors/font_outline_color = Color(0.24313726, 0.043137256, 0.22745098, 1)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 5

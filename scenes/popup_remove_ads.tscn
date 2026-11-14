@@ -386,7 +386,6 @@ text = "Remove Ads"
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
-uppercase = true
 metadata/u = {
 "id": "3089910432032338943",
 "n": "Title_txt",

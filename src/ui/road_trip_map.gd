@@ -41,7 +41,8 @@ const DASH := 22.0
 ## Hộp thứ i dùng BOX_ICONS[i % 3]: vùng UiAtlas của atlas UI_Winstreak_Atlas (lấy texture qua box_tex).
 const BOX_ICONS := ["gift_red", "gift_blue", "gift_purple"]
 const CUR_SPRITE := {"": "hex_green", "hard": "hex_red", "very_hard": "hex_purple"}
-const OUTLINE := {"locked": Color("787878"), "done": Color("076F87"), "": Color("4F7F10"), "hard": Color("911B35"),
+## Viền số theo mốc, cùng màu số trên mốc ở Home (home.gd TIERS, LOCKED_STROKE); mốc đã qua chỉ có ở Road Trip.
+const OUTLINE := {"locked": Color("A57BBE"), "done": Color("366869"), "": Color("2D5E12"), "hard": Color("6C133F"),
 	"very_hard": Color("4B1073")}
 const GLOW_TEX := "res://assets/ui/figma/home_glow.png"
 ## Quầng sáng so với mốc; mũi tên: cỡ, phần đè lên đỉnh mốc (mốc hàng trên chỉ cách ROW_H nên mũi tên cắm vào đỉnh

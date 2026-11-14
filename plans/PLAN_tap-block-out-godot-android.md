@@ -111,6 +111,7 @@ tests/smoke/   smoke.gd (runner, Node)  smoke_main.gd  scenarios.gd  smoke_saves
                scen_levels.gd scen_events.gd scen_modes.gd scen_meta.gd (kịch bản V và tính năng, Task 11.6)
 tests/cases/   <MODULE>.csv (test case theo form skill /game-testcase-generator, cột AUTO; có .gdignore, Task 11.7)
                đọc bằng tests/cases_csv.gd; kiểm bằng tests/test_cases.gd
+               FEATURES.md (sổ tính năng của skill /qa, Task 11.8)
 docs/          tài liệu; docs/TESTING.md (quy trình test), docs/godot/ (tham chiếu API Godot, MIT)
 .claude/       settings.json (chặn lệnh git phá dữ liệu), skills/, agents/, rules/ (Phase 11)
 output/        ảnh, log, báo cáo, Excel sinh ra (không vào git, có .gdignore)
@@ -602,7 +603,11 @@ Ngày lấy từ tiêu đề task và các đoạn "Bổ sung" trong mục 3. Ta
 - Task 11.5: Smoke trên máy Android thật qua USB (`tools/device_smoke.sh`); runner smoke đổi sang Node. Lần đo đầu trên vivo V2206.
 - Task 11.6: Kịch bản V (500 level) và 9 kịch bản tính năng mới, skill `/device-test`; 500/500 level đạt trên vivo V2206, tìm ra 5 lỗi game (chưa sửa).
 - Task 11.7: Test case trong repo (`tests/cases/<MODULE>.csv`, form skill `/game-testcase-generator` cộng cột AUTO), smoke chấm từng case (`r.tc`), `tests/test_cases.gd` đo bao phủ; thử trên Weekly Pass.
-- Bỏ màn chuyển level 3.1 `load_transition` (người dùng yêu cầu; mục 4 đóng việc duyệt chỗ đặt).
+- Bỏ màn chuyển level 3.1 `load_transition` (người dùng yêu cầu; mục 4 đóng việc duyệt chỗ đặt)
+
+**2026-11-13:**
+
+- Task 11.8: Vai agent test (skill `/qa`: onboard, feature, daily 16:00 qua `tools/qa_daily.sh`, full), sổ `tests/cases/FEATURES.md`..
 
 ---
 
@@ -1097,6 +1102,11 @@ Lấy mẫu từ quy trình test của Butcher Defense (2026-11-11), chỉ lấy
   - **Allowed Files:** `tests/cases/**`, `tests/cases_csv.gd`, `tests/test_cases.gd`, `tests/smoke/**`, `tests/test_weekly_pass.gd`, `tools/smoke.sh`, `tools/device_smoke.sh`, `tools/report.mjs`, `.claude/skills/game-testcase-generator/SKILL.md`, `.claude/rules/smoke-cases.md`, `CLAUDE.md`, `docs/TESTING.md`, kế hoạch này.
   - **Specs:** Lý do: 9 kịch bản của Task 11.6 do sub-agent viết thẳng từ `design.md`, không có danh sách case để duyệt, kỳ vọng đọc từ `Config` nên không bắt được `config.gd` lệch `design.md`. Mỗi tính năng có `tests/cases/<MODULE>.csv` (11 cột của skill cộng `AUTO`: `smoke:`, `unit:`, `todo:`, `manual:`); skill sinh CSV trước rồi dựng Excel từ CSV. Smoke chấm case bằng `r.tc(id, ok, detail)`, `r.tc_look(id, shot)`, `r.tc_blocked(id, why)`, in `SMOKE CASE`, cuối lần chạy in `SMOKE CASES` và fail khi có case FAIL hoặc case của kịch bản chưa được chấm (`missing`). Số kỳ vọng ghi từ CSV, không tính lại bằng code game. `tests/test_cases.gd` kiểm định dạng CSV, case `smoke:`/`unit:` có ID trong code, ID trong code có trong CSV, in dòng `CASES` theo module. Báo cáo HTML có bảng case. Rule `.claude/rules/smoke-cases.md` tự nạp khi sửa `tests/smoke/**`, `tests/cases/**`. Thử trên WP: sinh `tests/cases/WP.csv`, đo case kịch bản WP cũ đã phủ, viết lại kịch bản theo case.
   - **Verification:** `tools/test.sh` đạt (gồm `test_cases`, dòng `CASES WP` có `todo 0`); `tools/smoke.sh headless WP` in `SMOKE CASES WP ... missing=0`, mỗi case FAIL có loại; ảnh của case `look` đã đọc ở `tools/smoke.sh window WP`.
+
+- [x] **Task 11.8: Vai agent test (QA) (2026-11-13, người dùng yêu cầu)**
+  - **Allowed Files:** `.claude/skills/qa/SKILL.md`, `tools/qa_daily.sh`, `docs/TESTING.md`, kế hoạch này.
+  - **Specs:** Skill `/qa` với 4 chế độ: `onboard` (lần đầu tham gia: kê tính năng vào sổ `tests/cases/FEATURES.md`, so với `design.md`; có design thì tạo test case và script, chưa có thì `/design-note reverse` gắn nhãn `(đề xuất, chờ duyệt)`, gửi duyệt, duyệt xong mới tạo script), `feature` (code, design, art báo xong task), `daily` (16:00, commit từ 16:00 hôm trước cộng full game), `full`. Tính năng đang tắt không tạo script. Full game chạy trên desktop; máy thật qua `/device-test`. `tools/qa_daily.sh` gọi `claude -p "/qa daily" --permission-mode auto` cho Windows Task Scheduler. Kênh thông báo chưa nối (người dùng nối sau): tạm ghi `output/qa/<lần chạy>/notify.md`.
+  - **Verification:** `tools/qa_daily.sh --dry-run` in đường dẫn `claude` và lệnh, thoát 0; `tools/test.sh test_static_check` đạt.
 
 **Cổng Phase 11:** cổng mặc định cộng `tools/test.sh` và `tools/smoke.sh headless` thoát 0.
 

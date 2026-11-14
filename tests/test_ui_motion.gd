@@ -48,6 +48,36 @@ func test_pulse_breathes_on_the_own_scale(t: T) -> void:
 	c.free()
 
 
+## BREATHE (nút Chơi ở Home, 2026-11-13): phồng 1 -> 1 + 5% -> 1 trong 1,4 giây quanh tâm, không dời chỗ; nút tắt thì
+## đứng yên ở cỡ thật. Chạy cùng SHINE trên một nút nhờ node tên riêng.
+func test_breathe_swells_button_and_rests_when_disabled(t: T) -> void:
+	var b := Button.new()
+	b.position = Vector2(10, 10)
+	b.size = Vector2(200, 80)
+	b.pivot_offset_ratio = Vector2(0.5, 0.5)
+	_tree().root.add_child(b)
+	var shine := UiMotion.attach(b, UiMotion.SHINE)
+	var m := UiMotion.attach(b, UiMotion.BREATHE, -1.0, UiMotion.BREATHE_NODE)
+	t.ok(m != shine, "motion thứ hai trên cùng nút")
+	t.eq(int(m.get("kind")), UiMotion.BREATHE, "kiểu BREATHE")
+	t.eq(int(shine.get("kind")), UiMotion.SHINE, "SHINE vẫn còn")
+	t.eq(UiMotion.attach(b, UiMotion.PULSE, -1.0, UiMotion.BREATHE_NODE), m, "một motion mỗi tên")
+	t.near(UiMotion.BREATHE_SCALE, 0.05, 0.0001, "phồng nhẹ 5%")
+	t.near(UiMotion.BREATHE_SEC, 1.4, 0.0001, "1,4 giây một nhịp")
+	m.call("_process", UiMotion.BREATHE_SEC * 0.5)
+	t.near(b.scale.x, 1.0 + UiMotion.BREATHE_SCALE, 0.0001, "đỉnh phồng")
+	t.near(b.scale.y, 1.0 + UiMotion.BREATHE_SCALE, 0.0001, "phồng đều hai chiều")
+	m.call("_process", UiMotion.BREATHE_SEC * 0.5)
+	t.near(b.scale.x, 1.0, 0.0001, "hết nhịp về cỡ thật")
+	t.eq(b.position, Vector2(10, 10), "không dời chỗ")
+	m.call("_process", UiMotion.BREATHE_SEC * 0.25)
+	t.ok(b.scale.x > 1.0, "đang phồng")
+	b.disabled = true
+	m.call("_process", UiMotion.BREATHE_SEC * 0.25)
+	t.eq(b.scale, Vector2.ONE, "nút tắt thì đứng yên ở cỡ thật")
+	b.free()
+
+
 func test_hop_pose_is_continuous_and_rests(t: T) -> void:
 	t.eq(UiMotion.hop_pose(0.0), [0.0, 0.0, 0.0], "bắt đầu đứng yên")
 	t.eq(UiMotion.hop_pose(UiMotion.HOP_PERIOD - 0.01), [0.0, 0.0, 0.0], "cuối chu kỳ đứng yên")

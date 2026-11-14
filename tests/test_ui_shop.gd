@@ -478,6 +478,29 @@ func test_shop_cards_hold_their_text(t: T) -> void:
 	TranslationServer.set_locale("en")
 
 
+## Section titles show in capitals and pack names in title case, as written in the strings (user request 2026-11-13):
+## the prefab's TMP UpperCase style was on the pack names and off the No Ads and Gold titles.
+func test_shop_title_and_pack_name_case(t: T) -> void:
+	_offers_open(_g())
+	for lang in ["en", "vi"]:
+		TranslationServer.set_locale(lang)
+		var shop := _open(ShopScene, {"source": "test"})
+		var content: Node = shop.find_child("Content", true, false)
+		for title in ["NoAdsTitle", "BundleTitle", "GoldTitle"]:
+			t.ok((content.get_node(title + "/Text (TMP)") as Label).uppercase, "%s %s in hoa" % [lang, title])
+		for card in ["Shop_RemoveAdsBundle", "Shop_RemoveAds", "StarterPack", "SpecialPack", "BundleSweet"]:
+			var l: Label = content.get_node(card + "/PackName")
+			t.ok(not l.uppercase, "%s %s/PackName không in hoa" % [lang, card])
+			if not l.visible or l.text.is_empty():
+				continue
+			for word in l.text.split(" ", false):
+				t.eq(word.left(1), word.left(1).to_upper(), "%s %s: '%s' viết hoa chữ cái đầu" % [lang, card, l.text])
+		t.eq((content.get_node("Shop_RemoveAds/PackName") as Label).text, shop.tr("shop_remove_ads_name"),
+			"%s Shop_RemoveAds dùng tên gói riêng" % lang)
+		_free(shop)
+	TranslationServer.set_locale("en")
+
+
 ## Opened at one aspect ratio and resized to another (window, rotation, split screen), the cards are placed again in
 ## Content: each keeps its offset from Content's centre instead of the x the first width gave it.
 func test_shop_relayout_on_resize(t: T) -> void:

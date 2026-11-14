@@ -284,7 +284,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_yxhbb")
 text = "No Internet"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "3032118551645677414",
 "n": "txtHeader",

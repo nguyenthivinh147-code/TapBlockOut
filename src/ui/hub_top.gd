@@ -21,6 +21,15 @@ const AVATAR_PX := 124
 ## Avatar thụt 3% mỗi cạnh: to vừa đủ lấp lỗ frame, không hở ở góc.
 const AVATAR_INSET := 0.03
 const SIGNALS := ["coins_changed", "lives_changed", "cos_changed", "inv_changed"]
+## Lives and gold chip (3D pill of the Home ref, Figma 106:385; tools/make_pastel_home.py): CHIP_SCALE px per design px,
+## body CHIP_BODY design px high (= the bar), soft shadow CHIP_SHADOW below it. Scaled to the bar, 9-sliced across with
+## round caps of half the body height.
+const CHIP_TEX := "res://assets/ui/figma/hub_chip.png"
+const CHIP_SCALE := 3.0
+const CHIP_BODY := 70.0
+const CHIP_SHADOW := 8.0
+## Chip art per bar height in px (every HubTop of a screen size shares it).
+static var _chip_cache: Dictionary = {}
 
 # Getters bind the scene's nodes on first use (callers read them before adding the bar to the tree).
 var profile_btn: Button = null:
@@ -63,7 +72,7 @@ var settings_btn: Button = null:
 var _avatar: Control = null
 var _lives_icon: TextureRect = null
 var _fb := FigmaBox.new()
-var _bar_boxes: Array[StyleBoxFlat] = []
+var _bars: Array[Panel] = []
 var _bound: bool = false
 ## Lives number on the heart (-1 before the first, or while unlimited): a change bumps the heart.
 var _lives_shown: int = -1
@@ -107,11 +116,8 @@ func _bind() -> void:
 	gold_label = $GoldPanel/GoldLabel
 	gold_icon = $GoldPanel/Icon
 	settings_btn = $SettingsButton
-	# Sub-resources are shared by every instance of the scene; _layout() scales these per bar.
-	for bar: Panel in [$LivesPanel/Bar, $GoldPanel/Bar]:
-		var bs := (bar.get_theme_stylebox("panel") as StyleBoxFlat).duplicate() as StyleBoxFlat
-		bar.add_theme_stylebox_override("panel", bs)
-		_bar_boxes.append(bs)
+	# _layout() gives each bar the chip art at its height (the scene's flat box is the fallback without the art)
+	_bars = [$LivesPanel/Bar, $GoldPanel/Bar]
 	profile_btn.pressed.connect(_fire.bind("profile"))
 	($LivesPanel/LivesPlus as Button).pressed.connect(_on_lives_plus)
 	($GoldPanel/GoldPlus as Button).pressed.connect(_fire.bind("shop"))
@@ -140,10 +146,38 @@ func _layout() -> void:
 	var h := DESIGN_H * s
 	if not is_equal_approx(custom_minimum_size.y, h):
 		custom_minimum_size.y = h
-	for b in _bar_boxes:
-		b.set_corner_radius_all(roundi(36 * s))
-		b.set_border_width_all(maxi(roundi(2 * s), 1))
+	var chip := chip_box(CHIP_BODY * s)
+	for bar in _bars:
+		if chip != null:
+			bar.add_theme_stylebox_override("panel", chip)
 	_fb.apply(s)
+
+
+## Chip art scaled so its body is bar_h px high: 9-slice across (caps keep their round shape at any width), the shadow
+## drawn below the bar through expand_margin_bottom. Null when the art can't be read.
+static func chip_box(bar_h: float) -> StyleBoxTexture:
+	var key := roundi(bar_h)
+	if key <= 0:
+		return null
+	var k := float(key) / (CHIP_BODY * CHIP_SCALE)
+	var t: Texture2D = _chip_cache.get(key)
+	if t == null:
+		var src := load(CHIP_TEX) as Texture2D
+		var img := src.get_image() if src != null else null
+		if img == null:
+			return null
+		if img.is_compressed():
+			img.decompress()
+		img.resize(maxi(roundi(img.get_width() * k), 3), maxi(roundi(img.get_height() * k), 1), Image.INTERPOLATE_LANCZOS)
+		t = ImageTexture.create_from_image(img)
+		_chip_cache[key] = t
+	var cap := floorf(t.get_width() * 0.5 - 1.0)
+	var sb := StyleBoxTexture.new()
+	sb.texture = t
+	sb.texture_margin_left = cap
+	sb.texture_margin_right = cap
+	sb.expand_margin_bottom = t.get_height() - key
+	return sb
 
 
 func _enter_tree() -> void:

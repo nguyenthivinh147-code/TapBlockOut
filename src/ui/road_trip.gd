@@ -37,7 +37,7 @@ const FOCUS := 0.62
 ## Nút Level theo độ khó của level đang chơi: kiểu nút, viền chữ.
 const TIERS := {
 	"": {"button": "primary", "stroke": Color("5A9016")},
-	"hard": {"button": "danger", "stroke": Color("B1343C")},
+	"hard": {"button": "danger", "stroke": Color("3E0B3A")},
 	"very_hard": {"button": "purple", "stroke": Color("4C0B78")},
 }
 const CHIP_FILL := Color("7BD43A")

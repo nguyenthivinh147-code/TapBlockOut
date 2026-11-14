@@ -387,7 +387,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_wvnh1")
 text = "Player"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "2809704552690345925",
 "n": "txtHeader",

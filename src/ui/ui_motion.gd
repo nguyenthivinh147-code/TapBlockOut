@@ -12,6 +12,8 @@ extends Node
 ## NUDGE: an icon (Home's side columns) gives a small hop now and then: it stretches up as it rises, squashes as it
 ## lands, then rests; Home offsets the icons so one hop runs down the columns at a time.
 ## BADGE: a notice dot (Home's red dots) swells for a moment, then rests, like a slow heartbeat.
+## BREATHE: a main button (Home's Play) swells a little and back, without end, about its pivot; a host that is, or
+## whose parent is, a disabled button rests at its own size. It runs beside the host's SHINE under BREATHE_NODE.
 ## set_kind switches a motion in place (Home: an icon with a notice wobbles instead of nudging).
 ## The motion is added on top of the control's own position, scale and rotation: a value written by someone else
 ## (layout, a SimpleUIRotator spin, a press pulse) becomes the new base, so it never drifts. While the control is
@@ -19,10 +21,12 @@ extends Node
 ## add the others themselves; never while baking. attach's delay (s) offsets the first cycle, so neighbours that share
 ## a kind move in a ripple instead of together.
 
-enum { PULSE, AD_HOP, SOB, TEAR, FLOAT, WOBBLE, SHINE, NUDGE, BADGE }
+enum { PULSE, AD_HOP, SOB, TEAR, FLOAT, WOBBLE, SHINE, NUDGE, BADGE, BREATHE }
 
 const SCRIPT_PATH := "res://src/ui/ui_motion.gd"
 const NODE_NAME := "Motion"
+## Name of a host's second motion: BREATHE beside the SHINE that holds NODE_NAME.
+const BREATHE_NODE := "Breathe"
 ## _sprites.json keys of the video-ad icons: TV and clapperboard. Resources_moved_UI_Maincenter_7 is a clock.
 const AD_SPRITES := ["Resources_moved_UI_Maincenter:UI_Maincenter_5", "Resources_UI_Maincenter:UI_Maincenter_7"]
 const PULSE_SPRITES := ["fx_1", "light1"]
@@ -98,6 +102,9 @@ const NUDGE_SQUASH := 0.06
 const BADGE_PERIOD := 1.6
 const BADGE_BEAT := 0.45
 const BADGE_SCALE := 0.18
+## BREATHE: scale 1 -> 1 + BREATHE_SCALE -> 1 over BREATHE_SEC (sine).
+const BREATHE_SCALE := 0.05
+const BREATHE_SEC := 1.4
 
 var kind := PULSE
 var time := 0.0
@@ -116,14 +123,14 @@ var _shine_at := INF
 var _shine_box := Vector2.INF
 
 
-## Adds a motion of kind to c, unless c already has one; returns c's motion. delay >= 0: the first cycle starts that
-## many seconds from now (instead of the kind's own delay).
-static func attach(c: Control, k: int, delay: float = -1.0) -> Node:
-	var m := c.get_node_or_null(NODE_NAME)
+## Adds a motion of kind to c, unless c already has one under node_name; returns c's motion of that name.
+## delay >= 0: the first cycle starts that many seconds from now (instead of the kind's own delay).
+static func attach(c: Control, k: int, delay: float = -1.0, node_name: String = NODE_NAME) -> Node:
+	var m := c.get_node_or_null(node_name)
 	if m != null:
 		return m
 	m = (load(SCRIPT_PATH) as GDScript).new()
-	m.setup(c, k)
+	m.setup(c, k, node_name)
 	if delay >= 0.0:
 		m.time = -delay
 	return m
@@ -139,10 +146,10 @@ static func kind_for_sprite(key: Variant) -> int:
 	return -1
 
 
-func setup(c: Control, k: int) -> void:
+func setup(c: Control, k: int, node_name: String = NODE_NAME) -> void:
 	_host = c
 	kind = k
-	name = NODE_NAME
+	name = node_name
 	# Not saved by tools/bake_screen.gd and dropped from copies (UnityUI.strip_runtime).
 	set_meta("u_rt", true)
 	match k:
@@ -184,9 +191,16 @@ func _process(delta: float) -> void:
 	if kind == NUDGE and _host.get_parent() is BaseButton and (_host.get_parent() as BaseButton).disabled:
 		_rest()
 		return
+	if kind == BREATHE:
+		var btn: Node = _host if _host is BaseButton else _host.get_parent()
+		if btn is BaseButton and (btn as BaseButton).disabled:
+			_rest()
+			return
 	_sync()
 	if kind == PULSE:
 		_host.scale = _base_scale * (1.0 + PULSE_SCALE * (0.5 - 0.5 * cos(TAU * time / PULSE_SEC)))
+	elif kind == BREATHE:
+		_host.scale = _base_scale * (1.0 + BREATHE_SCALE * (0.5 - 0.5 * cos(TAU * time / BREATHE_SEC)))
 	elif kind == BADGE:
 		_host.scale = _base_scale * (1.0 + badge_swell(maxf(time, 0.0)))
 	elif kind == NUDGE:
@@ -351,7 +365,7 @@ func _shine(progress: float) -> void:
 func _sync() -> void:
 	if not _host.scale.is_equal_approx(_set_scale):
 		_base_scale = _host.scale
-	if kind != PULSE and kind != BADGE:
+	if not _scale_only():
 		if not _host.position.is_equal_approx(_set_pos):
 			_base_pos = _host.position
 		if not is_equal_approx(_host.rotation, _set_rot):
@@ -369,8 +383,13 @@ func _rest() -> void:
 	_sync()
 	_host.scale = _base_scale
 	_set_scale = _host.scale
-	if kind != PULSE and kind != BADGE:
+	if not _scale_only():
 		_host.position = _base_pos
 		_host.rotation = _base_rot
 		_set_pos = _host.position
 		_set_rot = _host.rotation
+
+
+## Kinds that only scale: position and rotation stay the host's own.
+func _scale_only() -> bool:
+	return kind == PULSE or kind == BADGE or kind == BREATHE

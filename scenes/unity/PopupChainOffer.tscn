@@ -442,7 +442,6 @@ text = "KHO BÁU VÔ TẬN"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"
@@ -498,7 +497,6 @@ text = "FLASH PACK"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"
@@ -552,7 +550,6 @@ text = "KHO BÁU VÔ TẬN"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"

@@ -23,9 +23,9 @@ const RewardFly := preload("res://src/ui/reward_fly.gd")
 const SCENE_PATH := "res://scenes/hub_nav.tscn"
 const DESIGN_W := 886.0
 const DESIGN_H := 248.0
-## Tint of a locked tab (button and panel). Theme pastel: light, the padlock says "locked"; the base theme dimmed to
-## Color(0.7, 0.7, 0.78) on its dark purple tabs.
-const LOCKED_TINT := Color(0.9, 0.88, 0.95)
+## Tint of a locked tab (button and panel). Theme pastel: none, as in the Home ref (Figma 106:385) the padlock and
+## caption say "locked"; the base theme dimmed to Color(0.7, 0.7, 0.78) on its dark purple tabs.
+const LOCKED_TINT := Color.WHITE
 ## [tab, icon, chữ, nút trong scene, nền tím trong scene], trái sang phải
 const TABS := [["shop", "ui_shop", "home_shop", "ShopButton", "ShopPanel"], ["home", "ui_home", "home_home", "HomeTab", "HomePanel"],
 	["road_trip", "ui_road_trip", "home_road_trip", "RoadTripTab", "RoadTripPanel"]]
@@ -37,7 +37,8 @@ const SLOT_INSET := 0.0
 ## by that much and no background shows under them.
 const PANEL_H := 151.0
 const HIGHLIGHT_H := 189.0
-const CAPTION_STROKE := Color("8A201F")
+## Open tab caption on the butter highlight: wine plum of the Home ref (Figma 106:385), like home.gd HOME_INK.
+const CAPTION_STROKE := Color("3E0B3A")
 ## Caption font px and fit width: open tab, other tabs.
 const CAPTION_FONT_ON := Vector2(60, 265)
 const CAPTION_FONT_OFF := Vector2(26, 271)
@@ -177,7 +178,9 @@ func _set_tab(b: Button, on: bool, icon_name: String, caption: String) -> void:
 	ic.texture = ThemeKit.icon(icon_name)
 	l.text = caption
 	l.uppercase = on
-	l.add_theme_color_override("font_outline_color", CAPTION_STROKE if on else ThemeKit.TEXT_OUTLINE)
+	var stroke: Color = CAPTION_STROKE if on else ThemeKit.TEXT_OUTLINE
+	l.add_theme_color_override("font_outline_color", stroke)
+	l.add_theme_color_override("font_shadow_color", stroke)
 	l.visible = on
 
 

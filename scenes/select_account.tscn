@@ -165,7 +165,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_r7cle")
 text = "Select Account"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "3000629520240064318",
 "n": "Title",

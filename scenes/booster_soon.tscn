@@ -312,7 +312,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 text = "Keep playing!"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"
@@ -363,7 +362,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 text = "Keep playing!"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"
@@ -414,7 +412,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_kvovk")
 text = "Keep playing!"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"

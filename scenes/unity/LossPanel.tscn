@@ -683,7 +683,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "YOU LOSE"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "6319970644758867423",
 "n": "Text (TMP)",

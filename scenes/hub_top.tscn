@@ -9,24 +9,24 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0mk0g"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6rpkh"]
-bg_color = Color(1, 0.98039216, 0.9411765, 1)
+bg_color = Color(1, 0.9411765, 0.9019608, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.70980394, 0.4117647, 0.08235294, 1)
+border_width_bottom = 3
+border_color = Color(0.6627451, 0.54509807, 0.8352941, 1)
 corner_radius_top_left = 36
 corner_radius_top_right = 36
 corner_radius_bottom_right = 36
 corner_radius_bottom_left = 36
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_40im1"]
-bg_color = Color(1, 0.98039216, 0.9411765, 1)
+bg_color = Color(1, 0.9411765, 0.9019608, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.70980394, 0.4117647, 0.08235294, 1)
+border_width_bottom = 3
+border_color = Color(0.6627451, 0.54509807, 0.8352941, 1)
 corner_radius_top_left = 36
 corner_radius_top_right = 36
 corner_radius_bottom_right = 36
@@ -121,7 +121,7 @@ offset_left = 96.0
 offset_top = 18.0
 offset_right = 266.0
 offset_bottom = 88.0
-theme_override_colors/font_color = Color(0.29019608, 0.16470588, 0.41960784, 1)
+theme_override_colors/font_color = Color(0.2627451, 0.09019608, 0.24705882, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_colors/font_outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_constants/shadow_offset_x = 0
@@ -200,7 +200,7 @@ offset_left = 96.0
 offset_top = 18.0
 offset_right = 266.0
 offset_bottom = 88.0
-theme_override_colors/font_color = Color(0.29019608, 0.16470588, 0.41960784, 1)
+theme_override_colors/font_color = Color(0.2627451, 0.09019608, 0.24705882, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_colors/font_outline_color = Color(0.22745098, 0.10980392, 0.43137255, 1)
 theme_override_constants/shadow_offset_x = 0

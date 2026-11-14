@@ -651,7 +651,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_wvnh1")
 text = "Leaderboard"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "2809704552690345925",
 "n": "txtHeader",
@@ -7789,7 +7788,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_wvnh1")
 text = "LEAGUE RESULT"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"
@@ -7840,7 +7838,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_wvnh1")
 text = "LEAGUE RESULT"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"
@@ -7891,7 +7888,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_wvnh1")
 text = "LEAGUE RESULT"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"

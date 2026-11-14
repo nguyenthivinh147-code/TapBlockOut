@@ -371,7 +371,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "Notify"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "3032118551645677414",
 "n": "txtHeader",

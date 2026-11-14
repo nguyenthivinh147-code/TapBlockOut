@@ -80,16 +80,32 @@ const GUIDE_DIM := ["Top", "Bottom", "Left", "Right"]
 const GUIDE_HOLE_TOP := 11.5
 const GUIDE_HOLE_RADIUS := 24.0
 
-# Nền (mọi độ khó như khung Hard: dải #3454AC -> #DEE1F2, phủ TopShade), hoạ tiết kẹo chìm (lớp sáng lệch 2 px xuống,
-# lớp #F2C2D2 trên, độ mờ 7%), ray kẹo mờ hai đầu, viền chữ ribbon #9E4D0F: lưu trong scenes/home.tscn.
-## Theo độ khó: kiểu nút, viền chữ nút, sprite mốc hiện tại, viền số, icon đầu lâu.
+# Nền (mọi độ khó giống nhau: dải tím nhạt #EFD4FC -> đào #FFDBCE theo ảnh ref Figma 106:385, phủ TopShade), hoạ
+# tiết kẹo chìm (lớp sáng lệch 2 px xuống, lớp #F2C2D2 trên, độ mờ 7%), ray kẹo mờ hai đầu, viền chữ ribbon mận
+# #3E0B3A (HOME_INK): lưu trong scenes/home.tscn.
+## Viền chữ mận của ref (ribbon cột, trong scene).
+const HOME_INK := Color("3E0B3A")
+## Nút Chơi ở level thường: ảnh riêng (bản sao pill_green của atlas; twin pastel xanh táo dịu, giữ sọc và bóng;
+## tools/make_pastel_home.py, map play_green). Các nút xanh ở màn khác đổi bằng cùng map nên trùng nút này.
+const PLAY_NORMAL_ART := "res://assets/ui/figma/home_play_normal.png"
+## Theo độ khó: kiểu nút (art: ảnh riêng thay sprite của kiểu nút), sprite mốc hiện tại, icon đầu lâu, và num: màu đậm
+## cùng tông nút, làm viền và bóng cho số trên mốc hiện tại, chữ PLAY, chữ độ khó.
 const TIERS := {
-	"": {"button": "primary", "stroke": Color("5A9016"), "node": "node_green", "num": Color("4F7F10"), "skull": ""},
-	"hard": {"button": "danger", "stroke": Color("B1343C"), "node": "hex_red", "num": Color("911B35"), "skull": "ui_hard"},
-	"very_hard": {"button": "purple", "stroke": Color("4C0B78"), "node": "hex_purple", "num": Color("4B1073"), "skull": "ui_superhard"},
+	"": {"button": "primary", "art": PLAY_NORMAL_ART, "node": "node_green", "num": Color("2D5E12"), "skull": ""},
+	"hard": {"button": "danger", "node": "hex_red", "num": Color("6C133F"), "skull": "ui_hard"},
+	"very_hard": {"button": "purple", "node": "hex_purple", "num": Color("4B1073"), "skull": "ui_superhard"},
 }
-const LOCKED_STROKE := Color("787878")
-const SOLVED_STROKE := Color("076F87")
+## Số trên mốc khoá: chữ tím rất nhạt, viền tím (mốc hoa tím nhạt của ref).
+const LOCKED_STROKE := Color("A57BBE")
+const LOCKED_NUM := Color("FBEAFF")
+## Cỡ mốc khoá (Figma 220; nhỏ hơn cho mốc hiện tại 290 nổi bật) và mốc hiện tại.
+const PATH_LOCKED_PX := 180.0
+const PATH_CURRENT_PX := 290.0
+## Ba mốc từ trên xuống: [y tâm, cỡ]. Tâm theo khung thường của Figma (mốc khoá 220 ở y 211 và 525, mốc hiện tại 290
+## ở y 868); đổi cỡ thì tâm giữ nguyên.
+const PATH_SLOTS := [[321.0, PATH_LOCKED_PX], [635.0, PATH_LOCKED_PX], [1013.0, PATH_CURRENT_PX]]
+## Mốc hiện tại trong PATH_SLOTS, path_nodes.
+const PATH_CURRENT := 2
 
 var gold_label: Label = null
 var lives_panel: Control = null
@@ -134,7 +150,8 @@ var bomb_caption: Label = null
 var bomb_badge: Control = null
 ## Remove Ads (cột phải): ẩn khi đã mua một trong hai gói bỏ quảng cáo.
 var remove_ads_btn: Button = null
-## Ba mốc trên đường level, từ trên xuống. Mỗi mốc: {"root", "sprite", "num", "badge", "skull"}.
+## Ba mốc trên đường level, từ trên xuống: level + 2, level + 1 (khoá), level hiện tại. Node trong scene giữ tên cũ
+## NextNode, CurrentNode, PrevNode theo vị trí. Mỗi mốc: {"root", "sprite", "num", "badge", "skull"}.
 var path_nodes: Array[Dictionary] = []
 
 var _args: Dictionary = {}
@@ -145,8 +162,6 @@ var _top: HubTop = null
 var _nav: HubNav = null
 var _fb := FigmaBox.new()
 var _tier: String = ""
-## Bố cục đường level: "first" (level 1: hai mốc khoá ở trên, mốc hiện tại ở dưới) hoặc "mid".
-var _path_mode: String = "mid"
 var _bg: ColorRect = null
 var _sparkles: Control = null
 var _rail: TextureRect = null
@@ -298,6 +313,9 @@ func _build() -> void:
 	play_btn.pressed.connect(_on_play)
 	# shine.gdshader trên chính nút: dải sáng chỉ chạy trên viên thuốc, chữ ở trên không loé; nút tắt thì không loé.
 	UiMotion.attach(play_btn, UiMotion.SHINE, PLAY_SHINE_DELAY)
+	# Phập phồng nhẹ quanh tâm nút (cả chữ PLAY, chữ độ khó); nút tắt (hết level) thì đứng yên.
+	play_btn.pivot_offset_ratio = Vector2(0.5, 0.5)
+	UiMotion.attach(play_btn, UiMotion.BREATHE, -1.0, UiMotion.BREATHE_NODE)
 	hard_tag = %HardTag
 	play_label = %PlayLabel
 	coming_soon_label = %ComingSoonLabel
@@ -408,14 +426,12 @@ func _stack(items: Array[Control], x: float, limit: float) -> void:
 		_fb.move(shown[i], Vector2(x, COL_TOP + i * step))
 
 
-## Ba mốc nằm trên ray kẹo: y theo khung Figma, tâm ở PATH_X (giữa ray).
+## Ba mốc nằm trên ray kẹo: y theo PATH_SLOTS (khung Figma), tâm ở PATH_X (giữa ray).
 ## Màn thấp hơn khung thì co cả cụm (ray, cỡ và khoảng cách mốc) quanh (PATH_X, đỉnh cụm) nên mốc vẫn trên ray.
-## first (level 1, khung thường): khoá 220 ở 211, khoá 220 ở 525, hiện tại 290 ở 868.
-## mid (khung Hard, hạ hai mốc dưới như ref): khoá 220 ở 149, hiện tại 290 ở 548, vừa qua 220 ở 971.
 func _layout_path(shift: float) -> void:
-	var slots: Array = [[211.0, 220.0], [525.0, 220.0], [868.0, 290.0]] if _path_mode == "first" else [[149.0, 220.0], [548.0, 290.0], [971.0, 220.0]]
-	var top: float = slots[0][0]
-	var span: float = float(slots[2][0]) + float(slots[2][1]) - top
+	var slots: Array = PATH_SLOTS
+	var top: float = float(slots[0][0]) - float(slots[0][1]) * 0.5
+	var span: float = float(slots[2][0]) + float(slots[2][1]) * 0.5 - top
 	var avail := PLAY_RECT.position.y - 12.0 + shift - PATH_GAP - top
 	var f := clampf(avail / span, 0.55, 1.0)
 	var origin := Vector2(PATH_X, top + maxf(avail - span, 0.0) * 0.5)
@@ -424,14 +440,13 @@ func _layout_path(shift: float) -> void:
 	var rail_end := PLAY_RECT.position.y + shift + RAIL_UNDER_PLAY
 	(_rail.material as ShaderMaterial).set_shader_parameter("cut",
 		clampf((rail_end - rail_pos.y) / (RAIL_RECT.size.y * f), 0.0, 1.0))
-	var cur_idx := 2 if _path_mode == "first" else 1
 	for i in 3:
 		var px: float = float(slots[i][1]) * f
-		var c := origin + Vector2(0.0, float(slots[i][0]) + float(slots[i][1]) * 0.5 - top) * f
+		var c := origin + Vector2(0.0, float(slots[i][0]) - top) * f
 		var pn: Dictionary = path_nodes[i]
 		_fb.put(pn.root, Rect2(c.x - px * 0.5, c.y - px * 0.5, px, px))
-		_layout_node(pn, px, i == cur_idx)
-	var cur: Rect2 = _fb.rect_of(path_nodes[cur_idx].root)
+		_layout_node(pn, px, i == PATH_CURRENT)
+	var cur: Rect2 = _fb.rect_of(path_nodes[PATH_CURRENT].root)
 	# tâm fx 1 lệch lên 16 khi mốc có đầu lâu (Hard), xuống 5 khi không
 	var gs := cur.size.x * GLOW_K
 	var gy := cur.get_center().y + cur.size.x * (-16.0 / 290.0 if _tier != "" else 5.0 / 290.0)
@@ -454,7 +469,7 @@ func _layout_node(pn: Dictionary, px: float, current: bool) -> void:
 	_fb.put(pn.skull, Rect2(79 * k, -34 * k, 131 * k, 131 * k))
 
 
-## Gán hình cho một mốc. kind: "current", "locked", "solved".
+## Gán hình cho một mốc. kind: "current", "locked".
 func _set_node(pn: Dictionary, level: int, kind: String, hex: bool) -> void:
 	pn["shape"] = "hex" if hex else "diamond"
 	var t: Dictionary = TIERS[_tier]
@@ -462,20 +477,19 @@ func _set_node(pn: Dictionary, level: int, kind: String, hex: bool) -> void:
 	num.text = str(level)
 	(pn.skull as TextureRect).texture = null
 	(pn.badge as TextureRect).texture = null
+	var stroke: Color = t.num
 	match kind:
 		"current":
 			(pn.sprite as TextureRect).texture = UiAtlas.tex(str(t.node))
-			num.add_theme_color_override("font_outline_color", t.num)
 			if str(t.skull) != "":
 				(pn.skull as TextureRect).texture = ThemeKit.icon(str(t.skull))
 		"locked":
 			(pn.sprite as TextureRect).texture = UiAtlas.tex("hex_gray" if hex else "node_gray")
-			num.add_theme_color_override("font_outline_color", LOCKED_STROKE)
+			stroke = LOCKED_STROKE
 			(pn.badge as TextureRect).texture = ThemeKit.icon("ui_lock")
-		"solved":
-			(pn.sprite as TextureRect).texture = UiAtlas.tex("hex_blue")
-			num.add_theme_color_override("font_outline_color", SOLVED_STROKE)
-			(pn.badge as TextureRect).texture = ThemeKit.icon("ui_check")
+	num.add_theme_color_override("font_color", LOCKED_NUM if kind == "locked" else Color.WHITE)
+	num.add_theme_color_override("font_outline_color", stroke)
+	num.add_theme_color_override("font_shadow_color", stroke)
 
 
 ## Đường level và nút Chơi theo độ khó của level hiện tại (nền giống nhau ở mọi độ khó).
@@ -484,23 +498,22 @@ func _refresh_path(level: int, ended: bool) -> void:
 	if not TIERS.has(_tier):
 		_tier = ""
 	var hard := _tier != ""
-	_path_mode = "first" if level <= 1 else "mid"
-	# mốc khoá luôn là lục giác xám như ref; chỉ mốc hiện tại đổi hình theo độ khó
-	if _path_mode == "first":
-		_set_node(path_nodes[0], level + 2, "locked", true)
-		_set_node(path_nodes[1], level + 1, "locked", true)
-		_set_node(path_nodes[2], level, "current", hard)
-	else:
-		_set_node(path_nodes[0], level + 1, "locked", true)
-		_set_node(path_nodes[1], level, "current", hard)
-		_set_node(path_nodes[2], level - 1, "solved", true)
+	# Mọi level: mốc hiện tại dưới cùng, hai level tiếp theo khoá ở trên (không hiện level đã qua).
+	# Mốc khoá luôn là lục giác xám như ref; chỉ mốc hiện tại đổi hình theo độ khó.
+	_set_node(path_nodes[0], level + 2, "locked", true)
+	_set_node(path_nodes[1], level + 1, "locked", true)
+	_set_node(path_nodes[PATH_CURRENT], level, "current", hard)
 
 
 ## Pill btn_play (387x165) gần đúng tỉ lệ sprite atlas (380x168) nên vẽ cả sprite co theo nút, không 9-slice.
-func _style_play(kind: String) -> void:
+func _style_play(kind: String, own_art: String = "") -> void:
 	var art: String = ThemeKit.BUTTON_ART[kind]
+	var tex: Texture2D = load(own_art) as Texture2D if own_art != "" else null
 	for st in ["normal", "hover", "pressed", "disabled", "focus"]:
 		var box := UiAtlas.box(art, Vector4.ZERO)
+		if tex != null:
+			box = StyleBoxTexture.new()
+			box.texture = tex
 		match st:
 			"hover":
 				box.modulate_color = Color(1.08, 1.08, 1.08)
@@ -528,10 +541,12 @@ func refresh() -> void:
 	_refresh_path(level, ended)
 	coming_soon_label.visible = ended
 	var t: Dictionary = TIERS[_tier]
-	_style_play(str(t.button))
+	_style_play(str(t.button), str(t.get("art", "")))
 	play_label.text = tr("home_play").to_upper()
-	play_label.add_theme_color_override("font_outline_color", t.stroke)
-	hard_tag.add_theme_color_override("font_outline_color", t.stroke)
+	# Viền và bóng chữ cùng tông nút; bóng đặt ở đây vì FigmaBox chỉ chép viền sang bóng khi màn đổi cỡ.
+	for l: Label in [play_label, hard_tag]:
+		l.add_theme_color_override("font_outline_color", t.num)
+		l.add_theme_color_override("font_shadow_color", t.num)
 	play_btn.disabled = ended
 	play_btn.modulate = Color(1, 1, 1, 0.7) if ended else Color.WHITE
 	hard_tag.visible = _tier != ""
@@ -546,19 +561,17 @@ func refresh() -> void:
 	# weekend sale: chỉ hiện khi sale bật và Shop đã mở
 	_sale_col.visible = Unlocks.is_open("shop", level) and Game.is_sale_active()
 
-	# challenge: tắt (Config.FEATURES) thì ẩn hẳn; khoá thì icon tối, có khoá và ghi level mở
+	# challenge: tắt (Config.FEATURES) thì ẩn hẳn; khoá thì icon giữ màu (như ref), có ổ khoá và ghi level mở
 	var ch: Dictionary = Game.challenge_view()
 	_challenge_col.visible = bool(ch.get("enabled", true))
 	var ch_open := bool(ch.get("open", false))
 	challenge_btn.disabled = not ch_open
-	challenge_btn.modulate = Color.WHITE if ch_open else Color(0.75, 0.75, 0.82)
 	_challenge_lock.visible = not ch_open
 	challenge_caption.text = tr("home_challenge") if ch_open else tr("home_play_level") % int(ch.get("unlock_level", Config.UNLOCK.challenge))
 
 	# bảng xếp hạng: khoá như challenge
 	var lb_open: bool = Game.lb_open()
 	leaderboard_btn.disabled = not lb_open
-	leaderboard_btn.modulate = Color.WHITE if lb_open else Color(0.75, 0.75, 0.82)
 	_leaderboard_lock.visible = not lb_open
 	leaderboard_caption.text = tr("home_ranking") if lb_open else tr("home_play_level") % int(Config.UNLOCK.get("leaderboard", 0))
 	leaderboard_dot.visible = lb_open and Game.lb_badge()

@@ -260,7 +260,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "Rate us"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "4532371269527757320",
 "n": "txtHeader",

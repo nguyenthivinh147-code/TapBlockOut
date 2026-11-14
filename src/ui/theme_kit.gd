@@ -43,8 +43,8 @@ const BLOCK_VAL := 0.96
 # Brand / Menu. Theme pastel (concept A, docs/UI_THEME_PASTEL.md): lavender E9D9FF fading to peach FFE3EC; the base
 # theme used blue 3967BF -> 7B9EDD.
 const BG := Color("E9D9FF")
-const BG_TOP := Color("E9D9FF")
-const BG_BOTTOM := Color("FFE3EC")
+const BG_TOP := Color("EFD4FC")
+const BG_BOTTOM := Color("FFDBCE")
 const NAV_TOP := Color("C9B3F5")
 const NAV_BOTTOM := Color("9F86E0")
 # Popup Lavender: PANEL là nền tối cho khối thông tin trên nền màu, POPUP_CREAM + INK cho thân popup sáng.
@@ -61,7 +61,7 @@ const UNDERLAY := Color("3A1C6E")
 const GOLD := Color("FFC933")
 const GOLD_DEEP := Color("FFA508")
 const GOOD := Color("73DF31")
-const DANGER := Color("F2581F")
+const DANGER := Color("FF636F")
 const HARD_BANNER := Color("B757FA")
 const HARD_BANNER_VERY := Color("C31F1F")
 const VIDEO := Color("2F92E0")
@@ -168,7 +168,8 @@ const FIGMA_ICON := {
 	"ui_music": "ic_music_on",
 	"ui_smash": "ic_bomb",
 	"ui_leaderboard": "ic_leaderboard",
-	"ui_road_trip": "ic_giftbox1",
+	# Road Trip tab and win-card feature bar: mint camper van with a gift on the roof (2026-11-13; was ic_giftbox1).
+	"ui_road_trip": "ic_road_trip",
 	"ui_noads": "ic_noads",
 	"ui_plus": "ic_plus",
 	"ui_close": "ic_close",

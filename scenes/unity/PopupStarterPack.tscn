@@ -385,7 +385,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "STARTER PACK"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"
@@ -437,7 +436,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "STARTER PACK"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"
@@ -489,7 +487,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "STARTER PACK"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"

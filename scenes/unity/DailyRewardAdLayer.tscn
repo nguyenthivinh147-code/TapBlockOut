@@ -490,7 +490,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "SPECIAL PACK"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "2809704552690345925",
 "n": "txtHeader",
@@ -537,7 +536,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "DAILY REWARD"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"
@@ -587,7 +585,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "DAILY REWARD"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"
@@ -637,7 +634,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "DAILY REWARD"
 horizontal_alignment = 1
 autowrap_mode = 3
-uppercase = true
 metadata/u = {
 "cs": [{
 "name": "CurvedTextMeshPro"

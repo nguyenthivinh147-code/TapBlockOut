@@ -5,7 +5,9 @@
 Reads each source under assets/, writes the twin under assets/themes/<theme>/<same path> with the same size and
 alpha, and copies the source .import (same compression and size limit; uid and cache path dropped so Godot gives
 the twin its own). A file rule is either whole-file ("map") or per region ("regions": [[x, y, w, h, map], ...]);
-pixels outside every region stay as they are.
+pixels outside every region stay as they are. Hand-made art enters through two more keys (paths from the repo root,
+made by tools such as make_pastel_home.py): "source" replaces the whole image before any map (same size), and
+"overlays": [[x, y, w, h, path], ...] replaces a region (colour and alpha, image exactly w x h) after the maps.
 
 A map sends source hue families to target families. For a pixel of family F with target T:
   hue  -> T.hue (plus the pixel's offset from F's centre times T.keep_hue),
@@ -132,7 +134,7 @@ def import_copy(src_import, dst_import):
 						lines.append(keep[(section, key)])
 			if not dropped:
 				lines.append(line)
-	with open(dst_import, "w", encoding="utf-8") as f:
+	with open(dst_import, "w", encoding="utf-8", newline="\n") as f:
 		f.writelines(lines)
 
 
@@ -192,7 +194,7 @@ def code_colors(spec, dry):
 			total += n
 			print("%4d  %s" % (n, os.path.relpath(f, ROOT)))
 			if not dry:
-				with open(f, "w", encoding="utf-8") as fh:
+				with open(f, "w", encoding="utf-8", newline="\n") as fh:
 					fh.write(new)
 	print("%s%d colour values" % ("would change " if dry else "changed ", total))
 
@@ -213,6 +215,11 @@ def main():
 		src = os.path.join(ROOT, "assets", rel)
 		dst = os.path.join(out_root, rel)
 		im = Image.open(src).convert("RGBA")
+		if "source" in rule:
+			alt = Image.open(os.path.join(ROOT, rule["source"])).convert("RGBA")
+			if alt.size != im.size:
+				sys.exit("%s: source %s is %s, not %s" % (rel, rule["source"], alt.size, im.size))
+			im = alt
 		arr = np.asarray(im).astype(np.float64) / 255.0
 		rgb = arr[..., :3].copy()
 		if "map" in rule:
@@ -221,17 +228,28 @@ def main():
 			x, y, w, h = int(x), int(y), int(w), int(h)
 			rgb[y:y + h, x:x + w] = recolor(rgb[y:y + h, x:x + w], spec, m)
 		arr[..., :3] = np.clip(rgb, 0, 1)
+		for x, y, w, h, path in rule.get("overlays", []):
+			x, y, w, h = int(x), int(y), int(w), int(h)
+			ov = Image.open(os.path.join(ROOT, path)).convert("RGBA")
+			if ov.size != (w, h):
+				sys.exit("%s: overlay %s is %s, not %s" % (rel, path, ov.size, (w, h)))
+			arr[y:y + h, x:x + w] = np.asarray(ov).astype(np.float64) / 255.0
 		os.makedirs(os.path.dirname(dst), exist_ok=True)
-		Image.fromarray((arr * 255.0 + 0.5).astype(np.uint8), "RGBA").save(dst, optimize=True)
+		out = (arr * 255.0 + 0.5).astype(np.uint8)
+		# Same pixels as the twin on disk: keep its bytes (another zlib/Pillow encodes differently, no git churn).
+		same = os.path.exists(dst) and np.array_equal(np.asarray(Image.open(dst).convert("RGBA")), out)
+		if not same:
+			Image.fromarray(out, "RGBA").save(dst, optimize=True)
 		if os.path.exists(src + ".import"):
 			import_copy(src + ".import", dst + ".import")
 		done += 1
 	# Twins whose rule was removed from the spec.
-	keep = {os.path.join(out_root, r) for r in spec["files"]}
+	# normpath: rule keys use "/", os.walk gives "\" on Windows (otherwise every twin counts as removed)
+	keep = {os.path.normcase(os.path.normpath(os.path.join(out_root, r))) for r in spec["files"]}
 	for base, _dirs, files in os.walk(out_root):
 		for fn in files:
 			p = os.path.join(base, fn)
-			if fn.endswith((".png", ".webp", ".jpg")) and p not in keep and not only:
+			if fn.endswith((".png", ".webp", ".jpg")) and os.path.normcase(os.path.normpath(p)) not in keep and not only:
 				os.remove(p)
 				for extra in (p + ".import",):
 					if os.path.exists(extra):

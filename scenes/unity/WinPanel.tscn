@@ -1522,7 +1522,6 @@ theme_override_constants/shadow_outline_size = 0
 text = "YOU WIN"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "6103585462646830365",
 "n": "Text (TMP)",

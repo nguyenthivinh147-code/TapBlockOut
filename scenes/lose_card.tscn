@@ -1669,7 +1669,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_lnssy")
 text = "YOU WIN"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "9213580793860384868",
 "n": "Text (TMP)",
@@ -4304,7 +4303,6 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_lnssy")
 text = "Not this time"
 horizontal_alignment = 1
 vertical_alignment = 1
-uppercase = true
 metadata/u = {
 "id": "322612326787785983",
 "n": "Text (TMP)",

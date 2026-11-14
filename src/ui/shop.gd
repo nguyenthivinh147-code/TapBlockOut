@@ -57,6 +57,12 @@ const SHOW_HEARTS := false
 ## Section titles sit this much closer to the first card under them than Content's 48 spacing (user request
 ## 2026-11-10); the gap above a title stays (hug_title).
 const TITLE_HUG := 30.0
+## Section titles show in capitals and pack names as the strings write them (each word capitalised), whatever the
+## prefab's TMP UpperCase style says (user request 2026-11-13). PACK_NAMES: the cards with a PackName, the bundle
+## cards included (templates of _pack_copy).
+const TITLES := ["NoAdsTitle", "BundleTitle", "GoldTitle"]
+const PACK_NAMES := ["Shop_RemoveAdsBundle", "Shop_RemoveAds", "StarterPack", "SpecialPack", "BundleSweet",
+	"BundleTasty", "BundleYummy"]
 ## ShopCashLayer card for each offer pack (remove_ads, remove_ads_bundle have their own Shop_RemoveAds* cards), under
 ## the BundleTitle; a card shows only while its offer is on sale (Game.offer_in_shop, _show_packs).
 const PACK_CARDS := {"starter_pack": "StarterPack", "level_pack": "SpecialPack", "rescue_pack": "BundleSweet"}
@@ -216,9 +222,15 @@ func _defaults() -> void:
 	# Builder gap: a Mask inside the Viewport's Mask does not clip in Godot (nested clip_children), so the
 	# rectangular Viewport mask clips by rect (and its graphic is clear) and the cards' BlurredBorder masks work.
 	ui.node(SCROLL + "/Viewport").clip_children = CanvasItem.CLIP_CHILDREN_DISABLED
-	for t in ["/NoAdsTitle", "/BundleTitle", "/GoldTitle"]:
-		one_line(ui.label(C + t + "/Text (TMP)"))
-		hug_title(ui.node(C + t))
+	for t in TITLES:
+		var l: Label = ui.label(C + "/" + t + "/Text (TMP)")
+		l.uppercase = true
+		one_line(l)
+		hug_title(ui.node(C + "/" + t))
+	for card in PACK_NAMES:
+		var name_label := ui.node(C).get_node_or_null(str(card) + "/PackName") as Label
+		if name_label != null:
+			name_label.uppercase = false
 	# One line like "10,000" in the prefab: bigger amounts grow past the rect instead of wrapping.
 	ui.label(C + "/Shop_GoldBigPack/GoldQuantityTxt").autowrap_mode = TextServer.AUTOWRAP_OFF
 	# RestorePurchase is hidden in the prefab (see _restore_row).
@@ -298,7 +310,7 @@ func _remove_ads_cards() -> void:
 	_gold_from["remove_ads_bundle"] = fill_no_ads_bundle(ui, b)
 	_buy_button(b + "/Button_Purchase", "remove_ads_bundle")
 	var p := C + "/Shop_RemoveAds"
-	ui.text(p + "/PackName", tr("shop_remove_ads"))
+	ui.text(p + "/PackName", _pack_title("remove_ads"))
 	# One game sentence instead of three short lines: in the scene the description takes the rect of all three.
 	# The scene centres that rect on the card, so the text starts over the ADS icon: move it right of the icon.
 	var d: Label = ui.label(p + "/Description")
@@ -772,6 +784,7 @@ func _pack_copy(content: Control, at: int, sku: String, card: String, art: Strin
 	v.root.name = "Pack_" + sku
 	v.root.set_meta("u_rt", true)
 	content.move_child(v.root, at)
+	v.label("PackName").uppercase = false
 	v.text("PackName", _pack_title(sku))
 	if art != "":
 		v.sprite("Image (2)", art)
@@ -811,6 +824,7 @@ func _preview_title(content: Control, at: int, text: String, node_name: String =
 	v.root.set_meta("u_rt", true)
 	if node_name != "":
 		v.root.name = node_name
+	v.label("Text (TMP)").uppercase = true
 	one_line(v.label("Text (TMP)"))
 	v.text("Text (TMP)", text)
 	hug_title(v.root)
@@ -871,7 +885,8 @@ func _pack_title(sku: String) -> String:
 		"rescue_pack":
 			return tr("shop_rescue_pack")
 		"remove_ads":
-			return tr("shop_remove_ads")
+			# Its own key: shop_remove_ads also captions the Home button and titles the No Ads section.
+			return tr("shop_remove_ads_name")
 		"remove_ads_bundle":
 			return tr("shop_remove_ads_bundle")
 	if sku.begins_with("helper_") or sku.begins_with("bundle_"):

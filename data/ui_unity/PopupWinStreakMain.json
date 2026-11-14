@@ -903,7 +903,7 @@
 									"v": 512,
 									"w": true,
 									"ov": 0,
-									"st": 16,
+									"st": 0,
 									"mat": "Baloo Outline - StarterPack",
 									"font": "Baloo Bhaijaan Regular 400 SDF",
 									"cs": 0,
